@@ -1,0 +1,138 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix atxa-rse-eclipse: <http://www.architexa.com/rdf/rse-eclipse#> .
+@prefix atxa-strata: <http://www.architexa.com/rdf/strata#> .
+@prefix atxa-core: <http://www.architexa.com/rdf/core#> .
+@prefix atxa: <http://www.architexa.com/rdf/> .
+@prefix atxa-jdt-wkspc: <http://www.architexa.com/rdf/jdt-wkspc#> .
+
+<http://www.architexa.com/rdf/rse-eclipse#Layered.atxa> a atxa-core:strataFile .
+
+atxa:DetailNode atxa-core:detailLevel "0" .
+
+atxa-core:docRoot atxa-core:browseModel "com.architexa.diagrams.relo.jdt/com.architexa.diagrams.relo.jdt.browse.ClassStrucBrowseModel" ;
+	atxa-core:contains _:node1abirdjcqx41414 .
+
+_:node1abirdjcqx41414 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.*> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:0,false,false,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "true" , "true" , "false" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac.*> atxa-core:contains atxa-jdt-wkspc:larac , <http://www.architexa.com/rdf/jdt-wkspc#larac.structure> .
+
+_:node1abirdjcqx41414 atxa-core:contains _:node1abirdjcqx41415 .
+
+_:node1abirdjcqx41415 a atxa-core:node ;
+	atxa-core:model atxa-jdt-wkspc:larac ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:0,false,false,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "true" , "false" , "false" .
+
+atxa-jdt-wkspc:larac atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher> , <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC> .
+
+_:node1abirdjcqx41415 atxa-core:contains _:node1abirdjcqx41416 .
+
+_:node1abirdjcqx41416 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,false:1,false,false,false:0,false,true,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "-1" ;
+	atxa-core:containerState "false" , "true" , "false" .
+
+_:node1abirdjcqx41415 atxa-core:contains _:node1abirdjcqx41417 .
+
+_:node1abirdjcqx41417 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:0,false,false,true:0,false,true,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "-1" ;
+	atxa-core:containerState "false" , "false" , "false" .
+
+_:node1abirdjcqx41414 atxa-core:contains _:node1abirdjcqx41418 .
+
+_:node1abirdjcqx41418 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:1,false,false,true" ;
+	atxa-strata:layerIndex "1" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "true" , "false" , "false" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac.structure> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR> .
+
+_:node1abirdjcqx41418 atxa-core:contains _:node1abirdjcqx41419 .
+
+_:node1abirdjcqx41419 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:0,false,false,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "false" , "false" , "false" .
+
+atxa-core:docRoot atxa-core:contains _:node1abirdjcqx41428 .
+
+_:node1abirdjcqx41428 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast> ;
+	atxa-strata:nestedLayerIndexes ":1,false,false,true:0,false,false,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "1" ;
+	atxa-core:containerState "true" , "false" , "false" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTStart> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTSelect> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTPointcut> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTApply> .
+
+_:node1abirdjcqx41428 atxa-core:contains _:node1abirdjcqx41429 .
+
+_:node1abirdjcqx41429 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTStart> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:1,false,false,true" ;
+	atxa-strata:layerIndex "1" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "false" , "false" , "false" .
+
+_:node1abirdjcqx41428 atxa-core:contains _:node1abirdjcqx41550 .
+
+_:node1abirdjcqx41550 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:0,false,false,true" ;
+	atxa-strata:layerIndex "0" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "false" , "true" , "false" .
+
+_:node1abirdjcqx41428 atxa-core:contains _:node1abirdjcqx41551 .
+
+_:node1abirdjcqx41551 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTSelect> ;
+	atxa-strata:nestedLayerIndexes ":1,false,false,true:1,false,false,true" ;
+	atxa-strata:layerIndex "1" ;
+	atxa-strata:indexWithinLayer "1" ;
+	atxa-core:containerState "false" , "true" , "false" .
+
+_:node1abirdjcqx41428 atxa-core:contains _:node1abirdjcqx41552 .
+
+_:node1abirdjcqx41552 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTPointcut> ;
+	atxa-strata:nestedLayerIndexes ":0,false,false,true:2,false,false,true" ;
+	atxa-strata:layerIndex "2" ;
+	atxa-strata:indexWithinLayer "0" ;
+	atxa-core:containerState "false" , "true" , "false" .
+
+_:node1abirdjcqx41428 atxa-core:contains _:node1abirdjcqx41553 .
+
+_:node1abirdjcqx41553 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTApply> ;
+	atxa-strata:nestedLayerIndexes ":1,false,false,true:2,false,false,true" ;
+	atxa-strata:layerIndex "2" ;
+	atxa-strata:indexWithinLayer "1" ;
+	atxa-core:containerState "false" , "true" , "false" .
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix atxa-rse-eclipse: <http://www.architexa.com/rdf/rse-eclipse#> .
+@prefix atxa-strata: <http://www.architexa.com/rdf/strata#> .
+@prefix atxa-core: <http://www.architexa.com/rdf/core#> .
+@prefix atxa: <http://www.architexa.com/rdf/> .
+@prefix atxa-jdt-wkspc: <http://www.architexa.com/rdf/jdt-wkspc#> .
+
+<http://www.architexa.com/rdf/rse-eclipse#Layered.atxa> a atxa-core:strataFile ;
+	atxa-core:contains _:node1abirdjcqx41416 , _:node1abirdjcqx41417 , _:node1abirdjcqx41415 , _:node1abirdjcqx41419 , _:node1abirdjcqx41418 , _:node1abirdjcqx41414 , _:node1abirdjcqx41429 , _:node1abirdjcqx41550 , _:node1abirdjcqx41551 , _:node1abirdjcqx41552 , _:node1abirdjcqx41553 , _:node1abirdjcqx41428 , atxa-core:docRoot , _:node1abirdjcqx41416 , _:node1abirdjcqx41417 , _:node1abirdjcqx41415 , _:node1abirdjcqx41419 , _:node1abirdjcqx41418 , _:node1abirdjcqx41414 , _:node1abirdjcqx41429 , _:node1abirdjcqx41550 , _:node1abirdjcqx41551 , _:node1abirdjcqx41552 , _:node1abirdjcqx41553 , _:node1abirdjcqx41428 , atxa-core:docRoot .
+

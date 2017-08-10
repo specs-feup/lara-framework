@@ -1,0 +1,17 @@
+/JJTLARAEcmaScriptState.java
+/LARAEcmaScript.java
+/LARAEcmaScript.jj
+/LARAEcmaScriptConstants.java
+/LARAEcmaScriptTokenManager.java
+/LARAEcmaScriptTreeConstants.java
+/Node.java
+/Token.java
+/JavaCharStream.java
+/ASTEventAdaptation.java
+/ASTPeriodicAdaptation.java
+/ASTStartCondition.java
+/ASTStopCondition.java
+
+# These files have custom changes
+#/TokenMgrError.java
+#/ParseException.java

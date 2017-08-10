@@ -1,0 +1,282 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix atxa-jdt: <http://www.architexa.com/rdf/jdt#> .
+@prefix atxa-rse-eclipse: <http://www.architexa.com/rdf/rse-eclipse#> .
+@prefix atxa-core: <http://www.architexa.com/rdf/core#> .
+@prefix atxa: <http://www.architexa.com/rdf/> .
+@prefix atxa-jdt-wkspc: <http://www.architexa.com/rdf/jdt-wkspc#> .
+
+<http://www.architexa.com/rdf/rse-eclipse#Class.atxa> a atxa-core:reloFile .
+
+atxa:DetailNode atxa-core:detailLevel "1" .
+
+atxa-core:docRoot atxa-core:browseModel "com.architexa.diagrams.relo.jdt/com.architexa.diagrams.relo.jdt.browse.ClassStrucBrowseModel" ;
+	atxa-core:contains _:node1abjppsp1x1 .
+
+_:node1abjppsp1x1 a atxa-core:node ;
+	atxa-core:model atxa-jdt-wkspc:larac ;
+	atxa-core:posX "-33" ;
+	atxa-core:posY "-111" .
+
+atxa-jdt-wkspc:larac atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher> , <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC> .
+
+_:node1abjppsp1x1 atxa-core:contains _:node1abjppsp1x2 .
+
+_:node1abjppsp1x2 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher> ;
+	atxa-core:posX "-27" ;
+	atxa-core:posY "-56" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher.exec(String[],LanguageSpecification,Output,)> .
+
+_:node1abjppsp1x3 a atxa-core:link ;
+	atxa-core:model atxa-jdt:refType ;
+	rdf:subject _:node1abjppsp1x2 ;
+	rdf:object _:node1abjppsp1x4 .
+
+_:node1abjppsp1x2 atxa-core:contains _:node1abjppsp1x5 .
+
+_:node1abjppsp1x5 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LARACLauncher.exec(String[],LanguageSpecification,Output,)> ;
+	atxa-core:posX "-26" ;
+	atxa-core:posY "-37" .
+
+_:node1abjppsp1x1 atxa-core:contains _:node1abjppsp1x4 .
+
+_:node1abjppsp1x4 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC> ;
+	atxa-core:posX "425" ;
+	atxa-core:posY "-85" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.compile()> , <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.parse()> , <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.toAspectIR()> , <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.createXML()> .
+
+_:node1abjppsp1x6 a atxa-core:link ;
+	atxa-core:model atxa-jdt:refType ;
+	rdf:subject _:node1abjppsp1x4 ;
+	rdf:object _:node1abjppsp1x7 .
+
+_:node1abjppsp1x4 atxa-core:contains _:node1abjppsp1x8 .
+
+_:node1abjppsp1x8 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.compile()> ;
+	atxa-core:posX "426" ;
+	atxa-core:posY "-66" .
+
+_:node1abjppsp1x4 atxa-core:contains _:node1abjppsp1x9 .
+
+_:node1abjppsp1x9 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.parse()> ;
+	atxa-core:posX "426" ;
+	atxa-core:posY "-49" .
+
+_:node1abjppsp1x4 atxa-core:contains _:node1abjppsp1x10 .
+
+_:node1abjppsp1x10 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.toAspectIR()> ;
+	atxa-core:posX "426" ;
+	atxa-core:posY "-32" .
+
+_:node1abjppsp1x4 atxa-core:contains _:node1abjppsp1x11 .
+
+_:node1abjppsp1x11 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac$LaraC.createXML()> ;
+	atxa-core:posX "426" ;
+	atxa-core:posY "-15" .
+
+atxa-core:docRoot atxa-core:contains _:node1abjppsp1x12 .
+
+_:node1abjppsp1x12 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast> ;
+	atxa-core:posX "-41" ;
+	atxa-core:posY "149" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTSelect> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTApply> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTInsert> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTStart> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode> , <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTPointcut> .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x13 .
+
+_:node1abjppsp1x13 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTSelect> ;
+	atxa-core:posX "-35" ;
+	atxa-core:posY "273" .
+
+_:node1abjppsp1x14 a atxa-core:link ;
+	atxa-core:model atxa-jdt:inherits ;
+	rdf:subject _:node1abjppsp1x13 ;
+	rdf:object _:node1abjppsp1x15 ;
+	atxa-core:bendpoint _:node1abjpmri8x2954 .
+
+_:node1abjpmri8x2954 atxa-core:bpLocation "22,232" ;
+	atxa-core:bpIndex "0" .
+
+_:node1abjppsp1x14 atxa-core:bendpoint _:node1abjpmri8x2955 .
+
+_:node1abjpmri8x2955 atxa-core:bpLocation "278,232" ;
+	atxa-core:bpIndex "1" .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x18 .
+
+_:node1abjppsp1x18 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTApply> ;
+	atxa-core:posX "335" ;
+	atxa-core:posY "271" .
+
+_:node1abjppsp1x19 a atxa-core:link ;
+	atxa-core:model atxa-jdt:inherits ;
+	rdf:subject _:node1abjppsp1x18 ;
+	rdf:object _:node1abjppsp1x15 ;
+	atxa-core:bendpoint _:node1abjpmri8x2956 .
+
+_:node1abjpmri8x2956 atxa-core:bpLocation "390,232" ;
+	atxa-core:bpIndex "0" .
+
+_:node1abjppsp1x19 atxa-core:bendpoint _:node1abjpmri8x2957 .
+
+_:node1abjpmri8x2957 atxa-core:bpLocation "278,232" ;
+	atxa-core:bpIndex "1" .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x22 .
+
+_:node1abjppsp1x22 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTInsert> ;
+	atxa-core:posX "222" ;
+	atxa-core:posY "270" .
+
+_:node1abjppsp1x23 a atxa-core:link ;
+	atxa-core:model atxa-jdt:refType ;
+	rdf:subject _:node1abjppsp1x22 ;
+	rdf:object _:node1abjppsp1x24 .
+
+_:node1abjppsp1x25 a atxa-core:link ;
+	atxa-core:model atxa-jdt:inherits ;
+	rdf:subject _:node1abjppsp1x22 ;
+	rdf:object _:node1abjppsp1x15 ;
+	atxa-core:bendpoint _:node1abjpmri8x2958 .
+
+_:node1abjpmri8x2958 atxa-core:bpLocation "278,232" ;
+	atxa-core:bpIndex "0" .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x27 .
+
+_:node1abjppsp1x27 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTStart> ;
+	atxa-core:posX "450" ;
+	atxa-core:posY "272" .
+
+_:node1abjppsp1x28 a atxa-core:link ;
+	atxa-core:model atxa-jdt:inherits ;
+	rdf:subject _:node1abjppsp1x27 ;
+	rdf:object _:node1abjppsp1x15 ;
+	atxa-core:bendpoint _:node1abjpmri8x2959 .
+
+_:node1abjpmri8x2959 atxa-core:bpLocation "503,232" ;
+	atxa-core:bpIndex "0" .
+
+_:node1abjppsp1x28 atxa-core:bendpoint _:node1abjpmri8x2960 .
+
+_:node1abjpmri8x2960 atxa-core:bpLocation "278,232" ;
+	atxa-core:bpIndex "1" .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x15 .
+
+_:node1abjppsp1x15 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode> ;
+	atxa-core:posX "172" ;
+	atxa-core:posY "175" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode.organize(Object,)> .
+
+_:node1abjppsp1x15 atxa-core:contains _:node1abjppsp1x31 .
+
+_:node1abjppsp1x31 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$SimpleNode.organize(Object,)> ;
+	atxa-core:posX "173" ;
+	atxa-core:posY "194" .
+
+_:node1abjppsp1x12 atxa-core:contains _:node1abjppsp1x32 .
+
+_:node1abjppsp1x32 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.dojo.jsl.parser.ast$ASTPointcut> ;
+	atxa-core:posX "83" ;
+	atxa-core:posY "271" .
+
+_:node1abjppsp1x33 a atxa-core:link ;
+	atxa-core:model atxa-jdt:refType ;
+	rdf:subject _:node1abjppsp1x32 ;
+	rdf:object _:node1abjppsp1x24 .
+
+_:node1abjppsp1x34 a atxa-core:link ;
+	atxa-core:model atxa-jdt:inherits ;
+	rdf:subject _:node1abjppsp1x32 ;
+	rdf:object _:node1abjppsp1x15 ;
+	atxa-core:bendpoint _:node1abjpmri8x2961 .
+
+_:node1abjpmri8x2961 atxa-core:bpLocation "148,232" ;
+	atxa-core:bpIndex "0" .
+
+_:node1abjppsp1x34 atxa-core:bendpoint _:node1abjpmri8x2962 .
+
+_:node1abjpmri8x2962 atxa-core:bpLocation "278,232" ;
+	atxa-core:bpIndex "1" .
+
+atxa-core:docRoot atxa-core:contains _:node1abjppsp1x37 .
+
+_:node1abjppsp1x37 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure> ;
+	atxa-core:posX "424" ;
+	atxa-core:posY "40" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac.structure> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR> .
+
+_:node1abjppsp1x37 atxa-core:contains _:node1abjppsp1x7 .
+
+_:node1abjppsp1x7 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR> ;
+	atxa-core:posX "430" ;
+	atxa-core:posY "66" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR.organize()> , <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR.toXML()> .
+
+_:node1abjppsp1x38 a atxa-core:link ;
+	atxa-core:model atxa-jdt:refType ;
+	rdf:subject _:node1abjppsp1x7 ;
+	rdf:object _:node1abjppsp1x27 .
+
+_:node1abjppsp1x7 atxa-core:contains _:node1abjppsp1x39 .
+
+_:node1abjppsp1x39 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR.organize()> ;
+	atxa-core:posX "431" ;
+	atxa-core:posY "85" .
+
+_:node1abjppsp1x7 atxa-core:contains _:node1abjppsp1x40 .
+
+_:node1abjppsp1x40 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#larac.structure$AspectIR.toXML()> ;
+	atxa-core:posX "431" ;
+	atxa-core:posY "102" .
+
+atxa-core:docRoot atxa-core:contains _:node1abjppsp1x41 .
+
+_:node1abjppsp1x41 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.lara.language.specification> ;
+	atxa-core:posX "123" ;
+	atxa-core:posY "357" .
+
+<http://www.architexa.com/rdf/jdt-wkspc#org.lara.language.specification> atxa-core:contains <http://www.architexa.com/rdf/jdt-wkspc#org.lara.language.specification$LanguageSpecification> .
+
+_:node1abjppsp1x41 atxa-core:contains _:node1abjppsp1x24 .
+
+_:node1abjppsp1x24 a atxa-core:node ;
+	atxa-core:model <http://www.architexa.com/rdf/jdt-wkspc#org.lara.language.specification$LanguageSpecification> ;
+	atxa-core:posX "129" ;
+	atxa-core:posY "383" .
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix atxa-jdt: <http://www.architexa.com/rdf/jdt#> .
+@prefix atxa-rse-eclipse: <http://www.architexa.com/rdf/rse-eclipse#> .
+@prefix atxa-core: <http://www.architexa.com/rdf/core#> .
+@prefix atxa: <http://www.architexa.com/rdf/> .
+@prefix atxa-jdt-wkspc: <http://www.architexa.com/rdf/jdt-wkspc#> .
+
+<http://www.architexa.com/rdf/rse-eclipse#Class.atxa> a atxa-core:reloFile ;
+	atxa-core:contains _:node1abjppsp1x5 , _:node1abjppsp1x2 , _:node1abjppsp1x8 , _:node1abjppsp1x9 , _:node1abjppsp1x10 , _:node1abjppsp1x11 , _:node1abjppsp1x4 , _:node1abjppsp1x1 , _:node1abjppsp1x13 , _:node1abjppsp1x18 , _:node1abjppsp1x22 , _:node1abjppsp1x27 , _:node1abjppsp1x31 , _:node1abjppsp1x15 , _:node1abjppsp1x32 , _:node1abjppsp1x12 , _:node1abjppsp1x39 , _:node1abjppsp1x40 , _:node1abjppsp1x7 , _:node1abjppsp1x37 , _:node1abjppsp1x24 , _:node1abjppsp1x41 , atxa-core:docRoot , _:node1abjppsp1x5 , _:node1abjppsp1x2 , _:node1abjppsp1x8 , _:node1abjppsp1x9 , _:node1abjppsp1x10 , _:node1abjppsp1x11 , _:node1abjppsp1x4 , _:node1abjppsp1x1 , _:node1abjppsp1x13 , _:node1abjppsp1x18 , _:node1abjppsp1x22 , _:node1abjppsp1x27 , _:node1abjppsp1x31 , _:node1abjppsp1x15 , _:node1abjppsp1x32 , _:node1abjppsp1x12 , _:node1abjppsp1x39 , _:node1abjppsp1x40 , _:node1abjppsp1x7 , _:node1abjppsp1x37 , _:node1abjppsp1x24 , _:node1abjppsp1x41 , atxa-core:docRoot , _:node1abjppsp1x3 , _:node1abjppsp1x6 , _:node1abjppsp1x14 , _:node1abjppsp1x19 , _:node1abjppsp1x23 , _:node1abjppsp1x25 , _:node1abjppsp1x28 , _:node1abjppsp1x33 , _:node1abjppsp1x34 , _:node1abjppsp1x38 , _:node1abjppsp1x3 , _:node1abjppsp1x6 , _:node1abjppsp1x14 , _:node1abjppsp1x19 , _:node1abjppsp1x23 , _:node1abjppsp1x25 , _:node1abjppsp1x28 , _:node1abjppsp1x33 , _:node1abjppsp1x34 , _:node1abjppsp1x38 .
+

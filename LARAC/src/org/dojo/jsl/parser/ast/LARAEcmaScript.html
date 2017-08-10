@@ -1,0 +1,2007 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for LARAEcmaScript.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for LARAEcmaScript.jj</H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*****************************************
+ * LEXICAL & REGEXP GRAMMARS STARTS HERE *
+ *****************************************/
+
+
+/* Section 7 : Lexical Conventions */
+
+/* Section 7.2 : White Space */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; SPECIAL : {
+&lt;WHITE_SPACE: &lt;TAB&gt; | &lt;VT&gt; | &lt;FF&gt; | &lt;SP&gt; | &lt;NBSP&gt;&gt;
+| &lt;#TAB: "\t" | "\t"&gt;
+| &lt;#VT: "\u000b"&gt;
+| &lt;#FF: "\f" | "\f"&gt;
+| &lt;#SP: " " | " "&gt;
+| &lt;#NBSP: "\u00a0"&gt;
+| &lt;#USP: ["\u2000"] | ["\u2001"] | ["\u2002"] | ["\u2003"] | ["\u2004"] | ["\u2005"] | ["\u2006"] | ["\u2007"] | ["\u2008"] | ["\u2009"] | ["\u200a"] | ["\u200b"] | ["\u3000"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.3 : Line Terminators */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; SPECIAL : {
+&lt;LINE_TERMINATOR: &lt;LF&gt; | &lt;CR&gt; | &lt;LS&gt; | &lt;PS&gt;&gt;
+| &lt;#LF: "\n"&gt;
+| &lt;#CR: "\r"&gt;
+| &lt;#LS: "\u2028"&gt;
+| &lt;#PS: "\u2029"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Comments */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; MORE : {
+"//" : IN_SINGLE_LINE_COMMENT
+| "/*" : IN_MULTI_LINE_COMMENT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IN_SINGLE_LINE_COMMENT&gt; SPECIAL : {
+&lt;SINGLE_LINE_COMMENT: (~["\n","\r"])* ("\n" | "\r" | "\r\n")?&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IN_MULTI_LINE_COMMENT&gt; SPECIAL : {
+&lt;MULTI_LINE_COMMENT: "*/"&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IN_SINGLE_LINE_COMMENT,IN_MULTI_LINE_COMMENT,IN_PATTERN&gt; MORE : {
+&lt;~[]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.5.1: Reserved Words */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;INCLUDE: "include"&gt; : DEFAULT
+| &lt;ASPECTDEF: "aspectdef"&gt; : DEFAULT
+| &lt;CODEDEF: "codedef"&gt; : DEFAULT
+| &lt;INPUT: "input"&gt; : DEFAULT
+| &lt;OUTPUT: "output"&gt; : DEFAULT
+| &lt;STATICDECL: "static"&gt; : DEFAULT
+| &lt;SELECT: "select"&gt; : DEFAULT
+| &lt;APPLY: "apply"&gt; : DEFAULT
+| &lt;TO: "to"&gt; : DEFAULT
+| &lt;CALL: "call"&gt; : DEFAULT
+| &lt;RUN: "run"&gt; : DEFAULT
+| &lt;CMD: "cmd"&gt; : DEFAULT
+| &lt;CONDITION: "condition"&gt; : DEFAULT
+| &lt;BEGIN: "begin"&gt; : DEFAULT
+| &lt;INSERT: "insert"&gt; : DEFAULT
+| &lt;EXEC: "exec"&gt; : DEFAULT
+| &lt;OUTPUT_ACT: "out"&gt; : DEFAULT
+| &lt;BEFORE: "before"&gt; : DEFAULT
+| &lt;AFTER: "after"&gt; : DEFAULT
+| &lt;AROUND: "around"&gt; : DEFAULT
+| &lt;REPLACE: "replace"&gt; : DEFAULT
+| &lt;DEFINE: "def"&gt; : DEFAULT
+| &lt;CHECK: "check"&gt; : DEFAULT
+| &lt;INITIALIZE: "initialize"&gt; : DEFAULT
+| &lt;FINALIZE: "finalize"&gt; : DEFAULT
+| &lt;END: "end"&gt; : DEFAULT
+| &lt;DYNAMIC: "dynamic"&gt; : DEFAULT
+| &lt;SEQUENCIAL: "seq"&gt; : DEFAULT
+| &lt;PARALLEL: "par"&gt; : DEFAULT
+| &lt;BREAK: "break"&gt; : DEFAULT
+| &lt;CONTINUE: "continue"&gt; : DEFAULT
+| &lt;DELETE: "delete"&gt; : DEFAULT
+| &lt;ELSE: "else"&gt; : DEFAULT
+| &lt;FOR: "for"&gt; : DEFAULT
+| &lt;FUNCTION: "function"&gt; : DEFAULT
+| &lt;IF: "if"&gt; : DEFAULT
+| &lt;IN: "in"&gt; : DEFAULT
+| &lt;OF: "of"&gt; : DEFAULT
+| &lt;EACH: "each"&gt; : DEFAULT
+| &lt;NEW: "new"&gt; : DEFAULT
+| &lt;RETURN: "return"&gt; : DEFAULT
+| &lt;THIS: "this"&gt; : IN_REGEX
+| &lt;TYPEOF: "typeof"&gt; : DEFAULT
+| &lt;VAR: "var"&gt; : DEFAULT
+| &lt;VOID: "void"&gt; : DEFAULT
+| &lt;WHILE: "while"&gt; : DEFAULT
+| &lt;WITH: "with"&gt; : DEFAULT
+| &lt;CASE: "case"&gt; : DEFAULT
+| &lt;CATCH: "catch"&gt; : DEFAULT
+| &lt;CLASS: "class"&gt; : DEFAULT
+| &lt;CONST: "const"&gt; : DEFAULT
+| &lt;DEBUGGER: "debugger"&gt; : DEFAULT
+| &lt;_DEFAULT: "default"&gt; : DEFAULT
+| &lt;DO: "do"&gt; : DEFAULT
+| &lt;ENUM: "enum"&gt; : DEFAULT
+| &lt;EXTENDS: "extends"&gt; : DEFAULT
+| &lt;FINALLY: "finally"&gt; : DEFAULT
+| &lt;IMPORT: "import"&gt; : DEFAULT
+| &lt;SUPER: "super"&gt; : DEFAULT
+| &lt;SWITCH: "switch"&gt; : DEFAULT
+| &lt;THROW: "throw"&gt; : DEFAULT
+| &lt;TRY: "try"&gt; : DEFAULT
+| &lt;UTF8_BOM: "\u00ef\u00bb\u00bf"&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* JScript .NET Tokens
+
+TOKEN :
+{
+	< BYTE: "byte" >
+	| < SBYTE: "sbyte" >
+	| < SHORT: "short" >
+	| < USHORT: "ushort" >
+	| < UINT: "uint" >
+	| < LONG: "long" >
+	| < ULONG: "ulong" >
+	| < FLOAT: "float" >
+	| < NUMBER: "Number" >
+	| < DOUBLE: "double" >
+	| < DECIMAL: "decimal" >
+	| < BOOLEAN: "boolean" >
+	| < STRING: "String" >
+	| < CHAR: "char" >
+}
+
+*/
+
+
+/* Section 7.7: Punctuators */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;LBRACE: "{"&gt; : DEFAULT
+| &lt;RBRACE: "}"&gt; : IN_REGEX
+| &lt;LPAREN: "("&gt; : DEFAULT
+| &lt;RPAREN: ")"&gt; : IN_REGEX
+| &lt;LBRACKET: "["&gt; : DEFAULT
+| &lt;RBRACKET: "]"&gt; : IN_REGEX
+| &lt;DOT: "."&gt; : DEFAULT
+| &lt;SEMICOLON: ";"&gt; : DEFAULT
+| &lt;COMMA: ","&gt; : DEFAULT
+| &lt;LT: "&lt;"&gt; : DEFAULT
+| &lt;GT: "&gt;"&gt; : DEFAULT
+| &lt;LE: "&lt;="&gt; : DEFAULT
+| &lt;GE: "&gt;="&gt; : DEFAULT
+| &lt;EQ: "=="&gt; : DEFAULT
+| &lt;NE: "!="&gt; : DEFAULT
+| &lt;MATCH: "~="&gt; : DEFAULT
+| &lt;SEQ: "==="&gt; : DEFAULT
+| &lt;SNEQ: "!=="&gt; : DEFAULT
+| &lt;PLUS: "+"&gt; : DEFAULT
+| &lt;MINUS: "-"&gt; : DEFAULT
+| &lt;STAR: "*"&gt; : DEFAULT
+| &lt;REM: "%"&gt; : DEFAULT
+| &lt;INCR: "++"&gt; : IN_REGEX
+| &lt;DECR: "--"&gt; : IN_REGEX
+| &lt;LSHIFT: "&lt;&lt;"&gt; : DEFAULT
+| &lt;RSHIFT: "&gt;&gt;"&gt; : DEFAULT
+| &lt;RUNSHIFT: "&gt;&gt;&gt;"&gt; : DEFAULT
+| &lt;BIT_AND: "&amp;"&gt; : DEFAULT
+| &lt;BIT_OR: "|"&gt; : DEFAULT
+| &lt;XOR: "^"&gt; : DEFAULT
+| &lt;BANG: "!"&gt; : DEFAULT
+| &lt;TILDE: "~"&gt; : IN_REGEX
+| &lt;SC_AND: "&amp;&amp;"&gt; : DEFAULT
+| &lt;SC_OR: "||"&gt; : DEFAULT
+| &lt;HOOK: "?"&gt; : DEFAULT
+| &lt;NATURAL_JOIN: "::"&gt; : DEFAULT
+| &lt;COLON: ":"&gt; : DEFAULT
+| &lt;ASSIGN: "="&gt; : DEFAULT
+| &lt;PLUSASSIGN: "+="&gt; : DEFAULT
+| &lt;MINUSASSIGN: "-="&gt; : DEFAULT
+| &lt;STARASSIGN: "*="&gt; : DEFAULT
+| &lt;REMASSIGN: "%="&gt; : DEFAULT
+| &lt;LSHIFTASSIGN: "&lt;&lt;="&gt; : DEFAULT
+| &lt;RSIGNEDSHIFTASSIGN: "&gt;&gt;="&gt; : DEFAULT
+| &lt;RUNSIGNEDSHIFTASSIGN: "&gt;&gt;&gt;="&gt; : DEFAULT
+| &lt;ANDASSIGN: "&amp;="&gt; : DEFAULT
+| &lt;ORASSIGN: "|="&gt; : DEFAULT
+| &lt;XORASSIGN: "^="&gt; : DEFAULT
+| &lt;INTANCE_OF: "instanceof"&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.8.3: Numeric Literals */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;DECIMAL_LITERAL: &lt;DECIMAL_INTEGER_LITERAL&gt; "." (&lt;DECIMAL_DIGITS&gt;)? (&lt;EXPONENT_PART&gt;)? | "." &lt;DECIMAL_DIGITS&gt; (&lt;EXPONENT_PART&gt;)? | &lt;DECIMAL_INTEGER_LITERAL&gt; (&lt;EXPONENT_PART&gt;)?&gt; : IN_REGEX
+| &lt;#NON_ZERO_DIGIT: ["1"-"9"]&gt;
+| &lt;#EXPONENT_PART: ("e" | "E") (["+","-"])? &lt;DECIMAL_DIGITS&gt;&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;DECIMAL_INTEGER_LITERAL: "0" | &lt;NON_ZERO_DIGIT&gt; (&lt;DECIMAL_DIGITS&gt;)?&gt; : IN_REGEX
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;HEX_INTEGER_LITERAL: "0" ["x","X"] (&lt;HEX_DIGIT&gt;)+&gt; : IN_REGEX
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;DECIMAL_DIGITS: (&lt;DECIMAL_DIGIT&gt;)+&gt; : IN_REGEX
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;DECIMAL_DIGIT: ["0"-"9"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.8.1: NULL Literals */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;NULL_LITERAL: "null"&gt; : IN_REGEX
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.8.2: Boolean Literals */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;BOOLEAN_LITERAL: "true" | "false"&gt; : IN_REGEX
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.8.4: String Literals */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;STRING_LITERAL: "\"" (&lt;DOUBLE_STRING_CHARACTERS&gt;)? "\"" | "\'" (&lt;SINGLE_STRING_CHARACTERS&gt;)? "\'"&gt; : IN_REGEX
+| &lt;#DOUBLE_STRING_CHARACTERS: (&lt;DOUBLE_STRING_CHARACTER&gt;)*&gt;
+| &lt;#SINGLE_STRING_CHARACTERS: (&lt;SINGLE_STRING_CHARACTER&gt;)*&gt;
+| &lt;#DOUBLE_STRING_CHARACTER: (~["\"","\\","\n","\r","\u2028","\u2029"])* | "\\" &lt;ESCAPE_SEQUENCE&gt;&gt;
+| &lt;#SINGLE_STRING_CHARACTER: ~["\'","\\","\n","\r","\u2028","\u2029"] | "\\" &lt;ESCAPE_SEQUENCE&gt;&gt;
+| &lt;#ESCAPE_SEQUENCE: &lt;CHARACTER_ESCAPE_SEQUENCE&gt; | "0" | &lt;HEX_ESCAPE_SEQUENCE&gt; | &lt;UNICODE_ESCAPE_SEQUENCE&gt;&gt;
+| &lt;#CHARACTER_ESCAPE_SEQUENCE: &lt;SINGLE_ESCAPE_CHARACTER&gt; | &lt;NON_ESCAPE_CHARACTER&gt;&gt;
+| &lt;#SINGLE_ESCAPE_CHARACTER: ["\'","\"","\\","b","f","n","r","t","v"]&gt;
+| &lt;#NON_ESCAPE_CHARACTER: ~["\n","\r","\u2028","\u2029"] | ~["\'","\"","\\","b","f","n","r","t","v","x","u"] | ~["0"-"9"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;HEX_ESCAPE_SEQUENCE: "x" &lt;HEX_DIGIT&gt; &lt;HEX_DIGIT&gt;&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;CODE_LITERAL: "%{" (~["}"])* "}" ("}" | ~["}","%"] (~["}"])* "}")* "%"&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*
+TOKEN:
+{
+  < ESCAPE_CHARACTER:
+	  ["'" , "\"" , "\\" , "b" , "f" , "n" , "r" , "t" , "v"]
+	| ["0"-"9"]
+	| "x"
+	| "u"
+  >
+}
+*/
+
+/* Section 7.6: Identifiers */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT,IN_REGEX&gt; TOKEN : {
+&lt;LABEL_IDENTIFIER: "#" (&lt;IDENTIFIER_PART&gt;)*&gt; : IN_REGEX
+| &lt;IDENTIFIER_NAME: &lt;DOLLAR_SIGN&gt; (&lt;DOLLAR_SIGN&gt; | "*" | "#" | "^") | (&lt;DOLLAR_SIGN&gt; | &lt;AT_SIGN&gt;)? &lt;IDENTIFIER_START&gt; (&lt;IDENTIFIER_PART&gt;)*&gt; : IN_REGEX
+| &lt;#IDENTIFIER_START: &lt;UNICODE_LETTER&gt; | &lt;UNDER_SCORE&gt; | &lt;UNICODE_ESCAPE_SEQUENCE&gt;&gt;
+| &lt;#IDENTIFIER_PART: &lt;IDENTIFIER_START&gt; | &lt;UNICODE_COMBINING_MARK&gt; | &lt;UNICODE_DIGIT&gt; | &lt;UNICODE_CONNECTOR_PUNCTUATION&gt; | &lt;UNICODE_ESCAPE_SEQUENCE&gt;&gt;
+| &lt;#DOLLAR_SIGN: "$"&gt;
+| &lt;#AT_SIGN: "@"&gt;
+| &lt;#UNDER_SCORE: "_"&gt;
+| &lt;#UNICODE_LETTER: ["A"-"Z"] | ["a"-"z"] | ["A"-"Z"] | ["a"-"z"] | ["\u00aa"] | ["\u00b5"] | ["\u00ba"] | ["\u00c0"-"\u00d6"] | ["\u00d8"-"\u00f6"] | ["\u00f8"-"\u021f"] | ["\u0222"-"\u0233"] | ["\u0250"-"\u02ad"] | ["\u02b0"-"\u02b8"] | ["\u02bb"-"\u02c1"] | ["\u02d0"-"\u02d1"] | ["\u02e0"-"\u02e4"] | ["\u02ee"] | ["\u037a"] | ["\u0386"] | ["\u0388"-"\u038a"] | ["\u038c"] | ["\u038e"-"\u03a1"] | ["\u03a3"-"\u03ce"] | ["\u03d0"-"\u03d7"] | ["\u03da"-"\u03f3"] | ["\u0400"-"\u0481"] | ["\u048c"-"\u04c4"] | ["\u04c7"-"\u04c8"] | ["\u04cb"-"\u04cc"] | ["\u04d0"-"\u04f5"] | ["\u04f8"-"\u04f9"] | ["\u0531"-"\u0556"] | ["\u0559"] | ["\u0561"-"\u0587"] | ["\u05d0"-"\u05ea"] | ["\u05f0"-"\u05f2"] | ["\u0621"-"\u063a"] | ["\u0640"-"\u064a"] | ["\u0671"-"\u06d3"] | ["\u06d5"] | ["\u06e5"-"\u06e6"] | ["\u06fa"-"\u06fc"] | ["\u0710"] | ["\u0712"-"\u072c"] | ["\u0780"-"\u07a5"] | ["\u0905"-"\u0939"] | ["\u093d"] | ["\u0950"] | ["\u0958"-"\u0961"] | ["\u0985"-"\u098c"] | ["\u098f"-"\u0990"] | ["\u0993"-"\u09a8"] | ["\u09aa"-"\u09b0"] | ["\u09b2"] | ["\u09b6"-"\u09b9"] | ["\u09dc"-"\u09dd"] | ["\u09df"-"\u09e1"] | ["\u09f0"-"\u09f1"] | ["\u0a05"-"\u0a0a"] | ["\u0a0f"-"\u0a10"] | ["\u0a13"-"\u0a28"] | ["\u0a2a"-"\u0a30"] | ["\u0a32"-"\u0a33"] | ["\u0a35"-"\u0a36"] | ["\u0a38"-"\u0a39"] | ["\u0a59"-"\u0a5c"] | ["\u0a5e"] | ["\u0a72"-"\u0a74"] | ["\u0a85"-"\u0a8b"] | ["\u0a8d"] | ["\u0a8f"-"\u0a91"] | ["\u0a93"-"\u0aa8"] | ["\u0aaa"-"\u0ab0"] | ["\u0ab2"-"\u0ab3"] | ["\u0ab5"-"\u0ab9"] | ["\u0abd"] | ["\u0ad0"] | ["\u0ae0"] | ["\u0b05"-"\u0b0c"] | ["\u0b0f"-"\u0b10"] | ["\u0b13"-"\u0b28"] | ["\u0b2a"-"\u0b30"] | ["\u0b32"-"\u0b33"] | ["\u0b36"-"\u0b39"] | ["\u0b3d"] | ["\u0b5c"-"\u0b5d"] | ["\u0b5f"-"\u0b61"] | ["\u0b85"-"\u0b8a"] | ["\u0b8e"-"\u0b90"] | ["\u0b92"-"\u0b95"] | ["\u0b99"-"\u0b9a"] | ["\u0b9c"] | ["\u0b9e"-"\u0b9f"] | ["\u0ba3"-"\u0ba4"] | ["\u0ba8"-"\u0baa"] | ["\u0bae"-"\u0bb5"] | ["\u0bb7"-"\u0bb9"] | ["\u0c05"-"\u0c0c"] | ["\u0c0e"-"\u0c10"] | ["\u0c12"-"\u0c28"] | ["\u0c2a"-"\u0c33"] | ["\u0c35"-"\u0c39"] | ["\u0c60"-"\u0c61"] | ["\u0c85"-"\u0c8c"] | ["\u0c8e"-"\u0c90"] | ["\u0c92"-"\u0ca8"] | ["\u0caa"-"\u0cb3"] | ["\u0cb5"-"\u0cb9"] | ["\u0cde"] | ["\u0ce0"-"\u0ce1"] | ["\u0d05"-"\u0d0c"] | ["\u0d0e"-"\u0d10"] | ["\u0d12"-"\u0d28"] | ["\u0d2a"-"\u0d39"] | ["\u0d60"-"\u0d61"] | ["\u0d85"-"\u0d96"] | ["\u0d9a"-"\u0db1"] | ["\u0db3"-"\u0dbb"] | ["\u0dbd"] | ["\u0dc0"-"\u0dc6"] | ["\u0e01"-"\u0e30"] | ["\u0e32"-"\u0e33"] | ["\u0e40"-"\u0e46"] | ["\u0e81"-"\u0e82"] | ["\u0e84"] | ["\u0e87"-"\u0e88"] | ["\u0e8a"] | ["\u0e8d"] | ["\u0e94"-"\u0e97"] | ["\u0e99"-"\u0e9f"] | ["\u0ea1"-"\u0ea3"] | ["\u0ea5"] | ["\u0ea7"] | ["\u0eaa"-"\u0eab"] | ["\u0ead"-"\u0eb0"] | ["\u0eb2"-"\u0eb3"] | ["\u0ebd"-"\u0ec4"] | ["\u0ec6"] | ["\u0edc"-"\u0edd"] | ["\u0f00"] | ["\u0f40"-"\u0f6a"] | ["\u0f88"-"\u0f8b"] | ["\u1000"-"\u1021"] | ["\u1023"-"\u1027"] | ["\u1029"-"\u102a"] | ["\u1050"-"\u1055"] | ["\u10a0"-"\u10c5"] | ["\u10d0"-"\u10f6"] | ["\u1100"-"\u1159"] | ["\u115f"-"\u11a2"] | ["\u11a8"-"\u11f9"] | ["\u1200"-"\u1206"] | ["\u1208"-"\u1246"] | ["\u1248"] | ["\u124a"-"\u124d"] | ["\u1250"-"\u1256"] | ["\u1258"] | ["\u125a"-"\u125d"] | ["\u1260"-"\u1286"] | ["\u1288"] | ["\u128a"-"\u128d"] | ["\u1290"-"\u12ae"] | ["\u12b0"] | ["\u12b2"-"\u12b5"] | ["\u12b8"-"\u12be"] | ["\u12c0"] | ["\u12c2"-"\u12c5"] | ["\u12c8"-"\u12ce"] | ["\u12d0"-"\u12d6"] | ["\u12d8"-"\u12ee"] | ["\u12f0"-"\u130e"] | ["\u1310"] | ["\u1312"-"\u1315"] | ["\u1318"-"\u131e"] | ["\u1320"-"\u1346"] | ["\u1348"-"\u135a"] | ["\u13a0"-"\u13b0"] | ["\u13b1"-"\u13f4"] | ["\u1401"-"\u1676"] | ["\u1681"-"\u169a"] | ["\u16a0"-"\u16ea"] | ["\u1780"-"\u17b3"] | ["\u1820"-"\u1877"] | ["\u1880"-"\u18a8"] | ["\u1e00"-"\u1e9b"] | ["\u1ea0"-"\u1ee0"] | ["\u1ee1"-"\u1ef9"] | ["\u1f00"-"\u1f15"] | ["\u1f18"-"\u1f1d"] | ["\u1f20"-"\u1f39"] | ["\u1f3a"-"\u1f45"] | ["\u1f48"-"\u1f4d"] | ["\u1f50"-"\u1f57"] | ["\u1f59"] | ["\u1f5b"] | ["\u1f5d"] | ["\u1f5f"-"\u1f7d"] | ["\u1f80"-"\u1fb4"] | ["\u1fb6"-"\u1fbc"] | ["\u1fbe"] | ["\u1fc2"-"\u1fc4"] | ["\u1fc6"-"\u1fcc"] | ["\u1fd0"-"\u1fd3"] | ["\u1fd6"-"\u1fdb"] | ["\u1fe0"-"\u1fec"] | ["\u1ff2"-"\u1ff4"] | ["\u1ff6"-"\u1ffc"] | ["\u207f"] | ["\u2102"] | ["\u2107"] | ["\u210a"-"\u2113"] | ["\u2115"] | ["\u2119"-"\u211d"] | ["\u2124"] | ["\u2126"] | ["\u2128"] | ["\u212a"-"\u212d"] | ["\u212f"-"\u2131"] | ["\u2133"-"\u2139"] | ["\u2160"-"\u2183"] | ["\u3005"-"\u3007"] | ["\u3021"-"\u3029"] | ["\u3031"-"\u3035"] | ["\u3038"-"\u303a"] | ["\u3041"-"\u3094"] | ["\u309d"-"\u309e"] | ["\u30a1"-"\u30fa"] | ["\u30fc"-"\u30fe"] | ["\u3105"-"\u312c"] | ["\u3131"-"\u318e"] | ["\u31a0"-"\u31b7"] | ["\u3400"] | ["\u4db5"] | ["\u4e00"] | ["\u9fa5"] | ["\ua000"-"\ua48c"] | ["\uac00"] | ["\ud7a3"] | ["\uf900"-"\ufa2d"] | ["\ufb00"-"\ufb06"] | ["\ufb13"-"\ufb17"] | ["\ufb1d"] | ["\ufb1f"-"\ufb28"] | ["\ufb2a"-"\ufb36"] | ["\ufb38"-"\ufb3c"] | ["\ufb3e"] | ["\ufb40"-"\ufb41"] | ["\ufb43"-"\ufb44"] | ["\ufb46"-"\ufbb1"] | ["\ufbd3"-"\ufd3d"] | ["\ufd50"-"\ufd8f"] | ["\ufd92"-"\ufdc7"] | ["\ufdf0"-"\ufdfb"] | ["\ufe70"-"\ufe72"] | ["\ufe74"] | ["\ufe76"-"\ufefc"] | ["\uff21"-"\uff3a"] | ["\uff41"-"\uff5a"] | ["\uff66"-"\uffbe"] | ["\uffc2"-"\uffc7"] | ["\uffca"-"\uffcf"] | ["\uffd2"-"\uffd7"] | ["\uffda"-"\uffdc"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*
+ * Unicode categories Non-spacing mark (MN) OR Combining spacing mark (MC)
+ */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; MORE : {
+&lt;UNICODE_COMBINING_MARK: &lt;MN&gt; | &lt;MC&gt;&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;MC: ["\u0903"] | ["\u093e"] | ["\u093f"] | ["\u0940"] | ["\u0949"] | ["\u094a"] | ["\u094b"] | ["\u094c"] | ["\u0982"] | ["\u0983"] | ["\u09be"] | ["\u09bf"] | ["\u09c0"] | ["\u09c7"] | ["\u09c8"] | ["\u09cb"] | ["\u09cc"] | ["\u09d7"] | ["\u0a03"] | ["\u0a3e"] | ["\u0a3f"] | ["\u0a40"] | ["\u0a83"] | ["\u0abe"] | ["\u0abf"] | ["\u0ac0"] | ["\u0ac9"] | ["\u0acb"] | ["\u0acc"] | ["\u0b02"] | ["\u0b03"] | ["\u0b3e"] | ["\u0b40"] | ["\u0b47"] | ["\u0b48"] | ["\u0b4b"] | ["\u0b4c"] | ["\u0b57"] | ["\u0bbe"] | ["\u0bbf"] | ["\u0bc1"] | ["\u0bc2"] | ["\u0bc6"] | ["\u0bc7"] | ["\u0bc8"] | ["\u0bca"] | ["\u0bcb"] | ["\u0bcc"] | ["\u0bd7"] | ["\u0c01"] | ["\u0c02"] | ["\u0c03"] | ["\u0c41"] | ["\u0c42"] | ["\u0c43"] | ["\u0c44"] | ["\u0c82"] | ["\u0c83"] | ["\u0cbe"] | ["\u0cc0"] | ["\u0cc1"] | ["\u0cc2"] | ["\u0cc3"] | ["\u0cc4"] | ["\u0cc7"] | ["\u0cc8"] | ["\u0cca"] | ["\u0ccb"] | ["\u0cd5"] | ["\u0cd6"] | ["\u0d02"] | ["\u0d03"] | ["\u0d3e"] | ["\u0d3f"] | ["\u0d40"] | ["\u0d46"] | ["\u0d47"] | ["\u0d48"] | ["\u0d4a"] | ["\u0d4b"] | ["\u0d4c"] | ["\u0d57"] | ["\u0d82"] | ["\u0d83"] | ["\u0dcf"] | ["\u0dd0"] | ["\u0dd1"] | ["\u0dd8"] | ["\u0dd9"] | ["\u0dda"] | ["\u0ddb"] | ["\u0ddc"] | ["\u0ddd"] | ["\u0dde"] | ["\u0ddf"] | ["\u0df2"] | ["\u0df3"] | ["\u0f3e"] | ["\u0f3f"] | ["\u0f7f"] | ["\u102c"] | ["\u1031"] | ["\u1038"] | ["\u1056"] | ["\u1057"] | ["\u17b6"] | ["\u17be"] | ["\u17bf"] | ["\u17c0"] | ["\u17c1"] | ["\u17c2"] | ["\u17c3"] | ["\u17c4"] | ["\u17c5"] | ["\u17c7"] | ["\u17c8"] | ["\u1923"] | ["\u1924"] | ["\u1925"] | ["\u1926"] | ["\u1929"] | ["\u192a"] | ["\u192b"] | ["\u1930"] | ["\u1931"] | ["\u1933"] | ["\u1934"] | ["\u1935"] | ["\u1936"] | ["\u1937"] | ["\u1938"] | ["\u19b0"] | ["\u19b1"] | ["\u19b2"] | ["\u19b3"] | ["\u19b4"] | ["\u19b5"] | ["\u19b6"] | ["\u19b7"] | ["\u19b8"] | ["\u19b9"] | ["\u19ba"] | ["\u19bb"] | ["\u19bc"] | ["\u19bd"] | ["\u19be"] | ["\u19bf"] | ["\u19c0"] | ["\u19c8"] | ["\u19c9"] | ["\u1a19"] | ["\u1a1a"] | ["\u1a1b"] | ["\ua802"] | ["\ua823"] | ["\ua824"] | ["\ua827"] | ["\u1d16"] | ["\u1d16"] | ["\u1d16"] | ["\u1d16"] | ["\u1d16"] | ["\u1d17"] | ["\u1d17"] | ["\u1d17"]&gt;
+| &lt;MN: ["\u0300"-"\u034e"] | ["\u0360"-"\u0362"] | ["\u0483"-"\u0486"] | ["\u0591"-"\u05a1"] | ["\u05a3"-"\u05b9"] | ["\u05bb"-"\u05bd"] | ["\u05bf"] | ["\u05c1"-"\u05c2"] | ["\u05c4"] | ["\u064b"-"\u0655"] | ["\u0670"] | ["\u06d6"-"\u06dc"] | ["\u06df"-"\u06e4"] | ["\u06e7"-"\u06e8"] | ["\u06ea"-"\u06ed"] | ["\u0711"] | ["\u0730"-"\u074a"] | ["\u07a6"-"\u07b0"] | ["\u0901"-"\u0903"] | ["\u093c"] | ["\u093e"-"\u094d"] | ["\u0951"-"\u0954"] | ["\u0962"-"\u0963"] | ["\u0981"-"\u0983"] | ["\u09bc"-"\u09c4"] | ["\u09c7"-"\u09c8"] | ["\u09cb"-"\u09cd"] | ["\u09d7"] | ["\u09e2"-"\u09e3"] | ["\u0a02"] | ["\u0a3c"] | ["\u0a3e"-"\u0a42"] | ["\u0a47"-"\u0a48"] | ["\u0a4b"-"\u0a4d"] | ["\u0a70"-"\u0a71"] | ["\u0a81"-"\u0a83"] | ["\u0abc"] | ["\u0abe"-"\u0ac5"] | ["\u0ac7"-"\u0ac9"] | ["\u0acb"-"\u0acd"] | ["\u0b01"-"\u0b03"] | ["\u0b3c"] | ["\u0b3e"-"\u0b43"] | ["\u0b47"-"\u0b48"] | ["\u0b4b"-"\u0b4d"] | ["\u0b56"-"\u0b57"] | ["\u0b82"-"\u0b83"] | ["\u0bbe"-"\u0bc2"] | ["\u0bc6"-"\u0bc8"] | ["\u0bca"-"\u0bcd"] | ["\u0bd7"] | ["\u0c01"-"\u0c03"] | ["\u0c3e"-"\u0c44"] | ["\u0c46"-"\u0c48"] | ["\u0c4a"-"\u0c4d"] | ["\u0c55"-"\u0c56"] | ["\u0c82"-"\u0c83"] | ["\u0cbe"-"\u0cc4"] | ["\u0cc6"-"\u0cc8"] | ["\u0cca"-"\u0ccd"] | ["\u0cd5"-"\u0cd6"] | ["\u0d02"-"\u0d03"] | ["\u0d3e"-"\u0d43"] | ["\u0d46"-"\u0d48"] | ["\u0d4a"-"\u0d4d"] | ["\u0d57"] | ["\u0d82"-"\u0d83"] | ["\u0dca"] | ["\u0dcf"-"\u0dd4"] | ["\u0dd6"] | ["\u0dd8"-"\u0ddf"] | ["\u0df2"-"\u0df3"] | ["\u0e31"] | ["\u0e34"-"\u0e3a"] | ["\u0e47"-"\u0e4e"] | ["\u0eb1"] | ["\u0eb4"-"\u0eb9"] | ["\u0ebb"-"\u0ebc"] | ["\u0ec8"-"\u0ecd"] | ["\u0f18"-"\u0f19"] | ["\u0f35"] | ["\u0f37"] | ["\u0f39"] | ["\u0f3e"-"\u0f3f"] | ["\u0f71"-"\u0f84"] | ["\u0f86"-"\u0f87"] | ["\u0f90"-"\u0f97"] | ["\u0f99"-"\u0fbc"] | ["\u0fc6"] | ["\u102c"-"\u1032"] | ["\u1036"-"\u1039"] | ["\u1056"-"\u1059"] | ["\u17b4"-"\u17d3"] | ["\u18a9"] | ["\u20d0"-"\u20dc"] | ["\u20e1"] | ["\u302a"-"\u302f"] | ["\u3099"-"\u309a"] | ["\ufb1e"] | ["\ufe20"-"\ufe23"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;UNICODE_DIGIT: ["0"-"9"] | ["\u0660"-"\u0669"] | ["\u06f0"-"\u06f9"] | ["\u0966"-"\u096f"] | ["\u09e6"-"\u09ef"] | ["\u0a66"-"\u0a6f"] | ["\u0ae6"-"\u0aef"] | ["\u0b66"-"\u0b6f"] | ["\u0be7"-"\u0bef"] | ["\u0c66"-"\u0c6f"] | ["\u0ce6"-"\u0cef"] | ["\u0d66"-"\u0d6f"] | ["\u0e50"-"\u0e59"] | ["\u0ed0"-"\u0ed9"] | ["\u0f20"-"\u0f29"] | ["\u1040"-"\u1049"] | ["\u1369"-"\u1371"] | ["\u17e0"-"\u17e9"] | ["\u1810"-"\u1819"] | ["\uff10"-"\uff19"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;UNICODE_CONNECTOR_PUNCTUATION: ["_"] | ["\u203f"-"\u2040"] | ["\u30fb"] | ["\ufe33"-"\ufe34"] | ["\ufe4d"-"\ufe4f"] | ["\uff3f"] | ["\uff65"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;UNICODE_ESCAPE_SEQUENCE: "u" &lt;HEX_DIGIT&gt; &lt;HEX_DIGIT&gt; &lt;HEX_DIGIT&gt; &lt;HEX_DIGIT&gt;&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;HEX_DIGIT: ["0"-"9"] | ["a"-"f"] | ["A"-"F"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IN_REGEX&gt; TOKEN : {
+&lt;SLASHASSIGN: "/="&gt; : DEFAULT
+| &lt;SLASH: "/"&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/************************** LARA TOKENS *************************************
+<DEFAULT, IN_REGEX>
+TOKEN : /* JP IDENTIFIERS *
+{
+  < JPVAR: "$" (<IDENTIFIER_NAME> | <IN_JPVAR>)>  :DEFAULT |
+  < #IN_JPVAR: <CALL > | <BEGIN > | < END > | <FUNCTION > | <VAR> | <RETURN> | <IF> | <ELSE> >
+}
+ /************************** LARA TOKENS *************************************/
+
+/* Section 7.8.5: Regular Expression Literals */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;REGULAR_EXPRESSION_LITERAL: "/" (~["\n","\r","\\","/","*"] | &lt;BACKSLASH_SEQUENCE&gt;) (~["\n","\r","\\","/"] | &lt;BACKSLASH_SEQUENCE&gt;)* "/" (&lt;IDENTIFIER_PART&gt;)*&gt; : IN_REGEX
+| &lt;#BACKSLASH_SEQUENCE: "\\" ~["\n","\r"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Get the join point Identifier
+	 * Function that returns the join point identifier, which can any identifier or one of the following reserved words
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">getNoReservedIdentifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; | &lt;CALL&gt; | &lt;BEGIN&gt; | &lt;END&gt; | &lt;FUNCTION&gt; | &lt;VAR&gt; | &lt;RETURN&gt; | &lt;IF&gt; | &lt;ELSE&gt; | &lt;TO&gt; | &lt;IN&gt; | &lt;INPUT&gt; | &lt;OUTPUT&gt; | &lt;CONDITION&gt; | &lt;_DEFAULT&gt; | &lt;CLASS&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">noReservedIdentifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; | &lt;CALL&gt; | &lt;BEGIN&gt; | &lt;END&gt; | &lt;FUNCTION&gt; | &lt;VAR&gt; | &lt;RETURN&gt; | &lt;IF&gt; | &lt;ELSE&gt; | &lt;TO&gt; | &lt;IN&gt; | &lt;INPUT&gt; | &lt;OUTPUT&gt; | &lt;CONDITION&gt; | &lt;_DEFAULT&gt; | &lt;CLASS&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*****************************************
+ * ECMA SYNTACTIC GRAMMARS  STARTS HERE  *
+ *****************************************/
+
+/*******************************************************************************
+ ************************    LARA SYNTACTIC GRAMMAR    ************************* 
+ *******************************************************************************/
+
+        /** LARA Start
+	 * A LARA file can contain zero or more includes and imports, followed by definitions of aspectdefs, codedefs, functions and global variables
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">Start</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;UTF8_BOM&gt; )? ( <A HREF="#prod4">Import</A> )* ( <A HREF="#prod5">AspectDef</A> | <A HREF="#prod6">CodeDef</A> )* &lt;EOF&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Import
+	 * Imports the path to a file that is not in the same path of the invoked LARA file.
+	 * With one import it is possible to import one or every file within a package
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">Import</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IMPORT&gt; <A HREF="#prod7">FilePath</A> <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** FilePath
+	* gets the path to a file or all the files in the package 
+	**/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">FilePath</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod9">Identifier</A> &lt;DOT&gt; )* ( &lt;IDENTIFIER_NAME&gt; | &lt;STAR&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** FilePathNoSTar
+	* gets the path to a file in a package
+	**/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">FilePathNoSTar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod9">Identifier</A> &lt;DOT&gt; )+</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Code Definition
+	 * A parcel of native code or LARA-Code to be used by the insert/output action. To define the target language, one has to define the type of the codedef, such as: codedef<C>, this means that the code to be inserted is written in C language.
+	 * A code definition needs an identifier and its body is code that can contain a tag such as "<a>" to insert information on the code such as: join point property or a variable value. To use those tags, the codedef must have input arguments to refer those to specific values.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">CodeDef</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CODEDEF&gt; ( &lt;LT&gt; &lt;IDENTIFIER_NAME&gt; &lt;GT&gt; )? &lt;IDENTIFIER_NAME&gt; ( ( &lt;LPAREN&gt; <A HREF="#prod11">FormalParameterList</A> &lt;RPAREN&gt; )? ) &lt;CODE_LITERAL&gt; &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Input arguments
+	 * The arguments to be defined when a "aspect-call" action is stated.
+	 * They can be normal variables or variables referent to a specific join point. The normal variables can have a default value
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">Input</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INPUT&gt; <A HREF="#prod13">VariableDeclarationList</A> ( &lt;SEMICOLON&gt; )? &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Output arguments
+	 * List of normal variables or variables referent to a specific join point. The normal variables can have a default value
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">Output</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OUTPUT&gt; <A HREF="#prod13">VariableDeclarationList</A> ( &lt;SEMICOLON&gt; )? &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Static
+	 * List of static variables and functions, which can be accessed statically in the aspect. The variables values are shared
+	 * between all aspect instances
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">Static</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STATICDECL&gt; ( <A HREF="#prod16">VariableStatement</A> | <A HREF="#prod17">FunctionDeclaration</A> )* &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Initialize
+	 * Similar to a constructor. A block of JavaScript code to initialize variables, inter alia
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">Initialize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INITIALIZE&gt; <A HREF="#prod19">JavaScript</A> &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Finalize
+	 * Similar to a destructor. A block of JavaScript code to finalize output variables, inter alia
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">Finalize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FINALIZE&gt; <A HREF="#prod19">JavaScript</A> &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Check
+	 * Set of conditions to verify input arguments and other important stats that specify if the aspect can be executed
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">Check</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CHECK&gt; ( <A HREF="#prod22">LogicalORExpression</A> <A HREF="#prod8">EndStatement</A> )* &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Aspect Definition
+	 * The aspect definition can contain outputs and inputs variables, a check to verify those variables, an initializer and a finalizer to deal with information to be handler before and after the aspect, respectively.
+	 * The body of the aspect consists of selects, applies and conditions to apply the aspect in the target program, and afters, befores, function and variable declaration to assist the apply and condition section.
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">AspectDef</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ASPECTDEF&gt; &lt;IDENTIFIER_NAME&gt; ( <A HREF="#prod12">Input</A> | <A HREF="#prod14">Output</A> | <A HREF="#prod15">Static</A> )* ( <A HREF="#prod18">Initialize</A> )? ( <A HREF="#prod21">Check</A> )? ( ( <A HREF="#prod23">Select</A> | <A HREF="#prod24">Apply</A> | <A HREF="#prod25">AroundApply</A> | <A HREF="#prod26">Condition</A> | <A HREF="#prod27">SourceElement</A> ) )* ( <A HREF="#prod20">Finalize</A> )? &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Select
+	 * Pointcut expression to specify which join points are intended to influence.
+	 * It can contain an unique label, so it can be advised, and a pointcut expression
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">Select</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; &lt;COLON&gt; )? &lt;SELECT&gt; ( <A HREF="#prod28">Pointcut</A> | <A HREF="#prod29">FourthSetOp</A> ) &lt;END&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod29">FourthSetOp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod30">ThirdSetOp</A> ( &lt;PLUS&gt; <A HREF="#prod29">FourthSetOp</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod30">ThirdSetOp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod31">FirstSetOp</A> ( ( &lt;NATURAL_JOIN&gt; | &lt;BIT_AND&gt; ) <A HREF="#prod30">ThirdSetOp</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod31">FirstSetOp</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LPAREN&gt; <A HREF="#prod29">FourthSetOp</A> &lt;RPAREN&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Pointcut
+	 * It can contain an identifier for the join point, a join point identifier and a possible property expression. 
+	 * Each join point can have a child, the join point down to its hierarchy
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">Pointcut</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod1">getNoReservedIdentifier</A> | &lt;LPAREN&gt; &lt;IDENTIFIER_NAME&gt; &lt;ASSIGN&gt; <A HREF="#prod1">getNoReservedIdentifier</A> &lt;RPAREN&gt; ) ( <A HREF="#prod32">PointcutFilters</A> )? ( &lt;DOT&gt; <A HREF="#prod28">Pointcut</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Pointcut  properties
+	 * The properties of a pointcut can be declared in three different ways:
+		- it can be any property (*)
+		- a set of properties that will be mapped to the default attribute
+		- a property expression
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod32">PointcutFilters</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LBRACE&gt; ( &lt;STAR&gt; | ( ( <A HREF="#prod33">OrFiltersExpr</A> ) | ( ( <A HREF="#prod34">ConditionalExpression</A> ( &lt;COMMA&gt; <A HREF="#prod34">ConditionalExpression</A> )* ) ) ) ) &lt;RBRACE&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** "OR" Property Expr
+	 * In the pointcut properties declaration, the comma is used as an OR operator (similar to ||)
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod33">OrFiltersExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod35">ANDFiltersExpr</A> ( &lt;COMMA&gt; <A HREF="#prod35">ANDFiltersExpr</A> )* )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** "AND" Property Expression
+	 * To combine properties such as an AND operation, the properties are declared inside brackets, converting the comma (which is the OR operator) into an AND.
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod35">ANDFiltersExpr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod36">Filter</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LPAREN&gt; ( <A HREF="#prod36">Filter</A> ( &lt;COMMA&gt; <A HREF="#prod36">Filter</A> )* ) &lt;RPAREN&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Property
+	 * The property is defined by comparing a join point attribute to a value
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod36">Filter</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER_NAME&gt; ( <A HREF="#prod37">EqualityOperator</A> | <A HREF="#prod38">RelationalOperator</A> ) <A HREF="#prod34">ConditionalExpression</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Around
+	 * A Statement to occur around an apply
+	 * It contains a list of applies that this statement refers to. The body of this statement is JavaScript, and can be used to prepare information for the applies.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">AroundApply</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; &lt;COLON&gt; )? ( &lt;BEFORE&gt; | &lt;AFTER&gt; ) ( ( <A HREF="#prod9">Identifier</A> ( ( &lt;COMMA&gt; <A HREF="#prod9">Identifier</A> )* ) ) )? &lt;DO&gt; <A HREF="#prod19">JavaScript</A> &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Apply
+	 * Old Version of apply, only static weaving
+	 * Advice each join point of the related select(s).
+	 * It can contain an unique label and a list of selects to be advised by the apply. If no select is inserted, the last select with no label will be used.
+	 * The body contains JavaScript, in which the actions can be declared
+	 **
+	void Apply() #Apply:
+	{Token name, apply, end;}
+	{
+	  [name=<IDENTIFIER_NAME>{jjtThis.setName(name.image);} <COLON>] apply=<APPLY> [To()]
+	  		JavaScript()
+	  end=<END>
+	  { jjtThis.setCoord(apply,end);}
+	}
+	/**/
+
+        /** Apply (Static/Dynamic)
+	 * The new version of the Apply statement: static or dynamic weaving
+	 * Advice each join point of the related select(s).
+	 * It can contain an unique label and a list of selects to be advised by the apply. If no select is inserted, the last select with no label will be used.
+	 * The body contains JavaScript, in which the actions can be declared
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">Apply</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; &lt;COLON&gt; )? &lt;APPLY&gt; ( &lt;DYNAMIC&gt; ( &lt;PARALLEL&gt; | &lt;SEQUENCIAL&gt; )? ( &lt;BEFORE&gt; | &lt;AFTER&gt; | &lt;REPLACE&gt; )? )? ( <A HREF="#prod39">To</A> )? <A HREF="#prod19">JavaScript</A> &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** To
+	 * list of selects that will be influenced by the apply
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod39">To</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TO&gt; <A HREF="#prod29">FourthSetOp</A> ( &lt;COMMA&gt; <A HREF="#prod29">FourthSetOp</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod40">SimpleAction</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod41">Insert</A> | <A HREF="#prod42">Define</A> | <A HREF="#prod43">Perform</A> | <A HREF="#prod44">OutputAct</A> ) <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Action
+	 * Actions that can be used to influence the join points.
+	 * A join point variable can be used to specify the targeted join point where the action takes place 
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod45">Action</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( ( &lt;IDENTIFIER_NAME&gt; ) ) ( <A HREF="#prod46">MemberExpressionPart</A> )* &lt;DOT&gt; ) ( <A HREF="#prod41">Insert</A> | <A HREF="#prod42">Define</A> | <A HREF="#prod43">Perform</A> | <A HREF="#prod44">OutputAct</A> ) <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Call
+	 * Action to invoke an aspect.
+	 * The aspect is called with the input arguments that requires and the call instance can have a reference variable to be used to recover information from the invoked aspect.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod47">Call</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CALL&gt; ( <A HREF="#prod48">LeftHandSideExpression</A> &lt;COLON&gt; )? ( <A HREF="#prod10">FilePathNoSTar</A> )? &lt;IDENTIFIER_NAME&gt; ( <A HREF="#prod49">Arguments</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Run
+	 * Execution of an external tool.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod50">Run</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RUN&gt; ( <A HREF="#prod48">LeftHandSideExpression</A> &lt;COLON&gt; )? ( <A HREF="#prod1">getNoReservedIdentifier</A> )? <A HREF="#prod49">Arguments</A> ( &lt;GT&gt; <A HREF="#prod51">AssignmentExpression</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Command
+	 * Execution of a command.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod52">Cmd</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CMD&gt; | &lt;RUN&gt; &lt;CMD&gt; ) ( <A HREF="#prod48">LeftHandSideExpression</A> &lt;COLON&gt; )? <A HREF="#prod49">Arguments</A> ( &lt;GT&gt; <A HREF="#prod51">AssignmentExpression</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** OLD CALL **
+	void Call() #Call:
+	{Token aspVarName,aspName,ref, end;}
+	{
+	   <CALL> [LOOKAHEAD(<IDENTIFIER_NAME> <COLON>)
+	   					aspVarName=<IDENTIFIER_NAME><COLON>
+	   							{jjtThis.setAspVarName(aspVarName.image);}]
+   			  [LOOKAHEAD(2)FilePathNoSTar()]aspName=<IDENTIFIER_NAME>
+		{jjtThis.setAspName(aspName.image);}
+	    	[LOOKAHEAD(Arguments())Arguments()] end=<SEMICOLON>
+	   { jjtThis.setCoord(aspName,end);}
+	}
+	/***/
+
+        /** Insert
+	 * The insertion of code is made by indicating a codedefinition's identifier with the required arguments or writing the desired code, with the possibility of using LARA-code to be defined into the target language, such as insert<C> before %{�}%.
+	 * It is also needed to say if the code is inserted before, after or around the pointcut.
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod41">Insert</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INSERT&gt; ( ( ( &lt;LT&gt; &lt;IDENTIFIER_NAME&gt; &lt;GT&gt; )? ( &lt;BEFORE&gt; | &lt;AFTER&gt; | &lt;AROUND&gt; | &lt;REPLACE&gt; ) ( <A HREF="#prod53">TemplateLiteral</A> | ( ( <A HREF="#prod9">Identifier</A> ( <A HREF="#prod49">Arguments</A> )? ) ) ) ) | ( <A HREF="#prod49">Arguments</A> ) )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Perform
+	 * Perform an action over the join point
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod43">Perform</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXEC&gt; <A HREF="#prod1">getNoReservedIdentifier</A> ( <A HREF="#prod49">Arguments</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Output
+	 * Similar to Insert, however it is used to output in runtime
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod44">OutputAct</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OUTPUT_ACT&gt; ( ( <A HREF="#prod53">TemplateLiteral</A> | ( ( <A HREF="#prod9">Identifier</A> ( <A HREF="#prod49">Arguments</A> )? ) ) ) | <A HREF="#prod49">Arguments</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Define
+	 *  Assign a value to a join point attribute
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod42">Define</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DEFINE&gt; ( <A HREF="#prod2">noReservedIdentifier</A> &lt;ASSIGN&gt; <A HREF="#prod51">AssignmentExpression</A> | <A HREF="#prod49">Arguments</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/** Condition
+	 *  Boolean expression that verifies if the apply can take place in a join point
+	 **/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">Condition</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER_NAME&gt; &lt;COLON&gt; )? &lt;CONDITION&gt; ( &lt;FOR&gt; ( <A HREF="#prod9">Identifier</A> ( &lt;COMMA&gt; <A HREF="#prod9">Identifier</A> )* ) )? <A HREF="#prod22">LogicalORExpression</A> &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*******************************************************************************
+ **********************   END OF LARA SYNTACTIC GRAMMAR    ********************* 
+ *******************************************************************************/
+
+        /* The following part of the grammar is the EcmaScript grammar created by The Dojo Foundation (2004-2005), and it was partially updated to conform to the requirements of LARA grammar, such as the use of actions and join point variables.
+	**/
+
+        /* Section 11.1: Primary Expressions */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod54">PrimaryExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"this"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod55">ObjectLiteral</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod56">ArrayLiteral</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "(" <A HREF="#prod57">Expression</A> ")" )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod58">Literal</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 7.8: Literals */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod58">Literal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DECIMAL_LITERAL&gt; | &lt;HEX_INTEGER_LITERAL&gt; | &lt;STRING_LITERAL&gt; | &lt;BOOLEAN_LITERAL&gt; | &lt;NULL_LITERAL&gt; | &lt;REGULAR_EXPRESSION_LITERAL&gt; | &lt;CODE_LITERAL&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod53">TemplateLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;STRING_LITERAL&gt; | &lt;CODE_LITERAL&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">Identifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER_NAME&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod59">LabelIdentifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LABEL_IDENTIFIER&gt; | &lt;IDENTIFIER_NAME&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.1.4: Array Initialiser */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod56">ArrayLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"[" ( ( <A HREF="#prod60">ElisionFirst</A> )? ( <A HREF="#prod61">ElementList</A> <A HREF="#prod62">Elision</A> "]" | ( <A HREF="#prod61">ElementList</A> )? "]" ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod61">ElementList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod51">AssignmentExpression</A> ( <A HREF="#prod62">Elision</A> <A HREF="#prod51">AssignmentExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod62">Elision</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "," ) ( ( "," )+ )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod60">ElisionFirst</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "," ) ( ( "," )+ )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.1.5: Object Initialiser */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod55">ObjectLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LBRACE&gt; ( <A HREF="#prod63">PropertyNameAndValueList</A> )? &lt;RBRACE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod63">PropertyNameAndValueList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod64">PropertyNameAndValue</A> ( "," <A HREF="#prod64">PropertyNameAndValue</A> | "," )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod64">PropertyNameAndValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod65">PropertyName</A> ":" <A HREF="#prod51">AssignmentExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod65">PropertyName</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">noReservedIdentifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod58">Literal</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.2: Left-Hand-Side Expressions */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod66">MemberExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod67">FunctionExpression</A> | <A HREF="#prod54">PrimaryExpression</A> ) ( <A HREF="#prod46">MemberExpressionPart</A> )* )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod68">AllocationExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod69">MemberExpressionForIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod67">FunctionExpression</A> | <A HREF="#prod54">PrimaryExpression</A> ) ( <A HREF="#prod46">MemberExpressionPart</A> )* )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod68">AllocationExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "new" <A HREF="#prod66">MemberExpression</A> ( ( <A HREF="#prod49">Arguments</A> ( <A HREF="#prod46">MemberExpressionPart</A> )* )* ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod46">MemberExpressionPart</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( "[" <A HREF="#prod57">Expression</A> "]" ) | ( &lt;LBRACE&gt; <A HREF="#prod57">Expression</A> &lt;RBRACE&gt; ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "." ( <A HREF="#prod2">noReservedIdentifier</A> ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod70">CallExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod66">MemberExpression</A> <A HREF="#prod49">Arguments</A> ( <A HREF="#prod71">CallExpressionPart</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod72">CallExpressionForIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod69">MemberExpressionForIn</A> <A HREF="#prod49">Arguments</A> ( <A HREF="#prod71">CallExpressionPart</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod71">CallExpressionPart</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod49">Arguments</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "[" <A HREF="#prod57">Expression</A> "]" )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "." <A HREF="#prod2">noReservedIdentifier</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod49">Arguments</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" ( ( <A HREF="#prod73">NamedArgumentList</A> ) | <A HREF="#prod74">ArgumentList</A> )? ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod73">NamedArgumentList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod75">NamedArgument</A> ( &lt;COMMA&gt; <A HREF="#prod75">NamedArgument</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod75">NamedArgument</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod1">getNoReservedIdentifier</A> &lt;COLON&gt; <A HREF="#prod51">AssignmentExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod74">ArgumentList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod51">AssignmentExpression</A> ( "," <A HREF="#prod51">AssignmentExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod48">LeftHandSideExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod70">CallExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod66">MemberExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod76">LeftHandSideExpressionForIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod72">CallExpressionForIn</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod69">MemberExpressionForIn</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.3 Postfix Expressions */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod77">PostfixExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod48">LeftHandSideExpression</A> ( <A HREF="#prod78">PostfixOperator</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod78">PostfixOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "++" | "--" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.4 Unary Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod79">UnaryExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod77">PostfixExpression</A> | ( <A HREF="#prod80">UnaryOperator</A> <A HREF="#prod79">UnaryExpression</A> )+ )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod80">UnaryOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "delete" | "void" | "typeof" | "++" | "--" | "+" | "-" | "~" | "!" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.5: Multiplicative Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod81">MultiplicativeExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod79">UnaryExpression</A> ( <A HREF="#prod82">MultiplicativeOperator</A> <A HREF="#prod79">UnaryExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod82">MultiplicativeOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "*" | &lt;SLASH&gt; | "%" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.6: Additive Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod83">AdditiveExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod81">MultiplicativeExpression</A> ( <A HREF="#prod84">AdditiveOperator</A> <A HREF="#prod81">MultiplicativeExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod84">AdditiveOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "+" | "-" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.7: Bitwise Shift Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod85">ShiftExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod83">AdditiveExpression</A> ( <A HREF="#prod86">ShiftOperator</A> <A HREF="#prod83">AdditiveExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod86">ShiftOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "&lt;&lt;" | "&gt;&gt;" | "&gt;&gt;&gt;" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.4: Relational Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod87">RelationalExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod85">ShiftExpression</A> ( <A HREF="#prod38">RelationalOperator</A> <A HREF="#prod85">ShiftExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod38">RelationalOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" | "instanceof" | "in" )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod88">RelationalExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod85">ShiftExpression</A> ( <A HREF="#prod89">RelationalNoInOperator</A> <A HREF="#prod85">ShiftExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod89">RelationalNoInOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" | "instanceof" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.9: Equality Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod90">EqualityExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod87">RelationalExpression</A> ( <A HREF="#prod37">EqualityOperator</A> <A HREF="#prod87">RelationalExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod91">EqualityExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod88">RelationalExpressionNoIn</A> ( <A HREF="#prod37">EqualityOperator</A> <A HREF="#prod88">RelationalExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod37">EqualityOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "==" | "!=" | "===" | "!==" | &lt;MATCH&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.10: Binary Bitwise Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod92">BitwiseANDExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod90">EqualityExpression</A> ( <A HREF="#prod93">BitwiseANDOperator</A> <A HREF="#prod90">EqualityExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod94">BitwiseANDExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod91">EqualityExpressionNoIn</A> ( <A HREF="#prod93">BitwiseANDOperator</A> <A HREF="#prod91">EqualityExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod93">BitwiseANDOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"&amp;"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod95">BitwiseXORExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod92">BitwiseANDExpression</A> ( <A HREF="#prod96">BitwiseXOROperator</A> <A HREF="#prod92">BitwiseANDExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod97">BitwiseXORExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod94">BitwiseANDExpressionNoIn</A> ( <A HREF="#prod96">BitwiseXOROperator</A> <A HREF="#prod94">BitwiseANDExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod96">BitwiseXOROperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"^"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod98">BitwiseORExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod95">BitwiseXORExpression</A> ( <A HREF="#prod99">BitwiseOROperator</A> <A HREF="#prod95">BitwiseXORExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod100">BitwiseORExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod97">BitwiseXORExpressionNoIn</A> ( <A HREF="#prod99">BitwiseOROperator</A> <A HREF="#prod97">BitwiseXORExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod99">BitwiseOROperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"|"</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.11: Binary Logical Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod101">LogicalANDExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod98">BitwiseORExpression</A> ( <A HREF="#prod102">LogicalANDOperator</A> <A HREF="#prod98">BitwiseORExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod103">LogicalANDExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod100">BitwiseORExpressionNoIn</A> ( <A HREF="#prod102">LogicalANDOperator</A> <A HREF="#prod100">BitwiseORExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod102">LogicalANDOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"&amp;&amp;"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">LogicalORExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod101">LogicalANDExpression</A> ( <A HREF="#prod104">LogicalOROperator</A> <A HREF="#prod101">LogicalANDExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod105">LogicalORExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod103">LogicalANDExpressionNoIn</A> ( <A HREF="#prod104">LogicalOROperator</A> <A HREF="#prod103">LogicalANDExpressionNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod104">LogicalOROperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"||"</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.12: Conditional Operator */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod34">ConditionalExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod22">LogicalORExpression</A> ( "?" <A HREF="#prod51">AssignmentExpression</A> ":" <A HREF="#prod51">AssignmentExpression</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod106">ConditionalExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod105">LogicalORExpressionNoIn</A> ( "?" <A HREF="#prod51">AssignmentExpression</A> ":" <A HREF="#prod107">AssignmentExpressionNoIn</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.13: Assignment Operators */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod51">AssignmentExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod48">LeftHandSideExpression</A> <A HREF="#prod108">AssignmentOperator</A> <A HREF="#prod51">AssignmentExpression</A> | <A HREF="#prod34">ConditionalExpression</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod107">AssignmentExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod48">LeftHandSideExpression</A> <A HREF="#prod108">AssignmentOperator</A> <A HREF="#prod107">AssignmentExpressionNoIn</A> | <A HREF="#prod106">ConditionalExpressionNoIn</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod108">AssignmentOperator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "=" | "*=" | &lt;SLASHASSIGN&gt; | "%=" | "+=" | "-=" | "&lt;&lt;=" | "&gt;&gt;=" | "&gt;&gt;&gt;=" | "&amp;=" | "^=" | "|=" )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 11.14: Comma Operator */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod57">Expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod51">AssignmentExpression</A> ( "," <A HREF="#prod51">AssignmentExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod109">ExpressionNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod107">AssignmentExpressionNoIn</A> ( "," <A HREF="#prod107">AssignmentExpressionNoIn</A> )*</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12: STATEMENTS */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod110">Statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod111">BodiedStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod112">SingleStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod112">SingleStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod40">SimpleAction</A> | <A HREF="#prod45">Action</A> | <A HREF="#prod47">Call</A> | <A HREF="#prod52">Cmd</A> | <A HREF="#prod50">Run</A> | <A HREF="#prod16">VariableStatement</A> | <A HREF="#prod113">EmptyStatement</A> | <A HREF="#prod114">ExpressionStatement</A> | <A HREF="#prod115">LabelledStatement</A> | <A HREF="#prod116">ContinueStatement</A> | <A HREF="#prod117">BreakStatement</A> | <A HREF="#prod118">ImportStatement</A> | <A HREF="#prod119">ReturnStatement</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod111">BodiedStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod120">Block</A> | <A HREF="#prod121">IfStatement</A> | <A HREF="#prod122">IterationStatement</A> | <A HREF="#prod123">SwitchStatement</A> | <A HREF="#prod124">WithStatement</A> | <A HREF="#prod125">ThrowStatement</A> | <A HREF="#prod126">TryStatement</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* 12.1 Block Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod120">Block</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LBRACE&gt; ( <A HREF="#prod127">StatementList</A> )? &lt;RBRACE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod127">StatementList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod110">Statement</A> )+</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.2: Variable statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">VariableStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod13">VariableDeclarationList</A> <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">VariableDeclarationList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod128">VariableDeclaration</A> ( "," <A HREF="#prod128">VariableDeclaration</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod129">VariableDeclarationListNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod130">VariableDeclarationNoIn</A> ( "," <A HREF="#prod130">VariableDeclarationNoIn</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod128">VariableDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A> ( <A HREF="#prod131">Initialiser</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod130">VariableDeclarationNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A> ( <A HREF="#prod132">InitialiserNoIn</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod131">Initialiser</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"=" <A HREF="#prod51">AssignmentExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod132">InitialiserNoIn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"=" <A HREF="#prod107">AssignmentExpressionNoIn</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.3: Empty Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod113">EmptyStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>";"</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.4: Expression Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod114">ExpressionStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod57">Expression</A> <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.5: The if Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod121">IfStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"if" "(" <A HREF="#prod57">Expression</A> ")" <A HREF="#prod110">Statement</A> ( "else" <A HREF="#prod110">Statement</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.6: Iteration Statements */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod122">IterationStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod133">DoStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod134">WhileStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod135">ForStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod133">DoStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DO&gt; <A HREF="#prod110">Statement</A> &lt;WHILE&gt; &lt;LPAREN&gt; <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod134">WhileStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WHILE&gt; &lt;LPAREN&gt; <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod110">Statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod135">ForStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FOR&gt; ( &lt;EACH&gt; &lt;LPAREN&gt; ( ( "var" <A HREF="#prod130">VariableDeclarationNoIn</A> &lt;IN&gt; <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod110">Statement</A> ) | ( <A HREF="#prod76">LeftHandSideExpressionForIn</A> &lt;IN&gt; <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod110">Statement</A> ) ) | &lt;LPAREN&gt; ( ( ( <A HREF="#prod109">ExpressionNoIn</A> )? ";" ( <A HREF="#prod57">Expression</A> )? ";" ( <A HREF="#prod57">Expression</A> )? ")" <A HREF="#prod110">Statement</A> ) | ( "var" <A HREF="#prod13">VariableDeclarationList</A> ";" ( <A HREF="#prod57">Expression</A> )? ";" ( <A HREF="#prod57">Expression</A> )? &lt;RPAREN&gt; <A HREF="#prod110">Statement</A> ) | ( "var" <A HREF="#prod130">VariableDeclarationNoIn</A> ( &lt;IN&gt; | ( &lt;OF&gt; ) ) <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod110">Statement</A> ) | ( <A HREF="#prod76">LeftHandSideExpressionForIn</A> ( &lt;IN&gt; | ( &lt;OF&gt; ) ) <A HREF="#prod57">Expression</A> &lt;RPAREN&gt; <A HREF="#prod110">Statement</A> ) ) )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.7: The continue Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod116">ContinueStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"continue" ( <A HREF="#prod59">LabelIdentifier</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.8: The break Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod117">BreakStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"break" ( <A HREF="#prod59">LabelIdentifier</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.9 The return Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod119">ReturnStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"return" ( <A HREF="#prod57">Expression</A> )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.10: The with Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod124">WithStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"with" "(" <A HREF="#prod57">Expression</A> ")" <A HREF="#prod110">Statement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* 12.11 The switch Statement */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod123">SwitchStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"switch" "(" <A HREF="#prod57">Expression</A> ")" <A HREF="#prod136">CaseBlock</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod136">CaseBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LBRACE&gt; ( <A HREF="#prod137">CaseClauses</A> )? ( &lt;RBRACE&gt; | <A HREF="#prod138">DefaultClause</A> ( <A HREF="#prod137">CaseClauses</A> )? &lt;RBRACE&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod137">CaseClauses</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod139">CaseClause</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod139">CaseClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( "case" <A HREF="#prod57">Expression</A> ":" ) ) ( <A HREF="#prod127">StatementList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod138">DefaultClause</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( "default" ":" ) ) ( <A HREF="#prod127">StatementList</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 12.12: Labelled Statements */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod115">LabelledStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A> ":" <A HREF="#prod110">Statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod125">ThrowStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"throw" <A HREF="#prod57">Expression</A> <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod126">TryStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"try" <A HREF="#prod120">Block</A> ( ( <A HREF="#prod140">Finally</A> | <A HREF="#prod141">Catch</A> ( <A HREF="#prod140">Finally</A> )? ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod141">Catch</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"catch" "(" <A HREF="#prod9">Identifier</A> ")" <A HREF="#prod120">Block</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod140">Finally</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"finally" <A HREF="#prod120">Block</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 13: Function Definition */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">FunctionDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"function" <A HREF="#prod9">Identifier</A> ( "(" ( <A HREF="#prod11">FormalParameterList</A> )? ")" ) <A HREF="#prod142">FunctionBody</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod67">FunctionExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"function" ( <A HREF="#prod9">Identifier</A> )? ( "(" ( <A HREF="#prod11">FormalParameterList</A> )? ")" ) <A HREF="#prod142">FunctionBody</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">FormalParameterList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod9">Identifier</A> ) ( "," ( <A HREF="#prod9">Identifier</A> ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod142">FunctionBody</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LBRACE&gt; ( <A HREF="#prod143">SourceElements</A> )? &lt;RBRACE&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Section 14: Program *
+
+	ASTProgram Program() #Program :
+	{}
+	{  
+		JavaScript()
+				<EOF>
+		{ return jjtThis; }
+	}
+	/**/</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">JavaScript</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod143">SourceElements</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod143">SourceElements</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod27">SourceElement</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">SourceElement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod17">FunctionDeclaration</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod110">Statement</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*
+	 * Grammar for parsing JScript .NET contructs: ( import System; var contents :
+	 * String = reader.ReadToEnd(); ) Refer: src/hostenv_jsc.js
+	 */</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod118">ImportStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"import" <A HREF="#prod144">Name</A> ( "." "*" )? <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod144">Name</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER_NAME&gt; ( &lt;DOT&gt; &lt;IDENTIFIER_NAME&gt; )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod145">JScriptVarStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod146">JScriptVarDeclarationList</A> <A HREF="#prod8">EndStatement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod146">JScriptVarDeclarationList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod147">JScriptVarDeclaration</A> ( &lt;COMMA&gt; <A HREF="#prod147">JScriptVarDeclaration</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod147">JScriptVarDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">Identifier</A> ":" &lt;IDENTIFIER_NAME&gt; ( <A HREF="#prod131">Initialiser</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">EndStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SEMICOLON&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod148">error_skipto</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><I>java code</I></TD></TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod149">error_noSkip</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><I>java code</I></TD></TR>
+</TABLE>
+</BODY>
+</HTML>

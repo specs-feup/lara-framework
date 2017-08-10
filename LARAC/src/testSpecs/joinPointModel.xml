@@ -1,0 +1,29 @@
+<joinpoints root_class="file">
+	<joinpoint class="file">
+		<select class="function" />
+	</joinpoint>
+	<joinpoint class="function">
+		<select alias="input" class="var" />
+		<select alias="output" class="var" />
+		<select class="body" />
+	</joinpoint>
+	<joinpoint class="body" extends="section">
+		<select name="first" class="statement" />
+		<select name="last" class="statement" />
+		<select class="statement" />
+		<select class="var" />
+		<select class="if" />
+		<select name="otherIf" class="if" />
+		<!-- ... -->
+	</joinpoint>
+	<joinpoint class="loop" />
+
+	<joinpoint class="if">
+		<select name="condition" class="expression" />
+		<select name="then" class="body" />
+		<select class="elseif" />
+	</joinpoint>
+	<joinpoint class="section">
+		<select class="test" />
+	</joinpoint>
+</joinpoints>
