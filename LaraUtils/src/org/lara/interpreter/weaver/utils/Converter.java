@@ -1,0 +1,196 @@
+/**
+ * Copyright 2015 SPeCS.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License. under the License.
+ */
+
+package org.lara.interpreter.weaver.utils;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
+
+public class Converter {
+
+    private static final String NEW_ARRAY = "[]"; // Faster
+    // private static final String NEW_ARRAY_CODE = "new Array()";
+    public static final ScriptEngine utilEngine = new ScriptEngineManager().getEngineByName("nashorn");
+
+    /**
+     * Converts an array of objects to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+
+    public static Bindings newNativeArray() {
+	try {
+	    return (Bindings) Converter.utilEngine.eval(Converter.NEW_ARRAY);
+	} catch (ScriptException e) {
+	    throw new DefaultLARAException("Could not create new array ", e);
+	}
+    }
+
+    public static Bindings toNativeArray(Object[] values) {
+
+	Bindings bindings = newNativeArray();
+	for (int i = 0; i < values.length; i++) {
+	    bindings.put("" + i, values[i]);
+	}
+	return bindings;
+    }
+
+    /**
+     * Converts a list of objects to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(Collection<? extends Object> values) {
+
+	return toNativeArray(values.toArray());
+    }
+
+    /**
+     * Converts an array of ints to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(int[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of floats to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(float[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of doubles to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(double[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of booleans to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(boolean[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of chars to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(char[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of bytes to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(byte[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    /**
+     * Converts an array of shorts to a JavaScript array
+     * 
+     * @param values
+     *            the array of values
+     * @return a javascript array containing all the elements in values, with the same indexes
+     */
+    public static Bindings toNativeArray(short[] values) {
+
+	Object[] newObject = new Object[values.length];
+	for (int i = 0; i < values.length; i++) {
+	    newObject[i] = values[i];
+	}
+	return toNativeArray(newObject);
+    }
+
+    static Object[] getArray(Object val) {
+
+	if (!val.getClass().isArray()) {
+
+	    throw new IllegalArgumentException("the argument should be an array");
+	}
+
+	int arrlength = Array.getLength(val);
+	Object[] outputArray = new Object[arrlength];
+	for (int i = 0; i < arrlength; ++i) {
+	    outputArray[i] = Array.get(val, i);
+	}
+	return outputArray;
+    }
+
+}
