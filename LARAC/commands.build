@@ -1,6 +1,6 @@
 # System commands to be executed before compiling this project
 
-java -cp ../Support/javacc/javacc.jar javacc -OUTPUT_DIRECTORY="./lib" src/org/dojo/jsl/parser/LARAEcmaScript.jjt
+java -cp ../Support/javacc/javacc.jar javacc -OUTPUT_DIRECTORY="./lib" ./src/org/dojo/jsl/parser/LARAEcmaScript.jjt
 
 
 #cd specs-java/Lara/LARAC/src/org/dojo/jsl/parser
