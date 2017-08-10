@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0">
+
+	<xsd:element name="artifacts" type="ArtifactsList" />
+
+	<xsd:complexType name="ArtifactsList">
+		<xsd:sequence>
+			<xsd:element name="global" type="Global" maxOccurs="1" minOccurs="0"/>
+			<xsd:element name="artifact" type="Artifact" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="object" type="NewObject" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NewObject">
+		<xsd:sequence>
+			<xsd:element name="attribute" type="Attribute" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Artifact">
+		<xsd:sequence>
+			<xsd:element name="attribute" type="Attribute" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="class" type="xsd:string" use="required" />
+		<xsd:attribute name="default" type="xsd:string" use="optional" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="Global">
+		<xsd:sequence>
+			<xsd:element name="attribute" type="Attribute" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Attribute">
+		<xsd:sequence>
+			<xsd:element name="parameter" type="Parameter" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="xsd:string" use="required" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="Parameter">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="xsd:string" use="required" />
+	</xsd:complexType>
+</xsd:schema>

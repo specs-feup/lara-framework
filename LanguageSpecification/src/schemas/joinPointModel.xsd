@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0">
+
+	<xsd:element name="joinpoints" type="JoinPointsList" />
+
+	<xsd:complexType name="JoinPointsList">
+		<xsd:sequence>
+			<xsd:element name="global" type="GlobalJoinPoints" 
+				maxOccurs="1" minOccurs="0" />
+			<xsd:element name="joinpoint" type="JoinPointType" maxOccurs="unbounded"
+				minOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="root_class" type="xsd:IDREF" use="required" />
+		<xsd:attribute name="root_alias" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="GlobalJoinPoints">
+		<xsd:sequence>
+			<xsd:element name="select" type="Select" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="JoinPointType">
+		<xsd:sequence>
+			<xsd:element name="select" type="Select" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="class" type="xsd:ID" use="required" />
+		<xsd:attribute name="extends" type="xsd:IDREF" use="optional" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+<!-- 		<xsd:attribute name="root" type="xsd:boolean" use="optional" -->
+<!-- 			default="false" /> -->
+	</xsd:complexType>
+	<xsd:complexType name="Select">
+		<xsd:attribute name="class" type="xsd:IDREF" use="required" />
+		<xsd:attribute name="alias" type="xsd:string" use="optional" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+	</xsd:complexType>
+</xsd:schema>

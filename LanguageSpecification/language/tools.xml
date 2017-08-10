@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<tools>
+	<!-- 
+	 Three types of tools (new names are welcome!):
+	  * tool: executes a command line for an external tool
+	  * javascript: executes a javascript method written in a *.js file (placed in "includes/scripts/")
+	  * java: executes a java method within the classpath (jars and class files within "includes/java/" are automatically added to the classpath
+	  -->
+	<tool name="harmonic" run="gearbox">
+		<argument value="-exec=arch;frigg"/> <!-- this element contains the attribute 'position', 
+												which defines if this argument should be placed 'before' or 'after' the arguments used in the run() execution.
+												If the attribute is not setted, then after is used as default-->
+		<argument value="-cfg=target/"/>
+		<argument value="-xin=architecture.xml"/>
+		<argument value="-aspReport=harmonic_report.js"/>
+		<report js="harmonic_report.js"/> <!-- or <report lara="report.lara"> for reports sent in lara format-->
+	</tool>
+	<tool name="reflectc" run="reflectc.app" />
+	<javascript name="xst" needsArgs="true">tools.xilinx.xst</javascript>
+	<javascript name="xpr" needsArgs="true">tools.xilinx.xpr</javascript>
+	<javascript name="ngdbuild" needsArgs="false">tools.xilinx.ngdbuild</javascript>
+	<javascript name="map" needsArgs="true">tools.xilinx.map</javascript>
+	<javascript name="par" needsArgs="true">tools.xilinx.par</javascript>
+	<java name  = "gprofExtract"
+		  class = "gprofExtract.GprofExtract"
+		  method= "report"/>
+	<!-- javascript and java elements can use the boolean attribute 'reports' (default=false), 
+	which informs the system that the executed method returns a jason-formatted report to be merged in LARA variable '@' -->
+	<tool name="myLSCommand" run="ls"/>
+</tools>

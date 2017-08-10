@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<artifacts>
+	
+	<!-- Attributes for all join points -->
+	<global>
+		<attribute name="file_name" type="String" />
+		<attribute name="initial_col" type="int" />
+		<attribute name="initial_line" type="int" />
+		<attribute name="end_col" type="int" />
+		<attribute name="end_line" type="int" />
+		<attribute name="num_oper" type="int" />
+		<attribute name="num_levels" type="int" />
+		<attribute name="num_calls" type="int" />
+		<attribute name="num_array_refs" type="int" />
+		<attribute name="num_pointer_refs" type="int" />
+		<attribute name="live_in_size" type="int" />
+		<attribute name="live_out_size" type="int" />
+		<attribute name="size" type="int" />
+		<attribute name="cost" type="int" />
+	</global>
+
+	<artifact class="file" default="name">
+		<attribute name="name" type="String" />
+	</artifact>
+	<!-- Attributes for each join point -->
+	<artifact class="var" default="name">
+		<attribute name="reference" type="{read,write,all,declaration}" />
+		<attribute name="num_read" type="int" />
+		<attribute name="num_writes" type="int" />
+		<attribute name="num_accesses" type="int" />
+		<attribute name="is_const" type="Boolean" />
+		<attribute name="scope" type="{local,global}" />
+		<attribute name="base_type" type="String" />
+		<attribute name="type" type="String" />
+		<attribute name="is_array" type="Boolean" />
+		<attribute name="is_scalar" type="Boolean" />
+		<attribute name="is_pointer" type="Boolean" />
+		<attribute name="shape" type="String" />
+		<attribute name="size" type="int" />
+		<attribute name="name" type="String" />
+		<attribute name="initializer" type="String" />
+		<attribute name="is_arg" type="Boolean" />
+		<attribute name="is_in" type="Boolean" />
+		<attribute name="is_out" type="Boolean" />
+		<attribute name="is_inout" type="Boolean" />
+		<attribute name="value" type="Object" />
+		<attribute name="rate" type="Float" />
+	</artifact>
+	<artifact class="index">
+		<attribute name="value" type="int" />
+		<attribute name="string" type="String" />
+	</artifact>
+	<artifact class="label" default="name">
+		<attribute name="name" type="String" />
+	</artifact>
+	<artifact class="loop" default="type">
+		<attribute name="type" type="{for,while,do-while}" />
+		<attribute name="num_iterations" type="int" />
+		<attribute name="is_bound" type="Boolean" />
+		<attribute name="is_normalized" type="Boolean" />
+		<attribute name="increment_value" type="int" />
+		<attribute name="is_innermost" type="Boolean" />
+		<attribute name="nested_level" type="int" />
+		<attribute name="num_levels" type="int" />
+		<attribute name="num_children" type="int" />
+		<attribute name="is_perfect" type="Boolean" />
+		<attribute name="interchange_legal" type="Boolean">
+			<parameter name="loop2" type="Loop" />
+		</attribute>
+	</artifact>
+	<artifact class="body">
+		<attribute name="num_statements" type="int" />
+		<attribute name="num_loops" type="int" />
+		<attribute name="num_for" type="int" />
+		<attribute name="num_while" type="int" />
+		<attribute name="num_dowhile" type="int" />
+	</artifact>
+	<artifact class="if">
+		<attribute name="num_branches" type="int" />
+	</artifact>
+	<artifact class="expr">
+		<attribute name="num_oper" type="int" />
+		<attribute name="num_levels" type="int" />
+		<attribute name="num_calls" type="int" />
+		<attribute name="num_array_refs" type="int" />
+		<attribute name="num_pointer_refs" type="int" />
+	</artifact>
+	<artifact class="call" default="name">
+		<attribute name="num_args" type="int" />
+		<attribute name="num_argin" type="int" />
+		<attribute name="num_arginout" type="int" />
+		<attribute name="return_type" type="String" />
+		<attribute name="num_argout" type="int" />
+		<attribute name="has_argin" type="Boolean" />
+		<attribute name="has_argout" type="Boolean" />
+		<attribute name="has_arginout" type="Boolean" />
+		<attribute name="name" type="String" />
+		<attribute name="hardware_kernel" type="Boolean" />
+	</artifact>
+	<artifact class="function" default="name">
+		<attribute name="name" type="String" />
+		<attribute name="return_type" type="String" />
+		<attribute name="hardware_kernel" type="Boolean" />
+		<attribute name="latency" type="int" />
+		<attribute name="exec_time" type="int" />
+		<attribute name="resources" type="int" />
+		<attribute name="exec_contribution" type="int" />
+		<attribute name="complexity" type="String" />
+		<attribute name="num_lines" type="int" />
+	</artifact>
+	<artifact class="section" default="label">
+		<attribute name="hardware_kernel" type="Boolean" />
+		<attribute name="latency" type="int" />
+		<attribute name="exec_time" type="int" />
+		<attribute name="resources" type="int" />
+		<attribute name="exec_contribution" type="int" />
+		<attribute name="label" type="String" />
+	</artifact>
+	<!-- Hardware Components -->
+	<artifact class="CCU">
+		<attribute name="maxsize" type="int" />
+		<attribute name="frequency" type="int" />
+		<attribute name="max" type="int" />
+		<attribute name="id" type="int" />
+	</artifact>
+	<artifact class="FIFO">
+		<attribute name="wordlength" type="int" />
+		<attribute name="maxsize" type="int" />
+	</artifact>
+	<artifact class="RAM">
+		<attribute name="maxsize" type="int" />
+		<attribute name="wordlength" type="int" />
+		<attribute name="numreadports" type="int" />
+		<attribute name="numwriteports" type="int" />
+		<attribute name="loadlatency" type="int" />
+		<attribute name="storelatency" type="int" />
+	</artifact>
+	<artifact class="Hardware_Templates">
+		<attribute name="in" type="Attribute" />
+		<attribute name="out" type="Attribute" />
+		<attribute name="reset" type="String" />
+		<attribute name="clock" type="String" />
+		<attribute name="frequency" type="int" />
+		<attribute name="cycles" type="int" />
+		<attribute name="pipeline_interval" type="int" />
+		<attribute name="library_name" type="String" />
+		<attribute name="component_name" type="String" />
+		<attribute name="name" type="String" />
+		<attribute name="width" type="int" />
+		<attribute name="size" type="int" />
+		<attribute name="type" type="String" />
+	</artifact>
+
+
+	<object name="SYM">
+		<attribute name="name" type="String" />
+		<attribute name="type" type="String" />
+	</object>
+</artifacts>

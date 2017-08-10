@@ -1,0 +1,41 @@
+<joinpoints root_alias="root" root_class="file">
+	<joinpoint class="weaver"/>
+<!-- 	<global> -->
+<!-- < 		<select alias="all" class="*"/> -->
+<!-- 	</global> -->
+	
+	<joinpoint class="file">
+		<select alias="function" class="function"/> 
+	</joinpoint>
+	<joinpoint class="function">
+		<select alias="input" class="var"/>
+		<select alias="output" class="var"/>
+		<select class="body"/> <!-- if no class is  specified, then it is considered that the alias already specifies the class-->
+							  <!-- or is it more logical to have the class mandatory and the alias optional? -->
+	</joinpoint>
+	<joinpoint class="body" extends="section"> <!-- section is a super class of body, i.e., the selects and attributes for section are also available for body! -->
+		<select alias="first" class="statement"/>
+		<select alias="last" class="statement"/>
+		<select class="statement"/>
+		<select class="var"/>
+		<select class="if"/>
+		<select alias="otherIf" class="if"/>
+		<!-- ... -->
+	</joinpoint>
+	<joinpoint class="loop"/>
+	
+	<joinpoint class="if">
+		<select alias="condition" class="expr"/>
+		<select alias="then" class="body"/>
+		<select class="elseif"/>
+	</joinpoint>
+	<joinpoint class="section">
+		<select class="test"/>
+	</joinpoint>
+	
+	<joinpoint class="elseif"/>
+	<joinpoint class="test"/>
+	<joinpoint class="statement"/>
+	<joinpoint class="var"/>
+	<joinpoint class="expr"/>
+</joinpoints>
