@@ -1,0 +1,36 @@
+/**
+ * Based on this code: https://stackoverflow.com/questions/4343746/is-there-a-data-structure-like-the-java-set-in-javascript
+ * 
+ * Changed the name of functions 'contains' to the name used in ECMAScript 6 ('has').
+ * 'remove' has not been changed to 'delete' because in LARA 'delete' is a keyword and cannot be used as a function name
+ * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.
+ */
+var StringSet = function() {
+	this.setObj = {};
+	this.val = {};
+};
+
+StringSet.prototype.add = function(str) {
+	this.setObj[str] = this.val;
+	return str;
+}
+
+StringSet.prototype.has = function(str) {
+	return this.setObj[str] === this.val;
+}
+
+StringSet.prototype.remove = function(str) {
+	var hasValue = this.has(str);
+	delete this.setObj[str];
+	return hasValue;
+}
+
+StringSet.prototype.values = function() {
+	var values = [];
+	for (var i in this.setObj) {
+		if (this.setObj[i] === this.val) {
+			values.push(i);
+		}
+	}
+	return values;
+}

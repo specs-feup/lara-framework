@@ -1,0 +1,52 @@
+var System = {};
+
+/**
+ * Returns the name of the platform where this code is executing
+ */
+System.getCurrentPlatform = function() {
+	notImplemented("getCurrentPlatform");
+}
+
+System.getExecutable = function(foldername) {
+	return Java.type('pt.up.fe.specs.clang.Platforms').getExecutable(foldername);
+}
+
+System.prepareExe = function(executable) {
+	return LARASystem.prepareExe(executable);
+}
+
+/**
+ * Controls whether by default, if the execution of commands should print the output to the console
+ **/
+System.defaultPrintToConsole = true;
+
+/**
+ * @output: can be undefined, null or the name of a file. If undefined, prints the output to the console; if null, does not print the output to the console; otherwise should be a string with the name of the file where the output will be written (in this case, no output is printed in the console).
+ */
+ 
+/**
+ *
+ **/
+System.execute = function(command, workingDir, printToConsole, outputFile, append) {
+	if(workingDir === undefined) {
+		workingDir = "./";
+	}
+	
+	if(printToConsole === undefined) {
+		printToConsole = System.defaultPrintToConsole;
+	}
+	
+	if(outputFile === undefined) {
+		outputFile = null;
+	}
+	
+	if(append === undefined) {
+		append = false;
+	}
+
+	var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, print);
+	
+	if(outputFile !== undefined) {
+		checkType(outputFile, "string");
+	}
+}

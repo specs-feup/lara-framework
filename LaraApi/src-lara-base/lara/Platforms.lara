@@ -1,0 +1,18 @@
+
+var Platforms = {};
+
+Platforms.isWindows = function() {
+	return SpecsPlatforms.isWindows();
+}
+
+Platforms.isLinux = function() {
+	return SpecsPlatforms.isLinux();
+}
+
+Platforms.isUnix = function() {
+	return SpecsPlatforms.isUnix();
+}
+
+Platforms.getPlatformName = function() {
+	return SpecsPlatforms.getPlatformName();
+}

@@ -1,0 +1,39 @@
+import lara.util.StringSet;
+
+var PrintOnce = {
+	messagesSet : new StringSet()
+};
+
+PrintOnce.message = function(message) {
+
+	if(message === undefined) {
+		return;
+	}
+
+	if(this.messagesSet.has(message)) {
+		return;
+	}
+	
+	this.messagesSet.add(message);
+	println(message);
+	
+	/*
+	var printedMessage = this.idCounter[message] !== undefined;
+	
+	if(printedMessage) {
+		return;
+	}
+
+	// Print message and add to set	
+	
+	var currentId = this.idCounter[key];
+
+	if(currentId === undefined) {
+		currentId = 0;
+	}
+	
+	this.idCounter[key] = currentId + 1;
+	
+	return key + currentId;
+	*/
+}

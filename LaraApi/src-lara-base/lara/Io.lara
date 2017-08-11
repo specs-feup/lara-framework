@@ -1,0 +1,50 @@
+var Io = {};
+
+/**
+ * Creates a folder.
+ *
+ */
+function mkdir(path) {
+	return IoUtils.safeFolder(path);
+}
+
+Io.getPath = function(fileOrBaseFolder, optionalFile) {
+	if(optionalFile === undefined) {
+		return new java.io.File(fileOrBaseFolder); 
+	}
+	
+	return new java.io.File(fileOrBaseFolder, optionalFile);
+}	
+
+/**
+ * Returns a List with a string for each line of the given file
+ */
+function readLines(fileOrBaseFolder, optionalFile) {
+	return LaraIo.readLines(Io.getPath(fileOrBaseFolder, optionalFile));	
+}
+
+function deleteFile(fileOrBaseFolder, optionalFile) {
+	return LaraIo.deleteFile(Io.getPath(fileOrBaseFolder, optionalFile));
+}
+
+/**
+ * @return true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
+ */
+Io.isFile = function(path) {
+	if(typeof path === "string") {
+		path = Io.getPath(path);
+	}
+	
+	return path.isFile();
+}
+
+/**
+ * @return true if and only if the file denoted by this abstract pathname exists and is a folder; false otherwise
+ */
+Io.isFolder = function(path) {
+	if(typeof path === "string") {
+		path = Io.getPath(path);
+	}
+	
+	return path.isDirectory();
+}

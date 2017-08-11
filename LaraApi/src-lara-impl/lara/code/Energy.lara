@@ -1,0 +1,13 @@
+import lara.code.EnergyBase;
+
+/**
+ * Measures the energy spent during the execution of a given section of code.
+ * 
+ * @param $start [Mandatory] Starting point of the energy measure
+ * @param prefix Message that will appear before the energy measure. If undefined, empty string will be used.
+ * @param $end Ending point of the energy measure. If undefined, measure is done around starting point.
+ */
+Energy.prototype.measure = function($start, prefix, $end) {
+	throw "Energy.measure: not yet implemented";
+}
+
