@@ -67,11 +67,6 @@ public class SimpleNode implements Node {
         id = i;
         parser = p;
     }
-	
-	@Override	
-	public int getId() {
-		return id;
-	}
 
 
     @Override
