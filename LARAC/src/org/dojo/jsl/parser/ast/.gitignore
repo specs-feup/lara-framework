@@ -4,7 +4,6 @@
 /LARAEcmaScriptConstants.java
 /LARAEcmaScriptTokenManager.java
 /LARAEcmaScriptTreeConstants.java
-/Node.java
 /Token.java
 /JavaCharStream.java
 /ASTEventAdaptation.java
@@ -15,3 +14,4 @@
 # These files have custom changes
 #/TokenMgrError.java
 #/ParseException.java
+#/Node.java
