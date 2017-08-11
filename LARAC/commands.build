@@ -2,8 +2,8 @@
 
 # Create .jj from .jjt
 # Could not set output directory of jjtree, setting working directory instead
-[dir=src/org/dojo/jsl/parser/] java -cp ../../../../../../Support/javacc/javacc.jar jjtree LARAEcmaScript.jjt
+[dir=src/org/dojo/jsl/parser/] java -cp ../../../../../../Support/javacc/javacc-5.jar jjtree LARAEcmaScript.jjt
 
 # Create grammar from .jj
-[dir=src/org/dojo/jsl/parser/ast] java -cp ../../../../../../../Support/javacc/javacc.jar javacc LARAEcmaScript.jj
+[dir=src/org/dojo/jsl/parser/ast] java -cp ../../../../../../../Support/javacc/javacc-5.jar javacc LARAEcmaScript.jj
 
