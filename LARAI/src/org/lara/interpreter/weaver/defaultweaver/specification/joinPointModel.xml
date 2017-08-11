@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<joinpoints  root_class="workspace">
+	<joinpoint class="folder">
+		<select class="file"/>
+	</joinpoint>
+	<joinpoint class="file">
+		<select class="function"/>
+	</joinpoint>
+	<joinpoint class="function"/>
+	<joinpoint class="workspace">
+		<select class="folder"/>
+	</joinpoint>
+</joinpoints>

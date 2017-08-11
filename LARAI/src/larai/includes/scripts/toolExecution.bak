@@ -1,0 +1,71 @@
+function run(tool, args, jpname, name, verbose,pipe){
+	args = (args== undefined)?[]:args;
+	jpname = (jpname== undefined)?null:jpname;
+	name = (name== undefined)?null:name;
+	verbose = (verbose == undefined)?default_verbose_level:verbose;
+	
+	if(pipe== undefined){
+		
+		verbose = 2;
+		pipe= null;
+	}else if(pipe == null){
+		verbose = 0;
+	}
+	
+	
+	var argsToSource = "";
+	try{
+		argsToSource = JSON.stringify(args);
+	}catch(e){
+		errorln("Exception while converting arguments to source: "+e);
+	}
+	var report = "";
+	try{
+		report = ""+LARASystem.run(tool,args,jpname, name, verbose, pipe,argsToSource);
+	}catch(e){
+			errorln(e);
+			throw null;
+	}
+	eval(report);
+}
+
+
+default_verbose_level = 2;
+
+function cmd(command, args, verbose,pipe){
+	args = (args== undefined)?[]:args;
+	verbose = (verbose == undefined)?default_verbose_level:verbose;
+	LARASystem.execute(command,args,verbose,pipe);
+}
+
+
+function report(tool, args, verbose){
+	args = (args== undefined)?[]:args;
+	verbose = (verbose == undefined)?default_verbose_level:verbose;
+	var argsToSource = "";
+	try{
+		argsToSource = JSON.stringify(args);
+	}catch(e){
+	}
+	var reportStr = "";
+	try{
+		 reportStr = ''+LARASystem.report(tool,args, argsToSource,verbose);
+	}catch(e){
+			errorln(e);
+			throw null;
+	}
+	eval(reportStr);
+}
+
+function toJavaArray(classType, array){
+	var argv = java.lang.reflect.Array.newInstance(classType, array.length);
+	for(var i = 0; i < array.length; i++)
+		java.lang.reflect.Array.set(argv, i, array[i]);
+	return argv;
+}
+
+function export(varName,value){
+	if(value == undefined)
+		LARASystem.export(varName);
+	else LARASystem.export(varName,value);
+	};

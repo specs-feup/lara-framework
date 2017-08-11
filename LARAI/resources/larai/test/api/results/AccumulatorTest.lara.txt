@@ -1,0 +1,5 @@
+Tuple get:2
+Array get:2
+key: step1 -> value: 3
+key: step1, step2 -> value: 2
+key: step1, step2.1 -> value: 1
