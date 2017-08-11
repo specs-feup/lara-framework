@@ -25,7 +25,7 @@ sf.eclipse.javacc.prefs
 MatisseOptions.lara
 Matisse.lara
 
-output/
+#output/
 .idea/
 ### Default folder for executing applications
 **/run/**

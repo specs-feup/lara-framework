@@ -1,10 +1,9 @@
 # System commands to be executed before compiling this project
 
-java -cp ../Support/javacc/javacc.jar jjtree -OUTPUT_DIRECTORY="./lib" ./src/org/dojo/jsl/parser/LARAEcmaScript.jjt
+# Create .jj from .jjt
+# Could not set output directory of jjtree, setting working directory instead
+[dir=src/org/dojo/jsl/parser/] java -cp ../../../../../../Support/javacc/javacc.jar jjtree LARAEcmaScript.jjt
 
+# Create grammar from .jj
+[dir=src/org/dojo/jsl/parser/ast] java -cp ../../../../../../../Support/javacc/javacc.jar javacc LARAEcmaScript.jj
 
-#cd specs-java/Lara/LARAC/src/org/dojo/jsl/parser
-
-#jjtree LARAEcmaScript.jjt
-#cd ast
-#javacc LARAEcmaScript.jj
