@@ -1,0 +1,5 @@
+https://github.com/specs-feup/lara-framework
+https://github.com/specs-feup/specs-java-libs
+--build
+--project LARAI
+--main larai.LaraI
