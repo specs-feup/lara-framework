@@ -16,7 +16,8 @@ package larai.larabundle;
 import pt.up.fe.specs.util.providers.StringProvider;
 
 public enum LaraBundleProperty implements StringProvider {
-    BUNDLE_TYPE("bundleType");
+    BUNDLE_TYPE("bundleType"),
+    BUNDLE_TAG("tag");
 
     private final String string;
 

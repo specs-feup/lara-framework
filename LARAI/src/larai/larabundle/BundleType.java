@@ -19,7 +19,7 @@ import pt.up.fe.specs.util.providers.StringProvider;
 
 public enum BundleType implements StringProvider {
     WEAVER("weaver"),
-    LANGUAGE("language");
+    CUSTOM("custom");
 
     private static final Lazy<EnumHelper<BundleType>> ENUM_HELPER = EnumHelper.newLazyHelper(BundleType.class);
 

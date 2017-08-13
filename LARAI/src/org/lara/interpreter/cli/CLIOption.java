@@ -39,7 +39,10 @@ public enum CLIOption implements WeaverOption {
     report("r", OptionArguments.ONE_ARG, "file_name.json", "Output file for the main aspect, in JSON format",
             LaraiKeys.REPORT_FILE),
     metrics("e", OptionArguments.ONE_ARG, "file_name.json", "Output file for the weaving metrics",
-            LaraiKeys.METRICS_FILE);
+            LaraiKeys.METRICS_FILE),
+    bundle_tags("bt", OptionArguments.ONE_ARG, "bundle tags",
+            "Bundle tags, in the following format: <TAG1>=<VALUE1>[,<TAG_N>=<VALUE_N>]*",
+            LaraiKeys.BUNDLE_TAGS);
 
     // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec
     // XMLspec("x"),

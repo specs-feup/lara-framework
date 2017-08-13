@@ -74,6 +74,8 @@ public class OptionsParser {
 
         final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
 
+        final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
+
         Options options = new Options()
                 .addOption(help)
                 .addOption(version)
@@ -89,7 +91,8 @@ public class OptionsParser {
                 .addOption(scripts)
                 .addOption(javascript)
                 .addOption(log)
-                .addOption(metrics);
+                .addOption(metrics)
+                .addOption(bundleTags);
 
         // final Option weaver = newOption(CLIOption.weaver, "className", ArgOption.ONE_ARG,
         // "change the target weaver (default: " + LaraI.DEFAULT_WEAVER + ")");

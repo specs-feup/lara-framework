@@ -15,22 +15,38 @@ package larai.larabundle;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.lara.interpreter.joptions.keys.FileList;
+
+import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
 public class LaraBundle {
 
-    private final Set<String> languages;
+    // private final Set<String> languages;
     private final Set<String> weavers;
+    private final Map<String, String> tagsMap;
 
-    public LaraBundle(Set<String> languages, Set<String> weavers) {
-        this.languages = languages;
+    // public LaraBundle(Set<String> languages, Set<String> weavers) {
+    public LaraBundle(Set<String> weavers, String tagsMap) {
+        this(weavers, parseTags(tagsMap));
+    }
+
+    private static Map<String, String> parseTags(String tagsMap) {
+        return null;
+    }
+
+    public LaraBundle(Set<String> weavers, Map<String, String> tagsMap) {
+        // this.languages = languages;
         this.weavers = weavers;
+        this.tagsMap = tagsMap;
     }
 
     public FileList process(FileList includeFolders) {
@@ -57,9 +73,12 @@ public class LaraBundle {
 
         BundleType bundleType = BundleType.getHelper().valueOf(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
 
+        // If custom, get the tag
+        Set<String> tagValue = getTagValue(laraBundle);
+
         switch (bundleType) {
-        case LANGUAGE:
-            addBundleFolders(includeFolder, laraBundleFile, languages, unbundledFolders);
+        case CUSTOM:
+            addBundleFolders(includeFolder, laraBundleFile, tagValue, unbundledFolders);
             break;
         case WEAVER:
             addBundleFolders(includeFolder, laraBundleFile, weavers, unbundledFolders);
@@ -68,6 +87,18 @@ public class LaraBundle {
             throw new RuntimeException("Not implemented:" + bundleType);
         }
 
+    }
+
+    private Set<String> getTagValue(SpecsProperties laraBundle) {
+        String tag = laraBundle.get(LaraBundleProperty.BUNDLE_TAG);
+        Preconditions.checkNotNull(tag, "Bundle has 'bundleType' property set to 'custom', but no 'tag' property");
+
+        // Get current value of the tag
+        String value = tagsMap.get(tag);
+
+        Preconditions.checkNotNull(value, "No value set for bundle tag '" + tag + "'");
+
+        return new HashSet<>(Arrays.asList(value));
     }
 
     private void addBundleFolders(File includeFolder, File laraBundleFile, Set<String> supportedNames,

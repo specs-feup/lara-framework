@@ -44,16 +44,15 @@ import Utils.LARASystem;
 import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
-import pt.up.fe.specs.lang.SpecsPlatforms;
 import pt.up.fe.specs.lara.JsApiResource;
+import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public class ImportProcessor {
 
-    private static final Class<?>[] classesToImport = { LARASystem.class, Stage.class, AspectDefException.class,
-            ExceptionUtils.class, UserException.class, FilterExpression.class, JoinPoint.class, SpecsIo.class,
-            LaraIo.class, SpecsPlatforms.class };
+    private static final Class<?>[] CLASSES_TO_IMPORT = { LARASystem.class, Stage.class, AspectDefException.class,
+            ExceptionUtils.class, UserException.class, FilterExpression.class, JoinPoint.class, LaraIo.class };
 
     private final Interpreter interpreter;
 
@@ -94,7 +93,8 @@ public class ImportProcessor {
 
         /* Load user scripts */
         FileList includeFolders = interpreter.getOptions().getIncludeDirs();
-        LaraBundle laraBundle = new LaraBundle(engine.getLanguages(), engine.getWeaverNames());
+        // LaraBundle laraBundle = new LaraBundle(engine.getLanguages(), engine.getWeaverNames());
+        LaraBundle laraBundle = new LaraBundle(engine.getWeaverNames(), interpreter.getOptions().getBundleTags());
         includeFolders = laraBundle.process(includeFolders);
 
         if (!includeFolders.isEmpty()) {
@@ -146,7 +146,11 @@ public class ImportProcessor {
      */
     public void importAndInitialize() {
 
-        for (Class<?> importingClass : classesToImport) {
+        for (Class<?> importingClass : LaraApis.getImportableClasses()) {
+            importClassWithSimpleName(importingClass);
+        }
+
+        for (Class<?> importingClass : CLASSES_TO_IMPORT) {
             importClassWithSimpleName(importingClass);
         }
 

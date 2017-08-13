@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +34,8 @@ import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.xml.sax.SAXException;
+
+import com.google.common.base.Preconditions;
 
 import larai.LaraI;
 import pt.up.fe.specs.lara.LaraApiResource;
@@ -221,6 +226,32 @@ public class LaraIDataStore implements LaraiKeys {
 
     public List<ResourceProvider> getLaraAPIs() {
         return laraAPIs;
+    }
+
+    public Map<String, String> getBundleTags() {
+        if (dataStore.hasValue(LaraiKeys.BUNDLE_TAGS)) {
+            return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
+        }
+        return Collections.emptyMap();
+    }
+
+    private Map<String, String> parseBundleTags(String bundleTagsString) {
+        Map<String, String> bundleTags = new HashMap<>();
+
+        // Split around the comma
+        String[] tagPairs = bundleTagsString.split(",");
+        for (String tagPair : tagPairs) {
+            int equalIndex = tagPair.indexOf('=');
+            Preconditions.checkArgument(equalIndex != -1,
+                    "Found a tag-value pair without equal sign (=): " + bundleTagsString);
+
+            String tag = tagPair.substring(0, equalIndex);
+            String value = tagPair.substring(equalIndex + 1, tagPair.length());
+
+            bundleTags.put(tag, value);
+        }
+
+        return bundleTags;
     }
 
 }

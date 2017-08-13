@@ -46,6 +46,7 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.includes, LaraiKeys.INCLUDES_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.report, LaraiKeys.REPORT_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.metrics, LaraiKeys.METRICS_FILE);
+        JOptionsInterface.CONVERSION_MAP.put(CLIOption.bundle_tags, LaraiKeys.BUNDLE_TAGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.tools, LaraiKeys.TOOLS_FILE);
         // Setting custom decoder because Properties use numbers instead of names for the verbose level
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,

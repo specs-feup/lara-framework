@@ -145,6 +145,11 @@ public class LaraI {
      * @return
      */
     public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
+        // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
+        return SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+    }
+
+    private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
@@ -198,6 +203,11 @@ public class LaraI {
      * @return
      */
     public static boolean exec(String[] args, WeaverEngine weaverEngine) {
+        // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
+        return SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
+    }
+
+    public static boolean execPrivate(String[] args, WeaverEngine weaverEngine) {
         // Reset global state
         MessageConstants.order = 1;
         if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
@@ -226,17 +236,17 @@ public class LaraI {
             case CONFIG: // convert configuration file to data store and run
                 System.out.println("CONFIG ARGS:" + Arrays.toString(args));
                 dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
-                return exec(dataStore, weaverEngine);
+                return execPrivate(dataStore, weaverEngine);
             case CONFIG_GUI: // get the configuration file and execute GUI
                 File guiFile = OptionsParser.getConfigFile(cmd);
                 LaraLauncher.launchGUI(weaverEngine, Optional.of(guiFile));
                 break;
             case OPTIONS: // convert options to data store and run
                 dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
-                return exec(dataStore, weaverEngine);
+                return execPrivate(dataStore, weaverEngine);
             case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
                 dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
-                return exec(dataStore, weaverEngine);
+                return execPrivate(dataStore, weaverEngine);
             case GUI:
                 LaraLauncher.launchGUI(weaverEngine, Optional.empty());
             }
@@ -334,7 +344,8 @@ public class LaraI {
         FileList includeDirs = options.getIncludeDirs();
 
         // Process LARA Bundles
-        LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
+        // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
+        LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
         FileList processedIncludeDirs = laraBundle.process(includeDirs);
 
         String encodedIncludes = processedIncludeDirs.encode();
