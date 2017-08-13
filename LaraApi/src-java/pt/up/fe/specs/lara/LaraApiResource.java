@@ -30,10 +30,12 @@ public enum LaraApiResource implements LaraResourceProvider {
     IO("Io.lara"),
     JOIN_POINTS("JoinPoints.lara"),
     PLATFORMS("Platforms.lara"),
+    STRINGS("Strings.lara"),
     SYSTEM("System.lara"),
 
     // Util
     ACCUMULATOR("util/Accumulator.lara"),
+    CHECKPOINT("util/Checkpoint.lara"),
     ID_GENERATOR("util/IdGenerator.lara"),
     PRINT_ONCE("util/PrintOnce.lara"),
     STRING_SET("util/StringSet.lara"),

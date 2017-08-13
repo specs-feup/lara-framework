@@ -1,0 +1,12 @@
+var Strings = {};
+
+/**
+ * Taken from here: https://stackoverflow.com/questions/154059/how-do-you-check-for-an-empty-string-in-javascript
+ *
+ * @return true if the given string is blank or contains only white-space
+ */
+Strings.isEmpty = function(string) {
+	return (string.length === 0 || !string.trim());
+}
+
+

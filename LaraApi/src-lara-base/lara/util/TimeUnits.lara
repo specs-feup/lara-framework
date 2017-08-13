@@ -84,6 +84,11 @@ TimeUnits.prototype.getMagnitudeFactorFromNanoseconds = function() {
     return this._magnitudeFactorNanoseconds[this.unit];
 }
 
+
+TimeUnits.prototype.toNanos = function(duration) {
+	return duration * this._magnitudeFactorNanoseconds[this.unit];
+}
+
 TimeUnits.prototype._decodeUnit = function(unit) {
 	
 	if(unit === undefined) {

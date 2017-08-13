@@ -27,6 +27,8 @@ function deleteFile(fileOrBaseFolder, optionalFile) {
 	return LaraIo.deleteFile(Io.getPath(fileOrBaseFolder, optionalFile));
 }
 
+Io.deleteFile = deleteFile;
+
 /**
  * @return true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
  */
@@ -47,4 +49,19 @@ Io.isFolder = function(path) {
 	}
 	
 	return path.isDirectory();
+}
+
+Io.readJson = function(path) {
+	return fileToJSON(path);
+}
+
+Io.writeJson = function(path, object) {
+	JSONtoFile(path, object);
+}
+
+Io.copyFile = function(filepath, destination) {
+	checkDefined(filepath, "filepath", "Io.copyFile");
+	checkTrue(Io.isFile(filepath), "Io.copyFile: given filepath '"+filepath+"' is not a file");
+	
+	return SpecsIo.copy(Io.getPath(filepath), Io.getPath(destination));
 }

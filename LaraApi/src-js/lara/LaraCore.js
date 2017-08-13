@@ -22,6 +22,10 @@ function isUndefined(value) {
 
 function checkTrue(booleanExpr, message) {
 	if(!booleanExpr) {
+		if(message === undefined) {
+			message = "checkTrue failed";
+		}
+		
 		throw message;
 	}
 }

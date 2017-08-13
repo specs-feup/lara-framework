@@ -50,3 +50,14 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 		checkType(outputFile, "string");
 	}
 }
+
+System.sleep = function(durantionMilis) {
+	SpecsSystem.sleep(durantionMilis);
+}
+
+/**
+ * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
+ */
+System.nanos = function() {
+	return java.lang.System.nanoTime();
+}
