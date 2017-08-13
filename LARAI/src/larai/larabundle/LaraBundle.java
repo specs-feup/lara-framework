@@ -53,19 +53,31 @@ public class LaraBundle {
         List<File> unbundledFolders = new ArrayList<>();
 
         for (File includeFolder : includeFolders.getFiles()) {
-
+            addFolder(includeFolder, unbundledFolders);
             // If no lara.bundle file, add and skip
-            File laraBundleFile = new File(includeFolder, "lara.bundle");
-            if (!laraBundleFile.isFile()) {
-                unbundledFolders.add(includeFolder);
-                continue;
-            }
-
-            addBundleFolders(includeFolder, laraBundleFile, unbundledFolders);
+            // File laraBundleFile = new File(includeFolder, "lara.bundle");
+            // if (!laraBundleFile.isFile()) {
+            // unbundledFolders.add(includeFolder);
+            // continue;
+            // }
+            //
+            // addBundleFolders(includeFolder, laraBundleFile, unbundledFolders);
 
         }
         return FileList.newInstance(unbundledFolders);
 
+    }
+
+    private void addFolder(File includeFolder, List<File> unbundledFolders) {
+        unbundledFolders.add(includeFolder);
+
+        // If no lara.bundle file, return
+        File laraBundleFile = new File(includeFolder, "lara.bundle");
+        if (!laraBundleFile.isFile()) {
+            return;
+        }
+
+        addBundleFolders(includeFolder, laraBundleFile, unbundledFolders);
     }
 
     private void addBundleFolders(File includeFolder, File laraBundleFile, List<File> unbundledFolders) {
@@ -105,18 +117,20 @@ public class LaraBundle {
             List<File> unbundledFolders) {
 
         // Each folder represents a weaver / language
-        List<File> weaverFolders = SpecsIo.getFolders(includeFolder);
+        List<File> bundleFolders = SpecsIo.getFolders(includeFolder);
 
-        // For each folder, check if name of current weaver corresponds with folder name
-        for (File weaverFolder : weaverFolders) {
+        // For each folder, check if name corresponds to a supported name
+        for (File bundleFolder : bundleFolders) {
 
             // If does not correspond, skip
-            if (!isFolderSupported(weaverFolder.getName(), supportedNames)) {
+            if (!isFolderSupported(bundleFolder.getName(), supportedNames)) {
                 continue;
             }
 
-            // Folder is supported, add
-            unbundledFolders.add(weaverFolder);
+            // Folder is supported, add. Calling this method
+            // adds support for nested bundles
+            addFolder(bundleFolder, unbundledFolders);
+            // unbundledFolders.add(weaverFolder);
         }
     }
 
