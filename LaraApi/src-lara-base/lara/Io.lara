@@ -5,8 +5,11 @@ var Io = {};
  *
  */
 function mkdir(path) {
-	return IoUtils.safeFolder(path);
+	return SpecsIo.mkdir(path);
 }
+
+Io.mkdir = mkdir;
+
 
 Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	if(optionalFile === undefined) {
@@ -16,6 +19,24 @@ Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	return new java.io.File(fileOrBaseFolder, optionalFile);
 }	
 
+Io.getPaths = function(baseFolder) {
+	checkDefined(baseFolder, "baseFolder", "Io.getPaths");
+	
+	var baseFolderFile = Io.getPath(baseFolder);
+	
+	// For each argument after the baseFolder, treat it as a different file/glob
+	var files = [];
+	for(argument of arguments) {
+		var foundFiles = SpecsIo.getFilesWithPattern(baseFolderFile, argument);
+		
+		for(file of foundFiles) {
+			files.push(file);
+		}
+	}
+	
+	return files;
+}
+
 /**
  * Returns a List with a string for each line of the given file
  */
@@ -23,11 +44,28 @@ function readLines(fileOrBaseFolder, optionalFile) {
 	return LaraIo.readLines(Io.getPath(fileOrBaseFolder, optionalFile));	
 }
 
+Io.readLines = readLines;
+
 function deleteFile(fileOrBaseFolder, optionalFile) {
+	var file = Io.getPath(fileOrBaseFolder, optionalFile);
+	if(!Io.isFile(file)) {
+		// Skipping file
+		return;
+	}
+
 	return LaraIo.deleteFile(Io.getPath(fileOrBaseFolder, optionalFile));
 }
 
 Io.deleteFile = deleteFile;
+
+/**
+ * Each argument is a file that will be deleted.
+ */
+Io.deleteFiles = function() {
+	for(argument of arguments) {
+		deleteFile(argument);
+	}
+}
 
 /**
  * @return true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
@@ -64,4 +102,8 @@ Io.copyFile = function(filepath, destination) {
 	checkTrue(Io.isFile(filepath), "Io.copyFile: given filepath '"+filepath+"' is not a file");
 	
 	return SpecsIo.copy(Io.getPath(filepath), Io.getPath(destination));
+}
+
+Io.removeExtension = function(file) {
+	return SpecsIo.removeExtension(file);
 }
