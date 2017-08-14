@@ -44,4 +44,14 @@ public class LaraApiTest {
         newTester().test("AccumulatorTest.lara");
     }
 
+    @Test
+    public void testCheckpoint() {
+        newTester().test("CheckpointTest.lara");
+    }
+
+    @Test
+    public void testIo() {
+        newTester().test("IoTest.lara");
+    }
+
 }

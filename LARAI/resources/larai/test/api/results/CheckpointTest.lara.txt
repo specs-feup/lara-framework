@@ -1,0 +1,23 @@
+checkpoint exists: true
+Is 10? 10
+Is 20? 20
+{
+   aNumber:
+      20,
+   aString:
+      Hello,
+   anObject:
+      {
+         anotherNumber:
+            100
+      },
+   anArray:
+      [
+         1,
+         2,
+         3,
+         5,
+         7,
+         11
+      ]
+}

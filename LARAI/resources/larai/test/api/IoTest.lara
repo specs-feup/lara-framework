@@ -1,0 +1,7 @@
+import lara.Io;
+
+aspectdef IoTest
+
+	var files = Io.getPaths("src/larai", "*.java");
+	println("Files: " + files.join());
+end
