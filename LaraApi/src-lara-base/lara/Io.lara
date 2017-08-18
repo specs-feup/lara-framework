@@ -152,7 +152,7 @@ Io.appendFile = function(path, content) {
  * <p>
  * If the file does not share a common ancestor with baseFile, returns undefined.
  */
-Io.getRelativePath(targetFile, baseFile) {
+Io.getRelativePath = function(targetFile, baseFile) {
 	var relativePath = SpecsIo.getRelativePath(Io.getPath(targetFile), Io.getPath(baseFile));
 	
 	if(Io.getPath(relativePath).isAbsolute()) {
