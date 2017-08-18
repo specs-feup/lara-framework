@@ -41,17 +41,27 @@ function checkDefined(value, varName, source) {
 		message += varName + " ";
 	}
 	if(source !== undefined) {
-		message += "from " + source + " ";
+		message = source + ": " + message;
+		//message += "from " + source + " ";
 	}
 	message += "is undefined";
 	
 	throw message;
 }
 
-function checkType(value, type) {
-	if(typeof value !== type) {
-		throw "Expected value to be of type '" + type + "', but is of type " + (typeof value);
+function checkType(value, type, source) {
+	
+	if(typeof value === type) {
+		return;
 	}
+	
+	var message = "Expected value to be of type '" + type + "', but is of type " + (typeof value);
+
+	if(source !== undefined) {
+		message = source + ": " + message;
+	}
+	
+	throw message;
 }	 
 
 function toArray(objectWithLength) {

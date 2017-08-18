@@ -19,6 +19,10 @@ Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	return new java.io.File(fileOrBaseFolder, optionalFile);
 }	
 
+Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
+	return SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile));
+}
+
 Io.getPaths = function(baseFolder) {
 	checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 	
@@ -53,7 +57,7 @@ function deleteFile(fileOrBaseFolder, optionalFile) {
 		return;
 	}
 
-	return LaraIo.deleteFile(Io.getPath(fileOrBaseFolder, optionalFile));
+	return LaraIo.deleteFile(file);
 }
 
 Io.deleteFile = deleteFile;
@@ -106,4 +110,12 @@ Io.copyFile = function(filepath, destination) {
 
 Io.removeExtension = function(file) {
 	return SpecsIo.removeExtension(file);
+}
+
+Io.writeFile = writeFile;
+Io.readFile = readFile;
+
+Io.appendFile = function(path, content) {
+	var file = new java.io.File(path);
+	SpecsIo.append(file,content);
 }

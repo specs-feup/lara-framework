@@ -1,3 +1,5 @@
+import lara.util.TimeUnits;
+
 var System = {};
 
 /**
@@ -27,7 +29,9 @@ System.defaultPrintToConsole = true;
 /**
  *
  **/
-System.execute = function(command, workingDir, printToConsole, outputFile, append) {
+System.execute = function(command, workingDir, printToConsole, outputFile, append, timeout, timeunit) {
+	//println("System.execute is deprecated, use ProcessExecutor instead");
+	
 	if(workingDir === undefined) {
 		workingDir = "./";
 	}
@@ -43,12 +47,24 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 	if(append === undefined) {
 		append = false;
 	}
-
-	var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, print);
 	
-	if(outputFile !== undefined) {
-		checkType(outputFile, "string");
+	if(timeunit === undefined) {
+		timeunit = new TimeUnits("SECONDS");
 	}
+	
+	var timeoutNanos = null;
+	if(timeout !== undefined) {
+		timeoutNanos = timeunit.toNanos(timeout);
+	}
+
+	var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, printToConsole, timeoutNanos)
+	.getOutput();
+	
+	if(executeOutput !== undefined) {
+		checkType(executeOutput, "string");
+	}
+	
+	return executeOutput;
 }
 
 System.sleep = function(durantionMilis) {

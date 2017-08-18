@@ -20,13 +20,14 @@ import pt.up.fe.specs.lang.SpecsPlatforms;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.system.ProcessOutputAsString;
 
 public class LaraApis {
 
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResources(LaraApiResource.class);
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
-            SpecsSystem.class);
+            SpecsSystem.class, ProcessOutputAsString.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;

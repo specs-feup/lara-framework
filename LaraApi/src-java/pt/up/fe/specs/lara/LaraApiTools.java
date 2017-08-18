@@ -16,16 +16,27 @@ package pt.up.fe.specs.lara;
 import java.io.File;
 import java.util.List;
 
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.parsing.arguments.ArgumentsParser;
+import pt.up.fe.specs.util.system.ProcessOutputAsString;
 
 public class LaraApiTools {
 
-    public static String runCommand(String command, String workingDir, boolean printToConsole) {
+    public static ProcessOutputAsString runCommand(String command, String workingDir, boolean printToConsole,
+            Long timeoutNanos) {
+
         ArgumentsParser argsParser = ArgumentsParser.newCommandLine();
         List<String> commandList = argsParser.parse(command);
+
         // System.out.println("CURRENT FOLDER:" + SpecsIo.getWorkingDir().getAbsolutePath());
-        return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole).getOutput();
+        try {
+            return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole, timeoutNanos);
+        } catch (Exception e) {
+            SpecsLogs.msgInfo("Problems while running command '" + command + "':" + e.getMessage());
+            return new ProcessOutputAsString(-1, "", "");
+        }
+
     }
 }
 

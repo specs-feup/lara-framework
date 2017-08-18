@@ -1,0 +1,99 @@
+import lara.System;
+
+/**
+ * Launches processes.
+ */
+var ProcessExecutor = function() {
+	// Configuration
+	this.workingDir = "./";
+	this.printToConsole = true;
+	this.outputFile = null;
+	this.append = false;
+	this.timeUnit = new TimeUnits("SECONDS");
+	this.timeout = undefined;
+	
+	// Private state
+	this.lastOutput = undefined;
+};
+
+ProcessExecutor.prototype.setWorkingDir = function(workingDir) {
+	this.workingDir = workingDir;
+	return this;
+}
+
+ProcessExecutor.prototype.setPrintToConsole = function(printToConsole) {
+	checkType(printToConsole, "boolean", "ProcessExecutor.prototype.setPrintToConsole");
+	this.printToConsole = printToConsole;
+	return this;
+}
+
+ProcessExecutor.prototype.setOutputFile = function(outputFile) {
+	this.outputFile = outputFile;
+	return this;
+}
+
+ProcessExecutor.prototype.append = function(append) {
+	checkType(append, "boolean", "ProcessExecutor.prototype.append");
+	this.append = append;
+	return this;
+}
+
+ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
+	this.timeUnit = new TimeUnits(timeUnit);
+	return this;
+}
+
+ProcessExecutor.prototype.setTimeout = function(timeout) {
+	this.timeout = timeout;
+	return this;
+}
+
+ProcessExecutor.prototype.execute = function(command) {
+	var timeoutNanos = null;
+	if(this.timeout !== undefined) {
+		timeoutNanos = this.timeUnit.toNanos(this.timeout);
+	}
+	
+	
+	this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
+	
+	var executeOutput = this.lastOutput.getOutput();
+	if(executeOutput !== undefined) {
+		checkType(executeOutput, "string");
+	}
+	
+	return executeOutput;
+}
+
+ProcessExecutor.prototype.getReturnValue = function() {
+	if(this.lastOutput === undefined) {
+		println("ProcessExecutor.getResult: no execution has been done yet");
+		return undefined;
+	}
+	
+	return this.lastOutput.getReturnValue();
+}
+
+ProcessExecutor.prototype.getStdOut = function() {
+	if(this.lastOutput === undefined) {
+		println("ProcessExecutor.getStdOut: no execution has been done yet");
+		return undefined;
+	}
+	
+	return this.lastOutput.getStdOut();
+}
+
+ProcessExecutor.prototype.getStdErr = function() {
+	if(this.lastOutput === undefined) {
+		println("ProcessExecutor.getStdErr: no execution has been done yet");
+		return undefined;
+	}
+	
+	return this.lastOutput.getStdErr();
+}
+
+// TODO: Implement for printToConsole, outputFile, append, timeUnit
+
+
+
+//System.execute = function(command, workingDir, printToConsole, outputFile, append, timeout, timeunit) {
