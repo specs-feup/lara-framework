@@ -1,14 +1,20 @@
 var Io = {};
 
+
 /**
  * Creates a folder.
- *
  */
-function mkdir(path) {
-	return SpecsIo.mkdir(path);
+Io.mkdir = function(fileOrBaseFolder, optionalFile) {
+	return SpecsIo.mkdir(Io.getPath(fileOrBaseFolder, optionalFile));
 }
 
-Io.mkdir = mkdir;
+/**
+ * Global version of the function.
+ */
+function mkdir(fileOrBaseFolder, optionalFile) {
+	return Io.mkdir(fileOrBaseFolder, optionalFile);
+	//return SpecsIo.mkdir(path);
+}
 
 
 Io.getPath = function(fileOrBaseFolder, optionalFile) {
@@ -23,10 +29,10 @@ Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
 	return SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile));
 }
 
-Io.getPaths = function(baseFolder) {
+Io.getPaths = function(fileOrBaseFolder, optionalFile) {
 	checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 	
-	var baseFolderFile = Io.getPath(baseFolder);
+	var baseFolderFile = Io.getPath(fileOrBaseFolder, optionalFile);
 	
 	// For each argument after the baseFolder, treat it as a different file/glob
 	var files = [];
@@ -44,13 +50,24 @@ Io.getPaths = function(baseFolder) {
 /**
  * Returns a List with a string for each line of the given file
  */
-function readLines(fileOrBaseFolder, optionalFile) {
+Io.readLines = function(fileOrBaseFolder, optionalFile) {
 	return LaraIo.readLines(Io.getPath(fileOrBaseFolder, optionalFile));	
 }
 
-Io.readLines = readLines;
 
-function deleteFile(fileOrBaseFolder, optionalFile) {
+/**
+ * Global version of the function.
+ */
+function readLines(fileOrBaseFolder, optionalFile) {
+	return Io.readLines(fileOrBaseFolder, optionalFile);
+}
+
+
+
+/**
+ * Deletes the given file.
+ */
+Io.deleteFile = function(fileOrBaseFolder, optionalFile) {
 	var file = Io.getPath(fileOrBaseFolder, optionalFile);
 	if(!Io.isFile(file)) {
 		// Skipping file
@@ -60,7 +77,14 @@ function deleteFile(fileOrBaseFolder, optionalFile) {
 	return LaraIo.deleteFile(file);
 }
 
-Io.deleteFile = deleteFile;
+/**
+ * Global version of the function.
+ */
+function deleteFile(fileOrBaseFolder, optionalFile) {
+	return Io.deleteFile(fileOrBaseFolder, optionalFile);
+}
+
+
 
 /**
  * Each argument is a file that will be deleted.
