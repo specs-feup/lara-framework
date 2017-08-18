@@ -29,10 +29,13 @@ Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
 	return SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile));
 }
 
-Io.getPaths = function(fileOrBaseFolder, optionalFile) {
+/**
+ * Gets the paths corresponding to the given base folder and argument patterns.
+ */
+Io.getPaths = function(baseFolder) {
 	checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 	
-	var baseFolderFile = Io.getPath(fileOrBaseFolder, optionalFile);
+	var baseFolderFile = Io.getPath(baseFolder);
 	
 	// For each argument after the baseFolder, treat it as a different file/glob
 	var files = [];
@@ -142,4 +145,19 @@ Io.readFile = readFile;
 Io.appendFile = function(path, content) {
 	var file = new java.io.File(path);
 	SpecsIo.append(file,content);
+}
+
+/**
+ * Returns the path of 'targetFile', relative to 'baseFile'. 
+ * <p>
+ * If the file does not share a common ancestor with baseFile, returns undefined.
+ */
+Io.getRelativePath(targetFile, baseFile) {
+	var relativePath = SpecsIo.getRelativePath(Io.getPath(targetFile), Io.getPath(baseFile));
+	
+	if(Io.getPath(relativePath).isAbsolute()) {
+		return undefined;
+	}
+	
+	return relativePath;
 }
