@@ -3,3 +3,4 @@ https://github.com/specs-feup/specs-java-libs
 --build
 --project LARAI
 --main larai.LaraI
+--fork-javac
