@@ -1,0 +1,32 @@
+var A = function() {
+    this.attr = "hello";
+};
+
+
+A.prototype.test1 = function() {
+    return this["attr"];   
+}
+
+A.prototype.test2 = function() {
+    var s = "attr";
+    return this[s];   
+}
+
+A.prototype.test3 = function() {
+    var s = "attr";
+    this[s] = "World";
+    
+    return this[s];   
+}
+
+aspectdef Hello
+
+    var a = new A();
+    println("Prop:" + a["attr"]);
+
+    var s = "attr";
+    println("Prop with var:" + a[s]);
+
+    println("Test 1:" + a.test1());
+    println("Test 2:" + a.test2());
+end

@@ -95,7 +95,7 @@ public class GenericWeaverTester {
         SpecsLogs.msgInfo("\n---- Testing '" + laraResource + "' ----\n");
         List<ResourceProvider> codes = SpecsCollections.map(codeResources, this::buildCodeResource);
 
-        File log = runJavaWeaver(() -> basePackage + laraResource, codes);
+        File log = runWeaver(() -> basePackage + laraResource, codes);
         String logContents = SpecsIo.read(log);
 
         StringBuilder expectedResourceBuilder = new StringBuilder();
@@ -135,7 +135,7 @@ public class GenericWeaverTester {
         return resourceName;
     }
 
-    private File runJavaWeaver(ResourceProvider lara, List<ResourceProvider> code) {
+    private File runWeaver(ResourceProvider lara, List<ResourceProvider> code) {
         // Prepare folder
         File workFolder = SpecsIo.mkdir(WORK_FOLDER);
         SpecsIo.deleteFolderContents(workFolder);
@@ -152,6 +152,7 @@ public class GenericWeaverTester {
         data.add(LaraiKeys.LARA_FILE, laraFile);
         // data.add(LaraiKeys.OUTPUT_FOLDER, outputFolder);
         data.add(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(workFolder));
+        // data.add(LaraiKeys.DEBUG_MODE, true);
         data.add(LaraiKeys.VERBOSE, VerboseLevel.warnings);
         data.add(LaraiKeys.LOG_JS_OUTPUT, Boolean.TRUE);
         data.add(LaraiKeys.LOG_FILE, OptionalFile.newInstance(getWeaverLog().getAbsolutePath()));
