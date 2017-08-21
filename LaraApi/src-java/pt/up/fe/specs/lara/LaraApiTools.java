@@ -38,6 +38,18 @@ public class LaraApiTools {
         }
 
     }
+
+    /**
+     * 'replace' is a reserved keyword in LARA, this method allows to use the method 'String.replace'
+     * 
+     * @param string
+     * @param oldSequence
+     * @param newSequence
+     * @return
+     */
+    public static String replacer(String string, String oldSequence, String newSequence) {
+        return string.replace(oldSequence, newSequence);
+    }
 }
 
 // cmd("sh dsfklsd fskld fsdkl fsjkl ") > "log.txt";

@@ -27,7 +27,7 @@ public class LaraApis {
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResources(LaraApiResource.class);
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
-            SpecsSystem.class, ProcessOutputAsString.class);
+            SpecsSystem.class, ProcessOutputAsString.class, LaraApiTools.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;

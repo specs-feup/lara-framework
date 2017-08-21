@@ -9,4 +9,7 @@ Strings.isEmpty = function(string) {
 	return (string.length === 0 || !string.trim());
 }
 
+Strings.replacer = function(string, oldSequence, newSequence) {
+	return LaraApiTools.replacer(string, oldSequence, newSequence);
+}
 
