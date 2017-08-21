@@ -161,3 +161,11 @@ Io.getRelativePath = function(targetFile, baseFile) {
 	
 	return relativePath;
 }
+
+/**
+ * 	The system-dependent path-separator.
+ */
+Io.getPathSeparator = function() {
+	return java.io.File.pathSeparator;
+}
+

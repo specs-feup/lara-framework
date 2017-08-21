@@ -77,3 +77,4 @@ System.sleep = function(durantionMilis) {
 System.nanos = function() {
 	return java.lang.System.nanoTime();
 }
+
