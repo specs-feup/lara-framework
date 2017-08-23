@@ -270,7 +270,7 @@ public abstract class JoinPoint {
     // }
 
     public WeaverEngine getWeaverEngine() {
-        return WeaverEngine.getWeaverStatic();
+        return WeaverEngine.getThreadLocalWeaver();
     }
 
     protected EventTrigger eventTrigger() {

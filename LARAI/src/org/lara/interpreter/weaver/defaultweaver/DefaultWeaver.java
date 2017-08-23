@@ -134,6 +134,6 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     public static DefaultWeaver getDefaultWeaver() {
-        return (DefaultWeaver) getWeaverStatic();
+        return (DefaultWeaver) getThreadLocalWeaver();
     }
 }

@@ -28,6 +28,7 @@ import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.util.Preconditions;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 /**
@@ -237,35 +238,45 @@ public abstract class WeaverEngine {
         return Collections.emptySet();
     }
 
-    private static ThreadLocal<WeaverEngine> WEAVER = new ThreadLocal<>();
+    private static ThreadLocal<WeaverEngine> THREAD_LOCAL_WEAVER = new ThreadLocal<>();
 
-    private static void setWeaverStatic(WeaverEngine aWeaver) {
-        Preconditions.checkArgument(WEAVER.get() == null,
+    private static void setThreadLocalWeaver(WeaverEngine aWeaver) {
+        Preconditions.checkArgument(THREAD_LOCAL_WEAVER.get() == null,
                 "Tried to set weaver but there is already a weaver present in this thread");
-        WEAVER.set(aWeaver);
+        THREAD_LOCAL_WEAVER.set(aWeaver);
     }
 
-    private static void removeWeaverStatic() {
-        Preconditions.checkNotNull(WEAVER.get(), "Tried to get weaver, but there is not weaver set");
-        WEAVER.remove();
+    private static void removeThreadLocalWeaver() {
+        Preconditions.checkNotNull(THREAD_LOCAL_WEAVER.get(), "Tried to remove weaver, but there is no weaver set");
+        THREAD_LOCAL_WEAVER.remove();
     }
 
-    protected static WeaverEngine getWeaverStatic() {
-        WeaverEngine weaver = WEAVER.get();
-        Preconditions.checkNotNull(weaver, "Tried to get weaver, but there is not weaver set");
+    protected static WeaverEngine getThreadLocalWeaver() {
+        WeaverEngine weaver = THREAD_LOCAL_WEAVER.get();
+        Preconditions.checkNotNull(weaver, "Tried to get weaver, but there is no weaver set");
         return weaver;
     }
 
     public void setWeaver() {
-        setWeaverStatic(this);
+        setThreadLocalWeaver(this);
     }
 
     public boolean isWeaverSet() {
-        return WEAVER.get() != null;
+        return THREAD_LOCAL_WEAVER.get() != null;
     }
 
     public void removeWeaver() {
-        removeWeaverStatic();
+        removeThreadLocalWeaver();
+    }
+
+    public DataStore getWeaverData() {
+        SpecsLogs.msgInfo("WeaverEngine.getWeaverArgs() not implemented for weaver " + getWeaverNames()
+                + ", returning empty DataStore");
+        return DataStore.newInstance("Empty WeaverEngine DataStore");
+    }
+
+    public static DataStore getThreadLocalWeaverData() {
+        return getThreadLocalWeaver().getWeaverData();
     }
 
 }
