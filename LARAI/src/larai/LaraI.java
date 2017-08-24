@@ -61,6 +61,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.properties.SpecsProperty;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
 /**
  * An interpreter for the LARA language, which converts the Aspect-IR into a javascript representation and runs that
@@ -77,6 +78,15 @@ public class LaraI {
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
+
+    /**
+     * Thread-scope DataStore
+     */
+    private static final SpecsThreadLocal<DataStore> THREAD_LOCAL_WEAVER_DATA = new SpecsThreadLocal<>(DataStore.class);
+
+    public static DataStore getThreadLocalData() {
+        return THREAD_LOCAL_WEAVER_DATA.get();
+    }
 
     private LaraIDataStore options;
     private MasterWeaver weaver;
@@ -160,6 +170,7 @@ public class LaraI {
                 throw new NullPointerException("The DataStore cannot be null");
             }
             long start = getCurrentTime();
+            THREAD_LOCAL_WEAVER_DATA.setWithWarning(dataStore);
             larai = new LaraI(dataStore, weaverEngine);
 
             if (larai.options.isDebug()) {
@@ -188,6 +199,9 @@ public class LaraI {
             if (weaverEngine.isWeaverSet()) {
                 weaverEngine.removeWeaver();
             }
+
+            THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
+
         }
     }
 

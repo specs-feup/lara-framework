@@ -1,0 +1,19 @@
+
+/**
+ * Contains generic methods related to all weavers. 
+ */
+var Weaver = {};
+
+/**
+ * 
+ */
+Weaver.getVerboseLevel = function() {
+	//println("VERBOSE LEVEL:" + WeaverEngine.getThreadLocalWeaverData().get(LaraiKeys.VERBOSE).ordinal());
+	println("VERBOSE LEVEL:" + LaraI.getThreadLocalData().get(LaraiKeys.VERBOSE));	
+}
+
+
+// Set/get outputfolder
+
+// Set/get verbose level
+

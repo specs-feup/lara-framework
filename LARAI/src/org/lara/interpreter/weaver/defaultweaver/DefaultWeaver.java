@@ -38,6 +38,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     DWorkspace root;
     private final TestGear testGear;
     private boolean property;
+    private DataStore args;
 
     // Constructors
     public DefaultWeaver() {
@@ -55,6 +56,8 @@ public class DefaultWeaver extends ADefaultWeaver {
      */
     @Override
     public boolean begin(List<File> sources, File output, DataStore args) {
+
+        this.args = args;
         root = new DWorkspace();
         for (File source : sources) {
             if (source.isDirectory()) {
@@ -136,4 +139,5 @@ public class DefaultWeaver extends ADefaultWeaver {
     public static DefaultWeaver getDefaultWeaver() {
         return (DefaultWeaver) getThreadLocalWeaver();
     }
+
 }

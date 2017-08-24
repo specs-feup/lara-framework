@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.aspectir.Argument;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
@@ -38,8 +39,7 @@ import org.xml.sax.SAXException;
 import com.google.common.base.Preconditions;
 
 import larai.LaraI;
-import pt.up.fe.specs.lara.LaraApiResource;
-import pt.up.fe.specs.util.SpecsEnums;
+import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
@@ -48,22 +48,25 @@ public class LaraIDataStore implements LaraiKeys {
     private final DataStore dataStore;
     private final LaraI larai;
     private Tools tools = null;
-    private final DataStore weaverDataStore;
+    // private final DataStore weaverDataStore;
     private final List<ResourceProvider> laraAPIs;
 
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
         larai = lara;
 
         this.dataStore = dataStore;
-        weaverDataStore = DataStore.newInstance("Weaver Arguments");
-        laraAPIs = new ArrayList<>(SpecsEnums.extractValues(LaraApiResource.class));
+        // weaverDataStore = DataStore.newInstance("Weaver Arguments");
+        laraAPIs = new ArrayList<>();
+        laraAPIs.addAll(LaraApis.getApis());
+        laraAPIs.addAll(WeaverApis.getApis());
         laraAPIs.addAll(weaverEngine.getAspectsAPI());
         // laraAPIs = weaverEngine.getAspectsAPI();
         for (WeaverOption option : weaverEngine.getOptions()) {
             DataKey<?> key = option.dataKey();
             Optional<?> value = dataStore.getTry(key);
             if (value.isPresent()) {
-                weaverDataStore.setRaw(key, value.get());
+                // weaverDataStore.setRaw(key, value.get());
+                dataStore.setRaw(key, value.get());
             }
         }
         setLaraProperties();
@@ -143,7 +146,8 @@ public class LaraIDataStore implements LaraiKeys {
      */
     public DataStore getWeaverArgs() {
 
-        return weaverDataStore;
+        // return weaverDataStore;
+        return dataStore;
     }
 
     public File getLaraFile() {

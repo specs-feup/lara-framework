@@ -146,7 +146,7 @@ public class GenericWeaverTester {
         code.forEach(resource -> resource.write(workFolder, true, GenericWeaverTester::resourceNameMapper));
         File laraFile = lara.write(workFolder);
 
-        DataStore data = DataStore.newInstance("CxxWeaverTest");
+        DataStore data = DataStore.newInstance("LARAI Weaver Test");
 
         // Set LaraI configurations
         data.add(LaraiKeys.LARA_FILE, laraFile);

@@ -583,9 +583,7 @@ public class MasterWeaver {
         return eventTrigger;
     }
 
-    public boolean close() { // String outputDir
-        // File outFile = new File(outputDir);
-        // System.out.println("MASTER WEAVER: Closing all weavers!");
+    public boolean close() {
 
         try {
             weaverEngine.close();
