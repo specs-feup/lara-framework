@@ -8,6 +8,6 @@ aspectdef WeaverData
 	println("CHANGED VERBOSE LEVEL: " + Weaver.getVerboseLevel());
 
 	println("ORIGINAL OUTPUT FOLDER: " + Weaver.getOutputFolder());
-	Weaver.setOutputFolder(Io.getPath(Weaver.getOutputFolder(), "subfolder"));
+	Weaver.setOutputFolder("subfolder");
 	println("CHANGED OUTPUT FOLDER: " + Weaver.getOutputFolder());
 end
