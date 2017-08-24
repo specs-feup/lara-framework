@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.joptions.config.interpreter.VerboseLevel;
 
 import larai.LaraI;
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -25,7 +26,8 @@ public class WeaverApis {
 
     private static final List<ResourceProvider> WEAVER_API = ResourceProvider.getResources(WeaverApiResource.class);
 
-    private static final List<Class<?>> WEAVER_IMPORTABLE_CLASSES = Arrays.asList(LaraI.class, LaraiKeys.class);
+    private static final List<Class<?>> WEAVER_IMPORTABLE_CLASSES = Arrays.asList(VerboseLevel.class, LaraI.class,
+            LaraiKeys.class);
 
     public static List<ResourceProvider> getApis() {
         return WEAVER_API;

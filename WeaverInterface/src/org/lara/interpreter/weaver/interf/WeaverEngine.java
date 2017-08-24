@@ -252,7 +252,7 @@ public abstract class WeaverEngine {
     }
 
     public boolean isWeaverSet() {
-        return THREAD_LOCAL_WEAVER.get() != null;
+        return THREAD_LOCAL_WEAVER.isSet();
     }
 
     public void removeWeaver() {

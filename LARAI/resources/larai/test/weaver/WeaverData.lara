@@ -1,7 +1,13 @@
 import weaver.Weaver;
+import lara.Io;
 
 aspectdef WeaverData
 
-	Weaver.getVerboseLevel();
+	println("ORIGINAL VERBOSE LEVEL: " + Weaver.getVerboseLevel());
+	Weaver.setVerboseLevel(3);
+	println("CHANGED VERBOSE LEVEL: " + Weaver.getVerboseLevel());
 
+	println("ORIGINAL OUTPUT FOLDER: " + Weaver.getOutputFolder());
+	Weaver.setOutputFolder(Io.getPath(Weaver.getOutputFolder(), "subfolder"));
+	println("CHANGED OUTPUT FOLDER: " + Weaver.getOutputFolder());
 end

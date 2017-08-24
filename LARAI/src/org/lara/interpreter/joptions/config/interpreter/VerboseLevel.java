@@ -22,11 +22,11 @@ public enum VerboseLevel {
     private String label;
 
     VerboseLevel(String label) {
-	this.label = label;
+        this.label = label;
     }
- 
+
     @Override
     public String toString() {
-	return this.label;
+        return this.label;
     }
 }

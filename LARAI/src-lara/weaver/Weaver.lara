@@ -1,3 +1,4 @@
+import lara.Io;
 
 /**
  * Contains generic methods related to all weavers. 
@@ -5,15 +6,43 @@
 var Weaver = {};
 
 /**
- * 
+ * @return DataStore with the data of the current weaver
+ */
+Weaver.getData = function() {
+	return LaraI.getThreadLocalData();
+}
+
+/**
+ * @return a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
  */
 Weaver.getVerboseLevel = function() {
-	//println("VERBOSE LEVEL:" + WeaverEngine.getThreadLocalWeaverData().get(LaraiKeys.VERBOSE).ordinal());
-	println("VERBOSE LEVEL:" + LaraI.getThreadLocalData().get(LaraiKeys.VERBOSE));	
+	return Weaver.getData().get(LaraiKeys.VERBOSE).ordinal();	
+}
+
+/**
+ * @param verboseLevel a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
+ */
+Weaver.setVerboseLevel = function(verboseLevel) {
+	checkTrue(verboseLevel >= 0 && verboseLevel <= 3, "Weaver.setVerboseLevel: expected a number  between 0 and 3");
+	
+	Weaver.getData().set(LaraiKeys.VERBOSE, VerboseLevel.values()[verboseLevel]);	
+}
+
+/**
+ * @return a java.io.File representing the current output folder of the weaver
+ */
+Weaver.getOutputFolder = function() {
+	return Weaver.getData().get(LaraiKeys.OUTPUT_FOLDER);	
+}
+
+/**
+ * @param outputFolder a java.io.File or a String, representing the current output folder of the weaver
+ */
+Weaver.setOutputFolder = function(outputFolder) {
+	var normalizedOutputFolder = Io.getPath(outputFolder);
+	
+	Weaver.getData().set(LaraiKeys.OUTPUT_FOLDER, normalizedOutputFolder);	
 }
 
 
-// Set/get outputfolder
-
-// Set/get verbose level
 
