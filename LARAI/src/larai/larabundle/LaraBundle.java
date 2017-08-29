@@ -152,21 +152,33 @@ public class LaraBundle {
     }
 
     private boolean isFolderSupported(String weaverFoldername, Set<String> supportedNames) {
+        // LARA is always supported
+        if (weaverFoldername.equals("lara")) {
+            return true;
+        }
+
+        if (supportedNames.contains(weaverFoldername)) {
+            return true;
+        }
+
+        return false;
+        /*
         // Split name
         String[] names = weaverFoldername.toLowerCase().split("_");
-
+        
         for (String name : names) {
             // LARA is always supported
             if (name.equals("lara")) {
                 return true;
             }
-
+        
             if (supportedNames.contains(name)) {
                 return true;
             }
         }
-
+        
         return false;
+        */
     }
 
 }
