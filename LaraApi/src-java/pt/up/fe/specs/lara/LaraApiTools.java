@@ -48,7 +48,7 @@ public class LaraApiTools {
      * @return
      */
     public static String replacer(String string, String oldSequence, String newSequence) {
-        return string.replace(oldSequence, newSequence);
+        return string.replaceAll(oldSequence, newSequence);
     }
 }
 

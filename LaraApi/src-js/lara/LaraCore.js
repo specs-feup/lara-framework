@@ -68,4 +68,13 @@ function toArray(objectWithLength) {
 	return Array.prototype.slice.call(objectWithLength);
 }
 
+function info(message, origin) {
+	var composedMessage = message;
+	
+	if(origin !== undefined) {
+		composedMessage = origin + ": " + composedMessage;
+	}
+	
+	println(composedMessage);
+}
 
