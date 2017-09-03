@@ -39,6 +39,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     ID_GENERATOR("util/IdGenerator.lara"),
     PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
+    REPLACER("util/Replacer.lara"),
     STRING_SET("util/StringSet.lara"),
     TIME_UNITS("util/TimeUnits.lara");
 

@@ -99,6 +99,16 @@ Io.deleteFiles = function() {
 }
 
 /**
+ * Deletes a folder and its contents.
+ *
+ * @return true if both the contents and the folder could be deleted
+ */
+Io.deleteFolder = function(folderPath) {
+	var folder = Io.getPath(folderPath);
+	return SpecsIo.deleteFolder(folder);
+}
+
+/**
  * @return true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
  */
 Io.isFile = function(path) {
