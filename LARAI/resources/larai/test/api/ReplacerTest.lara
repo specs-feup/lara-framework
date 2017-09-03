@@ -1,0 +1,22 @@
+import lara.Io;
+import lara.util.Replacer;
+
+aspectdef ReplacerTest
+
+	var replacer1 = new Replacer("a template <string_to_replace>");
+	println("Replacer 1: " + replacer1.replaceAll("<string_to_replace>", "string"));
+
+	var tempTemplate = "temp_template.txt";
+	Io.writeFile(tempTemplate, "another template <string_to_replace>");
+	
+	var replacer2 = new Replacer(Io.getPath(tempTemplate));
+	replacer2.replaceAll("<string_to_replace>", "string");
+	println("Replacer 2: " + replacer2.getString());
+	
+	var replacer3 = Replacer.fromFilename(tempTemplate);
+	replacer3.replaceAll("<string_to_replace>", "string again");
+	println("Replacer 3: " + replacer3.getString());
+	
+	Io.deleteFile(tempTemplate);
+end
+

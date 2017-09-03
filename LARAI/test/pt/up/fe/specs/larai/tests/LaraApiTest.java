@@ -54,6 +54,11 @@ public class LaraApiTest {
         newTester().test("IoTest.lara");
     }
 
+    @Test
+    public void testReplacer() {
+        newTester().test("ReplacerTest.lara");
+    }
+
     // @Test
     public void testThis() {
         newTester().test("ThisTest.lara");
