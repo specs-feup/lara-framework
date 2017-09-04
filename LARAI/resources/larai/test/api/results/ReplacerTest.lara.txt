@@ -1,3 +1,4 @@
 Replacer 1: a template string
 Replacer 2: another template string
 Replacer 3: another template string again
+Replacer 4: first string, second string
