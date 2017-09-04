@@ -20,7 +20,9 @@ Replacer.fromFilename = function(filename) {
 }
 
 Replacer.prototype.replaceAll = function(target, replacement) {
-	return this.javaReplacer.replaceAll(target, replacement);
+	this.javaReplacer.replaceAll(target, replacement);
+	
+	return this;
 }
 
 Replacer.prototype.getString = function() {
