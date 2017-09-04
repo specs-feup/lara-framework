@@ -145,6 +145,17 @@ Io.copyFile = function(filepath, destination) {
 	return SpecsIo.copy(Io.getPath(filepath), Io.getPath(destination));
 }
 
+Io.copyFolder = function(filepath, destination, verbose) {
+	checkDefined(filepath, "filepath", "Io.copyFolder");
+	checkDefined(destination, "destination", "Io.copyFolder");
+	
+	if(verbose === undefined) {
+		verbose = false;
+	}
+	
+	return SpecsIo.copyFolder(Io.getPath(filepath), Io.getPath(destination), verbose);
+}
+
 Io.removeExtension = function(file) {
 	return SpecsIo.removeExtension(file);
 }
