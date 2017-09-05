@@ -20,10 +20,17 @@ function isUndefined(value) {
 	return value === undefined || value === null;
 }
 
-function checkTrue(booleanExpr, message) {
+/**
+ * Throws an exception if the given expression evaluates to false.
+ */
+function checkTrue(booleanExpr, message, source) {
 	if(!booleanExpr) {
 		if(message === undefined) {
 			message = "checkTrue failed";
+		}
+		
+		if(source !== undefined) {
+			message = source + ": " + message;
 		}
 		
 		throw message;

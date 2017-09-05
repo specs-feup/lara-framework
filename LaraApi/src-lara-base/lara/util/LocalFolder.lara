@@ -1,0 +1,65 @@
+import lara.Io;
+
+/**
+ * Provides access to files in a specific folder.
+ */
+var LocalFolder = function(foldername) {
+	// DESIGN: currently foldername must exist, should create the folder if it does not exist? 
+	this.baseFolder = Io.getPath(foldername);
+	checkTrue(Io.isFolder(this.baseFolder), "given foldername must represent an existing folder", "LocalFolder");
+};
+
+/**
+ * @return java.io.File that represents the root of this LocalFolder
+ */
+LocalFolder.prototype.getBaseFolder = function() {
+	return this.baseFolder;
+}
+
+/**
+ * Returns a file from the path relative to the LocalFolder location.
+ *
+ * <p>If the path does not exist, or is not a file, throws an exception.
+ *
+ * @return java.io.File representing the given path relative to this LocalFolder
+ */
+LocalFolder.prototype.getFile = function(path) {
+	var file = Io.getPath(this.baseFolder, path);
+	if(!Io.isFile(file)) {
+		throw "Path '" + path + "' is not a file in the folder '" + 
+		Io.getAbsolutePath(this.baseFolder) + "'";
+	}
+	
+	return file;
+}
+
+/**
+ * Returns a folder from the path relative to the LocalFolder location.
+ *
+ * <p>If the path does not exist, or is not a folder, throws an exception.
+ *
+ * @return java.io.File representing the given path relative to this LocalFolder
+ */
+LocalFolder.prototype.getFolder = function(path) {
+	var folder = Io.getPath(this.baseFolder, path);
+	if(!Io.isFolder(folder)) {
+		throw "Path '" + path + "' is not a folder in the folder '" + 
+		Io.getAbsolutePath(this.baseFolder) + "'";
+	}
+	
+	return folder;
+}
+
+/**
+ * @return string with the contents of the given path
+ */
+LocalFolder.prototype.getString = function(path) {
+	return Io.readFile(this.getFile(path));
+}
+
+/**
+ * @return java.util.List with all the files in this LocalFolder
+ */
+LocalFolder.prototype.getFileList = function() {
+	return SpecsIo.getFiles(this.baseFolder);
+}

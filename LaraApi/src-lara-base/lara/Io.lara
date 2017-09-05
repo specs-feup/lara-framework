@@ -1,3 +1,6 @@
+/**
+ * Utility methods related with input/output operations on files.
+ */
 var Io = {};
 
 
