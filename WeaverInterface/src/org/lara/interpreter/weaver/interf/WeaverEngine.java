@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
@@ -27,6 +28,8 @@ import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
@@ -41,6 +44,16 @@ public abstract class WeaverEngine {
 
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
+    private final Lazy<File> temporaryWeaverFolder;
+
+    public WeaverEngine() {
+        temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
+    }
+
+    private static File createTemporaryWeaverFolder() {
+        String folderName = "lara_weaver_" + UUID.randomUUID().toString();
+        return SpecsIo.mkdir(SpecsIo.getTempFolder(), folderName);
+    }
 
     /**
      * Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time
@@ -235,6 +248,23 @@ public abstract class WeaverEngine {
      */
     public Set<String> getLanguages() {
         return Collections.emptySet();
+    }
+
+    /**
+     * Returns a temporary unique folder that is live while the weaver is running.
+     * 
+     * @return
+     */
+    public File getTemporaryWeaverFolder() {
+        return temporaryWeaverFolder.get();
+    }
+
+    /**
+     * 
+     * @return true if the temporary weaver folder has been created
+     */
+    public boolean hasTemporaryWeaverFolder() {
+        return temporaryWeaverFolder.isInitialized();
     }
 
     /**

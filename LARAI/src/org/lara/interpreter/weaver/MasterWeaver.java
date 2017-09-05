@@ -54,6 +54,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.runtime.Undefined;
 import larai.LaraI;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
 /**
@@ -594,6 +595,11 @@ public class MasterWeaver {
             throw new WeaverEngineException("closing", e);
         } finally {
             weaverEngine.removeWeaver();
+
+            // Delete weaver folder, if created
+            if (weaverEngine.hasTemporaryWeaverFolder()) {
+                SpecsIo.deleteFolder(weaverEngine.getTemporaryWeaverFolder());
+            }
         }
         // System.out.println("Done");
         return true;
