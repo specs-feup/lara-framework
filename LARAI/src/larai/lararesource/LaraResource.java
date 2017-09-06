@@ -77,8 +77,6 @@ public class LaraResource {
         File laraFile = getLaraFile(importPath);
 
         SpecsIo.write(laraFile, laraFileContents);
-        System.out.println("Wrote file " + SpecsIo.read(laraFile));
-        System.out.println("Is file " + laraFile.isFile());
 
         return getLaraResourceFolder();
     }
@@ -86,12 +84,19 @@ public class LaraResource {
     private String buildLaraFileContents(File includeFolder, String resourceName) {
         StringBuilder code = new StringBuilder();
 
+        code.append("import lara.Io;\n");
         code.append("import lara.util.LocalFolder;\n\n");
 
         String escapedPath = SpecsStrings.escapeJson(includeFolder.getAbsolutePath());
 
-        code.append("var " + resourceName + " = new LocalFolder(\"" + escapedPath + "\");");
+        code.append("var " + resourceName + " = new LocalFolder(\"" + escapedPath + "\");\n\n");
 
+        code.append(resourceName + ".getFileList = function() {\n" +
+                "    var files = SpecsIo.getFilesRecursive(this.baseFolder);\n" +
+                "    var resourceFile = Io.getPath(this.getBaseFolder(), \"" + LARA_RESOURCE_FILE + "\");\n" +
+                "    files.remove(resourceFile);\n" +
+                "    return files;\n" +
+                "}");
         return code.toString();
 
     }
