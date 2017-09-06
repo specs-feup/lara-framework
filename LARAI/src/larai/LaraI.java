@@ -56,6 +56,7 @@ import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.LaraC;
 import larac.utils.output.Output;
 import larai.larabundle.LaraBundle;
+import larai.lararesource.LaraResource;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -361,6 +362,10 @@ public class LaraI {
         // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
         FileList processedIncludeDirs = laraBundle.process(includeDirs);
+
+        // Process LARA Resources
+        LaraResource laraResource = new LaraResource(getWeaverEngine());
+        processedIncludeDirs = laraResource.process(processedIncludeDirs);
 
         String encodedIncludes = processedIncludeDirs.encode();
         // String encodedIncludes = options.getIncludeDirs().encode();

@@ -45,6 +45,7 @@ import Utils.LARASystem;
 import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
+import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.util.SpecsIo;
@@ -97,6 +98,10 @@ public class ImportProcessor {
         // LaraBundle laraBundle = new LaraBundle(engine.getLanguages(), engine.getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(engine.getWeaverNames(), interpreter.getOptions().getBundleTags());
         includeFolders = laraBundle.process(includeFolders);
+
+        // Process LARA Resources
+        LaraResource laraResource = new LaraResource(engine);
+        includeFolders = laraResource.process(includeFolders);
 
         if (!includeFolders.isEmpty()) {
 
