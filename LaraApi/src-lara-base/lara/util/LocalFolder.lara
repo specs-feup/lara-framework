@@ -61,5 +61,5 @@ LocalFolder.prototype.getString = function(path) {
  * @return java.util.List with all the files in this LocalFolder
  */
 LocalFolder.prototype.getFileList = function() {
-	return SpecsIo.getFiles(this.baseFolder);
+	return SpecsIo.getFilesRecursive(this.baseFolder);
 }
