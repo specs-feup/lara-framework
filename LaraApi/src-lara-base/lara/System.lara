@@ -78,3 +78,6 @@ System.nanos = function() {
 	return java.lang.System.nanoTime();
 }
 
+System.getNumLogicalCores = function() {
+	return java.lang.Runtime.getRuntime().availableProcessors();
+}
