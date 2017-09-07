@@ -1,0 +1,8 @@
+import lara.System;
+
+aspectdef SystemTest
+	
+	println("Logical cores working: " + (System.getNumLogicalCores() > 0));
+	//var files = Io.getPaths("src/larai", "*.java");
+	//println("Files: " + files.join());
+end
