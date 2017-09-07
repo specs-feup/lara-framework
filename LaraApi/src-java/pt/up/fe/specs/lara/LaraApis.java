@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara;
 import java.util.Arrays;
 import java.util.List;
 
+import pt.up.fe.specs.lang.ApacheStrings;
 import pt.up.fe.specs.lang.SpecsPlatforms;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -27,6 +28,7 @@ public class LaraApis {
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResources(LaraApiResource.class);
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
+            ApacheStrings.class,
             SpecsSystem.class, ProcessOutputAsString.class, LaraApiTools.class);
 
     public static List<ResourceProvider> getApis() {

@@ -13,3 +13,11 @@ Strings.replacer = function(string, oldSequence, newSequence) {
 	return LaraApiTools.replacer(string, oldSequence, newSequence);
 }
 
+/**
+ * Escapes HTML code.
+ *
+ * @return String with escaped code
+ */
+Strings.escapeHtml = function(html) {
+	return ApacheStrings.escapeHtml(html);
+}
