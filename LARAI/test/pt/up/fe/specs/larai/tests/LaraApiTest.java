@@ -64,6 +64,11 @@ public class LaraApiTest {
         newTester().test("SystemTest.lara");
     }
 
+    @Test
+    public void testStrings() {
+        newTester().test("StringsTest.lara");
+    }
+
     // @Test
     public void testThis() {
         newTester().test("ThisTest.lara");

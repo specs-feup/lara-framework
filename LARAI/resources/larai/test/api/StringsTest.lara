@@ -1,0 +1,8 @@
+import lara.Strings;
+
+aspectdef StringsTest
+	
+	println("Escaped HTML: " + Strings.escapeHtml("<h1>Hello</h1>"));
+	//var files = Io.getPaths("src/larai", "*.java");
+	//println("Files: " + files.join());
+end
