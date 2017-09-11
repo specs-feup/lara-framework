@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JavaGenerator"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/WeaverInterface"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LanguageSpecification"/>
+	<classpathentry exported="true" kind="src" path="/tdrcLibrary"/>
+	<classpathentry exported="true" kind="src" path="/SpecsUtils"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GuiHelper"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LARAWeaverGenerator&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="src" path="/jOptions"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

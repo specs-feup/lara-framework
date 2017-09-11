@@ -1,0 +1,149 @@
+   FROM GeneratorUtils
+   
+   /**
+     * @param abstJPClass
+     * @return
+     */
+    public static Method createGetAttributesWithNativeArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	abstJPClass.addImport(NativeArray.class.getCanonicalName());
+	abstJPClass.addImport(Context.class.getCanonicalName());
+	abstJPClass.addImport(Scriptable.class.getCanonicalName());
+	Method getAttributes = new Method(NativeArray.class.getSimpleName(), "getAttributes");
+	getAttributes.appendCode("Context cx = Context.enter();\r\n"
+		+ "Scriptable script = cx.initStandardObjects();\r\n"
+		+ "List<String> attributes = new ArrayList<String>();\r\n" + "fillWithAttributes(attributes);\r\n"
+		+ "NativeArray array = (NativeArray) cx.newArray(script, 0);\r\n"
+		+ "NativeArray.callMethod(array, \"push\", attributes.toArray());\r\n"
+		+ "NativeArray.callMethod(array, \"sort\", new Object[0]);\r\n" + "return array;");
+	return getAttributes;
+    }
+
+    /**
+     * @return
+     */
+    public static Method createGetAttributesWithList(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method("List<String>", "getAttributes");
+	getAttributes.appendCode("List<String> attributes = new ArrayList<String>();\r\n"
+		+ "fillWithAttributes(attributes);\r\n" + "return attributes;");
+	return getAttributes;
+    }
+
+    /**
+     * @return
+     */
+    public static Method createGetAttributesWithArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method(String[].class.getSimpleName(), "getAttributes");
+	getAttributes.appendCode("List<String> attributes = new ArrayList<String>();\r\n"
+		+ "fillWithAttributes(attributes);\r\n" + "return attributes.toArray(new String[0]);");
+	return getAttributes;
+    }
+
+    /**
+     * @param abstJPClass
+     * @return
+     */
+    public static Method createGetSelectWithNativeArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	abstJPClass.addImport(NativeArray.class.getCanonicalName());
+	abstJPClass.addImport(Context.class.getCanonicalName());
+	abstJPClass.addImport(Scriptable.class.getCanonicalName());
+	Method getAttributes = new Method(NativeArray.class.getSimpleName(), "getSelects");
+	getAttributes.appendCode("Context cx = Context.enter();\r\n"
+		+ "Scriptable script = cx.initStandardObjects();\r\n"
+		+ "List<String> selects = new ArrayList<String>();\r\n" + "fillWithSelects(selects);\r\n"
+		+ "NativeArray array = (NativeArray) cx.newArray(script, 0);\r\n"
+		+ "NativeArray.callMethod(array, \"push\", selects.toArray());\r\n"
+		+ "NativeArray.callMethod(array, \"sort\", new Object[0]);\r\n" + "return array;");
+	return getAttributes;
+    }
+
+    /**
+     * @param abstJPClass
+     * @return
+     */
+    public static Method createGetSelectWithList(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method("List<String>", "getSelects");
+	getAttributes.appendCode("List<String> selects = new ArrayList<String>();\r\n"
+		+ "fillWithSelects(selects);\r\n" + "return selects;");
+	return getAttributes;
+    }
+
+    /**
+     * @param abstJPClass
+     * @return
+     */
+    public static Method createGetSelectWithArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method(String[].class.getSimpleName(), "getSelects");
+	getAttributes.appendCode("List<String> selects = new ArrayList<String>();\r\n"
+		+ "fillWithSelects(selects);\r\n" + "return selects.toArray(new String[0]);");
+	return getAttributes;
+    }
+
+    public static Method createGetActionsWithNativeArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	abstJPClass.addImport(NativeArray.class.getCanonicalName());
+	abstJPClass.addImport(Context.class.getCanonicalName());
+	abstJPClass.addImport(Scriptable.class.getCanonicalName());
+	Method getAttributes = new Method(NativeArray.class.getSimpleName(), "getActions");
+	getAttributes.appendCode("Context cx = Context.enter();\r\n"
+		+ "Scriptable script = cx.initStandardObjects();\r\n"
+		+ "List<String> actions = new ArrayList<String>();\r\n" + "fillWithActions(actions);\r\n"
+		+ "NativeArray array = (NativeArray) cx.newArray(script, 0);\r\n"
+		+ "NativeArray.callMethod(array, \"push\", actions.toArray());\r\n"
+		+ "NativeArray.callMethod(array, \"sort\", new Object[0]);\r\n" + "return array;");
+	return getAttributes;
+    }
+
+    public static Method createGetActionsWithList(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method("List<String>", "getActions");
+	getAttributes.appendCode("List<String> actions = new ArrayList<String>();\r\n"
+		+ "fillWithActions(actions);\r\n" + "return actions;");
+	return getAttributes;
+    }
+
+    public static Method createGetActionsWithArray(JavaClass abstJPClass) {
+	abstJPClass.addImport(List.class.getCanonicalName());
+	abstJPClass.addImport(ArrayList.class.getCanonicalName());
+	Method getAttributes = new Method(String[].class.getSimpleName(), "getActions");
+	getAttributes.appendCode("List<String> actions = new ArrayList<String>();\r\n"
+		+ "fillWithActions(actions);\r\n" + "return actions.toArray(new String[0]);");
+	return getAttributes;
+    }
+    
+        /**
+     * Creates a void method with the given parameters
+     * 
+     * @param action
+     * @return
+     */
+    public static Method createVoidMethod(LanguageSpecification ls, String methodName, Pair<String, String>[] params) {
+	Method m = new Method(void.class.getName(), methodName);
+	for (Pair<String, String> param : params) {
+
+	    String paramName = param.getRight();
+	    paramName = StringUtils.getSanitizedName(paramName);
+	    String paramType = param.getLeft();
+	    paramType = ConvertUtils.getConvertedType(paramType, ls);
+	    if (paramType.equals("string"))
+		paramType = "String";
+	    else if (paramType.equals("template"))
+		paramType = "String";
+	    m.addArgument(paramType, paramName);
+	    m.addJavaDocTag(JDocTag.PARAM, paramName + " ");
+	}
+	return m;
+    }
