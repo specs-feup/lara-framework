@@ -85,3 +85,20 @@ function info(message, origin) {
 	println(composedMessage);
 }
 
+/**
+ * Converts an arguments object to a JavaScript array (Array).
+ * 
+ * args  - Mandatory. The original arguments object.
+ * start - Optional. The index where we begin the conversion (inclusive).
+ * */
+function arrayFromArgs(args, start) {
+	
+    checkDefined(args, 'args', 'LaraCore arrayFromArgs');
+    
+    if(start === undefined) {
+    
+        start = 0;
+    }
+    
+    return Array.prototype.slice.call(args, start);
+}
