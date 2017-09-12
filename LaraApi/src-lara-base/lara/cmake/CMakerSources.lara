@@ -1,0 +1,68 @@
+import lara.util.StringSet;
+
+/**
+ * Contains CMaker sources
+ */
+var CMakerSources = function() {
+	this.untaggedSources = [];
+	this.taggedSources = {};
+	this.tags = new StringSet();
+};
+
+CMakerSources.prototype._VARIABLE_UNTAGGED_SOURCES = "CMAKER_SOURCES";
+
+
+/**
+ * Adds the given sources.
+ *
+ * @param paths array with paths to sources
+ */
+CMakerSources.prototype.addSources = function(paths) {
+	checkDefined(paths, "path", "CMakerSources.addSources");
+	for(path of paths) {
+		this.untaggedSources.push(path);
+	}
+}
+
+/**
+ * Add the given sources.
+ */
+CMakerSources.prototype.addSource = function(path) {
+	checkDefined(path, "path", "CMakerSources.addSource");
+	this.untaggedSources.push(path);
+}
+
+/**
+ * Adds the given sources associated to a tag.
+ */
+CMakerSources.prototype.addTaggedSources = function(tag, paths) {
+	checkDefined(tag, "tag", "CMakerSources.addTaggedSources");
+	checkDefined(paths, "paths", "CMakerSources.addTaggedSources");
+	
+	// Get current tagged sources
+	var sources = this.taggedSources[tag];
+	
+	// If not defined, initialize it
+	if(sources === undefined) {
+		sources = [];
+		this.taggedSources[tag] = sources;
+		this.tags.add(tag);
+	}
+}
+
+/**
+ * @return an array with the CMake variables that have source files
+ */
+CMakerSources.prototype.getSourceVariables = function() {
+	var sources = [];
+	
+	if(this.untaggedSources.length > 0) {
+		sources.push(this._VARIABLE_UNTAGGED_SOURCES);
+	}
+	
+	for(tag of this.tags.values()) {
+		sources.push(tag);
+	}
+	
+	return sources;
+}
