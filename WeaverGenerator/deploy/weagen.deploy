@@ -1,0 +1,110 @@
+<SetupData>
+  <dataset>
+    <entry>
+      <string>NameOfOutputJar</string>
+      <FieldValue>
+        <rawValue class="string">weavergen.jar</rawValue>
+        <type>string</type>
+      </FieldValue>
+    </entry>
+    <entry>
+      <string>ClassWithMain</string>
+      <FieldValue>
+        <rawValue class="string">org.lara.interpreter.weaver.generator.commandline.WeaverGenerator</rawValue>
+        <type>string</type>
+      </FieldValue>
+    </entry>
+    <entry>
+      <string>Tasks</string>
+      <FieldValue>
+        <rawValue class="ListOfSetups">
+          <setupList>
+            <SetupData>
+              <dataset>
+                <entry>
+                  <string>OutputJarFilename</string>
+                  <FieldValue>
+                    <rawValue class="string">weavergen.jar</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>Port</string>
+                  <FieldValue>
+                    <rawValue class="string">22</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>UserPass</string>
+                  <FieldValue>
+                    <rawValue class="string">SpecS#12345</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>Host</string>
+                  <FieldValue>
+                    <rawValue class="string">192.168.55.127</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>DestinationFolder</string>
+                  <FieldValue>
+                    <rawValue class="string">/var/www/html/tools</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>UserLogin</string>
+                  <FieldValue>
+                    <rawValue class="string">root</rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+                <entry>
+                  <string>CommandsFile</string>
+                  <FieldValue>
+                    <rawValue class="string"></rawValue>
+                    <type>string</type>
+                  </FieldValue>
+                </entry>
+              </dataset>
+              <setupName>SFTP Task</setupName>
+            </SetupData>
+          </setupList>
+          <mapOfSetups class="linked-hash-map">
+            <entry>
+              <string>SFTP Task</string>
+              <SetupData reference="../../../setupList/SetupData"/>
+            </entry>
+          </mapOfSetups>
+        </rawValue>
+        <type>setupList</type>
+      </FieldValue>
+    </entry>
+    <entry>
+      <string>ProjectName</string>
+      <FieldValue>
+        <rawValue class="string">WeaverGenerator</rawValue>
+        <type>string</type>
+      </FieldValue>
+    </entry>
+    <entry>
+      <string>OutputJarType</string>
+      <FieldValue>
+        <rawValue class="string">RepackJar</rawValue>
+        <type>multipleChoice</type>
+      </FieldValue>
+    </entry>
+    <entry>
+      <string>WorkspaceFolder</string>
+      <FieldValue>
+        <rawValue class="string"></rawValue>
+        <type>string</type>
+      </FieldValue>
+    </entry>
+  </dataset>
+  <setupName>EclipseDeployment</setupName>
+</SetupData>
