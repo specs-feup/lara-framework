@@ -69,7 +69,7 @@ public class LaraApiTest {
         newTester().test("StringsTest.lara");
     }
 
-    // @Test
+    @Test
     public void testThis() {
         newTester().test("ThisTest.lara");
     }
