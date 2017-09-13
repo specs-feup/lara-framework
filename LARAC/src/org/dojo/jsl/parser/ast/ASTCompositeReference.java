@@ -55,15 +55,15 @@ public class ASTCompositeReference extends SimpleNode {
         // if (parent instanceof ASTExpressionStatement)
         // if (actionReview())
         // return obj;
-        if (!(children[0] instanceof ASTCompositeReference)) {
-            lara.aspectIR().setCompositeReference(this);
-        }
+        // if (!(children[0] instanceof ASTCompositeReference)) {
+        // lara.aspectIR().setCompositeReference(this);
+        // }
         int pos = 0;
         if ((children[0] instanceof ASTThisReference)) {
             pos = 1;
         }
         final Object childObj = ((SimpleNode) children[pos]).organize(obj);
-        lara.aspectIR().setCompositeReference(null);
+        // lara.aspectIR().setCompositeReference(null);
         if (childObj instanceof ASTPointcut && children.length == 2) {
             final ASTPointcut pc = (ASTPointcut) childObj;
             if (parent instanceof ASTCompositeReference) {
@@ -221,6 +221,9 @@ public class ASTCompositeReference extends SimpleNode {
 
     @Override
     public void organizeLHS(Types type) {
+        if (children[0] instanceof ASTThisReference) {
+            return;
+        }
         final String varName = getVarName();
         Variable var = null;
         if (varName.startsWith("$")) {

@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.dojo.jsl.parser.ast.ASTAspectDef;
-import org.dojo.jsl.parser.ast.ASTCompositeReference;
 import org.dojo.jsl.parser.ast.ASTStart;
 import org.dojo.jsl.parser.ast.SimpleNode;
 import org.w3c.dom.Document;
@@ -44,7 +43,7 @@ import larac.utils.output.MessageConstants;
  */
 public class AspectIR {
     private int codeCount;
-    private ASTCompositeReference compositeReference;
+    // private ASTCompositeReference compositeReference;
     private ASTStart ast;
     // private Map<String, ASTCodeDef> codedefs;
     private List<ASTAspectDef> aspectdefs;
@@ -238,20 +237,20 @@ public class AspectIR {
         this.codeCount = codeCount;
     }
 
-    /**
-     * @return the compositeReference
-     */
-    public ASTCompositeReference getCompositeReference() {
-        return compositeReference;
-    }
-
-    /**
-     * @param compositeReference
-     *            the compositeReference to set
-     */
-    public void setCompositeReference(ASTCompositeReference compositeReference) {
-        this.compositeReference = compositeReference;
-    }
+    // /**
+    // * @return the compositeReference
+    // */
+    // public ASTCompositeReference getCompositeReference() {
+    // return compositeReference;
+    // }
+    //
+    // /**
+    // * @param compositeReference
+    // * the compositeReference to set
+    // */
+    // public void setCompositeReference(ASTCompositeReference compositeReference) {
+    // this.compositeReference = compositeReference;
+    // }
 
     /**
      * @return the ast
