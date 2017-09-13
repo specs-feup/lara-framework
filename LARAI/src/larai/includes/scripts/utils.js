@@ -54,15 +54,18 @@ function printCurrentTime(){
 }
 
 var isJoinPoint = function(obj){
-	var type = toType(obj);
-	if(!type.equals("javaobject")){
+
+	if(obj === null || obj === undefined) //since typeof null is "object"
 		return false;
+	
+	var type = typeof obj;
+	if(type === 'object'){
+		
+		return Weaver.isJoinPoint(obj);
 	}
-	/*
-	for(var prop in JoinPoint){
-		print(prop+", ");
-	}*/
-	return LARA_SYSTEM.getJoinPointClass().isInstance(obj);
+	return false;
+
+	
 }
 
 	// for(var i = 0; i < this.length; i++){
