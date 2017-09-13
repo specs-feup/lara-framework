@@ -59,52 +59,52 @@ public class SourceTextArea extends JPanel {
     private final ReloadPane reloadPane;
 
     public SourceTextArea(TabsContainerPanel parent) {
-	this(Factory.newFile(parent), parent, true);
+        this(Factory.newFile(parent), parent, true);
     }
 
     public SourceTextArea(File file, TabsContainerPanel parent) {
-	this(file, parent, false);
+        this(file, parent, false);
 
     }
 
     private SourceTextArea(File file, TabsContainerPanel parent, boolean isNew) {
-	super(new BorderLayout());
-	this.isNew = isNew;
-	changed = false;
-	tabsContainer = parent;
-	sourceFile = file;
+        super(new BorderLayout());
+        this.isNew = isNew;
+        changed = false;
+        tabsContainer = parent;
+        sourceFile = file;
 
-	updateLastModified();
-	editorConfigurer = new EditorConfigurer();
-	textArea = editorConfigurer.buildTextArea(file, isNew);
+        updateLastModified();
+        editorConfigurer = new EditorConfigurer();
+        textArea = editorConfigurer.buildTextArea(file, isNew);
 
-	EditorListener.newInstance(this);
+        EditorListener.newInstance(this);
 
-	RTextScrollPane pane = Factory.standardScrollPane(textArea);
+        RTextScrollPane pane = Factory.standardScrollPane(textArea);
 
-	ErrorStrip es = new ErrorStrip(textArea);
-	JPanel temp = new JPanel(new BorderLayout());
-	temp.add(pane);
-	temp.add(es, BorderLayout.LINE_END);
-	add(temp, BorderLayout.CENTER);
-	reloadPane = new ReloadPane(this);
-	add(reloadPane, BorderLayout.NORTH);
-	originalText = textArea.getText();
-	addFocusListener(new FocusGainedListener(e -> {
+        ErrorStrip es = new ErrorStrip(textArea);
+        JPanel temp = new JPanel(new BorderLayout());
+        temp.add(pane);
+        temp.add(es, BorderLayout.LINE_END);
+        add(temp, BorderLayout.CENTER);
+        reloadPane = new ReloadPane(this);
+        // add(reloadPane, BorderLayout.NORTH);
+        originalText = textArea.getText();
+        addFocusListener(new FocusGainedListener(e -> {
 
-	    enterTab();
-	}));
+            enterTab();
+        }));
 
-	//
-	// System.out.println(Arrays.asList(textArea.getInputMap().allKeys()).stream()
-	// .map(k -> k.toString() + "->" + textArea.getInputMap().get(k))
-	// .collect(Collectors.joining("\n")));
+        //
+        // System.out.println(Arrays.asList(textArea.getInputMap().allKeys()).stream()
+        // .map(k -> k.toString() + "->" + textArea.getInputMap().get(k))
+        // .collect(Collectors.joining("\n")));
 
-	// textArea.getInputMap().put(StrokesAndActions.CTRL_SHIFT_C, RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
+        // textArea.getInputMap().put(StrokesAndActions.CTRL_SHIFT_C, RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
     }
 
     public TextEditorPane getTextArea() {
-	return textArea;
+        return textArea;
     }
 
     /**
@@ -116,12 +116,12 @@ public class SourceTextArea extends JPanel {
      */
     public boolean save() {
 
-	if (isNew) {
-	    return saveAs();
-	}
+        if (isNew) {
+            return saveAs();
+        }
 
-	textArea.setEncoding(StandardCharsets.UTF_8.name());
-	return forceSave();
+        textArea.setEncoding(StandardCharsets.UTF_8.name());
+        return forceSave();
 
     }
 
@@ -133,57 +133,57 @@ public class SourceTextArea extends JPanel {
      */
     private boolean forceSave() {
 
-	try {
-	    textArea.save();
-	    updateLastModified();
-	    setChanged(false);
-	    updateOldText();
-	    closeReloadPane();
-	    return true;
-	} catch (IOException e) {
-	    SpecsLogs.msgWarn("Error message:\n", e);
-	}
-	return false;
+        try {
+            textArea.save();
+            updateLastModified();
+            setChanged(false);
+            updateOldText();
+            closeReloadPane();
+            return true;
+        } catch (IOException e) {
+            SpecsLogs.msgWarn("Error message:\n", e);
+        }
+        return false;
     }
 
     private void updateOldText() {
-	originalText = textArea.getText();
-	setTabText();
+        originalText = textArea.getText();
+        setTabText();
     }
 
     public boolean saveAs() {
 
-	JFileChooser fc = Factory.newFileChooser("Save as...", "Save", getTabbedParent().getLastOpenedFolder());
-	fc.setApproveButtonMnemonic('s');
+        JFileChooser fc = Factory.newFileChooser("Save as...", "Save", getTabbedParent().getLastOpenedFolder());
+        fc.setApproveButtonMnemonic('s');
 
-	int returnVal = fc.showOpenDialog(this);
-	if (returnVal != JFileChooser.APPROVE_OPTION) {
-	    return false;
-	}
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return false;
+        }
 
-	File file = fc.getSelectedFile();
-	return saveAs(file);
+        File file = fc.getSelectedFile();
+        return saveAs(file);
     }
 
     protected boolean saveAs(File file) {
-	try {
-	    textArea.setEncoding(StandardCharsets.UTF_8.name());
+        try {
+            textArea.setEncoding(StandardCharsets.UTF_8.name());
 
-	    textArea.saveAs(FileLocation.create(file));
-	    isNew = false;
-	    setSourceFile(file);
-	    updateOldText();
-	    EditorConfigurer.setSyntaxEditingStyle(textArea, file);
-	    getTabbedParent().setLastOpenedFolder(file.getParentFile());
-	    return true;
-	} catch (IOException e) {
-	    SpecsLogs.msgWarn("Error message:\n", e);
-	}
-	return false;
+            textArea.saveAs(FileLocation.create(file));
+            isNew = false;
+            setSourceFile(file);
+            updateOldText();
+            EditorConfigurer.setSyntaxEditingStyle(textArea, file);
+            getTabbedParent().setLastOpenedFolder(file.getParentFile());
+            return true;
+        } catch (IOException e) {
+            SpecsLogs.msgWarn("Error message:\n", e);
+        }
+        return false;
     }
 
     public String getTabName() {
-	return sourceFile.getName();
+        return sourceFile.getName();
     }
 
     public void exitTab() {
@@ -191,19 +191,19 @@ public class SourceTextArea extends JPanel {
     }
 
     public void enterTab() {
-	textArea.requestFocus();
-	refresh();
+        textArea.requestFocus();
+        refresh();
     }
 
     public File getLaraFile() {
-	return sourceFile;
+        return sourceFile;
     }
 
     public void setSourceFile(File sourceFile) {
-	this.sourceFile = sourceFile;
-	updateLastModified();
-	setTabText();
-	tabsContainer.setTabToolTipText(this, SpecsIo.getCanonicalPath(sourceFile));
+        this.sourceFile = sourceFile;
+        updateLastModified();
+        setTabText();
+        tabsContainer.setTabToolTipText(this, SpecsIo.getCanonicalPath(sourceFile));
     }
 
     /*
@@ -233,74 +233,79 @@ public class SourceTextArea extends JPanel {
     */
     public void refresh() {
 
-	if (isNew) {
-	    return;
-	}
-	// System.out.println("refresh?" + lastModified + " vs " + sourceFile.lastModified());
-	// if local timestamp is different from the file timestamp
-	if (lastModified != sourceFile.lastModified()) {
-	    // System.out.println("update!");
-	    openReloadPane();
-	}
+        if (isNew) {
+            return;
+        }
+        // System.out.println("refresh?" + lastModified + " vs " + sourceFile.lastModified());
+        // if local timestamp is different from the file timestamp
+        if (lastModified != sourceFile.lastModified()) {
+            // System.out.println("update!");
+            openReloadPane();
+        }
 
     }
 
-    private void openReloadPane() {
-	reloadPane.setVisible(true);
-	// revalidate(); //looks like it is this parent's that has to be revalidated!
-	// getParent().
-	validate();
+    public void openReloadPane() {
+        add(reloadPane, BorderLayout.NORTH);
+        revalidate();
+        repaint();
+        // reloadPane.ativate(true);
+        // revalidate(); //looks like it is this parent's that has to be revalidated!
+        // getParent().
+        // validate();
     }
 
-    private void closeReloadPane() {
-	reloadPane.setVisible(false);
-	// revalidate();
-	// getParent().
-	validate();
+    public void closeReloadPane() {
+        remove(reloadPane);
+        revalidate();
+        repaint();
+        // reloadPane.ativate(false);
+        // getParent().
+        // validate();
     }
 
     @Deprecated
     void oldRefreshMethod() {
-	int choice = JOptionPane.showConfirmDialog(this,
-		sourceFile.getAbsolutePath()
-			+ "\n\nThis file has been modified my another program"
-			+ ".\nDo you wan to reload it?",
-		// + "\nTimeStamps: editor=" + lastModified + ", file=" + sourceFile.lastModified()
-		"Reload",
-		JOptionPane.YES_NO_OPTION);
-	switch (choice) {
-	case JOptionPane.NO_OPTION:
-	    // Just ignore file content
-	    break;
-	case JOptionPane.YES_OPTION:
-	    reload();
-	    // originalText = textArea.getText();
-	    // tabbedParent.setTabTitle(this);
-	    break;
-	default:
-	    break;
-	}
-	lastModified = sourceFile.lastModified();
+        int choice = JOptionPane.showConfirmDialog(this,
+                sourceFile.getAbsolutePath()
+                        + "\n\nThis file has been modified my another program"
+                        + ".\nDo you wan to reload it?",
+                // + "\nTimeStamps: editor=" + lastModified + ", file=" + sourceFile.lastModified()
+                "Reload",
+                JOptionPane.YES_NO_OPTION);
+        switch (choice) {
+        case JOptionPane.NO_OPTION:
+            // Just ignore file content
+            break;
+        case JOptionPane.YES_OPTION:
+            reload();
+            // originalText = textArea.getText();
+            // tabbedParent.setTabTitle(this);
+            break;
+        default:
+            break;
+        }
+        lastModified = sourceFile.lastModified();
     }
 
     /**
      * Reload the texarea with the file content
      */
     public void reload() {
-	try {
-	    int lastCaretPosition = textArea.getCaretPosition();
-	    setChanged(true);
-	    textArea.reload();
-	    setChanged(false);
-	    if (lastCaretPosition < textArea.getText().length()) {
-		textArea.setCaretPosition(lastCaretPosition);
-	    }
-	    originalText = textArea.getText();
-	    updateLastModified();
-	    // tabbedParent.setTabTitle(this);
-	} catch (IOException e) {
-	    SpecsLogs.msgWarn("Could not reload file:\n", e);
-	}
+        try {
+            int lastCaretPosition = textArea.getCaretPosition();
+            setChanged(true);
+            textArea.reload();
+            setChanged(false);
+            if (lastCaretPosition < textArea.getText().length()) {
+                textArea.setCaretPosition(lastCaretPosition);
+            }
+            originalText = textArea.getText();
+            updateLastModified();
+            // tabbedParent.setTabTitle(this);
+        } catch (IOException e) {
+            SpecsLogs.msgWarn("Could not reload file:\n", e);
+        }
     }
 
     // private void showTestDialog() {
@@ -308,24 +313,24 @@ public class SourceTextArea extends JPanel {
     // }
 
     protected void load(File file) {
-	boolean loaded = EditorConfigurer.loadFile(textArea, file);
+        boolean loaded = EditorConfigurer.loadFile(textArea, file);
 
-	if (loaded) {
-	    setSourceFile(file);
-	    isNew = false;
-	    updateOldText();
-	    updateLastModified();
-	    closeReloadPane();
-	    setChanged(false);
-	}
+        if (loaded) {
+            setSourceFile(file);
+            isNew = false;
+            updateOldText();
+            updateLastModified();
+            closeReloadPane();
+            setChanged(false);
+        }
     }
 
     private void setTabText() {
-	// if (changed) {
-	//
-	// } else {
-	tabsContainer.setTabTitle(this);
-	// }
+        // if (changed) {
+        //
+        // } else {
+        tabsContainer.setTabTitle(this);
+        // }
     }
 
     /**
@@ -335,185 +340,185 @@ public class SourceTextArea extends JPanel {
      */
     public boolean close() {
 
-	boolean closeTab = saveBeforeClose();
+        boolean closeTab = saveBeforeClose();
 
-	if (closeTab) {
-	    tabsContainer.closeTab(this);
-	}
-	return closeTab;
+        if (closeTab) {
+            tabsContainer.closeTab(this);
+        }
+        return closeTab;
     }
 
     public String getOriginalText() {
-	return originalText;
+        return originalText;
     }
 
     public void setOriginalText(String originalText) {
-	this.originalText = originalText;
+        this.originalText = originalText;
     }
 
     public TabsContainerPanel getTabbedParent() {
-	return tabsContainer;
+        return tabsContainer;
     }
 
     @Override
     public String toString() {
-	return "Lara Tab with file: " + sourceFile.getName();
+        return "Lara Tab with file: " + sourceFile.getName();
     }
 
     // boolean correctName = true;
 
     public long getLastModified() {
-	return lastModified;
+        return lastModified;
     }
 
     public void setLastModified(long lastModified) {
-	this.lastModified = lastModified;
+        this.lastModified = lastModified;
     }
 
     public void updateLastModified() {
-	setLastModified(sourceFile.lastModified());
+        setLastModified(sourceFile.lastModified());
     }
 
     public boolean isChanged() {
-	return changed;
+        return changed;
     }
 
     public void setChanged(boolean changed) {
-	this.changed = changed;
+        this.changed = changed;
     }
 
     public boolean isNew() {
-	return isNew;
+        return isNew;
     }
 
     public boolean saveBeforeClose() {
 
-	if (!originalText.equals(textArea.getText())) {
-	    if (!tabsContainer.getCurrentTab().equals(this)) {
-		// System.out.println("Requesting focus!");
-		tabsContainer.selectTab(this);
-		// textArea.requestFocus();
-	    }
+        if (!originalText.equals(textArea.getText())) {
+            if (!tabsContainer.getCurrentTab().equals(this)) {
+                // System.out.println("Requesting focus!");
+                tabsContainer.selectTab(this);
+                // textArea.requestFocus();
+            }
 
-	    int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
-		    JOptionPane.YES_NO_CANCEL_OPTION);
-	    switch (choice) {
-	    case JOptionPane.CANCEL_OPTION:
-		return false;
-	    case JOptionPane.NO_OPTION:
-		return true;
-	    case JOptionPane.YES_OPTION:
-		return save();
-	    default:
-		break;
-	    }
-	}
-	return true;
+            int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            switch (choice) {
+            case JOptionPane.CANCEL_OPTION:
+                return false;
+            case JOptionPane.NO_OPTION:
+                return true;
+            case JOptionPane.YES_OPTION:
+                return save();
+            default:
+                break;
+            }
+        }
+        return true;
     }
 
     // RSTA.ToggleCommentAction
     public void commentSelection(ActionEvent event) {
 
-	if ((!textArea.isEditable()) || (!textArea.isEnabled())) {
-	    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-	    return;
-	}
+        if ((!textArea.isEditable()) || (!textArea.isEnabled())) {
+            UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+            return;
+        }
 
-	RSyntaxDocument localRSyntaxDocument = (RSyntaxDocument) textArea.getDocument();
-	String[] arrayOfString = localRSyntaxDocument.getLineCommentStartAndEnd(0);
-	if (arrayOfString == null) {
-	    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-	    return;
-	}
-	Element localElement1 = localRSyntaxDocument.getDefaultRootElement();
-	Caret localCaret = textArea.getCaret();
-	int i = localCaret.getDot();
-	int j = localCaret.getMark();
-	int k = localElement1.getElementIndex(i);
-	int m = localElement1.getElementIndex(j);
-	int n = Math.min(k, m);
-	int i1 = Math.max(k, m);
-	if (n != i1) {
-	    Element localElement2 = localElement1.getElement(i1);
-	    if (Math.max(i, j) == localElement2.getStartOffset()) {
-		i1--;
-	    }
-	}
-	textArea.beginAtomicEdit();
-	try {
-	    boolean bool = getDoAdd(localRSyntaxDocument, localElement1, n, i1, arrayOfString);
-	    for (k = n; k <= i1; k++) {
-		Element localElement3 = localElement1.getElement(k);
-		handleToggleComment(localElement3, localRSyntaxDocument, arrayOfString, bool);
-	    }
-	} catch (BadLocationException localBadLocationException) {
-	    localBadLocationException.printStackTrace();
-	    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
-	} finally {
-	    textArea.endAtomicEdit();
-	}
+        RSyntaxDocument localRSyntaxDocument = (RSyntaxDocument) textArea.getDocument();
+        String[] arrayOfString = localRSyntaxDocument.getLineCommentStartAndEnd(0);
+        if (arrayOfString == null) {
+            UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+            return;
+        }
+        Element localElement1 = localRSyntaxDocument.getDefaultRootElement();
+        Caret localCaret = textArea.getCaret();
+        int i = localCaret.getDot();
+        int j = localCaret.getMark();
+        int k = localElement1.getElementIndex(i);
+        int m = localElement1.getElementIndex(j);
+        int n = Math.min(k, m);
+        int i1 = Math.max(k, m);
+        if (n != i1) {
+            Element localElement2 = localElement1.getElement(i1);
+            if (Math.max(i, j) == localElement2.getStartOffset()) {
+                i1--;
+            }
+        }
+        textArea.beginAtomicEdit();
+        try {
+            boolean bool = getDoAdd(localRSyntaxDocument, localElement1, n, i1, arrayOfString);
+            for (k = n; k <= i1; k++) {
+                Element localElement3 = localElement1.getElement(k);
+                handleToggleComment(localElement3, localRSyntaxDocument, arrayOfString, bool);
+            }
+        } catch (BadLocationException localBadLocationException) {
+            localBadLocationException.printStackTrace();
+            UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+        } finally {
+            textArea.endAtomicEdit();
+        }
     }
 
     private static boolean getDoAdd(Document paramDocument, Element paramElement, int paramInt1, int paramInt2,
-	    String[] paramArrayOfString)
-		    throws BadLocationException {
-	boolean bool = false;
-	for (int i = paramInt1; i <= paramInt2; i++) {
-	    Element localElement = paramElement.getElement(i);
-	    int j = localElement.getStartOffset();
-	    String str = paramDocument.getText(j, localElement.getEndOffset() - j - 1);
-	    if ((!str.startsWith(paramArrayOfString[0]))
-		    || ((paramArrayOfString[1] != null) && (!str.endsWith(paramArrayOfString[1])))) {
-		bool = true;
-		break;
-	    }
-	}
-	return bool;
+            String[] paramArrayOfString)
+            throws BadLocationException {
+        boolean bool = false;
+        for (int i = paramInt1; i <= paramInt2; i++) {
+            Element localElement = paramElement.getElement(i);
+            int j = localElement.getStartOffset();
+            String str = paramDocument.getText(j, localElement.getEndOffset() - j - 1);
+            if ((!str.startsWith(paramArrayOfString[0]))
+                    || ((paramArrayOfString[1] != null) && (!str.endsWith(paramArrayOfString[1])))) {
+                bool = true;
+                break;
+            }
+        }
+        return bool;
     }
 
     private static void handleToggleComment(Element paramElement, Document paramDocument, String[] paramArrayOfString,
-	    boolean paramBoolean)
-		    throws BadLocationException {
-	int i = paramElement.getStartOffset();
-	int j = paramElement.getEndOffset() - 1;
-	if (paramBoolean) {
-	    paramDocument.insertString(i, paramArrayOfString[0], null);
-	    if (paramArrayOfString[1] != null) {
-		paramDocument.insertString(j + paramArrayOfString[0].length(), paramArrayOfString[1], null);
-	    }
-	} else {
-	    paramDocument.remove(i, paramArrayOfString[0].length());
-	    if (paramArrayOfString[1] != null) {
-		int k = paramArrayOfString[1].length();
-		paramDocument.remove(j - paramArrayOfString[0].length() - k, k);
-	    }
-	}
+            boolean paramBoolean)
+            throws BadLocationException {
+        int i = paramElement.getStartOffset();
+        int j = paramElement.getEndOffset() - 1;
+        if (paramBoolean) {
+            paramDocument.insertString(i, paramArrayOfString[0], null);
+            if (paramArrayOfString[1] != null) {
+                paramDocument.insertString(j + paramArrayOfString[0].length(), paramArrayOfString[1], null);
+            }
+        } else {
+            paramDocument.remove(i, paramArrayOfString[0].length());
+            if (paramArrayOfString[1] != null) {
+                int k = paramArrayOfString[1].length();
+                paramDocument.remove(j - paramArrayOfString[0].length() - k, k);
+            }
+        }
     }
 
     /**
      * If the file is "dirty", ask user if he wants to save
      */
     public boolean askSave() {
-	if (!originalText.equals(textArea.getText())) {
-	    if (!tabsContainer.getCurrentTab().equals(this)) {
-		// System.out.println("Requesting focus!");
-		tabsContainer.selectTab(this);
-		// textArea.requestFocus();
-	    }
+        if (!originalText.equals(textArea.getText())) {
+            if (!tabsContainer.getCurrentTab().equals(this)) {
+                // System.out.println("Requesting focus!");
+                tabsContainer.selectTab(this);
+                // textArea.requestFocus();
+            }
 
-	    int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
-		    JOptionPane.YES_NO_CANCEL_OPTION);
-	    switch (choice) {
-	    case JOptionPane.CANCEL_OPTION:
-		return false;
-	    case JOptionPane.NO_OPTION:
-		return true;
-	    case JOptionPane.YES_OPTION:
-		return save();
-	    default:
-		break;
-	    }
-	}
-	return true;
+            int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            switch (choice) {
+            case JOptionPane.CANCEL_OPTION:
+                return false;
+            case JOptionPane.NO_OPTION:
+                return true;
+            case JOptionPane.YES_OPTION:
+                return save();
+            default:
+                break;
+            }
+        }
+        return true;
     }
 }

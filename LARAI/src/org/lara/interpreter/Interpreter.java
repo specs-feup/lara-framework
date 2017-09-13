@@ -683,11 +683,12 @@ public class Interpreter {
     // ================================================================================//
     public StringBuilder getJavascriptString(ExprOp op, int depth) {
 
+        StringBuilder exprString = getJavascriptString(op.exprs.get(0), 0);
         if (op.name.equals("COND")) {
             // Condition
             final StringBuilder cond = new StringBuilder(LaraIUtils.getSpace(depth));
             cond.append("(");
-            cond.append(getJavascriptString(op.exprs.get(0), 0));
+            cond.append(exprString);
             cond.append(")?(");
             // True
 
@@ -708,21 +709,22 @@ public class Interpreter {
         if (op.exprs.size() == 1) {
             final StringBuilder inc = new StringBuilder(LaraIUtils.getSpace(depth));
             if (op.name.equals("INCS")) {
-                inc.append(getJavascriptString(op.exprs.get(0), 0));
+                inc.append(exprString);
                 inc.append("++");
                 return inc;
             }
             if (op.name.equals("DECS")) {
-                inc.append(getJavascriptString(op.exprs.get(0), 0));
+                inc.append(exprString);
                 inc.append("--");
                 return inc;
             }
+            // INCP and DECP are in this "else"
             inc.append(Operators.getOpString(op.name));
-            inc.append("(" + getJavascriptString(op.exprs.get(0), 0) + ")");
+            inc.append("(" + exprString + ")");
             return inc;
         }
 
-        final StringBuilder left = getJavascriptString(op.exprs.get(0), 0);
+        final StringBuilder left = exprString;
         // if (isFilter && (op.exprs.get(0) instanceof ExprId))
         // left.append("()");
         StringBuilder right = getJavascriptString(op.exprs.get(1), 0);

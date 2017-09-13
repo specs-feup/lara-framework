@@ -75,7 +75,7 @@ public class LaraWorker extends ApplicationWorker<DataStore> {
             toOpen = Optional.empty();
         }
         editor.setPlayButton();
-
+        editor.getTabsContainer().getCurrentTab().refresh();
     }
 
 }

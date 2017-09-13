@@ -40,49 +40,84 @@ public class ReloadPane extends Panel {
 
     // private final JButton cancelBtn = new JButton("Ignore");
     private final JLabel messageLbl = new JLabel("This file was updated by another program");
+    private JButton reload;
+    private JButton overwrite;
+    private CloseButton close;
 
     public ReloadPane(SourceTextArea editorTab) {
-	super(new BorderLayout());
-	setBackground(BLUE);
+        super(new BorderLayout());
+        setBackground(BLUE);
 
-	// JLabel label = new JLabel("File content was modified");
-	Font currentFont = messageLbl.getFont();
-	Font newFont = currentFont.deriveFont(11f).deriveFont(Font.BOLD);
+        // JLabel label = new JLabel("File content was modified");
+        Font currentFont = messageLbl.getFont();
+        Font newFont = currentFont.deriveFont(11f).deriveFont(Font.BOLD);
 
-	add(messageLbl, BorderLayout.CENTER);
+        add(messageLbl, BorderLayout.CENTER);
 
-	JPanel buttonsPanel = new JPanel();
-	buttonsPanel.setBackground(BLUE);
-	JButton reload = new JButton("Reload");
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(BLUE);
+        reload = new JButton("Reload");
 
-	reload.setFont(newFont);
-	addButtonListener(reload, x -> editorTab.reload());
-	buttonsPanel.add(reload);
-	// reload.addActionListener(new GenericActionListener(x -> editorTab.reload()));
-	JButton overwrite = new JButton("Overwrite");
-	addButtonListener(overwrite, x -> editorTab.save());
-	overwrite.setFont(newFont);
-	buttonsPanel.add(overwrite);
-	CloseButton close = new CloseButton(x -> {
-	    editorTab.updateLastModified();
-	    setVisible(false);
-	    editorTab.revalidate();
+        reload.setFont(newFont);
+        addButtonListener(reload, x -> {
+            editorTab.reload();
+            editorTab.closeReloadPane();
+        });
+        buttonsPanel.add(reload);
+        // reload.addActionListener(new GenericActionListener(x -> editorTab.reload()));
+        overwrite = new JButton("Overwrite");
+        addButtonListener(overwrite, x -> {
+            editorTab.save();
+            editorTab.closeReloadPane();
 
-	});
-	close.setFont(newFont);
-	buttonsPanel.add(close);
-	add(buttonsPanel, BorderLayout.EAST);
-
-	setVisible(false); // true for debugging
+        });
+        overwrite.setFont(newFont);
+        buttonsPanel.add(overwrite);
+        close = new CloseButton(x -> {
+            editorTab.updateLastModified();
+            editorTab.closeReloadPane();
+            // ativate(false);
+        });
+        close.setFont(newFont);
+        buttonsPanel.add(close);
+        add(buttonsPanel, BorderLayout.EAST);
+        validate();
+        // setVisible(false); // true for debugging
     }
 
     public void addButtonListener(JButton button, Consumer<ActionEvent> consumer) {
-	button.addActionListener(new GenericActionListener(x -> {
-	    consumer.accept(x);
-	    setVisible(false);
-	    // editorTab.revalidate();
+        button.addActionListener(new GenericActionListener(x -> {
+            consumer.accept(x);
+            // ativate(false);
 
-	}));
+        }));
     }
+
+    // public void ativate(boolean b) {
+    // setVisible(b);
+    // // get
+    // EventQueue.invokeLater(new Runnable() {
+    // @Override
+    // public void run() {
+    // repaint();
+    // revalidate();
+    // }
+    // });
+    //
+    // // messageLbl.setVisible(b);
+    // // close.setVisible(b);
+    // // reload.setVisible(b);
+    // // overwrite.setVisible(b);
+    // // // this.repaint();
+    // // // this.revalidate();
+    // // messageLbl.repaint();
+    // // messageLbl.revalidate();
+    // // close.repaint();
+    // // close.revalidate();
+    // // reload.repaint();
+    // // reload.revalidate();
+    // // overwrite.repaint();
+    // // overwrite.revalidate();
+    // }
 
 }
