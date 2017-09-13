@@ -20,6 +20,11 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  *
  */
 public enum LaraApiResource implements LaraResourceProvider {
+
+    // CMake
+    CMAKER("cmake/CMaker.lara"),
+    CMAKER_SOURCES("cmake/CMakerSources.lara"),
+
     // Code
     ENERGY_BASE("code/EnergyBase.lara"),
     LOGGER_BASE("code/LoggerBase.lara"),

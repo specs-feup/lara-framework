@@ -1,0 +1,25 @@
+import lara.cmake.CMakerSources;
+
+/**
+ * Builds CMake configurations.
+ */
+var CMaker = function(name) {
+	checkDefined(name, "name", "CMaker");
+	
+	this.name = name;
+	this.sources = new CMakerSources();
+};
+
+
+/*
+.setMinimumVersion("3.0.2") // Could have a standard minimum version
+    .addSources(Io.getPaths(srcFolder, "*.cpp"))
+    .addCxxFlags("-O3", "-std=c++11")
+    .addLibs("stdc++")
+    .addIncludes(srcFolder);
+	.setVariable(name, value)
+	cmaker.getCMake()
+	cmaker.build(Io.getPath(srcFolder, "build")); 
+	
+	.addTaggedSources("tag", sources)
+	*/
