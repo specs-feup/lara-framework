@@ -66,11 +66,12 @@ public class EditorToolBar extends JPanel {
 
     public EditorToolBar(EditorPanel editorPanel) {
         super(new FlowLayout(FlowLayout.LEFT));
+        // setBackground(Colors.BLUE_GREY);
         editor = editorPanel;
         // menuBar = new JToolBar();
         // add(menuBar);
         toolBar = newToolBar("Tool Bar");
-
+        // toolBar.setBackground(Colors.BLUE_GREY);
         addFileButtons();
         toolBar.addSeparator();
         addSearchButtons();

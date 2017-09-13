@@ -90,6 +90,7 @@ public class LanguageSpecificationSideBar extends JPanel {
     public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecificationV2 langSpec) {
         super(new BorderLayout());
         setBorder(new EmptyBorder(4, 0, 5, 0));
+        // setBackground(Colors.BLUE_GREY);
         Dimension preferredSize = this.getPreferredSize();
         preferredSize.setSize(preferedWidth, preferredSize.getHeight());
         this.setPreferredSize(preferredSize);

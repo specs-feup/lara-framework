@@ -14,7 +14,6 @@
 package org.lara.interpreter.joptions.panels.editor.components;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
@@ -26,6 +25,7 @@ import javax.swing.JPanel;
 
 import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
+import org.lara.interpreter.joptions.panels.editor.utils.Colors;
 
 public class ReloadPane extends Panel {
 
@@ -33,11 +33,6 @@ public class ReloadPane extends Panel {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private static final Color BLUE = new Color(120, 169, 255);
-    // private final JButton reload;
-    // private final JButton overwrite;
-    // private final JButton close;
-
     // private final JButton cancelBtn = new JButton("Ignore");
     private final JLabel messageLbl = new JLabel("This file was updated by another program");
     private JButton reload;
@@ -46,7 +41,7 @@ public class ReloadPane extends Panel {
 
     public ReloadPane(SourceTextArea editorTab) {
         super(new BorderLayout());
-        setBackground(BLUE);
+        setBackground(Colors.BLUE);
 
         // JLabel label = new JLabel("File content was modified");
         Font currentFont = messageLbl.getFont();
@@ -55,7 +50,7 @@ public class ReloadPane extends Panel {
         add(messageLbl, BorderLayout.CENTER);
 
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(BLUE);
+        buttonsPanel.setBackground(Colors.BLUE);
         reload = new JButton("Reload");
 
         reload.setFont(newFont);
@@ -82,7 +77,7 @@ public class ReloadPane extends Panel {
         buttonsPanel.add(close);
         add(buttonsPanel, BorderLayout.EAST);
         validate();
-        // setVisible(false); // true for debugging
+        // setVisible(true); // true for debugging
     }
 
     public void addButtonListener(JButton button, Consumer<ActionEvent> consumer) {

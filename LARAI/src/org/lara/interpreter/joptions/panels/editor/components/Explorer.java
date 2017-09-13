@@ -70,6 +70,7 @@ public class Explorer extends JPanel {
 
     public Explorer(EditorPanel parent) {
         super(new BorderLayout());
+        // setBackground(Colors.BLUE_GREY);
         this.parent = parent;
         fileSystemView = FileSystemView.getFileSystemView();
 

@@ -30,6 +30,7 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.ListenerUtils;
 import org.lara.interpreter.joptions.panels.editor.listeners.StrokesAndActions;
+import org.lara.interpreter.joptions.panels.editor.utils.Colors;
 
 public class SearchPanel extends JPanel {
 
@@ -49,93 +50,95 @@ public class SearchPanel extends JPanel {
     private final JButton closeButton;
 
     public SearchPanel(EditorPanel editorPanel) {
-	super(new BorderLayout());
+        super(new BorderLayout());
 
-	JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	closeButton = new JButton("Close");
-	closeButton.addActionListener(e -> setVisible(false));
-	add(panel, BorderLayout.CENTER);
-	add(closeButton, BorderLayout.EAST);
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.setBackground(Colors.BLUE_GREY);
 
-	this.editorPanel = editorPanel;
-	searchField = new JTextField(20);
+        closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> setVisible(false));
+        add(panel, BorderLayout.CENTER);
+        add(closeButton, BorderLayout.EAST);
 
-	ListenerUtils.mapAction(searchField, StrokesAndActions.ENTER, "FindNext", x -> search(true));
-	ListenerUtils.mapAction(searchField, StrokesAndActions.SHIFT_ENTER, "FindPrevious", x -> search(false));
+        this.editorPanel = editorPanel;
+        searchField = new JTextField(20);
 
-	panel.add(searchField);
+        ListenerUtils.mapAction(searchField, StrokesAndActions.ENTER, "FindNext", x -> search(true));
+        ListenerUtils.mapAction(searchField, StrokesAndActions.SHIFT_ENTER, "FindPrevious", x -> search(false));
 
-	upButton = new JButton("\u25B2");
-	upButton.setActionCommand("FindPrevious");
-	upButton.addActionListener(this::actionPerformed);
-	panel.add(upButton);
+        panel.add(searchField);
 
-	downButton = new JButton("\u25BC");
-	downButton.setActionCommand("FindNext");
-	downButton.addActionListener(this::actionPerformed);
-	panel.add(downButton);
+        upButton = new JButton("\u25B2");
+        upButton.setActionCommand("FindPrevious");
+        upButton.addActionListener(this::actionPerformed);
+        panel.add(upButton);
 
-	markAllCB = new JCheckBox("Highlight All");
-	panel.add(markAllCB);
-	matchCaseCB = new JCheckBox("Match Case");
-	panel.add(matchCaseCB);
-	regexCB = new JCheckBox("Regex");
-	panel.add(regexCB);
-	infoLabel = new JLabel("");
-	// infoLabel.setBorder(new Border);
-	panel.add(infoLabel);
+        downButton = new JButton("\u25BC");
+        downButton.setActionCommand("FindNext");
+        downButton.addActionListener(this::actionPerformed);
+        panel.add(downButton);
 
-	setVisible(false);
+        markAllCB = new JCheckBox("Highlight All");
+        panel.add(markAllCB);
+        matchCaseCB = new JCheckBox("Match Case");
+        panel.add(matchCaseCB);
+        regexCB = new JCheckBox("Regex");
+        panel.add(regexCB);
+        infoLabel = new JLabel("");
+        // infoLabel.setBorder(new Border);
+        panel.add(infoLabel);
+
+        setVisible(false);
     }
 
     public void actionPerformed(ActionEvent e) {
 
-	// "FindNext" => search forward, "FindPrev" => search backward
-	String command = e.getActionCommand();
-	boolean forward = "FindNext".equals(command);
+        // "FindNext" => search forward, "FindPrev" => search backward
+        String command = e.getActionCommand();
+        boolean forward = "FindNext".equals(command);
 
-	search(forward);
+        search(forward);
 
     }
 
     private void search(boolean forward) {
-	// Create an object defining our search parameters.
-	SearchContext context = new SearchContext();
-	String text = searchField.getText();
-	// if (text.length() == 0) {
-	// return;
-	// }
-	context.setSearchFor(text);
-	context.setMatchCase(matchCaseCB.isSelected());
-	context.setRegularExpression(regexCB.isSelected());
-	context.setSearchForward(forward);
-	context.setWholeWord(false);
+        // Create an object defining our search parameters.
+        SearchContext context = new SearchContext();
+        String text = searchField.getText();
+        // if (text.length() == 0) {
+        // return;
+        // }
+        context.setSearchFor(text);
+        context.setMatchCase(matchCaseCB.isSelected());
+        context.setRegularExpression(regexCB.isSelected());
+        context.setSearchForward(forward);
+        context.setWholeWord(false);
 
-	RTextArea textArea = getTextArea();
+        RTextArea textArea = getTextArea();
 
-	boolean found = SearchEngine.find(textArea, context).wasFound();
-	if (!found) {
+        boolean found = SearchEngine.find(textArea, context).wasFound();
+        if (!found) {
 
-	    textArea.setCaretPosition(0);
-	    found = SearchEngine.find(textArea, context).wasFound();
-	    if (found) {
-		infoLabel.setText("Wrapped Search");
-	    } else {
-		infoLabel.setText("Text not found");
-	    }
-	    return;
+            textArea.setCaretPosition(0);
+            found = SearchEngine.find(textArea, context).wasFound();
+            if (found) {
+                infoLabel.setText("Wrapped Search");
+            } else {
+                infoLabel.setText("Text not found");
+            }
+            return;
 
-	}
-	infoLabel.setText("");
+        }
+        infoLabel.setText("");
     }
 
     private TextEditorPane getTextArea() {
-	return editorPanel.getTabsContainer().getCurrentTab().getTextArea();
+        return editorPanel.getTabsContainer().getCurrentTab().getTextArea();
     }
 
     public void getFocus() {
-	setVisible(true);
-	searchField.requestFocus();
+        setVisible(true);
+        searchField.requestFocus();
     }
 
 }
