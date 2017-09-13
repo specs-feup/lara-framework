@@ -319,6 +319,7 @@ public class LaraC {
                 throw new SyntaxException(parser.exceptions, possibleException);
             } else if (possibleException != null) {
                 parser.exceptions.add(possibleException);
+                possibleException.printStackTrace();
                 throw new SyntaxException(parser.exceptions);
             }
         }
@@ -661,7 +662,7 @@ public class LaraC {
         // On debug mode, dump the AST
         if (getOptions().isDebug()) {
             printTopic("Dumping AST");
-            getAspectIR().getAst().dump(" ");
+            getAspectIR().getAst().dump("  ");
         }
         importedLARA.add(SpecsIo.getCanonicalPath(laraFile));
 

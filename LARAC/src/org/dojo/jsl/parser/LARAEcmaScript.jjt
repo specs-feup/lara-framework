@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
-
+ 
 
 options {
  
@@ -1351,7 +1351,8 @@ TOKEN :
 	    t=<CALL > | t=<BEGIN > | t=< END > |
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
-	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > 
+	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > |
+	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> 
 	  )
 	  {return t;}
 	}
@@ -1366,7 +1367,8 @@ TOKEN :
 	    t=<CALL > | t=<BEGIN > | t=< END > |
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
-	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > 
+	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > |
+	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> 
 	  )
 	  { jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
 	   jjtThis.setCoord(t,t);}
@@ -2330,7 +2332,7 @@ TOKEN :
 	void UnaryExpression() #UnaryExpression(>1) :
 	{}
 	{ 
-		PostfixExpression() | ( LOOKAHEAD(1) UnaryOperator() UnaryExpression() )+
+		PostfixExpression() | ( UnaryOperator() UnaryExpression() )
 	}
 
 	void UnaryOperator() #Operator :

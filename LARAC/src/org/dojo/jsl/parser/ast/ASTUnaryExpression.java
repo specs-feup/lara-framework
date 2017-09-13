@@ -32,7 +32,7 @@ public class ASTUnaryExpression extends SimpleNode {
     @Override
     public void toXML(Document doc, Element parent) {
         final Element opEl = toXMLCommon(doc, parent);
-        final SimpleNode unary = (SimpleNode) getChildren()[1];
+        final SimpleNode unary = getChild(1);
         unary.toXML(doc, opEl);
     }
 

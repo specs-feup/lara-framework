@@ -14,100 +14,99 @@ public class ASTBinaryExpressionSequence extends SimpleNode {
     private Types maxType;
 
     public ASTBinaryExpressionSequence(int id) {
-	super(id);
+        super(id);
     }
 
     public ASTBinaryExpressionSequence(LARAEcmaScript p, int id) {
-	super(p, id);
+        super(p, id);
     }
 
     @Override
     public Object organize(Object obj) {
-	final SimpleNode left = getChild(0);
-	left.organize(this);
-	// Types lastType = maxType = left.getExpressionType();
-	for (int i = 1; i < getChildren().length; i += 2) {
-	    final ASTOperator operator = (ASTOperator) getChild(i);
-	    operator.organize(this);
-	    final SimpleNode right = getChild(i + 1);
-	    right.organize(this);
-	    /*
-	     * if(BinaryOperator.valueOf(operator.getTag()).ordinal() >
-	     * BinaryOperator.DIV.ordinal())
-	     * operator.setReturnType(Types.Boolean); else
-	     * operator.setReturnType(lastType, right.getExpressionType());
-	     * lastType = right.getExpressionType(); maxType =
-	     * Types.maxType(maxType, lastType);
-	     */
-	}
-	return obj;
+        final SimpleNode left = getChild(0);
+        left.organize(this);
+        // Types lastType = maxType = left.getExpressionType();
+        for (int i = 1; i < getChildren().length; i += 2) {
+            final ASTOperator operator = (ASTOperator) getChild(i);
+            operator.organize(this);
+            final SimpleNode right = getChild(i + 1);
+            right.organize(this);
+            /*
+             * if(BinaryOperator.valueOf(operator.getTag()).ordinal() >
+             * BinaryOperator.DIV.ordinal())
+             * operator.setReturnType(Types.Boolean); else
+             * operator.setReturnType(lastType, right.getExpressionType());
+             * lastType = right.getExpressionType(); maxType =
+             * Types.maxType(maxType, lastType);
+             */
+        }
+        return obj;
     }
 
     @Override
     public Types getExpressionType() {
-	SimpleNode simpleNode = getChild(0);
-	Types aType = simpleNode.getExpressionType();
-	maxType = aType;
+        SimpleNode simpleNode = getChild(0);
+        Types aType = simpleNode.getExpressionType();
+        maxType = aType;
 
-	// Types lastType = maxType = left.getExpressionType();
-	for (int i = 2; i < getChildren().length; i += 2) {
+        // Types lastType = maxType = left.getExpressionType();
+        for (int i = 2; i < getChildren().length; i += 2) {
 
-	    final SimpleNode right = getChild(i);
-	    maxType = Types.maxType(maxType, right.getExpressionType());
+            final SimpleNode right = getChild(i);
+            maxType = Types.maxType(maxType, right.getExpressionType());
 
-	    /*
-	     * if(BinaryOperator.valueOf(operator.getTag()).ordinal() >
-	     * BinaryOperator.DIV.ordinal())
-	     * operator.setReturnType(Types.Boolean); else
-	     * operator.setReturnType(lastType, right.getExpressionType());
-	     * lastType = right.getExpressionType(); maxType =
-	     * Types.maxType(maxType, lastType);
-	     */
-	}
+            /*
+             * if(BinaryOperator.valueOf(operator.getTag()).ordinal() >
+             * BinaryOperator.DIV.ordinal())
+             * operator.setReturnType(Types.Boolean); else
+             * operator.setReturnType(lastType, right.getExpressionType());
+             * lastType = right.getExpressionType(); maxType =
+             * Types.maxType(maxType, lastType);
+             */
+        }
 
-	return maxType;
+        return maxType;
     }
 
     @Override
     public void toXML(Document doc, Element parent) {
+        final SimpleNode left = getChild(0);
 
-	final SimpleNode left = getChild(0);
+        ASTOperator operator = (ASTOperator) getChild(1);
+        SimpleNode right = getChild(2);
+        Element opEl = doc.createElement("op");
 
-	ASTOperator operator = (ASTOperator) getChild(1);
-	SimpleNode right = getChild(2);
-	Element opEl = doc.createElement("op");
+        opEl.setAttribute("name", operator.getTag());
 
-	opEl.setAttribute("name", operator.getTag());
-
-	left.toXML(doc, opEl);
-	right.toXML(doc, opEl);
-	int i = 3;
-	while (i < getChildren().length) {
-	    operator = (ASTOperator) getChildren()[i++];
-	    final Element newOpEl = doc.createElement("op");
-	    newOpEl.setAttribute("name", operator.getTag());
-	    newOpEl.appendChild(opEl);
-	    opEl = newOpEl;
-	    right = getChild(i++);
-	    right.toXML(doc, opEl);
-	}
-	parent.appendChild(opEl);
-	return;
+        left.toXML(doc, opEl);
+        right.toXML(doc, opEl);
+        int i = 3;
+        while (i < getChildren().length) {
+            operator = (ASTOperator) jjtGetChild(i++);
+            final Element newOpEl = doc.createElement("op");
+            newOpEl.setAttribute("name", operator.getTag());
+            newOpEl.appendChild(opEl);
+            opEl = newOpEl;
+            right = getChild(i++);
+            right.toXML(doc, opEl);
+        }
+        parent.appendChild(opEl);
+        return;
     }
 
     @Override
     public String toSource(int indentation) {
-	String source = indent(indentation);
-	final SimpleNode left = getChild(0);
-	source += left.toSource();
+        String source = indent(indentation);
+        final SimpleNode left = getChild(0);
+        source += left.toSource();
 
-	for (int i = 1; i < getChildren().length; i += 2) {
-	    final ASTOperator operator = (ASTOperator) getChild(i);
-	    source += " " + operator.toSource();
-	    final SimpleNode right = getChild(i + 1);
-	    source += " " + right.toSource();
-	}
-	return source;
+        for (int i = 1; i < getChildren().length; i += 2) {
+            final ASTOperator operator = (ASTOperator) getChild(i);
+            source += " " + operator.toSource();
+            final SimpleNode right = getChild(i + 1);
+            source += " " + right.toSource();
+        }
+        return source;
     }
 }
 /*

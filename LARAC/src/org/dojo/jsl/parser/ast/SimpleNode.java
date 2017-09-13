@@ -68,7 +68,6 @@ public class SimpleNode implements Node {
         parser = p;
     }
 
-
     @Override
     public void jjtOpen() {
         // System.out.println("OPENING a " + LARAEcmaScriptTreeConstants.jjtNodeName[id]);
@@ -174,7 +173,7 @@ public class SimpleNode implements Node {
             for (int i = 0; i < getChildren().length; ++i) {
                 final SimpleNode n = (SimpleNode) getChildren()[i];
                 if (n != null) {
-                    n.dump(prefix + " ");
+                    n.dump(prefix + "  ");
                 }
             }
         }
@@ -344,7 +343,7 @@ public class SimpleNode implements Node {
     	     * for(Variable var: fnDecl){ var.getInitialize().toXML(doc,
     	     * parent); }
     	     *//*
-               }}*/
+                }}*/
 
     protected void createInputXMLDecl(SimpleNode simpleNode, Map<String, Variable> vars, Document doc, Element parent) {
         if (simpleNode instanceof ASTVariableDeclarationList) {
