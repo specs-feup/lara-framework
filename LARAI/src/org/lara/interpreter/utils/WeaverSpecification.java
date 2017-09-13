@@ -51,6 +51,13 @@ public class WeaverSpecification {
         return obj instanceof JoinPoint;
     }
 
+    public boolean isJoinPoint(Object obj, String type) {
+        if (isJoinPoint(obj)) {
+            return ((JoinPoint) obj).instanceOf(type);
+        }
+        return false;
+    }
+
     public Bindings getJoinpoints() {
 
         List<String> joinPoints = ls.getJoinPoints().values().stream()
