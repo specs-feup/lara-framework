@@ -52,10 +52,7 @@ public class WeaverSpecification {
     }
 
     public boolean isJoinPoint(Object obj, String type) {
-        if (isJoinPoint(obj)) {
-            return ((JoinPoint) obj).instanceOf(type);
-        }
-        return false;
+        return isJoinPoint(obj) && ((JoinPoint) obj).instanceOf(type);
     }
 
     public Bindings getJoinpoints() {
