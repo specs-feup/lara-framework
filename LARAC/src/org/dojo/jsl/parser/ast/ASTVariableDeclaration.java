@@ -29,10 +29,10 @@ public class ASTVariableDeclaration extends SimpleNode {
 
     @Override
     public void declareGlobal(LaraC lara) {
+
         final ASTIdentifier id = (ASTIdentifier) getChildren()[0];
         final String varName = id.value.toString();
         if (getChildren().length > 1) {
-
             SimpleNode init = getChild(1);
             if (init instanceof ASTAssignmentExpression) {
                 throw newException("Chainned variable declaration assignments are not supported.");
@@ -42,6 +42,10 @@ public class ASTVariableDeclaration extends SimpleNode {
         }
 
         lara.aspectIR().addGlobalElement(varName, this);
+        Optional<ASTVariableStatement> ancestorOfType = getAncestorOfType(ASTVariableStatement.class);
+        if (ancestorOfType.isPresent()) {
+            jjtGetFirstToken().specialToken = ancestorOfType.get().jjtGetFirstToken().specialToken;
+        }
     }
 
     @Override
@@ -135,6 +139,7 @@ public class ASTVariableDeclaration extends SimpleNode {
         final Element statementDeclEl = doc.createElement("declaration");
         statementDeclEl.setAttribute("name", "vardecl");
         statementDeclEl.setAttribute("coord", getCoords());
+        addXMLComent(statementDeclEl);
         parent.appendChild(statementDeclEl);
         toXML(doc, statementDeclEl);
 

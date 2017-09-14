@@ -46,6 +46,7 @@ public class ASTVariableStatement extends SimpleNode {
         final Element statementDeclEl = doc.createElement("statement");
         statementDeclEl.setAttribute("name", "vardecl");
         statementDeclEl.setAttribute("coord", getCoords());
+        addXMLComent(statementDeclEl);
         if (!label.isEmpty()) {
             statementDeclEl.setAttribute("label", label);
         }

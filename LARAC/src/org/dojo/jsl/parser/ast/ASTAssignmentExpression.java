@@ -75,6 +75,7 @@ public class ASTAssignmentExpression extends SimpleNode {
         final Element statEl = doc.createElement("declaration");
         statEl.setAttribute("name", "expr");
         statEl.setAttribute("coord", getCoords());
+        addXMLComent(statEl);
         parent.appendChild(statEl);
         final Element exprEl = doc.createElement("expression");
         statEl.appendChild(exprEl);

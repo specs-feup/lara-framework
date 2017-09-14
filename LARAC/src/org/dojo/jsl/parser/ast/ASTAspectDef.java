@@ -293,6 +293,7 @@ public class ASTAspectDef extends SimpleNode {
         final Element aspectEl = doc.createElement("aspect");
         aspectEl.setAttribute("name", lara.getPrefix() + getName());
         aspectEl.setAttribute("coord", getCoords());
+        addXMLComent(aspectEl);
         root.appendChild(aspectEl);
 
         final Element parameterEl = doc.createElement("parameters");

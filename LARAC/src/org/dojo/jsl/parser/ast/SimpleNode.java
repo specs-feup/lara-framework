@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.language.specification.artifactsmodel.ArtifactsModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -164,10 +165,15 @@ public class SimpleNode implements Node {
 
     public void dump(String prefix) {
         LaraC lara = getLara();
+        String string = toString(prefix);
+        Token specialToken = jjtGetFirstToken().specialToken;
+        // if (specialToken != null) {
+        // string += " special: " + specialToken.image;
+        // }
         if (lara == null) {
-            System.out.println(toString(prefix));
+            System.out.println(string);
         } else {
-            lara.println(toString(prefix));
+            lara.println(string);
         }
         if (getChildren() != null) {
             for (int i = 0; i < getChildren().length; ++i) {
@@ -343,7 +349,7 @@ public class SimpleNode implements Node {
     	     * for(Variable var: fnDecl){ var.getInitialize().toXML(doc,
     	     * parent); }
     	     *//*
-                }}*/
+                                       }}*/
 
     protected void createInputXMLDecl(SimpleNode simpleNode, Map<String, Variable> vars, Document doc, Element parent) {
         if (simpleNode instanceof ASTVariableDeclarationList) {
@@ -717,11 +723,39 @@ public class SimpleNode implements Node {
         return false;
     }
 
+    /**
+     * 
+     * @param methodID
+     * @return
+     */
     public ASTAllocationExpression newAllocExpr(String methodID) {
         final ASTAllocationExpression alloc = new ASTAllocationExpression(
                 LARAEcmaScriptTreeConstants.JJTALLOCATIONEXPRESSION);
         alloc.setMethodID(methodID);
         return alloc;
+    }
+
+    public void addXMLComent(Element el) {
+
+        StringBuilder comment = new StringBuilder();
+        Token special = jjtGetFirstToken().specialToken;
+        while (special != null) {
+            comment.append(special);
+            comment.append("\n");
+            special = special.specialToken;
+        }
+        if (comment.length() != 0) {
+            String content;
+            // try {
+            // content = DatatypeConverter.printBase64Binary(comment.toString().getBytes("UTF-8"));
+            content = StringEscapeUtils.escapeHtml4(comment.toString());
+            el.setAttribute("comment", content);
+            // } catch (UnsupportedEncodingException e) {
+            // getLara().warnln(
+            // "Could not add the following comment(s) to aspect-ir: " + comment.toString() + ". Reason: "
+            // + e.getMessage());
+            // }
+        }
     }
 }
 

@@ -9,43 +9,44 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTExpressionStatement extends SimpleNode {
-	public ASTExpressionStatement(int id) {
-		super(id);
-	}
+    public ASTExpressionStatement(int id) {
+        super(id);
+    }
 
-	public ASTExpressionStatement(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTExpressionStatement(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		for (final Node child : getChildren()) {
-			((SimpleNode) child).organize(obj);
-		}
-		return null;
-	}
+    @Override
+    public Object organize(Object obj) {
+        for (final Node child : getChildren()) {
+            ((SimpleNode) child).organize(obj);
+        }
+        return null;
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		for (final Node child : getChildren()) {
+    @Override
+    public void toXML(Document doc, Element parent) {
+        for (final Node child : getChildren()) {
 
-			if (!insertTag) {
-				((SimpleNode) child).toXML(doc, parent);
-				continue;
-			}
-			final Element statEl = doc.createElement("statement");
-			statEl.setAttribute("coord", getCoords());
-			if (!label.isEmpty()) {
-				statEl.setAttribute("label", label);
-			}
-			parent.appendChild(statEl);
-			statEl.setAttribute("name", "expr");
+            if (!insertTag) {
+                ((SimpleNode) child).toXML(doc, parent);
+                continue;
+            }
+            final Element statEl = doc.createElement("statement");
+            addXMLComent(statEl);
+            statEl.setAttribute("coord", getCoords());
+            if (!label.isEmpty()) {
+                statEl.setAttribute("label", label);
+            }
+            parent.appendChild(statEl);
+            statEl.setAttribute("name", "expr");
 
-			final Element exprEl = doc.createElement("expression");
-			statEl.appendChild(exprEl);
-			((SimpleNode) child).toXML(doc, exprEl);
-		}
-	}
+            final Element exprEl = doc.createElement("expression");
+            statEl.appendChild(exprEl);
+            ((SimpleNode) child).toXML(doc, exprEl);
+        }
+    }
 }
 /*
  * JavaCC - OriginalChecksum=b35cf230ca3a5f40e973934bf7137de1 (do not edit this

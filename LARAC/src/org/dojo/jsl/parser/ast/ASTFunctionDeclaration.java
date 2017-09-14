@@ -83,6 +83,7 @@ public class ASTFunctionDeclaration extends SimpleNode {
         final Element statEl = doc.createElement(elementType);
         statEl.setAttribute("name", "fndecl");
         statEl.setAttribute("coord", getCoords());
+        addXMLComent(statEl);
         parent.appendChild(statEl);
         final Element exprEl = doc.createElement("expression");
         statEl.appendChild(exprEl);
