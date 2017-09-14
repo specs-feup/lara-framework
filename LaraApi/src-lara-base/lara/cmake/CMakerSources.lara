@@ -1,3 +1,4 @@
+import lara.Strings;
 import lara.util.StringSet;
 
 /**
@@ -20,7 +21,8 @@ CMakerSources.prototype._VARIABLE_UNTAGGED_SOURCES = "CMAKER_SOURCES";
 CMakerSources.prototype.addSources = function(paths) {
 	checkDefined(paths, "path", "CMakerSources.addSources");
 	for(path of paths) {
-		this.untaggedSources.push(path);
+		this._addSourcePrivate(this.untaggedSources, path);
+		//this.untaggedSources.push(path);
 	}
 }
 
@@ -29,7 +31,7 @@ CMakerSources.prototype.addSources = function(paths) {
  */
 CMakerSources.prototype.addSource = function(path) {
 	checkDefined(path, "path", "CMakerSources.addSource");
-	this.untaggedSources.push(path);
+	this._addSourcePrivate(this.untaggedSources, path);
 }
 
 /**
@@ -48,7 +50,17 @@ CMakerSources.prototype.addTaggedSources = function(tag, paths) {
 		this.taggedSources[tag] = sources;
 		this.tags.add(tag);
 	}
+	
+	for(var path of paths) {
+		this._addSourcePrivate(sources, path);
+	}
+	
 }
+
+CMakerSources.prototype._addSourcePrivate = function(sources, path) {
+	sources.push('\"' + Strings.escapeJson(path) + '\"');
+}
+
 
 /**
  * @return an array with the CMake variables that have source files
@@ -65,4 +77,48 @@ CMakerSources.prototype.getSourceVariables = function() {
 	}
 	
 	return sources;
+}
+
+/**
+ * @return String with the CMake code that declares the current sources
+ */
+CMakerSources.prototype.getCode = function() {
+	var code = "";
+
+	// Add untagged sources
+	if(this.untaggedSources.length > 0) {
+		code += this._getCodeSource(this._VARIABLE_UNTAGGED_SOURCES, this.untaggedSources);
+	}
+	
+	for(tag of this.tags.values()) {
+		var tagCode = this._getCodeSource(tag, this.taggedSources[tag]);
+		
+		if(code.length !== 0) {
+			code += "\n";
+		}
+		
+		code += tagCode;
+	}
+	
+	return code;
+}
+
+/**
+ * @return String with the CMake code for a given source name and values
+ **/
+CMakerSources.prototype._getCodeSource = function(sourceName, values) {
+	var prefix = "set (" + sourceName +  " ";
+	var code = prefix;
+
+	// Build space
+	var space = "";
+	for(var i = 0; i<prefix.length; i++) {
+		space += " ";
+	}
+	
+	code += values.join("\n" + space);
+	
+	code += "\n)";
+	
+	return code;
 }
