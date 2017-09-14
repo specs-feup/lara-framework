@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -191,7 +191,7 @@ public class LaraIUtils {
     /*
     public static void includeClassPath(List<File> file, Output stream) {
         final ClassLoader classLoader;
-    
+
         // Thread currentThread = Thread.currentThread();
         try {
             // currentThreadClassLoader = currentThread.getContextClassLoader();
@@ -199,12 +199,12 @@ public class LaraIUtils {
         } catch (Exception e) {
             throw new BuildException(e);
         }
-    
+
         // Add the conf dir to the classpath
         // Chain the current thread classloader
-    
+
         // try (URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { f.toURI().toURL() },
-    
+
         Function<? super File, ? extends URL> mapper = f -> {
             try {
                 stream.println(" " + MessageConstants.BRANCH_STR + SpecsIo.getCanonicalPath(f));
@@ -216,10 +216,10 @@ public class LaraIUtils {
         URL[] urls = file.stream().map(mapper).collect(Collectors.toList()).toArray(new URL[0]);
         try (URLClassLoader urlClassLoader = new URLClassLoader(urls, classLoader)) {
             System.out.println("..>" + Arrays.asList(urls));
-            
+
             // Replace the thread classloader - assumes you have permissions to do so
             currentThread.setContextClassLoader(urlClassLoader);
-    
+
             Class<?> forName = Class.forName("org.Test", true, urlClassLoader);
             System.out.println("..>" + forName);
         } catch (final Exception e) {
@@ -228,23 +228,23 @@ public class LaraIUtils {
     }*/
     /*
     public static void includeClassPath(File f) {
-    
+
         final ClassLoader currentThreadClassLoader;
-    
+
         try {
             currentThreadClassLoader = Thread.currentThread().getContextClassLoader();
         } catch (Exception e) {
             throw new BuildException(e);
         }
-    
+
         // Add the conf dir to the classpath
         // Chain the current thread classloader
         try (URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { f.toURI().toURL() },
                 currentThreadClassLoader)) {
-    
+
             // Replace the thread classloader - assumes you have permissions to do so
             Thread.currentThread().setContextClassLoader(urlClassLoader);
-    
+
         } catch (final Exception e) {
             throw new JavaImportException(f, e);
         }
@@ -253,7 +253,8 @@ public class LaraIUtils {
     public static void appendComment(Base base, final StringBuilder ret) {
         String comment = base.comment;
         if (comment != null && !comment.isEmpty()) {
-            ret.append(StringEscapeUtils.unescapeJava(comment.toString()));
+            String unescapeJava = StringEscapeUtils.unescapeHtml4(comment.toString());
+            ret.append(unescapeJava);
         }
     }
 }

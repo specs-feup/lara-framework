@@ -5,12 +5,12 @@
  */
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -121,7 +121,7 @@ public class SimpleNode implements Node {
 
     /**
      * Returns a child casted as {@link SimpleNode}
-     * 
+     *
      * @param i
      * @return
      */
@@ -309,7 +309,7 @@ public class SimpleNode implements Node {
     }
     /*
     protected void varDeclToXML(Document doc, Element parent, Variable var) {
-    
+
     	final Element nameExprEl = doc.createElement("expression");
     	parent.appendChild(nameExprEl);
     	// if(var.getName().startsWith("$"))
@@ -325,7 +325,7 @@ public class SimpleNode implements Node {
     	    var.getInitialize().toXML(doc, initEl);
     	}
     }
-    
+
     /*
     protected void createXMLDecl(Collection<Variable> vars, Document doc, Element parent) {
     	final Element statementDeclEl = doc.createElement("statement");
@@ -334,7 +334,7 @@ public class SimpleNode implements Node {
     	if (!label.isEmpty()) {
     	    statementDeclEl.setAttribute("label", label);
     	}
-    
+
     	final ArrayList<Variable> fnDecl = new ArrayList<>();
     	for (final Variable var : vars) {
     	    if (var.getType().equals(Types.FNDecl)) {
@@ -349,7 +349,7 @@ public class SimpleNode implements Node {
     	     * for(Variable var: fnDecl){ var.getInitialize().toXML(doc,
     	     * parent); }
     	     *//*
-                                       }}*/
+                                                            }}*/
 
     protected void createInputXMLDecl(SimpleNode simpleNode, Map<String, Variable> vars, Document doc, Element parent) {
         if (simpleNode instanceof ASTVariableDeclarationList) {
@@ -532,7 +532,7 @@ public class SimpleNode implements Node {
             } else {
             final String[] props = param.split("\\.");
             Element lastEl = doc.createElement("id");
-            
+
             lastEl.setAttribute("name", props[0]);
             for (int j = 1; j < props.length; j++) {
             final Element propEl = doc.createElement("property");
@@ -640,7 +640,7 @@ public class SimpleNode implements Node {
     /**
      * Return the LARA source code of the AST <br>
      * <NOTE> This code is not equal to the input as it is automatically generated
-     * 
+     *
      * @return
      */
     public final String toSource() {
@@ -649,7 +649,7 @@ public class SimpleNode implements Node {
 
     /**
      * Return the LARA source code of the AST
-     * 
+     *
      * @see SimpleNode#toSource()
      * @param indentation
      * @return
@@ -701,7 +701,7 @@ public class SimpleNode implements Node {
 
     /**
      * Verifies if a node is equal or descendant of this node
-     * 
+     *
      * @param descendant
      * @return
      */
@@ -724,7 +724,7 @@ public class SimpleNode implements Node {
     }
 
     /**
-     * 
+     *
      * @param methodID
      * @return
      */
@@ -737,25 +737,42 @@ public class SimpleNode implements Node {
 
     public void addXMLComent(Element el) {
 
-        StringBuilder comment = new StringBuilder();
+        List<String> comments = new ArrayList<String>();
         Token special = jjtGetFirstToken().specialToken;
         while (special != null) {
-            comment.append(special);
-            comment.append("\n");
+            comments.add(special.image);
             special = special.specialToken;
         }
-        if (comment.length() != 0) {
-            String content;
-            // try {
-            // content = DatatypeConverter.printBase64Binary(comment.toString().getBytes("UTF-8"));
-            content = StringEscapeUtils.escapeHtml4(comment.toString());
-            el.setAttribute("comment", content);
-            // } catch (UnsupportedEncodingException e) {
-            // getLara().warnln(
-            // "Could not add the following comment(s) to aspect-ir: " + comment.toString() + ". Reason: "
-            // + e.getMessage());
-            // }
+        if (!comments.isEmpty()) {
+            Collections.reverse(comments);
+            escapeHTML(el, StringUtils.join(comments, "\n"));
+            // base64(el, comment);
         }
+    }
+
+    /**
+     * @param el
+     * @param comment
+     */
+    // private void base64(Element el, String comment) {
+    // try {
+    // String content = DatatypeConverter.printBase64Binary(comment.getBytes("UTF-8"));
+    // el.setAttribute("comment", content);
+    // } catch (UnsupportedEncodingException e) {
+    // getLara().warnln(
+    // "Could not add the following comment(s) to aspect-ir: " + comment.toString() + ". Reason: "
+    // + e.getMessage());
+    // }
+    // }
+
+    /**
+     * @param el
+     * @param string
+     */
+    private void escapeHTML(Element el, String string) {
+        String content;
+        content = StringEscapeUtils.escapeHtml4(string);
+        el.setAttribute("comment", content);
     }
 }
 
