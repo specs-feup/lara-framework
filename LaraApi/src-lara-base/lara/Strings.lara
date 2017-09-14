@@ -21,3 +21,12 @@ Strings.replacer = function(string, oldSequence, newSequence) {
 Strings.escapeHtml = function(html) {
 	return ApacheStrings.escapeHtml(html);
 }
+
+/**
+ * Escapes JSON content.
+ *
+ * @return String with escaped code
+ */
+Strings.escapeJson = function(jsonContents) {
+	return SpecsStrings.escapeJson(jsonContents);
+}

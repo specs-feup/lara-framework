@@ -34,3 +34,7 @@ StringSet.prototype.values = function() {
 	}
 	return values;
 }
+
+StringSet.prototype.isEmpty = function() {
+	this.values.length === 0;
+}

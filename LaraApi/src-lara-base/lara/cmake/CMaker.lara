@@ -1,4 +1,8 @@
+import lara.Strings;
+import lara.Platforms;
 import lara.cmake.CMakerSources;
+import lara.util.StringSet;
+import lara.util.ProcessExecutor;
 
 /**
  * Builds CMake configurations.
@@ -7,9 +11,181 @@ var CMaker = function(name) {
 	checkDefined(name, "name", "CMaker");
 	
 	this.name = name;
+	this.makeCommand = "make";
+	this.minimumVersion = this._MINIMUM_VERSION;
+	this.cxxFlags = [];
+	this.libs = [];
 	this.sources = new CMakerSources();
+	this.includeFolders = new StringSet();
 };
 
+CMaker.prototype._MINIMUM_VERSION = "2.8";
+CMaker.prototype._EXE_VAR = "EXE_NAME";
+
+
+/**
+ * Sets the minimum version of the CMake file.
+ *
+ * @param version String with minimum CMake version
+ */
+CMaker.prototype.setMinimumVersion = function(version) {
+	this.minimumVersion = version;
+	
+	return this;
+}
+
+CMaker.prototype.setMakeCommand = function(makeCommand) {
+	this.makeCommand = makeCommand;
+	
+	return this;
+}
+
+/**
+ * Adds a variable number of Strings, one for each flag.
+ *
+ */
+CMaker.prototype.addCxxFlags = function() {
+	for(var flag of arguments) {
+		this.cxxFlags.push(flag);
+	}
+	
+	return this;
+}
+
+/**
+ *
+ */
+CMaker.prototype.addLibs = function() {
+	for(var lib of arguments) {
+		this.libs.push(lib);
+	}
+	
+	return this;
+}
+
+
+/**
+ * param includeFolder String representing an include folder
+ */
+CMaker.prototype.addIncludeFolder = function(includeFolder) {
+	
+	this.includeFolders.add(Strings.escapeJson(includeFolder));
+	
+	return this;
+}
+
+/**
+ * @return the name of the executable that will be generated
+ */
+CMaker.prototype._getExecutableName = function() {
+	var executable = this.name;
+	
+	if(Platforms.isWindows) {
+		executable += ".exe";
+	}
+	
+	return executable;
+}
+
+CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
+	// Generate CMakeLists.txt
+	var cmakeFile = Io.getPath(cmakelistsFolder, "CMakeLists.txt");
+	Io.writeFile(cmakeFile, this.getCode());
+	
+	// Create build folder
+	Io.mkdir(builderFolder);
+	
+	// Execute CMake
+	var cmakeCmd = "cmake \"" + cmakelistsFolder + "\"";
+	if(cmakeFlags !== undefined) {
+		cmakeCmd += " " + cmakeFlags;
+	}
+	
+	var cmakeOutput = new ProcessExecutor()
+		.setWorkingDir(builderFolder)
+		.execute(cmakeCmd);
+	//println("CMake output: " + cmakeOutput);
+		
+	// Execute make
+	var makeOutput = new ProcessExecutor()
+		.setWorkingDir(builderFolder)
+		.execute(this.makeCommand);
+	//println("Make output: " + makeOutput);
+	
+	var executableFile = Io.getPath(builderFolder, this._getExecutableName());
+	if(!Io.isFile(executableFile)) {
+		println("Cmaker.build: Could not generate executable file '" + this._getExecutableName() + "'");
+		return;
+	}
+	
+	return executableFile;
+}
+
+
+
+/*** CODE FUNCTIONS ***/
+
+/**
+ * @return the CMake corresponding to the current configuration
+ */
+CMaker.prototype.getCode = function() {
+	
+	var code = "";
+	
+	// Minimum version
+	code += "cmake_minimum_required(VERSION " + this.minimumVersion + ")\n\n";
+	
+	// Executable
+	code += "set (" + this._EXE_VAR +  " \"" + this.name + "\")\n\n";
+	
+	// CXX Flags
+	code += this._getCxxFlagsCode();
+	
+	// Sources
+	code += this.sources.getCode() + "\n\n";
+
+	// Include folders
+	code += this._getIncludeFoldersCode();
+	
+	// Executable
+	code += "add_executable(${" + this._EXE_VAR + "} ";
+	code += "${" + this.sources.getSourceVariables().join("} ${") + "}";
+	code += ")\n\n";
+	
+	// Libs
+	code += "target_link_libraries(${" + this._EXE_VAR + "} ";
+	code += '"' + this.libs.join('" "') + '")\n\n';
+		
+	return code;
+}
+
+CMaker.prototype._getCxxFlagsCode = function() {
+	if(this.cxxFlags.length === 0) {
+		return "";
+	}
+	
+	var code = "set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ";
+	
+	code += this.cxxFlags.join(" ");
+	code += "\")\n\n";
+	
+	return code;
+}
+
+CMaker.prototype._getIncludeFoldersCode = function() {
+
+	if(this.includeFolders.isEmpty()) {
+		return "";
+	}
+
+	var code = "include_directories(";
+
+	code += '"' + this.includeFolders.values().join("\", \"") + '"'; 
+	
+	code += ")\n\n";
+	return code;	
+	//return "include_directories(<absolute path to srcFolder>)";
+}
 
 /*
 .setMinimumVersion("3.0.2") // Could have a standard minimum version
