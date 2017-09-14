@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Feb 23 16:08:26 2017
+// Thu Sep 14 01:51:29 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
 /****************************** Class Statement ******************************/
-public class Statement implements IElement {
+public class Statement extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
 	public java.util.ArrayList<CodeElem> components= new java.util.ArrayList<CodeElem>();
@@ -47,7 +47,10 @@ public class Statement implements IElement {
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("concurrent")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
 			concurrent = Boolean.parseBoolean(a.getNodeValue());
 		}
 		else if (a.getNodeName().equals("coord")){
@@ -133,7 +136,10 @@ this(readDocument(fileName), rootName);
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("concurrent")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
 			concurrent = Boolean.parseBoolean(a.getNodeValue());
 		}
 		else if (a.getNodeName().equals("coord")){
@@ -197,7 +203,10 @@ this(readDocument(fileName), rootName);
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("concurrent")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
 			concurrent = Boolean.parseBoolean(a.getNodeValue());
 		}
 		else if (a.getNodeName().equals("coord")){
@@ -271,6 +280,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	tagEl.setAttribute("concurrent", ""+concurrent);
 	tagEl.setAttribute("coord", ""+coord);
 	tagEl.setAttribute("desc", ""+desc);
@@ -286,6 +296,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 		tagEl.setAttribute("concurrent", ""+concurrent);
 		tagEl.setAttribute("coord", ""+coord);
 		tagEl.setAttribute("desc", ""+desc);
@@ -299,6 +310,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("Statement {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.println("components = <[");
 	for(CodeElem i_components: components){

@@ -2,6 +2,7 @@ package org.lara.interpreter.aspectir;
 
 /****************************** Interface Visitor ******************************/
 public interface Visitor {
+	public void visit(Base base);
 	public void visit(CodeElem codeElem);
 	public void visit(Expression expression);
 	public void visit(Argument argument);

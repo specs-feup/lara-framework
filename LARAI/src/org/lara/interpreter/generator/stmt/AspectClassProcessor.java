@@ -162,7 +162,9 @@ public class AspectClassProcessor {
      *            The javascript context
      */
     public StringBuilder getAspectJavascript(Aspect asp) {
-        final StringBuilder aspectConstructor = new StringBuilder("function " + asp.name + "(");
+        final StringBuilder aspectConstructor = new StringBuilder();
+        LaraIUtils.appendComment(asp, aspectConstructor);
+        aspectConstructor.append("function " + asp.name + "(");
         final StringBuilder arguments = new StringBuilder();
         final StringBuilder callArgs = new StringBuilder();
         final StringBuilder inputInit = new StringBuilder();

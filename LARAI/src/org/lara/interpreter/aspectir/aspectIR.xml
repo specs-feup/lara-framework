@@ -3,6 +3,10 @@
    <!--<type name="ROOT">-->
 		<!--<member name="aspects" type="Aspects" count="1" />-->
    <!--</type>  -->
+   
+   <type name="Base">
+     <member name="comment" type="string" where="attribute" count="0..1"/>
+   </type>
 	<type name="Aspects">
 		<member name="aspect" type="Aspect" count="*" />
 		<member name="main" where="attribute" type="string" count="0..1" />
@@ -10,7 +14,7 @@
 	</type>
 		
 <!-- ASPECT DEFINITION ************************************************ -->	
-  <type name="Aspect">
+  <type name="Aspect" base="Base">
      <member name="name" type="string" key="yes" where="attribute"/>  
      <member name="stage" type="string" where="attribute" count="0..1"/>
      <member name="coord" type="string" where="attribute" count="0..1"/>
@@ -45,7 +49,7 @@
   </type>    
               
 <!-- Statement ************************************************* -->	
-  <type name="Statement">  
+  <type name="Statement" base="Base">
      <member name="desc" type="string" where="attribute" count="0..1"/>
      <member name="name" type="string" where="attribute" count="1"/>     
      <member name="component" type="CodeElem" count="*" isAlias="yes"/> 

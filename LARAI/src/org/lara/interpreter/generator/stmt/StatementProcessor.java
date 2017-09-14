@@ -41,6 +41,7 @@ public class StatementProcessor {
 
     public StringBuilder processStatement(Statement stat, String prefix, int depth, String sufix) {
         final StringBuilder ret = new StringBuilder();
+        LaraIUtils.appendComment(stat, ret);
         switch (Statements.valueOf(stat.name.toUpperCase())) {
         case SELECT:
             interpreter.getWeaverStmtProcessor().processSelect(stat, depth, ret);

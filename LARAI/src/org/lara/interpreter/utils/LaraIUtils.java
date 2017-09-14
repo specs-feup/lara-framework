@@ -16,6 +16,8 @@ import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWea
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.lara.interpreter.aspectir.Base;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.language.specification.LanguageSpecification;
@@ -247,4 +249,11 @@ public class LaraIUtils {
             throw new JavaImportException(f, e);
         }
     }*/
+
+    public static void appendComment(Base base, final StringBuilder ret) {
+        String comment = base.comment;
+        if (comment != null && !comment.isEmpty()) {
+            ret.append(StringEscapeUtils.unescapeJava(comment.toString()));
+        }
+    }
 }

@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Feb 23 16:08:26 2017
+// Thu Sep 14 01:51:29 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
 /****************************** Class Aspect ******************************/
-public class Aspect implements IElement {
+public class Aspect extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
 	public Expression check;
@@ -54,7 +54,10 @@ public class Aspect implements IElement {
 	int found_staticBlock = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("coord")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("coord")){
 			coord = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -157,7 +160,10 @@ this(readDocument(fileName), rootName);
 	int found_staticBlock = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("coord")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("coord")){
 			coord = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -237,7 +243,10 @@ this(readDocument(fileName), rootName);
 	int found_staticBlock = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("coord")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("coord")){
 			coord = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -322,6 +331,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	tagEl.setAttribute("coord", ""+coord);
 	tagEl.setAttribute("name", ""+name);
 	tagEl.setAttribute("stage", ""+stage);
@@ -343,6 +353,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 		tagEl.setAttribute("coord", ""+coord);
 		tagEl.setAttribute("name", ""+name);
 		tagEl.setAttribute("stage", ""+stage);
@@ -362,6 +373,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("Aspect {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.print("check = ");
 	if (check == null)
