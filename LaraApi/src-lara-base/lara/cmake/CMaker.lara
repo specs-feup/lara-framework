@@ -12,11 +12,13 @@ var CMaker = function(name) {
 	
 	this.name = name;
 	this.makeCommand = "make";
+	this.generator = undefined;
 	this.minimumVersion = this._MINIMUM_VERSION;
 	this.cxxFlags = [];
 	this.libs = [];
 	this.sources = new CMakerSources();
 	this.includeFolders = new StringSet();
+
 };
 
 CMaker.prototype._MINIMUM_VERSION = "2.8";
@@ -30,6 +32,12 @@ CMaker.prototype._EXE_VAR = "EXE_NAME";
  */
 CMaker.prototype.setMinimumVersion = function(version) {
 	this.minimumVersion = version;
+	
+	return this;
+}
+
+CMaker.prototype.setGenerator = function(generator) {
+	this.generator = generator;
 	
 	return this;
 }
@@ -100,6 +108,11 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	if(cmakeFlags !== undefined) {
 		cmakeCmd += " " + cmakeFlags;
 	}
+	
+	if(this.generator !== undefined) {
+		cmakeCmd += " -G \"" + this.generator + "\"";
+	}
+	
 	
 	var cmakeOutput = new ProcessExecutor()
 		.setWorkingDir(builderFolder)
