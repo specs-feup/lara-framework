@@ -1,3 +1,14 @@
+var LARA_DEBUG = false;
+
+function setDebug(value) {
+	if(value === undefined) {
+		LARA_DEBUG = true;
+		return;
+	}
+	
+	LARA_DEBUG = value;
+}
+
 function notImplemented(functionName) {
 	
 	functionName = defaultValue(functionName, "<unknown>");
@@ -84,6 +95,13 @@ function info(message, origin) {
 	
 	println(composedMessage);
 }
+
+function debug(message, origin) {
+	if(LARA_DEBUG) {
+		info("[DEBUG] " + message, origin);
+	}
+}
+
 
 /**
  * Converts an arguments object to a JavaScript array (Array).

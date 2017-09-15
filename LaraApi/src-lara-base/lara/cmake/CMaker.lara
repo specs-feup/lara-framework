@@ -101,10 +101,11 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	Io.writeFile(cmakeFile, this.getCode());
 	
 	// Create build folder
-	Io.mkdir(builderFolder);
+	var builderFolderpath = Io.mkdir(builderFolder).getAbsolutePath();
 	
 	// Execute CMake
-	var cmakeCmd = "cmake \"" + cmakelistsFolder + "\"";
+	var cmakeCmd = "cmake \"" + cmakeFile.getParentFile().getAbsolutePath() + "\"";
+	//var cmakeCmd = "cmake \"" + cmakelistsFolder + "\"";
 	if(cmakeFlags !== undefined) {
 		cmakeCmd += " " + cmakeFlags;
 	}
@@ -113,19 +114,20 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		cmakeCmd += " -G \"" + this.generator + "\"";
 	}
 	
-	
+	debug("Executing CMake, calling '"+  cmakeCmd + "' at ' " + builderFolderpath +  " '");
 	var cmakeOutput = new ProcessExecutor()
-		.setWorkingDir(builderFolder)
+		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
 	//println("CMake output: " + cmakeOutput);
 		
 	// Execute make
+	debug("Building, calling '"+  this.makeCommand + "' at ' " + builderFolderpath +  " '");
 	var makeOutput = new ProcessExecutor()
-		.setWorkingDir(builderFolder)
+		.setWorkingDir(builderFolderpath)
 		.execute(this.makeCommand);
 	//println("Make output: " + makeOutput);
 	
-	var executableFile = Io.getPath(builderFolder, this._getExecutableName());
+	var executableFile = Io.getPath(builderFolderpath, this._getExecutableName());
 	if(!Io.isFile(executableFile)) {
 		println("Cmaker.build: Could not generate executable file '" + this._getExecutableName() + "'");
 		return;
