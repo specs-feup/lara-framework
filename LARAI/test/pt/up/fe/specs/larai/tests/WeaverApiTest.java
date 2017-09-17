@@ -40,8 +40,8 @@ public class WeaverApiTest {
     }
 
     @Test
-    public void testWeaverData() {
-        newTester().test("WeaverData.lara");
+    public void testWeaverOptions() {
+        newTester().test("WeaverOptions.lara");
     }
 
 }

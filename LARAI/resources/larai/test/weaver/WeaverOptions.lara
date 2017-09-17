@@ -1,0 +1,13 @@
+import weaver.WeaverOptions;
+import lara.Io;
+
+aspectdef WeaverData
+
+	println("ORIGINAL VERBOSE LEVEL: " + WeaverOptions.getVerboseLevel());
+	WeaverOptions.setVerboseLevel(3);
+	println("CHANGED VERBOSE LEVEL: " + WeaverOptions.getVerboseLevel());
+
+	println("ORIGINAL OUTPUT FOLDER: " + WeaverOptions.getOutputFolder());
+	WeaverOptions.setOutputFolder("subfolder");
+	println("CHANGED OUTPUT FOLDER: " + WeaverOptions.getOutputFolder());
+end
