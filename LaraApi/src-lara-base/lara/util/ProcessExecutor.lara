@@ -31,13 +31,13 @@ ProcessExecutor.prototype.setOutputFile = function(outputFile) {
 	this.outputFile = outputFile;
 	return this;
 }
-
+/*
 ProcessExecutor.prototype.append = function(append) {
 	checkType(append, "boolean", "ProcessExecutor.prototype.append");
 	this.append = append;
 	return this;
 }
-
+*/
 ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
 	this.timeUnit = new TimeUnits(timeUnit);
 	return this;

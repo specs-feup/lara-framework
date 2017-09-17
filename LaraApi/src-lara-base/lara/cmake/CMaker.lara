@@ -18,7 +18,7 @@ var CMaker = function(name) {
 	this.libs = [];
 	this.sources = new CMakerSources();
 	this.includeFolders = new StringSet();
-
+	this.printToConsole = false;
 };
 
 CMaker.prototype._MINIMUM_VERSION = "2.8";
@@ -32,6 +32,15 @@ CMaker.prototype._EXE_VAR = "EXE_NAME";
  */
 CMaker.prototype.setMinimumVersion = function(version) {
 	this.minimumVersion = version;
+	
+	return this;
+}
+
+/**
+ * Sets if output of external tools (e.g., cmake, make) should appear in the console. By default it is off.
+ */
+CMaker.prototype.setPrintToolsOutput = function(printToolsOutput) {
+	this.printToConsole = printToConsole;
 	
 	return this;
 }
@@ -116,6 +125,7 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	
 	debug("Executing CMake, calling '"+  cmakeCmd + "' at ' " + builderFolderpath +  " '");
 	var cmakeOutput = new ProcessExecutor()
+		.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
 	//println("CMake output: " + cmakeOutput);
@@ -123,6 +133,7 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	// Execute make
 	debug("Building, calling '"+  this.makeCommand + "' at ' " + builderFolderpath +  " '");
 	var makeOutput = new ProcessExecutor()
+		.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(this.makeCommand);
 	//println("Make output: " + makeOutput);
