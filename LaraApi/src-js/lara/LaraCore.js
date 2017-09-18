@@ -67,13 +67,64 @@ function checkDefined(value, varName, source) {
 	throw message;
 }
 
-function checkType(value, type, source) {
+function checkInstance(value, type, source, userTypeName) {
+    if(typeof type !== "function")  {
+        throw "checkInstance: parameter type must be a function";       
+    }
+    
+    if(value instanceof type) {
+        return;
+    }    
+
+    // Try to get name from type
+    var typeName = type.name;
+    
+    // If no name, try to use user type name
+    if(typeName.length === 0) {
+        typeName = userTypeName;
+    }
+
+    // If still undefined, add placeholder
+    if(typeName === undefined) {
+        typeName = "<could not determine>";
+    }
+
+    var valueName = value.constructor.name;
+    if(valueName.length === 0) {
+        valueName = undefined;
+    }
+    
+
+    var message = "Expected value to be of type '" + typeName + "'";
+
+    if(valueName !== undefined) {
+        message +=  ", but is of type '" + valueName + "'";
+    } else {
+        message += ", but is of another type. The code of the constructor function is:\n" + value.constructor;
+    }
+
 	
-	if(typeof value === type) {
-		return;
+    if(source !== undefined) {
+		message = source + ": " + message;
 	}
-	
-	var message = "Expected value to be of type '" + type + "', but is of type " + (typeof value);
+    
+	throw message;
+    
+    //_throwTypeException(value.constructor.name, type.name, source);
+    //_throwTypeException(value, type.name, source);
+}
+
+
+function checkType(value, type, source) {
+    if(typeof type !== "string")  {
+        throw "checkType: parameter type must be a string";       
+    }
+    
+    if(typeof value === type) {
+        return;
+    }
+    
+    var message = "Expected value to be of type '" + type + "', but is of type '" + (typeof value) + "'";
 
 	if(source !== undefined) {
 		message = source + ": " + message;
