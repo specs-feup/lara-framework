@@ -163,9 +163,9 @@ public abstract class WeaverProfiler extends AGear {
         onActionImpl(data);
         if (data.getStage().equals(Stage.END)) {
             report.actionPerformed(data.getActionName());
-            System.out.println("[DEBUG] ACTION " + data.getActionName());
+            // System.out.println("[DEBUG] ACTION " + data.getActionName());
             if (data.getActionName().equals("insert")) {
-                System.out.println("[DEBUG] INSERT" + report.getInserts());
+                // System.out.println("[DEBUG] INSERT" + report.getInserts());
                 report.incInserts();
             }
         }
