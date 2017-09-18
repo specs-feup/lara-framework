@@ -133,6 +133,25 @@ function checkType(value, type, source) {
 	throw message;
 }	 
 
+function checkJoinPoint($jp, type, source) {
+   
+    var message;
+    
+    if(!Weaver.isJoinPoint($jp)) {
+        
+        message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
+    } else if(!Weaver.isJoinPoint($jp, type)) {
+        
+        message = "Expected variable to be a join point of type '" + type + "', but it's of type '" + $jp.joinPointType + "'";
+    } else { return }
+
+    if(source !== undefined) {
+        message = source + ": " + message;
+    }
+
+    throw message; 
+}
+
 function toArray(objectWithLength) {
 	return Array.prototype.slice.call(objectWithLength);
 }
