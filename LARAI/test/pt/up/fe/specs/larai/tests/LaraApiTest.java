@@ -74,4 +74,9 @@ public class LaraApiTest {
         newTester().test("ThisTest.lara");
     }
 
+    @Test
+    public void testMath() {
+        newTester().test("MathTest.lara");
+    }
+
 }
