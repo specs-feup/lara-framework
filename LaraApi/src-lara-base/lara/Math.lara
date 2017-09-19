@@ -1,0 +1,22 @@
+var Math = {};
+
+/**
+ * Attempts to simplify a mathematical expression.
+ *
+ */
+Math.simplify = function(expression, constants) {
+	checkType(expression, "string", "Math.simplify(), expression");
+	
+	var HashMap = Java.type("java.util.HashMap");            
+	var map = new HashMap();
+	
+	if(constants !== undefined) {
+	
+		for(var p in constants) {
+			map.put(p, constants[p]);
+		}
+	
+	}
+	
+	return LaraApiTools.simplifyExpression(expression, map);
+}

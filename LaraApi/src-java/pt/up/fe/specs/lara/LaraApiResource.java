@@ -34,6 +34,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     DEBUG("Debug.lara"),
     IO("Io.lara"),
     JOIN_POINTS("JoinPoints.lara"),
+    MATH("Math.lara"),
     PLATFORMS("Platforms.lara"),
     STRINGS("Strings.lara"),
     SYSTEM("System.lara"),

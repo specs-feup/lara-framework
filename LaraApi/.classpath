@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SymjaPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
