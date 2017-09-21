@@ -1,11 +1,11 @@
-var Math = {};
+var MathExtra = {};
 
 /**
  * Attempts to simplify a mathematical expression.
  *
  */
-Math.simplify = function(expression, constants) {
-	checkType(expression, "string", "Math.simplify(), expression");
+MathExtra.simplify = function(expression, constants) {
+	checkType(expression, "string", "MathExtra.simplify(), expression");
 	
 	var HashMap = Java.type("java.util.HashMap");            
 	var map = new HashMap();
@@ -18,5 +18,5 @@ Math.simplify = function(expression, constants) {
 	
 	}
 	
-	return LaraApiTools.simplifyExpression(expression, map);
+	return LaraExtraApiTools.simplifyExpression(expression, map);
 }

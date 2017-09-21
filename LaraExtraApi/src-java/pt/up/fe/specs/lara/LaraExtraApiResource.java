@@ -19,35 +19,9 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  * @author Joao Bispo
  *
  */
-public enum LaraApiResource implements LaraResourceProvider {
+public enum LaraExtraApiResource implements LaraResourceProvider {
 
-    // CMake
-    CMAKER("cmake/CMaker.lara"),
-    CMAKER_SOURCES("cmake/CMakerSources.lara"),
-
-    // Code
-    ENERGY_BASE("code/EnergyBase.lara"),
-    LOGGER_BASE("code/LoggerBase.lara"),
-    TIMER_BASE("code/TimerBase.lara"),
-
-    // Lara
-    DEBUG("Debug.lara"),
-    IO("Io.lara"),
-    JOIN_POINTS("JoinPoints.lara"),
-    PLATFORMS("Platforms.lara"),
-    STRINGS("Strings.lara"),
-    SYSTEM("System.lara"),
-
-    // Util
-    ACCUMULATOR("util/Accumulator.lara"),
-    CHECKPOINT("util/Checkpoint.lara"),
-    ID_GENERATOR("util/IdGenerator.lara"),
-    LOCAL_FOLDER("util/LocalFolder.lara"),
-    PRINT_ONCE("util/PrintOnce.lara"),
-    PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
-    REPLACER("util/Replacer.lara"),
-    STRING_SET("util/StringSet.lara"),
-    TIME_UNITS("util/TimeUnits.lara");
+    MATH_EXTRA("MathExtra.lara");
 
     private final String resource;
 
@@ -56,7 +30,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     /**
      * @param resource
      */
-    private LaraApiResource(String resource) {
+    private LaraExtraApiResource(String resource) {
         this.resource = BASE_PACKAGE + resource;
     }
 

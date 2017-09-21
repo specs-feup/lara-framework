@@ -14,12 +14,7 @@
 package pt.up.fe.specs.lara;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.suikasoft.SymjaPlus.SymjaPlusUtils;
 
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -56,18 +51,6 @@ public class LaraApiTools {
         return string.replaceAll(oldSequence, newSequence);
     }
 
-    public static String simplifyExpression(String expression, Map<Object, Object> constants) {
-
-        // Convert object map to strings
-        Map<String, String> stringConstants = new HashMap<>();
-        if (constants != null) {
-            for (Entry<Object, Object> entry : constants.entrySet()) {
-                stringConstants.put(entry.getKey().toString(), entry.getValue().toString());
-            }
-        }
-
-        return SymjaPlusUtils.simplify(expression, stringConstants);
-    }
 }
 
 // cmd("sh dsfklsd fskld fsdkl fsjkl ") > "log.txt";
