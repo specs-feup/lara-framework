@@ -60,6 +60,25 @@ LocalFolder.prototype.getString = function(path) {
 /**
  * @return java.util.List with all the files in this LocalFolder
  */
-LocalFolder.prototype.getFileList = function() {
-	return SpecsIo.getFilesRecursive(this.baseFolder);
+LocalFolder.prototype.getFileList = function(path) {
+	return this._getFileListPrivate(path);
+	/*
+	var basePath = this.baseFolder;
+	if(path !== undefined) {
+		basePath = Io.getPath(basePath, path);
+	}
+	
+	//return SpecsIo.getFilesRecursive(this.baseFolder);
+	return SpecsIo.getFilesRecursive(basePath);
+	*/
+}
+
+
+LocalFolder.prototype._getFileListPrivate = function(path) {
+	var basePath = this.baseFolder;
+	if(path !== undefined) {
+		basePath = Io.getPath(basePath, path);
+	}
+	
+	return SpecsIo.getFilesRecursive(basePath);
 }
