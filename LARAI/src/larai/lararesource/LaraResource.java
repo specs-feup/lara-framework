@@ -91,8 +91,15 @@ public class LaraResource {
 
         code.append("var " + resourceName + " = new LocalFolder(\"" + escapedPath + "\");\n\n");
 
-        code.append(resourceName + ".getFileList = function() {\n" +
-                "    var files = SpecsIo.getFilesRecursive(this.baseFolder);\n" +
+        // code.append(resourceName + ".getFileList = function() {\n" +
+        // " var files = SpecsIo.getFilesRecursive(this.baseFolder);\n" +
+        // " var resourceFile = Io.getPath(this.getBaseFolder(), \"" + LARA_RESOURCE_FILE + "\");\n" +
+        // " files.remove(resourceFile);\n" +
+        // " return files;\n" +
+        // "}");
+
+        code.append(resourceName + ".getFileList = function(path) {\n" +
+                "    var files = this._getFileListPrivate(path);\n" +
                 "    var resourceFile = Io.getPath(this.getBaseFolder(), \"" + LARA_RESOURCE_FILE + "\");\n" +
                 "    files.remove(resourceFile);\n" +
                 "    return files;\n" +
