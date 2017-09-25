@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
@@ -27,6 +28,8 @@ import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -45,14 +48,26 @@ public abstract class WeaverEngine {
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
+    private final Lazy<StoreDefinition> storeDefinition;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
+        storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
     }
 
     private static File createTemporaryWeaverFolder() {
         String folderName = "lara_weaver_" + UUID.randomUUID().toString();
         return SpecsIo.mkdir(SpecsIo.getTempFolder(), folderName);
+    }
+
+    private StoreDefinition buildStoreDefinition() {
+        String weaverName = getName().orElse("<unnamed weaver>");
+
+        return new StoreDefinitionBuilder(weaverName)
+                // Add weaver custom keys
+                .addKeys(getOptions().stream().map(WeaverOption::dataKey).collect(Collectors.toList()))
+                .build();
+
     }
 
     /**
@@ -125,6 +140,15 @@ public abstract class WeaverEngine {
     // return Collections.emptyList();
     // }
     ;
+
+    /**
+     * The store definition for the options specific to this weaver
+     * 
+     * @return
+     */
+    public StoreDefinition getStoreDefinition() {
+        return storeDefinition.get();
+    }
 
     /**
      * The Language Specification associated to this weaver. This specification is required for the LARA compiler
@@ -273,7 +297,7 @@ public abstract class WeaverEngine {
     private static final SpecsThreadLocal<WeaverEngine> THREAD_LOCAL_WEAVER = new SpecsThreadLocal<>(
             WeaverEngine.class);
 
-    protected static WeaverEngine getThreadLocalWeaver() {
+    public static WeaverEngine getThreadLocalWeaver() {
         return THREAD_LOCAL_WEAVER.get();
     }
 
