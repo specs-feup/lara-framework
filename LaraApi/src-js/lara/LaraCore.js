@@ -80,7 +80,7 @@ function checkInstance(value, type, source, userTypeName) {
     var typeName = type.name;
     
     // If no name, try to use user type name
-    if(typeName.length === 0) {
+    if(typeName === undefined || typeName.length === 0) {
         typeName = userTypeName;
     }
 
