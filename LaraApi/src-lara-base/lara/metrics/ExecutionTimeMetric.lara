@@ -1,0 +1,22 @@
+import lara.metrics.Metric;
+
+/**
+ * Measures execution time of an application.
+ */
+function ExecutionTimeMetric() {
+    // Parent constructor
+    Metric.call(this);
+}
+// Inheritance
+ExecutionTimeMetric.prototype = Object.create(Metric.prototype);
+
+
+// Override
+ExecutionTimeMetric.prototype.instrument = function($start, $end) {
+
+}
+
+// Override
+ExecutionTimeMetric.prototype.report = function(processExecutor) {
+
+}

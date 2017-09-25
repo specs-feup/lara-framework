@@ -1,0 +1,21 @@
+/**
+ * Data about a metric.
+ */
+var MetricResult = function(value, unit) {
+	this.value = value;
+	this.unit = unit;
+}
+
+/**
+ * @return the value of the metric
+ */
+MetricResult.prototype.getValue = function() {
+	return this.value;
+}
+
+/**
+ * @return the unit of the metric value
+ */
+MetricResult.prototype.getUnit = function() {
+	return this.unit;
+}

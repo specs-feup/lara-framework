@@ -1,0 +1,25 @@
+/**
+ * Reprents a metric we want to extract.
+ */
+function Metric() {
+    
+};
+
+
+/**
+ * Instruments code so that when executed, it produces information about the metric to measure.
+ */
+Metric.prototype.instrument = function($start, $end) {
+		notImplemented("Metric.instrument");
+}
+
+
+/**
+ * Extract metric.
+ *
+ * @param {lara.util.ProcessExecutor} instance after program execution
+ * @return {lara.metrics.MetricResult} metric after program execution
+ */
+Metric.prototype.report = function(processExecutor) {
+		notImplemented("Metric.report");
+}
