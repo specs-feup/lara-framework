@@ -22,6 +22,8 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
+import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 public interface LaraiKeys {
 
@@ -63,6 +65,11 @@ public interface LaraiKeys {
     DataKey<String> BUNDLE_TAGS = KeyFactory.string("bundle_tags").setLabel("Bundle tags");
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
+
+    StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI")
+            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER, TOOLS_FILE,
+                    REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT, DEBUG_MODE, BUNDLE_TAGS)
+            .build();
 
     /**
      * Backup code

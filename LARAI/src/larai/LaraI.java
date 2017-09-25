@@ -46,9 +46,12 @@ import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
@@ -162,6 +165,8 @@ public class LaraI {
 
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
+        setDataStoreDefinition(dataStore, weaverEngine);
+
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
 
@@ -204,6 +209,18 @@ public class LaraI {
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
 
         }
+    }
+
+    private static void setDataStoreDefinition(DataStore dataStore, WeaverEngine weaverEngine) {
+        String weaverName = weaverEngine.getName().orElse("<unnamed weaver>");
+        StoreDefinition weaverKeys = new StoreDefinitionBuilder(weaverName)
+                // Add LaraI keys
+                .addDefinition(LaraiKeys.STORE_DEFINITION)
+                // Add weaver custom keys
+                .addKeys(weaverEngine.getOptions().stream().map(WeaverOption::dataKey).collect(Collectors.toList()))
+                .build();
+
+        dataStore.setStoreDefinition(weaverKeys);
     }
 
     // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
