@@ -1,9 +1,11 @@
 import lara.Io;
+import lara.util.DataStore;
 
 /**
  * Contains generic methods related to all weavers. 
  */
-var WeaverOptions = {};
+//var WeaverOptions = {};
+var WeaverOptions = new DataStore(LaraI.getThreadLocalData());
 
 /**
  * @return DataStore with the data of the current weaver

@@ -10,4 +10,6 @@ aspectdef WeaverData
 	println("ORIGINAL OUTPUT FOLDER: " + WeaverOptions.getOutputFolder());
 	WeaverOptions.setOutputFolder("subfolder");
 	println("CHANGED OUTPUT FOLDER: " + WeaverOptions.getOutputFolder());
+	
+	//println("KEYS: " + WeaverOptions.getKeys());
 end
