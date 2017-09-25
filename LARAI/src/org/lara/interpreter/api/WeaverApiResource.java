@@ -21,6 +21,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum WeaverApiResource implements LaraResourceProvider {
     // Weaver
+    WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara"),
     WEAVER_OPTIONS("WeaverOptions.lara");
 
     private final String resource;

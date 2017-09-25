@@ -1,4 +1,5 @@
-ORIGINAL VERBOSE LEVEL: 2
-CHANGED VERBOSE LEVEL: 3
-ORIGINAL OUTPUT FOLDER: .
-CHANGED OUTPUT FOLDER: subfolder
+Original verbose level: 2
+New verbose level: 3
+Original output folder: .
+New output folder: subfolder
+Supported languages: []

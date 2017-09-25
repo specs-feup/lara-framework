@@ -15,6 +15,20 @@ WeaverOptions.getData = function() {
 }
 
 /**
+ * @return the current WeaverEngine
+ */
+WeaverOptions.getWeaverEngine = function() {
+	return Java.type("org.lara.interpreter.weaver.interf.WeaverEngine").getThreadLocalWeaver();
+}
+
+/**
+ * @return java.util.Set<String> with the languages supported by the current weaver 
+ */
+WeaverOptions.getSupportedLanguages = function() {
+	return this.getWeaverEngine().getLanguages(); 
+}
+
+/**
  * @return a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
  */
 WeaverOptions.getVerboseLevel = function() {

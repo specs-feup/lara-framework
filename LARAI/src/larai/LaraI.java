@@ -46,7 +46,6 @@ import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -217,7 +216,7 @@ public class LaraI {
                 // Add LaraI keys
                 .addDefinition(LaraiKeys.STORE_DEFINITION)
                 // Add weaver custom keys
-                .addKeys(weaverEngine.getOptions().stream().map(WeaverOption::dataKey).collect(Collectors.toList()))
+                .addDefinition(weaverEngine.getStoreDefinition())
                 .build();
 
         dataStore.setStoreDefinition(weaverKeys);
