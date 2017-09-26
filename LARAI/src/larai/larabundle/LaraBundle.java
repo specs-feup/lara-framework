@@ -137,8 +137,8 @@ public class LaraBundle {
         List<File> bundleFolders = SpecsIo.getFolders(includeFolder);
 
         // For each folder, check if name corresponds to a supported name
+        boolean foundBundle = false;
         for (File bundleFolder : bundleFolders) {
-
             // If does not correspond, skip
             if (!isFolderSupported(bundleFolder.getName(), supportedNames)) {
                 continue;
@@ -148,6 +148,18 @@ public class LaraBundle {
             // adds support for nested bundles
             addFolder(bundleFolder, unbundledFolders);
             // unbundledFolders.add(weaverFolder);
+
+            if (!bundleFolder.getName().equals("lara")) {
+                foundBundle = true;
+            }
+        }
+
+        if (!foundBundle) {
+            Preconditions.checkArgument(supportedNames.size() == 1,
+                    "Expected size to be 1, it is " + supportedNames.size());
+            String tag = supportedNames.stream().findFirst().get();
+            SpecsLogs.msgInfo("Could not find a bundle for tag '" + tag + "' in folder '"
+                    + includeFolder.getAbsolutePath() + "'");
         }
     }
 
