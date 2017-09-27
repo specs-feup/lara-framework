@@ -42,27 +42,60 @@ public class LaraResource {
         boolean addedResourceFolder = false;
         for (File includeFolder : includeFolders.getFiles()) {
 
-            // If no resource folder, just add it
+            // If no resource folder, add it
+            // Recursively look for resource folders inside
             if (!isLaraResource(includeFolder)) {
                 processedFolders.add(includeFolder);
+
+                for (File subfolder : SpecsIo.getFoldersRecursive(includeFolder)) {
+                    if (isLaraResource(subfolder)) {
+                        addedResourceFolder = addResourceFolder(subfolder, processedFolders, addedResourceFolder);
+                        /*
+                        File laraResourceFolder = processLaraFolder(subfolder);
+                        
+                        if (!addedResourceFolder) {
+                            processedFolders.add(laraResourceFolder);
+                            addedResourceFolder = true;
+                        }
+                        */
+                    }
+                }
+
                 continue;
             }
 
+            addedResourceFolder = addResourceFolder(includeFolder, processedFolders, addedResourceFolder);
+            /*
             // Process folder. Returns include resource folder,
             // which is the same for all Lara resources, add it
             // only once.
-
+            
             File laraResourceFolder = processLaraFolder(includeFolder);
-
+            
             if (!addedResourceFolder) {
                 processedFolders.add(laraResourceFolder);
                 addedResourceFolder = true;
             }
-
+            */
         }
 
         return FileList.newInstance(processedFolders);
 
+    }
+
+    private boolean addResourceFolder(File includeFolder, List<File> processedFolders, boolean addedResourceFolder) {
+        // Process folder. Returns include resource folder,
+        // which is the same for all Lara resources, add it
+        // only once.
+
+        File laraResourceFolder = processLaraFolder(includeFolder);
+
+        if (!addedResourceFolder) {
+            processedFolders.add(laraResourceFolder);
+            addedResourceFolder = true;
+        }
+
+        return addedResourceFolder;
     }
 
     private File processLaraFolder(File includeFolder) {

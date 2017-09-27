@@ -14,10 +14,10 @@ ExecutionTimeMetric.prototype = Object.create(Metric.prototype);
 
 // Override
 ExecutionTimeMetric.prototype.instrument = function($start, $end) {
-
+	println("ExecutionTimeMetric.instrument not implemented yet");
 }
 
 // Override
 ExecutionTimeMetric.prototype.report = function(processExecutor) {
-
+	println("ExecutionTimeMetric.report not implemented yet");
 }
