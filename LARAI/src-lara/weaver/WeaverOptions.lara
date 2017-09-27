@@ -1,17 +1,19 @@
 import lara.Io;
 import lara.util.DataStore;
+import weaver.util.WeaverDataStore;
 
 /**
  * Contains generic methods related to all weavers. 
  */
-//var WeaverOptions = {};
-var WeaverOptions = new DataStore(LaraI.getThreadLocalData());
+var WeaverOptions = {};
+//var WeaverOptions = new DataStore(LaraI.getThreadLocalData());
+//var WeaverOptions = new WeaverDataStore(LaraI.getThreadLocalData());
 
 /**
  * @return DataStore with the data of the current weaver
  */
 WeaverOptions.getData = function() {
-	return LaraI.getThreadLocalData();
+	return new WeaverDataStore(LaraI.getThreadLocalData());
 }
 
 /**
@@ -29,7 +31,15 @@ WeaverOptions.getSupportedLanguages = function() {
 }
 
 /**
+ * @return {Java StoreDefinition}
+ */
+WeaverOptions.getKeys = function() {
+	return Java.type("org.lara.interpreter.joptions.config.interpreter").STORE_DEFINITION;
+}
+
+/**
  * @return a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
+ * @deprecated Use weaver.util.WeaverDataStore instead
  */
 WeaverOptions.getVerboseLevel = function() {
 	return WeaverOptions.getData().get(LaraiKeys.VERBOSE).ordinal();	
@@ -37,6 +47,7 @@ WeaverOptions.getVerboseLevel = function() {
 
 /**
  * @param verboseLevel a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
+ * @deprecated Use weaver.util.WeaverDataStore instead
  */
 WeaverOptions.setVerboseLevel = function(verboseLevel) {
 	checkTrue(verboseLevel >= 0 && verboseLevel <= 3, "WeaverOptions.setVerboseLevel: expected a number  between 0 and 3");
@@ -46,6 +57,7 @@ WeaverOptions.setVerboseLevel = function(verboseLevel) {
 
 /**
  * @return a java.io.File representing the current output folder of the weaver
+ * @deprecated Use weaver.util.WeaverDataStore instead
  */
 WeaverOptions.getOutputFolder = function() {
 	return WeaverOptions.getData().get(LaraiKeys.OUTPUT_FOLDER);	
@@ -53,6 +65,7 @@ WeaverOptions.getOutputFolder = function() {
 
 /**
  * @param outputFolder a java.io.File or a String, representing the current output folder of the weaver
+ * @deprecated Use weaver.util.WeaverDataStore instead
  */
 WeaverOptions.setOutputFolder = function(outputFolder) {
 	//var normalizedOutputFolder = Io.getPath(outputFolder);
