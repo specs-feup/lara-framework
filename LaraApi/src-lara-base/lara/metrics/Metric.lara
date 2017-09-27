@@ -1,5 +1,6 @@
 /**
  * Reprents a metric we want to extract.
+ * @constructor
  */
 function Metric() {
     

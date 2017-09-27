@@ -2,6 +2,7 @@ import lara.metrics.Metric;
 
 /**
  * Measures execution time of an application.
+ * @constructor
  */
 function ExecutionTimeMetric() {
     // Parent constructor

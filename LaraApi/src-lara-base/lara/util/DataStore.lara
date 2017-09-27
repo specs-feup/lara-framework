@@ -3,20 +3,44 @@ import lara.util.StringSet;
 /**
  * Interface with Java class DataStore, used for storing arbitrary information.
  */
-function DataStore(data) {
-	checkInstance(data, this._getDataStoreClass(), "DataStore::data", "DataStore (Java)");
+function DataStore(data, definition) {
+	if(data === undefined) {
+		data = this._getDataStoreClass().newInstance("DataStore from Lara");
+	}
+
+	if(typeof data === "string") {
+		data = this._getDataStoreClass().newInstance(data);
+	}
+	
+	// Check if Lara DataStore, get Java DataStore
+	if(data instanceof DataStore) {
+		data = data.getData();
+	}
+	
+	checkInstance(data, this._getDataStoreClass(), "DataStore::data", this._getDataStoreClass());
 
 	this.data = data;
 
-	// Enable key checking if DataStore has a StoreDefinition
-	var optionalDef = this.data.getStoreDefinition();
-	this.checkKeys = optionalDef.isPresent();
+	// Determine definition
+	this.definition = definition !== undefined ? definition : undefined;
+	// If no definition as argument, try to get one from data
+	if(this.definition === undefined) {
+		if(this.data.getStoreDefinition().isPresent()) {
+			this.definition = this.data.getStoreDefinition().get();
+		}
+	}
+	
+	// Enable key checking if there is a definition
+	this.checkKeys = this.definition !== undefined;
+	
+	//var optionalDef = this.data.getStoreDefinition();
+	//this.checkKeys = optionalDef.isPresent();
 
 	// Build set with allowed keys
-	this.definition = undefined;
+	//this.definition = undefined;
 	this.allowedKeys = undefined;
 	if(this.checkKeys) {
-		this.definition = optionalDef.get();
+		//this.definition = optionalDef.get();
 		this.allowedKeys = new StringSet();
 		for(var dataKey of this.definition.getKeys()) {
 			this.allowedKeys.add(dataKey.getName());
@@ -25,6 +49,15 @@ function DataStore(data) {
 
 	// Aliases map
 	this.keyAliases = {};
+	/*
+	if(this.allowedKeys === undefined) {
+		println("ALLOWED KEYS UNDEFINED");
+		println("DATA:" + data);
+		println("DEFINITION:" + definition);
+	}
+	*/
+		
+	
 }
 
 
@@ -72,6 +105,9 @@ DataStore.prototype.getKeys = function() {
 	return this.allowedKeys.values();
 }
 
+DataStore.prototype.getData = function() {
+	return this.data;
+}
 
 DataStore.prototype.addAlias = function(key, alias) {
 	checkType(key, "string", "DataStore.addAlias::key");
@@ -90,6 +126,16 @@ DataStore.prototype.addAlias = function(key, alias) {
 	this.keyAliases[alias] = key;
 }
 
+/*** PRIVATE OVERRIDABLE FUNCTIONS ***/
+
+/**
+ * Wraps a Java DataStore around a Lara DataStore.
+ */
+DataStore.prototype._dataStoreWrapper = function(javaDataStore) {
+	return new DataStore(javaDataStore, this.definition);
+}
+
+
 /*** PRIVATE FUNCTIONS ***/
 
 /**
@@ -97,6 +143,13 @@ DataStore.prototype.addAlias = function(key, alias) {
  */
 DataStore.prototype._getDataStoreClass = function() {
 	return Java.type("org.suikasoft.jOptions.Interfaces.DataStore");
+}
+
+/**
+ * @return the Java class with utility methods for DataStore
+ */
+DataStore.prototype._getUtilityClass = function() {
+	return Java.type("org.suikasoft.jOptions.JOptionsUtils");
 }
 
 DataStore.prototype._processKey = function(key, functionName) {
@@ -130,4 +183,17 @@ DataStore.prototype._checkKey = function(key, functionName) {
 	throw message;
 }
 
+DataStore.prototype.save = function(fileOrBaseFolder, optionalFile) {
+	this._getUtilityClass().saveDataStore(Io.getPath(fileOrBaseFolder, optionalFile), this.data);
+}
+
+DataStore.prototype.load = function(fileOrBaseFolder, optionalFile) {
+	if(this.definition === undefined) {
+		throw "DataStore.load: current DataStore does not have keys definition, cannot load from file";
+	}
+	
+	var javaDataStore = this._getUtilityClass().loadDataStore(Io.getPath(fileOrBaseFolder, optionalFile), this.definition);
+
+	return this._dataStoreWrapper(javaDataStore);
+}
 
