@@ -34,7 +34,7 @@ WeaverOptions.getSupportedLanguages = function() {
  * @return {Java StoreDefinition}
  */
 WeaverOptions.getKeys = function() {
-	return Java.type("org.lara.interpreter.joptions.config.interpreter").STORE_DEFINITION;
+	return Java.type("org.lara.interpreter.joptions.config.interpreter.LaraiKeys").STORE_DEFINITION;
 }
 
 /**
