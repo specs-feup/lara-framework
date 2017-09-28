@@ -309,7 +309,7 @@ public class SimpleNode implements Node {
     }
     /*
     protected void varDeclToXML(Document doc, Element parent, Variable var) {
-
+    
     	final Element nameExprEl = doc.createElement("expression");
     	parent.appendChild(nameExprEl);
     	// if(var.getName().startsWith("$"))
@@ -325,7 +325,7 @@ public class SimpleNode implements Node {
     	    var.getInitialize().toXML(doc, initEl);
     	}
     }
-
+    
     /*
     protected void createXMLDecl(Collection<Variable> vars, Document doc, Element parent) {
     	final Element statementDeclEl = doc.createElement("statement");
@@ -334,7 +334,7 @@ public class SimpleNode implements Node {
     	if (!label.isEmpty()) {
     	    statementDeclEl.setAttribute("label", label);
     	}
-
+    
     	final ArrayList<Variable> fnDecl = new ArrayList<>();
     	for (final Variable var : vars) {
     	    if (var.getType().equals(Types.FNDecl)) {
@@ -349,7 +349,7 @@ public class SimpleNode implements Node {
     	     * for(Variable var: fnDecl){ var.getInitialize().toXML(doc,
     	     * parent); }
     	     *//*
-                                                            }}*/
+                                                                    }}*/
 
     protected void createInputXMLDecl(SimpleNode simpleNode, Map<String, Variable> vars, Document doc, Element parent) {
         if (simpleNode instanceof ASTVariableDeclarationList) {
@@ -519,35 +519,37 @@ public class SimpleNode implements Node {
 
     public void codeTemplateArgumentsToXML(Document doc, Element parent, List<String> codeParams) {
         for (final String param : codeParams) {
+
             final Element propertyKeyEl = doc.createElement("key");
             parent.appendChild(propertyKeyEl);
             propertyKeyEl.setAttribute("name", Enums.SYMBOL_BEGIN + param + Enums.SYMBOL_END);
             SimpleNode expression = OrganizeUtils.parseExpression(param.trim());
             expression.toXML(doc, propertyKeyEl);
-            /*
-            if (!param.contains(".")) {
-            final Element idRefEl = doc.createElement("id");
-            propertyKeyEl.appendChild(idRefEl);
-            idRefEl.setAttribute("name", param);
-            } else {
-            final String[] props = param.split("\\.");
-            Element lastEl = doc.createElement("id");
-
-            lastEl.setAttribute("name", props[0]);
-            for (int j = 1; j < props.length; j++) {
-            final Element propEl = doc.createElement("property");
-            propEl.appendChild(lastEl);
-            final Element propLiteralEl = doc.createElement("literal");
-            propEl.appendChild(propLiteralEl);
-            propLiteralEl.setAttribute("value", props[j]);
-            propLiteralEl.setAttribute("type", Types.String.toString());
-            lastEl = propEl;
-            }
-            propertyKeyEl.appendChild(lastEl);
-            }
-            */
         }
     }
+
+    /*
+    if (!param.contains(".")) {
+    final Element idRefEl = doc.createElement("id");
+    propertyKeyEl.appendChild(idRefEl);
+    idRefEl.setAttribute("name", param);
+    } else {
+    final String[] props = param.split("\\.");
+    Element lastEl = doc.createElement("id");
+    
+    lastEl.setAttribute("name", props[0]);
+    for (int j = 1; j < props.length; j++) {
+    final Element propEl = doc.createElement("property");
+    propEl.appendChild(lastEl);
+    final Element propLiteralEl = doc.createElement("literal");
+    propEl.appendChild(propLiteralEl);
+    propLiteralEl.setAttribute("value", props[j]);
+    propLiteralEl.setAttribute("type", Types.String.toString());
+    lastEl = propEl;
+    }
+    propertyKeyEl.appendChild(lastEl);
+    }
+    */
 
     /**
      * @param coords
@@ -769,10 +771,22 @@ public class SimpleNode implements Node {
      * @param el
      * @param string
      */
-    private void escapeHTML(Element el, String string) {
+    private static void escapeHTML(Element el, String string) {
         String content;
         content = StringEscapeUtils.escapeHtml4(string);
         el.setAttribute("comment", content);
+    }
+
+    protected void addCoords(Element el) {
+        final LaraC lara = getLara();
+        String path = "";
+        if (lara != null) {
+            path = lara.getLaraPath();
+        }
+        String coordStr = path + ":" + jjtGetFirstToken().beginLine + ":" + jjtGetFirstToken().beginColumn + ":"
+                + jjtGetLastToken().endLine
+                + ":" + jjtGetLastToken().endColumn;
+        el.setAttribute("coord", coordStr);
     }
 }
 

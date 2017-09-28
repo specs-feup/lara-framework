@@ -748,6 +748,14 @@ public class Interpreter {
             final StringBuilder ret = generateFunctionExpression(op, depth);
             return ret;
         }
+        if (op.name.equals("COMMA")) { // this type of expression is always binary, even if multiple commas are used
+            final StringBuilder commaExpr = new StringBuilder(LaraIUtils.getSpace(depth) + "(");
+            commaExpr.append(left);
+            commaExpr.append(",");
+            commaExpr.append(right);
+            commaExpr.append(")");
+            return commaExpr;
+        }
         final String operator = Operators.getOpString(op.name);
         final StringBuilder opBuff = new StringBuilder("(" + LaraIUtils.getSpace(depth));
         opBuff.append(left);

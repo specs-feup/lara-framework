@@ -89,6 +89,7 @@ public class ASTAssignmentExpression extends SimpleNode {
         final ASTOperator operator = (ASTOperator) getChildren()[1];
         final SimpleNode assignment = (SimpleNode) getChildren()[2];
         final Element assignEl = doc.createElement("op");
+        // addCoords(assignEl);
         parent.appendChild(assignEl);
         assignEl.setAttribute("name", operator.getTag());
         assignee.toXML(doc, assignEl);
