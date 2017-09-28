@@ -7,6 +7,7 @@ import weaver.WeaverOptions;
  * @constructor
  */
 function WeaverDataStore(data, definition) {
+	data = data !== undefined ? data : "LaraI Options";
 	definition = definition !== undefined ? definition : WeaverOptions.getKeys();
 	
     // Parent constructor
