@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.script.ScriptException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.interpreter.aspectir.Argument;
 import org.lara.interpreter.aspectir.Aspect;
 import org.lara.interpreter.aspectir.Aspects;
@@ -44,6 +45,7 @@ import org.lara.interpreter.generator.stmt.StatementProcessor;
 import org.lara.interpreter.generator.stmt.WeaverStatementProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.keys.OptionalFile;
+import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Operators;
 import org.lara.interpreter.utils.MessageConstants;
@@ -59,6 +61,7 @@ import larac.objects.Enums.Types;
 import larac.utils.output.Output;
 import larac.utils.xml.Pair;
 import larai.LaraI;
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
@@ -76,6 +79,7 @@ public class Interpreter {
     private final AspectClassProcessor aspectProcessor;
     private final ImportProcessor importProcessor;
     private final StatementProcessor statementProcessor;
+    private CallStackTrace stackStrace;
 
     // private List<Integer> js2LARALines;
 
@@ -98,7 +102,9 @@ public class Interpreter {
         aspectProcessor = AspectClassProcessor.newInstance(this);
         importProcessor = ImportProcessor.newInstance(this);
         statementProcessor = StatementProcessor.newInstance(this);
-
+        if (options.useStackTrace()) {
+            stackStrace = new CallStackTrace();
+        }
         importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
         if (options.isJavaScriptStream()) { // AFTER it is initialized
             setprintStream(out.getOutStream());
@@ -295,6 +301,7 @@ public class Interpreter {
     // Code //
     // ================================================================================//
     private boolean brackets = true;
+    private boolean newInstance = false;
 
     public StringBuilder getJavascriptString(Code c, int depth) {
         final boolean myBrackets = brackets;
@@ -333,6 +340,8 @@ public class Interpreter {
     // ExprCall //
     // ================================================================================//
     public StringBuilder getJavascriptString(ExprCall exprCall, int depth) {
+        boolean newInstance = this.newInstance;
+        this.newInstance = false;
         final StringBuilder encapsule = new StringBuilder();
         StringBuilder call = getJavascriptString(exprCall.method, depth);
 
@@ -381,7 +390,7 @@ public class Interpreter {
 
         if (exprCall.arguments.isEmpty()) {
             call.append("()");
-            return returnCall(encapsule, call, depth, isAction, methodName, exprCall.arguments);
+            return returnCall(encapsule, call, newInstance, isAction, methodName, exprCall.arguments);
         }
         if (exprCall.arguments.get(0).name != null) {
             String context = "";
@@ -397,7 +406,7 @@ public class Interpreter {
             }
             call.deleteCharAt(call.length() - 1);
             call.append("})");
-            return returnCall(encapsule, call, depth, isAction, methodName, exprCall.arguments);
+            return returnCall(encapsule, call, newInstance, isAction, methodName, exprCall.arguments);
         }
         call.append("(");
         for (int i = 0; i < exprCall.arguments.size() - 1; i++) {
@@ -406,11 +415,16 @@ public class Interpreter {
         }
         call.append(getJavascriptString(exprCall.arguments.get(exprCall.arguments.size() - 1), 0));
         call.append(")");
-        return returnCall(encapsule, call, depth, isAction, methodName, exprCall.arguments);
+        return returnCall(encapsule, call, newInstance, isAction, methodName, exprCall.arguments);
     }
 
-    private StringBuilder returnCall(StringBuilder encapsule, StringBuilder call, int indent, boolean isAction,
+    private StringBuilder returnCall(StringBuilder encapsule, StringBuilder call, boolean newInstance, boolean isAction,
             Pair<String, String> methodName, List<Argument> arguments) {
+        if (newInstance) {
+            StringBuilder temp = call;
+            call = new StringBuilder("new ");
+            call.append(temp);
+        }
         if (encapsule.length() != 0) {
             // This code is more feasible if done at weaver-side
             WeaverEngine weaverEngine = laraInterp.getEngine();
@@ -438,12 +452,58 @@ public class Interpreter {
 
             encapsule.append(call);
             encapsule.append(")");
-            return encapsule;
+            return encapsuleCall(encapsule, methodName, newInstance);
         }
-        return call;
+        return encapsuleCall(call, methodName, newInstance);
 
     }
 
+    private StringBuilder encapsuleCall(StringBuilder callCode, Pair<String, String> methodName, boolean newInstance) {
+        if (options.useStackTrace()) {
+            String called = methodName.getRight();
+            if (methodName.getLeft() != null && !methodName.getLeft().isEmpty()) {
+                called = methodName.getLeft() + "." + called;
+            }
+            if (newInstance) {
+                called = "new " + called;
+            }
+            called = StringEscapeUtils.escapeEcmaScript(called);
+            String position = "unknown";
+            if (currentStatement != null) {
+                position = extractFileAndLineFromCoords(currentStatement.coord);
+            }
+            String pushToStack = ExpressionProcessor.pushToStack(called, position);
+            String popFromStack = ExpressionProcessor.popFromStack(called, position);
+            return new StringBuilder("( ")
+                    .append(pushToStack)
+                    .append(", ")
+                    .append(CallStackTrace.RETURN_FOR_STACK_STRACE)
+                    .append(" = ")
+                    .append(callCode)
+                    .append(", ")
+                    .append(popFromStack)
+                    .append(", ")
+                    .append(CallStackTrace.RETURN_FOR_STACK_STRACE)
+                    .append(" )");
+        }
+        return callCode;
+    }
+
+    public static String extractFileAndLineFromCoords(String coordsStr) {
+        Coordinates coords = new Coordinates(coordsStr);
+        if (!coords.isWellParsed()) {
+            return "unknown";
+        }
+        return coords.fileAndLineString();
+    }
+
+    /**
+     * Returns a pair in which the left is the target object (if any) and the right side is the actual method invoked
+     * 
+     * @param exprCall
+     * @param call
+     * @return
+     */
     private static Pair<String, String> getMethodName(ExprCall exprCall, String call) {
 
         final Expression callExpr = exprCall.method.exprs.get(0);
@@ -700,7 +760,8 @@ public class Interpreter {
             return cond;
         }
         if (op.name.equals("NEW")) {
-            final StringBuilder newOp = new StringBuilder(LaraIUtils.getSpace(depth) + " new ");
+            final StringBuilder newOp = new StringBuilder(LaraIUtils.getSpace(depth));
+            newInstance = true;
             newOp.append(getJavascriptString(op.exprs.get(0), depth));
             // newOp.deleteCharAt(0);
             // newOp.deleteCharAt(newOp.length()-1);
@@ -855,10 +916,13 @@ public class Interpreter {
         return ret;
     }
 
+    private Statement currentStatement;
+
     // ================================================================================//
     // ================================== Statement ===================================//
     // ================================================================================//
     public StringBuilder getJavascriptString(Statement stat, int depth) {
+        currentStatement = stat;
         return processStatement(stat, "var ", depth, ";\n"); // TODO - add label
     }
 
@@ -978,4 +1042,7 @@ public class Interpreter {
         return importProcessor;
     }
 
+    public CallStackTrace getStackStrace() {
+        return stackStrace;
+    }
 }

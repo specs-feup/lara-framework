@@ -24,7 +24,7 @@ public enum CLIOption implements WeaverOption {
     javascript("j", "show the javascript output in the same stream as the application's output",
             LaraiKeys.LOG_JS_OUTPUT),
     debug("d", "show all process information", LaraiKeys.DEBUG_MODE),
-
+    stack("s", "show call stack trace instead of LARAI trace", LaraiKeys.TRACE_MODE),
     argv("av", OptionArguments.ONE_ARG, "arguments", "arguments for the main aspect", LaraiKeys.ASPECT_ARGS),
     // argw("aw", OptionArguments.SEVERAL_ARGS, "arguments", "arguments for the weaver", LaraiKeys.WEAVER_ARGS),
 

@@ -471,6 +471,7 @@ public class EditorPanel extends GuiTab {
                 optionsDataStore.getStoreDefinition().map(sd -> sd.getName()).orElse(optionsDataStore.getName()),
                 optionsDataStore);
         tempDS.setRaw(LaraiKeys.DEBUG_MODE, true);
+        tempDS.setRaw(LaraiKeys.TRACE_MODE, true);
         tempDS.setRaw(LaraiKeys.VERBOSE, VerboseLevel.all);
         runDebug = true;
         executeLARA(tempDS);

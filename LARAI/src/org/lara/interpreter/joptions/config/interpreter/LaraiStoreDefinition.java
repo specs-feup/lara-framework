@@ -69,6 +69,7 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
         builder.addKey(LaraiKeys.LOG_FILE);
         builder.addKey(LaraiKeys.LOG_JS_OUTPUT);
         builder.addKey(LaraiKeys.DEBUG_MODE);
+        builder.addKey(LaraiKeys.TRACE_MODE);
         // builder.addKey(LaraiKeys.SHOW_HELP);
 
         final StoreDefinitionBuilder finalBuilder = builder.setDefaultValues(getDefaultValues());

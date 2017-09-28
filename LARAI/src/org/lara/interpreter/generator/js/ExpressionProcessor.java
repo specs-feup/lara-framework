@@ -13,9 +13,12 @@
 
 package org.lara.interpreter.generator.js;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.aspectir.ExprId;
 import org.lara.interpreter.utils.LaraIUtils;
+
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 
 public class ExpressionProcessor {
 
@@ -29,8 +32,17 @@ public class ExpressionProcessor {
     // ==================================== ExprId ====================================//
     // ================================================================================//
     public static StringBuilder getJavascriptString(ExprId id, int depth) {
-	return new StringBuilder(LaraIUtils.getSpace(depth)
-		+ (id.name.startsWith("@") ? Interpreter.ATTRIBUTES + "." + id.name.substring(1) : id.name));
+        return new StringBuilder(LaraIUtils.getSpace(depth)
+                + (id.name.startsWith("@") ? Interpreter.ATTRIBUTES + "." + id.name.substring(1) : id.name));
+    }
+
+    public static String pushToStack(String callee, String position) {
+        return CallStackTrace.STACKTRACE_NAME + ".push('" + callee + "','" + StringEscapeUtils.escapeJava(position)
+                + "')";
+    }
+
+    public static String popFromStack(String callee, String position) {
+        return CallStackTrace.STACKTRACE_NAME + ".pop()";
     }
 
 }

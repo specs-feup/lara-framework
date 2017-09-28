@@ -48,6 +48,7 @@ import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
@@ -171,6 +172,10 @@ public class ImportProcessor {
         interpreter.evaluate(laraPath);
         interpreter.evaluate(attribute);
         LaraI laraI = interpreter.getLaraI();
+
+        if (laraI.getOptions().useStackTrace()) {
+            interpreter.put(CallStackTrace.STACKTRACE_NAME, interpreter.getStackStrace());
+        }
         interpreter.put(MasterWeaver.WEAVER_NAME, laraI.getWeaver());
         interpreter.put(LARASystem.LARA_SYSTEM_NAME, new LARASystem(laraI));
         WeaverEngine engine = laraI.getWeaver().getEngine();
