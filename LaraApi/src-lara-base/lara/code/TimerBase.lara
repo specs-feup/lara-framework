@@ -11,6 +11,12 @@ var Timer = function(unit, filename) {
 	this.print = true;
 };
 
+
+Timer.prototype.time = function($start, prefix, $end) {
+	throw "Timer.time: Not implemented yet";
+}
+
+
 /**
  * @param printUnit boolean
  */

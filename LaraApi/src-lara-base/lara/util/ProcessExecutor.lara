@@ -14,11 +14,16 @@ var ProcessExecutor = function() {
 	
 	// Private state
 	this.lastOutput = undefined;
+	this.lastCommand = undefined;
 };
 
 ProcessExecutor.prototype.setWorkingDir = function(workingDir) {
 	this.workingDir = workingDir;
 	return this;
+}
+
+ProcessExecutor.prototype.getWorkingDir = function() {
+	return this.workingDir;
 }
 
 ProcessExecutor.prototype.setPrintToConsole = function(printToConsole) {
@@ -49,6 +54,8 @@ ProcessExecutor.prototype.setTimeout = function(timeout) {
 }
 
 ProcessExecutor.prototype.execute = function(command) {
+	this.lastCommand = command;
+	
 	var timeoutNanos = null;
 	if(this.timeout !== undefined) {
 		timeoutNanos = this.timeUnit.toNanos(this.timeout);
@@ -65,9 +72,27 @@ ProcessExecutor.prototype.execute = function(command) {
 	return executeOutput;
 }
 
+ProcessExecutor.prototype.getCommand = function() {
+	if(this.lastCommand === undefined) {
+		println("ProcessExecutor.getLastCommand: no execution has been done yet");
+		return undefined;
+	}
+	
+	return this.lastCommand;
+}
+
+ProcessExecutor.prototype.getConsoleOutput = function() {
+	if(this.lastOutput === undefined) {
+		println("ProcessExecutor.getConsoleOutput: no execution has been done yet");
+		return undefined;
+	}
+	
+	return this.lastOutput.getOutput();
+}
+
 ProcessExecutor.prototype.getReturnValue = function() {
 	if(this.lastOutput === undefined) {
-		println("ProcessExecutor.getResult: no execution has been done yet");
+		println("ProcessExecutor.getReturnValue: no execution has been done yet");
 		return undefined;
 	}
 	

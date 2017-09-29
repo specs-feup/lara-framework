@@ -1,0 +1,29 @@
+import lara.metrics.Metric;
+import lara.code.Energy;
+
+/**
+ * Measures energy consumed during an application.
+ * @constructor
+ */
+function EnergyMetric() {
+    // Parent constructor
+    Metric.call(this);
+}
+// Inheritance
+EnergyMetric.prototype = Object.create(Metric.prototype);
+
+
+// Override
+EnergyMetric.prototype.instrument = function($start, $end) {
+	var energy = new Energy().setPrintUnit(false);
+	energy.measure($start, "energy:" , $end);
+}
+
+// Override
+EnergyMetric.prototype.report = function(processExecutor) {
+	println("EnergyMetric.report not implemented yet");
+}
+
+EnergyMetric.prototype.getImport = function() {
+		return "lara.metrics.EnergyMetric";
+}

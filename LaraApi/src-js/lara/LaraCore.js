@@ -198,9 +198,13 @@ function arrayFromArgs(args, start) {
     checkDefined(args, 'args', 'LaraCore arrayFromArgs');
     
     if(start === undefined) {
-    
         start = 0;
     }
     
+	// If only one element and is already an array, just return the array
+	if(args.length === (start + 1) && args[0].constructor === Array) {
+		return args[0];
+	}
+	
     return Array.prototype.slice.call(args, start);
 }
