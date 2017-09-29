@@ -19,88 +19,91 @@ import tdrc.utils.StringUtils;
 
 public class Coordinates {
 
-	private String fileName;
-	private int lineBegin;
-	private int lineEnd;
-	private int columnBegin;
-	private int columnEnd;
-	private boolean wellParsed;
+    private String fileName;
+    private int lineBegin;
+    private int lineEnd;
+    private int columnBegin;
+    private int columnEnd;
+    private boolean wellParsed;
 
-	public Coordinates(String coord) {
-		String[] splitted = coord.split(":");
-		// Will consider that last 4 positions are the coordenates and all
-		// previous positions are related to the name
-		// since the file path may contain, for instance, "C:\"
-		if (splitted.length < 5) {
-			wellParsed = false;
-			fileName = coord;
-			lineBegin = 0;
-			lineEnd = 0;
-			columnBegin = 0;
-			columnEnd = 0;
-			return;
-		}
-		int endPosition = splitted.length - 1;
-		columnEnd = Integer.parseInt(splitted[endPosition]);
-		endPosition--;
-		lineEnd = Integer.parseInt(splitted[endPosition]);
-		endPosition--;
-		columnBegin = Integer.parseInt(splitted[endPosition]);
-		endPosition--;
-		lineBegin = Integer.parseInt(splitted[endPosition]);
-		endPosition--;
-		String[] onlyTheName = Arrays.copyOf(splitted, splitted.length - 4);
-		fileName = StringUtils.join(Arrays.asList(onlyTheName), ":");
-		wellParsed = true;
+    public Coordinates(String coord) {
+        String[] splitted = coord.split(":");
+        // Will consider that last 4 positions are the coordenates and all
+        // previous positions are related to the name
+        // since the file path may contain, for instance, "C:\"
+        if (splitted.length < 5) {
+            wellParsed = false;
+            fileName = coord;
+            lineBegin = 0;
+            lineEnd = 0;
+            columnBegin = 0;
+            columnEnd = 0;
+            return;
+        }
+        int endPosition = splitted.length - 1;
+        columnEnd = Integer.parseInt(splitted[endPosition]);
+        endPosition--;
+        lineEnd = Integer.parseInt(splitted[endPosition]);
+        endPosition--;
+        columnBegin = Integer.parseInt(splitted[endPosition]);
+        endPosition--;
+        lineBegin = Integer.parseInt(splitted[endPosition]);
+        endPosition--;
+        String[] onlyTheName = Arrays.copyOf(splitted, splitted.length - 4);
+        fileName = StringUtils.join(Arrays.asList(onlyTheName), ":");
+        wellParsed = true;
 
-	}
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public int getLineBegin() {
-		return lineBegin;
-	}
+    public int getLineBegin() {
+        return lineBegin;
+    }
 
-	public void setLineBegin(int lineBegin) {
-		this.lineBegin = lineBegin;
-	}
+    public void setLineBegin(int lineBegin) {
+        this.lineBegin = lineBegin;
+    }
 
-	public int getLineEnd() {
-		return lineEnd;
-	}
+    public int getLineEnd() {
+        return lineEnd;
+    }
 
-	public void setLineEnd(int lineEnd) {
-		this.lineEnd = lineEnd;
-	}
+    public void setLineEnd(int lineEnd) {
+        this.lineEnd = lineEnd;
+    }
 
-	public int getColumnBegin() {
-		return columnBegin;
-	}
+    public int getColumnBegin() {
+        return columnBegin;
+    }
 
-	public void setColumnBegin(int columnBegin) {
-		this.columnBegin = columnBegin;
-	}
+    public void setColumnBegin(int columnBegin) {
+        this.columnBegin = columnBegin;
+    }
 
-	public int getColumnEnd() {
-		return columnEnd;
-	}
+    public int getColumnEnd() {
+        return columnEnd;
+    }
 
-	public void setColumnEnd(int columnEnd) {
-		this.columnEnd = columnEnd;
-	}
+    public void setColumnEnd(int columnEnd) {
+        this.columnEnd = columnEnd;
+    }
 
-	public boolean isWellParsed() {
-		return wellParsed;
-	}
+    public boolean isWellParsed() {
+        return wellParsed;
+    }
 
-	public void setWellParsed(boolean wellParsed) {
-		this.wellParsed = wellParsed;
-	}
+    public void setWellParsed(boolean wellParsed) {
+        this.wellParsed = wellParsed;
+    }
 
+    public String fileAndLineString() {
+        return fileName + ", line " + lineBegin;
+    }
 }

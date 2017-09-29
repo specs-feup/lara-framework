@@ -348,6 +348,7 @@ public class TabsContainerPanel extends JPanel {
     }
 
     public boolean askSave() {
+
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {
 
             SourceTextArea editorTab = getTab(i);

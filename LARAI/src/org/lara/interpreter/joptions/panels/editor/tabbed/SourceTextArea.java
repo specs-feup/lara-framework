@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -33,6 +34,8 @@ import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.lara.interpreter.joptions.panels.editor.EditorPanel;
+import org.lara.interpreter.joptions.panels.editor.components.DontAskMeAgainPanel;
 import org.lara.interpreter.joptions.panels.editor.components.ReloadPane;
 import org.lara.interpreter.joptions.panels.editor.highlight.EditorConfigurer;
 import org.lara.interpreter.joptions.panels.editor.listeners.EditorListener;
@@ -47,6 +50,7 @@ public class SourceTextArea extends JPanel {
     /**
      * 
      */
+    private static final int NO_VALUE = -10;
     private static final long serialVersionUID = 1L;
     private final TextEditorPane textArea;
     private File sourceFile;
@@ -57,6 +61,7 @@ public class SourceTextArea extends JPanel {
     private boolean changed;
     private boolean isNew;
     private final ReloadPane reloadPane;
+    Consumer<Integer> saveAskSaveMethod;
 
     public SourceTextArea(TabsContainerPanel parent) {
         this(Factory.newFile(parent), parent, true);
@@ -73,7 +78,7 @@ public class SourceTextArea extends JPanel {
         changed = false;
         tabsContainer = parent;
         sourceFile = file;
-
+        saveAskSaveMethod = getEditorPanel().getSettings()::saveAskSave;
         updateLastModified();
         editorConfigurer = new EditorConfigurer();
         textArea = editorConfigurer.buildTextArea(file, isNew);
@@ -101,6 +106,10 @@ public class SourceTextArea extends JPanel {
         // .collect(Collectors.joining("\n")));
 
         // textArea.getInputMap().put(StrokesAndActions.CTRL_SHIFT_C, RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
+    }
+
+    private EditorPanel getEditorPanel() {
+        return tabsContainer.getEditor().getEditorPanel();
     }
 
     public TextEditorPane getTextArea() {
@@ -506,8 +515,14 @@ public class SourceTextArea extends JPanel {
                 // textArea.requestFocus();
             }
 
-            int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
-                    JOptionPane.YES_NO_CANCEL_OPTION);
+            // int choice = JOptionPane.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?", "Save",
+            // JOptionPane.YES_NO_CANCEL_OPTION);
+
+            int choice = getEditorPanel().getSettings().loadAskSave(NO_VALUE);
+            if (choice == NO_VALUE) {
+                choice = DontAskMeAgainPanel.showConfirmDialog(this, "Save file " + sourceFile.getName() + "?",
+                        "Save", JOptionPane.YES_NO_CANCEL_OPTION, saveAskSaveMethod);
+            }
             switch (choice) {
             case JOptionPane.CANCEL_OPTION:
                 return false;

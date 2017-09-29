@@ -21,6 +21,7 @@ import org.lara.interpreter.aspectir.Expression;
 import org.lara.interpreter.aspectir.Parameter;
 import org.lara.interpreter.aspectir.Statement;
 import org.lara.interpreter.exception.LaraIException;
+import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.ExceptionUtils;
@@ -129,13 +130,22 @@ public class AspectClassProcessor {
             }
         }
         mainName += main;
+        Aspect mainAspectDecl = asps.aspects.get(main);
         final StringBuilder code = new StringBuilder();
         code.append("var " + mainName + " = new " + main + "();\n");
-
+        Coordinates coord = new Coordinates(mainAspectDecl.coord);
+        String position = coord.fileAndLineString();
+        if (interpreter.getOptions().useStackTrace()) {
+            code.append(ExpressionProcessor.pushToStack(main, position));
+            code.append(";\n");
+        }
         setArgumentsAndCallMain(mainName, code);
         code.append(";\n");
-
-        createOutputReport(code, mainName, asps.aspects.get(main),
+        if (interpreter.getOptions().useStackTrace()) {
+            code.append(ExpressionProcessor.popFromStack(main, position));
+            code.append(";\n");
+        }
+        createOutputReport(code, mainName, mainAspectDecl,
                 interpreter.getOptions().getReportFile());
 
         code.append(LaraIUtils.getSpace(0));

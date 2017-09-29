@@ -16,6 +16,8 @@ package pt.up.fe.specs.tools.lara.exception;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
+import pt.up.fe.specs.tools.lara.trace.Trace;
 import tdrc.utils.StringUtils;
 
 public class LARAExceptionBuilder {
@@ -30,6 +32,7 @@ public class LARAExceptionBuilder {
     private StackTraceElement[] lastTrace;
     private BaseException lastLARAException;
     private Throwable lastException;
+    private CallStackTrace stackTrace;
 
     private static final List<String> ignoredPackages;
 
@@ -39,6 +42,11 @@ public class LARAExceptionBuilder {
         LARAExceptionBuilder.ignoredPackages.add("java.lang.reflect.");
         LARAExceptionBuilder.ignoredPackages.add("org.mozilla.javascript.");
         LARAExceptionBuilder.ignoredPackages.add("java.util.");
+    }
+
+    public LARAExceptionBuilder(CallStackTrace stacktrace) {
+        this();
+        this.stackTrace = stacktrace;
     }
 
     public LARAExceptionBuilder() {
@@ -73,7 +81,35 @@ public class LARAExceptionBuilder {
         String separator = LARAExceptionBuilder.SEPARATOR;
         int predefinedSpace = LARAExceptionBuilder.PREDEFINED_SPACE;
         String indentStr = LARAExceptionBuilder.INDENT;
-        if (!messages.isEmpty()) {
+        if (stackTrace != null) {
+            // completeMessage.append(indentStr + messages.get(0));
+            // int i = 1;
+            List<String> locations = new ArrayList<>();
+            Trace trace = stackTrace.pop();
+            while (trace != null) {
+                locations.add(trace.toString());
+                trace = stackTrace.pop();
+            }
+
+            int size = locations.size() - 1;
+            for (int i = size; i >= 0; i--) {
+                int repeatValue = (size - i) + 1;
+                if (repeatValue > 15) {
+                    repeatValue = 15;
+                }
+                String indentation = StringUtils.repeat(" ", predefinedSpace)
+                        + StringUtils.repeat(indentStr, repeatValue);
+                String finalMessage = indentation + locations.get(i);
+                completeMessage.append(separator + finalMessage);
+            }
+            int repeatValue = size + 2;
+            if (repeatValue > 16) {
+                repeatValue = 16;
+            }
+            String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, repeatValue);
+            String lastMessage = messages.get(messages.size() - 1);
+            completeMessage.append(separator + indentation + lastMessage);
+        } else if (!messages.isEmpty()) {
 
             completeMessage.append(indentStr + messages.get(0));
             for (int i = 1; i < messages.size(); i++) {

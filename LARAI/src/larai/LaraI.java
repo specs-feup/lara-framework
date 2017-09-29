@@ -60,6 +60,7 @@ import larac.utils.output.Output;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.properties.SpecsProperty;
@@ -104,6 +105,7 @@ public class LaraI {
     private WeaverProfiler weavingProfile;
 
     private final WeaverEngine weaverEngine;
+
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
     /**
@@ -305,12 +307,33 @@ public class LaraI {
 
             laraInterp.out.close();
             laraInterp.quit = true;
+
+            if (laraInterp.options.useStackTrace()) {
+                CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
+                if (stackStrace.isEmpty()) {
+                    return prettyRuntimeException(e);
+                }
+                return prettyRuntimeException(e, stackStrace);
+            }
             return prettyRuntimeException(e);
         }
         // laraInterp.out is an Output object which already checks if its out or
 
         LaraIException ex = new LaraIException("Exception before LARA Interpreter was initialized", e);
         return prettyRuntimeException(ex);
+    }
+
+    private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
+        BaseException laraException;
+
+        if (!(e instanceof BaseException)) {
+            laraException = new LaraIException("During LARA Interpreter execution ", e);
+        } else {
+            laraException = (BaseException) e;
+        }
+        //
+        // BaseException laraException = (BaseException) e;
+        return laraException.generateRuntimeException(stackStrace);
     }
 
     /**
@@ -615,4 +638,5 @@ public class LaraI {
 
         return timeProvider.get();
     }
+
 }

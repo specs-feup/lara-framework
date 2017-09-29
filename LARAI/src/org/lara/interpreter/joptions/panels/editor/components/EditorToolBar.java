@@ -188,6 +188,8 @@ public class EditorToolBar extends JPanel {
     private void showLS() {
         JComponent sideBar = editor.getLsScrollBar();
         sideBar.setVisible(!sideBar.isVisible());
+        editor.getSettings().saveShowLangSpec(sideBar.isVisible());
+        // Preferences.userRoot().putBoolean(editor.getShowLangSpecSetting(), sideBar.isVisible());
         // editor.revalidate();
         editor.updateUI();
     }

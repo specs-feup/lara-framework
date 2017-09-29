@@ -13,6 +13,8 @@
 
 package pt.up.fe.specs.tools.lara.exception;
 
+import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
+
 /**
  * Abstract exception of a LARA exception. These type of exceptions are used to encapsulate other thrown exceptions
  * 
@@ -27,7 +29,7 @@ public abstract class BaseException extends RuntimeException {
      * 
      */
     public BaseException(Throwable e) {
-	super(e);
+        super(e);
     }
 
     /**
@@ -47,44 +49,62 @@ public abstract class BaseException extends RuntimeException {
 
     @Override
     public String getMessage() {
-	return generateMessage();
+        return generateMessage();
+    }
+
+    /**
+     * Generate a Runtime exception and use a specific stack trace instead of the one generated based on the chained
+     * exceptions
+     * 
+     * @param stackStrace
+     * @return
+     */
+    public RuntimeException generateRuntimeException(CallStackTrace stackStrace) {
+        LARAExceptionBuilder builder = generateExceptionBuilder(stackStrace);
+        throw builder.getRuntimeException();
     }
 
     public RuntimeException generateRuntimeException() {
-	LARAExceptionBuilder builder = generateExceptionBuilder();
-	throw builder.getRuntimeException();
+        LARAExceptionBuilder builder = generateExceptionBuilder();
+        throw builder.getRuntimeException();
     }
 
     public LARAExceptionBuilder generateExceptionBuilder() {
-	LARAExceptionBuilder builder = new LARAExceptionBuilder();
-	generateException(builder);
-	return builder;
+        LARAExceptionBuilder builder = new LARAExceptionBuilder();
+        generateException(builder);
+        return builder;
+    }
+
+    public LARAExceptionBuilder generateExceptionBuilder(CallStackTrace stackStrace) {
+        LARAExceptionBuilder builder = new LARAExceptionBuilder(stackStrace);
+        generateException(builder);
+        return builder;
     }
 
     protected void generateException(LARAExceptionBuilder builder) {
-	String thisMessage = generateSimpleMessage();
-	if (thisMessage != null) {
-	    builder.add(thisMessage);
-	}
-	Throwable causedBy = getCause();
-	// If there was no cause, then this was the cause
-	if (causedBy == null) {
-	    builder.setLastException(this);
-	    builder.setLastLARAException(this);
-	    builder.setLastTrace(getStackTrace());
-	    return;
-	}
+        String thisMessage = generateSimpleMessage();
+        if (thisMessage != null) {
+            builder.add(thisMessage);
+        }
+        Throwable causedBy = getCause();
+        // If there was no cause, then this was the cause
+        if (causedBy == null) {
+            builder.setLastException(this);
+            builder.setLastLARAException(this);
+            builder.setLastTrace(getStackTrace());
+            return;
+        }
 
-	// If the cause is a BaseException, then process it, recursively
-	if (causedBy instanceof BaseException) {
-	    ((BaseException) causedBy).generateException(builder);
-	    return;
-	}
+        // If the cause is a BaseException, then process it, recursively
+        if (causedBy instanceof BaseException) {
+            ((BaseException) causedBy).generateException(builder);
+            return;
+        }
 
-	// Otherwise the cause is another type of exception and is considered
-	// the last cause to capture
-	builder.setLastException(causedBy);
-	builder.setLastLARAException(this);
-	builder.setLastTrace(causedBy.getStackTrace());
+        // Otherwise the cause is another type of exception and is considered
+        // the last cause to capture
+        builder.setLastException(causedBy);
+        builder.setLastLARAException(this);
+        builder.setLastTrace(causedBy.getStackTrace());
     }
 }
