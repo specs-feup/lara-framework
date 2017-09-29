@@ -84,4 +84,9 @@ public class LaraApiTest {
         newTester().test("util/DataStoreTest.lara");
     }
 
+    @Test
+    public void testLaraCore() {
+        newTester().test("LaraCoreTest.lara");
+    }
+
 }
