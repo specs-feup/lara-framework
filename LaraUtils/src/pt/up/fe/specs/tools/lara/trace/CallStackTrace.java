@@ -24,7 +24,7 @@ public class CallStackTrace {
     private Stack<Trace> callStack;
 
     public CallStackTrace() {
-        LaraLog.setDebug(true);
+        // LaraLog.setDebug(true);
         callStack = new Stack<>();
     }
 
