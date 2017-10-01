@@ -15,6 +15,7 @@ var ProcessExecutor = function() {
 	// Private state
 	this.lastOutput = undefined;
 	this.lastCommand = undefined;
+	this._customReturnValue = undefined;
 };
 
 ProcessExecutor.prototype.setWorkingDir = function(workingDir) {
@@ -50,6 +51,11 @@ ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
 
 ProcessExecutor.prototype.setTimeout = function(timeout) {
 	this.timeout = timeout;
+	return this;
+}
+
+ProcessExecutor.prototype.setCustomReturnValue = function(returnValue) {
+	this._customReturnValue = returnValue;
 	return this;
 }
 
@@ -94,6 +100,10 @@ ProcessExecutor.prototype.getReturnValue = function() {
 	if(this.lastOutput === undefined) {
 		println("ProcessExecutor.getReturnValue: no execution has been done yet");
 		return undefined;
+	}
+	
+	if(this._customReturnValue !== undefined) {
+		return this._customReturnValue;
 	}
 	
 	return this.lastOutput.getReturnValue();

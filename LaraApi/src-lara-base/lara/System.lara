@@ -9,12 +9,47 @@ System.getCurrentPlatform = function() {
 	notImplemented("getCurrentPlatform");
 }
 
+/**
+ * @deprecated
+ */
 System.getExecutable = function(foldername) {
 	return Java.type('pt.up.fe.specs.clang.Platforms').getExecutable(foldername);
 }
 
 System.prepareExe = function(executable) {
 	return LARASystem.prepareExe(executable);
+}
+
+System.getExecutableFile = function(executableName, executableFolder) {
+	var exe = undefined;
+	if(executableFolder === undefined) {
+	  exe = executableName;
+	} else {
+	  exe = Io.getPath(executableFolder, executableName).getAbsolutePath();
+	}
+
+	
+	if(Platforms.isWindows() && (!exe.endsWith(".exe"))) {
+		exe = exe + ".exe";
+	}
+	
+	if(executableFolder !== undefined && !Io.isFile(exe)) {
+		throw "System.getExecutableFile: Could not find executable '"+exe+"'";
+	}
+	
+	return exe;
+}
+
+System.getExecutableName = function(baseName) {
+	var exeName = baseName;
+	if(Platforms.isWindows()) {
+		exeName = exeName + ".exe";
+	}
+	else {
+		exeName = "./" + exeName;
+	}
+	
+	return exeName;
 }
 
 /**
