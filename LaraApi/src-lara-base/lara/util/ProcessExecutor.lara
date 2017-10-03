@@ -7,10 +7,11 @@ var ProcessExecutor = function() {
 	// Configuration
 	this.workingDir = "./";
 	this.printToConsole = true;
-	this.outputFile = null;
+	this.outputFile = undefined;
 	this.append = false;
 	this.timeUnit = new TimeUnits("SECONDS");
 	this.timeout = undefined;
+	this.outputPrefix = undefined;
 	
 	// Private state
 	this.lastOutput = undefined;
@@ -37,13 +38,13 @@ ProcessExecutor.prototype.setOutputFile = function(outputFile) {
 	this.outputFile = outputFile;
 	return this;
 }
-/*
-ProcessExecutor.prototype.append = function(append) {
+
+ProcessExecutor.prototype.setAppend = function(append) {
 	checkType(append, "boolean", "ProcessExecutor.prototype.append");
 	this.append = append;
 	return this;
 }
-*/
+
 ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
 	this.timeUnit = new TimeUnits(timeUnit);
 	return this;
@@ -59,6 +60,12 @@ ProcessExecutor.prototype.setCustomReturnValue = function(returnValue) {
 	return this;
 }
 
+ProcessExecutor.prototype.setOutputPrefix = function(outputPrefix) {
+	this.outputPrefix = outputPrefix;
+	return this;
+}
+
+
 ProcessExecutor.prototype.execute = function(command) {
 	this.lastCommand = command;
 	
@@ -67,12 +74,26 @@ ProcessExecutor.prototype.execute = function(command) {
 		timeoutNanos = this.timeUnit.toNanos(this.timeout);
 	}
 	
-	
+	// TODO: Can change LaraApiTools.runCommand to accept a file and append flag, to be able to write to a file in stream mode
 	this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
 	
 	var executeOutput = this.lastOutput.getOutput();
 	if(executeOutput !== undefined) {
 		checkType(executeOutput, "string");
+	}
+
+	// After previous TODO is done, this can be removed
+	if(this.outputFile !== undefined) {
+		var outputContents = executeOutput;
+		if(this.outputPrefix !== undefined && executeOutput.length() > 0) {
+			outputContents = this.outputPrefix + outputContents;
+		}
+		
+		if(this.append) {
+			Io.appendFile(this.outputFile, outputContents); 
+		} else {
+			Io.writeFile(this.outputFile, outputContents);
+		}
 	}
 	
 	return executeOutput;
