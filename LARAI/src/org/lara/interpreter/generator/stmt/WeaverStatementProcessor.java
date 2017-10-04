@@ -36,6 +36,7 @@ import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Operators;
 import org.lara.interpreter.utils.SelectUtils;
+import org.lara.interpreter.weaver.JoinpointUtils;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.events.EventTriggerGenerator;
 import org.lara.interpreter.weaver.interf.events.Stage;
@@ -192,7 +193,7 @@ public class WeaverStatementProcessor {
             depth++;
             jpAlias = '$' + simpleJPName;
             ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = " + jpArrayName + "[" + counterName
-                    + "].reference;\n");
+                    + "]." + JoinpointUtils.getReferenceProperty() + ";\n");
             pointcutChainNames.add(jpAlias);
             before = jpArrayName + "[" + counterName + "]";
         }

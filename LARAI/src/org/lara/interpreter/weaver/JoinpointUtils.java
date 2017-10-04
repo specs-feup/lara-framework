@@ -18,14 +18,14 @@ import java.util.List;
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.internal.objects.NativeFunction;
-
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.Converter;
 import org.lara.interpreter.weaver.utils.FilterExpression;
+
+import jdk.nashorn.api.scripting.NashornScriptEngine;
+import jdk.nashorn.internal.objects.NativeFunction;
 
 /**
  * Utility class for handling the LaraJoinpoint class
@@ -36,13 +36,13 @@ public class JoinpointUtils {
 
     private static final String LARA_JOIN_POINT_PROPERTY = "laraJoinPoint";
     private static final String IS_EMPTY_PROPERTY = "isEmpty";
-    private static final String REFERENCE_PROPERTY = "reference";
-    private static final String PARENT_PROPERTY = "parent";
+    private static final String REFERENCE_PROPERTY = "_jp_reference_";
+    private static final String PARENT_PROPERTY = "_jp_parent_";
     private final NashornScriptEngine engine;
     private final List<NativeFunction> actions = null;
 
     public JoinpointUtils(NashornScriptEngine engine) {
-	this.engine = engine;
+        this.engine = engine;
     }
 
     /**
@@ -56,18 +56,18 @@ public class JoinpointUtils {
 
     public Bindings toJavaScript(LaraJoinPoint root) {
 
-	final Bindings obj = engine.createBindings();
-	if (root.getChildren() != null) {
+        final Bindings obj = engine.createBindings();
+        if (root.getChildren() != null) {
 
-	    for (final LaraJoinPoint child : root.getChildren()) {
-		toJavaScriptAux(child, obj);
-	    }
-	    obj.put(IS_EMPTY_PROPERTY, root.getChildren().isEmpty());
-	} else {
-	    obj.put(IS_EMPTY_PROPERTY, true);
-	}
-	obj.put(LARA_JOIN_POINT_PROPERTY, root);
-	return obj;
+            for (final LaraJoinPoint child : root.getChildren()) {
+                toJavaScriptAux(child, obj);
+            }
+            obj.put(IS_EMPTY_PROPERTY, root.getChildren().isEmpty());
+        } else {
+            obj.put(IS_EMPTY_PROPERTY, true);
+        }
+        obj.put(LARA_JOIN_POINT_PROPERTY, root);
+        return obj;
     }
 
     /**
@@ -80,20 +80,20 @@ public class JoinpointUtils {
      */
 
     private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
-	if (!parent.containsKey(jp.getClassAlias())) {
-	    final Bindings jps = Converter.newNativeArray();
-	    parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
-	}
-	final Bindings jps = (Bindings) parent.get(jp.getClassAlias());
-	final Bindings obj = engine.createBindings();// cx.newObject(scope);
-	jps.put("" + jps.size(), obj);
-	obj.put(REFERENCE_PROPERTY, jp.getReference());
-	obj.put(PARENT_PROPERTY, parent);
-	if (!jp.isLeaf()) {
-	    for (final LaraJoinPoint child : jp.getChildren()) {
-		toJavaScriptAux(child, obj);
-	    }
-	}
+        if (!parent.containsKey(jp.getClassAlias())) {
+            final Bindings jps = Converter.newNativeArray();
+            parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
+        }
+        final Bindings jps = (Bindings) parent.get(jp.getClassAlias());
+        final Bindings obj = engine.createBindings();// cx.newObject(scope);
+        jps.put("" + jps.size(), obj);
+        obj.put(getReferenceProperty(), jp.getReference());
+        obj.put(getParentProperty(), parent);
+        if (!jp.isLeaf()) {
+            for (final LaraJoinPoint child : jp.getChildren()) {
+                toJavaScriptAux(child, obj);
+            }
+        }
     }
 
     /**
@@ -149,65 +149,73 @@ public class JoinpointUtils {
      * @return the evaluation of the conditional expression
      */
     public static final String EVAL_NAME = "_EVAL_";
-    public static final String EVAL_REFERENCE = REFERENCE_PROPERTY;
+    public static final String EVAL_REFERENCE = getReferenceProperty();
 
     public boolean evalFilter(JoinPoint jp, FilterExpression[] filter, Bindings localScope) {
-	if (filter.length == 0 || filter[0].isEmpty()) {
-	    return true;
-	}
-	// localScope.entrySet().forEach(entry -> System.out.println(entry.getKey() + "-" + entry.getValue()));
-	// final Scriptable obj = cx.newObject(localScope);
-	// obj.put("reference", obj, jp);
-	// localScope.put(" ", localScope, jp);
-	// localScope.setMember("_EVAL_", jp);
-	localScope.put(JoinpointUtils.EVAL_NAME, jp);
-	final StringBuilder sb = new StringBuilder();
-	// final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
-	// Object.bindProperties({},
-	List<String> toClear = new ArrayList<>();
-	toClear.add(JoinpointUtils.EVAL_NAME);
-	for (int i = 0; i < filter.length; i++) {
+        if (filter.length == 0 || filter[0].isEmpty()) {
+            return true;
+        }
+        // localScope.entrySet().forEach(entry -> System.out.println(entry.getKey() + "-" + entry.getValue()));
+        // final Scriptable obj = cx.newObject(localScope);
+        // obj.put("reference", obj, jp);
+        // localScope.put(" ", localScope, jp);
+        // localScope.setMember("_EVAL_", jp);
+        localScope.put(JoinpointUtils.EVAL_NAME, jp);
+        final StringBuilder sb = new StringBuilder();
+        // final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
+        // Object.bindProperties({},
+        List<String> toClear = new ArrayList<>();
+        toClear.add(JoinpointUtils.EVAL_NAME);
+        for (int i = 0; i < filter.length; i++) {
 
-	    FilterExpression filterExpression = filter[i];
+            FilterExpression filterExpression = filter[i];
 
-	    if (filterExpression.isFilterComparator()) {
-		sb.append(" " + filterExpression.getOperator() + " ");
-		continue;
-	    }
-	    String attributeVar = "_expected_" + i;
-	    localScope.put(attributeVar, filterExpression.getExpected());
-	    toClear.add(attributeVar);
-	    if (filterExpression.isMatch()) {
-		sb.append("String(");
-		sb.append(JoinpointUtils.EVAL_NAME + "." + filterExpression.getAttribute());
-		sb.append(").match(new RegExp(");
-		sb.append(attributeVar);
-		sb.append(")) != null");
-	    } else {
+            if (filterExpression.isFilterComparator()) {
+                sb.append(" " + filterExpression.getOperator() + " ");
+                continue;
+            }
+            String attributeVar = "_expected_" + i;
+            localScope.put(attributeVar, filterExpression.getExpected());
+            toClear.add(attributeVar);
+            if (filterExpression.isMatch()) {
+                sb.append("String(");
+                sb.append(JoinpointUtils.EVAL_NAME + "." + filterExpression.getAttribute());
+                sb.append(").match(new RegExp(");
+                sb.append(attributeVar);
+                sb.append(")) != null");
+            } else {
 
-		sb.append(JoinpointUtils.EVAL_NAME + "." + filterExpression.getAttribute());
-		sb.append(filterExpression.getOperator() + attributeVar);
-	    }
+                sb.append(JoinpointUtils.EVAL_NAME + "." + filterExpression.getAttribute());
+                sb.append(filterExpression.getOperator() + attributeVar);
+            }
 
-	}
-	// nonScriptObject)
-	// sb.append("}");
-	// final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);
-	boolean res;
-	try {
-	    res = (Boolean) engine.eval(sb.toString(), localScope);
-	} catch (ScriptException e) {
-	    throw new FilterException(jp, filter.toString(), e);
-	}
-	toClear.forEach(localScope::remove);
-	return res;
+        }
+        // nonScriptObject)
+        // sb.append("}");
+        // final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);
+        boolean res;
+        try {
+            res = (Boolean) engine.eval(sb.toString(), localScope);
+        } catch (ScriptException e) {
+            throw new FilterException(jp, filter.toString(), e);
+        }
+        toClear.forEach(localScope::remove);
+        return res;
     }
 
     /**
      * @return the actions
      */
     public List<NativeFunction> getActions() {
-	return actions;
+        return actions;
+    }
+
+    public static String getReferenceProperty() {
+        return REFERENCE_PROPERTY;
+    }
+
+    public static String getParentProperty() {
+        return PARENT_PROPERTY;
     }
 
 }
