@@ -70,7 +70,7 @@ public interface LaraiKeys {
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER, TOOLS_FILE,
-                    REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT, DEBUG_MODE, BUNDLE_TAGS)
+                    REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT, DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS)
             .build();
 
     /**

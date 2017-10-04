@@ -23,6 +23,7 @@ import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.system.ProcessOutputAsString;
+import pt.up.fe.specs.util.utilities.StringLines;
 
 public class LaraApis {
 
@@ -30,7 +31,7 @@ public class LaraApis {
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
             ApacheStrings.class, SpecsStrings.class, SpecsSystem.class, ProcessOutputAsString.class,
-            LaraApiTools.class);
+            LaraApiTools.class, StringLines.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;

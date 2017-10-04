@@ -51,10 +51,17 @@ LocalFolder.prototype.getFolder = function(path) {
 }
 
 /**
- * @return string with the contents of the given path
+ * @return {string} string with the contents of the given path
  */
 LocalFolder.prototype.getString = function(path) {
 	return Io.readFile(this.getFile(path));
+}
+
+/**
+ * @return {object} Decodes the specified file as a JSON file.
+ */
+LocalFolder.prototype.getJson = function(path) {
+	return fileToJSON(this.getFile(path));
 }
 
 /**

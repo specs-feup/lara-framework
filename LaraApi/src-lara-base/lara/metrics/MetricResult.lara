@@ -1,7 +1,8 @@
 /**
  * Data about a metric.
+ * @constructor
  */
-var MetricResult = function(value, unit) {
+function MetricResult(value, unit) {
 	this.value = value;
 	this.unit = unit;
 }

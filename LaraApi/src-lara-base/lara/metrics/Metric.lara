@@ -24,3 +24,10 @@ Metric.prototype.instrument = function($start, $end) {
 Metric.prototype.report = function(processExecutor) {
 		notImplemented("Metric.report");
 }
+
+/**
+ * @returns {string} A string with the LARA import of this Metric.
+ */
+Metric.prototype.getImport = function() {
+		notImplemented("Metric.getImport");
+}

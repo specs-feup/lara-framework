@@ -1,4 +1,7 @@
 import lara.metrics.Metric;
+import lara.metrics.MetricResult;
+import lara.code.Timer;
+import lara.util.TimeUnits;
 
 /**
  * Measures execution time of an application.
@@ -11,13 +14,32 @@ function ExecutionTimeMetric() {
 // Inheritance
 ExecutionTimeMetric.prototype = Object.create(Metric.prototype);
 
+ExecutionTimeMetric._PREFIX = "elapsed:";
 
 // Override
 ExecutionTimeMetric.prototype.instrument = function($start, $end) {
-	println("ExecutionTimeMetric.instrument not implemented yet");
+	var timer = new Timer("NANOSECONDS").setPrintUnit(false);
+	//timer.time($start, "execution time:" , $end);
+	timer.time($start, ExecutionTimeMetric._PREFIX , $end);
 }
 
 // Override
 ExecutionTimeMetric.prototype.report = function(processExecutor) {
-	println("ExecutionTimeMetric.report not implemented yet");
+	var lines = StringLines.newInstance(processExecutor.getConsoleOutput());
+	while(lines.hasNextLine()) {
+		var line = lines.nextLine().trim();
+		
+		if(!line.startsWith(ExecutionTimeMetric._PREFIX)) {
+			continue;
+		}
+		
+		return new MetricResult(line.substring(ExecutionTimeMetric._PREFIX.length), "ns");
+	}
+
+	return undefined;
+	//throw "ExecutionTimeMetric.report: Could not extract metric from console output:\n" + processExecutor.getConsoleOutput();
+}
+
+ExecutionTimeMetric.prototype.getImport = function() {
+	return "lara.metrics.ExecutionTimeMetric";
 }
