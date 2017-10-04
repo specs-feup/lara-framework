@@ -13,9 +13,12 @@
 
 package org.lara.interpreter.joptions.panels.editor.utils;
 
+import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
+
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 
 public class SettingsManager {
 
@@ -24,9 +27,11 @@ public class SettingsManager {
     private static final String ASK_SAVE_PREFIX = "ask_save_";
     private static final String SHOW_CONSOLE_PREFIX = "show_console_";
     private static final String SHOW_LANG_SPEC_PREFIX = "show_lang_spec_";
+    private static final String OPENED_FILES_PREFIX = "opened_files_";
 
     public Preferences prefs;
     private String keySufix;
+    public static final String FILE_SEPARATOR = File.pathSeparator;
 
     public SettingsManager(EditorPanel panel, String keySufix) {
         this.keySufix = keySufix;
@@ -88,6 +93,17 @@ public class SettingsManager {
         return prefs.getInt(getAskSaveSetting(), defaultVale);
     }
 
+    public void saveOpenedFiles(String filesList) {
+        LaraLog.debug("SAVING OPENED FILES: " + filesList + "!");
+        prefs.put(getOpenedFilesSetting(), filesList);
+    }
+
+    public String loadOpenedFiles() {
+        String fileList = prefs.get(getOpenedFilesSetting(), "");
+        LaraLog.debug("LOADING OPENED FILES: " + fileList + "!");
+        return fileList;
+    }
+
     /////////////////////////////////////////////////
     /////////////// Get Preferences Keys ////////////
     /////////////////////////////////////////////////
@@ -109,6 +125,10 @@ public class SettingsManager {
 
     private String getShowLangSpecSetting() {
         return SHOW_LANG_SPEC_PREFIX + getKeySufix();
+    }
+
+    private String getOpenedFilesSetting() {
+        return OPENED_FILES_PREFIX + getKeySufix();
     }
 
     private String getKeySufix() {

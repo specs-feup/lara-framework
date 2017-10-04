@@ -26,6 +26,7 @@ import org.lara.interpreter.joptions.panels.editor.components.Explorer;
 import org.lara.interpreter.joptions.panels.editor.listeners.FileTransferHandler;
 import org.lara.interpreter.joptions.panels.editor.listeners.TabbedListener;
 import org.lara.interpreter.joptions.panels.editor.utils.Factory;
+import org.lara.interpreter.joptions.panels.editor.utils.SettingsManager;
 
 /**
  * This source files panel contains a tabbed pane that will contain the editor tabs. The main tab, which is the main
@@ -51,10 +52,11 @@ public class TabsContainerPanel extends JPanel {
         // tabs = new ArrayList<>();
         lastOpenedFolder = new File(".");
         tabbedPane = new JTabbedPane();
+        // tabbedPane.addChangeListener(e -> System.out.println("Tab: " + e.getSource()));
         // tabbedPane.setBackground(Colors.BLUE_GREY);
 
         mainTab = new MainLaraTab(this);
-        addTab(mainTab);
+        addMainTab(mainTab);
 
         // ButtonTabComponent tabComp = (ButtonTabComponent) tabbedPane.getTabComponentAt(0);
         // tabComp.remove(1); // remove button!
@@ -145,8 +147,23 @@ public class TabsContainerPanel extends JPanel {
         // Component comp = tabbedPane.getTabComponentAt(currentIndex);
         // System.out.println(comp);
         // tabbedPane.setTabComponentAt(currentIndex, new ButtonTabComponent(tab));
-
+        updateOpenedFiles();
         return currentIndex;
+    }
+
+    public int addMainTab(SourceTextArea tab) {
+        int mnemonic = KeyEvent.VK_1;
+        // RTextScrollPane sp = new RTextScrollPane(tab);
+        tabbedPane.addTab(tab.getTabName(), tab);
+        tabbedPane.setMnemonicAt(0, mnemonic);
+        tabbedPane.setSelectedIndex(0);
+        // tabbedPane.setTitleAt(currentIndex, "TEST");
+
+        // Component comp = tabbedPane.getTabComponentAt(currentIndex);
+        // System.out.println(comp);
+        // tabbedPane.setTabComponentAt(currentIndex, new ButtonTabComponent(tab));
+        // updateOpenedFiles();
+        return 0;
     }
 
     public void setTabTitle(SourceTextArea tab) {
@@ -175,6 +192,21 @@ public class TabsContainerPanel extends JPanel {
 
     private void closeAndRemoveTab(int pos) {
         tabbedPane.removeTabAt(pos);
+        updateOpenedFiles();
+    }
+
+    public void updateOpenedFiles() {
+        int tabCount = tabbedPane.getTabCount();
+        String openedFiles = "";
+        if (tabCount > 1) {
+            SourceTextArea editorTab = getTab(1);
+            openedFiles += editorTab.getLaraFile();
+            for (int i = 2; i < tabCount; i++) {
+                editorTab = getTab(i);
+                openedFiles += SettingsManager.FILE_SEPARATOR + editorTab.getLaraFile();
+            }
+        }
+        getEditor().getEditorPanel().updateOpenedFiles(openedFiles);
     }
 
     public SourceTextArea getCurrentTab() {
@@ -339,12 +371,31 @@ public class TabsContainerPanel extends JPanel {
         return mainTab;
     }
 
-    public void saveAll() {
+    public boolean saveAll() {
+        boolean cancelled = false;
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {
 
             SourceTextArea editorTab = getTab(i);
-            editorTab.save();
+            boolean approved = editorTab.save();
+            if (!approved) {
+                cancelled = true;
+            }
         }
+        return !cancelled;
+    }
+
+    public boolean saveAllForClose() {
+        boolean cancelled = false;
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+
+            SourceTextArea editorTab = getTab(i);
+
+            boolean approved = editorTab.save();
+            if (!approved) {
+                cancelled = true;
+            }
+        }
+        return !cancelled;
     }
 
     public boolean askSave() {
@@ -473,4 +524,5 @@ public class TabsContainerPanel extends JPanel {
             // editorTab.repaint();
         }
     }
+
 }

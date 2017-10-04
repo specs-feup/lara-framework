@@ -24,13 +24,12 @@ public class CallStackTrace {
     private Stack<Trace> callStack;
 
     public CallStackTrace() {
-        LaraLog.setDebug(true);
         callStack = new Stack<>();
     }
 
     public void push(String callName, String location) {
         callStack.push(Trace.newInstance(callName, location));
-        LaraLog.debug(toString());
+        // LaraLog.debug(toString());
     }
 
     public void push(String callName) {
@@ -43,7 +42,7 @@ public class CallStackTrace {
             return null;
         }
         Trace pop = callStack.pop();
-        LaraLog.debug(toString());
+        // LaraLog.debug(toString());
         return pop;
     }
 

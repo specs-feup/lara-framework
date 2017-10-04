@@ -60,7 +60,7 @@ public class EditorPanel extends GuiTab {
      *
      */
     private static final long serialVersionUID = 1L;
-
+    public static final int DEFAULT_FONT = 12;
     private final SettingsManager settings;
     private final TabsContainerPanel tabsContainer;
     // private final LanguageSpecificationSideBar langSpecSideBar;
@@ -83,7 +83,8 @@ public class EditorPanel extends GuiTab {
     private boolean runDebug = false;
 
     private JSplitPane splitterExplorer;
-    public static final int DEFAULT_FONT = 12;
+
+    private boolean firstEntry = true;
 
     // public static EditorPanel newInstance(DataStore dataStore) {
     // return new EditorPanel(dataStore);
@@ -181,7 +182,10 @@ public class EditorPanel extends GuiTab {
     @Override
     public void enterTab() {
 
-        loadEditorPreferences();
+        if (firstEntry) {
+            firstEntry = false;
+            loadEditorPreferences();
+        }
 
         optionsDataStore = null;
         outputFile = null;
@@ -217,6 +221,16 @@ public class EditorPanel extends GuiTab {
         consolePanel.setVisible(showConsole);
         boolean showLangSpec = settings.loadShowLangSpec(true);
         langSpecSideBar.setVisible(showLangSpec);
+        String openedFiles = settings.loadOpenedFiles();
+        if (!openedFiles.isEmpty()) {
+            String[] split = openedFiles.split(SettingsManager.FILE_SEPARATOR);
+            for (String fileName : split) {
+                File file = new File(fileName);
+                if (file.exists()) {
+                    tabsContainer.open(file);
+                }
+            }
+        }
         revalidate();
     }
 
@@ -500,6 +514,15 @@ public class EditorPanel extends GuiTab {
 
     public SettingsManager getSettings() {
         return settings;
+    }
+
+    public void updateOpenedFiles(String openedFiles) {
+        settings.saveOpenedFiles(openedFiles);
+    }
+
+    public boolean closingProgram() {
+        boolean saved = getTabsContainer().saveAllForClose();
+        return saved;
     }
 
 }
