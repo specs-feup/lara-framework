@@ -18,10 +18,10 @@ import java.util.prefs.Preferences;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 
-import pt.up.fe.specs.tools.lara.logging.LaraLog;
-
 public class SettingsManager {
 
+    private static final String EDITOR_FONT_SIZE_PREFIX = "editor_font_size_";
+    private static final String CONSOLE_FONT_SIZE_PREFIX = "console_font_size_";
     private static final String CONSOLE_SPLIT_FACTOR_PREFIX = "split_factor_";
     private static final String EXPLORER_SPLIT_FACTOR_PREFIX = "explorer_factor_";
     private static final String ASK_SAVE_PREFIX = "ask_save_";
@@ -94,14 +94,35 @@ public class SettingsManager {
     }
 
     public void saveOpenedFiles(String filesList) {
-        LaraLog.debug("SAVING OPENED FILES: " + filesList + "!");
+        // LaraLog.debug("SAVING OPENED FILES: " + filesList + "!");
         prefs.put(getOpenedFilesSetting(), filesList);
     }
 
     public String loadOpenedFiles() {
         String fileList = prefs.get(getOpenedFilesSetting(), "");
-        LaraLog.debug("LOADING OPENED FILES: " + fileList + "!");
+        // LaraLog.debug("LOADING OPENED FILES: " + fileList + "!");
         return fileList;
+    }
+
+    public void saveEditorFontSize(float fontSize) {
+        // LaraLog.debug("SAVING Editor Font: " + fontSize + "!");
+
+        prefs.putFloat(getEditorFontSizeSetting(), fontSize);
+    }
+
+    public float loadEditorFontSize(float defaultVale) {
+
+        float float1 = prefs.getFloat(getEditorFontSizeSetting(), defaultVale);
+        // LaraLog.debug("LOADING Editor Font: " + float1 + "!");
+        return float1;
+    }
+
+    public void saveConsoleFontSize(float fontSize) {
+        prefs.putFloat(getConsoleFontSizeSetting(), fontSize);
+    }
+
+    public float loadConsoleFontSize(float defaultVale) {
+        return prefs.getFloat(getConsoleFontSizeSetting(), defaultVale);
     }
 
     /////////////////////////////////////////////////
@@ -129,6 +150,14 @@ public class SettingsManager {
 
     private String getOpenedFilesSetting() {
         return OPENED_FILES_PREFIX + getKeySufix();
+    }
+
+    private String getEditorFontSizeSetting() {
+        return EDITOR_FONT_SIZE_PREFIX + getKeySufix();
+    }
+
+    private String getConsoleFontSizeSetting() {
+        return CONSOLE_FONT_SIZE_PREFIX + getKeySufix();
     }
 
     private String getKeySufix() {
