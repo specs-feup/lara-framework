@@ -2,6 +2,7 @@ import lara.metrics.Metric;
 import lara.metrics.MetricResult;
 import lara.code.Timer;
 import lara.util.TimeUnits;
+import lara.Strings;
 
 /**
  * Measures execution time of an application.
@@ -25,6 +26,9 @@ ExecutionTimeMetric.prototype.instrument = function($start, $end) {
 
 // Override
 ExecutionTimeMetric.prototype.report = function(processExecutor) {
+	var value = Strings.extractValue(ExecutionTimeMetric._PREFIX, processExecutor.getConsoleOutput());	
+	return new MetricResult(value, "ns");
+/*
 	var lines = StringLines.newInstance(processExecutor.getConsoleOutput());
 	while(lines.hasNextLine()) {
 		var line = lines.nextLine().trim();
@@ -38,6 +42,7 @@ ExecutionTimeMetric.prototype.report = function(processExecutor) {
 
 	return undefined;
 	//throw "ExecutionTimeMetric.report: Could not extract metric from console output:\n" + processExecutor.getConsoleOutput();
+	*/
 }
 
 ExecutionTimeMetric.prototype.getImport = function() {
