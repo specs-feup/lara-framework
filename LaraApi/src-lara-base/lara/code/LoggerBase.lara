@@ -28,6 +28,7 @@ Logger.prototype.Type = {
     CHAR: 5,
     HEX: 6,
     OCTAL: 7,
+	LITERAL: 8
 }
 
 /**
@@ -161,6 +162,10 @@ Logger.prototype._info = function(message) {
 Logger.prototype._getPrintableContent = function(element) {
     var enumType = this.Type;
     var content = element.content;
+	if (element.type === enumType.LITERAL) {
+		return content;
+	}
+	
     if (element.type === enumType.NORMAL || element.type === enumType.STRING) {
         return "\"" + content + "\"";
     }
