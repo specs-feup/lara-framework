@@ -19,6 +19,7 @@ var CMaker = function(name) {
 	this.sources = new CMakerSources();
 	this.includeFolders = new StringSet();
 	this.printToConsole = false;
+	this._lastMakeOutput = undefined;
 };
 
 CMaker.prototype._MINIMUM_VERSION = "2.8";
@@ -91,13 +92,23 @@ CMaker.prototype.addIncludeFolder = function(includeFolder) {
 	return this;
 }
 
+CMaker.prototype.getMakeOutput = function() {
+	if(this._lastMakeOutput === undefined) {
+		println("CMaker.getMakeOutput: there is not make output yet");
+		return undefined;
+	}
+	
+	return this._lastMakeOutput;
+}
+
+
 /**
  * @return the name of the executable that will be generated
  */
 CMaker.prototype._getExecutableName = function() {
 	var executable = this.name;
 	
-	if(Platforms.isWindows) {
+	if(Platforms.isWindows()) {
 		executable += ".exe";
 	}
 	
@@ -128,17 +139,22 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
+	debug("CMake output:" + cmakeOutput);
+
 	//println("CMake output: " + cmakeOutput);
 		
 	// Execute make
 	debug("Building, calling '"+  this.makeCommand + "' at ' " + builderFolderpath +  " '");
-	var makeOutput = new ProcessExecutor()
+	this._lastMakeOutput = new ProcessExecutor()
 		.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(this.makeCommand);
+	debug("Make output:" + this._lastMakeOutput);
 	//println("Make output: " + makeOutput);
 	
 	var executableFile = Io.getPath(builderFolderpath, this._getExecutableName());
+	//println("BuildFolderPath:" + builderFolderpath);
+	//println("Executable Name:" + this._getExecutableName());
 	if(!Io.isFile(executableFile)) {
 		println("Cmaker.build: Could not generate executable file '" + this._getExecutableName() + "'");
 		return;
