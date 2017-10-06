@@ -55,7 +55,17 @@ ProcessExecutor.prototype.setTimeout = function(timeout) {
 	return this;
 }
 
+/**
+ * @param {(number|string)} returnValue an integer that represents the return value of the process executor
+ */
 ProcessExecutor.prototype.setCustomReturnValue = function(returnValue) {
+	if(typeof returnValue === "string") {
+		// Convert string to integer
+		returnValue = parseInt(returnValue, 10);
+	}
+
+	checkType(returnValue, "number", "ProcessExecutor.setCustomReturnValue");
+
 	this._customReturnValue = returnValue;
 	return this;
 }
@@ -117,14 +127,15 @@ ProcessExecutor.prototype.getConsoleOutput = function() {
 	return this.lastOutput.getOutput();
 }
 
-ProcessExecutor.prototype.getReturnValue = function() {
+ProcessExecutor.prototype.getReturnValue = function() {	
+	// Give priority to custom value
+	if(this._customReturnValue !== undefined) {
+		return this._customReturnValue;
+	}
+	
 	if(this.lastOutput === undefined) {
 		println("ProcessExecutor.getReturnValue: no execution has been done yet");
 		return undefined;
-	}
-	
-	if(this._customReturnValue !== undefined) {
-		return this._customReturnValue;
 	}
 	
 	return this.lastOutput.getReturnValue();
