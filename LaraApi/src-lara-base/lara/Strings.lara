@@ -25,8 +25,39 @@ Strings.escapeHtml = function(html) {
 /**
  * Escapes JSON content.
  *
- * @return String with escaped code
+ * @return {string} String with escaped code
  */
 Strings.escapeJson = function(jsonContents) {
 	return SpecsStrings.escapeJson(jsonContents);
+}
+
+/**
+ * Iterates over the given string, line-by-line, looking for the given prefix. If found, returns the contents of the line after the prefix.
+ *
+ * @returns {string} 
+ */
+Strings.extractValue = function(prefix, contents, errorOnUndefined) {
+	checkType(prefix, "string", "Strings.extractValue::prefix");
+	checkType(contents, "string", "Strings.extractValue::contents");
+	
+	if(errorOnUndefined === undefined) {
+		errorOnUndefined = false;
+	}
+	
+	var lines = StringLines.newInstance(contents);
+	while(lines.hasNextLine()) {
+		var line = lines.nextLine().trim();
+		
+		if(!line.startsWith(prefix)) {
+			continue;
+		}
+		
+		return line.substring(prefix.length);
+	}
+
+	if(errorOnUndefined) {
+		throw "Could not extract a value with prefix '" + prefix + "' from output '" + contents + "'";
+	}
+	
+	return undefined;	
 }
