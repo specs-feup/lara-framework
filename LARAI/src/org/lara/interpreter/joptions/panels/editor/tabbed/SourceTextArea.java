@@ -36,6 +36,7 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.components.DontAskMeAgainPanel;
+import org.lara.interpreter.joptions.panels.editor.components.FileNotExistPane;
 import org.lara.interpreter.joptions.panels.editor.components.ReloadPane;
 import org.lara.interpreter.joptions.panels.editor.highlight.EditorConfigurer;
 import org.lara.interpreter.joptions.panels.editor.listeners.EditorListener;
@@ -61,7 +62,9 @@ public class SourceTextArea extends JPanel {
     private boolean changed;
     private boolean isNew;
     private final ReloadPane reloadPane;
+    private final FileNotExistPane fileNotExistsPane;
     Consumer<Integer> saveAskSaveMethod;
+    private boolean asked;
 
     public SourceTextArea(TabsContainerPanel parent) {
         this(Factory.newFile(parent), parent, true);
@@ -93,6 +96,7 @@ public class SourceTextArea extends JPanel {
         temp.add(es, BorderLayout.LINE_END);
         add(temp, BorderLayout.CENTER);
         reloadPane = new ReloadPane(this);
+        fileNotExistsPane = new FileNotExistPane(this);
         // add(reloadPane, BorderLayout.NORTH);
         originalText = textArea.getText();
         addFocusListener(new FocusGainedListener(e -> {
@@ -125,6 +129,18 @@ public class SourceTextArea extends JPanel {
      */
     public boolean save() {
 
+        if (!(getLaraFile().exists())) {
+            int result = askToSaveIfNonExistant();
+            switch (result) {
+            case JOptionPane.CANCEL_OPTION:
+            case JOptionPane.CLOSED_OPTION:
+                return false;
+            case JOptionPane.NO_OPTION:
+                return true;
+            default:
+                break;
+            }
+        }
         if (isNew) {
             return saveAs();
         }
@@ -146,11 +162,13 @@ public class SourceTextArea extends JPanel {
             textArea.save();
             updateLastModified();
             setChanged(false);
+            setAsked(false);
             updateOldText();
             closeReloadPane();
             return true;
         } catch (IOException e) {
             SpecsLogs.msgWarn("Error message:\n", e);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Save Exception", JOptionPane.ERROR_MESSAGE);
         }
         return false;
     }
@@ -184,6 +202,7 @@ public class SourceTextArea extends JPanel {
             updateOldText();
             EditorConfigurer.setSyntaxEditingStyle(textArea, file);
             getTabbedParent().setLastOpenedFolder(file.getParentFile());
+            tabsContainer.updateOpenedFiles();
             return true;
         } catch (IOException e) {
             SpecsLogs.msgWarn("Error message:\n", e);
@@ -242,11 +261,15 @@ public class SourceTextArea extends JPanel {
     */
     public void refresh() {
 
-        if (isNew) {
+        if (isNew || asked) {
             return;
         }
         // System.out.println("refresh?" + lastModified + " vs " + sourceFile.lastModified());
         // if local timestamp is different from the file timestamp
+        if (!getLaraFile().exists()) {
+            openFileNotExistsPane();
+            return;
+        }
         if (lastModified != sourceFile.lastModified()) {
             // System.out.println("update!");
             openReloadPane();
@@ -264,8 +287,19 @@ public class SourceTextArea extends JPanel {
         // validate();
     }
 
+    public void openFileNotExistsPane() {
+        add(fileNotExistsPane, BorderLayout.NORTH);
+        revalidate();
+        repaint();
+        // reloadPane.ativate(true);
+        // revalidate(); //looks like it is this parent's that has to be revalidated!
+        // getParent().
+        // validate();
+    }
+
     public void closeReloadPane() {
         remove(reloadPane);
+        remove(fileNotExistsPane);
         revalidate();
         repaint();
         // reloadPane.ativate(false);
@@ -273,28 +307,14 @@ public class SourceTextArea extends JPanel {
         // validate();
     }
 
-    @Deprecated
-    void oldRefreshMethod() {
+    public int askToSaveIfNonExistant() {
         int choice = JOptionPane.showConfirmDialog(this,
                 sourceFile.getAbsolutePath()
-                        + "\n\nThis file has been modified my another program"
-                        + ".\nDo you wan to reload it?",
+                        + "\n\nThis file does not exist or was removed. Do you wan to create?",
                 // + "\nTimeStamps: editor=" + lastModified + ", file=" + sourceFile.lastModified()
-                "Reload",
+                "File does not exist",
                 JOptionPane.YES_NO_OPTION);
-        switch (choice) {
-        case JOptionPane.NO_OPTION:
-            // Just ignore file content
-            break;
-        case JOptionPane.YES_OPTION:
-            reload();
-            // originalText = textArea.getText();
-            // tabbedParent.setTabTitle(this);
-            break;
-        default:
-            break;
-        }
-        lastModified = sourceFile.lastModified();
+        return choice;
     }
 
     /**
@@ -401,6 +421,10 @@ public class SourceTextArea extends JPanel {
     }
 
     public boolean saveBeforeClose() {
+
+        if (!getLaraFile().exists() || isNew) {
+            return save();
+        }
 
         if (!originalText.equals(textArea.getText())) {
             if (!tabsContainer.getCurrentTab().equals(this)) {
@@ -535,5 +559,9 @@ public class SourceTextArea extends JPanel {
             }
         }
         return true;
+    }
+
+    public void setAsked(boolean b) {
+        asked = true;
     }
 }

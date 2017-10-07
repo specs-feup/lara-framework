@@ -63,6 +63,8 @@ public class EditorToolBar extends JPanel {
     private JButton execButton;
     private boolean running;
     private JButton debugButton;
+    private JComboBox<Integer> editorCombo;
+    private JComboBox<Integer> consoleCombo;
 
     public EditorToolBar(EditorPanel editorPanel) {
         super(new FlowLayout(FlowLayout.LEFT));
@@ -88,17 +90,31 @@ public class EditorToolBar extends JPanel {
 
         Integer[] values = { 10, 12, 14, 16, 18, 20 };
 
-        addSizeCombo(values, 12, "Editor Font Size", "Editor Font Size", editor::setTabsFont);
+        editorCombo = addSizeCombo(values, 12, "Editor Font Size", "Editor Font Size", editor::setTabsFont);
 
-        addSizeCombo(values, EditorPanel.DEFAULT_FONT, "Output Font Size", "Output Font Size",
+        consoleCombo = addSizeCombo(values, EditorPanel.DEFAULT_FONT, "Output Font Size", "Output Font Size",
                 editor::setOutputAreaFont);
 
     }
 
+    public void setSelectedEditorFont(float value) {
+        editorCombo.setSelectedItem((int) value);
+        // editorCombo.revalidate();
+        // editorCombo.repaint();
+    }
+
+    public void setSelectedConsoleFont(float value) {
+        consoleCombo.setSelectedItem((int) value);
+        // consoleCombo.revalidate();
+        // consoleCombo.repaint();
+    }
+
     /**
      * @return
+     * @return
      */
-    private void addSizeCombo(Integer[] values, int defaultValue, String tooltip, String label, Consumer<Float> c) {
+    private JComboBox<Integer> addSizeCombo(Integer[] values, int defaultValue, String tooltip, String label,
+            Consumer<Float> c) {
 
         JLabel sizeLabel = new JLabel(label);
         add(sizeLabel);
@@ -124,6 +140,7 @@ public class EditorToolBar extends JPanel {
         });
 
         add(combo);
+        return combo;
     }
 
     private JToolBar newToolBar(String name) {

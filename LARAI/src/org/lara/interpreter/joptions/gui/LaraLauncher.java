@@ -123,7 +123,8 @@ public class LaraLauncher {
                 if (!success) {
                     return;
                 }
-                success = editorPanel.getTabsContainer().closeAll();
+                success = editorPanel.closingProgram();
+                // success = editorPanel.getTabsContainer().closeAll();
                 if (!success) {
                     return;
                 }

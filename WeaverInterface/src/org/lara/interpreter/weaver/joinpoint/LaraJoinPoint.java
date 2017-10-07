@@ -35,7 +35,7 @@ public class LaraJoinPoint {
     /**
      * join point parent in the pointcut chain
      */
-    private LaraJoinPoint parent;
+    private LaraJoinPoint _jp_parent_;
 
     /**
      * List of join point children in the join point chain
@@ -50,7 +50,7 @@ public class LaraJoinPoint {
     /**
      * The Reference to a join point
      */
-    private JoinPoint reference;
+    private JoinPoint _jp_reference_;
 
     // private LaraJoinPoint laraJoinPoint;
 
@@ -61,26 +61,26 @@ public class LaraJoinPoint {
      * @return
      */
     public static LaraJoinPoint createRoot() {
-	return new LaraJoinPoint();
+        return new LaraJoinPoint();
     }
 
     /**
      * Empty constructor. Used to create a join point element that is used as root.
      */
     public LaraJoinPoint() {
-	leaf = false;
-	children = new ArrayList<>();
-	// laraJoinPoint = this; // This is just of backwards compatibility. After migrating to nashorn remove this!
+        leaf = false;
+        children = new ArrayList<>();
+        // laraJoinPoint = this; // This is just of backwards compatibility. After migrating to nashorn remove this!
     }
 
     /**
      * Constructor based on a existing join point, containing the attributes and the Object reference
      */
     public LaraJoinPoint(JoinPoint jp) {
-	leaf = false;
-	children = new ArrayList<>();
-	// laraJoinPoint = this;
-	setReference(jp);
+        leaf = false;
+        children = new ArrayList<>();
+        // laraJoinPoint = this;
+        setReference(jp);
     }
 
     /**
@@ -90,9 +90,9 @@ public class LaraJoinPoint {
      *            the child to add
      */
     public void addChild(LaraJoinPoint jp) {
-	children.add(jp);
-	jp.setParent(this);
-	setLeaf(false);
+        children.add(jp);
+        jp.setParent(this);
+        setLeaf(false);
     }
 
     /**
@@ -102,9 +102,9 @@ public class LaraJoinPoint {
      *            the collection of children to add
      */
     public void addChildren(Collection<LaraJoinPoint> jpC) {
-	for (final LaraJoinPoint jp : jpC) {
-	    addChild(jp);
-	}
+        for (final LaraJoinPoint jp : jpC) {
+            addChild(jp);
+        }
     }
 
     /**
@@ -115,7 +115,7 @@ public class LaraJoinPoint {
      * @return true if this list contained the specified join point
      */
     public boolean removeChild(LaraJoinPoint jp) {
-	return children.remove(jp);
+        return children.remove(jp);
     }
 
     /**
@@ -126,7 +126,7 @@ public class LaraJoinPoint {
      * @return the join point at the specified position
      */
     public LaraJoinPoint removeChild(int index) {
-	return children.remove(index);
+        return children.remove(index);
     }
 
     /**
@@ -137,14 +137,14 @@ public class LaraJoinPoint {
      * @return the join point at the specified position in the children list
      */
     public LaraJoinPoint getChild(int index) {
-	return children.get(index);
+        return children.get(index);
     }
 
     /**
      * @return the name
      */
     public String getClassAlias() {
-	return classAlias;
+        return classAlias;
     }
 
     /**
@@ -152,14 +152,14 @@ public class LaraJoinPoint {
      *            the name to set
      */
     public void setClassAlias(String classAlias) {
-	this.classAlias = classAlias;
+        this.classAlias = classAlias;
     }
 
     /**
      * @return the parent
      */
     public LaraJoinPoint getParent() {
-	return parent;
+        return _jp_parent_;
     }
 
     /**
@@ -167,14 +167,14 @@ public class LaraJoinPoint {
      *            the parent to set
      */
     public void setParent(LaraJoinPoint parent) {
-	this.parent = parent;
+        this._jp_parent_ = parent;
     }
 
     /**
      * @return the children
      */
     public List<LaraJoinPoint> getChildren() {
-	return children;
+        return children;
     }
 
     /**
@@ -182,7 +182,7 @@ public class LaraJoinPoint {
      *            the children to set
      */
     public void setChildren(List<LaraJoinPoint> children) {
-	this.children = children;
+        this.children = children;
     }
 
     /**
@@ -190,21 +190,21 @@ public class LaraJoinPoint {
      *            the isLeaf to set
      */
     public void setLeaf(boolean isLeaf) {
-	leaf = isLeaf;
+        leaf = isLeaf;
     }
 
     /**
      * @return the isLeaf
      */
     public boolean isLeaf() {
-	return leaf;
+        return leaf;
     }
 
     /**
      * @return the reference
      */
     public JoinPoint getReference() {
-	return reference;
+        return _jp_reference_;
     }
 
     /**
@@ -212,38 +212,38 @@ public class LaraJoinPoint {
      *            the reference to set
      */
     public void setReference(JoinPoint reference) {
-	this.reference = reference;
+        this._jp_reference_ = reference;
     }
 
     @Override
     public String toString() {
-	return toString("");
+        return toString("");
     }
 
     private String toString(String space) {
-	final String space2 = space + "\t";
+        final String space2 = space + "\t";
 
-	String ret = "\n" + space + "JoinPoint {";
-	ret += "\n" + space2 + "type : " + getReference().get_class();
-	ret += "\n" + space2;
-	if (classAlias == null) {
-	    ret += "LARA Root for Select";
-	} else {
-	    ret += "alias: " + classAlias;
-	}
+        String ret = "\n" + space + "JoinPoint {";
+        ret += "\n" + space2 + "type : " + getReference().get_class();
+        ret += "\n" + space2;
+        if (classAlias == null) {
+            ret += "LARA Root for Select";
+        } else {
+            ret += "alias: " + classAlias;
+        }
 
-	if (parent != null) {
-	    ret += "\n" + space2 + "parent: " + (parent.classAlias == null ? "none" : parent.classAlias);
-	}
-	if (!leaf) {
-	    ret += "\n" + space2 + "children: [";
-	    for (final LaraJoinPoint ljp : children) {
-		ret += ljp.toString(space2 + "\t");
-	    }
-	    ret += "\n" + space2 + "]";
-	}
-	ret += "\n" + space + "}";
-	return ret;
+        if (_jp_parent_ != null) {
+            ret += "\n" + space2 + "parent: " + (_jp_parent_.classAlias == null ? "none" : _jp_parent_.classAlias);
+        }
+        if (!leaf) {
+            ret += "\n" + space2 + "children: [";
+            for (final LaraJoinPoint ljp : children) {
+                ret += ljp.toString(space2 + "\t");
+            }
+            ret += "\n" + space2 + "]";
+        }
+        ret += "\n" + space + "}";
+        return ret;
     }
 
     /**
@@ -252,26 +252,26 @@ public class LaraJoinPoint {
     @Override
     public LaraJoinPoint clone() {
 
-	final LaraJoinPoint clone = cleanClone();
+        final LaraJoinPoint clone = cleanClone();
 
-	for (final LaraJoinPoint child : children) {
+        for (final LaraJoinPoint child : children) {
 
-	    final LaraJoinPoint clonedChild = child.clone();
-	    clone.addChild(clonedChild);
-	}
+            final LaraJoinPoint clonedChild = child.clone();
+            clone.addChild(clonedChild);
+        }
 
-	return clone;
+        return clone;
     }
 
     /**
      * Create a LaraJoinPoint clone for this instance, with no children
      */
     public LaraJoinPoint cleanClone() {
-	final LaraJoinPoint clone = new LaraJoinPoint(reference);
-	clone.setClassAlias(classAlias);
-	clone.setLeaf(leaf);
-	clone.setParent(null);
-	return clone;
+        final LaraJoinPoint clone = new LaraJoinPoint(_jp_reference_);
+        clone.setClassAlias(classAlias);
+        clone.setLeaf(leaf);
+        clone.setParent(null);
+        return clone;
     }
 
     /**
@@ -281,9 +281,9 @@ public class LaraJoinPoint {
      */
     public List<LaraJoinPoint> getLeaves() {
 
-	final List<LaraJoinPoint> leaves = new ArrayList<>();
-	this.getLeaves(leaves);
-	return leaves;
+        final List<LaraJoinPoint> leaves = new ArrayList<>();
+        this.getLeaves(leaves);
+        return leaves;
     }
 
     /**
@@ -293,35 +293,35 @@ public class LaraJoinPoint {
      *            the list to use to add leaves
      */
     private void getLeaves(List<LaraJoinPoint> leaves) {
-	if (isLeaf()) {
+        if (isLeaf()) {
 
-	    leaves.add(this);
-	} else {
+            leaves.add(this);
+        } else {
 
-	    for (final LaraJoinPoint child : children) {
+            for (final LaraJoinPoint child : children) {
 
-		child.getLeaves(leaves);
-	    }
-	}
+                child.getLeaves(leaves);
+            }
+        }
     }
 
     public List<String> getJoinPointChain() {
-	final List<String> chain = new ArrayList<>();
-	getJoinPointChain(chain);
-	return chain;
+        final List<String> chain = new ArrayList<>();
+        getJoinPointChain(chain);
+        return chain;
     }
 
     private void getJoinPointChain(List<String> chain) {
-	if (chain != null) {
-	    chain.add(classAlias);
-	}
-	if (!isLeaf()) {
-	    children.get(0).getJoinPointChain(chain);
-	}
+        if (chain != null) {
+            chain.add(classAlias);
+        }
+        if (!isLeaf()) {
+            children.get(0).getJoinPointChain(chain);
+        }
     }
 
     public boolean isEmpty() {
-	return children.isEmpty();
+        return children.isEmpty();
     }
 
     // public LaraJoinPoint getLaraJoinPoint() {

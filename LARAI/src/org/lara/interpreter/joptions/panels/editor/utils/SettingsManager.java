@@ -13,20 +13,25 @@
 
 package org.lara.interpreter.joptions.panels.editor.utils;
 
+import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 
 public class SettingsManager {
 
+    private static final String EDITOR_FONT_SIZE_PREFIX = "editor_font_size_";
+    private static final String CONSOLE_FONT_SIZE_PREFIX = "console_font_size_";
     private static final String CONSOLE_SPLIT_FACTOR_PREFIX = "split_factor_";
     private static final String EXPLORER_SPLIT_FACTOR_PREFIX = "explorer_factor_";
     private static final String ASK_SAVE_PREFIX = "ask_save_";
     private static final String SHOW_CONSOLE_PREFIX = "show_console_";
     private static final String SHOW_LANG_SPEC_PREFIX = "show_lang_spec_";
+    private static final String OPENED_FILES_PREFIX = "opened_files_";
 
     public Preferences prefs;
     private String keySufix;
+    public static final String FILE_SEPARATOR = File.pathSeparator;
 
     public SettingsManager(EditorPanel panel, String keySufix) {
         this.keySufix = keySufix;
@@ -88,6 +93,38 @@ public class SettingsManager {
         return prefs.getInt(getAskSaveSetting(), defaultVale);
     }
 
+    public void saveOpenedFiles(String filesList) {
+        // LaraLog.debug("SAVING OPENED FILES: " + filesList + "!");
+        prefs.put(getOpenedFilesSetting(), filesList);
+    }
+
+    public String loadOpenedFiles() {
+        String fileList = prefs.get(getOpenedFilesSetting(), "");
+        // LaraLog.debug("LOADING OPENED FILES: " + fileList + "!");
+        return fileList;
+    }
+
+    public void saveEditorFontSize(float fontSize) {
+        // LaraLog.debug("SAVING Editor Font: " + fontSize + "!");
+
+        prefs.putFloat(getEditorFontSizeSetting(), fontSize);
+    }
+
+    public float loadEditorFontSize(float defaultVale) {
+
+        float float1 = prefs.getFloat(getEditorFontSizeSetting(), defaultVale);
+        // LaraLog.debug("LOADING Editor Font: " + float1 + "!");
+        return float1;
+    }
+
+    public void saveConsoleFontSize(float fontSize) {
+        prefs.putFloat(getConsoleFontSizeSetting(), fontSize);
+    }
+
+    public float loadConsoleFontSize(float defaultVale) {
+        return prefs.getFloat(getConsoleFontSizeSetting(), defaultVale);
+    }
+
     /////////////////////////////////////////////////
     /////////////// Get Preferences Keys ////////////
     /////////////////////////////////////////////////
@@ -109,6 +146,18 @@ public class SettingsManager {
 
     private String getShowLangSpecSetting() {
         return SHOW_LANG_SPEC_PREFIX + getKeySufix();
+    }
+
+    private String getOpenedFilesSetting() {
+        return OPENED_FILES_PREFIX + getKeySufix();
+    }
+
+    private String getEditorFontSizeSetting() {
+        return EDITOR_FONT_SIZE_PREFIX + getKeySufix();
+    }
+
+    private String getConsoleFontSizeSetting() {
+        return CONSOLE_FONT_SIZE_PREFIX + getKeySufix();
     }
 
     private String getKeySufix() {

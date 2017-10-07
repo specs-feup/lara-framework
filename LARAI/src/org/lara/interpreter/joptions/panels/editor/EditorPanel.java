@@ -60,7 +60,7 @@ public class EditorPanel extends GuiTab {
      *
      */
     private static final long serialVersionUID = 1L;
-
+    public static final int DEFAULT_FONT = 12;
     private final SettingsManager settings;
     private final TabsContainerPanel tabsContainer;
     // private final LanguageSpecificationSideBar langSpecSideBar;
@@ -83,7 +83,8 @@ public class EditorPanel extends GuiTab {
     private boolean runDebug = false;
 
     private JSplitPane splitterExplorer;
-    public static final int DEFAULT_FONT = 12;
+
+    private boolean firstEntry = true;
 
     // public static EditorPanel newInstance(DataStore dataStore) {
     // return new EditorPanel(dataStore);
@@ -171,17 +172,22 @@ public class EditorPanel extends GuiTab {
     public void setOutputAreaFont(Float size) {
 
         outputArea.setFont(outputArea.getFont().deriveFont(size));
+        settings.saveConsoleFontSize(size);
     }
 
     public void setTabsFont(Float size) {
 
         tabsContainer.setTabsFont(size);
+        settings.saveEditorFontSize(size);
     }
 
     @Override
     public void enterTab() {
 
-        loadEditorPreferences();
+        if (firstEntry) {
+            firstEntry = false;
+            loadEditorPreferences();
+        }
 
         optionsDataStore = null;
         outputFile = null;
@@ -217,6 +223,23 @@ public class EditorPanel extends GuiTab {
         consolePanel.setVisible(showConsole);
         boolean showLangSpec = settings.loadShowLangSpec(true);
         langSpecSideBar.setVisible(showLangSpec);
+        float fontSize = settings.loadEditorFontSize(DEFAULT_FONT);
+        setTabsFont(fontSize);
+        menu.setSelectedEditorFont(fontSize);
+        fontSize = settings.loadConsoleFontSize(DEFAULT_FONT);
+        setOutputAreaFont(fontSize);
+        menu.setSelectedConsoleFont(fontSize);
+
+        String openedFiles = settings.loadOpenedFiles();
+        if (!openedFiles.isEmpty()) {
+            String[] split = openedFiles.split(SettingsManager.FILE_SEPARATOR);
+            for (String fileName : split) {
+                File file = new File(fileName);
+                if (file.exists()) {
+                    tabsContainer.open(file);
+                }
+            }
+        }
         revalidate();
     }
 
@@ -500,6 +523,15 @@ public class EditorPanel extends GuiTab {
 
     public SettingsManager getSettings() {
         return settings;
+    }
+
+    public void updateOpenedFiles(String openedFiles) {
+        settings.saveOpenedFiles(openedFiles);
+    }
+
+    public boolean closingProgram() {
+        boolean saved = getTabsContainer().saveAllForClose();
+        return saved;
     }
 
 }

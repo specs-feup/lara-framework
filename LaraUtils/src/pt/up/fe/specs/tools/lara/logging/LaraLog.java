@@ -22,6 +22,13 @@ public class LaraLog extends SpecsLogger {
     private static final String LARAI_TAG = buildLoggerName(LaraLog.class);
     private static final Lazy<LaraLog> LOGGER = buildLazy(LaraLog::new);
     private static boolean debug;
+    // private static String default_debug = "false";
+    private static String default_debug = "true";
+
+    static {
+        String laraLog = System.getProperty("LARA_LOG", default_debug);
+        LaraLog.setDebug(Boolean.parseBoolean(laraLog));
+    }
 
     public static LaraLog logger() {
         return LOGGER.get();
