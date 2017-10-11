@@ -214,10 +214,13 @@ public class OutlinePanel extends JPanel {
                     new OutlineElement(a.getFuncName(), a.jjtGetFirstToken().beginLine, OutlineElementType.FUNCTION)));
             codedefList.forEach(a -> list.add(
                     new OutlineElement(a.getName(), a.jjtGetFirstToken().beginLine, OutlineElementType.CODEDEF)));
-            expressionList.forEach(a -> list.add(convert(a)));
+
+            expressionList.stream()
+                    .map(OutlineElement::convert)
+                    .filter(a -> a != null)
+                    .forEach(list::add);
 
             Comparator<OutlineElement> alpha = (e1, e2) -> e1.name.toLowerCase().compareTo(e2.name.toLowerCase());
-
             return list.stream().sorted(alpha).collect(Collectors.toList());
         }
 
@@ -234,9 +237,9 @@ public class OutlinePanel extends JPanel {
                 final String varName = id.getName();
 
                 return new OutlineElement(varName, varDecl.jjtGetFirstToken().beginLine, OutlineElementType.FUNCTION);
-            } else {
-                throw new RuntimeException("Found a FunctionExpression whose parent is not a VaribleDeclaration");
             }
+
+            return null;
         }
     }
 }
