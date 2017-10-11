@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -55,7 +55,7 @@ import org.lara.interpreter.joptions.panels.editor.utils.Factory;
 public class Explorer extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private final EditorPanel parent;
@@ -73,7 +73,6 @@ public class Explorer extends JPanel {
         // setBackground(Colors.BLUE_GREY);
         this.parent = parent;
         fileSystemView = FileSystemView.getFileSystemView();
-
         // the File tree
         root = new DefaultMutableTreeNode("Workspace");
         treeModel = new DefaultTreeModel(root);
@@ -320,7 +319,7 @@ public class Explorer extends JPanel {
 
     /**
      * Update the children of a node
-     * 
+     *
      * @param depth
      */
     private synchronized void updateChildren(final FileNode node, int depth) {
@@ -393,7 +392,7 @@ public class Explorer extends JPanel {
 
             /**
              * If contains file will remove the node from the list
-             * 
+             *
              * @param file
              * @return
              */

@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.swing.JFileChooser;
@@ -29,6 +30,11 @@ import javax.swing.text.Caret;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 
+import org.dojo.jsl.parser.ast.ASTAspectDef;
+import org.dojo.jsl.parser.ast.ASTCodeDef;
+import org.dojo.jsl.parser.ast.ASTFunctionDeclaration;
+import org.dojo.jsl.parser.ast.ASTFunctionExpression;
+import org.dojo.jsl.parser.ast.ASTStart;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
@@ -49,11 +55,11 @@ import pt.up.fe.specs.util.SpecsLogs;
 public class SourceTextArea extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final int NO_VALUE = -10;
     private static final long serialVersionUID = 1L;
-    private final TextEditorPane textArea;
+    private TextEditorPane textArea;
     private File sourceFile;
     private long lastModified;
     private String originalText;
@@ -84,7 +90,7 @@ public class SourceTextArea extends JPanel {
         saveAskSaveMethod = getEditorPanel().getSettings()::saveAskSave;
         updateLastModified();
         editorConfigurer = new EditorConfigurer();
-        textArea = editorConfigurer.buildTextArea(file, isNew);
+        textArea = editorConfigurer.buildTextArea(file, isNew, this);
 
         EditorListener.newInstance(this);
 
@@ -124,7 +130,7 @@ public class SourceTextArea extends JPanel {
      * Save the content of the textArea in a file.
      * <p>
      * Before saving verifies if the content is the same as the old content of the file
-     * 
+     *
      * @return
      */
     public boolean save() {
@@ -152,7 +158,7 @@ public class SourceTextArea extends JPanel {
 
     /**
      * Save the content of the textArea in a file, regardless the old content.
-     * 
+     *
      * @param savingText
      * @return
      */
@@ -200,7 +206,7 @@ public class SourceTextArea extends JPanel {
             isNew = false;
             setSourceFile(file);
             updateOldText();
-            EditorConfigurer.setSyntaxEditingStyle(textArea, file);
+            EditorConfigurer.setSyntaxEditingStyle(this, file);
             getTabbedParent().setLastOpenedFolder(file.getParentFile());
             tabsContainer.updateOpenedFiles();
             return true;
@@ -221,6 +227,16 @@ public class SourceTextArea extends JPanel {
     public void enterTab() {
         textArea.requestFocus();
         refresh();
+        parse();
+    }
+
+    /**
+     *
+     */
+    private void parse() {
+        if (getTextArea().getParserCount() > 0) {
+            getTextArea().forceReparsing(0);
+        }
     }
 
     public File getLaraFile() {
@@ -236,27 +252,27 @@ public class SourceTextArea extends JPanel {
 
     /*
     public boolean open() {
-    
+
     	JFileChooser fc = Factory.newFileChooser(getTabbedParent().getLastOpennedFolder());
-    
+
     	int returnVal = fc.showOpenDialog(this);
-    
+
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
     	    File file = fc.getSelectedFile();
     	    int tabIndex = tabsContainer.getTabIndex(file);
-    
+
     	    if (tabIndex > -1) {// If the file already exists
     		// change the focus to the corresponding tab
     		tabsContainer.getTabbedPane().setSelectedIndex(tabIndex);
     	    } else {
-    
+
     		load(file);
     		getTabbedParent().setLastOpennedFolder(file.getParentFile());
     	    }
     	    return true;
     	}
     	return false;
-    
+
     }
     */
     public void refresh() {
@@ -342,7 +358,7 @@ public class SourceTextArea extends JPanel {
     // }
 
     protected void load(File file) {
-        boolean loaded = EditorConfigurer.loadFile(textArea, file);
+        boolean loaded = EditorConfigurer.loadFile(this, file);
 
         if (loaded) {
             setSourceFile(file);
@@ -364,7 +380,7 @@ public class SourceTextArea extends JPanel {
 
     /**
      * Closes this document. If the files is 'dirty', then asks the user if he wants to save.
-     * 
+     *
      * @return false if during save request the user cancels the process; true otherwise
      */
     public boolean close() {
@@ -563,5 +579,22 @@ public class SourceTextArea extends JPanel {
 
     public void setAsked(boolean b) {
         asked = true;
+    }
+
+    /**
+    *
+    */
+    public void astListener(ASTStart ast) {
+        ast.dump("");
+        List<ASTAspectDef> aspects = ast.getDescendantsOfType(ASTAspectDef.class);
+        List<ASTFunctionDeclaration> functions = ast.getDescendantsOfType(ASTFunctionDeclaration.class);
+        List<ASTCodeDef> codedefs = ast.getDescendantsOfType(ASTCodeDef.class);
+        List<ASTFunctionExpression> expressions = ast.getDescendantsOfType(ASTFunctionExpression.class);
+
+        getEditorPanel().getOutline().setElements(aspects, functions, codedefs, expressions);
+    }
+
+    public void setTextArea(TextEditorPane textArea2) {
+        textArea = textArea2;
     }
 }
