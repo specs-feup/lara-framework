@@ -12,56 +12,62 @@ import larac.LaraC;
 import larac.objects.Enums.Types;
 
 public class ASTPropertyIdentifierReference extends SimpleNode {
-	public ASTPropertyIdentifierReference(int id) {
-		super(id);
-	}
+    public ASTPropertyIdentifierReference(int id) {
+        super(id);
+    }
 
-	public ASTPropertyIdentifierReference(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTPropertyIdentifierReference(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		final String name = ((ASTIdentifier) children[0]).getName();
-		final Element literalEl = doc.createElement("literal");
-		literalEl.setAttribute("value", name);
-		literalEl.setAttribute("type", Types.String.toString());
-		parent.appendChild(literalEl);
-		// ((SimpleNode)children[0]).toXML(doc, parent);
-	}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        final String name = ((ASTIdentifier) children[0]).getName();
+        final Element literalEl = doc.createElement("literal");
+        literalEl.setAttribute("value", name);
+        literalEl.setAttribute("type", Types.String.toString());
+        parent.appendChild(literalEl);
+        // ((SimpleNode)children[0]).toXML(doc, parent);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		return null;
-	}
+    @Override
+    public Object organize(Object obj) {
+        return null;
+    }
 
-	@Override
-	public void organizePointcutReference(ASTPointcut pc) {
-		final LaraC lara = getLara();
-		if (lara.languageSpec().getArtifacts().getAttribute(pc.getType(),
-				((SimpleNode) children[0]).value.toString()) == null) {
-			throw newException("The joinpoint \"" + pc.getReference() + "\" does not contain the attribute \""
-					+ ((SimpleNode) children[0]).value.toString() + "\"");
-		}
-	}
+    @Override
+    public String toSource(int indentation) {
 
-	@Override
-	public void organizeActionReference(ASTPointcut pc) {
-		final LaraC lara = getLara();
-		if (!lara.languageSpec().getActionModel().contains(((SimpleNode) children[0]).value.toString())) {
-			throw newException("The action \"" + ((SimpleNode) children[0]).value.toString() + "\" does not exist");
-		}
-	}
+        return indent(indentation) + ((ASTIdentifier) children[0]).toSource();
+    }
 
-	@Override
-	public String getMethodId() {
-		return ((SimpleNode) children[0]).getMethodId();
-	}
+    @Override
+    public void organizePointcutReference(ASTPointcut pc) {
+        final LaraC lara = getLara();
+        if (lara.languageSpec().getArtifacts().getAttribute(pc.getType(),
+                ((SimpleNode) children[0]).value.toString()) == null) {
+            throw newException("The joinpoint \"" + pc.getReference() + "\" does not contain the attribute \""
+                    + ((SimpleNode) children[0]).value.toString() + "\"");
+        }
+    }
 
-	@Override
-	public String getVarName() {
-		return ((SimpleNode) children[0]).getVarName();
-	}
+    @Override
+    public void organizeActionReference(ASTPointcut pc) {
+        final LaraC lara = getLara();
+        if (!lara.languageSpec().getActionModel().contains(((SimpleNode) children[0]).value.toString())) {
+            throw newException("The action \"" + ((SimpleNode) children[0]).value.toString() + "\" does not exist");
+        }
+    }
+
+    @Override
+    public String getMethodId() {
+        return ((SimpleNode) children[0]).getMethodId();
+    }
+
+    @Override
+    public String getVarName() {
+        return ((SimpleNode) children[0]).getVarName();
+    }
 }
 /*
  * JavaCC - OriginalChecksum=ce74fbfcc89103c0721fd0ebd16fcba1 (do not edit this
