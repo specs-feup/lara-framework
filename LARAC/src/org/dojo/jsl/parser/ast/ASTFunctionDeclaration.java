@@ -157,6 +157,10 @@ public class ASTFunctionDeclaration extends SimpleNode {
     public HashMap<String, Variable> getHMVars() {
         return args;
     }
+
+    public String getFuncName() {
+        return ((ASTIdentifier) children[0]).value.toString();
+    }
 }
 
 /*

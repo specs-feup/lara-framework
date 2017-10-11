@@ -31,6 +31,7 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.panels.editor.components.EditorToolBar;
 import org.lara.interpreter.joptions.panels.editor.components.Explorer;
 import org.lara.interpreter.joptions.panels.editor.components.LanguageSpecificationSideBar;
+import org.lara.interpreter.joptions.panels.editor.components.OutlinePanel;
 import org.lara.interpreter.joptions.panels.editor.components.SearchPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.FocusGainedListener;
 import org.lara.interpreter.joptions.panels.editor.tabbed.MainLaraTab;
@@ -71,7 +72,9 @@ public class EditorPanel extends GuiTab {
     private final SearchPanel searchPanel;
     private final JTextArea outputArea;
     private final JScrollPane consolePanel;
-    private final JSplitPane splitterConsole;
+    private final JSplitPane tabsConsoleSplit;
+    private final OutlinePanel outline;
+
     // private boolean init = true;
     private final LanguageSpecificationSideBar langSpecSideBar;
     private double lasSplitSize = 0.75;
@@ -82,7 +85,7 @@ public class EditorPanel extends GuiTab {
 
     private boolean runDebug = false;
 
-    private JSplitPane splitterExplorer;
+    private JSplitPane explorerEditorSplit;
 
     private boolean firstEntry = true;
 
@@ -102,7 +105,7 @@ public class EditorPanel extends GuiTab {
     public EditorPanel(DataStore dataStore, AppPersistence persistence, LanguageSpecification langSpec) {
         super(dataStore);
         setLayout(new BorderLayout());
-        this.settings = new SettingsManager(this, getAppName());
+        settings = new SettingsManager(this, getAppName());
         this.persistence = persistence;
         canonicalAspectFile = null;
         explorer = new Explorer(this);
@@ -115,6 +118,7 @@ public class EditorPanel extends GuiTab {
         outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, EditorPanel.DEFAULT_FONT));
         outputArea.setEditable(false);
         outputArea.setLineWrap(true);
+        outline = new OutlinePanel(this);
         // outputArea.setColumns(20);
         // outputArea.setRows(5);
         consolePanel = new javax.swing.JScrollPane(outputArea);
@@ -137,14 +141,14 @@ public class EditorPanel extends GuiTab {
 
         centerPanel.add(langSpecSideBar, BorderLayout.EAST);
 
-        splitterConsole = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, consolePanel);
-        splitterConsole.addPropertyChangeListener("dividerLocation", p -> {
+        tabsConsoleSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerPanel, consolePanel);
+        tabsConsoleSplit.addPropertyChangeListener("dividerLocation", p -> {
             // System.out.println("changed: " + p.getNewValue());
             // Only save split factor if the console panel is visible (hiding the console panel makes split factor to be
             // almost 1.0
             if (consolePanel.isVisible()) {
                 // System.out.println("Changing size when console is not visible");
-                settings.saveConsoleSplitFactor(getDividerProportion(splitterConsole));
+                settings.saveConsoleSplitFactor(getDividerProportion(tabsConsoleSplit));
             }
         });
         // splitterConsole.setDividerLocation(this.lasSplitSize);
@@ -152,17 +156,21 @@ public class EditorPanel extends GuiTab {
         // splitterConsole.add(consolePanel);
         // add(splitterConsole, BorderLayout.CENTER);
 
-        splitterExplorer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitterExplorer.add(explorer);
-        splitterExplorer.add(splitterConsole);
-        splitterExplorer.addPropertyChangeListener("dividerLocation", p -> {
+        JSplitPane explorerOutlineSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        explorerOutlineSplit.add(explorer);
+        explorerOutlineSplit.add(outline);
+
+        explorerEditorSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        explorerEditorSplit.add(explorerOutlineSplit);
+        explorerEditorSplit.add(tabsConsoleSplit);
+        explorerEditorSplit.addPropertyChangeListener("dividerLocation", p -> {
             // System.out.println("changed: " + p.getNewValue());
-            double dividerProportion = getDividerProportion(splitterExplorer);
+            double dividerProportion = getDividerProportion(explorerEditorSplit);
             settings.saveExplorerSplitFactor(dividerProportion);
             // System.out.println("Exp. SAVE: " + dividerProportion);
         });
 
-        add(splitterExplorer, BorderLayout.CENTER);
+        add(explorerEditorSplit, BorderLayout.CENTER);
 
         add(searchPanel, BorderLayout.SOUTH);
 
@@ -210,15 +218,16 @@ public class EditorPanel extends GuiTab {
         updateProjects(optionsDataStore);
         // }
         explorer.refreshAllExceptMain();
+
     }
 
     private void loadEditorPreferences() {
 
         lasSplitSize = settings.loadConsoleSplitFactor(0.75);
-        splitterConsole.setDividerLocation(lasSplitSize);
+        tabsConsoleSplit.setDividerLocation(lasSplitSize);
         double newSplitFactor = settings.loadExplorerSplitFactor(0.25);
         // System.out.println("Exp. LOAD: " + newSplitFactor);
-        splitterExplorer.setDividerLocation(newSplitFactor);
+        explorerEditorSplit.setDividerLocation(newSplitFactor);
         boolean showConsole = settings.loadShowConsole(true);
         consolePanel.setVisible(showConsole);
         boolean showLangSpec = settings.loadShowLangSpec(true);
@@ -431,11 +440,11 @@ public class EditorPanel extends GuiTab {
     public void swapConsoleVisibility() {
         // consolePanel.setVisible(!consolePanel.isVisible());
         if (consolePanel.isVisible()) {
-            lasSplitSize = getDividerProportion(splitterConsole);
+            lasSplitSize = getDividerProportion(tabsConsoleSplit);
             consolePanel.setVisible(false);
         } else {
             consolePanel.setVisible(true);
-            splitterConsole.setDividerLocation(lasSplitSize);
+            tabsConsoleSplit.setDividerLocation(lasSplitSize);
         }
         settings.saveShowConsole(consolePanel.isVisible());
         // Preferences.userRoot().putBoolean(getShowConsoleSetting(), consolePanel.isVisible());
@@ -534,4 +543,7 @@ public class EditorPanel extends GuiTab {
         return saved;
     }
 
+    public OutlinePanel getOutline() {
+        return outline;
+    }
 }

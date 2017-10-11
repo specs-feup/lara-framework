@@ -42,6 +42,7 @@ import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
 import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.lara.interpreter.joptions.panels.editor.TextEditorDemo;
 import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
+import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
@@ -73,10 +74,12 @@ public class EditorConfigurer {
      * Build a text area according to the type of the input file
      *
      * @param inputFile
+     * @param sourceTextArea
      * @return
      */
-    public TextEditorPane buildTextArea(File inputFile, boolean isNew) {
+    public TextEditorPane buildTextArea(File inputFile, boolean isNew, SourceTextArea sourceTextArea) {
         TextEditorPane textArea = new TextEditorPane();
+        sourceTextArea.setTextArea(textArea);
         // textArea.setFont(textArea.getFont().deriveFont(12f));
         if (theme != null) {
             theme.apply(textArea);
@@ -88,7 +91,7 @@ public class EditorConfigurer {
         textArea.setCodeFoldingEnabled(true);
         textArea.setAntiAliasingEnabled(true);
 
-        loadFile(textArea, inputFile);
+        loadFile(sourceTextArea, inputFile);
 
         return textArea;
     }
@@ -101,7 +104,8 @@ public class EditorConfigurer {
         popupMenu.add(copySyntax);
     }
 
-    public static void setLaraTextArea(TextEditorPane textArea) {
+    public static void setLaraTextArea(SourceTextArea sourceTextArea) {
+        TextEditorPane textArea = sourceTextArea.getTextArea();
         textArea.setSyntaxEditingStyle(TextEditorDemo.LARA_STYLE_KEY);
 
         CompletionProvider provider = EditorConfigurer.createCompletionProvider();
@@ -110,7 +114,11 @@ public class EditorConfigurer {
         ac.install(textArea);
 
         textArea.clearParsers();
-        textArea.addParser(new EditorParser());
+        EditorParser parser = new EditorParser();
+        textArea.addParser(parser);
+
+        // adds a list of aspects to the aspect list pane whenever a parsing is performed
+        parser.addListener(sourceTextArea::outlineAstListener);
     }
 
     /**
@@ -169,7 +177,8 @@ public class EditorConfigurer {
         provider.addCompletion(printlnCompletion);
     }
 
-    public static boolean loadFile(TextEditorPane textArea, File inputFile) {
+    public static boolean loadFile(SourceTextArea sourceTextArea, File inputFile) {
+        TextEditorPane textArea = sourceTextArea.getTextArea();
         if (inputFile.isDirectory()) {
             SpecsLogs.msgWarn(
                     "Input file cannot be a directory: '" + SpecsIo.getCanonicalPath(inputFile) + "'\n");
@@ -181,7 +190,7 @@ public class EditorConfigurer {
             textArea.setEncoding(StandardCharsets.UTF_8.name());
             textArea.getDocument().putProperty(DefaultEditorKit.EndOfLineStringProperty, System.lineSeparator());
 
-            setSyntaxEditingStyle(textArea, inputFile);
+            setSyntaxEditingStyle(sourceTextArea, inputFile);
 
             return true;
         } catch (IOException e) {
@@ -190,13 +199,14 @@ public class EditorConfigurer {
         return false;
     }
 
-    public static void setSyntaxEditingStyle(TextEditorPane textArea, File inputFile) {
+    public static void setSyntaxEditingStyle(SourceTextArea sourceTextArea, File inputFile) {
+        TextEditorPane textArea = sourceTextArea.getTextArea();
         // System.out.println(textArea.getDocument());
         String extension = SpecsIo.getExtension(inputFile);
         if (extension.isEmpty()) {
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         } else if (extension.equals("lara")) {
-            setLaraTextArea(textArea);
+            setLaraTextArea(sourceTextArea);
         } else if (extension.equals("js")) {
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
         } else if ((extension.equals("h"))) {
