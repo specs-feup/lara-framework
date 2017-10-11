@@ -118,7 +118,7 @@ public class EditorConfigurer {
         textArea.addParser(parser);
 
         // adds a list of aspects to the aspect list pane whenever a parsing is performed
-        parser.addListener(sourceTextArea::astListener);
+        parser.addListener(sourceTextArea::outlineAstListener);
     }
 
     /**

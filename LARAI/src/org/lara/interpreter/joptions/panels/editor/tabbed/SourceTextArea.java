@@ -252,27 +252,27 @@ public class SourceTextArea extends JPanel {
 
     /*
     public boolean open() {
-
+    
     	JFileChooser fc = Factory.newFileChooser(getTabbedParent().getLastOpennedFolder());
-
+    
     	int returnVal = fc.showOpenDialog(this);
-
+    
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
     	    File file = fc.getSelectedFile();
     	    int tabIndex = tabsContainer.getTabIndex(file);
-
+    
     	    if (tabIndex > -1) {// If the file already exists
     		// change the focus to the corresponding tab
     		tabsContainer.getTabbedPane().setSelectedIndex(tabIndex);
     	    } else {
-
+    
     		load(file);
     		getTabbedParent().setLastOpennedFolder(file.getParentFile());
     	    }
     	    return true;
     	}
     	return false;
-
+    
     }
     */
     public void refresh() {
@@ -584,8 +584,8 @@ public class SourceTextArea extends JPanel {
     /**
     *
     */
-    public void astListener(ASTStart ast) {
-        ast.dump("");
+    public void outlineAstListener(ASTStart ast) {
+
         List<ASTAspectDef> aspects = ast.getDescendantsOfType(ASTAspectDef.class);
         List<ASTFunctionDeclaration> functions = ast.getDescendantsOfType(ASTFunctionDeclaration.class);
         List<ASTCodeDef> codedefs = ast.getDescendantsOfType(ASTCodeDef.class);
