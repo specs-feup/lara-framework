@@ -73,6 +73,7 @@ public class EditorPanel extends GuiTab {
     private final JTextArea outputArea;
     private final JScrollPane consolePanel;
     private final JSplitPane tabsConsoleSplit;
+    private final JSplitPane explorerOutlineSplit;
     private final OutlinePanel outline;
 
     // private boolean init = true;
@@ -156,9 +157,13 @@ public class EditorPanel extends GuiTab {
         // splitterConsole.add(consolePanel);
         // add(splitterConsole, BorderLayout.CENTER);
 
-        JSplitPane explorerOutlineSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        explorerOutlineSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         explorerOutlineSplit.add(explorer);
         explorerOutlineSplit.add(outline);
+        explorerOutlineSplit.addPropertyChangeListener("dividerLocation", p -> {
+            double dividerProportion = getDividerProportion(explorerOutlineSplit);
+            settings.saveExplorerOutlineSplitFactor(dividerProportion);
+        });
 
         explorerEditorSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         explorerEditorSplit.add(explorerOutlineSplit);
@@ -226,8 +231,10 @@ public class EditorPanel extends GuiTab {
         lasSplitSize = settings.loadConsoleSplitFactor(0.75);
         tabsConsoleSplit.setDividerLocation(lasSplitSize);
         double newSplitFactor = settings.loadExplorerSplitFactor(0.25);
+        double explorerOutlineSplitFactor = settings.loadExplorerOutlineSplitFactor(0.65);
         // System.out.println("Exp. LOAD: " + newSplitFactor);
         explorerEditorSplit.setDividerLocation(newSplitFactor);
+        explorerOutlineSplit.setDividerLocation(explorerOutlineSplitFactor);
         boolean showConsole = settings.loadShowConsole(true);
         consolePanel.setVisible(showConsole);
         boolean showLangSpec = settings.loadShowLangSpec(true);
