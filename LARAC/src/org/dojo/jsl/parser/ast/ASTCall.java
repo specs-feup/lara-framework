@@ -97,7 +97,7 @@ public class ASTCall extends SimpleNode {
         aspectDeclaration = lookup(path);
         // System.out.println(path + "->" + aspectDeclaration);
         Types aspectType = aspectDeclaration.getType();
-        if (aspectDeclaration == null) {
+        if (aspectDeclaration == null && !getLara().getOptions().isDocumentationMode()) {
             throw newException("Called aspect/variable does not exist: \"" + aspName + "\"");
         }
         /*

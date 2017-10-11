@@ -186,7 +186,7 @@ public class ASTPointcut extends SimpleNode {
 
             final Variable var = lookup(value.toString());
 
-            if (var.isNotFound()) {
+            if (var.isNotFound() && !getLara().getOptions().isDocumentationMode()) {
                 throw new LARACompilerException(
                         "The join point \"" + value + "\" does not exist in the join point model");
             }

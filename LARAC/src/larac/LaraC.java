@@ -680,13 +680,17 @@ public class LaraC {
         // On debug or When the user wants to see the Aspect-IR
         if (getOptions().isShowAspectIR() || getOptions().isDebug()) {
             printTopic("Dumping Aspect-IR");
-            try {
-                println(StringUtils.xmlToStringBuffer(aspectIRXmlRepresentation, MessageConstants.INDENT).toString());
-            } catch (TransformerFactoryConfigurationError | TransformerException e) {
-                throw new LARACompilerException("When dumping Aspect-IR", e);
-            }
+            printAspectIR();
         }
         return getAspectIRXmlRepresentation();
+    }
+
+    public void printAspectIR() {
+        try {
+            println(StringUtils.xmlToStringBuffer(aspectIRXmlRepresentation, MessageConstants.INDENT).toString());
+        } catch (TransformerFactoryConfigurationError | TransformerException e) {
+            throw new LARACompilerException("When dumping Aspect-IR", e);
+        }
     }
 
     public Document getAspectIRXmlRepresentation() {

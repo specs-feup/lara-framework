@@ -37,6 +37,10 @@ public class ASTImport extends SimpleNode {
 
     @Override
     public void declareGlobal(LaraC lara) {
+        // Ignore imports if in documentation mode
+        if (lara.getOptions().isDocumentationMode()) {
+            return;
+        }
 
         String fileName = value + ".lara";
         String filePath = "";
@@ -57,6 +61,7 @@ public class ASTImport extends SimpleNode {
         }
         MessageConstants.removeSpace();
         lara.println("");
+
     }
 
     /**

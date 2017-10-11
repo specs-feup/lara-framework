@@ -89,10 +89,12 @@ public class AspectIR {
             docBuilder = dbfac.newDocumentBuilder();
             final Document doc = docBuilder.newDocument();
             final Element root = doc.createElement("aspects");
-            if (aspectdefs.isEmpty()) {
-                return doc;
+            if (!aspectdefs.isEmpty()) {
+                // return doc;
+                root.setAttribute("main", aspectdefs.get(0).getName());
+            } else {
+                root.setAttribute("main", "");
             }
-            root.setAttribute("main", aspectdefs.get(0).getName());
             doc.appendChild(root);
 
             for (final ASTAspectDef aspect : aspectdefs) {
