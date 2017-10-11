@@ -128,6 +128,10 @@ public class LaraI {
         }
     }
 
+    public static LaraI newInstance(DataStore dataStore, WeaverEngine weaverEngine) {
+        return new LaraI(dataStore, weaverEngine);
+    }
+
     public WeaverEngine getWeaverEngine() {
         return weaverEngine;
     }

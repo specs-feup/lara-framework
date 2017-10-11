@@ -54,6 +54,36 @@ public class AspectClassProcessor {
 
     }
 
+    public StringBuilder generateJavaScriptDocV1(Aspects asps) {
+        return generateAspects(asps, false);
+    }
+
+    public StringBuilder generateJavaScriptDoc(Aspects asps) {
+        StringBuilder jsCode = new StringBuilder();
+
+        // first the aspects declaration
+        try {
+            for (final Aspect asp : asps.aspects.values()) {
+                setCurrentAspect(asp.name);
+                jsCode.append(getAspectJavascript(asp));
+            }
+
+            // then the global variables declaration
+            for (final Statement stmt : asps.declarations) {
+                jsCode.append(interpreter.getJavascriptString(stmt, 0));
+            }
+
+        } catch (Exception e) {
+            throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
+                    "generating documentation", e);
+        }
+
+        return jsCode;
+
+        // StringBuilder generateAspects = generateAspects(asps, false);
+        // return inter;
+    }
+
     // ================================================================================//
     // ================================== Aspects =====================================//
     // ================================================================================//
@@ -72,7 +102,13 @@ public class AspectClassProcessor {
             interpreter.out().warnln("No aspects to execute!");
             code = new StringBuilder();
         } else {
-            code = generateAspects(asps);
+            code = generateAspects(asps, true);
+            // System.out.println("--- LARADOC V1 START ---");
+            // System.out.println(generateJavaScriptDocV1(asps));
+            // System.out.println("--- LARADOC V1 END ---");
+            // System.out.println("--- LARADOC V2 START ---");
+            // System.out.println(generateJavaScriptDoc(asps));
+            // System.out.println("--- LARADOC V2 END ---");
         }
 
         code.append(MasterWeaver.WEAVER_NAME);
@@ -93,7 +129,7 @@ public class AspectClassProcessor {
         return code;
     }
 
-    private StringBuilder generateAspects(Aspects asps) {
+    private StringBuilder generateAspects(Aspects asps, boolean evaluate) {
         // first the aspects declaration
         for (final Aspect asp : asps.aspects.values()) {
             setCurrentAspect(asp.name);
@@ -101,25 +137,47 @@ public class AspectClassProcessor {
                 final StringBuilder aspectConstructor = getAspectJavascript(asp);
                 aspectConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(aspectConstructor);
-                interpreter.evaluate(aspectConstructor.toString());
+                if (evaluate) {
+                    interpreter.evaluate(aspectConstructor.toString());
+                }
             } catch (Exception e) {
                 throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
                         "generating aspects", e);
             }
         }
+
+        generateDeclarations(asps, evaluate);
+
+        final StringBuilder code = generateMainCallAndReport(asps);
+
+        // code.append(".close('");
+        // final String separator = java.lang.System.getProperty("file.separator");
+        // code.append(IoUtils.getCanonicalPath(interpreter.getOptions().getOutputDir()).replace(separator,
+        // separator + separator));
+        // code.append("');\n");
+        // code.append("');\n}\n");
+        code.trimToSize();
+        return code;
+    }
+
+    private void generateDeclarations(Aspects asps, boolean evaluate) {
         // then the global variables declaration
         for (final Statement stmt : asps.declarations) {
             try {
                 final StringBuilder globalsConstructor = interpreter.getJavascriptString(stmt, 0);
                 globalsConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(globalsConstructor);
-                interpreter.evaluate(globalsConstructor.toString());
+                if (evaluate) {
+                    interpreter.evaluate(globalsConstructor.toString());
+                }
             } catch (Exception e) {
                 throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
                         "generating global variables", e);
             }
         }
+    }
 
+    private StringBuilder generateMainCallAndReport(Aspects asps) {
         String mainName = MAIN_PREFIX;
         String main = asps.main;
         String mainAspect = interpreter.getOptions().getMainAspect();
@@ -149,14 +207,6 @@ public class AspectClassProcessor {
                 interpreter.getOptions().getReportFile());
 
         code.append(LaraIUtils.getSpace(0));
-
-        // code.append(".close('");
-        // final String separator = java.lang.System.getProperty("file.separator");
-        // code.append(IoUtils.getCanonicalPath(interpreter.getOptions().getOutputDir()).replace(separator,
-        // separator + separator));
-        // code.append("');\n");
-        // code.append("');\n}\n");
-        code.trimToSize();
         return code;
     }
 
