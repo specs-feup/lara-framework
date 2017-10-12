@@ -15,16 +15,22 @@ package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
 
+import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
+import pt.up.fe.specs.util.SpecsSystem;
+
 public class LaraDocLauncher {
 
     public static void main(String[] args) {
+        SpecsSystem.programStandardInit();
         // String inputFolder =
         // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara";
-        String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
-        String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js";
+        String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
+        String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js-laradse";
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
-        new LaraDoc(new File(inputFolder), new File(outputFolder)).convertFiles();
+        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder), new File(outputFolder)).buildLaraDoc();
+
+        System.out.println("LARA DOC FILES:" + laraDocFiles);
     }
 
 }
