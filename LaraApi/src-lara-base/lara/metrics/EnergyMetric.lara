@@ -4,6 +4,7 @@ import lara.code.Energy;
 /**
  * Measures energy consumed during an application.
  * @constructor
+ * @extends Metric
  */
 function EnergyMetric() {
     // Parent constructor

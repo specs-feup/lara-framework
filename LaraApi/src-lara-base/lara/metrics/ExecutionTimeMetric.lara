@@ -7,6 +7,7 @@ import lara.Strings;
 /**
  * Measures execution time of an application.
  * @constructor
+ * @extends Metric
  */
 function ExecutionTimeMetric() {
     // Parent constructor
