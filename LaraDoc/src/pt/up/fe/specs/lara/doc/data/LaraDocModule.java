@@ -14,6 +14,8 @@
 package pt.up.fe.specs.lara.doc.data;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -59,6 +61,17 @@ public class LaraDocModule {
 
     public void setBaseLara(File baseLara) {
         this.baseLara = baseLara;
+    }
+
+    public List<File> getLaraFiles() {
+        List<File> laraFiles = new ArrayList<>();
+
+        laraFiles.add(mainLara);
+        if (baseLara != null) {
+            laraFiles.add(baseLara);
+        }
+
+        return laraFiles;
     }
 
 }

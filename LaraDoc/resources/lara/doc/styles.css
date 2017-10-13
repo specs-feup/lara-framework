@@ -1,0 +1,17 @@
+#row1{
+    display:flex;
+    flex-direction:row;
+justify-content: space-around;
+}
+
+#column1{
+    display:flex;
+    flex-direction:column;
+
+}
+
+
+#column2{
+    display:flex;
+    flex-direction:column;
+}

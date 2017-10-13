@@ -53,4 +53,8 @@ public class LaraDocBundle {
         return bundlePackages.values();
     }
 
+    public String getBundleName() {
+        return bundleName;
+    }
+
 }

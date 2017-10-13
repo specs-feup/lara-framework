@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

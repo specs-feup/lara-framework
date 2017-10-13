@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.doc.data;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ import pt.up.fe.specs.util.SpecsLogs;
  */
 public class LaraDocFiles {
 
-    private static final String DEFAULT_PACKAGE_ID = "%Default Package%";
+    private static final String DEFAULT_PACKAGE_ID = "Default Package";
 
     private final Map<String, LaraDocBundle> bundles;
     private final Map<String, LaraDocPackage> packages;
@@ -172,6 +173,14 @@ public class LaraDocFiles {
         allPackages.addAll(packages.values());
 
         return allPackages;
+    }
+
+    public Collection<LaraDocBundle> getBundles() {
+        return bundles.values();
+    }
+
+    public Collection<LaraDocPackage> getPackages() {
+        return packages.values();
     }
 
 }
