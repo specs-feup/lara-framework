@@ -54,6 +54,7 @@ public class LaraCOptions {
     // include aspects in the given directories (separated by the file separator)
     private List<File> includeFolders;
     private List<LaraResourceProvider> includeResources;
+    private boolean documentationMode;
 
     private Options options;
     private CommandLine command;
@@ -74,6 +75,7 @@ public class LaraCOptions {
         // Add working dir to the included paths
         final File workingDir = SpecsIo.getWorkingDir();
         includeFolders.add(workingDir);
+        documentationMode = false;
     }
 
     /**
@@ -205,6 +207,9 @@ public class LaraCOptions {
             return false;
         case debug:
             setDebug(true);
+            break;
+        case documentation:
+            setDocumentationMode(true);
             break;
         case aspectir:
             showAspectIR = true;
@@ -421,6 +426,14 @@ public class LaraCOptions {
                     + includeResources.stream().map(ResourceProvider::getResource).collect(Collectors.toList()));
         }
         print.println("Running on: " + System.getProperty("os.name"));
+    }
+
+    public boolean isDocumentationMode() {
+        return documentationMode;
+    }
+
+    public void setDocumentationMode(boolean documentationMode) {
+        this.documentationMode = documentationMode;
     }
 
 }

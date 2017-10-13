@@ -133,6 +133,18 @@ function checkType(value, type, source) {
 	throw message;
 }	 
 
+function checkBoolean(variable, source) {
+	checkType(variable, "boolean", source);
+};
+
+function checkString(variable, source) {
+	checkType(variable, "string", source);
+};
+
+function checkNumber(variable, source) {
+	checkType(variable, "number", source);
+};
+
 function checkJoinPoint($jp, source) {
     
     if(Weaver.isJoinPoint($jp)) {

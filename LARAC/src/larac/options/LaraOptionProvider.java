@@ -30,6 +30,8 @@ public enum LaraOptionProvider implements OptionProvider, KeyProvider<Descriptor
     aspectir(OptionUtils.newDescriptor("aspectir", "a", ArgOption.NO_ARGS, MessageConstants.SHOWXML_DESC)),
     // Display all available information in the console
     debug(OptionUtils.newDescriptor("debug", "d", ArgOption.NO_ARGS, MessageConstants.DEBUG_DESC)),
+    // Special mode to generate aspect IR for documentation purposes
+    documentation(OptionUtils.newDescriptor("doc", "c", ArgOption.NO_ARGS, MessageConstants.DOC_DESC)),
 
     /* Options with one argument */
     // Target Language

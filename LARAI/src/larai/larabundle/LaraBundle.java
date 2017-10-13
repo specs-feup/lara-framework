@@ -32,6 +32,33 @@ import pt.up.fe.specs.util.properties.SpecsProperties;
 
 public class LaraBundle {
 
+    private final static String LARA_BUNDLE_FILENAME = "lara.bundle";
+    private final static String LARA_FOLDER_NAME = "lara";
+
+    public static String getLaraBundleFilename() {
+        return LARA_BUNDLE_FILENAME;
+    }
+
+    public static String getLaraFolderName() {
+        return LARA_FOLDER_NAME;
+    }
+
+    public static SpecsProperties loadBundleFile(File bundlePath) {
+        Preconditions.checkArgument(bundlePath.exists(), "Expected path '" + bundlePath + "' to exist");
+
+        if (bundlePath.isDirectory()) {
+            File bundleFile = new File(bundlePath, LARA_BUNDLE_FILENAME);
+            if (!bundleFile.isFile()) {
+                throw new RuntimeException(
+                        "Could not find file '" + LARA_BUNDLE_FILENAME + "' in folder '" + bundlePath + "'");
+            }
+
+            return loadBundleFile(bundleFile);
+        }
+
+        return SpecsProperties.newInstance(bundlePath);
+    }
+
     // private final Set<String> languages;
     private final Set<String> weavers;
     private final Map<String, String> tagsMap;
