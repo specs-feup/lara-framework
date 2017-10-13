@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.doc.jsdoc;
+package pt.up.fe.specs.lara.doc.jsdocgen;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 
-public class JsDocNodeGenerator implements JsDocGenerator {
+public class DocumentationGenerator implements JsDocGenerator {
 
     // private final Process shell;
 
@@ -31,7 +31,7 @@ public class JsDocNodeGenerator implements JsDocGenerator {
     // private final File documentationFolder;
     private int counter;
 
-    public JsDocNodeGenerator() {
+    public DocumentationGenerator() {
         // this.shell = SpecsPlatforms.getShell();
         // this.shell = null;
         counter = 0;
@@ -59,11 +59,13 @@ public class JsDocNodeGenerator implements JsDocGenerator {
         inputFiles.stream().forEach(file -> SpecsIo.copy(file, new File(commandFolder, file.getName())));
 
         List<String> command = new ArrayList<>();
-        command.add("jsdoc.cmd");
+        command.add("documentation.cmd");
+        command.add("build");
         // command.add(documentationFolder.getAbsolutePath() + File.separator + "**");
-        command.add(commandFolder.getAbsolutePath());
-        command.add("-r");
-        command.add("-d");
+        command.add(commandFolder.getAbsolutePath() + File.separator + "**");
+        command.add("-f");
+        command.add("html");
+        command.add("-o");
         command.add(outputFolder.getAbsolutePath());
         /*
         // get stdin of shell

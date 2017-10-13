@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -96,6 +97,60 @@ public class LaraToJs {
     }
 
     public void convertLara(File laraFile) {
+        /*
+        // Pass through LaraC
+        System.out.println("COMPILING FILE " + laraFile);
+        List<String> args = new ArrayList<>();
+        
+        args.add(laraFile.getAbsolutePath());
+        args.add("--doc");
+        args.add("--verbose");
+        args.add("0");
+        // args.add("-d");
+        // preprocess.add("-o");
+        // preprocess.add(path);
+        // if (!encodedIncludes.trim().isEmpty()) {
+        // preprocess.add("-i");
+        // preprocess.add(encodedIncludes);
+        // }
+        
+        // lara files as resources
+        // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
+        // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
+        // laraAPIs.addAll(options.getLaraAPIs());
+        
+        LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
+        Document aspectIr = null;
+        
+        try {
+            aspectIr = larac.compile();
+        } catch (Exception e) {
+            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
+            return;
+        }
+        
+        // String aspectXml = toXml(aspectIr);
+        
+        // LaraI.main(args);
+        Aspects asps = null;
+        try {
+            asps = new Aspects(aspectIr, "");
+            // System.out.println("--- IR BEFORE ---");
+            // lara.printAspectIR();
+            // System.out.println("--- IR AFTER ---");
+        
+        } catch (Exception e) {
+            SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
+            return;
+            // throw new RuntimeException("Could not create aspects", e);
+        }
+        */
+        String outputFilename = SpecsIo.removeExtension(laraFile) + ".js";
+        parseLara(laraFile).ifPresent(asps -> convertAspectIrToJs(outputFilename, asps));
+
+    }
+
+    public static Optional<Aspects> parseLara(File laraFile) {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
@@ -130,45 +185,49 @@ public class LaraToJs {
             preprocess.add("-d");
         }
         */
-        LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
+        // LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
+        LaraC larac = new LaraC(args.toArray(new String[0]), new DefaultWeaver().getLanguageSpecification(),
+                new Output());
         Document aspectIr = null;
 
         try {
             aspectIr = larac.compile();
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
-            return;
+            return Optional.empty();
         }
 
         // String aspectXml = toXml(aspectIr);
 
         // LaraI.main(args);
-        Aspects asps = null;
         try {
-            asps = new Aspects(aspectIr, "");
+            return Optional.of(new Aspects(aspectIr, ""));
             // System.out.println("--- IR BEFORE ---");
             // lara.printAspectIR();
             // System.out.println("--- IR AFTER ---");
 
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
-            return;
+            return Optional.empty();
             // throw new RuntimeException("Could not create aspects", e);
         }
 
+    }
+
+    private void convertAspectIrToJs(String outputFilename, Aspects asps) {
         // Pass through LaraI
         AspectClassProcessor aspectClassProcessor = aspectProcessor.get();
         StringBuilder jsCode = aspectClassProcessor.generateJavaScriptDoc(asps);
 
         File rawFolder = SpecsIo.mkdir(outputFolder.getParentFile(), outputFolder.getName() + "-raw");
-        File rawJsFile = new File(rawFolder, SpecsIo.removeExtension(laraFile) + ".js");
+        File rawJsFile = new File(rawFolder, outputFilename);
         SpecsIo.write(rawJsFile, jsCode.toString());
 
         SpecsLogs.msgInfo("Raw JS from Lara: " + rawJsFile.getAbsolutePath());
         String cleanedJsCode = cleanJsCode(jsCode.toString());
 
         // Save js to the same relative location as the original file
-        File jsFile = new File(outputFolder, SpecsIo.removeExtension(laraFile) + ".js");
+        File jsFile = new File(outputFolder, outputFilename);
         SpecsLogs.msgInfo("Cleaned JS: " + jsFile.getAbsolutePath());
         SpecsIo.write(jsFile, cleanedJsCode.toString());
     }

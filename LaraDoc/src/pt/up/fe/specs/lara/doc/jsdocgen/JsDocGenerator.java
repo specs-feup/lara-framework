@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.doc.jsdoc;
+package pt.up.fe.specs.lara.doc.jsdocgen;
 
 import java.io.File;
 import java.util.List;

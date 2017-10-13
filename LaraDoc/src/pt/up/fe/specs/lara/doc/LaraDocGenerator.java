@@ -25,7 +25,7 @@ import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.data.LaraDocPackage;
-import pt.up.fe.specs.lara.doc.jsdoc.JsDocGenerator;
+import pt.up.fe.specs.lara.doc.jsdocgen.JsDocGenerator;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.utilities.Replacer;
 

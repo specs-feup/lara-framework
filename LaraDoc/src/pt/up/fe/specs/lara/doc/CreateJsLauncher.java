@@ -16,7 +16,7 @@ package pt.up.fe.specs.lara.doc;
 import java.io.File;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
-import pt.up.fe.specs.lara.doc.jsdoc.DummyGenerator;
+import pt.up.fe.specs.lara.doc.jsdocgen.DummyGenerator;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
