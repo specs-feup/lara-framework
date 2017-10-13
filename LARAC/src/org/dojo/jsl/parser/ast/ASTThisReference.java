@@ -11,25 +11,30 @@ import org.w3c.dom.Element;
 import larac.objects.Variable;
 
 public class ASTThisReference extends SimpleNode {
-	public ASTThisReference(int id) {
-		super(id);
-	}
+    public ASTThisReference(int id) {
+        super(id);
+    }
 
-	public ASTThisReference(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTThisReference(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		return new Variable("this");// getParentById(LARAEcmaScriptTreeConstants.JJTASPECTDEF);
-	}
+    @Override
+    public Object organize(Object obj) {
+        return new Variable("this");// getParentById(LARAEcmaScriptTreeConstants.JJTASPECTDEF);
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		final Element thisEl = doc.createElement("id");
-		thisEl.setAttribute("name", "this");
-		parent.appendChild(thisEl);
-	}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        final Element thisEl = doc.createElement("id");
+        thisEl.setAttribute("name", "this");
+        parent.appendChild(thisEl);
+    }
+
+    @Override
+    public String toSource(int indentation) {
+        return indent(indentation) + "this";
+    }
 
 }
 /*

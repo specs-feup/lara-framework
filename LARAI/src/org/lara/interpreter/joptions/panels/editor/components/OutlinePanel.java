@@ -36,6 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.text.BadLocationException;
 
 import org.dojo.jsl.parser.ast.ASTAspectDef;
+import org.dojo.jsl.parser.ast.ASTAssignmentExpression;
 import org.dojo.jsl.parser.ast.ASTCodeDef;
 import org.dojo.jsl.parser.ast.ASTFunctionDeclaration;
 import org.dojo.jsl.parser.ast.ASTFunctionExpression;
@@ -45,6 +46,7 @@ import org.dojo.jsl.parser.ast.Node;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
@@ -237,6 +239,16 @@ public class OutlinePanel extends JPanel {
                 final String varName = id.getName();
 
                 return new OutlineElement(varName, varDecl.jjtGetFirstToken().beginLine, OutlineElementType.FUNCTION);
+            }
+            if (parent instanceof ASTAssignmentExpression) {
+                try {
+                    ASTAssignmentExpression assignment = (ASTAssignmentExpression) parent;
+                    String source = assignment.getChild(0).toSource();
+                    return new OutlineElement(source, expr.jjtGetFirstToken().beginLine,
+                            OutlineElementType.FUNCTION);
+                } catch (Exception e) {
+                    LaraLog.debug("Could not create outline element for a function expression: " + e.getMessage());
+                }
             }
 
             return null;

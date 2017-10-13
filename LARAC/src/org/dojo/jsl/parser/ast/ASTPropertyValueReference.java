@@ -9,23 +9,29 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTPropertyValueReference extends SimpleNode {
-	public ASTPropertyValueReference(int id) {
-		super(id);
-	}
+    public ASTPropertyValueReference(int id) {
+        super(id);
+    }
 
-	public ASTPropertyValueReference(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTPropertyValueReference(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		return ((SimpleNode) children[0]).organize(obj);
-	}
+    @Override
+    public Object organize(Object obj) {
+        return ((SimpleNode) children[0]).organize(obj);
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		((SimpleNode) children[0]).toXML(doc, parent);
-	}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        ((SimpleNode) children[0]).toXML(doc, parent);
+    }
+
+    @Override
+    public String toSource(int indentation) {
+
+        return indent(indentation) + "[" + ((SimpleNode) children[0]).toSource(0) + "]";
+    }
 }
 /*
  * JavaCC - OriginalChecksum=a9e3d25c9236ea41f6a673f87a9ca4a5 (do not edit this

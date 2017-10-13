@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -28,6 +28,7 @@ public class SettingsManager {
     private static final String SHOW_CONSOLE_PREFIX = "show_console_";
     private static final String SHOW_LANG_SPEC_PREFIX = "show_lang_spec_";
     private static final String OPENED_FILES_PREFIX = "opened_files_";
+    private static final String EXPLORER_OUTLINE_SPLIT_FACTOR_PREFIX = "explorer_outline_split_";
 
     public Preferences prefs;
     private String keySufix;
@@ -35,7 +36,7 @@ public class SettingsManager {
 
     public SettingsManager(EditorPanel panel, String keySufix) {
         this.keySufix = keySufix;
-        this.prefs = Preferences.userRoot();
+        prefs = Preferences.userRoot();
     }
 
     /**
@@ -67,6 +68,14 @@ public class SettingsManager {
 
     public double loadExplorerSplitFactor(double defaultVale) {
         return prefs.getDouble(getExplorerSplitFactorSetting(), defaultVale);
+    }
+
+    public void saveExplorerOutlineSplitFactor(double value) {
+        prefs.putDouble(getExplorerOutlineSplitSetting(), value);
+    }
+
+    public double loadExplorerOutlineSplitFactor(double defaultVale) {
+        return prefs.getDouble(getExplorerOutlineSplitSetting(), defaultVale);
     }
 
     public void saveShowConsole(boolean value) {
@@ -158,6 +167,10 @@ public class SettingsManager {
 
     private String getConsoleFontSizeSetting() {
         return CONSOLE_FONT_SIZE_PREFIX + getKeySufix();
+    }
+
+    private String getExplorerOutlineSplitSetting() {
+        return EXPLORER_OUTLINE_SPLIT_FACTOR_PREFIX + getKeySufix();
     }
 
     private String getKeySufix() {

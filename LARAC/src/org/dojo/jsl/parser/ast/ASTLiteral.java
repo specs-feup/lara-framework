@@ -199,7 +199,11 @@ public class ASTLiteral extends SimpleNode {
     @Override
     public String toSource(int indentation) {
 
-        return indent(indentation) + value.toString();
+        String string = value.toString();
+        if (type == Types.String) {
+            string = '"' + string + '"';
+        }
+        return indent(indentation) + string;
     }
 }
 /*

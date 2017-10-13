@@ -57,6 +57,11 @@ public class ASTIdentifier extends SimpleNode {
     }
 
     @Override
+    public String toSource(int indentation) {
+        return indent(indentation) + getName();
+    }
+
+    @Override
     public Object organize(Object obj) {
         /*	if (isTemplate) {
         codeDef = getLara().aspectIR().getCodedef(name);
