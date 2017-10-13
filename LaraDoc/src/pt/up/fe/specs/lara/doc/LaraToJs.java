@@ -160,11 +160,16 @@ public class LaraToJs {
         AspectClassProcessor aspectClassProcessor = aspectProcessor.get();
         StringBuilder jsCode = aspectClassProcessor.generateJavaScriptDoc(asps);
 
+        File rawFolder = SpecsIo.mkdir(outputFolder.getParentFile(), outputFolder.getName() + "-raw");
+        File rawJsFile = new File(rawFolder, SpecsIo.removeExtension(laraFile) + ".js");
+        SpecsIo.write(rawJsFile, jsCode.toString());
+
+        SpecsLogs.msgInfo("Raw JS from Lara: " + rawJsFile.getAbsolutePath());
         String cleanedJsCode = cleanJsCode(jsCode.toString());
 
         // Save js to the same relative location as the original file
         File jsFile = new File(outputFolder, SpecsIo.removeExtension(laraFile) + ".js");
-
+        SpecsLogs.msgInfo("Cleaned JS: " + jsFile.getAbsolutePath());
         SpecsIo.write(jsFile, cleanedJsCode.toString());
     }
 
@@ -185,7 +190,7 @@ public class LaraToJs {
         currentCode = REGEX_FOR_EACH.matcher(currentCode).replaceAll("for (");
 
         // Remove quotes from JS properties accesses
-        currentCode = replaceQuotes(currentCode);
+        // currentCode = replaceQuotes(currentCode);
 
         return currentCode;
     }
