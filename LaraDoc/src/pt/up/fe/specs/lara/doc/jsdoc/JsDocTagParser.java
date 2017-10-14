@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.doc.jsdoc;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -31,6 +32,8 @@ public class JsDocTagParser {
         DEFAULT_PARSERS = new HashMap<>();
         DEFAULT_PARSERS.put("class", JsDocTagParser::parseTagOnly);
         DEFAULT_PARSERS.put("constructor", (tagName, contents) -> JsDocTagParser.parseTagOnly("class", contents));
+        DEFAULT_PARSERS.put("returns", (tagName, contents) -> JsDocTagParser.parseReturns(contents));
+        DEFAULT_PARSERS.put("return", (tagName, contents) -> JsDocTagParser.parseReturns(contents));
     }
 
     private final Map<String, JsDocTagLineParser> tagParsers;
@@ -90,6 +93,15 @@ public class JsDocTagParser {
     public static JsDocTag parseTagOnly(String tagName, StringParser contents) {
         // No more parsing to do
         return new JsDocTag(tagName);
+    }
+
+    public static JsDocTag parseReturns(StringParser contents) {
+        JsDocTag tag = new JsDocTag("returns");
+
+        // Check if there is a type
+        Optional<String> type = contents.apply(JsDocTagStringParsers::checkType);
+        type.ifPresent(typeValue -> tag.setValue(JsDocTagProperty.TYPE, typeValue));
+        return tag;
     }
 
 }
