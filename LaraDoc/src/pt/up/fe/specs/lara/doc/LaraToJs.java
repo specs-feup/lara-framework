@@ -187,7 +187,7 @@ public class LaraToJs {
         */
         // LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
         LaraC larac = new LaraC(args.toArray(new String[0]), new DefaultWeaver().getLanguageSpecification(),
-                new Output());
+                new Output(0));
         Document aspectIr = null;
 
         try {

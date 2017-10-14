@@ -28,9 +28,8 @@ public class AspectIrDocMain {
 
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
-        // String inputPath =
-        // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
-        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
+        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
+        // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
 
         LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath), new File("./")).buildLaraDoc();
 

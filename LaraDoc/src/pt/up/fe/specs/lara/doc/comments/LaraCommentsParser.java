@@ -13,7 +13,9 @@
 
 package pt.up.fe.specs.lara.doc.comments;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagParser;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.parsing.CommentParser;
 import pt.up.fe.specs.util.parsing.comments.TextElement;
@@ -40,6 +44,12 @@ public class LaraCommentsParser {
 
     private static final Set<Character> CHARS_TO_CLEAN = new HashSet<>(Arrays.asList('*', '/'));
 
+    private final JsDocTagParser tagParser;
+
+    public LaraCommentsParser() {
+        this.tagParser = new JsDocTagParser();
+    }
+
     public LaraDocComment parse(String comment) {
 
         // Obtain text elements
@@ -55,9 +65,25 @@ public class LaraCommentsParser {
                 .map(this::cleanComment)
                 .orElse("");
 
+        // Split into comment text and list of JsDoc tags
+        List<String> commentLines = StringLines.getLines(cleanedComment);
+        Collections.reverse(commentLines);
+        String docText = extractElementText(commentLines);
+        List<String> tagsText = extractTagsText(commentLines);
+
+        Preconditions.checkArgument(commentLines.isEmpty(), "Expected comment lines to be empty");
+        /*
         if (!cleanedComment.isEmpty()) {
             System.out.println("COMMENT BEFORE:\n" + comment + "\n----");
-            System.out.println("COMMENT AFTER:\n" + cleanedComment + "\n----");
+            // System.out.println("COMMENT AFTER:\n" + cleanedComment + "\n----");
+            System.out.println("COMMENT TEXT:\n" + docText + "\n----");
+            System.out.println("COMMENT TAGS:\n" + tagsText + "\n----");
+        }
+        */
+        // Parse tags
+        List<JsDocTag> tags = SpecsCollections.map(tagsText, tagParser::parse);
+        if (!tags.isEmpty()) {
+            System.out.println("TAGS:" + tags);
         }
 
         return null;
@@ -69,6 +95,67 @@ public class LaraCommentsParser {
             String cleanedLine = cleanLine(line);
         }
         */
+    }
+
+    private List<String> extractTagsText(List<String> commentLines) {
+        List<String> tags = new ArrayList<>();
+        List<String> currentTag = new ArrayList<>();
+
+        for (int i = commentLines.size() - 1; i >= 0; i--) {
+            String line = commentLines.get(i).trim();
+            commentLines.remove(i);
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            // Check if beginning of a new tag
+            if (currentTag.isEmpty()) {
+                Preconditions.checkArgument(line.startsWith("@"), "Expected line to start with @:" + line);
+                currentTag.add(line);
+
+                continue;
+            }
+
+            // If line start with tag, save current tag and start another one
+            if (line.startsWith("@")) {
+                tags.add(currentTag.stream().collect(Collectors.joining(" ")));
+                currentTag = new ArrayList<>();
+            }
+
+            currentTag.add(line);
+        }
+
+        // Collect last tag
+        if (!currentTag.isEmpty()) {
+            tags.add(currentTag.stream().collect(Collectors.joining(" ")));
+        }
+
+        return tags;
+
+    }
+
+    /**
+     * 
+     * @param commentLines
+     *            reversed-list
+     * @return
+     */
+    private String extractElementText(List<String> commentLines) {
+        List<String> elementText = new ArrayList<>();
+
+        // Add lines until a '@' is found
+        for (int i = commentLines.size() - 1; i >= 0; i--) {
+            String line = commentLines.get(i);
+            if (line.startsWith("@")) {
+                break;
+            }
+
+            elementText.add(line);
+            commentLines.remove(i);
+        }
+
+        return elementText.stream().collect(Collectors.joining("\n"));
     }
 
     private String cleanComment(String comment) {

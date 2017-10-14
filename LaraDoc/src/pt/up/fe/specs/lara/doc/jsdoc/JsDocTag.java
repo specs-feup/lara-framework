@@ -17,14 +17,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.up.fe.specs.util.SpecsLogs;
+
 public class JsDocTag {
 
     private static final String PROPERTY_TAG_NAME = "tagName";
+    private static final String PROPERTY_CONTENT = "content";
 
     private final Map<String, String> properties;
 
-    public JsDocTag() {
+    public JsDocTag(String tagName) {
         this.properties = new HashMap<>();
+        this.properties.put(PROPERTY_TAG_NAME, tagName);
     }
 
     public Collection<String> getKeys() {
@@ -33,6 +37,32 @@ public class JsDocTag {
 
     public String getTagName() {
         return properties.get(PROPERTY_TAG_NAME);
+    }
+
+    public void setContent(String content) {
+        genericSet(PROPERTY_CONTENT, content);
+    }
+
+    public void addContent(String value) {
+        String content = properties.getOrDefault(PROPERTY_CONTENT, "");
+
+        String newContent = content.isEmpty() ? value : content + " " + value;
+
+        properties.put(PROPERTY_CONTENT, newContent);
+    }
+
+    private void genericSet(String key, String value) {
+        String previousValue = properties.put(key, value);
+        if (previousValue != null) {
+            SpecsLogs.msgInfo(
+                    "Replacing previous value of property '" + key + "' in JsDoc tag '" + getTagName()
+                            + "'. Current value '" + value + "', previous value '" + previousValue + "'");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return properties.toString();
     }
 
 }
