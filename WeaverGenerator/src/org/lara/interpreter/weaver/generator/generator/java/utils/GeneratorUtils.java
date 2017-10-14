@@ -267,7 +267,7 @@ public class GeneratorUtils {
                 if (generator.hasImplMode() && !type.isArray()) {
                     name += GenConstants.getImplementationSufix();
                 }
-                final Method getter = createGetter(sanitizedName, name, type, fieldName);
+                final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter());
                 getter.add(Annotation.OVERRIDE);
                 javaC.add(getter);
             }
@@ -398,9 +398,25 @@ public class GeneratorUtils {
     /**
      * @param attr
      * @param getAttrType
+     * @param list
      * @return
      */
-    private static Method createGetter(String attr, String originalName, JavaType getAttrType, String superField) {
+    private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
+            List<org.lara.language.specification.artifactsmodel.schema.Parameter> list) {
+
+        if (list != null && !list.isEmpty()) {
+            final Method getAttribute = new Method(getAttrType, originalName);
+            // getAttribute.addModifier(Modifier.ABSTRACT);
+            getAttribute.appendComment("Get value on attribute " + attr);
+            getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
+            getAttribute.appendCode("return this." + superField + "." + originalName + "(");
+            for (org.lara.language.specification.artifactsmodel.schema.Parameter parameter : list) {
+                getAttribute.addArgument(new JavaType(parameter.getType()), parameter.getName());
+                getAttribute.appendCode(parameter.getName());
+            }
+            getAttribute.appendCode(");");
+            return getAttribute;
+        }
         final String getName = "get" + Utils.firstCharToUpper(originalName);
         final Method getAttribute = new Method(getAttrType, getName);
         // getAttribute.addModifier(Modifier.ABSTRACT);
