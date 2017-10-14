@@ -61,3 +61,4 @@ Strings.extractValue = function(prefix, contents, errorOnUndefined) {
 	
 	return undefined;	
 }
+

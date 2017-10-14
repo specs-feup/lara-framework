@@ -16,32 +16,43 @@ package pt.up.fe.specs.lara.doc;
 import java.io.File;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
-import pt.up.fe.specs.lara.doc.jsdocgen.JsDocNodeGenerator;
+import pt.up.fe.specs.lara.doc.jsdocgen.DummyGenerator;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 
-public class LaraDocLauncher {
+public class CreateJsLauncher {
 
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
-        String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\Io.lara";
+
+        if (args.length < 2) {
+            SpecsLogs.msgInfo(
+                    "Expects at least two arguments, the input path and the output folder. Passed " + args.length);
+            return;
+        }
+
+        String inputPath = args[0];
+        String outputFolder = args[1];
+        // String inputFolder =
+        // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
         // String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
-        String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js-laradse-v2";
+        // String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js-laradse-v2";
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
         long laraDocStart = System.nanoTime();
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder), new File(outputFolder)).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath), new File(outputFolder)).buildLaraDoc();
         System.out.println(SpecsStrings.takeTime("LaraDocFiles", laraDocStart));
 
         long laraDocGeneratorStart = System.nanoTime();
-        LaraDocGenerator generator = new LaraDocGenerator(new JsDocNodeGenerator(),
+        LaraDocGenerator generator = new LaraDocGenerator(new DummyGenerator(),
                 // LaraDocGenerator generator = new LaraDocGenerator(new DocumentationGenerator(),
                 SpecsIo.mkdir(outputFolder));
         generator.generateDoc(laraDocFiles);
 
         System.out.println(SpecsStrings.takeTime("LaraDocGenerator", laraDocGeneratorStart));
-        // System.out.println("LARA DOC FILES:" + laraDocFiles);
+
     }
 
 }

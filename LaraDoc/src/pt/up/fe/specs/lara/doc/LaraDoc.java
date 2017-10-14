@@ -42,6 +42,7 @@ import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
 import larai.larabundle.LaraBundleProperty;
+import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.util.Preconditions;
@@ -276,6 +277,11 @@ public class LaraDoc {
         }
 
         // Resource folder
+        if (LaraResource.getLaraResourceFile(currentPath).isFile()) {
+            // Ignoring for now
+            // TODO: Create temporary file for the LocalResource
+            return;
+        }
 
         // Normal folder
 

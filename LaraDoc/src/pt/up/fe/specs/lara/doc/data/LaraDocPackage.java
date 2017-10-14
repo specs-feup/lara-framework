@@ -14,6 +14,7 @@
 package pt.up.fe.specs.lara.doc.data;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,6 +40,14 @@ public class LaraDocPackage {
     @Override
     public String toString() {
         return "Package '" + packageName + "' -> " + packageModules;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public Collection<LaraDocModule> getModules() {
+        return packageModules.values();
     }
 
     public void add(String importPath, File laraFile) {

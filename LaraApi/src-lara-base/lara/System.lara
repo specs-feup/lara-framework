@@ -28,6 +28,15 @@ System.getExecutableFile = function(executableName, executableFolder) {
 	  exe = Io.getPath(executableFolder, executableName).getAbsolutePath();
 	}
 
+	// Ensure exe is a string
+	exe = exe.toString();
+	
+	if(Platforms.isUnix()) {
+		var addDotSlash = (!exe.startsWith("./")) && (!exe.startsWith("/"));
+		if(addDotSlash) {
+			exe = "./" + exe;
+		}
+	}
 	
 	if(Platforms.isWindows() && (!exe.endsWith(".exe"))) {
 		exe = exe + ".exe";

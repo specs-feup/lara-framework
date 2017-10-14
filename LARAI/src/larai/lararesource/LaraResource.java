@@ -154,7 +154,7 @@ public class LaraResource {
         return importPath.substring(lastDotIndex + 1);
     }
 
-    private File getLaraResourceFile(File includeFolder) {
+    public static File getLaraResourceFile(File includeFolder) {
         return new File(includeFolder, LARA_RESOURCE_FILE);
     }
 

@@ -193,3 +193,6 @@ Io.getPathSeparator = function() {
 	return java.io.File.pathSeparator;
 }
 
+Io.md5 = function(fileOrBaseFolder, optionalFile) {
+	return SpecsIo.getMd5(Io.getPath(fileOrBaseFolder, optionalFile));
+}
