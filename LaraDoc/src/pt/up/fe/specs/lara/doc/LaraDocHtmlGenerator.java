@@ -64,6 +64,7 @@ public class LaraDocHtmlGenerator {
             moduleList.append(generateDoc(laraPackage));
         }
 
+        LaraDocResource.JQUERY.write(outputFolder);
         LaraDocResource.JS_DOC_JS.write(outputFolder);
         LaraDocResource.STYLES_CSS.write(outputFolder);
 
@@ -142,7 +143,6 @@ public class LaraDocHtmlGenerator {
         String folderName = Integer.toString(counter);
         counter++;
 
-       
         File moduleDocFolder = SpecsIo.mkdir(outputFolder, folderName);
 
         Optional<File> indexFile = generator.generate(module, moduleDocFolder);

@@ -17,7 +17,8 @@ public enum JsDocTagProperty {
 
     TAG_NAME("tagName"),
     CONTENT("content"),
-    TYPE("type");
+    TYPE("type"),
+    NAME_PATH("namePath");
 
     private final String property;
 

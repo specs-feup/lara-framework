@@ -17,7 +17,7 @@ import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 
 public interface AspectIrElement {
 
-    AspectIrElementType getType();
+	String getType();
 
-    LaraDocComment getComment();
+	LaraDocComment getComment();
 }

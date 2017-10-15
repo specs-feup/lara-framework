@@ -13,7 +13,9 @@
 
 package pt.up.fe.specs.lara.doc.comments;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 
@@ -21,10 +23,18 @@ public class LaraDocComment {
 
     private final String text;
     private final List<JsDocTag> tags;
+    private final Set<String> currentTags;
 
     public LaraDocComment(String text, List<JsDocTag> tags) {
         this.text = text;
         this.tags = tags;
+        this.currentTags = new HashSet<>();
+        tags.stream().map(JsDocTag::getTagName).forEach(currentTags::add);
+    }
+
+    @Override
+    public String toString() {
+        return "LaraDocComment text:'" + text + "'; tags: " + tags;
     }
 
     public List<JsDocTag> getTags() {
@@ -33,5 +43,19 @@ public class LaraDocComment {
 
     public String getText() {
         return text;
+    }
+
+    public LaraDocComment addTag(JsDocTag tag) {
+        tags.add(tag);
+        this.currentTags.add(tag.getTagName());
+        return this;
+    }
+
+    public LaraDocComment addTagIfMissing(JsDocTag tag) {
+        if (currentTags.contains(tag.getTagName())) {
+            return this;
+        }
+
+        return addTag(tag);
     }
 }

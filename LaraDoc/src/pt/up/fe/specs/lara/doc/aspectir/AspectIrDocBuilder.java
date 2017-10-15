@@ -43,28 +43,29 @@ public class AspectIrDocBuilder {
     }
 
     public List<AspectIrElement> getAspectIrElements() {
-		return aspectIrElements;
-	}
-    
+        return aspectIrElements;
+    }
+
     public void parse(Aspects aspects) {
         // For each element, create LaraDocComment
 
         for (Aspect aspect : aspects.aspects.values()) {
             System.out.println("ASPECT:" + aspect.toString());
             LaraDocComment laraComment = commentParser.parse(aspect.comment);
-            AspectIrElement aspectIrElement = aspectIrParser.parseAspect(aspect, laraComment);
+            AspectIrElement aspectIrElement = aspectIrParser.parse(aspect, laraComment);
             aspectIrElements.add(aspectIrElement);
         }
 
         for (Statement declaration : aspects.declarations) {
-            // System.out.println("Declaration class:" + declaration.getClass().getSimpleName());
+            // System.out.println("Declaration class:" +
+            // declaration.getClass().getSimpleName());
             // if (declaration.name.equals("expr")) {
             // System.out.println("Declaration Name:" + declaration.name);
             // }
             // System.out.println("Declaration Name:" + declaration.name);
 
             LaraDocComment laraComment = commentParser.parse(declaration.comment);
-            AspectIrElement aspectIrElement = aspectIrParser.parseDeclaration(declaration, laraComment);
+            AspectIrElement aspectIrElement = aspectIrParser.parse(declaration, laraComment);
             aspectIrElements.add(aspectIrElement);
             // System.out.println("Declaration Comment:" + declaration.comment);
             // System.out.println("Declaration Desc:" + declaration.desc);
@@ -78,6 +79,6 @@ public class AspectIrDocBuilder {
     }
 
     public AspectIrDoc build() {
-    	return new AspectIrDoc(aspectIrElements);
+        return AspectIrDoc.newInstance(aspectIrElements);
     }
 }
