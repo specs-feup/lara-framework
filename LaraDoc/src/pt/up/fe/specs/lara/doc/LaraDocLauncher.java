@@ -35,7 +35,7 @@ public class LaraDocLauncher {
         System.out.println(SpecsStrings.takeTime("LaraDocFiles", laraDocStart));
 
         long laraDocGeneratorStart = System.nanoTime();
-        LaraDocGenerator generator = new LaraDocGenerator(new JsDocNodeGenerator(),
+        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new JsDocNodeGenerator(),
                 // LaraDocGenerator generator = new LaraDocGenerator(new DocumentationGenerator(),
                 SpecsIo.mkdir(outputFolder));
         generator.generateDoc(laraDocFiles);

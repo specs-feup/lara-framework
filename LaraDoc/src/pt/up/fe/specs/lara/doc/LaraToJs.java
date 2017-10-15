@@ -41,6 +41,7 @@ import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.LaraC;
 import larac.utils.output.Output;
 import larai.LaraI;
+import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -279,4 +280,24 @@ public class LaraToJs {
         return currentCode;
 
     }
+    
+    /**
+     * 
+     * @param module
+     * @return the JavaScript files generated from the LARA files in the given module
+     */
+	public static List<File> convertModuleToJs(LaraDocModule module) {
+		
+        File jsTemporaryFolder = SpecsIo.mkdir(SpecsIo.getTempFolder(), "laradoc-js");
+        SpecsIo.deleteFolderContents(jsTemporaryFolder);
+
+        LaraToJs converter = new LaraToJs(jsTemporaryFolder);
+		
+		// Convert LARA to JS to temporary folder
+	    for (File laraFile : module.getLaraFiles()) {
+	        converter.convertLara(laraFile);
+	    }
+
+	    return SpecsIo.getFiles(jsTemporaryFolder);
+	}
 }

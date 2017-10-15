@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import pt.up.fe.specs.lara.doc.LaraToJs;
+import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -46,8 +48,11 @@ public class JsDocNodeGenerator implements JsDocGenerator {
 
     @Override
     // public File queue(List<File> inputFiles, File outputFolder) {
-    public Optional<File> generate(List<File> inputFiles, File outputFolder) {
-        // Copy files to a temporary folder
+    public Optional<File> generate(LaraDocModule module, File outputFolder) {
+        
+    	List<File> inputFiles = LaraToJs.convertModuleToJs(module);
+    	
+    	// Copy files to a temporary folder
         File documentationFolder = new File(SpecsIo.getTempFolder(), "jsdocumentation");
         File commandFolder = SpecsIo.mkdir(documentationFolder, Integer.toString(counter));
         counter++;

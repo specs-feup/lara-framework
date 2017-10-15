@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
+
 /**
  * Represents a LARA module which can be imported.
  * 
@@ -29,10 +31,12 @@ public class LaraDocModule {
     private final String importPath;
     private final File mainLara;
     private File baseLara;
+    private AspectIrDoc documentation;
 
     public LaraDocModule(String importPath, File mainLara) {
         this.importPath = importPath;
         this.mainLara = mainLara;
+        documentation = null;
     }
 
     @Override
@@ -73,5 +77,13 @@ public class LaraDocModule {
 
         return laraFiles;
     }
+
+	public void setDocumentation(AspectIrDoc documentation) {
+		this.documentation = documentation;
+	}
+	
+	public Optional<AspectIrDoc> getDocumentation() {
+		return Optional.of(documentation);
+	}
 
 }
