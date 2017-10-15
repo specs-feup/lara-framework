@@ -31,7 +31,7 @@ public class LaraDocLauncher {
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
         long laraDocStart = System.nanoTime();
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder), new File(outputFolder)).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder)).buildLaraDoc();
         System.out.println(SpecsStrings.takeTime("LaraDocFiles", laraDocStart));
 
         long laraDocGeneratorStart = System.nanoTime();

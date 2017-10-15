@@ -34,7 +34,7 @@ public class AspectIrDocMain {
 //        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
         // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath), outputFolder).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();
 
         // Add documentation to modules
         for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {
