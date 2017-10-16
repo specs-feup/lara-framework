@@ -15,7 +15,7 @@ MetricResult.prototype.getValue = function() {
 }
 
 /**
- * @return the unit of the metric value
+ * @return {string} the unit of the metric value
  */
 MetricResult.prototype.getUnit = function() {
 	return this.unit;
