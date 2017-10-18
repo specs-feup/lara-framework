@@ -50,7 +50,6 @@ public class AspectIrDocBuilder {
         // For each element, create LaraDocComment
 
         for (Aspect aspect : aspects.aspects.values()) {
-            System.out.println("ASPECT:" + aspect.toString());
             LaraDocComment laraComment = commentParser.parse(aspect.comment);
             AspectIrElement aspectIrElement = aspectIrParser.parse(aspect, laraComment);
             aspectIrElements.add(aspectIrElement);

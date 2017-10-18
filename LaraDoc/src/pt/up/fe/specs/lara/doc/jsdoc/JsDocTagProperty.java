@@ -16,9 +16,11 @@ package pt.up.fe.specs.lara.doc.jsdoc;
 public enum JsDocTagProperty {
 
     TAG_NAME("tagName"),
+    NAME("name"),
     CONTENT("content"),
     TYPE("type"),
-    NAME_PATH("namePath");
+    NAME_PATH("namePath"),
+    DEFAULT_VALUE("default");
 
     private final String property;
 
