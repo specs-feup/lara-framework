@@ -5,7 +5,9 @@ public enum JsDocTagName {
     ASPECT("aspect"),
     CLASS("class"),
     RETURNS("constructor"),
-    PARAM("param");
+    PARAM("param"),
+    AUGMENTS("augments"),
+    DEPRECATED("deprecated");
 
     private final String name;
 
