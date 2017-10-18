@@ -1,5 +1,7 @@
 package pt.up.fe.specs.lara.doc.aspectir;
 
+import java.util.List;
+
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
@@ -49,5 +51,14 @@ public class CodeElems {
         } catch (TransformerFactoryConfigurationError | TransformerException e) {
             throw new RuntimeException("Could not convert aspect IR node to XML: ", e);
         }
+    }
+
+    public static <T extends CodeElem> T get(int index, List<? extends CodeElem> elements, Class<T> elemClass) {
+        CodeElem element = elements.get(index);
+
+        Preconditions.checkArgument(elemClass.isInstance(element),
+                "Expected code element at index " + index + " to be a " + elemClass.getSimpleName());
+
+        return elemClass.cast(element);
     }
 }

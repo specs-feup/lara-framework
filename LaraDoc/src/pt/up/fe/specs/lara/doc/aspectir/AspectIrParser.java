@@ -13,11 +13,13 @@
 
 package pt.up.fe.specs.lara.doc.aspectir;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -25,6 +27,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.lara.interpreter.aspectir.Aspect;
 import org.lara.interpreter.aspectir.Base;
 import org.lara.interpreter.aspectir.CodeElem;
+import org.lara.interpreter.aspectir.ExprLiteral;
 import org.lara.interpreter.aspectir.ExprOp;
 import org.lara.interpreter.aspectir.Expression;
 import org.lara.interpreter.aspectir.Parameter;
@@ -34,12 +37,14 @@ import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.classmap.BiFunctionClassMap;
 import tdrc.utils.StringUtils;
@@ -96,22 +101,56 @@ public class AspectIrParser {
 
         Preconditions.checkArgument(statement.components.size() == 1,
                 "Expected one component, has " + statement.components.size());
-        CodeElem firstElement = statement.components.get(0);
 
-        Preconditions.checkArgument(firstElement instanceof Expression,
-                "Expected first code element of function decl to be an expression");
-
-        Expression expression = (Expression) firstElement;
+        Expression expression = CodeElems.get(0, statement.components, Expression.class);
+        // CodeElem firstElement = statement.components.get(0);
+        // Preconditions.checkArgument(firstElement instanceof Expression,
+        // "Expected first code element of function decl to be an expression");
+        //
+        // Expression expression = (Expression) firstElement;
 
         Preconditions.checkArgument(expression.exprs.size() == 1,
                 "Expected one expression, has " + expression.exprs.size());
+
+        ExprOp op = CodeElems.get(0, expression.exprs, ExprOp.class);
+
+        // Get all literal nodes until a different appears
+        List<ExprLiteral> literals = new ArrayList<>();
+        for (Expression expr : op.exprs) {
+            // If not a literal, break
+            if (!(expr instanceof ExprLiteral)) {
+                break;
+            }
+
+            // If a literal, collect
+            literals.add((ExprLiteral) expr);
+        }
+
+        Preconditions.checkArgument(!literals.isEmpty(), "Expected to find at least one literal node");
+
+        // First child before the body is the name of the function
+        String functionName = literals.get(0).value;
+        // Remaining children until the body are the names of the parameters
+        List<String> parameters = SpecsCollections.subList(literals, 1).stream()
+                .map(literal -> literal.value)
+                .collect(Collectors.toList());
+
+        // Add information to documentation
+        laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, functionName));
+
+        // Add parameters if not present
+        for (String parameter : parameters) {
+            JsDocTag inputTag = laraComment.getInput(parameter);
+            inputTag = inputTag != null ? inputTag
+                    : new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, parameter);
+        }
+
         /*
         String vardeclName = CodeElems.parseStringLiteralExpr(expression);
         System.out.println("LARA COMMENT:" + laraComment);
         laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, vardeclName));
         */
-        System.out.println("F DECL:" + AspectIrParser.toXml(statement));
-        throw new RuntimeException("STOP");
+        return new FunctionDeclElement(functionName, parameters, laraComment);
     }
 
     public AspectIrElement parseAspect(Aspect aspect, LaraDocComment laraComment) {
@@ -239,7 +278,7 @@ public class AspectIrParser {
                 "Expected first code element of var decl to be an expression");
 
         String vardeclName = CodeElems.parseStringLiteralExpr((Expression) expression);
-        System.out.println("LARA COMMENT:" + laraComment);
+        // System.out.println("LARA COMMENT:" + laraComment);
         laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, vardeclName));
 
         return new VarDeclElement(vardeclName, laraComment);
