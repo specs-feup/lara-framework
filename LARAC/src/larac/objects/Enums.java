@@ -12,6 +12,9 @@
  */
 package larac.objects;
 
+import pt.up.fe.specs.util.enums.EnumHelper;
+import pt.up.fe.specs.util.lazy.Lazy;
+import pt.up.fe.specs.util.providers.StringProvider;
 import tdrc.utils.StringUtils;
 
 public class Enums {
@@ -23,47 +26,47 @@ public class Enums {
     public static String SYMBOL_END = "]]";
     // public static String INSERT_SYMBOL_REGEX = Enums.SYMBOL_REGEX_BEGIN + "(?!\\[)(\\S+?)" + Enums.SYMBOL_REGEX_END;
     public static String INSERT_SYMBOL_REGEX = Enums.SYMBOL_REGEX_BEGIN + Enums.CODE_PARAM_REGEX
-	    + Enums.SYMBOL_REGEX_END;
+            + Enums.SYMBOL_REGEX_END;
 
     public static enum JoinOperator {
-	UNION_JOIN("+"),
-	NATURAL_JOIN("::"),
-	BITAND_JOIN("&"),;
-	private String op;
+        UNION_JOIN("+"),
+        NATURAL_JOIN("::"),
+        BITAND_JOIN("&"),;
+        private String op;
 
-	JoinOperator(String op) {
-	    setOp(op);
-	}
+        JoinOperator(String op) {
+            setOp(op);
+        }
 
-	public void setOp(String op) {
-	    this.op = op;
-	}
+        public void setOp(String op) {
+            this.op = op;
+        }
 
-	public String getOp() {
-	    return op;
-	}
+        public String getOp() {
+            return op;
+        }
 
-	public static JoinOperator getOpTag(String text) {
-	    if (text != null) {
-		for (final JoinOperator b : JoinOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return b;
-		    }
-		}
-	    }
-	    return null;
-	}
+        public static JoinOperator getOpTag(String text) {
+            if (text != null) {
+                for (final JoinOperator b : JoinOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return b;
+                    }
+                }
+            }
+            return null;
+        }
 
-	public static boolean contains(String text) {
-	    if (text != null) {
-		for (final JoinOperator b : JoinOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return true;
-		    }
-		}
-	    }
-	    return false;
-	}
+        public static boolean contains(String text) {
+            if (text != null) {
+                for (final JoinOperator b : JoinOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     /**
@@ -72,246 +75,272 @@ public class Enums {
      * @author Tiago
      *
      */
-    public static enum BinaryOperator {
+    public static enum BinaryOperator implements StringProvider {
 
-	COMMA(",", 0), // 0
-	OR("||", 1), // 1
-	AND("&&", 2), // 2
-	BitOR("|", 3), // 3
-	BitXOR("^", 4), // 4
-	BitAND("&", 5), // 5
+        COMMA(",", 0), // 0
+        OR("||", 1), // 1
+        AND("&&", 2), // 2
+        BitOR("|", 3), // 3
+        BitXOR("^", 4), // 4
+        BitAND("&", 5), // 5
 
-	SEQ("===", 6), // 6
-	NSEQ("!==", 6), // 6
-	EQ("==", 6), // 6
-	NEQ("!=", 6), // 6
-	MATCH("~=", 6), // 6
+        SEQ("===", 6), // 6
+        NSEQ("!==", 6), // 6
+        EQ("==", 6), // 6
+        NEQ("!=", 6), // 6
+        MATCH("~=", 6), // 6
 
-	LT("<", 7), // 7
-	LTE("<=", 7), // 7
-	GT(">", 7), // 7
-	GTE(">=", 7), // 7
-	INSTANCEOF("instanceof", 7), // 7
-	IN("in", 7), // 7
+        LT("<", 7), // 7
+        LTE("<=", 7), // 7
+        GT(">", 7), // 7
+        GTE(">=", 7), // 7
+        INSTANCEOF("instanceof", 7), // 7
+        IN("in", 7), // 7
 
-	SHL("<<", 8), // 8
-	SHR(">>", 8), // 8
-	USHR(">>>", 8), // 8
+        SHL("<<", 8), // 8
+        SHR(">>", 8), // 8
+        USHR(">>>", 8), // 8
 
-	ADD("+", 9), // 9
-	SUB("-", 9), // 9
+        ADD("+", 9), // 9
+        SUB("-", 9), // 9
 
-	MULT("*", 10), // 10
-	DIV("/", 10), // 10
-	MOD("%", 10), // 10
+        MULT("*", 10), // 10
+        DIV("/", 10), // 10
+        MOD("%", 10), // 10
 
-	;
-	private String op;
-	private final int precedence;
+        ;
 
-	BinaryOperator(String op, int precedence) {
-	    setOp(op);
-	    this.precedence = precedence;
-	}
+        private static final Lazy<EnumHelper<BinaryOperator>> ENUM_HELPER = EnumHelper
+                .newLazyHelper(BinaryOperator.class);
 
-	public void setOp(String op) {
-	    this.op = op;
-	}
+        private String op;
+        private final int precedence;
 
-	public String getOp() {
-	    return op;
-	}
+        BinaryOperator(String op, int precedence) {
+            setOp(op);
+            this.precedence = precedence;
+        }
 
-	public static BinaryOperator getOpTag(String text) {
-	    if (text != null) {
-		for (final BinaryOperator b : BinaryOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return b;
-		    }
-		}
-	    }
-	    return null;
-	}
+        public void setOp(String op) {
+            this.op = op;
+        }
 
-	public static boolean contains(String text) {
-	    if (text != null) {
-		for (final BinaryOperator b : BinaryOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return true;
-		    }
-		}
-	    }
-	    return false;
-	}
+        public String getOp() {
+            return op;
+        }
 
-	public boolean hasPrecedence(BinaryOperator operator) {
-	    return precedence > operator.precedence;
-	}
+        public static BinaryOperator getOpTag(String text) {
+            if (text != null) {
+                for (final BinaryOperator b : BinaryOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return b;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static boolean contains(String text) {
+            if (text != null) {
+                for (final BinaryOperator b : BinaryOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public boolean hasPrecedence(BinaryOperator operator) {
+            return precedence > operator.precedence;
+        }
+
+        @Override
+        public String getString() {
+            return name();
+        }
+
+        public static EnumHelper<BinaryOperator> getHelper() {
+            return ENUM_HELPER.get();
+        }
     }
 
-    public static enum UnaryOperator {
-	POS("+"),
-	NEG("-"),
-	NOT("!"),
-	INV("~"),
-	INCP("++"),
-	DECP("--"),
-	TYPEOF("typeof"),
-	DELETE("delete"),
-	VOID(
-		"void");
-	private String op;
+    public static enum UnaryOperator implements StringProvider {
+        POS("+"),
+        NEG("-"),
+        NOT("!"),
+        INV("~"),
+        INCP("++"),
+        DECP("--"),
+        TYPEOF("typeof"),
+        DELETE("delete"),
+        VOID(
+                "void");
 
-	UnaryOperator(String op) {
-	    setOp(op);
-	}
+        private static final Lazy<EnumHelper<UnaryOperator>> ENUM_HELPER = EnumHelper
+                .newLazyHelper(UnaryOperator.class);
 
-	public void setOp(String op) {
-	    this.op = op;
-	}
+        private String op;
 
-	public String getOp() {
-	    return op;
-	}
+        UnaryOperator(String op) {
+            setOp(op);
+        }
 
-	public static UnaryOperator getOpTag(String text) {
-	    if (text != null) {
-		for (final UnaryOperator b : UnaryOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return b;
-		    }
-		}
-	    }
-	    return null;
-	}
+        public void setOp(String op) {
+            this.op = op;
+        }
 
-	public static boolean contains(String text) {
-	    if (text != null) {
-		for (final UnaryOperator b : UnaryOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return true;
-		    }
-		}
-	    }
-	    return false;
-	}
+        public String getOp() {
+            return op;
+        }
+
+        public static UnaryOperator getOpTag(String text) {
+            if (text != null) {
+                for (final UnaryOperator b : UnaryOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return b;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static boolean contains(String text) {
+            if (text != null) {
+                for (final UnaryOperator b : UnaryOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String getString() {
+            return name();
+        }
+
+        public static EnumHelper<UnaryOperator> getHelper() {
+            return ENUM_HELPER.get();
+        }
     }
 
     public static enum AssignOperator {
-	ASSIGN("="),
-	ASSIGN_ADD("+="),
-	ASSIGN_SUB("-="),
-	ASSIGN_MULT("*="),
-	ASSIGN_DIV("/="),
-	ASSIGN_MOD(
-		"%="),
-	ASSIGN_SHL("<<="),
-	ASSIGN_SHR(">>="),
-	ASSIGN_USHR(">>>="),
-	ASSIGN_BitAND("&="),
-	ASSIGN_BitXOR(
-		"^="),
-	ASSIGN_BitOR("|=")
+        ASSIGN("="),
+        ASSIGN_ADD("+="),
+        ASSIGN_SUB("-="),
+        ASSIGN_MULT("*="),
+        ASSIGN_DIV("/="),
+        ASSIGN_MOD(
+                "%="),
+        ASSIGN_SHL("<<="),
+        ASSIGN_SHR(">>="),
+        ASSIGN_USHR(">>>="),
+        ASSIGN_BitAND("&="),
+        ASSIGN_BitXOR(
+                "^="),
+        ASSIGN_BitOR("|=")
 
-	;
-	/*
-	 * "<<=" <op name=�ASSIGN_SHL�/> ">>=" <op name=�ASSIGN_SHR�/>
-	 * ">>>=" <op name=�ASSIGN_USHR�/> "&=" "^=" <op
-	 * name=�ASSIGN_BitAND�/> "^=" <op name=�ASSIGN_BitXOR�/> "|="
-	 * <op name=�ASSIGN_BitOR�/>
-	 * 
-	 * 
-	 */
+        ;
+        /*
+         * "<<=" <op name=�ASSIGN_SHL�/> ">>=" <op name=�ASSIGN_SHR�/>
+         * ">>>=" <op name=�ASSIGN_USHR�/> "&=" "^=" <op
+         * name=�ASSIGN_BitAND�/> "^=" <op name=�ASSIGN_BitXOR�/> "|="
+         * <op name=�ASSIGN_BitOR�/>
+         * 
+         * 
+         */
 
-	private String op;
+        private String op;
 
-	AssignOperator(String op) {
-	    setOp(op);
-	}
+        AssignOperator(String op) {
+            setOp(op);
+        }
 
-	public void setOp(String op) {
-	    this.op = op;
-	}
+        public void setOp(String op) {
+            this.op = op;
+        }
 
-	public String getOp() {
-	    return op;
-	}
+        public String getOp() {
+            return op;
+        }
 
-	public static AssignOperator getOpTag(String text) {
-	    if (text != null) {
-		for (final AssignOperator b : AssignOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return b;
-		    }
-		}
-	    }
-	    return null;
-	}
+        public static AssignOperator getOpTag(String text) {
+            if (text != null) {
+                for (final AssignOperator b : AssignOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return b;
+                    }
+                }
+            }
+            return null;
+        }
 
-	public static boolean contains(String text) {
-	    if (text != null) {
-		for (final AssignOperator b : AssignOperator.values()) {
-		    if (text.equalsIgnoreCase(b.op)) {
-			return true;
-		    }
-		}
-	    }
-	    return false;
-	}
+        public static boolean contains(String text) {
+            if (text != null) {
+                for (final AssignOperator b : AssignOperator.values()) {
+                    if (text.equalsIgnoreCase(b.op)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     public static enum Types {
-	Null,
-	Boolean,
-	Int,
-	Float,
-	Double,
-	String,
-	RegEx,
-	Code,
-	Joinpoint,
-	Aspect,
-	Array,
-	Map,
-	Object,
-	FN,
-	FNDecl,
-	Exception,
-	Undefined,
-	AspectSTATIC,
-	Base64;
-	public static Types getDefault() {
-	    return Undefined;
-	}
+        Null,
+        Boolean,
+        Int,
+        Float,
+        Double,
+        String,
+        RegEx,
+        Code,
+        Joinpoint,
+        Aspect,
+        Array,
+        Map,
+        Object,
+        FN,
+        FNDecl,
+        Exception,
+        Undefined,
+        AspectSTATIC,
+        Base64;
+        public static Types getDefault() {
+            return Undefined;
+        }
 
-	public static Types maxType(Types leftType, Types rightType) {
-	    return leftType.compareTo(rightType) >= 0 ? leftType : rightType;
-	}
+        public static Types maxType(Types leftType, Types rightType) {
+            return leftType.compareTo(rightType) >= 0 ? leftType : rightType;
+        }
 
-	public static Types value(String t) {
-	    if (t.equals("Integer")) {
-		return Int;
-	    }
-	    t = StringUtils.firstCharToUpper(t);
-	    try {
-		return valueOf(t);
-	    } catch (final Exception e) {
-		return null;
-	    }
-	}
+        public static Types value(String t) {
+            if (t.equals("Integer")) {
+                return Int;
+            }
+            t = StringUtils.firstCharToUpper(t);
+            try {
+                return valueOf(t);
+            } catch (final Exception e) {
+                return null;
+            }
+        }
 
-	@Override
-	public String toString() {
-	    return name().toLowerCase();
-	}
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
 
     }
 
     public static enum LoopTypes {
-	WHILE,
-	DO,
-	FOR,
-	FORIN,
-	FOREACH;
+        WHILE,
+        DO,
+        FOR,
+        FORIN,
+        FOREACH;
     }
 }
