@@ -114,6 +114,12 @@ public class AspectIrParser {
 
         ExprOp op = CodeElems.get(0, expression.exprs, ExprOp.class);
 
+        return parseFunctionDecl(op, laraComment);
+    }
+
+    public static AspectIrElement parseFunctionDecl(ExprOp op, LaraDocComment laraComment) {
+        Preconditions.checkArgument(op.name.equals("FN"), "Expected op to have the name FN, has '" + op.name + "'");
+
         // Get all literal nodes until a different appears
         List<ExprLiteral> literals = new ArrayList<>();
         for (Expression expr : op.exprs) {
@@ -136,13 +142,17 @@ public class AspectIrParser {
                 .collect(Collectors.toList());
 
         // Add information to documentation
-        laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, functionName));
+        laraComment
+                .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, functionName));
 
         // Add parameters if not present
         for (String parameter : parameters) {
             JsDocTag inputTag = laraComment.getInput(parameter);
-            inputTag = inputTag != null ? inputTag
-                    : new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, parameter);
+            if (inputTag == null) {
+                inputTag = new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, parameter);
+                laraComment.addTag(inputTag);
+            }
+
         }
 
         /*
@@ -168,8 +178,10 @@ public class AspectIrParser {
 
             // Add parameters if not present
             JsDocTag inputTag = laraComment.getInput(paramName);
-            inputTag = inputTag != null ? inputTag
-                    : new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, paramName);
+            if (inputTag == null) {
+                inputTag = new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, paramName);
+                laraComment.addTag(inputTag);
+            }
 
             // Add default value to parameter tag
             if (!parameter.exprs.isEmpty()) {
@@ -257,14 +269,36 @@ public class AspectIrParser {
             return Optional.empty();
         }
 
-        Preconditions.checkArgument(!op.exprs.isEmpty(), "Expected op to have at least one expression, is empty");
+        Preconditions.checkArgument(op.exprs.size() == 2,
+                "Expected op to have two expressions, has " + op.exprs.size());
 
         // Get code for the left hand
         String leftHandCode = CodeElems.getLaraCode(op.exprs.get(0));
 
+        AspectIrElement rightHand = parseRightHand(op.exprs.get(1));
+
         // laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, leftHandCode));
 
-        return Optional.of(new AssignmentElement(leftHandCode, laraComment));
+        return Optional.of(new AssignmentElement(leftHandCode, rightHand, laraComment));
+    }
+
+    private AspectIrElement parseRightHand(Expression expression) {
+        // Check if function
+        if (expression instanceof ExprOp) {
+            ExprOp op = (ExprOp) expression;
+
+            if (op.name.equals("FN")) {
+                return parseFunctionDecl(op, new LaraDocComment());
+            }
+
+            // System.out.println("ANOTHER OP: " + CodeElems.toXml(op));
+            return null;
+        }
+
+        // System.out.println("ANOTHER EXPR: " + CodeElems.toXml(expression));
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private AspectIrElement parseVarDeclStatement(Statement statement, LaraDocComment laraComment) {
@@ -279,7 +313,7 @@ public class AspectIrParser {
 
         String vardeclName = CodeElems.parseStringLiteralExpr((Expression) expression);
         // System.out.println("LARA COMMENT:" + laraComment);
-        laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, vardeclName));
+        laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, vardeclName));
 
         return new VarDeclElement(vardeclName, laraComment);
     }

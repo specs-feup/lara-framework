@@ -13,34 +13,44 @@
 
 package pt.up.fe.specs.lara.doc.comments;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.collections.MultiMap;
 
 public class LaraDocComment {
 
     private final String text;
-    private final List<JsDocTag> tags;
-    private final Map<String, JsDocTag> currentTags;
+    // private final List<JsDocTag> tags;
+    private final MultiMap<String, JsDocTag> currentTags;
     // private final Set<String> currentTags;
     private final Map<String, JsDocTag> inputs;
 
+    public LaraDocComment() {
+        this("", Collections.emptyList());
+    }
+
     public LaraDocComment(String text, List<JsDocTag> tags) {
         this.text = text;
-        this.tags = tags;
-        this.currentTags = new HashMap<>();
+        // this.tags = new ArrayList<>(tags);
+        // this.currentTags = new HashMap<>();
         inputs = new HashMap<>();
+        this.currentTags = new MultiMap<>();
         tags.stream().forEach(tag -> currentTags.put(tag.getTagName(), tag));
     }
 
     @Override
     public String toString() {
-        return "LaraDocComment text:'" + text + "'; tags: " + tags;
+        // return "LaraDocComment text:'" + text + "'; tags: " + tags;
+        return "LaraDocComment text:'" + text + "'; tags: " + currentTags;
     }
 
     public boolean hasTag(JsDocTagName tagName) {
@@ -51,16 +61,22 @@ public class LaraDocComment {
         return currentTags.containsKey(tagName);
     }
 
-    public List<JsDocTag> getTags() {
-        return tags;
-    }
+    // public List<JsDocTag> getTags() {
+    // return tags;
+    // }
 
     public JsDocTag getLastTag(JsDocTagName tagName) {
         return getLastTag(tagName.getTagName());
     }
 
     public JsDocTag getLastTag(String tagName) {
-        return currentTags.get(tagName);
+        // return currentTags.get(tagName);
+        List<JsDocTag> tags = currentTags.get(tagName);
+        if (tags.isEmpty()) {
+            return null;
+        }
+
+        return SpecsCollections.last(tags);
     }
 
     public String getText() {
@@ -72,7 +88,7 @@ public class LaraDocComment {
             return this;
         }
 
-        tags.add(tag);
+        // tags.add(tag);
         this.currentTags.put(tag.getTagName(), tag);
         return this;
     }
@@ -104,5 +120,27 @@ public class LaraDocComment {
 
     public JsDocTag getInput(String paramName) {
         return inputs.get(paramName);
+    }
+
+    public JsDocTag getTag(JsDocTagName tagName) {
+        return tryTag(tagName).orElseThrow(() -> new RuntimeException("Tag '" + tagName + "' not found"));
+    }
+
+    public Optional<JsDocTag> tryTag(JsDocTagName tagName) {
+        List<JsDocTag> tags = currentTags.get(tagName.getTagName());
+        if (tags.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (tags.size() > 1) {
+            SpecsLogs
+                    .msgInfo("Asked for a single tag '" + tagName + "' but there are several, returning the first one");
+        }
+
+        return Optional.of(tags.get(0));
+    }
+
+    public List<JsDocTag> getTags(JsDocTagName tagName) {
+        return currentTags.get(tagName.getTagName());
     }
 }
