@@ -159,6 +159,9 @@ Io.copyFolder = function(filepath, destination, verbose) {
 	return SpecsIo.copyFolder(Io.getPath(filepath), Io.getPath(destination), verbose);
 }
 
+/**
+ * @param {string|#java.io.File} file 
+ */
 Io.removeExtension = function(file) {
 	return SpecsIo.removeExtension(file);
 }
