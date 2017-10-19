@@ -83,7 +83,7 @@ public class LaraCommentsParser {
         // Parse tags
         List<JsDocTag> tags = SpecsCollections.map(tagsText, tagParser::parse);
         if (!tags.isEmpty()) {
-            System.out.println("TAGS:" + tags);
+            // System.out.println("TAGS:" + tags);
         }
 
         return new LaraDocComment(docText, tags);

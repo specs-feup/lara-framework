@@ -26,6 +26,10 @@ public class JsDocTag {
 
     private final Map<String, String> properties;
 
+    public JsDocTag(JsDocTagName tagName) {
+        this(tagName.getTagName());
+    }
+
     public JsDocTag(String tagName) {
         this.properties = new HashMap<>();
         setValue(JsDocTagProperty.TAG_NAME, tagName);
@@ -57,6 +61,14 @@ public class JsDocTag {
     public JsDocTag setContent(String content) {
         setValue(JsDocTagProperty.CONTENT, content);
         return this;
+    }
+
+    public boolean hasProperty(JsDocTagProperty property) {
+        return hasProperty(property.getPropertyName());
+    }
+
+    public boolean hasProperty(String property) {
+        return properties.containsKey(property);
     }
 
     public JsDocTag addContent(String value) {

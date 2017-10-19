@@ -78,12 +78,12 @@ public class LaraDocModule {
         return laraFiles;
     }
 
-	public void setDocumentation(AspectIrDoc documentation) {
-		this.documentation = documentation;
-	}
-	
-	public Optional<AspectIrDoc> getDocumentation() {
-		return Optional.of(documentation);
-	}
+    public void setDocumentation(AspectIrDoc documentation) {
+        this.documentation = documentation;
+    }
+
+    public Optional<AspectIrDoc> getDocumentation() {
+        return Optional.ofNullable(documentation);
+    }
 
 }

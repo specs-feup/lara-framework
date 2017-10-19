@@ -176,7 +176,7 @@ Io.appendFile = function(path, content) {
 
 /**
  * Returns the path of 'targetFile', relative to 'baseFile'. 
- * <p>
+ * 
  * If the file does not share a common ancestor with baseFile, returns undefined.
  */
 Io.getRelativePath = function(targetFile, baseFile) {
