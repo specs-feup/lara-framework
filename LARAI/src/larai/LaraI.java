@@ -14,7 +14,6 @@ package larai;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -116,7 +115,6 @@ public class LaraI {
      */
     private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {
         this.weaverEngine = weaverEngine;
-
         setOptions(new LaraIDataStore(this, dataStore, weaverEngine));
 
         // final boolean continueRun = LaraIOptionsSetter.setOptions(this, jarLoc, dataStore);
@@ -271,7 +269,7 @@ public class LaraI {
             DataStore dataStore;
             switch (mode) {
             case CONFIG: // convert configuration file to data store and run
-                System.out.println("CONFIG ARGS:" + Arrays.toString(args));
+                // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
                 dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
                 return execPrivate(dataStore, weaverEngine);
             case CONFIG_GUI: // get the configuration file and execute GUI
@@ -454,6 +452,7 @@ public class LaraI {
     }
 
     private void compile(LanguageSpecification languageSpecification) {
+
         // final String aspectIR_name = this.options.getAspectIR_name();
         final String extention = SpecsIo.getExtension(options.getLaraFile());
 

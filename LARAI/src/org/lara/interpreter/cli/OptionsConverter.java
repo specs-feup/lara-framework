@@ -161,6 +161,7 @@ public class OptionsConverter {
         StoreDefinition laraiDefinition = OptionsParser.getLaraStoreDefinition(weaverEngine);
         AppPersistence persistence = OptionsParser.getXmlPersistence(laraiDefinition);
         DataStore laraiStore = persistence.loadData(file);
+
         return laraiStore;
     }
 }

@@ -240,7 +240,9 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     public Map<String, String> getBundleTags() {
+        // System.out.println("DATA STORE:" + dataStore);
         if (dataStore.hasValue(LaraiKeys.BUNDLE_TAGS)) {
+            // System.out.println("BUNDLE TAGS:" + dataStore.get(LaraiKeys.BUNDLE_TAGS));
             return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
         }
         return Collections.emptyMap();
