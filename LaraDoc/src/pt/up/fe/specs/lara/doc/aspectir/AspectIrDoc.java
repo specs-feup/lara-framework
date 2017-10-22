@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
@@ -57,7 +58,10 @@ public class AspectIrDoc {
         // Add var declarations as top level elements
         topLevelElements.addAll(classes.values());
 
-        // Var declarations, function declarations and generic statements are considered global
+        // Aspects, var declarations, function declarations and generic statements are considered global
+        SpecsCollections.remove(aspectIrElements, AspectElement.class::isInstance).stream()
+                .forEach(topLevelElements::add);
+
         SpecsCollections.remove(aspectIrElements, FunctionDeclElement.class::isInstance).stream()
                 .forEach(topLevelElements::add);
 
