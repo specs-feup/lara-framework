@@ -14,7 +14,6 @@
 package pt.up.fe.specs.lara.doc.comments;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +32,8 @@ public class LaraDocComment {
     // private final List<JsDocTag> tags;
     private final MultiMap<String, JsDocTag> currentTags;
     // private final Set<String> currentTags;
-    private final Map<String, JsDocTag> inputs;
+    // private final Map<String, JsDocTag> inputs;
+    private Map<String, JsDocTag> currentInputs;
 
     public LaraDocComment() {
         this("", Collections.emptyList());
@@ -43,8 +43,9 @@ public class LaraDocComment {
         this.text = text;
         // this.tags = new ArrayList<>(tags);
         // this.currentTags = new HashMap<>();
-        inputs = new HashMap<>();
+        // inputs = new HashMap<>();
         this.currentTags = new MultiMap<>();
+        this.currentInputs = null;
         tags.stream().forEach(tag -> currentTags.put(tag.getTagName(), tag));
     }
 
@@ -104,8 +105,22 @@ public class LaraDocComment {
                 return false;
             }
 
-            // Add param to table
-            inputs.put(tag.getValue(JsDocTagProperty.NAME), tag);
+            String paramName = tag.getValue(JsDocTagProperty.NAME);
+            if (getCurrentInputs().containsKey(paramName)) {
+                throw new RuntimeException("No yet merging tags");
+                // System.out.println("OLD:" + getCurrentInputs().get(paramName));
+                // System.out.println("NEW:" + tag);
+            }
+
+            // Merge
+            // if (getCurrentInputs().containsKey(paramName)) {
+            //
+            // }
+
+            // Add param to table, if not there yet
+            // if (!getCurrentInputs().containsKey(paramName)) {
+            // getCurrentInputs().put(paramName, tag);
+            // }
         }
 
         return true;
@@ -120,7 +135,17 @@ public class LaraDocComment {
     }
 
     public JsDocTag getInput(String paramName) {
-        return inputs.get(paramName);
+        return getCurrentInputs().get(paramName);
+        // return inputs.get(paramName);
+    }
+
+    private Map<String, JsDocTag> getCurrentInputs() {
+        if (currentInputs == null) {
+            currentInputs = getTags(JsDocTagName.PARAM).stream()
+                    .collect(Collectors.toMap(tag -> tag.getValue(JsDocTagProperty.NAME), tag -> tag));
+        }
+
+        return currentInputs;
     }
 
     public JsDocTag getTag(JsDocTagName tagName) {

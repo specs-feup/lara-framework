@@ -81,6 +81,7 @@ public class AspectIrParser {
     }
 
     public AspectIrElement parseStatement(Statement statement, LaraDocComment laraComment) {
+
         // Check type of statement
         switch (statement.name) {
         case "vardecl":
@@ -165,9 +166,12 @@ public class AspectIrParser {
             laraComment.addTagIfMissing(tag);
         }
 
+        // System.out.println("LARA COMMENT:" + laraComment);
+
         // Add parameters if not present
         for (String parameter : parameters) {
             JsDocTag inputTag = laraComment.getInput(parameter);
+
             if (inputTag == null) {
                 inputTag = new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, parameter);
                 laraComment.addTag(inputTag);
@@ -315,6 +319,7 @@ public class AspectIrParser {
     }
 
     private Optional<AssignmentElement> parseAssignmentTry(Expression expression, LaraDocComment laraComment) {
+
         if (expression.exprs.size() != 1) {
             return Optional.empty();
         }
@@ -334,21 +339,19 @@ public class AspectIrParser {
 
         // Get code for the left hand
         String leftHandCode = CodeElems.getLaraCode(op.exprs.get(0));
-
-        AspectIrElement rightHand = parseRightHand(op.exprs.get(1));
-
+        AspectIrElement rightHand = parseRightHand(op.exprs.get(1), laraComment);
         // laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, leftHandCode));
 
         return Optional.of(new AssignmentElement(leftHandCode, rightHand, laraComment));
     }
 
-    private AspectIrElement parseRightHand(Expression expression) {
+    private AspectIrElement parseRightHand(Expression expression, LaraDocComment laraComment) {
         // Check if function
         if (expression instanceof ExprOp) {
             ExprOp op = (ExprOp) expression;
 
             if (op.name.equals("FN")) {
-                return parseFunctionOp(op, new LaraDocComment(), null);
+                return parseFunctionOp(op, laraComment, null);
             }
 
             // System.out.println("ANOTHER OP: " + CodeElems.toXml(op));

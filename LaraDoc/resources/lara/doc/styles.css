@@ -50,3 +50,7 @@ ul {
 .toc_class_element {
 	/*padding-top: 4px;*/
 }
+
+.function_content {
+	padding-left: 2em;
+}

@@ -51,6 +51,7 @@ public class AspectIrDocBuilder {
 
         for (Aspect aspect : aspects.aspects.values()) {
             LaraDocComment laraComment = commentParser.parse(aspect.comment);
+
             AspectIrElement aspectIrElement = aspectIrParser.parse(aspect, laraComment);
             aspectIrElements.add(aspectIrElement);
         }
@@ -64,6 +65,7 @@ public class AspectIrDocBuilder {
             // System.out.println("Declaration Name:" + declaration.name);
 
             LaraDocComment laraComment = commentParser.parse(declaration.comment);
+
             AspectIrElement aspectIrElement = aspectIrParser.parse(declaration, laraComment);
             aspectIrElements.add(aspectIrElement);
             // System.out.println("Declaration Comment:" + declaration.comment);

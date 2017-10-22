@@ -99,7 +99,9 @@ public class LaraModuleBuilder {
                     staticIds.add(staticId);
                     staticNames.add(staticMember.getNamePath());
 
-                    htmlCode.append(HtmlGenerators.generate(staticMember, staticId));
+                    boolean isFunction = staticMember.getRightFunctionDecl().isPresent();
+                    htmlCode.append(HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction));
+                    // htmlCode.append(HtmlGenerators.generateAssignment(staticMember, staticId));
                 }
             }
 
@@ -116,7 +118,11 @@ public class LaraModuleBuilder {
                     String instanceId = nextId();
                     instanceIds.add(instanceId);
                     instanceNames.add(instanceMember.getNamePath());
-                    htmlCode.append(HtmlGenerators.generate(instanceMember, instanceId));
+                    // htmlCode.append(HtmlGenerators.generateAssignment(instanceMember, instanceId));
+
+                    boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
+                    htmlCode.append(HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction));
+
                 }
             }
 
@@ -131,7 +137,7 @@ public class LaraModuleBuilder {
             for (FunctionDeclElement functionDecl : functionDecls) {
                 String globalFunctionId = nextId();
                 toc.addLevelOne("Global Functions", globalFunctionId, functionDecl.getFunctionName());
-                htmlCode.append(HtmlGenerators.generateFunction(globalFunctionId, functionDecl.getComment()));
+                htmlCode.append(HtmlGenerators.generateMember(globalFunctionId, functionDecl.getComment()));
             }
         }
 

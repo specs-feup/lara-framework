@@ -27,14 +27,14 @@ import pt.up.fe.specs.util.utilities.StringLines;
 
 public class HtmlGenerators {
 
-    public static String generate(AssignmentElement assignment, String id) {
+    public static String generateAssignment(AssignmentElement assignment, String id) {
         StringBuilder assignmentCode = new StringBuilder();
         assignmentCode.append("<p>");
 
         JsDocTag alias = assignment.getComment().getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
 
-        startEmTag(id, assignmentCode);
+        startTag("span", id, assignmentCode);
         assignmentCode.append(namePath);
 
         Optional<FunctionDeclElement> functionRightHand = assignment.getRightFunctionDecl();
@@ -44,53 +44,39 @@ public class HtmlGenerators {
                 .orElse("");
         assignmentCode.append(functionParameters);
 
-        assignmentCode.append("</em>");
+        assignmentCode.append("</span>");
 
         // If function, add inputs
-        if (functionRightHand.isPresent()) {
-            LaraDocComment comment = functionRightHand.get().getComment();
-            assignmentCode.append(generateInputTags(comment));
-            /*
-            List<JsDocTag> params = comment.getTags(JsDocTagName.PARAM);
-            for (JsDocTag param : params) {
-                String name = param.getValue(JsDocTagProperty.NAME);
-                String type = param.getValue(JsDocTagProperty.TYPE_NAME, "");
-                String content = param.getValue(JsDocTagProperty.CONTENT, "");
-            
-                assignmentCode.append("<br> - ").append(name);
-                if (!type.isEmpty()) {
-                    assignmentCode.append(" [<strong>" + type + "</strong>] ");
-                }
-            
-                if (!content.isEmpty()) {
-                    assignmentCode.append(" : " + content);
-                }
-            }
-            */
-        }
-
+        // if (functionRightHand.isPresent()) {
+        // LaraDocComment comment = functionRightHand.get().getComment();
+        // assignmentCode.append(generateInputTags(comment));
+        // }
         assignmentCode.append("</p>");
 
+        assignmentCode.append("<div class='function_content'>");
         String text = assignment.getComment().getText();
         if (!text.isEmpty()) {
             assignmentCode.append("<p>");
             String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
             assignmentCode.append(htmlText);
             assignmentCode.append("</p>");
-            assignmentCode.append("<br>");
+            // assignmentCode.append("<br>");
         }
+
+        assignmentCode.append(generateParameters("Parameters", assignment.getComment().getTags(JsDocTagName.PARAM)));
+        assignmentCode.append("</div>");
 
         return assignmentCode.toString();
 
     }
 
-    private static void startEmTag(String id, StringBuilder code) {
+    private static void startTag(String tag, String id, StringBuilder code) {
         if (id != null && !id.isEmpty()) {
-            code.append("<em id='" + id + "'>");
+            code.append("<" + tag + " id='" + id + "'>");
             return;
         }
 
-        code.append("<em>");
+        code.append("<" + tag + ">");
     }
 
     // public static String generateFunctionParams(FunctionDeclElement assignment) {
@@ -99,25 +85,32 @@ public class HtmlGenerators {
     }
 
     // public static String generateFunction(FunctionDeclElement functionDecl, String id) {
-    public static String generateFunction(String id, LaraDocComment laraComment) {
+    public static String generateMember(String id, LaraDocComment laraComment) {
+        return generateMember(id, laraComment, true);
+    }
+
+    public static String generateMember(String id, LaraDocComment laraComment, boolean isFunction) {
+
         StringBuilder functionCode = new StringBuilder();
         functionCode.append("<p>");
 
         JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        startEmTag(id, functionCode);
+        startTag("span", id, functionCode);
         // assignmentCode.append("<em>" + namePath);
         functionCode.append(namePath);
 
-        List<String> params = laraComment.getParameters();
-        String functionParameters = generateFunctionParams(params);
+        String functionParameters = isFunction ? generateFunctionParams(laraComment.getParameters()) : "";
+
+        // List<String> params = laraComment.getParameters();
+        // String functionParameters = generateFunctionParams(params);
         functionCode.append(functionParameters);
 
-        functionCode.append("</em>");
+        functionCode.append("</span>");
 
         // assignmentCode.append(generateInputTags(laraComment));
 
-        functionCode.append("</p>");
+        functionCode.append("<div class='function_content'>");
 
         String text = laraComment.getText();
         if (!text.isEmpty()) {
@@ -125,13 +118,18 @@ public class HtmlGenerators {
             String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
             functionCode.append(htmlText);
             functionCode.append("</p>");
-            functionCode.append("<br>");
+            // functionCode.append("<br>");
         }
+
+        functionCode.append(generateParameters("Parameters", laraComment.getTags(JsDocTagName.PARAM)));
+        functionCode.append("</div>");
 
         // Input parameters
 
         // List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
         // functionCode.append(generateParameters("Parameters", inputTags));
+
+        functionCode.append("</p>");
 
         return functionCode.toString();
 
