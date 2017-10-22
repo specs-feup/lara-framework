@@ -1,5 +1,8 @@
 import lara.util.StringSet;
 
+/**
+ * @class
+ */
 var PrintOnce = {
 	messagesSet : new StringSet()
 };
