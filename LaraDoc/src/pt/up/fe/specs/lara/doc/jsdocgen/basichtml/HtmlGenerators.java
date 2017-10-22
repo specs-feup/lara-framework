@@ -39,7 +39,9 @@ public class HtmlGenerators {
 
         Optional<FunctionDeclElement> functionRightHand = assignment.getRightFunctionDecl();
 
-        String functionParameters = functionRightHand.map(HtmlGenerators::generateFunctionParams).orElse("");
+        String functionParameters = functionRightHand
+                .map(function -> HtmlGenerators.generateFunctionParams(function.getParameters()))
+                .orElse("");
         assignmentCode.append(functionParameters);
 
         assignmentCode.append("</em>");
@@ -91,40 +93,138 @@ public class HtmlGenerators {
         code.append("<em>");
     }
 
-    public static String generateFunctionParams(FunctionDeclElement assignment) {
-        return assignment.getParameters().stream().collect(Collectors.joining(", ", "(", ")"));
+    // public static String generateFunctionParams(FunctionDeclElement assignment) {
+    public static String generateFunctionParams(List<String> parameters) {
+        return parameters.stream().collect(Collectors.joining(", ", "(", ")"));
     }
 
-    public static String generate(FunctionDeclElement functionDecl, String id) {
-        StringBuilder assignmentCode = new StringBuilder();
-        assignmentCode.append("<p>");
+    // public static String generateFunction(FunctionDeclElement functionDecl, String id) {
+    public static String generateFunction(String id, LaraDocComment laraComment) {
+        StringBuilder functionCode = new StringBuilder();
+        functionCode.append("<p>");
 
-        JsDocTag alias = functionDecl.getComment().getTag(JsDocTagName.ALIAS);
+        JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        startEmTag(id, assignmentCode);
+        startEmTag(id, functionCode);
         // assignmentCode.append("<em>" + namePath);
-        assignmentCode.append(namePath);
+        functionCode.append(namePath);
 
-        String functionParameters = generateFunctionParams(functionDecl);
-        assignmentCode.append(functionParameters);
+        List<String> params = laraComment.getParameters();
+        String functionParameters = generateFunctionParams(params);
+        functionCode.append(functionParameters);
 
-        assignmentCode.append("</em>");
+        functionCode.append("</em>");
 
-        assignmentCode.append(generateInputTags(functionDecl.getComment()));
+        // assignmentCode.append(generateInputTags(laraComment));
 
-        assignmentCode.append("</p>");
+        functionCode.append("</p>");
 
-        String text = functionDecl.getComment().getText();
+        String text = laraComment.getText();
         if (!text.isEmpty()) {
-            assignmentCode.append("<p>");
+            functionCode.append("<p>");
             String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
-            assignmentCode.append(htmlText);
-            assignmentCode.append("</p>");
-            assignmentCode.append("<br>");
+            functionCode.append(htmlText);
+            functionCode.append("</p>");
+            functionCode.append("<br>");
         }
 
-        return assignmentCode.toString();
+        // Input parameters
 
+        // List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
+        // functionCode.append(generateParameters("Parameters", inputTags));
+
+        return functionCode.toString();
+
+    }
+
+    public static String generateAspect(String id, LaraDocComment laraComment) {
+        StringBuilder aspectCode = new StringBuilder();
+        // aspectCode.append("<p>");
+
+        JsDocTag aspectTag = laraComment.getTag(JsDocTagName.ASPECT);
+        String aspectName = aspectTag.getValue(JsDocTagProperty.NAME_PATH);
+
+        // Name of the aspect
+        aspectCode.append("<div id='" + id + "'>").append(aspectName).append("</div>");
+
+        // Description
+        String text = laraComment.getText();
+        if (!text.isEmpty()) {
+            aspectCode.append("<p>");
+            String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
+            aspectCode.append(htmlText);
+            aspectCode.append("</p>");
+            aspectCode.append("<br>");
+        }
+
+        // Input parameters
+
+        List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
+        aspectCode.append(generateParameters("Inputs", inputTags));
+
+        /*
+                List<String> params = laraComment.getParameters();
+        if (!params.isEmpty()) {
+            aspectCode.append("<p>Inputs:</p>");
+            aspectCode.append("<ul>");
+            params.stream().map(param -> "<li>" + param + "</li>").forEach(aspectCode::append);
+            aspectCode.append("</ul>");
+        }
+        
+        aspectCode.append(generateInputTags(laraComment));
+        */
+        // startEmTag(id, aspectCode);
+        // assignmentCode.append("<em>" + namePath);
+        // aspectCode.append(aspectName);
+
+        // List<String> params = laraComment.getParameters();
+        // String functionParameters = generateFunctionParams(params);
+        // aspectCode.append(functionParameters);
+
+        // aspectCode.append("</em>");
+
+        // aspectCode.append("</p>");
+
+        return aspectCode.toString();
+
+    }
+
+    private static String generateParameters(String paramsName, List<JsDocTag> params) {
+
+        if (params.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder code = new StringBuilder();
+
+        code.append("<h3>" + paramsName + "</h3>");
+
+        for (JsDocTag param : params) {
+            String name = param.getValue(JsDocTagProperty.NAME);
+            String type = param.getValue(JsDocTagProperty.TYPE_NAME, "");
+            String content = param.getValue(JsDocTagProperty.CONTENT, "").trim();
+
+            code.append("<strong>" + name + "</strong>");
+
+            // code.append("<br> - ").append(name);
+
+            String typeInfo = type.isEmpty() ? "any" : type;
+            code.append(" (").append(typeInfo).append(")");
+
+            if (!content.isEmpty()) {
+                code.append(" ");
+                boolean addDash = !content.startsWith("-");
+                if (addDash) {
+                    code.append("- ");
+                }
+
+                code.append(content);
+            }
+
+            code.append("<br>");
+        }
+
+        return code.toString();
     }
 
     public static String generateInputTags(LaraDocComment comment) {

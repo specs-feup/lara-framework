@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
@@ -142,5 +143,11 @@ public class LaraDocComment {
 
     public List<JsDocTag> getTags(JsDocTagName tagName) {
         return currentTags.get(tagName.getTagName());
+    }
+
+    public List<String> getParameters() {
+        return getTags(JsDocTagName.PARAM).stream()
+                .map(jsdoctag -> jsdoctag.getValue(JsDocTagProperty.NAME))
+                .collect(Collectors.toList());
     }
 }

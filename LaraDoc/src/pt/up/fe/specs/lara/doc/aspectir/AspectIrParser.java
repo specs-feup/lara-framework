@@ -223,9 +223,12 @@ public class AspectIrParser {
 
         // Get aspect name
         String aspectName = aspect.name;
-        if (!laraComment.hasTag(JsDocTagName.ASPECT)) {
-            laraComment.addTag(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH, aspectName));
-        }
+        // if (!laraComment.hasTag(JsDocTagName.ASPECT)) {
+        // laraComment.addTag(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH, aspectName));
+        // }
+
+        laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH, aspectName));
+        laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, aspectName));
 
         // Process each input
         for (Parameter parameter : getInputParameters(aspect)) {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
@@ -50,7 +51,8 @@ public class LaraModuleBuilder {
     public String getHtml() {
 
         if (!module.getDocumentation().isPresent()) {
-            return "[no module documentation found]";
+            return "";
+            // return "[no module documentation found]";
         }
 
         AspectIrDoc doc = module.getDocumentation().get();
@@ -59,6 +61,15 @@ public class LaraModuleBuilder {
         // TocBuilder tocBuilder = new TocBuilder("import " + module.getImportPath() + ";");
 
         // Generate HTML for Aspects
+        List<AspectElement> aspects = doc.getTopLevelElements(AspectElement.class);
+        if (!aspects.isEmpty()) {
+            htmlCode.append("<h2>Aspects</h2>");
+            for (AspectElement aspect : aspects) {
+                String globalAspectId = nextId();
+                toc.addLevelOne("Aspects", globalAspectId, aspect.getAspectName());
+                htmlCode.append(HtmlGenerators.generateAspect(globalAspectId, aspect.getComment()));
+            }
+        }
 
         // Generate HTML for Classes
         for (ClassElement classElement : doc.getTopLevelElements(ClassElement.class)) {
@@ -120,7 +131,7 @@ public class LaraModuleBuilder {
             for (FunctionDeclElement functionDecl : functionDecls) {
                 String globalFunctionId = nextId();
                 toc.addLevelOne("Global Functions", globalFunctionId, functionDecl.getFunctionName());
-                htmlCode.append(HtmlGenerators.generate(functionDecl, globalFunctionId));
+                htmlCode.append(HtmlGenerators.generateFunction(globalFunctionId, functionDecl.getComment()));
             }
         }
 
