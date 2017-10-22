@@ -27,6 +27,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.lara.interpreter.aspectir.Aspect;
 import org.lara.interpreter.aspectir.Base;
 import org.lara.interpreter.aspectir.CodeElem;
+import org.lara.interpreter.aspectir.ExprBody;
+import org.lara.interpreter.aspectir.ExprId;
 import org.lara.interpreter.aspectir.ExprLiteral;
 import org.lara.interpreter.aspectir.ExprOp;
 import org.lara.interpreter.aspectir.Expression;
@@ -37,6 +39,7 @@ import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
@@ -109,16 +112,24 @@ public class AspectIrParser {
         //
         // Expression expression = (Expression) firstElement;
 
-        Preconditions.checkArgument(expression.exprs.size() == 1,
-                "Expected one expression, has " + expression.exprs.size());
+        ExprOp functionOp = CodeElems.getOp(expression, ExtraOp.FN.getName())
+                .orElseThrow(() -> new RuntimeException("Expected to find a function: " + expression));
 
-        ExprOp op = CodeElems.get(0, expression.exprs, ExprOp.class);
+        // Preconditions.checkArgument(expression.exprs.size() == 1,
+        // "Expected one expression, has " + expression.exprs.size());
+        //
+        // ExprOp op = CodeElems.get(0, expression.exprs, ExprOp.class);
 
-        return parseFunctionDecl(op, laraComment);
+        // return parseFunctionDecl(op, laraComment);
+        return parseFunctionOp(functionOp, laraComment);
     }
 
-    public static AspectIrElement parseFunctionDecl(ExprOp op, LaraDocComment laraComment) {
-        Preconditions.checkArgument(op.name.equals("FN"), "Expected op to have the name FN, has '" + op.name + "'");
+    public static AspectIrElement parseFunctionOp(ExprOp op, LaraDocComment laraComment) {
+        return parseFunctionOp(op, laraComment, null);
+    }
+
+    public static AspectIrElement parseFunctionOp(ExprOp op, LaraDocComment laraComment, String varName) {
+        // Preconditions.checkArgument(op.name.equals("FN"), "Expected op to have the name FN, has '" + op.name + "'");
 
         // Get all literal nodes until a different appears
         List<ExprLiteral> literals = new ArrayList<>();
@@ -134,16 +145,25 @@ public class AspectIrParser {
 
         Preconditions.checkArgument(!literals.isEmpty(), "Expected to find at least one literal node");
 
+        // TODO: take into account boolean isAnonymous
+
         // First child before the body is the name of the function
         String functionName = literals.get(0).value;
+
+        if (functionName.isEmpty() && varName != null) {
+            functionName = varName;
+        }
+
         // Remaining children until the body are the names of the parameters
         List<String> parameters = SpecsCollections.subList(literals, 1).stream()
                 .map(literal -> literal.value)
                 .collect(Collectors.toList());
 
         // Add information to documentation
-        laraComment
-                .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, functionName));
+        if (!functionName.isEmpty()) {
+            JsDocTag tag = new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, functionName);
+            laraComment.addTagIfMissing(tag);
+        }
 
         // Add parameters if not present
         for (String parameter : parameters) {
@@ -155,12 +175,48 @@ public class AspectIrParser {
 
         }
 
+        // If no name, it is not a class
+        if (functionName.isEmpty()) {
+            return new FunctionDeclElement(functionName, parameters, laraComment);
+        }
+
+        ////
+
+        // Check if marked with tag class
+        if (laraComment.hasTag(JsDocTagName.CLASS)) {
+            // System.out.println("FOUND CLASS 1:" + functionName);
+            return new ClassElement(functionName, parameters, laraComment);
+        }
+
+        ExprBody body = CodeElems.getBody(op);
+
+        // If there is an id with name 'this', consider this to be a class
+        boolean isClass = CodeElems.toElemStream(body)
+                .filter(ExprId.class::isInstance)
+                .map(ExprId.class::cast)
+                .filter(exprId -> exprId.name.equals("this"))
+                .findFirst()
+                .isPresent();
+
+        // Add tag class
+        if (isClass) {
+            JsDocTag classTag = new JsDocTag(JsDocTagName.CLASS).setValue(JsDocTagProperty.NAME, functionName);
+            laraComment.addTagIfMissing(classTag);
+            // System.out.println("FOUND CLASS 2:" + functionName);
+
+        }
+
+        return isClass ? new ClassElement(functionName, parameters, laraComment)
+                : new FunctionDeclElement(functionName, parameters, laraComment);
+
+        ///
+
         /*
         String vardeclName = CodeElems.parseStringLiteralExpr(expression);
         System.out.println("LARA COMMENT:" + laraComment);
         laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, vardeclName));
         */
-        return new FunctionDeclElement(functionName, parameters, laraComment);
+        // return new FunctionDeclElement(functionName, parameters, laraComment);
     }
 
     public AspectIrElement parseAspect(Aspect aspect, LaraDocComment laraComment) {
@@ -242,6 +298,7 @@ public class AspectIrParser {
         // Detect assignment
         Optional<AssignmentElement> assignment = parseAssignmentTry(expression, laraComment);
         if (assignment.isPresent()) {
+            // System.out.println("ASSIGNMENT:" + CodeElems.toXml(expression));
             return assignment.get();
         }
 
@@ -288,7 +345,7 @@ public class AspectIrParser {
             ExprOp op = (ExprOp) expression;
 
             if (op.name.equals("FN")) {
-                return parseFunctionDecl(op, new LaraDocComment());
+                return parseFunctionOp(op, new LaraDocComment(), null);
             }
 
             // System.out.println("ANOTHER OP: " + CodeElems.toXml(op));
@@ -315,7 +372,65 @@ public class AspectIrParser {
         // System.out.println("LARA COMMENT:" + laraComment);
         laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, vardeclName));
 
+        // Check if vardecl is a class
+        Optional<AspectIrElement> functionElement = parseFunctionElementFromVarDecl(statement, vardeclName,
+                laraComment);
+        if (functionElement.isPresent()) {
+            return functionElement.get();
+        }
+
         return new VarDeclElement(vardeclName, laraComment);
+    }
+
+    private Optional<AspectIrElement> parseFunctionElementFromVarDecl(Statement statement, String className,
+            LaraDocComment laraComment) {
+
+        /**
+         * VarDecl without assignment
+         */
+        if (statement.components.size() < 2) {
+            return Optional.empty();
+        }
+
+        // Second child must be an expression
+        Expression expression = (Expression) statement.components.get(1);
+
+        Optional<ExprOp> op = CodeElems.getOp(expression, ExtraOp.FN.getName());
+        if (!op.isPresent()) {
+            // No function. Test if annotated with class tag
+            return laraComment.hasTag(JsDocTagName.CLASS)
+                    ? Optional.of(new ClassElement(className, Collections.emptyList(), laraComment))
+                    : Optional.empty();
+        }
+
+        AspectIrElement parsedFunction = parseFunctionOp(op.get(), laraComment, className);
+
+        // Only return ClassElement
+        return parsedFunction instanceof ClassElement ? Optional.of((ClassElement) parsedFunction) : Optional.empty();
+        /*
+        // Check if marked with tag class
+        if (laraComment.hasTag(JsDocTagName.CLASS)) {
+            return Optional.of(new ClassElement(className, laraComment));
+        }
+        
+        ExprBody body = CodeElems.getBody(op.get());
+        
+        // If there is an id with name 'this', consider this to be a class
+        boolean isClass = CodeElems.toElemStream(body)
+                .filter(ExprId.class::isInstance)
+                .map(ExprId.class::cast)
+                .filter(exprId -> exprId.name.equals("this"))
+                .findFirst()
+                .isPresent();
+        
+        // Add tag class
+        if (isClass) {
+            JsDocTag classTag = new JsDocTag(JsDocTagName.CLASS).setValue(JsDocTagProperty.NAME, className);
+            laraComment.addTagIfMissing(classTag);
+        }
+        
+        return isClass ? Optional.of(new ClassElement(className, laraComment)) : Optional.empty();
+        */
     }
 
     /*

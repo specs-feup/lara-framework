@@ -7,6 +7,9 @@ public enum JsDocTagName {
      * Properties NAME_PATH
      */
     ALIAS("alias"),
+    /**
+     * Properties NAME
+     */
     CLASS("class"),
     RETURNS("constructor"),
     /**

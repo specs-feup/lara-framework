@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -11,6 +12,7 @@ import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentType;
+import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
@@ -23,47 +25,61 @@ public class AspectIrDoc {
 
     // private final Map<String, VarDeclElement> varDeclarations;
     private final List<AspectIrElement> topLevelElements;
+    private final Predicate<String> nameExcluder;
+    //
+    // public AspectIrDoc(List<AspectIrElement> elements) {
+    // this(elements, name -> name.startsWith("_"));
+    // }
 
-    public AspectIrDoc(List<AspectIrElement> elements) {
-
+    public AspectIrDoc(List<AspectIrElement> elements, Predicate<String> nameExcluder) {
         this.topLevelElements = elements;
+        this.nameExcluder = nameExcluder;
     }
 
     public static AspectIrDoc newInstance(List<AspectIrElement> aspectIrElements) {
+        return newInstance(aspectIrElements, name -> name.startsWith("_"));
+    }
+
+    public static AspectIrDoc newInstance(List<AspectIrElement> aspectIrElements, Predicate<String> nameExcluder) {
         List<AspectIrElement> topLevelElements = new ArrayList<>();
         // TODO: Organize elements (e.g., separate into classes / functions, put together elements that belong to each
         // other, etc.)
 
-        Map<String, VarDeclElement> vardeclarations = new LinkedHashMap<>();
+        Map<String, ClassElement> classes = new LinkedHashMap<>();
 
         // Remove variable declarations from the list
-        SpecsCollections.remove(aspectIrElements, VarDeclElement.class::isInstance).stream()
-                .map(VarDeclElement.class::cast)
-                .forEach(varDecl -> vardeclarations.put(varDecl.getVarDeclName(), varDecl));
+        SpecsCollections.remove(aspectIrElements, ClassElement.class::isInstance).stream()
+                .map(ClassElement.class::cast)
+                .forEach(classElement -> classes.put(classElement.getClassName(), classElement));
 
+        // vardeclarations.values().stream()
+        // .forEach(vardecl -> System.out.println("VarDecl comment:" + vardecl.getComment()));
         // Add var declarations as top level elements
-        topLevelElements.addAll(vardeclarations.values());
+        topLevelElements.addAll(classes.values());
 
-        // Function declarations and generic statements are considered global
+        // Var declarations, function declarations and generic statements are considered global
         SpecsCollections.remove(aspectIrElements, FunctionDeclElement.class::isInstance).stream()
                 .forEach(topLevelElements::add);
 
         SpecsCollections.remove(aspectIrElements, StatementElement.class::isInstance).stream()
                 .forEach(topLevelElements::add);
 
+        SpecsCollections.remove(aspectIrElements, VarDeclElement.class::isInstance).stream()
+                .forEach(topLevelElements::add);
+
         // Bind assignments to variable declarations, whenever possible
         SpecsCollections.remove(aspectIrElements, AssignmentElement.class::isInstance).stream()
                 .map(AssignmentElement.class::cast)
-                .forEach(assignment -> bindAssignment(assignment, vardeclarations, topLevelElements));
+                .forEach(assignment -> bindAssignment(assignment, classes, topLevelElements, nameExcluder));
 
         Preconditions.checkArgument(aspectIrElements.isEmpty(), "Expected list of aspect elements to be empty: %s",
                 aspectIrElements);
 
-        return new AspectIrDoc(topLevelElements);
+        return new AspectIrDoc(topLevelElements, nameExcluder);
     }
 
-    private static void bindAssignment(AssignmentElement assignment, Map<String, VarDeclElement> vardeclarations,
-            List<AspectIrElement> topLevelElements) {
+    private static void bindAssignment(AssignmentElement assignment, Map<String, ClassElement> classes,
+            List<AspectIrElement> topLevelElements, Predicate<String> nameExcluder) {
 
         String leftHand = assignment.getLeftHand();
 
@@ -73,8 +89,12 @@ public class AspectIrDoc {
         // If only one part
         if (parts.length == 1) {
 
+            if (nameExcluder.test(parts[0])) {
+                return;
+            }
+
             // If name already exists, is a redefinition; otherwise is a global assignment
-            AssignmentType type = vardeclarations.containsKey(parts[0]) ? AssignmentType.REDEFINITION
+            AssignmentType type = classes.containsKey(parts[0]) ? AssignmentType.REDEFINITION
                     : AssignmentType.GLOBAL;
             assignment.setAssignmentType(type);
 
@@ -89,10 +109,14 @@ public class AspectIrDoc {
         }
 
         // Try to find first part in the table
-        VarDeclElement varDecl = vardeclarations.get(parts[0]);
+        ClassElement classElement = classes.get(parts[0]);
 
-        // If no varDecl, add has global assignment
-        if (varDecl == null) {
+        // If no varDecl, add as global assignment
+        if (classElement == null) {
+            if (nameExcluder.test(parts[0])) {
+                return;
+            }
+
             assignment.setAssignmentType(AssignmentType.GLOBAL);
             // In both cases, they are added to top-level elements
             topLevelElements.add(assignment);
@@ -113,7 +137,10 @@ public class AspectIrDoc {
                 .collect(Collectors.joining("."));
 
         // Add assignment to varDecl
-        varDecl.addAssignment(assignment);
+        if (!nameExcluder.test(memberName)) {
+            classElement.addAssignment(assignment);
+        }
+
         // Add alias
         assignment.getComment()
                 .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, memberName));

@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
@@ -29,9 +29,10 @@ public class BasicHtmlGenerator implements JsDocGenerator {
 
         AspectIrDoc doc = module.getDocumentation().get();
 
-        for (VarDeclElement varDecl : doc.getTopLevelElements(VarDeclElement.class)) {
-            htmlCode.append("<h1>" + varDecl.getVarDeclName() + "</h1>");
-            LaraDocComment comment = varDecl.getComment();
+        // Generate HTML for Classes
+        for (ClassElement classElement : doc.getTopLevelElements(ClassElement.class)) {
+            htmlCode.append("<h1>" + classElement.getClassName() + "</h1>");
+            LaraDocComment comment = classElement.getComment();
 
             if (!comment.getText().isEmpty()) {
                 String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
@@ -39,7 +40,7 @@ public class BasicHtmlGenerator implements JsDocGenerator {
             }
 
             // Static members
-            List<AssignmentElement> staticMembers = varDecl.getStaticElements();
+            List<AssignmentElement> staticMembers = classElement.getStaticElements();
             if (!staticMembers.isEmpty()) {
                 htmlCode.append("<h2>Static Members</h2>");
 
@@ -49,7 +50,7 @@ public class BasicHtmlGenerator implements JsDocGenerator {
             }
 
             // Instance members
-            List<AssignmentElement> instanceMembers = varDecl.getInstanceElements();
+            List<AssignmentElement> instanceMembers = classElement.getInstanceElements();
             if (!instanceMembers.isEmpty()) {
                 htmlCode.append("<h2>Instance Members</h2>");
 
@@ -69,7 +70,9 @@ public class BasicHtmlGenerator implements JsDocGenerator {
             }
         }
 
-        // Ad Global assignments?
+        // Add Global assignments?
+
+        // Add Global vardecls?
 
         // htmlCode.append("<em>Hello!</em> Elements -> " + doc);
 
