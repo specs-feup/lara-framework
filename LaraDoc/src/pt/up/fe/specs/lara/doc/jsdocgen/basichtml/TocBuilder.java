@@ -57,10 +57,10 @@ public class TocBuilder {
     public void addLevelOne(String type, String id, String className) {
         if (!currentTitles.contains(type)) {
             currentTitles.add(type);
-            tocHtml.append(type + ":");
+            tocHtml.append("<p class='toc_class'>" + type + ":" + "</p>");
         }
 
-        tocHtml.append("<li><a href='#" + id + "'>" + className + "</a></li>");
+        tocHtml.append("<li class='toc_class_element'><a href='#" + id + "'>" + className + "</a></li>");
     }
 
     public void addSubList(List<String> ids, List<String> names, String title) {

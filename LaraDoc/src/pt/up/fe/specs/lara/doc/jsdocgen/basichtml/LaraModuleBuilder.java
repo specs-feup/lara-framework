@@ -118,7 +118,9 @@ public class LaraModuleBuilder {
         if (!functionDecls.isEmpty()) {
             htmlCode.append("<h2>Global Functions</h2>");
             for (FunctionDeclElement functionDecl : functionDecls) {
-                htmlCode.append(HtmlGenerators.generate(functionDecl));
+                String globalFunctionId = nextId();
+                toc.addLevelOne("Global Functions", globalFunctionId, functionDecl.getFunctionName());
+                htmlCode.append(HtmlGenerators.generate(functionDecl, globalFunctionId));
             }
         }
 

@@ -27,18 +27,14 @@ import pt.up.fe.specs.util.utilities.StringLines;
 
 public class HtmlGenerators {
 
-    public static String generate(AssignmentElement assignment, String staticId) {
+    public static String generate(AssignmentElement assignment, String id) {
         StringBuilder assignmentCode = new StringBuilder();
         assignmentCode.append("<p>");
 
         JsDocTag alias = assignment.getComment().getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
 
-        if (staticId != null && !staticId.isEmpty()) {
-            assignmentCode.append("<em id='" + staticId + "'>");
-        } else {
-            assignmentCode.append("<em>");
-        }
+        startEmTag(id, assignmentCode);
         assignmentCode.append(namePath);
 
         Optional<FunctionDeclElement> functionRightHand = assignment.getRightFunctionDecl();
@@ -86,17 +82,28 @@ public class HtmlGenerators {
 
     }
 
+    private static void startEmTag(String id, StringBuilder code) {
+        if (id != null && !id.isEmpty()) {
+            code.append("<em id='" + id + "'>");
+            return;
+        }
+
+        code.append("<em>");
+    }
+
     public static String generateFunctionParams(FunctionDeclElement assignment) {
         return assignment.getParameters().stream().collect(Collectors.joining(", ", "(", ")"));
     }
 
-    public static String generate(FunctionDeclElement functionDecl) {
+    public static String generate(FunctionDeclElement functionDecl, String id) {
         StringBuilder assignmentCode = new StringBuilder();
         assignmentCode.append("<p>");
 
         JsDocTag alias = functionDecl.getComment().getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        assignmentCode.append("<em>" + namePath);
+        startEmTag(id, assignmentCode);
+        // assignmentCode.append("<em>" + namePath);
+        assignmentCode.append(namePath);
 
         String functionParameters = generateFunctionParams(functionDecl);
         assignmentCode.append(functionParameters);
