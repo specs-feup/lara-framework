@@ -13,6 +13,7 @@
 
 package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,10 +62,10 @@ public class LaraModuleBuilder {
 
         // Generate HTML for Classes
         for (ClassElement classElement : doc.getTopLevelElements(ClassElement.class)) {
-            String id = nextId();
-            htmlCode.append("<h1 id='" + id + "'>" + classElement.getClassName() + "</h1>");
+            String classId = nextId();
+            htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
 
-            toc.addLevelOne("Classes", id, classElement.getClassName());
+            toc.addLevelOne("Classes", classId, classElement.getClassName());
             // addToc(toc, classElement, id);
 
             LaraDocComment comment = classElement.getComment();
@@ -76,23 +77,39 @@ public class LaraModuleBuilder {
 
             // Static members
             List<AssignmentElement> staticMembers = classElement.getStaticElements();
+            List<String> staticIds = new ArrayList<>();
+            List<String> staticNames = new ArrayList<>();
             if (!staticMembers.isEmpty()) {
+
                 htmlCode.append("<h2>Static Members</h2>");
 
                 for (AssignmentElement staticMember : staticMembers) {
-                    htmlCode.append(HtmlGenerators.generate(staticMember));
+                    String staticId = nextId();
+                    staticIds.add(staticId);
+                    staticNames.add(staticMember.getNamePath());
+
+                    htmlCode.append(HtmlGenerators.generate(staticMember, staticId));
                 }
             }
 
+            toc.addSubList(staticIds, staticNames, "Static Members");
+
             // Instance members
+            List<String> instanceIds = new ArrayList<>();
+            List<String> instanceNames = new ArrayList<>();
             List<AssignmentElement> instanceMembers = classElement.getInstanceElements();
             if (!instanceMembers.isEmpty()) {
                 htmlCode.append("<h2>Instance Members</h2>");
 
                 for (AssignmentElement instanceMember : instanceMembers) {
-                    htmlCode.append(HtmlGenerators.generate(instanceMember));
+                    String instanceId = nextId();
+                    instanceIds.add(instanceId);
+                    instanceNames.add(instanceMember.getNamePath());
+                    htmlCode.append(HtmlGenerators.generate(instanceMember, instanceId));
                 }
             }
+
+            toc.addSubList(instanceIds, instanceNames, "Instance Members");
 
         }
 
@@ -105,6 +122,9 @@ public class LaraModuleBuilder {
             }
         }
 
+        System.out.println("MODULE:" + module.getImportPath());
+        System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
+                .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
         // Add Global assignments?
 
         // Add Global vardecls?

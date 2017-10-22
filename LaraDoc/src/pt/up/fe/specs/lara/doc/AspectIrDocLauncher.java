@@ -32,7 +32,7 @@ public class AspectIrDocLauncher {
         SpecsSystem.programStandardInit();
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-dse\\";
-        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
+        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
         // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
         LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();

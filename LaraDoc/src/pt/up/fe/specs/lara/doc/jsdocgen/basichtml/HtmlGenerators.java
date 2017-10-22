@@ -27,13 +27,19 @@ import pt.up.fe.specs.util.utilities.StringLines;
 
 public class HtmlGenerators {
 
-    public static String generate(AssignmentElement assignment) {
+    public static String generate(AssignmentElement assignment, String staticId) {
         StringBuilder assignmentCode = new StringBuilder();
         assignmentCode.append("<p>");
 
         JsDocTag alias = assignment.getComment().getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        assignmentCode.append("<em>" + namePath);
+
+        if (staticId != null && !staticId.isEmpty()) {
+            assignmentCode.append("<em id='" + staticId + "'>");
+        } else {
+            assignmentCode.append("<em>");
+        }
+        assignmentCode.append(namePath);
 
         Optional<FunctionDeclElement> functionRightHand = assignment.getRightFunctionDecl();
 

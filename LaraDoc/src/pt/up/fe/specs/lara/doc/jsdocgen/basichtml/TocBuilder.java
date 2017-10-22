@@ -14,7 +14,10 @@
 package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.google.common.base.Preconditions;
 
 public class TocBuilder {
 
@@ -58,5 +61,25 @@ public class TocBuilder {
         }
 
         tocHtml.append("<li><a href='#" + id + "'>" + className + "</a></li>");
+    }
+
+    public void addSubList(List<String> ids, List<String> names, String title) {
+        Preconditions.checkArgument(ids.size() == names.size(), "Expected sizes to be the same");
+
+        int numElements = ids.size();
+
+        // If no elements, do nothing
+        if (numElements == 0) {
+            return;
+        }
+
+        tocHtml.append("<ul>");
+        if (title != null && !title.isEmpty()) {
+            tocHtml.append(title);
+        }
+        for (int i = 0; i < numElements; i++) {
+            tocHtml.append("<li><em><a href='#" + ids.get(i) + "'>" + names.get(i) + "</a></em></li>");
+        }
+        tocHtml.append("</ul>");
     }
 }
