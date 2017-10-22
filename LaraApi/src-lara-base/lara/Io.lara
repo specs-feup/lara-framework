@@ -1,5 +1,6 @@
 /**
  * Utility methods related with input/output operations on files.
+ * @class
  */
 var Io = {};
 
