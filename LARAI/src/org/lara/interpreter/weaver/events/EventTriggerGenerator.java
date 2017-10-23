@@ -16,13 +16,13 @@ package org.lara.interpreter.weaver.events;
 import java.util.List;
 
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.Argument;
-import org.lara.interpreter.aspectir.Aspect;
-import org.lara.interpreter.aspectir.Parameter;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
+import pt.up.fe.specs.lara.aspectir.Argument;
+import pt.up.fe.specs.lara.aspectir.Aspect;
+import pt.up.fe.specs.lara.aspectir.Parameter;
 import tdrc.utils.StringUtils;
 
 public class EventTriggerGenerator {

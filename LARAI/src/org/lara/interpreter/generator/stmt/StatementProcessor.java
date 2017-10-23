@@ -14,16 +14,16 @@
 package org.lara.interpreter.generator.stmt;
 
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.Code;
-import org.lara.interpreter.aspectir.CodeElem;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-import org.lara.interpreter.aspectir.Statement;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Statements;
 
 import larac.objects.Enums.LoopTypes;
+import pt.up.fe.specs.lara.aspectir.Code;
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Statement;
 
 public class StatementProcessor {
     private static final String CARDINAL = "__CARDINAL__";

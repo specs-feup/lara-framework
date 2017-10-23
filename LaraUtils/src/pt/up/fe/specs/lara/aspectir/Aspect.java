@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,4 +1,4 @@
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 
 /****************************** Interface Visitor ******************************/
 public interface Visitor {

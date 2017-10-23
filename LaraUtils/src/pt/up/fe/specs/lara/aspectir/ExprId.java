@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,30 +13,41 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class Expression ******************************/
-public class Expression extends CodeElem implements IElement {
+/****************************** Class ExprId ******************************/
+public class ExprId extends Expression implements IElement {
 	public String xml_location;
 	public String xmltag;
-	public java.util.ArrayList<Expression> exprs= new java.util.ArrayList<Expression>();
+	public String name;
+	public String type;
 
-	public Expression(){
+	public ExprId(){
+		name = "";
+		type = "";
 
 	}
 
-	public Expression(Element e, 
+	public ExprId(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
 	if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 		throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 	}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
+		else if (a.getNodeName().equals("name")){
+			name = a.getNodeValue();
+			found_name++;
+		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node Expression: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprId: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -101,9 +112,11 @@ public class Expression extends CodeElem implements IElement {
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
-	public Expression(String fileName, String rootName) throws Exception {
+	public ExprId(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -114,21 +127,31 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public Expression(Document doc,
+	public ExprId(Document doc,
 			String rootName) throws Exception {
+		name = "";
+		type = "";
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
 			if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 				throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 			}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
+		else if (a.getNodeName().equals("name")){
+			name = a.getNodeValue();
+			found_name++;
+		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node Expression: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprId: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -193,19 +216,29 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 	}
 	public void loadXml(Element e, String rootName, Document doc) throws Exception{
 	if (e == null) return;
 	if (!e.getNodeName().equals(rootName)){
 		throw new Exception(" Error unexpected: " + e.getNodeName() +" != "+ rootName);
 	}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
+		else if (a.getNodeName().equals("name")){
+			name = a.getNodeValue();
+			found_name++;
+		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node Expression: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprId: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -270,6 +303,8 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
 	public IElement getParent(){
@@ -290,6 +325,8 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
 	tagEl.setAttribute("desc", ""+desc);
+	tagEl.setAttribute("name", ""+name);
+	tagEl.setAttribute("type", ""+type);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
 	return doc;}
@@ -299,12 +336,14 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
 		tagEl.setAttribute("desc", ""+desc);
+		tagEl.setAttribute("name", ""+name);
+		tagEl.setAttribute("type", ""+type);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("Expression {");
+	os.println("ExprId {");
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
 	printIndent(os, indent+1);
@@ -315,12 +354,16 @@ public 	Document getXmlDocument(){
 	}
 	printIndent(os, indent+1);
 	os.println("]>");
+	printIndent(os, indent+1);
+	os.println("name = '" + name);
+	printIndent(os, indent+1);
+	os.println("type = '" + type);
 	printIndent(os, indent);
 	os.println("}");
 }
 
 	public String typeName(){
-	return "Expression";
+	return "ExprId";
 }
 
 	public void printIndent(PrintStream os, int indent){

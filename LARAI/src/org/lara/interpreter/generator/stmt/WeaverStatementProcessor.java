@@ -24,12 +24,6 @@ import javax.script.Bindings;
 
 import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.Code;
-import org.lara.interpreter.aspectir.CodeElem;
-import org.lara.interpreter.aspectir.ExprId;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-import org.lara.interpreter.aspectir.Statement;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.ExceptionUtils;
@@ -44,6 +38,12 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import larac.objects.Enums;
 import larac.objects.Enums.JoinOperator;
 import larai.LaraI;
+import pt.up.fe.specs.lara.aspectir.Code;
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprId;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 public class WeaverStatementProcessor {

@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,18 +13,20 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class ExprKey ******************************/
-public class ExprKey extends Expression implements IElement {
+/****************************** Class Parameter ******************************/
+public class Parameter extends Expression implements IElement {
 	public String xml_location;
 	public String xmltag;
 	public String name;
+	public String type;
 
-	public ExprKey(){
+	public Parameter(){
 		name = "";
+		type = "";
 
 	}
 
-	public ExprKey(Element e, 
+	public Parameter(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
@@ -41,8 +43,11 @@ public class ExprKey extends Expression implements IElement {
 			name = a.getNodeValue();
 			found_name++;
 		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node ExprKey: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -111,7 +116,7 @@ public class ExprKey extends Expression implements IElement {
 		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
-	public ExprKey(String fileName, String rootName) throws Exception {
+	public Parameter(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -122,9 +127,10 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public ExprKey(Document doc,
+	public Parameter(Document doc,
 			String rootName) throws Exception {
 		name = "";
+		type = "";
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -141,8 +147,11 @@ this(readDocument(fileName), rootName);
 			name = a.getNodeValue();
 			found_name++;
 		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node ExprKey: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -225,8 +234,11 @@ this(readDocument(fileName), rootName);
 			name = a.getNodeValue();
 			found_name++;
 		}
+		else if (a.getNodeName().equals("type")){
+			type = a.getNodeValue();
+		}
 		else
-						throw new Exception("Unexpected attribute in Node ExprKey: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
@@ -314,6 +326,7 @@ public 	Document getXmlDocument(){
 		doc.appendChild(tagEl);
 	tagEl.setAttribute("desc", ""+desc);
 	tagEl.setAttribute("name", ""+name);
+	tagEl.setAttribute("type", ""+type);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
 	return doc;}
@@ -324,12 +337,13 @@ public 	Document getXmlDocument(){
 	parent.appendChild(tagEl);
 		tagEl.setAttribute("desc", ""+desc);
 		tagEl.setAttribute("name", ""+name);
+		tagEl.setAttribute("type", ""+type);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("ExprKey {");
+	os.println("Parameter {");
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
 	printIndent(os, indent+1);
@@ -342,12 +356,14 @@ public 	Document getXmlDocument(){
 	os.println("]>");
 	printIndent(os, indent+1);
 	os.println("name = '" + name);
+	printIndent(os, indent+1);
+	os.println("type = '" + type);
 	printIndent(os, indent);
 	os.println("}");
 }
 
 	public String typeName(){
-	return "ExprKey";
+	return "Parameter";
 }
 
 	public void printIndent(PrintStream os, int indent){

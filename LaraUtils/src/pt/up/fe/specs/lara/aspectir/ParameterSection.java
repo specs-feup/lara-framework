@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,42 +13,43 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class Code ******************************/
-public class Code extends CodeElem implements IElement {
+/****************************** Class ParameterSection ******************************/
+public class ParameterSection implements IElement {
 	public String xml_location;
 	public String xmltag;
-	public java.util.ArrayList<Statement> statements= new java.util.ArrayList<Statement>();
+	public ParameterList input;
+	public ParameterList output;
 
-	public Code(){
+	public ParameterSection(){
+		input = null;
+		output = null;
 
 	}
 
-	public Code(Element e, 
+	public ParameterSection(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
 	if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 		throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 	}
-	for (int i = 0; i < e.getAttributes().getLength(); i++){
-		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
-			desc = a.getNodeValue();
+	int found_input = 0;
+	int found_output = 0;
+		if (e.getAttributes().getLength() != 0){
+			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
 		}
-		else
-						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
-	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("statement")){
-			Statement _m;
-			_m = new Statement(q,"",doc);
-			if (statements.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			statements.add(_m);
+		if (q.getNodeName().equals("input")){
+			input = new ParameterList(q,"",doc);
+			found_input++;
+		}
+		else if (q.getNodeName().equals("output")){
+			output = new ParameterList(q,"",doc);
+			found_output++;
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -59,9 +60,13 @@ public class Code extends CodeElem implements IElement {
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_input > 1)
+		throw new Exception(" too many input: " +found_input+"(max: "+1+ "x)");
+	if (found_output > 1)
+		throw new Exception(" too many output: " +found_output+"(max: "+1+ "x)");
 }
 
-	public Code(String fileName, String rootName) throws Exception {
+	public ParameterSection(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -72,33 +77,33 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public Code(Document doc,
+	public ParameterSection(Document doc,
 			String rootName) throws Exception {
+		input = null;
+		output = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
 			if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 				throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 			}
-	for (int i = 0; i < e.getAttributes().getLength(); i++){
-		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
-			desc = a.getNodeValue();
+	int found_input = 0;
+	int found_output = 0;
+		if (e.getAttributes().getLength() != 0){
+			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
 		}
-		else
-						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
-	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("statement")){
-			Statement _m;
-			_m = new Statement(q,"",doc);
-			if (statements.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			statements.add(_m);
+		if (q.getNodeName().equals("input")){
+			input = new ParameterList(q,"",doc);
+			found_input++;
+		}
+		else if (q.getNodeName().equals("output")){
+			output = new ParameterList(q,"",doc);
+			found_output++;
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -109,31 +114,33 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_input > 1)
+		throw new Exception(" too many input: " +found_input+"(max: "+1+ "x)");
+	if (found_output > 1)
+		throw new Exception(" too many output: " +found_output+"(max: "+1+ "x)");
 	}
 	public void loadXml(Element e, String rootName, Document doc) throws Exception{
 	if (e == null) return;
 	if (!e.getNodeName().equals(rootName)){
 		throw new Exception(" Error unexpected: " + e.getNodeName() +" != "+ rootName);
 	}
-	for (int i = 0; i < e.getAttributes().getLength(); i++){
-		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
-			desc = a.getNodeValue();
+	int found_input = 0;
+	int found_output = 0;
+		if (e.getAttributes().getLength() != 0){
+			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
 		}
-		else
-						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
-	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("statement")){
-			Statement _m;
-			_m = new Statement(q,"",doc);
-			if (statements.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			statements.add(_m);
+		if (q.getNodeName().equals("input")){
+			input = new ParameterList(q,"",doc);
+			found_input++;
+		}
+		else if (q.getNodeName().equals("output")){
+			output = new ParameterList(q,"",doc);
+			found_output++;
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -144,6 +151,10 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_input > 1)
+		throw new Exception(" too many input: " +found_input+"(max: "+1+ "x)");
+	if (found_output > 1)
+		throw new Exception(" too many output: " +found_output+"(max: "+1+ "x)");
 }
 
 	public IElement getParent(){
@@ -163,38 +174,42 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
-	tagEl.setAttribute("desc", ""+desc);
-	for(Statement i_statements: statements)
-		i_statements.writeXml(doc,tagEl,"",level+1);
+	if (input != null)
+		input.writeXml(doc, tagEl,"", level+1);
+	if (output != null)
+		output.writeXml(doc, tagEl,"", level+1);
 	return doc;}
 
 	public 	void writeXml(Document doc, Element parent, String  rootName, int level){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
-		tagEl.setAttribute("desc", ""+desc);
-	for(Statement i_statements: statements)
-		i_statements.writeXml(doc,tagEl,"",level+1);
+	if (input != null)
+		input.writeXml(doc, tagEl,"", level+1);
+	if (output != null)
+		output.writeXml(doc, tagEl,"", level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("Code {");
+	os.println("ParameterSection {");
 	printIndent(os, indent+1);
-	os.println("desc = '" + desc);
+	os.print("input = ");
+	if (input == null)
+		os.println("(null)");
+	else
+		input.print(os, indent+1);
 	printIndent(os, indent+1);
-	os.println("statements = <[");
-	for(Statement i_statements: statements){
-		printIndent(os, indent+2);
-		i_statements.print(os, indent+2);
-	}
-	printIndent(os, indent+1);
-	os.println("]>");
+	os.print("output = ");
+	if (output == null)
+		os.println("(null)");
+	else
+		output.print(os, indent+1);
 	printIndent(os, indent);
 	os.println("}");
 }
 
 	public String typeName(){
-	return "Code";
+	return "ParameterSection";
 }
 
 	public void printIndent(PrintStream os, int indent){

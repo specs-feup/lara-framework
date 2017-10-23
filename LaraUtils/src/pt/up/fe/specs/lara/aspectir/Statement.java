@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,88 +13,86 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class Argument ******************************/
-public class Argument extends Expression implements IElement {
+/****************************** Class Statement ******************************/
+public class Statement extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public java.util.ArrayList<CodeElem> components= new java.util.ArrayList<CodeElem>();
+	public boolean concurrent;
+	public String coord;
+	public String desc;
+	public boolean dynamic;
+	public String execute;
+	public String label;
 	public String name;
 
-	public Argument(){
+	public Statement(){
+		concurrent = false;
+		coord = "";
+		desc = "";
+		dynamic = false;
+		execute = "";
+		label = "";
 		name = "";
 
 	}
 
-	public Argument(Element e, 
+	public Statement(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
 	if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 		throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 	}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
+			concurrent = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("coord")){
+			coord = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("dynamic")){
+			dynamic = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("execute")){
+			execute = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("label")){
+			label = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
 			name = a.getNodeValue();
+			found_name++;
 		}
 		else
-						throw new Exception("Unexpected attribute in Node Argument: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Statement: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
-			ExprBody _m;
-			_m = new ExprBody(q,"",doc);
-			if (exprs.contains(_m))
+		if (q.getNodeName().equals("code")){
+			Code _m;
+			_m = new Code(q,"",doc);
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
-		else if (q.getNodeName().equals("call")){
-			ExprCall _m;
-			_m = new ExprCall(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("id")){
-			ExprId _m;
-			_m = new ExprId(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("key")){
-			ExprKey _m;
-			_m = new ExprKey(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("literal")){
-			ExprLiteral _m;
-			_m = new ExprLiteral(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("op")){
-			ExprOp _m;
-			_m = new ExprOp(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("property")){
+		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
-			if (exprs.contains(_m))
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -105,9 +103,11 @@ public class Argument extends Expression implements IElement {
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
-	public Argument(String fileName, String rootName) throws Exception {
+	public Statement(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -118,8 +118,14 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public Argument(Document doc,
+	public Statement(Document doc,
 			String rootName) throws Exception {
+		concurrent = false;
+		coord = "";
+		desc = "";
+		dynamic = false;
+		execute = "";
+		label = "";
 		name = "";
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
@@ -127,70 +133,55 @@ this(readDocument(fileName), rootName);
 			if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 				throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 			}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
+			concurrent = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("coord")){
+			coord = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("dynamic")){
+			dynamic = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("execute")){
+			execute = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("label")){
+			label = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
 			name = a.getNodeValue();
+			found_name++;
 		}
 		else
-						throw new Exception("Unexpected attribute in Node Argument: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Statement: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
-			ExprBody _m;
-			_m = new ExprBody(q,"",doc);
-			if (exprs.contains(_m))
+		if (q.getNodeName().equals("code")){
+			Code _m;
+			_m = new Code(q,"",doc);
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
-		else if (q.getNodeName().equals("call")){
-			ExprCall _m;
-			_m = new ExprCall(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("id")){
-			ExprId _m;
-			_m = new ExprId(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("key")){
-			ExprKey _m;
-			_m = new ExprKey(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("literal")){
-			ExprLiteral _m;
-			_m = new ExprLiteral(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("op")){
-			ExprOp _m;
-			_m = new ExprOp(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("property")){
+		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
-			if (exprs.contains(_m))
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -201,76 +192,63 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 	}
 	public void loadXml(Element e, String rootName, Document doc) throws Exception{
 	if (e == null) return;
 	if (!e.getNodeName().equals(rootName)){
 		throw new Exception(" Error unexpected: " + e.getNodeName() +" != "+ rootName);
 	}
+	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("concurrent")){
+			concurrent = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("coord")){
+			coord = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("dynamic")){
+			dynamic = Boolean.parseBoolean(a.getNodeValue());
+		}
+		else if (a.getNodeName().equals("execute")){
+			execute = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("label")){
+			label = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
 			name = a.getNodeValue();
+			found_name++;
 		}
 		else
-						throw new Exception("Unexpected attribute in Node Argument: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Statement: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
-			ExprBody _m;
-			_m = new ExprBody(q,"",doc);
-			if (exprs.contains(_m))
+		if (q.getNodeName().equals("code")){
+			Code _m;
+			_m = new Code(q,"",doc);
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
-		else if (q.getNodeName().equals("call")){
-			ExprCall _m;
-			_m = new ExprCall(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("id")){
-			ExprId _m;
-			_m = new ExprId(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("key")){
-			ExprKey _m;
-			_m = new ExprKey(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("literal")){
-			ExprLiteral _m;
-			_m = new ExprLiteral(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("op")){
-			ExprOp _m;
-			_m = new ExprOp(q,"",doc);
-			if (exprs.contains(_m))
-				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
-		}
-		else if (q.getNodeName().equals("property")){
+		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
-			if (exprs.contains(_m))
+			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
-			exprs.add(_m);
+			components.add(_m);
 		}
 		else
 			throw new Exception(" Error unexpected : " + q.getNodeName());
@@ -281,6 +259,8 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
+	if (found_name < 1)
+		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
 	public IElement getParent(){
@@ -300,34 +280,58 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
+	tagEl.setAttribute("concurrent", ""+concurrent);
+	tagEl.setAttribute("coord", ""+coord);
 	tagEl.setAttribute("desc", ""+desc);
+	tagEl.setAttribute("dynamic", ""+dynamic);
+	tagEl.setAttribute("execute", ""+execute);
+	tagEl.setAttribute("label", ""+label);
 	tagEl.setAttribute("name", ""+name);
-	for(Expression i_exprs: exprs)
-		i_exprs.writeXml(doc,tagEl,"",level+1);
+	for(CodeElem i_components: components)
+		i_components.writeXml(doc,tagEl,"",level+1);
 	return doc;}
 
 	public 	void writeXml(Document doc, Element parent, String  rootName, int level){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
+		tagEl.setAttribute("concurrent", ""+concurrent);
+		tagEl.setAttribute("coord", ""+coord);
 		tagEl.setAttribute("desc", ""+desc);
+		tagEl.setAttribute("dynamic", ""+dynamic);
+		tagEl.setAttribute("execute", ""+execute);
+		tagEl.setAttribute("label", ""+label);
 		tagEl.setAttribute("name", ""+name);
-	for(Expression i_exprs: exprs)
-		i_exprs.writeXml(doc,tagEl,"",level+1);
+	for(CodeElem i_components: components)
+		i_components.writeXml(doc,tagEl,"",level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("Argument {");
+	os.println("Statement {");
 	printIndent(os, indent+1);
-	os.println("desc = '" + desc);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
-	os.println("exprs = <[");
-	for(Expression i_exprs: exprs){
+	os.println("components = <[");
+	for(CodeElem i_components: components){
 		printIndent(os, indent+2);
-		i_exprs.print(os, indent+2);
+		i_components.print(os, indent+2);
 	}
 	printIndent(os, indent+1);
 	os.println("]>");
+	printIndent(os, indent+1);
+	os.println("concurrent = '" + concurrent);
+	printIndent(os, indent+1);
+	os.println("coord = '" + coord);
+	printIndent(os, indent+1);
+	os.println("desc = '" + desc);
+	printIndent(os, indent+1);
+	os.println("dynamic = '" + dynamic);
+	printIndent(os, indent+1);
+	os.println("execute = '" + execute);
+	printIndent(os, indent+1);
+	os.println("label = '" + label);
 	printIndent(os, indent+1);
 	os.println("name = '" + name);
 	printIndent(os, indent);
@@ -335,7 +339,7 @@ public 	Document getXmlDocument(){
 }
 
 	public String typeName(){
-	return "Argument";
+	return "Statement";
 }
 
 	public void printIndent(PrintStream os, int indent){
