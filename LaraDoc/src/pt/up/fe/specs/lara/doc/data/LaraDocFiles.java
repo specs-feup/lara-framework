@@ -183,4 +183,25 @@ public class LaraDocFiles {
         return packages.values();
     }
 
+    /**
+     * 
+     * @return all the modules
+     */
+    public Collection<LaraDocModule> getModules() {
+        List<LaraDocModule> modules = new ArrayList<>();
+
+        // Add modules from bundles
+        for (LaraDocBundle bundle : getBundles()) {
+            for (LaraDocPackage laraPackage : bundle.getPackages()) {
+                modules.addAll(laraPackage.getModules());
+            }
+        }
+
+        // Add modules from packages
+        for (LaraDocPackage laraPackage : getPackages()) {
+            modules.addAll(laraPackage.getModules());
+        }
+
+        return modules;
+    }
 }

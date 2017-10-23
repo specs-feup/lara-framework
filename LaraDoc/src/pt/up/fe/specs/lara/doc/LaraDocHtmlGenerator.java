@@ -106,6 +106,7 @@ public class LaraDocHtmlGenerator {
     }
 
     private String generateDoc(LaraDocPackage laraPackage) {
+        System.out.println("PACKAGE: " + laraPackage.getPackageName());
         StringBuilder packageCode = new StringBuilder();
 
         packageCode.append("<h2>" + laraPackage.getPackageName() + "</h2>");
@@ -118,16 +119,7 @@ public class LaraDocHtmlGenerator {
         List<LaraDocModule> modules = new ArrayList<>(laraPackage.getModules());
         Collections.sort(modules, (o1, o2) -> o1.getImportPath().compareTo(o2.getImportPath()));
 
-        // Map<String, LaraDocModule> modules = laraPackage.getModules().stream()
-        // .collect(Collectors.toMap(LaraDocModule::getImportPath, module -> module));
-        //
-        // List<String> importPaths = new ArrayList<>(modules.keySet());
-        // Collections.sort(importPaths);
-
         for (LaraDocModule module : modules) {
-            // for (LaraDocModule module : laraPackage.getModules()) {
-            // for (String importPath : importPaths) {
-            // LaraDocModule module = modules.get(importPath);
             packageCode.append("<li>\n");
             packageCode.append(generateDoc(module));
             packageCode.append("</li>\n");
