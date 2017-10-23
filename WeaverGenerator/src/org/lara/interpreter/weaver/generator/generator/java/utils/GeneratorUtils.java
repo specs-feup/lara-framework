@@ -34,6 +34,7 @@ import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.lara.language.specification.joinpointmodel.schema.Select;
@@ -118,7 +119,7 @@ public class GeneratorUtils {
     }
 
     public static void createSelectByName(JavaClass javaC, JoinPointType joinPoint, String superName,
-            boolean isFinal) {
+            boolean isFinal, JoinPointModel jpm) {
         // javaC.addImport(List.class.getCanonicalName());
         final String selectMethodName = GenConstants.getSelectByNameMethodName();
 
@@ -137,7 +138,16 @@ public class GeneratorUtils {
         selectByName.appendCodeln(joinPointListType.getSimpleType() + " joinPointList;");
         selectByName.appendCodeln("switch(selectName) {");
 
-        for (final Select sel : joinPoint.getSelect()) {
+        // for (final Select sel : joinPoint.getSelect()) {
+        //
+        // String alias = sel.getAlias();
+        // selectByName.appendCodeln("\tcase \"" + alias + "\": ");
+        // selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
+        // selectByName.appendCodeln("\t\tbreak;");
+        // }
+
+        List<Select> allSelects = jpm.getAllSelects(joinPoint);
+        for (final Select sel : allSelects) {
 
             String alias = sel.getAlias();
             selectByName.appendCodeln("\tcase \"" + alias + "\": ");
