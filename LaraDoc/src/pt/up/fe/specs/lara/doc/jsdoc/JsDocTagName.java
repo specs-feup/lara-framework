@@ -13,9 +13,13 @@ public enum JsDocTagName {
     CLASS("class"),
     RETURNS("constructor"),
     /**
-     * Properties NAME, TYPE_NAME
+     * Properties NAME, TYPE_NAME, OPTIONAL, DEFAULT_VALUE
      */
     PARAM("param"),
+    /**
+     * Properties NAME, TYPE_NAME, OPTIONAL, DEFAULT_VALUE
+     */
+    OUTPUT("output"),
     AUGMENTS("augments"),
     DEPRECATED("deprecated");
 

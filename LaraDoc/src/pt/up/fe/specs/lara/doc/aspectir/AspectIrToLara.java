@@ -1,16 +1,15 @@
 package pt.up.fe.specs.lara.doc.aspectir;
 
-import org.lara.interpreter.aspectir.CodeElem;
-import org.lara.interpreter.aspectir.ExprId;
-import org.lara.interpreter.aspectir.ExprLiteral;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-
 import com.google.common.base.Preconditions;
 
 import larac.objects.Enums;
 import larac.objects.Enums.BinaryOperator;
 import larac.objects.Enums.UnaryOperator;
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprId;
+import pt.up.fe.specs.lara.aspectir.ExprLiteral;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.util.classmap.FunctionClassMap;
 
 public class AspectIrToLara {

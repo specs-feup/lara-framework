@@ -16,8 +16,7 @@ package pt.up.fe.specs.lara.doc;
 import java.io.File;
 import java.util.Optional;
 
-import org.lara.interpreter.aspectir.Aspects;
-
+import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;

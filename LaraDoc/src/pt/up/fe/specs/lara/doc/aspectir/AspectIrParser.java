@@ -24,19 +24,18 @@ import java.util.stream.Collectors;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.lara.interpreter.aspectir.Aspect;
-import org.lara.interpreter.aspectir.Base;
-import org.lara.interpreter.aspectir.CodeElem;
-import org.lara.interpreter.aspectir.ExprBody;
-import org.lara.interpreter.aspectir.ExprId;
-import org.lara.interpreter.aspectir.ExprLiteral;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-import org.lara.interpreter.aspectir.Parameter;
-import org.lara.interpreter.aspectir.Statement;
-
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.aspectir.Aspect;
+import pt.up.fe.specs.lara.aspectir.Base;
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprBody;
+import pt.up.fe.specs.lara.aspectir.ExprId;
+import pt.up.fe.specs.lara.aspectir.ExprLiteral;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Parameter;
+import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
@@ -236,34 +235,39 @@ public class AspectIrParser {
 
         // Process each input
         for (Parameter parameter : getInputParameters(aspect)) {
-            // Extract name
-            String paramName = parameter.name;
-
-            // Add parameters if not present
-            JsDocTag inputTag = laraComment.getInput(paramName);
-            if (inputTag == null) {
-                inputTag = new JsDocTag(JsDocTagName.PARAM).setValue(JsDocTagProperty.NAME, paramName);
-                laraComment.addTag(inputTag);
-            }
-
-            // Add default value to parameter tag
-            if (!parameter.exprs.isEmpty()) {
-                Preconditions.checkArgument(parameter.exprs.size() == 1,
-                        "Expected only one argument, found " + parameter.exprs.size());
-
-                String defaultValue = CodeElems.getLaraCode(parameter.exprs.get(0));
-                // ExprLiteral literal = (ExprLiteral) parameter.exprs.get(0);
-                // String defaultValue = literal.value;
-                inputTag.setValue(JsDocTagProperty.DEFAULT_VALUE, defaultValue);
-            }
+            addParameter(laraComment, JsDocTagName.PARAM, parameter);
         }
 
         for (Parameter parameter : getOutputParameters(aspect)) {
-            // TODO: Add outputs if not present
-            throw new RuntimeException("Not implemented yet: " + CodeElems.toXml(parameter));
+            addParameter(laraComment, JsDocTagName.OUTPUT, parameter);
         }
 
         return new AspectElement(laraComment);
+    }
+
+    private void addParameter(LaraDocComment laraComment, JsDocTagName tagName, Parameter parameter) {
+        // Extract name
+        String paramName = parameter.name;
+
+        // Add parameters if not present
+        JsDocTag tag = laraComment.getInput(paramName);
+        if (tag == null) {
+            tag = new JsDocTag(tagName).setValue(JsDocTagProperty.NAME, paramName);
+            laraComment.addTag(tag);
+        }
+
+        // Add default value to parameter tag
+        if (!parameter.exprs.isEmpty()) {
+            Preconditions.checkArgument(parameter.exprs.size() == 1,
+                    "Expected only one argument, found " + parameter.exprs.size());
+
+            String defaultValue = CodeElems.getLaraCode(parameter.exprs.get(0));
+            // ExprLiteral literal = (ExprLiteral) parameter.exprs.get(0);
+            // String defaultValue = literal.value;
+            // Default value implies optional
+            tag.setValue(JsDocTagProperty.OPTIONAL, "");
+            tag.setValue(JsDocTagProperty.DEFAULT_VALUE, defaultValue);
+        }
     }
 
     private List<Parameter> getInputParameters(Aspect aspect) {

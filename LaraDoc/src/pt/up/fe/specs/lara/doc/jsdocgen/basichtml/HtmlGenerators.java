@@ -166,6 +166,11 @@ public class HtmlGenerators {
         List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
         aspectCode.append(generateParameters("Inputs", inputTags));
 
+        // Output parameters
+
+        List<JsDocTag> outputTags = laraComment.getTags(JsDocTagName.OUTPUT);
+        aspectCode.append(generateParameters("Outputs", outputTags));
+
         /*
                 List<String> params = laraComment.getParameters();
         if (!params.isEmpty()) {
