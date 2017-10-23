@@ -13,8 +13,10 @@
 
 package org.dojo.jsl.parser.ast.utils;
 
+import org.dojo.jsl.parser.ast.ASTAllocationExpression;
 import org.dojo.jsl.parser.ast.ASTIdentifier;
 import org.dojo.jsl.parser.ast.LARAEcmaScriptConstants;
+import org.dojo.jsl.parser.ast.LARAEcmaScriptTreeConstants;
 
 public class LaraCNodeFactory {
 
@@ -22,5 +24,17 @@ public class LaraCNodeFactory {
 	ASTIdentifier id = new ASTIdentifier(LARAEcmaScriptConstants.IDENTIFIER_NAME);
 	id.setName(name);
 	return id;
+    }
+
+    /**
+     *
+     * @param methodID
+     * @return
+     */
+    public static ASTAllocationExpression newAllocExpr(String methodID) {
+        final ASTAllocationExpression alloc = new ASTAllocationExpression(
+                LARAEcmaScriptTreeConstants.JJTALLOCATIONEXPRESSION);
+        alloc.setMethodID(methodID);
+        return alloc;
     }
 }

@@ -129,7 +129,7 @@ public class ASTApply extends SimpleNode {
             setActiveSelect(to.selects.get(toPosition));
             final String applyName = getName() + "_" + count++;
             final Element applyEl = doc.createElement("statement");
-            applyEl.setAttribute("coord", lookDownCoords());
+            applyEl.setAttribute("coord", getCoords());
             parent.appendChild(applyEl);
             applyEl.setAttribute("name", "apply");
             applyEl.setAttribute("label", applyName);

@@ -60,7 +60,7 @@ public class ASTAction extends SimpleNode {
     @Override
     public void toXML(Document doc, Element parent) {
         final Element statEl = doc.createElement("statement");
-        statEl.setAttribute("coord", lookDownCoords());
+        statEl.setAttribute("coord", getCoords());
         parent.appendChild(statEl);
 
         final Element exprEl = doc.createElement("expression");
