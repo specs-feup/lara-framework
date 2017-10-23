@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,18 +13,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class CodeElem ******************************/
-public class CodeElem implements IElement {
+/****************************** Class Code ******************************/
+public class Code extends CodeElem implements IElement {
 	public String xml_location;
 	public String xmltag;
-	public String desc;
+	public java.util.ArrayList<Statement> statements= new java.util.ArrayList<Statement>();
 
-	public CodeElem(){
-		desc = "";
+	public Code(){
 
 	}
 
-	public CodeElem(Element e, 
+	public Code(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
@@ -37,20 +36,32 @@ public class CodeElem implements IElement {
 			desc = a.getNodeValue();
 		}
 		else
-						throw new Exception("Unexpected attribute in Node CodeElem: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		throw new Exception(" Error unexpected : " + q.getNodeName());
+		if (q.getNodeName().equals("statement")){
+			Statement _m;
+			_m = new Statement(q,"",doc);
+			if (statements.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			statements.add(_m);
+		}
+		else
+			throw new Exception(" Error unexpected : " + q.getNodeName());
+		do{
+			n = n.getNextSibling();
+		}while(n!= null && !(n instanceof Element));
+		q = (n!=null)?(Element)n:null;
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
 }
 
-	public CodeElem(String fileName, String rootName) throws Exception {
+	public Code(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -61,9 +72,8 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public CodeElem(Document doc,
+	public Code(Document doc,
 			String rootName) throws Exception {
-		desc = "";
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -76,14 +86,26 @@ this(readDocument(fileName), rootName);
 			desc = a.getNodeValue();
 		}
 		else
-						throw new Exception("Unexpected attribute in Node CodeElem: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		throw new Exception(" Error unexpected : " + q.getNodeName());
+		if (q.getNodeName().equals("statement")){
+			Statement _m;
+			_m = new Statement(q,"",doc);
+			if (statements.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			statements.add(_m);
+		}
+		else
+			throw new Exception(" Error unexpected : " + q.getNodeName());
+		do{
+			n = n.getNextSibling();
+		}while(n!= null && !(n instanceof Element));
+		q = (n!=null)?(Element)n:null;
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
@@ -99,14 +121,26 @@ this(readDocument(fileName), rootName);
 			desc = a.getNodeValue();
 		}
 		else
-						throw new Exception("Unexpected attribute in Node CodeElem: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node Code: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		throw new Exception(" Error unexpected : " + q.getNodeName());
+		if (q.getNodeName().equals("statement")){
+			Statement _m;
+			_m = new Statement(q,"",doc);
+			if (statements.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			statements.add(_m);
+		}
+		else
+			throw new Exception(" Error unexpected : " + q.getNodeName());
+		do{
+			n = n.getNextSibling();
+		}while(n!= null && !(n instanceof Element));
+		q = (n!=null)?(Element)n:null;
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
@@ -117,7 +151,7 @@ this(readDocument(fileName), rootName);
 }
 
 public 	Document getXmlDocument(){
-	Document doc = null;	try {
+	Document doc = null;	int level = 0;	try {
 		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
 		docBuilder = dbfac.newDocumentBuilder();
@@ -130,6 +164,8 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
 	tagEl.setAttribute("desc", ""+desc);
+	for(Statement i_statements: statements)
+		i_statements.writeXml(doc,tagEl,"",level+1);
 	return doc;}
 
 	public 	void writeXml(Document doc, Element parent, String  rootName, int level){
@@ -137,18 +173,28 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
 		tagEl.setAttribute("desc", ""+desc);
+	for(Statement i_statements: statements)
+		i_statements.writeXml(doc,tagEl,"",level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("CodeElem {");
+	os.println("Code {");
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
+	printIndent(os, indent+1);
+	os.println("statements = <[");
+	for(Statement i_statements: statements){
+		printIndent(os, indent+2);
+		i_statements.print(os, indent+2);
+	}
+	printIndent(os, indent+1);
+	os.println("]>");
 	printIndent(os, indent);
 	os.println("}");
 }
 
 	public String typeName(){
-	return "CodeElem";
+	return "Code";
 }
 
 	public void printIndent(PrintStream os, int indent){

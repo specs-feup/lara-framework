@@ -3,7 +3,7 @@
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,48 +13,47 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
-/****************************** Class Parameter ******************************/
-public class Parameter extends Expression implements IElement {
+/****************************** Class ExprCall ******************************/
+public class ExprCall extends Expression implements IElement {
 	public String xml_location;
 	public String xmltag;
-	public String name;
-	public String type;
+	public java.util.ArrayList<Argument> arguments= new java.util.ArrayList<Argument>();
+	public Expression method;
 
-	public Parameter(){
-		name = "";
-		type = "";
+	public ExprCall(){
+		method = null;
 
 	}
 
-	public Parameter(Element e, 
+	public ExprCall(Element e, 
 			String rootName, Document doc) throws DOMException, Exception{
 	if (e == null) return;
 	xmltag = e.getTagName();
 	if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 		throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 	}
-	int found_name = 0;
+	int found_method = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
-		else if (a.getNodeName().equals("name")){
-			name = a.getNodeValue();
-			found_name++;
-		}
-		else if (a.getNodeName().equals("type")){
-			type = a.getNodeValue();
-		}
 		else
-						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprCall: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
+		if (q.getNodeName().equals("argument")){
+			Argument _m;
+			_m = new Argument(q,"",doc);
+			if (arguments.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			arguments.add(_m);
+		}
+		else if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
 			if (exprs.contains(_m))
@@ -89,6 +88,10 @@ public class Parameter extends Expression implements IElement {
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
 		}
+		else if (q.getNodeName().equals("method")){
+			method = new Expression(q,"",doc);
+			found_method++;
+		}
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
@@ -112,11 +115,13 @@ public class Parameter extends Expression implements IElement {
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
-	if (found_name < 1)
-		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
+	if (found_method > 1)
+		throw new Exception(" too many method: " +found_method+"(max: "+1+ "x)");
+	if (found_method < 1)
+		throw new Exception(" too few method: " +found_method+"(min: "+1+ "x)");
 }
 
-	public Parameter(String fileName, String rootName) throws Exception {
+	public ExprCall(String fileName, String rootName) throws Exception {
 this(readDocument(fileName), rootName);
 	}
 
@@ -127,38 +132,37 @@ this(readDocument(fileName), rootName);
 		return doc;
 	}
 
-	public Parameter(Document doc,
+	public ExprCall(Document doc,
 			String rootName) throws Exception {
-		name = "";
-		type = "";
+		method = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
 			if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 				throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 			}
-	int found_name = 0;
+	int found_method = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
-		else if (a.getNodeName().equals("name")){
-			name = a.getNodeValue();
-			found_name++;
-		}
-		else if (a.getNodeName().equals("type")){
-			type = a.getNodeValue();
-		}
 		else
-						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprCall: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
+		if (q.getNodeName().equals("argument")){
+			Argument _m;
+			_m = new Argument(q,"",doc);
+			if (arguments.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			arguments.add(_m);
+		}
+		else if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
 			if (exprs.contains(_m))
@@ -193,6 +197,10 @@ this(readDocument(fileName), rootName);
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
 		}
+		else if (q.getNodeName().equals("method")){
+			method = new Expression(q,"",doc);
+			found_method++;
+		}
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
@@ -216,36 +224,38 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
-	if (found_name < 1)
-		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
+	if (found_method > 1)
+		throw new Exception(" too many method: " +found_method+"(max: "+1+ "x)");
+	if (found_method < 1)
+		throw new Exception(" too few method: " +found_method+"(min: "+1+ "x)");
 	}
 	public void loadXml(Element e, String rootName, Document doc) throws Exception{
 	if (e == null) return;
 	if (!e.getNodeName().equals(rootName)){
 		throw new Exception(" Error unexpected: " + e.getNodeName() +" != "+ rootName);
 	}
-	int found_name = 0;
+	int found_method = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
 		if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
-		else if (a.getNodeName().equals("name")){
-			name = a.getNodeValue();
-			found_name++;
-		}
-		else if (a.getNodeName().equals("type")){
-			type = a.getNodeValue();
-		}
 		else
-						throw new Exception("Unexpected attribute in Node Parameter: "+e.getAttributes().item(0).getNodeName());
+						throw new Exception("Unexpected attribute in Node ExprCall: "+e.getAttributes().item(0).getNodeName());
 	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
 	Element q = (n!=null)?(Element)n:null;
 	while (q != null){
-		if (q.getNodeName().equals("body")){
+		if (q.getNodeName().equals("argument")){
+			Argument _m;
+			_m = new Argument(q,"",doc);
+			if (arguments.contains(_m))
+				throw new Exception(" Error duplicate: "+_m);
+			arguments.add(_m);
+		}
+		else if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
 			if (exprs.contains(_m))
@@ -280,6 +290,10 @@ this(readDocument(fileName), rootName);
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
 		}
+		else if (q.getNodeName().equals("method")){
+			method = new Expression(q,"",doc);
+			found_method++;
+		}
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
@@ -303,8 +317,10 @@ this(readDocument(fileName), rootName);
 	}
 	if (!e.getTextContent().trim().isEmpty())
 		throw new Exception("Error unexpected: text");
-	if (found_name < 1)
-		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
+	if (found_method > 1)
+		throw new Exception(" too many method: " +found_method+"(max: "+1+ "x)");
+	if (found_method < 1)
+		throw new Exception(" too few method: " +found_method+"(min: "+1+ "x)");
 }
 
 	public IElement getParent(){
@@ -325,10 +341,12 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
 	tagEl.setAttribute("desc", ""+desc);
-	tagEl.setAttribute("name", ""+name);
-	tagEl.setAttribute("type", ""+type);
+	for(Argument i_arguments: arguments)
+		i_arguments.writeXml(doc,tagEl,"",level+1);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
+	if (method != null)
+		method.writeXml(doc, tagEl,"", level+1);
 	return doc;}
 
 	public 	void writeXml(Document doc, Element parent, String  rootName, int level){
@@ -336,14 +354,16 @@ public 	Document getXmlDocument(){
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
 		tagEl.setAttribute("desc", ""+desc);
-		tagEl.setAttribute("name", ""+name);
-		tagEl.setAttribute("type", ""+type);
+	for(Argument i_arguments: arguments)
+		i_arguments.writeXml(doc,tagEl,"",level+1);
 	for(Expression i_exprs: exprs)
 		i_exprs.writeXml(doc,tagEl,"",level+1);
+	if (method != null)
+		method.writeXml(doc, tagEl,"", level+1);
 }
 
 	public void print(PrintStream os, int indent){
-	os.println("Parameter {");
+	os.println("ExprCall {");
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
 	printIndent(os, indent+1);
@@ -355,15 +375,25 @@ public 	Document getXmlDocument(){
 	printIndent(os, indent+1);
 	os.println("]>");
 	printIndent(os, indent+1);
-	os.println("name = '" + name);
+	os.println("arguments = <[");
+	for(Argument i_arguments: arguments){
+		printIndent(os, indent+2);
+		i_arguments.print(os, indent+2);
+	}
 	printIndent(os, indent+1);
-	os.println("type = '" + type);
+	os.println("]>");
+	printIndent(os, indent+1);
+	os.print("method = ");
+	if (method == null)
+		os.println("(null)");
+	else
+		method.print(os, indent+1);
 	printIndent(os, indent);
 	os.println("}");
 }
 
 	public String typeName(){
-	return "Parameter";
+	return "ExprCall";
 }
 
 	public void printIndent(PrintStream os, int indent){

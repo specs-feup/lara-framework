@@ -1,4 +1,4 @@
-package org.lara.interpreter.aspectir;
+package pt.up.fe.specs.lara.aspectir;
 
 /****************************** Interface Visitable ******************************/
 public interface Visitable {

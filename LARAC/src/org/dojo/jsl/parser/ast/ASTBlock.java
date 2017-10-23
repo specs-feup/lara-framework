@@ -9,88 +9,97 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTBlock extends SimpleNode {
-	// private SymbolTable<String, Variable> localVars = new SymbolTable<String,
-	// Variable>();
-	public ASTBlock(int id) {
-		super(id);
-	}
+    // private SymbolTable<String, Variable> localVars = new SymbolTable<String,
+    // Variable>();
+    public ASTBlock(int id) {
+        super(id);
+    }
 
-	public ASTBlock(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTBlock(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		if (getChildren() != null) {
-			for (final Node child : getChildren()) {
-				((SimpleNode) child).organize(obj);
-			}
-		}
-		return null;
-	}
+    @Override
+    public Object organize(Object obj) {
+        if (getChildren() != null) {
+            for (final Node child : getChildren()) {
+                ((SimpleNode) child).organize(obj);
+            }
+        }
+        return null;
+    }
 
-	/*
-	 * public Variable lookup(String var) { if(localVars.containsKey(var))
-	 * return localVars.get(var); return ((SimpleNode)parent).lookup(var); }
-	 * 
-	 * public Variable lookupNoError(String var) {
-	 * if(localVars.containsKey(var)) return localVars.get(var); return
-	 * ((SimpleNode)parent).lookupNoError(var); }
-	 * 
-	 * @Override public HashMap<String, Variable> getHMVars() { return
-	 * localVars; }
-	 */
-	private static enum NodeJump {
-		ASTForVarStatement, ASTForStatement, ASTForVarInStatement, ASTDoStatement, ASTWhileStatement, ASTIfStatement, ASTWithStatement, ASTTryStatement, ASTCatchClause, ASTFinallyClause;
+    /*
+     * public Variable lookup(String var) { if(localVars.containsKey(var))
+     * return localVars.get(var); return ((SimpleNode)parent).lookup(var); }
+     * 
+     * public Variable lookupNoError(String var) {
+     * if(localVars.containsKey(var)) return localVars.get(var); return
+     * ((SimpleNode)parent).lookupNoError(var); }
+     * 
+     * @Override public HashMap<String, Variable> getHMVars() { return
+     * localVars; }
+     */
+    private static enum NodeJump {
+        ASTForVarStatement,
+        ASTForStatement,
+        ASTForVarInStatement,
+        ASTDoStatement,
+        ASTWhileStatement,
+        ASTIfStatement,
+        ASTWithStatement,
+        ASTTryStatement,
+        ASTCatchClause,
+        ASTFinallyClause;
 
-		public static boolean contains(String member) {
-			if (member != null) {
-				for (final NodeJump b : NodeJump.values()) {
-					if (member.equalsIgnoreCase(b.name())) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-	}
+        public static boolean contains(String member) {
+            if (member != null) {
+                for (final NodeJump b : NodeJump.values()) {
+                    if (member.equalsIgnoreCase(b.name())) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		Element blockEl;
-		if (!insertTag) {
-			blockEl = doc.createElement("body");
-			parent.appendChild(blockEl);
-		} else {
-			if (NodeJump.contains(this.parent.getClass().getSimpleName())) {
-				if (getChildren() == null) {
-					return;
-				}
-				// createXMLDecl(localVars.values(), doc, parent);
-				for (final Node child : getChildren()) {
-					((SimpleNode) child).toXML(doc, parent);
-				}
-				return;
-			}
-			blockEl = doc.createElement("code");
-			final Element statEl = doc.createElement("statement");
-			if (!label.isEmpty()) {
-				statEl.setAttribute("label", label);
-			}
-			statEl.setAttribute("name", "block");
-			statEl.setAttribute("coord", lookDownCoords());
-			parent.appendChild(statEl);
-			statEl.appendChild(blockEl);
-		}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        Element blockEl;
+        if (!insertTag) {
+            blockEl = doc.createElement("body");
+            parent.appendChild(blockEl);
+        } else {
+            if (NodeJump.contains(this.parent.getClass().getSimpleName())) {
+                if (getChildren() == null) {
+                    return;
+                }
+                // createXMLDecl(localVars.values(), doc, parent);
+                for (final Node child : getChildren()) {
+                    ((SimpleNode) child).toXML(doc, parent);
+                }
+                return;
+            }
+            blockEl = doc.createElement("code");
+            final Element statEl = doc.createElement("statement");
+            if (!label.isEmpty()) {
+                statEl.setAttribute("label", label);
+            }
+            statEl.setAttribute("name", "block");
+            statEl.setAttribute("coord", getCoords());
+            parent.appendChild(statEl);
+            statEl.appendChild(blockEl);
+        }
 
-		if (getChildren() == null) {
-			return;
-		}
-		// createXMLDecl(localVars.values(), doc, blockEl);
-		for (final Node child : getChildren()) {
-			((SimpleNode) child).toXML(doc, blockEl);
-		}
-	}
+        if (getChildren() == null) {
+            return;
+        }
+        // createXMLDecl(localVars.values(), doc, blockEl);
+        for (final Node child : getChildren()) {
+            ((SimpleNode) child).toXML(doc, blockEl);
+        }
+    }
 
 }
 /*

@@ -1379,7 +1379,8 @@ TOKEN :
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> 
 	  )
 	  { jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
-	   jjtThis.setCoord(t,t);}
+	   //jjtThis.setCoord(t,t);
+	   }
 	}
 
 /*****************************************
@@ -1428,7 +1429,7 @@ TOKEN :
 	{
 	  begin=<IMPORT> t=FilePath() end=EndStatement()
 	  {jjtThis.jjtSetValue(t.image);}
-	  { jjtThis.setCoord(begin,end);}
+	 // { jjtThis.setCoord(begin,end);}
 	}
 	/** FilePath
 	* gets the path to a file or all the files in the package 
@@ -1470,7 +1471,7 @@ TOKEN :
 	 	 }
 	  end=<END >
 
-	  { jjtThis.setCoord(begin,end);}
+	 // { jjtThis.setCoord(begin,end);}
 	}
 	
 	/**
@@ -1482,7 +1483,7 @@ TOKEN :
 		begin=<INPUT>
 			VariableDeclarationList() (<SEMICOLON>)?
 		end=<END>
-		{ jjtThis.setCoord(begin,end);}
+		//{ jjtThis.setCoord(begin,end);}
 	}
 
 	/**
@@ -1571,7 +1572,7 @@ TOKEN :
 		  [ Finalize() ]
 	  end=<END >
 	  {jjtThis.setName(aspName.image);}
-	  { jjtThis.setCoord(begin,end);}
+	 // { jjtThis.setCoord(begin,end);}
 	}
 
 	/** Select
@@ -1586,7 +1587,7 @@ TOKEN :
 	      		|   ([<LPAREN>]getNoReservedIdentifier() <ASSIGN >)) Pointcut() |
 	    
 	      LOOKAHEAD(2) FourthSetOp()) end=< END >
-	  { jjtThis.setCoord(begin,end);}
+	  //{ jjtThis.setCoord(begin,end);}
 	}
 	
 	void FourthSetOp() #Join(>1):
@@ -1714,7 +1715,7 @@ TOKEN :
 	  		{jjtThis.setName(label);
 	  		jjtThis.setWhen(when.image);} 
 	  end=<END>
-	{ jjtThis.setCoord(when,end);}
+	//{ jjtThis.setCoord(when,end);}
 	  
 	}	
 	
@@ -1767,7 +1768,7 @@ TOKEN :
 	   [To()]
   	  JavaScript()
       end=<END>
-      { jjtThis.setCoord(apply,end);}
+      //{ jjtThis.setCoord(apply,end);}
 	  
 	  
 	}
@@ -1814,7 +1815,7 @@ TOKEN :
 					  t=<IDENTIFIER_NAME>
 					  {
 					    jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
-					    jjtThis.setCoord(t,t);
+					    //jjtThis.setCoord(t,t);
 					  }
 				)#Identifier
 			  )
@@ -1847,7 +1848,7 @@ TOKEN :
 	    	[Arguments()] end=EndStatement() 
 	   {
 		 jjtThis.setAspName(aspName.image);
-	     jjtThis.setCoord(aspName,end);
+	    // jjtThis.setCoord(aspName,end);
 	   }
 	}
 
@@ -1863,7 +1864,7 @@ TOKEN :
 				[<GT> AssignmentExpression()]
 	   end=EndStatement() 
 	   		
-	     {jjtThis.setCoord(run,end);}
+	    // {jjtThis.setCoord(run,end);}
 	}
 
 	/** Command
@@ -1878,7 +1879,7 @@ TOKEN :
 	   	  	Arguments()
 				[<GT> AssignmentExpression()]
 	   end=EndStatement() 		
-	     {jjtThis.setCoord(cmd,end);}
+	     //{jjtThis.setCoord(cmd,end);}
 	}
 
 	/** OLD CALL **
@@ -1891,7 +1892,7 @@ TOKEN :
    			  [LOOKAHEAD(2)FilePathNoSTar()]aspName=<IDENTIFIER_NAME>
 		{jjtThis.setAspName(aspName.image);}
 	    	[LOOKAHEAD(Arguments())Arguments()] end=<SEMICOLON>
-	   { jjtThis.setCoord(aspName,end);}
+	  // { jjtThis.setCoord(aspName,end);}
 	}
 	/***/
 	
@@ -1919,12 +1920,12 @@ TOKEN :
 //			   				((Identifier() [LOOKAHEAD(Arguments())Arguments()]) #CompositeReference(>1))
 //			   			)
 			   		{jjtThis.setWhen(when.image);}
-			   		{jjtThis.setCoord(begin,when);}
+			   		//{jjtThis.setCoord(begin,when);}
 			     )
 			   |
 			     (
 			   		Arguments()
-			   		{jjtThis.setCoord(begin,begin);}
+			   		//{jjtThis.setCoord(begin,begin);}
 			     )
 			   /*|
 			     (
@@ -1932,7 +1933,7 @@ TOKEN :
 			   		|
 					((Identifier() [LOOKAHEAD(Arguments())Arguments()]) #CompositeReference(>1))
 			   		{jjtThis.setWhen("inside");}
-			   		{jjtThis.setCoord(begin,begin);}
+			   		//{jjtThis.setCoord(begin,begin);}
 			     ) */
 			   )
 		 )
@@ -1945,7 +1946,7 @@ TOKEN :
 //			   	 ((Identifier() [LOOKAHEAD(Arguments())Arguments()]) #CompositeReference(>1))
 //			   )
 	   		   {jjtThis.setWhen(begin.image);}
-	   		   {jjtThis.setCoord(begin,begin);}
+	   		   //{jjtThis.setCoord(begin,begin);}
 	     )
 	   )
 	}
@@ -1960,7 +1961,7 @@ TOKEN :
 		[LOOKAHEAD(< IDENTIFIER_NAME > < COLON > ) t=< IDENTIFIER_NAME > < COLON >{jjtThis.setVariable(t.image);} ]
 		action=getNoReservedIdentifier()
  		{jjtThis.setAction(action.image);}
-		{jjtThis.setCoord(begin,action);}
+		//{jjtThis.setCoord(begin,action);}
 	   	[
 	   			(TemplateLiteral()) #FunctionCallParameters
 			| 
@@ -1989,7 +1990,7 @@ TOKEN :
 	   |
 	   		Arguments()
 	     )
-	   {jjtThis.setCoord(begin,begin);}
+	   //{jjtThis.setCoord(begin,begin);}
 	}
 	
 	/** Define
@@ -2005,7 +2006,7 @@ TOKEN :
 		|
 			Arguments()
 		)
-		{jjtThis.setCoord(begin,begin);}
+		//{jjtThis.setCoord(begin,begin);}
 	}
 
 	/** Condition
@@ -2018,7 +2019,7 @@ TOKEN :
 	 		begin=<CONDITION> [<FOR> (Identifier() (<COMMA> Identifier())*  ) #For]
 	  LogicalORExpression()
 	  end=<END>
-	  {jjtThis.setCoord(begin,end);}
+	 //{jjtThis.setCoord(begin,end);}
 	}
 
 /*******************************************************************************
@@ -2136,7 +2137,7 @@ TOKEN :
 	  t=<IDENTIFIER_NAME>
 	  {
 	    jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
-	    jjtThis.setCoord(t,t);
+	   /*{jjtThis.setCoord(t,t); }*/
 	  }
 	}
 
@@ -2150,7 +2151,7 @@ TOKEN :
 	    t=<LABEL_IDENTIFIER> | t=< IDENTIFIER_NAME>)
 	  {
 	    jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
-	    jjtThis.setCoord(t,t);
+	   /*{jjtThis.setCoord(t,t); }*/
 	  }
 	}
 
@@ -2678,7 +2679,7 @@ TOKEN :
 		begin=< LBRACE >
 			( StatementList() )?
 		end=< RBRACE >
-		{jjtThis.setCoord(begin,end);}
+		//{jjtThis.setCoord(begin,end);}
 		}
 
 	void StatementList() #StatementList(>1) : 
@@ -2695,7 +2696,7 @@ TOKEN :
 	{
 	  
 		begin=< VAR > VariableDeclarationList() end=EndStatement() 
-		{ jjtThis.setCoord(begin,end);}
+		//{ jjtThis.setCoord(begin,end);}
 	
 		}
 
@@ -2774,9 +2775,7 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="if" "(" Expression() ")" Statement() [ LOOKAHEAD(1) "else" Statement() ]
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		//{jjtThis.setCoord(begin,begin);	}
 	}
 
 
@@ -2793,14 +2792,14 @@ TOKEN :
 	{Token begin, end;}
 	{
 	  begin=<DO> Statement() end=<WHILE> <LPAREN> Expression() <RPAREN> EndStatement() 
-	  {jjtThis.setCoord(begin,end);}
+	 // {jjtThis.setCoord(begin,end);}
 	}
 
 	void WhileStatement() #WhileStatement:
 	{Token begin;}
 	{
 	  begin=<WHILE> <LPAREN> Expression() <RPAREN> Statement()
-	  {jjtThis.setCoord(begin,begin);}
+	 // {jjtThis.setCoord(begin,begin);}
 	}
 
 	void ForStatement() #void:
@@ -2809,28 +2808,28 @@ TOKEN :
 	  begin=< FOR >(
 		<EACH> <LPAREN>( //for each var
 			   ("var" VariableDeclarationNoIn() <IN> Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(true);} {jjtThis.setCoord(begin,begin);}) #ForVarInStatement
+			         {jjtThis.setEach(true);} /*{jjtThis.setCoord(begin,begin);*/) #ForVarInStatement
 			   |//for each
 			   ( LeftHandSideExpressionForIn() <IN> Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(true);} {jjtThis.setCoord(begin,begin);}) #ForInStatement
+			         {jjtThis.setEach(true);} /*{jjtThis.setCoord(begin,begin);*/) #ForInStatement
 	    )
 	  |
 		<LPAREN> ( //for ...;...;...
 			  LOOKAHEAD( (ExpressionNoIn())? ";") (( ExpressionNoIn() #PreAssignmentList)? #EmptyExpression(jjtree.nodeArity()==0) ";"
 																   ( Expression() #ForConditionList)? #EmptyExpression(jjtree.nodeArity()==0) ";"
 																   ( Expression() #PostAssignmentList)? #EmptyExpression(jjtree.nodeArity()==0) ")"
-																   Statement() {jjtThis.setCoord(begin,begin);}) #ForStatement 
+																   Statement() /*{jjtThis.setCoord(begin,begin); }*/) #ForStatement 
 			|//for var ...;...;...
 			  LOOKAHEAD("var" VariableDeclarationList() ";") ("var" VariableDeclarationList() #PreAssignmentList";"
 																   ( Expression() #ForConditionList)? #EmptyExpression(jjtree.nodeArity()==0) ";"
 																   ( Expression() #PostAssignmentList)? #EmptyExpression(jjtree.nodeArity()==0) <RPAREN>
-																   Statement() {jjtThis.setCoord(begin,begin);}) #ForVarStatement
+																   Statement() /*{jjtThis.setCoord(begin,begin);}*/) #ForVarStatement
 			| //for var in/of
 			  (  "var" VariableDeclarationNoIn() (<IN>|(<OF> {isEach = true;})) Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(isEach);} {jjtThis.setCoord(begin,begin);}) #ForVarInStatement
+			         {jjtThis.setEach(isEach);} /*{jjtThis.setCoord(begin,begin); }*/) #ForVarInStatement
 			| //for in/of
 			  ( LeftHandSideExpressionForIn() (<IN>|(<OF> {isEach = true;})) Expression() <RPAREN> Statement()
-			          {jjtThis.setEach(isEach);} {jjtThis.setCoord(begin,begin);}) #ForInStatement
+			          {jjtThis.setEach(isEach);}/*{jjtThis.setCoord(begin,begin); }*/) #ForInStatement
 	     )
 	  )  
 	}
@@ -2840,9 +2839,7 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="continue" ( LOOKAHEAD(LabelIdentifier()) LabelIdentifier() )? EndStatement()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 
@@ -2852,9 +2849,7 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="break"( LOOKAHEAD(LabelIdentifier()) LabelIdentifier() )?  EndStatement()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 
@@ -2882,9 +2877,7 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="switch" "(" Expression() ")" CaseBlock()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	void CaseBlock() #CaseGroups :
@@ -2894,9 +2887,7 @@ TOKEN :
 				( 
 						end=< RBRACE > | DefaultClause() ( CaseClauses() )? end=< RBRACE > 
 				)
-		{
-		  jjtThis.setCoord(begin,end);
-		}
+		/*{jjtThis.setCoord(begin,end); }*/
 	}
 
 	void CaseClauses() #void :
@@ -2909,18 +2900,14 @@ TOKEN :
 	{Token begin;}
 	{
 		( ( begin="case" Expression() ":" ) #CaseGuard ) ( StatementList() )?
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	void DefaultClause() #CaseGroup :
 	{Token begin;}
 	{
 		( ( begin="default" ":" ) #CaseGuard ) ( StatementList() )?
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 
@@ -2936,9 +2923,7 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="throw" Expression() EndStatement()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	void TryStatement() #TryStatement : 
@@ -2947,27 +2932,22 @@ TOKEN :
 		begin="try" Block() 
 		( 
 				( Finally() | Catch() [Finally()])
-		){
-		  jjtThis.setCoord(begin,begin);
-		}
+		)
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}  
 
 	void Catch() #CatchClause :
 	{Token begin;}
 	{
 		begin="catch" "(" Identifier() ")" Block()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	void Finally() #FinallyClause :
 	{Token begin;}
 	{
 		begin="finally" Block()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	/* Section 13: Function Definition */
@@ -2976,18 +2956,14 @@ TOKEN :
 	{Token begin;}
 	{
 		begin="function" Identifier() ( "(" ( FormalParameterList() )? ")" ) #FormalParameterList FunctionBody()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}  
+		/*{jjtThis.setCoord(begin,begin); }*/ 
 	}
 
 	void FunctionExpression() #FunctionExpression :
 	{Token begin;}
 	{
 		begin="function" ( Identifier() )? ( "(" ( FormalParameterList() )? ")" ) #FormalParameterList FunctionBody()
-		{
-		  jjtThis.setCoord(begin,begin);
-		}
+		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
 	void FormalParameterList() #void :

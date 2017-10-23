@@ -114,7 +114,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         boolean isFinal = !langSpec.getJpModel().isSuper(joinPoint);
 
-        GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal);
+        GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal, langSpec.getJpModel());
 
         GeneratorUtils.createListOfAvailableAttributes(javaC, langSpec, joinPoint, superTypeName, isFinal);
         GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);

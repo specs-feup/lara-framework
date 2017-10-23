@@ -7,6 +7,7 @@ package org.dojo.jsl.parser.ast;
 
 import java.util.HashMap;
 
+import org.dojo.jsl.parser.ast.utils.LaraCNodeFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -158,7 +159,7 @@ public class ASTCall extends SimpleNode {
             exprEl.appendChild(assignEl);
             leftHandSideExpression.toXML(doc, assignEl);
             if (aspectDeclaration.getType().equals(Types.AspectSTATIC)) {
-                ASTAllocationExpression allocExpr = newAllocExpr(aspectDeclaration.getName());
+                ASTAllocationExpression allocExpr = LaraCNodeFactory.newAllocExpr(aspectDeclaration.getName());
                 allocExpr.toXML(doc, assignEl);
             } else {
                 aspectDeclaration.toXML(doc, assignEl);
@@ -172,7 +173,7 @@ public class ASTCall extends SimpleNode {
                 varName = aspectDeclaration.getName() + aspectDeclaration.staticName
                         + aspectDeclaration.staticCounter++;
             }
-            SimpleNode initExpr = newAllocExpr(aspectDeclaration.getName());
+            SimpleNode initExpr = LaraCNodeFactory.newAllocExpr(aspectDeclaration.getName());
             // if (aspectDeclaration.getType().equals(Types.AspectSTATIC)) {
             // } else {
             // initExpr = LaraCNodeFactory.newIdentifier(aspectDeclaration.getName());

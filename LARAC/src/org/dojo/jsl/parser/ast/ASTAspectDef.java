@@ -8,6 +8,7 @@ package org.dojo.jsl.parser.ast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -330,6 +331,29 @@ public class ASTAspectDef extends SimpleNode {
          */
         if (finalize != null) {
             finalize.toXML(doc, aspectEl);
+        }
+    }
+
+    protected void createInputXMLDecl(SimpleNode simpleNode, Map<String, Variable> vars, Document doc, Element parent) {
+        if (simpleNode instanceof ASTVariableDeclarationList) {
+            for (SimpleNode node : simpleNode.getSimpleNodeChildren()) {
+                ASTVariableDeclaration varDecl = (ASTVariableDeclaration) node;
+                createInputXMLDecl(varDecl, vars.get(varDecl.getId()), doc, parent);
+            }
+        } else {
+            ASTVariableDeclaration varDecl = (ASTVariableDeclaration) simpleNode;
+            createInputXMLDecl(varDecl, vars.get(varDecl.getId()), doc, parent);
+        }
+    }
+
+    protected void createInputXMLDecl(ASTVariableDeclaration simpleNode, Variable var, Document doc,
+            Element parent) {
+        final Element paramEl = doc.createElement("parameter");
+        paramEl.setAttribute("name", var.getName());
+        parent.appendChild(paramEl);
+        paramEl.setAttribute("type", var.getType().toString());
+        if (simpleNode.jjtGetNumChildren() > 1) {
+            simpleNode.getChild(1).toXML(doc, paramEl);
         }
     }
 

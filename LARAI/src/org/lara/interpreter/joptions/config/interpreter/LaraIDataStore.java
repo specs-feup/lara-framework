@@ -25,7 +25,6 @@ import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.lara.interpreter.api.WeaverApis;
-import org.lara.interpreter.aspectir.Argument;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
@@ -40,6 +39,7 @@ import com.google.common.base.Preconditions;
 
 import larai.LaraI;
 import pt.up.fe.specs.lara.LaraApis;
+import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 

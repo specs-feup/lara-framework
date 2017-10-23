@@ -14,12 +14,6 @@
 package org.lara.interpreter.generator.stmt;
 
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.Aspect;
-import org.lara.interpreter.aspectir.Aspects;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-import org.lara.interpreter.aspectir.Parameter;
-import org.lara.interpreter.aspectir.Statement;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.joptions.keys.OptionalFile;
@@ -30,6 +24,12 @@ import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.events.EventTriggerGenerator;
 
+import pt.up.fe.specs.lara.aspectir.Aspect;
+import pt.up.fe.specs.lara.aspectir.Aspects;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Parameter;
+import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.util.SpecsIo;
 
 /**

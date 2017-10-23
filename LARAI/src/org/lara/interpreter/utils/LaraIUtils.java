@@ -17,12 +17,12 @@ import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWea
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.lara.interpreter.aspectir.Base;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.language.specification.LanguageSpecification;
 
 import larai.LaraI;
+import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {

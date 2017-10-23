@@ -15,9 +15,9 @@ package org.lara.interpreter.generator.js;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.ExprId;
 import org.lara.interpreter.utils.LaraIUtils;
 
+import pt.up.fe.specs.lara.aspectir.ExprId;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 
 public class ExpressionProcessor {

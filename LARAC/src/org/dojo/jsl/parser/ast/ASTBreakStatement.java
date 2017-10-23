@@ -9,44 +9,44 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTBreakStatement extends SimpleNode {
-	private String targetLabel = "";
+    private String targetLabel = "";
 
-	public ASTBreakStatement(int id) {
-		super(id);
-	}
+    public ASTBreakStatement(int id) {
+        super(id);
+    }
 
-	public ASTBreakStatement(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTBreakStatement(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		if (children != null) {
-			targetLabel = ((ASTIdentifier) children[0]).value.toString();
-			if (targetLabel.startsWith("#")) {
-				return null;
-			}
-			if (lookupLabel(targetLabel) == null) {
-				throw newException("Label \"" + targetLabel + "\" does not exist.");
-			}
-		}
-		return null;
-	}
+    @Override
+    public Object organize(Object obj) {
+        if (children != null) {
+            targetLabel = ((ASTIdentifier) children[0]).value.toString();
+            if (targetLabel.startsWith("#")) {
+                return null;
+            }
+            if (lookupLabel(targetLabel) == null) {
+                throw newException("Label \"" + targetLabel + "\" does not exist.");
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		final Element breakEl = doc.createElement("statement");
-		breakEl.setAttribute("name", "break");
-		breakEl.setAttribute("coord", lookDownCoords());
-		final Element exprEl = doc.createElement("expression");
-		breakEl.appendChild(exprEl);
-		if (!targetLabel.isEmpty()) {
-			final Element idEl = doc.createElement("id");
-			idEl.setAttribute("name", targetLabel);
-			exprEl.appendChild(idEl);
-		}
-		parent.appendChild(breakEl);
-	}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        final Element breakEl = doc.createElement("statement");
+        breakEl.setAttribute("name", "break");
+        breakEl.setAttribute("coord", getCoords());
+        final Element exprEl = doc.createElement("expression");
+        breakEl.appendChild(exprEl);
+        if (!targetLabel.isEmpty()) {
+            final Element idEl = doc.createElement("id");
+            idEl.setAttribute("name", targetLabel);
+            exprEl.appendChild(idEl);
+        }
+        parent.appendChild(breakEl);
+    }
 }
 /*
  * JavaCC - OriginalChecksum=7d2ce2261e1f80d7976629a6225e61c1 (do not edit this
