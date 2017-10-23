@@ -26,6 +26,7 @@ public enum JsDocTagProperty {
     NAME("name"),
     TYPE_NAME("type"),
     NAME_PATH("namePath"),
+    OPTIONAL("optional"),
     DEFAULT_VALUE("default");
 
     private final String property;

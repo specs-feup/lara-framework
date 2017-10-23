@@ -51,6 +51,21 @@ ul {
 	/*padding-top: 4px;*/
 }
 
+.function_block {
+	/* padding-top: 1em; */
+	padding-bottom: 1em;
+}
+
 .function_content {
 	padding-left: 2em;
+}
+
+.code {
+	
+}
+
+.parameters {
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
 }

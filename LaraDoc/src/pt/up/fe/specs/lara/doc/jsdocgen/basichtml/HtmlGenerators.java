@@ -86,18 +86,23 @@ public class HtmlGenerators {
 
     // public static String generateFunction(FunctionDeclElement functionDecl, String id) {
     public static String generateMember(String id, LaraDocComment laraComment) {
-        return generateMember(id, laraComment, true);
+        return generateMember(id, laraComment, true, false);
     }
 
-    public static String generateMember(String id, LaraDocComment laraComment, boolean isFunction) {
+    public static String generateMember(String id, LaraDocComment laraComment, boolean isFunction,
+            boolean isConstructor) {
 
         StringBuilder functionCode = new StringBuilder();
-        functionCode.append("<p>");
+        functionCode.append("<div class='function_block'>");
 
         JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        startTag("span", id, functionCode);
+        startTag("pre class='prettyprint'><code class='language-js'", id, functionCode);
         // assignmentCode.append("<em>" + namePath);
+        if (isConstructor) {
+            functionCode.append("new ");
+        }
+
         functionCode.append(namePath);
 
         String functionParameters = isFunction ? generateFunctionParams(laraComment.getParameters()) : "";
@@ -106,7 +111,7 @@ public class HtmlGenerators {
         // String functionParameters = generateFunctionParams(params);
         functionCode.append(functionParameters);
 
-        functionCode.append("</span>");
+        functionCode.append("</code></pre>");
 
         // assignmentCode.append(generateInputTags(laraComment));
 
@@ -115,7 +120,8 @@ public class HtmlGenerators {
         String text = laraComment.getText();
         if (!text.isEmpty()) {
             functionCode.append("<p>");
-            String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
+            // String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
+            String htmlText = generateTextBlock(text);
             functionCode.append(htmlText);
             functionCode.append("</p>");
             // functionCode.append("<br>");
@@ -129,7 +135,7 @@ public class HtmlGenerators {
         // List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
         // functionCode.append(generateParameters("Parameters", inputTags));
 
-        functionCode.append("</p>");
+        functionCode.append("</div>");
 
         return functionCode.toString();
 
@@ -202,12 +208,23 @@ public class HtmlGenerators {
             String type = param.getValue(JsDocTagProperty.TYPE_NAME, "");
             String content = param.getValue(JsDocTagProperty.CONTENT, "").trim();
 
+            code.append("<span class='parameters'>");
             code.append("<strong>" + name + "</strong>");
 
             // code.append("<br> - ").append(name);
 
             String typeInfo = type.isEmpty() ? "any" : type;
-            code.append(" (").append(typeInfo).append(")");
+
+            if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
+                if (param.hasProperty(JsDocTagProperty.DEFAULT_VALUE)) {
+                    typeInfo += " = " + param.getValue(JsDocTagProperty.DEFAULT_VALUE);
+                } else {
+                    typeInfo += "?";
+                }
+            }
+
+            code.append("(").append(typeInfo).append(")");
+            code.append("</span>");
 
             if (!content.isEmpty()) {
                 code.append(" ");
@@ -251,5 +268,10 @@ public class HtmlGenerators {
         }
 
         return code.toString();
+    }
+
+    public static String generateTextBlock(String text) {
+        return StringLines.getLines(text).stream()
+                .collect(Collectors.joining("<br>"));
     }
 }

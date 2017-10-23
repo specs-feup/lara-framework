@@ -22,10 +22,8 @@ import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.SpecsStrings;
-import pt.up.fe.specs.util.utilities.StringLines;
 
 public class LaraModuleBuilder {
 
@@ -77,14 +75,15 @@ public class LaraModuleBuilder {
             htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
 
             toc.addLevelOne("Classes", classId, classElement.getClassName());
-            // addToc(toc, classElement, id);
 
-            LaraDocComment comment = classElement.getComment();
-
-            if (!comment.getText().isEmpty()) {
-                String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
-                htmlCode.append("<p>" + text + "</p>");
-            }
+            boolean isConstructor = !classElement.getInstanceElements().isEmpty();
+            String classCode = HtmlGenerators.generateMember(classId, classElement.getComment(), isConstructor,
+                    isConstructor);
+            htmlCode.append(classCode);
+            // if (!comment.getText().isEmpty()) {
+            // String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
+            // htmlCode.append("<p>" + text + "</p>");
+            // }
 
             // Static members
             List<AssignmentElement> staticMembers = classElement.getStaticElements();
@@ -100,7 +99,8 @@ public class LaraModuleBuilder {
                     staticNames.add(staticMember.getNamePath());
 
                     boolean isFunction = staticMember.getRightFunctionDecl().isPresent();
-                    htmlCode.append(HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction));
+                    htmlCode.append(
+                            HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction, false));
                     // htmlCode.append(HtmlGenerators.generateAssignment(staticMember, staticId));
                 }
             }
@@ -121,7 +121,8 @@ public class LaraModuleBuilder {
                     // htmlCode.append(HtmlGenerators.generateAssignment(instanceMember, instanceId));
 
                     boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
-                    htmlCode.append(HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction));
+                    htmlCode.append(
+                            HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction, false));
 
                 }
             }
