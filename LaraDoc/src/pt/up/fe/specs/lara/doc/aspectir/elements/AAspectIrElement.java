@@ -31,4 +31,9 @@ public abstract class AAspectIrElement implements AspectIrElement {
     public String toString() {
         return "Comment:" + laraDocComment;
     }
+
+    @Override
+    public String getName() {
+        throw new RuntimeException("Not implemented for class " + getClass());
+    }
 }

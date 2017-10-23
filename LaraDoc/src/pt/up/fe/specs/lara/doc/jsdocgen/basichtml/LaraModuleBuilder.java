@@ -15,9 +15,9 @@ package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
+import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
@@ -60,6 +60,7 @@ public class LaraModuleBuilder {
 
         // Generate HTML for Aspects
         List<AspectElement> aspects = doc.getTopLevelElements(AspectElement.class);
+        AspectIrElement.sort(aspects);
         if (!aspects.isEmpty()) {
             htmlCode.append("<h2>Aspects</h2>");
             for (AspectElement aspect : aspects) {
@@ -70,7 +71,10 @@ public class LaraModuleBuilder {
         }
 
         // Generate HTML for Classes
-        for (ClassElement classElement : doc.getTopLevelElements(ClassElement.class)) {
+        List<ClassElement> classes = doc.getTopLevelElements(ClassElement.class);
+        AspectIrElement.sort(classes);
+
+        for (ClassElement classElement : classes) {
             String classId = nextId();
             htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
 
@@ -87,6 +91,8 @@ public class LaraModuleBuilder {
 
             // Static members
             List<AssignmentElement> staticMembers = classElement.getStaticElements();
+            AspectIrElement.sort(staticMembers);
+
             List<String> staticIds = new ArrayList<>();
             List<String> staticNames = new ArrayList<>();
             if (!staticMembers.isEmpty()) {
@@ -111,6 +117,8 @@ public class LaraModuleBuilder {
             List<String> instanceIds = new ArrayList<>();
             List<String> instanceNames = new ArrayList<>();
             List<AssignmentElement> instanceMembers = classElement.getInstanceElements();
+            AspectIrElement.sort(instanceMembers);
+
             if (!instanceMembers.isEmpty()) {
                 htmlCode.append("<h2>Instance Members</h2>");
 
@@ -133,6 +141,8 @@ public class LaraModuleBuilder {
 
         // Global functions
         List<FunctionDeclElement> functionDecls = doc.getTopLevelElements(FunctionDeclElement.class);
+        AspectIrElement.sort(functionDecls);
+
         if (!functionDecls.isEmpty()) {
             htmlCode.append("<h2>Global Functions</h2>");
             for (FunctionDeclElement functionDecl : functionDecls) {
@@ -142,9 +152,9 @@ public class LaraModuleBuilder {
             }
         }
 
-        System.out.println("MODULE:" + module.getImportPath());
-        System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
-                .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
+        // System.out.println("MODULE:" + module.getImportPath());
+        // System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
+        // .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
         // Add Global assignments?
 
         // Add Global vardecls?

@@ -13,6 +13,11 @@ public class AspectElement extends AAspectIrElement {
     public String getAspectName() {
         return getComment().getLastTag(JsDocTagName.ASPECT).getValue(JsDocTagProperty.NAME_PATH);
     }
+
+    @Override
+    public String getName() {
+        return getAspectName();
+    }
     //
     // public List<String> getParameters() {
     // return getComment().getTags(JsDocTagName.PARAM).stream()
