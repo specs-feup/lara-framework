@@ -13,11 +13,24 @@
 
 package pt.up.fe.specs.lara.doc.aspectir;
 
-import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
+public enum ExtraOp {
 
-public interface AspectIrElement {
+    COND("COND"),
+    NEW("NEW"),
+    INCS("INCS"),
+    DECS("DECS"),
+    ASSIGN("ASSIGN"),
+    MATCH("MATCH"),
+    FN("FN"),
+    COMMA("COMMA");
 
-	String getType();
+    private String op;
 
-	LaraDocComment getComment();
+    private ExtraOp(String op) {
+        this.op = op;
+    }
+
+    public String getName() {
+        return op;
+    }
 }

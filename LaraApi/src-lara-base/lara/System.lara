@@ -1,5 +1,8 @@
 import lara.util.TimeUnits;
 
+/**
+ * @class
+ */
 var System = {};
 
 /**

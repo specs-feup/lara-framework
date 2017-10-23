@@ -84,8 +84,12 @@ DataStore.prototype.get = function(key) {
  */
 DataStore.prototype.put = function(key, value) {
 	checkType(key, "string", "DataStore.putValue::key");
+	//println("KEY:" + key);
 	var processedKey = this._processKey(key, "put");
+	//println("PROCESSED KEY:" + processedKey);
+	//println("DATA BEFORE:" + this.data.toString());
 	this.data.setRaw(processedKey, value);
+	//println("DATA AFTER:" + this.data.toString());
 }
 
 /**
@@ -195,5 +199,12 @@ DataStore.prototype.load = function(fileOrBaseFolder, optionalFile) {
 	var javaDataStore = this._getUtilityClass().loadDataStore(Io.getPath(fileOrBaseFolder, optionalFile), this.definition);
 
 	return this._dataStoreWrapper(javaDataStore);
+}
+
+DataStore.prototype.copy = function() {
+	// Save this data store to a temporary file, a load it again. Return loaded object
+	var tempFilename = "_datastore_copy_temp.datastore";
+	this.save(tempFilename);
+	return this.load(tempFilename);
 }
 

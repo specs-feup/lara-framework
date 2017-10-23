@@ -1,17 +1,56 @@
 #row1{
     display:flex;
     flex-direction:row;
-justify-content: space-around;
+	/* justify-content: space-around; */
 }
 
 #column1{
     display:flex;
     flex-direction:column;
-
+	padding-right: 30px;
 }
 
 
 #column2{
     display:flex;
     flex-direction:column;
+}
+
+ul {
+	padding-left: 1em;
+}
+
+/**
+ * Taken from here: https://www.tipsandtricks-hq.com/simple-table-of-contents-toc-using-pure-html-and-css-code-9217
+ */
+
+#toc_container {
+    background: #f9f9f9 none repeat scroll 0 0;
+    border: 1px solid #aaa;
+    display: table;
+    font-size: 95%;
+    margin-bottom: 1em;
+    padding: 20px;
+    width: auto;
+}
+
+.toc_title {
+    font-weight: 700;
+    text-align: center;
+}
+
+#toc_container li, #toc_container ul, #toc_container ul li{
+    list-style: outside none none !important;
+}
+
+.toc_class {
+	margin-bottom: 4px;
+}
+
+.toc_class_element {
+	/*padding-top: 4px;*/
+}
+
+.function_content {
+	padding-left: 2em;
 }

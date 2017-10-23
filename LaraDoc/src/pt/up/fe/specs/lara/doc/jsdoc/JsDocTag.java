@@ -26,11 +26,20 @@ public class JsDocTag {
 
     private final Map<String, String> properties;
 
+    public JsDocTag(JsDocTagName tagName) {
+        this(tagName.getTagName());
+    }
+
     public JsDocTag(String tagName) {
         this.properties = new HashMap<>();
         setValue(JsDocTagProperty.TAG_NAME, tagName);
         // this.properties.put(PROPERTY_TAG_NAME, tagName);
     }
+
+    // public static JsDocTag(String tagName, JsDocTagProperty property, String value) {
+    // JsDocTag tag = new JsDocTag(tagName);
+    // tag.setValue(property, value);
+    // }
 
     public Collection<String> getKeys() {
         return properties.keySet();
@@ -49,11 +58,20 @@ public class JsDocTag {
         // return properties.get(PROPERTY_TAG_NAME);
     }
 
-    public void setContent(String content) {
+    public JsDocTag setContent(String content) {
         setValue(JsDocTagProperty.CONTENT, content);
+        return this;
     }
 
-    public void addContent(String value) {
+    public boolean hasProperty(JsDocTagProperty property) {
+        return hasProperty(property.getPropertyName());
+    }
+
+    public boolean hasProperty(String property) {
+        return properties.containsKey(property);
+    }
+
+    public JsDocTag addContent(String value) {
         // String content = properties.getOrDefault(PROPERTY_CONTENT, "");
         String content = getValue(JsDocTagProperty.CONTENT, "");
 
@@ -61,23 +79,28 @@ public class JsDocTag {
 
         setValue(JsDocTagProperty.CONTENT, newContent);
         // properties.put(PROPERTY_CONTENT, newContent);
+
+        return this;
     }
 
     // public void setType(String value) {
     //
     // }
 
-    public void setValue(JsDocTagProperty property, String value) {
+    public JsDocTag setValue(JsDocTagProperty property, String value) {
         setValue(property.getPropertyName(), value);
+        return this;
     }
 
-    public void setValue(String key, String value) {
+    public JsDocTag setValue(String key, String value) {
         String previousValue = properties.put(key, value);
         if (previousValue != null) {
             SpecsLogs.msgInfo(
                     "Replacing previous value of property '" + key + "' in JsDoc tag '" + getTagName()
                             + "'. Current value '" + value + "', previous value '" + previousValue + "'");
         }
+
+        return this;
     }
 
     private String genericGet(String key, String defaultValue) {

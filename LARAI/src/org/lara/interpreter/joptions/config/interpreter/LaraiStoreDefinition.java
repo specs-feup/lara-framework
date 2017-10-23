@@ -49,6 +49,8 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     @Override
     public StoreDefinition getStoreDefinition() {
 
+        // return LaraiKeys.STORE_DEFINITION;
+
         StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.DEFINITION_NAME);
 
         builder.addKey(LaraiKeys.LARA_FILE);
@@ -70,6 +72,7 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
         builder.addKey(LaraiKeys.LOG_JS_OUTPUT);
         builder.addKey(LaraiKeys.DEBUG_MODE);
         builder.addKey(LaraiKeys.TRACE_MODE);
+        builder.addKey(LaraiKeys.BUNDLE_TAGS);
         // builder.addKey(LaraiKeys.SHOW_HELP);
 
         final StoreDefinitionBuilder finalBuilder = builder.setDefaultValues(getDefaultValues());
@@ -83,6 +86,7 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
         // LoggingUtils.msgWarn("Error message:\n", e);
         // }
         return finalBuilder.build();
+
     }
 
     private static DataStore getDefaultValues() {

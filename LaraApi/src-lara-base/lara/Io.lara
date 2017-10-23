@@ -1,5 +1,6 @@
 /**
  * Utility methods related with input/output operations on files.
+ * @class
  */
 var Io = {};
 
@@ -159,6 +160,9 @@ Io.copyFolder = function(filepath, destination, verbose) {
 	return SpecsIo.copyFolder(Io.getPath(filepath), Io.getPath(destination), verbose);
 }
 
+/**
+ * @param {string|#java.io.File} file 
+ */
 Io.removeExtension = function(file) {
 	return SpecsIo.removeExtension(file);
 }
@@ -173,7 +177,7 @@ Io.appendFile = function(path, content) {
 
 /**
  * Returns the path of 'targetFile', relative to 'baseFile'. 
- * <p>
+ * 
  * If the file does not share a common ancestor with baseFile, returns undefined.
  */
 Io.getRelativePath = function(targetFile, baseFile) {

@@ -68,6 +68,7 @@ public class LaraIKeyFactory {
 
         DataKey<FileList> fileListKey = KeyFactory.object(id, FileList.class)
                 .setDecoder(FileList::newInstance)
+                .setDefault(() -> FileList.newInstance())
                 .setKeyPanelProvider((key, data) -> new FileListPanel(key, data, selectionMode,
                         extensions));
 
@@ -104,14 +105,14 @@ public class LaraIKeyFactory {
     	if (!file.getAbsoluteFile().exists()) {
     	    LoggingUtils
     		    .msgInfo("Path '" + file.getAbsolutePath() + "' does not exist, treating it as a folder");
-
+    
     	    isFolder = true;
     	}
-
+    
     	File processedFile = KeyFactory.customGetterFile(isFolder, create).get(file, dataStore);
     	processedFiles.add(processedFile);
         }
-
+    
         return FileList.newInstance(processedFiles);
     };
     }
@@ -263,6 +264,7 @@ public class LaraIKeyFactory {
 
         return KeyFactory.object(id, OptionalFile.class)
                 .setDecoder(OptionalFile::newInstance) // .setDecoder(s -> new OptionalFile(new File(s), false))
+                .setDefault(() -> OptionalFile.newInstance(null))
                 .setKeyPanelProvider((key, data) -> new FileWithCheckBoxPanel(key, data, fileChooser, extensions))
                 .setCustomGetter((optFile, dataStore) -> {
                     File file = optFile.getFile();

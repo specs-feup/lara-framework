@@ -68,7 +68,7 @@ public class LaraCommentsParser {
         // Split into comment text and list of JsDoc tags
         List<String> commentLines = StringLines.getLines(cleanedComment);
         Collections.reverse(commentLines);
-        String docText = extractElementText(commentLines);
+        String docText = extractElementText(commentLines).trim();
         List<String> tagsText = extractTagsText(commentLines);
 
         Preconditions.checkArgument(commentLines.isEmpty(), "Expected comment lines to be empty");
@@ -83,10 +83,10 @@ public class LaraCommentsParser {
         // Parse tags
         List<JsDocTag> tags = SpecsCollections.map(tagsText, tagParser::parse);
         if (!tags.isEmpty()) {
-            System.out.println("TAGS:" + tags);
+            // System.out.println("TAGS:" + tags);
         }
 
-        return null;
+        return new LaraDocComment(docText, tags);
         /*
         // Split into lines
         List<String> lines = new ArrayList<>();

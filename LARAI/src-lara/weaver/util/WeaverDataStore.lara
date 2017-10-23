@@ -56,6 +56,7 @@ WeaverDataStore.prototype.getOutputFolder = function() {
 
 /**
  * @param outputFolder a java.io.File or a String, representing the current output folder of the weaver
+ * @TODO: Implementation is wrong
  */
 WeaverDataStore.prototype.setOutputFolder = function(outputFolder) {
 	//var normalizedOutputFolder = Io.getPath(outputFolder);
@@ -64,5 +65,17 @@ WeaverDataStore.prototype.setOutputFolder = function(outputFolder) {
 	this.set(LaraiKeys.OUTPUT_FOLDER, normalizedOutputFolder);	
 }
 
+/**
+ * 
+ */
+WeaverDataStore.prototype.setIncludeFolders = function(includeFolders) {
+	
+	var fileList = Java.type("org.lara.interpreter.joptions.keys.FileList").newInstance(includeFolders);	
+	this.put("include", fileList);	
+}
 
-
+WeaverDataStore.prototype.setTools = function(toolsPath) {
+	
+	var toolsFile = Java.type("org.lara.interpreter.joptions.keys.OptionalFile").newInstance(toolsPath);	
+	this.put("tools", toolsFile);	
+}

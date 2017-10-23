@@ -29,7 +29,7 @@ import pt.up.fe.specs.lara.doc.jsdocgen.JsDocGenerator;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.utilities.Replacer;
 
-public class LaraDocGenerator {
+public class LaraDocHtmlGenerator {
 
     private final JsDocGenerator generator;
     private final File outputFolder;
@@ -39,7 +39,7 @@ public class LaraDocGenerator {
 
     private final Deque<String> currentModulePath;
 
-    public LaraDocGenerator(JsDocGenerator generator, File outputFolder) {
+    public LaraDocHtmlGenerator(JsDocGenerator generator, File outputFolder) {
         this.generator = generator;
         this.outputFolder = outputFolder;
         this.currentModulePath = new ArrayDeque<>();
@@ -64,6 +64,7 @@ public class LaraDocGenerator {
             moduleList.append(generateDoc(laraPackage));
         }
 
+        LaraDocResource.JQUERY.write(outputFolder);
         LaraDocResource.JS_DOC_JS.write(outputFolder);
         LaraDocResource.STYLES_CSS.write(outputFolder);
 
@@ -138,37 +139,20 @@ public class LaraDocGenerator {
     }
 
     private String generateDoc(LaraDocModule module) {
-        // Clean temporary folder
-        // SpecsIo.deleteFolderContents(jsTemporaryFolder);
 
-        // Generate HTML documentation to a module folder
-        // String folderName = currentModulePath.stream().collect(Collectors.joining("_", "", "_"))
-        // + module.getImportPath();
-        // folderName = folderName.replace(" ", "_");
         String folderName = Integer.toString(counter);
         counter++;
 
-        // Convert LARA to JS to temporary folder
-        File jsOutputFolder = new File(jsTemporaryFolder, folderName);
-        converter.setOutputFolder(jsOutputFolder);
-        for (File laraFile : module.getLaraFiles()) {
-            converter.convertLara(laraFile);
-        }
+        File moduleDocFolder = SpecsIo.mkdir(outputFolder, folderName);
 
-        File moduleDoc = SpecsIo.mkdir(outputFolder, folderName);
-
-        Optional<File> indexFile = generator.generate(SpecsIo.getFiles(jsOutputFolder), moduleDoc);
+        Optional<File> indexFile = generator.generate(module, moduleDocFolder);
 
         if (!indexFile.isPresent()) {
             return module.getImportPath();
         }
 
         String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
-        // System.out.println("INDEX FILE:" + indexFile.get().getAbsolutePath());
-        // System.out.println("OUTPUT FOLDER:" + outputFolder.getAbsolutePath());
 
-        // String moduleTemplate = "<a target=\"_blank\" href=\"" + indexRelativePath + "\">" + module.getImportPath()
-        // + "</a>";
         String moduleTemplate = "<a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
                 + module.getImportPath() + "</a>";
 

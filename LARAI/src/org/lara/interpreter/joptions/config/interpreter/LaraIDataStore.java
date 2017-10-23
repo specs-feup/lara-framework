@@ -240,7 +240,9 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     public Map<String, String> getBundleTags() {
+        // System.out.println("DATA STORE:" + dataStore);
         if (dataStore.hasValue(LaraiKeys.BUNDLE_TAGS)) {
+            // System.out.println("BUNDLE TAGS:" + dataStore.get(LaraiKeys.BUNDLE_TAGS));
             return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
         }
         return Collections.emptyMap();
@@ -249,12 +251,17 @@ public class LaraIDataStore implements LaraiKeys {
     private Map<String, String> parseBundleTags(String bundleTagsString) {
         Map<String, String> bundleTags = new HashMap<>();
 
+        if (bundleTagsString.trim().isEmpty()) {
+            return bundleTags;
+        }
+
         // Split around the comma
         String[] tagPairs = bundleTagsString.split(",");
         for (String tagPair : tagPairs) {
             int equalIndex = tagPair.indexOf('=');
             Preconditions.checkArgument(equalIndex != -1,
-                    "Found a tag-value pair without equal sign (=): " + bundleTagsString);
+                    "Malformed 'Bundle Tags' option, found a tag-value pair without equal sign (=): '"
+                            + bundleTagsString + "'");
 
             String tag = tagPair.substring(0, equalIndex);
             String value = tagPair.substring(equalIndex + 1, tagPair.length());

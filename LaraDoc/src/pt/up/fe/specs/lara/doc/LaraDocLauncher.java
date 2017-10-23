@@ -31,11 +31,11 @@ public class LaraDocLauncher {
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
         long laraDocStart = System.nanoTime();
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder), new File(outputFolder)).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputFolder)).buildLaraDoc();
         System.out.println(SpecsStrings.takeTime("LaraDocFiles", laraDocStart));
 
         long laraDocGeneratorStart = System.nanoTime();
-        LaraDocGenerator generator = new LaraDocGenerator(new JsDocNodeGenerator(),
+        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new JsDocNodeGenerator(),
                 // LaraDocGenerator generator = new LaraDocGenerator(new DocumentationGenerator(),
                 SpecsIo.mkdir(outputFolder));
         generator.generateDoc(laraDocFiles);

@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+import pt.up.fe.specs.lara.doc.LaraToJs;
+import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class DummyGenerator implements JsDocGenerator {
@@ -28,8 +30,10 @@ public class DummyGenerator implements JsDocGenerator {
     }
 
     @Override
-    public Optional<File> generate(List<File> inputFiles, File outputFolder) {
-        // Copy files to the corresponding folder
+    public Optional<File> generate(LaraDocModule module, File outputFolder) {
+    	List<File> inputFiles = LaraToJs.convertModuleToJs(module);
+    	
+    	// Copy files to the corresponding folder
         File commandFolder = SpecsIo.mkdir(outputFolder.getParentFile(), "js");
         counter++;
         inputFiles.stream().forEach(file -> SpecsIo.copy(file, new File(commandFolder, file.getName())));
