@@ -309,11 +309,11 @@ public class LaraC {
             // Just go to the finally statement and throw syntax exception with exceptions
         } catch (ParseException e) {
             parser.exceptions.add(e);
+        } catch (Error e) {
+            parser.exceptions.add(e);
         } catch (Throwable e) {
             possibleException = e;
-        } finally
-
-        {
+        } finally {
 
             if (!parser.exceptions.isEmpty()) {
                 throw new SyntaxException(parser.exceptions, possibleException);

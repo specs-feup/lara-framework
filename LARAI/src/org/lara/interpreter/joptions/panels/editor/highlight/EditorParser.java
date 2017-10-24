@@ -101,6 +101,8 @@ public class EditorParser extends AbstractParser {
                 }
             }
 
+        } catch (Error e) {
+            addException(result, e);
         } catch (Throwable e) {
 
             addException(result, e);
