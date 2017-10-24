@@ -57,4 +57,10 @@ public class AssignmentElement extends AAspectIrElement {
         JsDocTag alias = getComment().getTag(JsDocTagName.ALIAS);
         return alias.getValue(JsDocTagProperty.NAME_PATH);
     }
+
+    @Override
+    public String getName() {
+        return getNamePath();
+    }
+
 }

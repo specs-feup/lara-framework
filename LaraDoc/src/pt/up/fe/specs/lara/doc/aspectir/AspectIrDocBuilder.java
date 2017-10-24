@@ -16,10 +16,9 @@ package pt.up.fe.specs.lara.doc.aspectir;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.aspectir.Aspect;
-import org.lara.interpreter.aspectir.Aspects;
-import org.lara.interpreter.aspectir.Statement;
-
+import pt.up.fe.specs.lara.aspectir.Aspect;
+import pt.up.fe.specs.lara.aspectir.Aspects;
+import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.comments.LaraCommentsParser;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 

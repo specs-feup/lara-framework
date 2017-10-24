@@ -15,17 +15,15 @@ package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
+import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.SpecsStrings;
-import pt.up.fe.specs.util.utilities.StringLines;
 
 public class LaraModuleBuilder {
 
@@ -62,6 +60,7 @@ public class LaraModuleBuilder {
 
         // Generate HTML for Aspects
         List<AspectElement> aspects = doc.getTopLevelElements(AspectElement.class);
+        AspectIrElement.sort(aspects);
         if (!aspects.isEmpty()) {
             htmlCode.append("<h2>Aspects</h2>");
             for (AspectElement aspect : aspects) {
@@ -72,22 +71,28 @@ public class LaraModuleBuilder {
         }
 
         // Generate HTML for Classes
-        for (ClassElement classElement : doc.getTopLevelElements(ClassElement.class)) {
+        List<ClassElement> classes = doc.getTopLevelElements(ClassElement.class);
+        AspectIrElement.sort(classes);
+
+        for (ClassElement classElement : classes) {
             String classId = nextId();
             htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
 
             toc.addLevelOne("Classes", classId, classElement.getClassName());
-            // addToc(toc, classElement, id);
 
-            LaraDocComment comment = classElement.getComment();
-
-            if (!comment.getText().isEmpty()) {
-                String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
-                htmlCode.append("<p>" + text + "</p>");
-            }
+            boolean isConstructor = !classElement.getInstanceElements().isEmpty();
+            String classCode = HtmlGenerators.generateMember(classId, classElement.getComment(), isConstructor,
+                    isConstructor);
+            htmlCode.append(classCode);
+            // if (!comment.getText().isEmpty()) {
+            // String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
+            // htmlCode.append("<p>" + text + "</p>");
+            // }
 
             // Static members
             List<AssignmentElement> staticMembers = classElement.getStaticElements();
+            AspectIrElement.sort(staticMembers);
+
             List<String> staticIds = new ArrayList<>();
             List<String> staticNames = new ArrayList<>();
             if (!staticMembers.isEmpty()) {
@@ -100,7 +105,8 @@ public class LaraModuleBuilder {
                     staticNames.add(staticMember.getNamePath());
 
                     boolean isFunction = staticMember.getRightFunctionDecl().isPresent();
-                    htmlCode.append(HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction));
+                    htmlCode.append(
+                            HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction, false));
                     // htmlCode.append(HtmlGenerators.generateAssignment(staticMember, staticId));
                 }
             }
@@ -111,6 +117,8 @@ public class LaraModuleBuilder {
             List<String> instanceIds = new ArrayList<>();
             List<String> instanceNames = new ArrayList<>();
             List<AssignmentElement> instanceMembers = classElement.getInstanceElements();
+            AspectIrElement.sort(instanceMembers);
+
             if (!instanceMembers.isEmpty()) {
                 htmlCode.append("<h2>Instance Members</h2>");
 
@@ -121,7 +129,8 @@ public class LaraModuleBuilder {
                     // htmlCode.append(HtmlGenerators.generateAssignment(instanceMember, instanceId));
 
                     boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
-                    htmlCode.append(HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction));
+                    htmlCode.append(
+                            HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction, false));
 
                 }
             }
@@ -132,6 +141,8 @@ public class LaraModuleBuilder {
 
         // Global functions
         List<FunctionDeclElement> functionDecls = doc.getTopLevelElements(FunctionDeclElement.class);
+        AspectIrElement.sort(functionDecls);
+
         if (!functionDecls.isEmpty()) {
             htmlCode.append("<h2>Global Functions</h2>");
             for (FunctionDeclElement functionDecl : functionDecls) {
@@ -141,9 +152,9 @@ public class LaraModuleBuilder {
             }
         }
 
-        System.out.println("MODULE:" + module.getImportPath());
-        System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
-                .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
+        // System.out.println("MODULE:" + module.getImportPath());
+        // System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
+        // .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
         // Add Global assignments?
 
         // Add Global vardecls?

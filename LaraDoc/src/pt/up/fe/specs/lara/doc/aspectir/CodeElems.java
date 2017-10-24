@@ -7,16 +7,15 @@ import java.util.stream.Stream;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.lara.interpreter.aspectir.Code;
-import org.lara.interpreter.aspectir.CodeElem;
-import org.lara.interpreter.aspectir.ExprBody;
-import org.lara.interpreter.aspectir.ExprLiteral;
-import org.lara.interpreter.aspectir.ExprOp;
-import org.lara.interpreter.aspectir.Expression;
-import org.lara.interpreter.aspectir.Statement;
-
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.aspectir.Code;
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprBody;
+import pt.up.fe.specs.lara.aspectir.ExprLiteral;
+import pt.up.fe.specs.lara.aspectir.ExprOp;
+import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.util.classmap.FunctionClassMap;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.StringProvider;

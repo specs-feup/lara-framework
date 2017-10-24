@@ -14,17 +14,14 @@
 package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.script.ScriptEngineManager;
 
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.aspectir.Aspects;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.FileList;
@@ -33,11 +30,8 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.w3c.dom.Document;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
-import larac.LaraC;
-import larac.utils.output.Output;
 import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
@@ -47,7 +41,6 @@ import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
@@ -56,7 +49,7 @@ public class LaraDoc {
     private static final Set<String> FILES_TO_COPY = new HashSet<>(Arrays.asList("lara.resource", "lara.bundle"));
 
     private final File inputPath;
-//    private final File outputFolder;
+    // private final File outputFolder;
     private final Lazy<AspectClassProcessor> aspectProcessor;
     private final LanguageSpecification languageSpecification;
 
@@ -66,7 +59,7 @@ public class LaraDoc {
     public LaraDoc(File inputPath) {
         Preconditions.checkArgument(inputPath.exists(), "Given input path '" + inputPath + "' does not exist");
         this.inputPath = inputPath;
-//        this.outputFolder = SpecsIo.mkdir(outputFolder);
+        // this.outputFolder = SpecsIo.mkdir(outputFolder);
         // this.aspectProcessor = Lazy.newInstance(() -> LaraDoc.newAspectProcessor(weaverEngine));
         this.aspectProcessor = Lazy.newInstance(LaraDoc::newAspectProcessor);
         this.languageSpecification = new DefaultWeaver().getLanguageSpecification();
@@ -91,18 +84,18 @@ public class LaraDoc {
 
         return AspectClassProcessor.newInstance(interpreter);
     }
-/*
+    /*
     public void convertFilesV1() {
-
+    
         List<File> allFiles = SpecsIo.getFilesRecursive(inputPath);
-
+    
         // TODO: Filter contents of folders that have file lara.resource
-
+    
         List<File> resourceFiles = allFiles.stream()
                 .filter(file -> file.getName().equals("lara.resource"))
                 .collect(Collectors.toList());
-
-
+    
+    
         List<File> filteredFiles = new ArrayList<>(allFiles);
         for (File resourceFile : resourceFiles) {
             String resourceFolder = resourceFile.getParentFile().getAbsolutePath();
@@ -110,49 +103,49 @@ public class LaraDoc {
                     .filter(file -> !file.getAbsolutePath().startsWith(resourceFolder))
                     .collect(Collectors.toList());
         }
-
+    
         // Parse LARA files
         filteredFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .forEach(this::convertLara);
-
+    
         System.out.println("ALL LARA FILES:" + allFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .count());
-
+    
         System.out.println("FILTERED LARA FILES:" + filteredFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .count());
-
+    
         // Copy JS files, bundle files and resource files
         filteredFiles.stream()
                 .filter(LaraDoc::copyFileFilter)
                 .forEach(this::copyFile);
     }
-*/
-    
+    */
+
     /*
     private void convertLara(File laraFile) {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
-
+    
         args.add(laraFile.getAbsolutePath());
         args.add("--doc");
         args.add("--verbose");
         args.add("0");
         LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
         Document aspectIr = null;
-
+    
         try {
             aspectIr = larac.compile();
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
             return;
         }
-
+    
         // String aspectXml = toXml(aspectIr);
-
+    
         // LaraI.main(args);
         Aspects asps = null;
         try {
@@ -160,24 +153,24 @@ public class LaraDoc {
             // System.out.println("--- IR BEFORE ---");
             // lara.printAspectIR();
             // System.out.println("--- IR AFTER ---");
-
+    
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
             return;
             // throw new RuntimeException("Could not create aspects", e);
         }
-
+    
         // Pass through LaraI
         AspectClassProcessor aspectClassProcessor = aspectProcessor.get();
         StringBuilder jsCode = aspectClassProcessor.generateJavaScriptDoc(asps);
-
+    
         // Save js to the same relative location as the original file
         String relativePath = SpecsIo.getRelativePath(laraFile, inputPath);
         File jsFile = new File(outputFolder, SpecsIo.removeExtension(relativePath) + ".js");
-
+    
         SpecsIo.write(jsFile, jsCode.toString());
     }
-*/
+    */
     private static boolean copyFileFilter(File file) {
         String filename = file.getName().toLowerCase();
 
@@ -191,15 +184,16 @@ public class LaraDoc {
 
         return false;
     }
-/*
+
+    /*
     private void copyFile(File file) {
         // Save to the same relative location as the original file
         String relativePath = SpecsIo.getRelativePath(file, inputPath);
         File newFile = new File(outputFolder, relativePath);
-
+    
         SpecsIo.copy(file, newFile);
     }
-*/
+    */
     public LaraDocFiles buildLaraDoc() {
         // Collect information
         LaraDocFiles laraDocFiles = collectInformation();

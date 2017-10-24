@@ -13,11 +13,20 @@
 
 package pt.up.fe.specs.lara.doc.aspectir;
 
+import java.util.Collections;
+import java.util.List;
+
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 
 public interface AspectIrElement {
 
-	String getType();
+    String getType();
 
-	LaraDocComment getComment();
+    LaraDocComment getComment();
+
+    String getName();
+
+    static void sort(List<? extends AspectIrElement> elements) {
+        Collections.sort(elements, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+    }
 }

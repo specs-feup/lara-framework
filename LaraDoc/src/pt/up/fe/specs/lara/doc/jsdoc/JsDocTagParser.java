@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.doc.jsdoc.data.ParamData;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.stringparser.StringParser;
 import pt.up.fe.specs.util.stringparser.StringParsers;
@@ -142,8 +143,16 @@ public class JsDocTagParser {
 
         // Parameter name required
         String paramName = contents.apply(StringParsers::parseWord);
-        paramName = !paramName.isEmpty() ? paramName : "[missing param name]";
-        tag.setValue(JsDocTagProperty.NAME, paramName);
+        ParamData paramData = ParamData.parseParam(paramName);
+        String parsedName = !paramData.getName().isEmpty() ? paramData.getName() : "[missing param name]";
+
+        tag.setValue(JsDocTagProperty.NAME, parsedName);
+
+        if (paramData.isOptional()) {
+            tag.setValue(JsDocTagProperty.OPTIONAL, "");
+        }
+
+        paramData.getDefaultValue().ifPresent(value -> tag.setValue(JsDocTagProperty.DEFAULT_VALUE, value));
 
         return tag;
     }

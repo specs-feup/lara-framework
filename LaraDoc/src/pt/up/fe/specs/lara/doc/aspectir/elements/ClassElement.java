@@ -62,4 +62,9 @@ public class ClassElement extends AAspectIrElement {
             throw new RuntimeException("Assignment type not supported: " + assignment.getAssignmentType());
         }
     }
+
+    @Override
+    public String getName() {
+        return getClassName();
+    }
 }

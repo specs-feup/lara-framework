@@ -22,4 +22,9 @@ public class FunctionDeclElement extends AAspectIrElement {
     public List<String> getParameters() {
         return parameters;
     }
+
+    @Override
+    public String getName() {
+        return functionName;
+    }
 }
