@@ -91,7 +91,7 @@ public class LaraIDataStore implements LaraiKeys {
         if (dataStore.hasValue(LaraiKeys.LOG_FILE)) {
             OptionalFile logFile = dataStore.get(LaraiKeys.LOG_FILE);
             if (logFile.isUsed()) {
-                larai.out.setStream(logFile.getFile());
+                larai.out.addFileStream(logFile.getFile());
             }
         }
 
