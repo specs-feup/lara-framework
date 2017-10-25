@@ -41,6 +41,7 @@ import larai.LaraI;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public class LaraIDataStore implements LaraiKeys {
@@ -223,9 +224,23 @@ public class LaraIDataStore implements LaraiKeys {
 
     public String getAspectArgumentsStr() {
         if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
-            return dataStore.get(LaraiKeys.ASPECT_ARGS);
+            String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
+
+            // Parse aspect args (e.g., in case it is a file)
+            return parseAspectArgs(aspectArgs);
+
         }
         return "";
+    }
+
+    private static String parseAspectArgs(String aspectArgs) {
+        // If string ends with '.properties', interpret as a path to a properties file
+        if (aspectArgs.trim().endsWith(".properties")) {
+            File properties = SpecsIo.existingFile(aspectArgs);
+            return SpecsProperties.newInstance(properties).toJson();
+        }
+
+        return aspectArgs;
     }
 
     public boolean isJavaScriptStream() {
