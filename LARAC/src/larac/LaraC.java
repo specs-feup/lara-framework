@@ -31,6 +31,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.dojo.jsl.parser.ast.ASTStart;
 import org.dojo.jsl.parser.ast.LARAEcmaScript;
 import org.dojo.jsl.parser.ast.ParseException;
+import org.dojo.jsl.parser.ast.TokenMgrError;
 import org.lara.language.specification.LanguageSpecification;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -309,7 +310,7 @@ public class LaraC {
             // Just go to the finally statement and throw syntax exception with exceptions
         } catch (ParseException e) {
             parser.exceptions.add(e);
-        } catch (Error e) {
+        } catch (TokenMgrError e) {
             parser.exceptions.add(e);
         } catch (Throwable e) {
             possibleException = e;
