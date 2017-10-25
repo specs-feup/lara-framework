@@ -6,19 +6,19 @@ function Metric() {
     
 }
 
-
 /**
  * Instruments code so that when executed, it produces information about the metric to measure.
+ * @param {joinpoint} $start - join point representing the start point of the instrumentation
+ * @param {joinpoint} [$end=$start] - join point representing the end point of the instrumentation
  */
 Metric.prototype.instrument = function($start, $end) {
 		notImplemented("Metric.instrument");
 }
 
-
 /**
  * Extract metric.
  *
- * @param {lara.util.ProcessExecutor} instance after program execution
+ * @param {lara.util.ProcessExecutor} processExecutor - instance after program execution
  * @return {lara.metrics.MetricResult} metric after program execution
  */
 Metric.prototype.report = function(processExecutor) {

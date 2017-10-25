@@ -208,3 +208,13 @@ DataStore.prototype.copy = function() {
 	return this.load(tempFilename);
 }
 
+/**
+ * Checks if the given key has an associated value in the DataStore.
+ *
+ * @param {string} key - The name of the key to check
+ * @returns {boolean} true if the data store has a value for the given key, false otherwise
+ */
+DataStore.prototype.hasValue = function(key) {
+	return this.data.hasValueRaw(key);
+}
+
