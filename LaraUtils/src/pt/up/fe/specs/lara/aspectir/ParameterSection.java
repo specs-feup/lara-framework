@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -14,9 +14,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
 /****************************** Class ParameterSection ******************************/
-public class ParameterSection implements IElement {
+public class ParameterSection extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public ParameterList input;
 	public ParameterList output;
 
@@ -35,9 +36,14 @@ public class ParameterSection implements IElement {
 	}
 	int found_input = 0;
 	int found_output = 0;
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -45,10 +51,12 @@ public class ParameterSection implements IElement {
 	while (q != null){
 		if (q.getNodeName().equals("input")){
 			input = new ParameterList(q,"",doc);
+			input.parent = (IElement)this;
 			found_input++;
 		}
 		else if (q.getNodeName().equals("output")){
 			output = new ParameterList(q,"",doc);
+			output.parent = (IElement)this;
 			found_output++;
 		}
 		else
@@ -81,6 +89,7 @@ this(readDocument(fileName), rootName);
 			String rootName) throws Exception {
 		input = null;
 		output = null;
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -89,9 +98,14 @@ this(readDocument(fileName), rootName);
 			}
 	int found_input = 0;
 	int found_output = 0;
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -99,10 +113,12 @@ this(readDocument(fileName), rootName);
 	while (q != null){
 		if (q.getNodeName().equals("input")){
 			input = new ParameterList(q,"",doc);
+			input.parent = (IElement)this;
 			found_input++;
 		}
 		else if (q.getNodeName().equals("output")){
 			output = new ParameterList(q,"",doc);
+			output.parent = (IElement)this;
 			found_output++;
 		}
 		else
@@ -126,9 +142,14 @@ this(readDocument(fileName), rootName);
 	}
 	int found_input = 0;
 	int found_output = 0;
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterSection: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -136,10 +157,12 @@ this(readDocument(fileName), rootName);
 	while (q != null){
 		if (q.getNodeName().equals("input")){
 			input = new ParameterList(q,"",doc);
+			input.parent = (IElement)this;
 			found_input++;
 		}
 		else if (q.getNodeName().equals("output")){
 			output = new ParameterList(q,"",doc);
+			output.parent = (IElement)this;
 			found_output++;
 		}
 		else
@@ -157,8 +180,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception(" too many output: " +found_output+"(max: "+1+ "x)");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){
@@ -174,6 +197,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	if (input != null)
 		input.writeXml(doc, tagEl,"", level+1);
 	if (output != null)
@@ -184,6 +208,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 	if (input != null)
 		input.writeXml(doc, tagEl,"", level+1);
 	if (output != null)
@@ -192,6 +217,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("ParameterSection {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.print("input = ");
 	if (input == null)

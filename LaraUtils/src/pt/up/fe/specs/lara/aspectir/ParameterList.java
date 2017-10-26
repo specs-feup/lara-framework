@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -14,9 +14,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
 /****************************** Class ParameterList ******************************/
-public class ParameterList implements IElement {
+public class ParameterList extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public java.util.ArrayList<Parameter> parameters= new java.util.ArrayList<Parameter>();
 
 	public ParameterList(){
@@ -30,9 +31,14 @@ public class ParameterList implements IElement {
 	if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 		throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 	}
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -41,6 +47,7 @@ public class ParameterList implements IElement {
 		if (q.getNodeName().equals("parameter")){
 			Parameter _m;
 			_m = new Parameter(q,"",doc);
+			_m.parent = (IElement)this;
 			if (parameters.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			parameters.add(_m);
@@ -69,15 +76,21 @@ this(readDocument(fileName), rootName);
 
 	public ParameterList(Document doc,
 			String rootName) throws Exception {
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
 			if ((!rootName.equals("")) && (!e.getNodeName().equals(rootName))){
 				throw new Exception(" Error unexpected : "+e.getNodeName()+", "+rootName);
 			}
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -86,6 +99,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("parameter")){
 			Parameter _m;
 			_m = new Parameter(q,"",doc);
+			_m.parent = (IElement)this;
 			if (parameters.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			parameters.add(_m);
@@ -105,9 +119,14 @@ this(readDocument(fileName), rootName);
 	if (!e.getNodeName().equals(rootName)){
 		throw new Exception(" Error unexpected: " + e.getNodeName() +" != "+ rootName);
 	}
-		if (e.getAttributes().getLength() != 0){
-			throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	for (int i = 0; i < e.getAttributes().getLength(); i++){
+		Node a = e.getAttributes().item(i);
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
 		}
+		else
+						throw new Exception("Unexpected attribute in Node ParameterList: "+e.getAttributes().item(0).getNodeName());
+	}
 	Node n = e.getFirstChild();
 	while(n != null && !(n instanceof Element))
 		n = n.getNextSibling();
@@ -116,6 +135,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("parameter")){
 			Parameter _m;
 			_m = new Parameter(q,"",doc);
+			_m.parent = (IElement)this;
 			if (parameters.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			parameters.add(_m);
@@ -131,8 +151,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception("Error unexpected: text");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){
@@ -148,6 +168,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	for(Parameter i_parameters: parameters)
 		i_parameters.writeXml(doc,tagEl,"",level+1);
 	return doc;}
@@ -156,12 +177,15 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 	for(Parameter i_parameters: parameters)
 		i_parameters.writeXml(doc,tagEl,"",level+1);
 }
 
 	public void print(PrintStream os, int indent){
 	os.println("ParameterList {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.println("parameters = <[");
 	for(Parameter i_parameters: parameters){

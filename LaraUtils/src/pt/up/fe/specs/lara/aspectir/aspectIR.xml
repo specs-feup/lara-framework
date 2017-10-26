@@ -7,7 +7,7 @@
    <type name="Base">
      <member name="comment" type="string" where="attribute" count="0..1"/>
    </type>
-	<type name="Aspects">
+	<type name="Aspects" base="Base">
 		<member name="aspect" type="Aspect" count="*" />
 		<member name="main" where="attribute" type="string" count="0..1" />
 		<member name="declaration" type="Statement" count="*"/>
@@ -26,12 +26,12 @@
      <member name="statement" type="Statement" count="*"/>
   </type>
     
-  <type name="ParameterSection">
+  <type name="ParameterSection" base="Base">
      <member name="input" type="ParameterList" count="0..1"/>
      <member name="output" type="ParameterList" count="0..1"/>  
   </type>
   
-  <type name="ParameterList">
+  <type name="ParameterList" base="Base">
     <member name="parameter" count="*" type="Parameter"/>
   </type>
   
@@ -40,7 +40,7 @@
      <member name="type" where="attribute" count="0..1"/>     
   </type>
        
-  <type name="CodeElem">
+  <type name="CodeElem" base="Base">
      <member name="desc" type="string" where="attribute" count="0..1"/>
   </type>   
   

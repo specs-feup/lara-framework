@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -17,6 +17,7 @@ import java.io.PrintStream;
 public class Code extends CodeElem implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public java.util.ArrayList<Statement> statements= new java.util.ArrayList<Statement>();
 
 	public Code(){
@@ -32,7 +33,10 @@ public class Code extends CodeElem implements IElement {
 	}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else
@@ -46,6 +50,7 @@ public class Code extends CodeElem implements IElement {
 		if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
@@ -74,6 +79,7 @@ this(readDocument(fileName), rootName);
 
 	public Code(Document doc,
 			String rootName) throws Exception {
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -82,7 +88,10 @@ this(readDocument(fileName), rootName);
 			}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else
@@ -96,6 +105,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
@@ -117,7 +127,10 @@ this(readDocument(fileName), rootName);
 	}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else
@@ -131,6 +144,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
@@ -146,8 +160,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception("Error unexpected: text");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){
@@ -163,6 +177,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	tagEl.setAttribute("desc", ""+desc);
 	for(Statement i_statements: statements)
 		i_statements.writeXml(doc,tagEl,"",level+1);
@@ -172,6 +187,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 		tagEl.setAttribute("desc", ""+desc);
 	for(Statement i_statements: statements)
 		i_statements.writeXml(doc,tagEl,"",level+1);
@@ -179,6 +195,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("Code {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
 	printIndent(os, indent+1);
