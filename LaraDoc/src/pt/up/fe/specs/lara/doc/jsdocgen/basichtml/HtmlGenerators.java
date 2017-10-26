@@ -93,6 +93,7 @@ public class HtmlGenerators {
             boolean isConstructor) {
 
         StringBuilder functionCode = new StringBuilder();
+
         functionCode.append("<div class='function_block'>");
 
         JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
@@ -120,6 +121,15 @@ public class HtmlGenerators {
         String text = laraComment.getText();
         if (!text.isEmpty()) {
             functionCode.append("<p>");
+
+            List<JsDocTag> augmentTags = laraComment.getTags(JsDocTagName.AUGMENTS);
+            if (!augmentTags.isEmpty()) {
+                String parentClasses = augmentTags.stream().map(tag -> tag.getValue(JsDocTagProperty.NAME_PATH))
+                        .collect(Collectors.joining("</em>, <em>", "<em>", "</em>"));
+                functionCode.append("<div class='augments'>- Extends " + parentClasses + "</div>");
+                // functionCode.append("(Extends " + parentClasses + ") - ");
+            }
+
             // String htmlText = StringLines.getLines(text).stream().collect(Collectors.joining("<br>"));
             String htmlText = generateTextBlock(text);
             functionCode.append(htmlText);

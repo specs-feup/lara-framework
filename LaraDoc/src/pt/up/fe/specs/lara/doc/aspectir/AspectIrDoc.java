@@ -10,7 +10,9 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprId;
 import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
@@ -24,7 +26,7 @@ import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 import pt.up.fe.specs.util.SpecsCollections;
-import pt.up.fe.specs.util.lazy.LazyString;
+import pt.up.fe.specs.util.SpecsLogs;
 
 public class AspectIrDoc {
 
@@ -148,8 +150,25 @@ public class AspectIrDoc {
         if (type == AssignmentType.INSTANCE && memberName.isEmpty()) {
             // Determine from where it inherits from
             String parentClass = extractParentClass(assignment.getRightHand());
-            classElement.getComment()
-                    .addTag(new JsDocTag(JsDocTagName.AUGMENTS).setValue(JsDocTagProperty.NAME_PATH, parentClass));
+
+            // Check if tag already exist for this value
+            boolean hasTag = classElement.getComment().getTags(JsDocTagName.AUGMENTS).stream()
+                    .filter(tag -> tag.hasProperty(JsDocTagProperty.NAME_PATH))
+                    .map(tag -> tag.getValue(JsDocTagProperty.NAME_PATH))
+                    .filter(namepath -> namepath.equals(parentClass))
+                    .findAny()
+                    .isPresent();
+
+            if (hasTag) {
+                System.out.println("ALREADY HAS TAG");
+                return;
+            }
+
+            // Add tag
+            JsDocTag augmentsTag = new JsDocTag(JsDocTagName.AUGMENTS)
+                    .setValue(JsDocTagProperty.NAME_PATH, parentClass);
+
+            classElement.getComment().addTag(augmentsTag);
             return;
         }
 
@@ -170,22 +189,36 @@ public class AspectIrDoc {
         CodeElem codeElem = ((CodeElement) rightHand).getCodeElement();
 
         // Look for a property that has a literal 'prototype' and an id
-        List<ExprLiteral> prototypeLiterals = CodeElems.toElemStream(codeElem)
-                // CodeElems.toElemStream(codeElem)
+        List<ExprLiteral> prototypeLiterals = BaseNodes.toStream(codeElem)
                 .filter(ExprLiteral.class::isInstance)
                 .map(ExprLiteral.class::cast)
-                // .forEach(literal -> System.out.println("Literal: " + CodeElems.toXml(literal)));
                 .filter(literal -> literal.value.equals("prototype"))
                 .collect(Collectors.toList());
 
-        LazyString message = new LazyString(() -> "Expected to find one 'prototype' literal, found "
-                + prototypeLiterals.size() + ":\n " + CodeElems.toXml(codeElem));
-        Preconditions.checkArgument(prototypeLiterals.size() == 1, message);
+        if (prototypeLiterals.size() != 1) {
+            SpecsLogs.msgWarn("Expected to find one 'prototype' literal, found "
+                    + prototypeLiterals.size() + ":\n " + CodeElems.toXml(codeElem));
+            return "";
+        }
 
         ExprLiteral prototypeLiteral = prototypeLiterals.get(0);
-        System.out.println("PARENT CLASS:" + prototypeLiteral.getParent());
 
-        return "";
+        Base parent = (Base) prototypeLiteral.getParent();
+
+        // Look for ID node
+        List<ExprId> idNodes = BaseNodes.toStream(parent)
+                .filter(ExprId.class::isInstance)
+                .map(ExprId.class::cast)
+                .collect(Collectors.toList());
+
+        if (idNodes.size() != 1) {
+            SpecsLogs.msgWarn("Expected to find one id node, found "
+                    + idNodes.size() + ":\n " + BaseNodes.toXml(parent));
+            return "";
+        }
+
+        ExprId id = idNodes.get(0);
+        return id.name;
     }
 
     public List<AspectIrElement> getTopLevelElements() {

@@ -36,6 +36,12 @@ public class CodeElems {
         CODE_ELEM_TO_STREAM.put(Code.class, CodeElems::toElemStream);
     }
 
+    /**
+     * @deprecated Replaced by BaseNodes.toStream()
+     * @param codeElem
+     * @return
+     */
+    @Deprecated
     public static Stream<CodeElem> toElemStream(CodeElem codeElem) {
         return CODE_ELEM_TO_STREAM.apply(codeElem);
     }
@@ -48,6 +54,12 @@ public class CodeElems {
         return code.statements.stream().flatMap(CodeElems::toElemStream);
     }
 
+    /**
+     * @deprecated Replaced by BaseNodes.toStream()
+     * @param statement
+     * @return
+     */
+    @Deprecated
     public static Stream<CodeElem> toElemStream(Statement statement) {
         if (statement.components == null) {
             return Stream.empty();
