@@ -79,3 +79,19 @@ WeaverDataStore.prototype.setTools = function(toolsPath) {
 	var toolsFile = Java.type("org.lara.interpreter.joptions.keys.OptionalFile").newInstance(toolsPath);	
 	this.put("tools", toolsFile);	
 }
+
+WeaverDataStore.prototype.setLogFile = function(logPath) {
+	
+	var logFile = Java.type("org.lara.interpreter.joptions.keys.OptionalFile").newInstance(logPath);	
+	this.put("log", logFile);	
+}
+
+WeaverDataStore.prototype.getLogFile = function() {
+	if(!this.hasValue("log")) {
+		return undefined;
+	}
+
+	return this.get("log").getFile();
+}
+
+		

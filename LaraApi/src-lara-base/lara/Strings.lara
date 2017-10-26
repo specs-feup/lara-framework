@@ -65,3 +65,7 @@ Strings.extractValue = function(prefix, contents, errorOnUndefined) {
 	return undefined;	
 }
 
+Strings.asLines = function(string) {
+	return StringLines.getLines(string);
+}
+

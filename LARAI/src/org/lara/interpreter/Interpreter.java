@@ -1002,6 +1002,7 @@ public class Interpreter {
      * Change the print stream where the javascript output is going
      */
     private void setprintStream(PrintStream printStream) {
+        // private void setprintStream(OutputStream printStream) {
         engine.put("outputStream", printStream);
         engine.put("errorStream", printStream);
     }

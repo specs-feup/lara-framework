@@ -161,10 +161,21 @@ Io.copyFolder = function(filepath, destination, verbose) {
 }
 
 /**
- * @param {string|#java.io.File} file 
+ * Returns the given path, without extension.
+ *
+ * @param {string|#java.io.File} path 
  */
-Io.removeExtension = function(file) {
-	return SpecsIo.removeExtension(file);
+Io.removeExtension = function(path) {
+	return SpecsIo.removeExtension(path);
+}
+
+/**
+ * Returns the extension of the given path.
+ *
+ * @param {string|#java.io.File} path 
+ */
+Io.getExtension = function(path) {
+	return SpecsIo.getExtension(path);
 }
 
 Io.writeFile = writeFile;
@@ -199,4 +210,8 @@ Io.getPathSeparator = function() {
 
 Io.md5 = function(fileOrBaseFolder, optionalFile) {
 	return SpecsIo.getMd5(Io.getPath(fileOrBaseFolder, optionalFile));
+}
+
+Io.getWorkingFolder = function() {
+	return SpecsIo.getWorkingDir();
 }
