@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import pt.up.fe.specs.lara.aspectir.Code;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
 import pt.up.fe.specs.lara.aspectir.ExprBody;
+import pt.up.fe.specs.lara.aspectir.ExprCall;
 import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
 import pt.up.fe.specs.lara.aspectir.Expression;
@@ -29,6 +30,7 @@ public class CodeElems {
     static {
         CODE_ELEM_TO_STREAM = new FunctionClassMap<>();
 
+        CODE_ELEM_TO_STREAM.put(ExprCall.class, CodeElems::toElemStream);
         CODE_ELEM_TO_STREAM.put(ExprBody.class, exprBody -> CodeElems.toElemStream(exprBody, exprBody.code));
         CODE_ELEM_TO_STREAM.put(Expression.class, CodeElems::getDescendantsAndSelf);
         CODE_ELEM_TO_STREAM.put(Code.class, CodeElems::toElemStream);
@@ -70,6 +72,13 @@ public class CodeElems {
         Stream<CodeElem> descendants = getDescendants(expression);
 
         return Stream.concat(descendants, toElemStream(code));
+    }
+
+    private static Stream<CodeElem> toElemStream(ExprCall exprCall) {
+        Stream<CodeElem> arguments = exprCall.arguments.stream().flatMap(CodeElems::getDescendants);
+        Stream<CodeElem> method = CodeElems.getDescendants(exprCall.method);
+
+        return Stream.concat(arguments, method);
     }
 
     public static String parseStringLiteralExpr(Expression stringLiteral) {

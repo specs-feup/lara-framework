@@ -106,7 +106,6 @@ public class LaraDocHtmlGenerator {
     }
 
     private String generateDoc(LaraDocPackage laraPackage) {
-        System.out.println("PACKAGE: " + laraPackage.getPackageName());
         StringBuilder packageCode = new StringBuilder();
 
         packageCode.append("<h2>" + laraPackage.getPackageName() + "</h2>");

@@ -19,8 +19,12 @@ import java.util.List;
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.aspectir.Statement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.comments.LaraCommentsParser;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 
 /**
  * Incrementally builds an AspectIrDoc.
@@ -80,5 +84,13 @@ public class AspectIrDocBuilder {
 
     public AspectIrDoc build() {
         return AspectIrDoc.newInstance(aspectIrElements);
+    }
+
+    public void addImportPath(String importPath) {
+        JsDocTag importTag = new JsDocTag(JsDocTagName.IMPORT).setValue(JsDocTagProperty.NAME_PATH, importPath);
+        // Add import tag to class elements
+        aspectIrElements.stream()
+                .filter(ClassElement.class::isInstance)
+                .forEach(classElement -> classElement.getComment().addTagIfMissing(importTag));
     }
 }

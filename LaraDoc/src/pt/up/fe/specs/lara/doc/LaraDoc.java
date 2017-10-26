@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.script.ScriptEngineManager;
@@ -37,8 +38,11 @@ import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
 import larai.larabundle.LaraBundleProperty;
 import larai.lararesource.LaraResource;
+import pt.up.fe.specs.lara.aspectir.Aspects;
+import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
+import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -201,7 +205,34 @@ public class LaraDoc {
         // Merge base files information
         laraDocFiles.mergeBaseFiles();
 
+        // Build documentation information
+        buildDocumentationTags(laraDocFiles);
+
         return laraDocFiles;
+    }
+
+    private void buildDocumentationTags(LaraDocFiles laraDocFiles) {
+        // Add documentation to modules
+        for (LaraDocModule module : laraDocFiles.getModules()) {
+            // Add info about a module to the same AspectIrDoc
+            AspectIrDocBuilder laraDocBuilder = new AspectIrDocBuilder();
+
+            // Parse files
+            for (File laraFile : module.getLaraFiles()) {
+                Optional<Aspects> aspectIr = LaraToJs.parseLara(laraFile);
+                if (!aspectIr.isPresent()) {
+                    continue;
+                }
+
+                laraDocBuilder.parse(aspectIr.get());
+            }
+
+            // Add information about import path to class files in module
+            laraDocBuilder.addImportPath(module.getImportPath());
+
+            // Build AspectIrDoc and associate with module
+            module.setDocumentation(laraDocBuilder.build());
+        }
     }
 
     /**

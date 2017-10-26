@@ -40,6 +40,7 @@ import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.CodeElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -359,13 +360,10 @@ public class AspectIrParser {
             }
 
             // System.out.println("ANOTHER OP: " + CodeElems.toXml(op));
-            return null;
+            return new CodeElement(expression, laraComment);
         }
 
-        // System.out.println("ANOTHER EXPR: " + CodeElems.toXml(expression));
-
-        // TODO Auto-generated method stub
-        return null;
+        return new CodeElement(expression, laraComment);
     }
 
     private AspectIrElement parseVarDeclStatement(Statement statement, LaraDocComment laraComment) {

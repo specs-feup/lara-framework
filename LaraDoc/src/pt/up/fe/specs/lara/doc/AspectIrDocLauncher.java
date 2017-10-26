@@ -14,12 +14,8 @@
 package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
-import java.util.Optional;
 
-import pt.up.fe.specs.lara.aspectir.Aspects;
-import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
-import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.jsdocgen.BasicHtmlGenerator;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -30,34 +26,36 @@ public class AspectIrDocLauncher {
         SpecsSystem.programStandardInit();
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-framework\\LaraApi\\src-lara-base\\lara\\";
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-dse\\";
+        // String inputPath =
+        // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\metrics\\ExecutionTimeMetric.lara";
         String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
         // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
         LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();
-
+        /*
         // Add documentation to modules
         // for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {
         // for (LaraDocModule module : laraPackage.getModules()) {
         for (LaraDocModule module : laraDocFiles.getModules()) {
             // Add info about a module to the same AspectIrDoc
             AspectIrDocBuilder laraDocBuilder = new AspectIrDocBuilder();
-
+        
             // Parse files
             for (File laraFile : module.getLaraFiles()) {
                 Optional<Aspects> aspectIr = LaraToJs.parseLara(laraFile);
                 if (!aspectIr.isPresent()) {
                     continue;
                 }
-
+        
                 laraDocBuilder.parse(aspectIr.get());
             }
-
+        
             // Build AspectIrDoc and associate with module
             module.setDocumentation(laraDocBuilder.build());
         }
         // }
         // }
-
+        */
         // Generate documentation
         LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
         generator.generateDoc(laraDocFiles);

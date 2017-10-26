@@ -20,8 +20,19 @@ public enum JsDocTagName {
      * Properties NAME, TYPE_NAME, OPTIONAL, DEFAULT_VALUE
      */
     OUTPUT("output"),
+    /**
+     * Indicates that this class extends another class.
+     * <p>
+     * Properties NAME_PATH
+     */
     AUGMENTS("augments"),
-    DEPRECATED("deprecated");
+    DEPRECATED("deprecated"),
+    /**
+     * The import this element belongs to.
+     * <p>
+     * Properties NAME_PATH
+     */
+    IMPORT("import");
 
     private final String name;
 

@@ -10,10 +10,13 @@ import java.util.stream.IntStream;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.CodeElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
@@ -21,6 +24,7 @@ import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 import pt.up.fe.specs.util.SpecsCollections;
+import pt.up.fe.specs.util.lazy.LazyString;
 
 public class AspectIrDoc {
 
@@ -140,6 +144,15 @@ public class AspectIrDoc {
                 .mapToObj(i -> parts[i])
                 .collect(Collectors.joining("."));
 
+        // // If instance and member name is empty, means prototype inheritance
+        if (type == AssignmentType.INSTANCE && memberName.isEmpty()) {
+            // Determine from where it inherits from
+            String parentClass = extractParentClass(assignment.getRightHand());
+            classElement.getComment()
+                    .addTag(new JsDocTag(JsDocTagName.AUGMENTS).setValue(JsDocTagProperty.NAME_PATH, parentClass));
+            return;
+        }
+
         // Add assignment to varDecl
         if (!nameExcluder.test(memberName)) {
             classElement.addAssignment(assignment);
@@ -148,6 +161,31 @@ public class AspectIrDoc {
         // Add alias
         assignment.getComment()
                 .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, memberName));
+    }
+
+    private static String extractParentClass(AspectIrElement rightHand) {
+        // Confirm it is a CodeElement
+        Preconditions.checkArgument(rightHand instanceof CodeElement, "Case not defined: " + rightHand.getClass());
+
+        CodeElem codeElem = ((CodeElement) rightHand).getCodeElement();
+
+        // Look for a property that has a literal 'prototype' and an id
+        List<ExprLiteral> prototypeLiterals = CodeElems.toElemStream(codeElem)
+                // CodeElems.toElemStream(codeElem)
+                .filter(ExprLiteral.class::isInstance)
+                .map(ExprLiteral.class::cast)
+                // .forEach(literal -> System.out.println("Literal: " + CodeElems.toXml(literal)));
+                .filter(literal -> literal.value.equals("prototype"))
+                .collect(Collectors.toList());
+
+        LazyString message = new LazyString(() -> "Expected to find one 'prototype' literal, found "
+                + prototypeLiterals.size() + ":\n " + CodeElems.toXml(codeElem));
+        Preconditions.checkArgument(prototypeLiterals.size() == 1, message);
+
+        ExprLiteral prototypeLiteral = prototypeLiterals.get(0);
+        System.out.println("PARENT CLASS:" + prototypeLiteral.getParent());
+
+        return "";
     }
 
     public List<AspectIrElement> getTopLevelElements() {
