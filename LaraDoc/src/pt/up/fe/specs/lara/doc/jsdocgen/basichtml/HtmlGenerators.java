@@ -181,29 +181,6 @@ public class HtmlGenerators {
         List<JsDocTag> outputTags = laraComment.getTags(JsDocTagName.OUTPUT);
         aspectCode.append(generateParameters("Outputs", outputTags));
 
-        /*
-                List<String> params = laraComment.getParameters();
-        if (!params.isEmpty()) {
-            aspectCode.append("<p>Inputs:</p>");
-            aspectCode.append("<ul>");
-            params.stream().map(param -> "<li>" + param + "</li>").forEach(aspectCode::append);
-            aspectCode.append("</ul>");
-        }
-        
-        aspectCode.append(generateInputTags(laraComment));
-        */
-        // startEmTag(id, aspectCode);
-        // assignmentCode.append("<em>" + namePath);
-        // aspectCode.append(aspectName);
-
-        // List<String> params = laraComment.getParameters();
-        // String functionParameters = generateFunctionParams(params);
-        // aspectCode.append(functionParameters);
-
-        // aspectCode.append("</em>");
-
-        // aspectCode.append("</p>");
-
         return aspectCode.toString();
 
     }

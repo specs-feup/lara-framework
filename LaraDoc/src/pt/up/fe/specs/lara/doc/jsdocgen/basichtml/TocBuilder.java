@@ -73,7 +73,7 @@ public class TocBuilder {
             return;
         }
 
-        tocHtml.append("<ul>");
+        tocHtml.append("<ul class='toc_sublist'>");
         if (title != null && !title.isEmpty()) {
             tocHtml.append(title);
         }

@@ -28,10 +28,13 @@ public class AspectIrDocLauncher {
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-dse\\";
         // String inputPath =
         // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\metrics\\ExecutionTimeMetric.lara";
-        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
-        // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
+        String laraApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
+        String laraDse = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc()
+                .addPath("Lara API", new File(laraApi))
+                .addPath("Lara DSE", new File(laraDse))
+                .buildLaraDoc();
         /*
         // Add documentation to modules
         // for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {

@@ -42,7 +42,7 @@ public class CreateJsLauncher {
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
         long laraDocStart = System.nanoTime();
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();
+        LaraDocFiles laraDocFiles = new LaraDoc().addPath("Default Package", new File(inputPath)).buildLaraDoc();
         System.out.println(SpecsStrings.takeTime("LaraDocFiles", laraDocStart));
 
         long laraDocGeneratorStart = System.nanoTime();

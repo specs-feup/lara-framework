@@ -54,14 +54,14 @@ public class LaraDocHtmlGenerator {
     public void generateDoc(LaraDocFiles laraDocFiles) {
         StringBuilder moduleList = new StringBuilder();
 
-        // Add code for bundles
-        for (LaraDocBundle bundle : laraDocFiles.getBundles()) {
-            moduleList.append(generateDoc(bundle));
-        }
-
         // Add code for packages
         for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {
             moduleList.append(generateDoc(laraPackage));
+        }
+
+        // Add code for bundles
+        for (LaraDocBundle bundle : laraDocFiles.getBundles()) {
+            moduleList.append(generateDoc(bundle));
         }
 
         LaraDocResource.JQUERY.write(outputFolder);
@@ -89,7 +89,7 @@ public class LaraDocHtmlGenerator {
             return "";
         }
 
-        bundleCode.append("<h1>Bundle <em>" + bundle.getBundleName() + "</em></h1>\n");
+        bundleCode.append("<h2>Bundle <em>" + bundle.getBundleName() + "</em></h2>\n");
         bundleCode.append("<ul>\n");
 
         currentModulePath.push("bundle_" + bundle.getBundleName());

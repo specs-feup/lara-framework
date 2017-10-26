@@ -51,6 +51,10 @@ ul {
 	/*padding-top: 4px;*/
 }
 
+.toc_sublist {
+	padding-top: 0.5em;
+}
+
 .function_block {
 	/* padding-top: 1em; */
 	padding-bottom: 1em;

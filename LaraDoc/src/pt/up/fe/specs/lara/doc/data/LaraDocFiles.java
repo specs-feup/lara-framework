@@ -52,6 +52,14 @@ public class LaraDocFiles {
         this.packageNameStack = new ArrayDeque<>();
     }
 
+    public void pushPackage(String packageName) {
+        packageNameStack.push(packageName);
+    }
+
+    public String popPackage() {
+        return packageNameStack.pop();
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -88,20 +96,20 @@ public class LaraDocFiles {
     }
 
     public void addLaraModule(String importPath, File laraFile) {
-        // addLaraModule(DEFAULT_PACKAGE_ID, importPath, laraFile);
-        // }
-        //
-        // public void addLaraModule(String packageName, String importPath, File laraFile) {
-        // Give priority to package name stack
+        getCurrentPackage().add(importPath, laraFile);
+    }
+
+    private LaraDocPackage getCurrentPackage() {
+        if (packageNameStack.isEmpty()) {
+            SpecsLogs.msgWarn("Package name stack is empty, using default name");
+        }
+
         String packageName = !packageNameStack.isEmpty() ? packageNameStack.peek() : DEFAULT_PACKAGE_ID;
 
         // Give priority to bundle stack
         LaraDocPackage laraPackage = !bundleStack.isEmpty() ? bundleStack.peek().getOrCreate(packageName)
                 : getOrCreatePackage(packageName);
-
-        // LaraDocPackage laraPackage = !bundleStack.isEmpty() ? bundleStack.peek().getOrCreate(packageName)
-        // : getOrCreatePackage(packageName);
-        laraPackage.add(importPath, laraFile);
+        return laraPackage;
     }
 
     private LaraDocPackage getOrCreatePackage(String packageName) {

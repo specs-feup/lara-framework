@@ -160,7 +160,6 @@ public class AspectIrDoc {
                     .isPresent();
 
             if (hasTag) {
-                System.out.println("ALREADY HAS TAG");
                 return;
             }
 
