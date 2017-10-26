@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -17,6 +17,7 @@ import java.io.PrintStream;
 public class Aspect extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public Expression check;
 	public String coord;
 	public Code finalize;
@@ -77,29 +78,35 @@ public class Aspect extends Base implements IElement {
 	while (q != null){
 		if (q.getNodeName().equals("check")){
 			check = new Expression(q,"",doc);
+			check.parent = (IElement)this;
 			found_check++;
 		}
 		else if (q.getNodeName().equals("finalize")){
 			finalize = new Code(q,"",doc);
+			finalize.parent = (IElement)this;
 			found_finalize++;
 		}
 		else if (q.getNodeName().equals("initialize")){
 			initialize = new Code(q,"",doc);
+			initialize.parent = (IElement)this;
 			found_initialize++;
 		}
 		else if (q.getNodeName().equals("parameters")){
 			parameters = new ParameterSection(q,"",doc);
+			parameters.parent = (IElement)this;
 			found_parameters++;
 		}
 		else if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
 		}
 		else if (q.getNodeName().equals("static")){
 			staticBlock = new Code(q,"",doc);
+			staticBlock.parent = (IElement)this;
 			found_staticBlock++;
 		}
 		else
@@ -146,6 +153,7 @@ this(readDocument(fileName), rootName);
 		parameters = null;
 		stage = "";
 		staticBlock = null;
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -183,29 +191,35 @@ this(readDocument(fileName), rootName);
 	while (q != null){
 		if (q.getNodeName().equals("check")){
 			check = new Expression(q,"",doc);
+			check.parent = (IElement)this;
 			found_check++;
 		}
 		else if (q.getNodeName().equals("finalize")){
 			finalize = new Code(q,"",doc);
+			finalize.parent = (IElement)this;
 			found_finalize++;
 		}
 		else if (q.getNodeName().equals("initialize")){
 			initialize = new Code(q,"",doc);
+			initialize.parent = (IElement)this;
 			found_initialize++;
 		}
 		else if (q.getNodeName().equals("parameters")){
 			parameters = new ParameterSection(q,"",doc);
+			parameters.parent = (IElement)this;
 			found_parameters++;
 		}
 		else if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
 		}
 		else if (q.getNodeName().equals("static")){
 			staticBlock = new Code(q,"",doc);
+			staticBlock.parent = (IElement)this;
 			found_staticBlock++;
 		}
 		else
@@ -266,29 +280,35 @@ this(readDocument(fileName), rootName);
 	while (q != null){
 		if (q.getNodeName().equals("check")){
 			check = new Expression(q,"",doc);
+			check.parent = (IElement)this;
 			found_check++;
 		}
 		else if (q.getNodeName().equals("finalize")){
 			finalize = new Code(q,"",doc);
+			finalize.parent = (IElement)this;
 			found_finalize++;
 		}
 		else if (q.getNodeName().equals("initialize")){
 			initialize = new Code(q,"",doc);
+			initialize.parent = (IElement)this;
 			found_initialize++;
 		}
 		else if (q.getNodeName().equals("parameters")){
 			parameters = new ParameterSection(q,"",doc);
+			parameters.parent = (IElement)this;
 			found_parameters++;
 		}
 		else if (q.getNodeName().equals("statement")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (statements.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			statements.add(_m);
 		}
 		else if (q.getNodeName().equals("static")){
 			staticBlock = new Code(q,"",doc);
+			staticBlock.parent = (IElement)this;
 			found_staticBlock++;
 		}
 		else
@@ -314,8 +334,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception(" too many static: " +found_staticBlock+"(max: "+1+ "x)");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){

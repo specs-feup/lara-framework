@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:20 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -17,6 +17,7 @@ import java.io.PrintStream;
 public class Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public String comment;
 
 	public Base(){

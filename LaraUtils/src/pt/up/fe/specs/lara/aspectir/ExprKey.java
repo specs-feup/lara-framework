@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:20 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -17,6 +17,7 @@ import java.io.PrintStream;
 public class ExprKey extends Expression implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public String name;
 
 	public ExprKey(){
@@ -34,7 +35,10 @@ public class ExprKey extends Expression implements IElement {
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -52,6 +56,7 @@ public class ExprKey extends Expression implements IElement {
 		if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -59,6 +64,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("call")){
 			ExprCall _m;
 			_m = new ExprCall(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -66,6 +72,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("id")){
 			ExprId _m;
 			_m = new ExprId(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -73,6 +80,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("key")){
 			ExprKey _m;
 			_m = new ExprKey(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -80,6 +88,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("literal")){
 			ExprLiteral _m;
 			_m = new ExprLiteral(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -87,6 +96,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -94,6 +104,7 @@ public class ExprKey extends Expression implements IElement {
 		else if (q.getNodeName().equals("property")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -125,6 +136,7 @@ this(readDocument(fileName), rootName);
 	public ExprKey(Document doc,
 			String rootName) throws Exception {
 		name = "";
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -134,7 +146,10 @@ this(readDocument(fileName), rootName);
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -152,6 +167,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -159,6 +175,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("call")){
 			ExprCall _m;
 			_m = new ExprCall(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -166,6 +183,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("id")){
 			ExprId _m;
 			_m = new ExprId(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -173,6 +191,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("key")){
 			ExprKey _m;
 			_m = new ExprKey(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -180,6 +199,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("literal")){
 			ExprLiteral _m;
 			_m = new ExprLiteral(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -187,6 +207,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -194,6 +215,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("property")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -218,7 +240,10 @@ this(readDocument(fileName), rootName);
 	int found_name = 0;
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("desc")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("desc")){
 			desc = a.getNodeValue();
 		}
 		else if (a.getNodeName().equals("name")){
@@ -236,6 +261,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("body")){
 			ExprBody _m;
 			_m = new ExprBody(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -243,6 +269,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("call")){
 			ExprCall _m;
 			_m = new ExprCall(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -250,6 +277,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("id")){
 			ExprId _m;
 			_m = new ExprId(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -257,6 +285,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("key")){
 			ExprKey _m;
 			_m = new ExprKey(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -264,6 +293,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("literal")){
 			ExprLiteral _m;
 			_m = new ExprLiteral(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -271,6 +301,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("op")){
 			ExprOp _m;
 			_m = new ExprOp(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -278,6 +309,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("property")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (exprs.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			exprs.add(_m);
@@ -295,8 +327,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){
@@ -312,6 +344,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	tagEl.setAttribute("desc", ""+desc);
 	tagEl.setAttribute("name", ""+name);
 	for(Expression i_exprs: exprs)
@@ -322,6 +355,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 		tagEl.setAttribute("desc", ""+desc);
 		tagEl.setAttribute("name", ""+name);
 	for(Expression i_exprs: exprs)
@@ -330,6 +364,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("ExprKey {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.println("desc = '" + desc);
 	printIndent(os, indent+1);

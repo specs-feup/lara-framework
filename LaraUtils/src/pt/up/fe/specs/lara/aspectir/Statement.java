@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -17,6 +17,7 @@ import java.io.PrintStream;
 public class Statement extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public java.util.ArrayList<CodeElem> components= new java.util.ArrayList<CodeElem>();
 	public boolean concurrent;
 	public String coord;
@@ -83,6 +84,7 @@ public class Statement extends Base implements IElement {
 		if (q.getNodeName().equals("code")){
 			Code _m;
 			_m = new Code(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -90,6 +92,7 @@ public class Statement extends Base implements IElement {
 		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -127,6 +130,7 @@ this(readDocument(fileName), rootName);
 		execute = "";
 		label = "";
 		name = "";
+		parent = null;
 			Element e = (Element)doc.getFirstChild();
 			if (e == null) return;
 			xmltag = e.getTagName();
@@ -172,6 +176,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("code")){
 			Code _m;
 			_m = new Code(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -179,6 +184,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -239,6 +245,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("code")){
 			Code _m;
 			_m = new Code(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -246,6 +253,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("expression")){
 			Expression _m;
 			_m = new Expression(q,"",doc);
+			_m.parent = (IElement)this;
 			if (components.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			components.add(_m);
@@ -263,8 +271,8 @@ this(readDocument(fileName), rootName);
 		throw new Exception(" too few name: " +found_name+"(min: "+1+ "x)");
 }
 
-	public IElement getParent(){
-	return null;
+public IElement getParent(){
+	return parent;
 }
 
 public 	Document getXmlDocument(){

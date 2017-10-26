@@ -1,5 +1,5 @@
 // xmljavabind
-// Thu Sep 14 01:51:29 2017
+// Thu Oct 26 14:27:21 2017
 // Warning:  This file has been automatically generated.
 //    Any modifications to the file could be lost.
 
@@ -14,9 +14,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintStream;
 
 /****************************** Class Aspects ******************************/
-public class Aspects implements IElement {
+public class Aspects extends Base implements IElement {
 	public String xml_location;
 	public String xmltag;
+	public IElement parent;
 	public java.util.HashMap<String, Aspect> aspects= new java.util.HashMap<String, Aspect>();
 	public java.util.ArrayList<Statement> declarations= new java.util.ArrayList<Statement>();
 	public String main;
@@ -35,7 +36,10 @@ public class Aspects implements IElement {
 	}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("main")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("main")){
 			main = a.getNodeValue();
 		}
 		else
@@ -49,6 +53,7 @@ public class Aspects implements IElement {
 		if (q.getNodeName().equals("aspect")){
 			Aspect _m;
 			_m = new Aspect(q,"",doc);
+			_m.parent = (IElement)this;
 			if (aspects.containsKey(_m.name))
 				throw new Exception(" Error duplicate: "+_m.name);
 			aspects.put(_m.name,_m);
@@ -56,6 +61,7 @@ public class Aspects implements IElement {
 		else if (q.getNodeName().equals("declaration")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (declarations.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			declarations.add(_m);
@@ -93,7 +99,10 @@ this(readDocument(fileName), rootName);
 			}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("main")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("main")){
 			main = a.getNodeValue();
 		}
 		else
@@ -107,6 +116,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("aspect")){
 			Aspect _m;
 			_m = new Aspect(q,"",doc);
+			_m.parent = (IElement)this;
 			if (aspects.containsKey(_m.name))
 				throw new Exception(" Error duplicate: "+_m.name);
 			aspects.put(_m.name,_m);
@@ -114,6 +124,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("declaration")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (declarations.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			declarations.add(_m);
@@ -135,7 +146,10 @@ this(readDocument(fileName), rootName);
 	}
 	for (int i = 0; i < e.getAttributes().getLength(); i++){
 		Node a = e.getAttributes().item(i);
-		if (a.getNodeName().equals("main")){
+		if (a.getNodeName().equals("comment")){
+			comment = a.getNodeValue();
+		}
+		else if (a.getNodeName().equals("main")){
 			main = a.getNodeValue();
 		}
 		else
@@ -149,6 +163,7 @@ this(readDocument(fileName), rootName);
 		if (q.getNodeName().equals("aspect")){
 			Aspect _m;
 			_m = new Aspect(q,"",doc);
+			_m.parent = (IElement)this;
 			if (aspects.containsKey(_m.name))
 				throw new Exception(" Error duplicate: "+_m.name);
 			aspects.put(_m.name,_m);
@@ -156,6 +171,7 @@ this(readDocument(fileName), rootName);
 		else if (q.getNodeName().equals("declaration")){
 			Statement _m;
 			_m = new Statement(q,"",doc);
+			_m.parent = (IElement)this;
 			if (declarations.contains(_m))
 				throw new Exception(" Error duplicate: "+_m);
 			declarations.add(_m);
@@ -188,6 +204,7 @@ public 	Document getXmlDocument(){
 	}
 	Element tagEl = doc.createElement(xmltag);
 		doc.appendChild(tagEl);
+	tagEl.setAttribute("comment", ""+comment);
 	tagEl.setAttribute("main", ""+main);
 	for(Aspect i_aspects: aspects.values())
 		i_aspects.writeXml(doc,tagEl,"",level+1);
@@ -199,6 +216,7 @@ public 	Document getXmlDocument(){
 	String tagName = ((rootName.isEmpty())?xmltag:rootName);
 	Element tagEl = doc.createElement(tagName);
 	parent.appendChild(tagEl);
+		tagEl.setAttribute("comment", ""+comment);
 		tagEl.setAttribute("main", ""+main);
 	for(Aspect i_aspects: aspects.values())
 		i_aspects.writeXml(doc,tagEl,"",level+1);
@@ -208,6 +226,8 @@ public 	Document getXmlDocument(){
 
 	public void print(PrintStream os, int indent){
 	os.println("Aspects {");
+	printIndent(os, indent+1);
+	os.println("comment = '" + comment);
 	printIndent(os, indent+1);
 	os.println("aspects = <[");
 	for(Aspect i_aspects: aspects.values()){
