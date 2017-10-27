@@ -16,7 +16,9 @@ package pt.up.fe.specs.lara.doc;
 import java.io.File;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
+import pt.up.fe.specs.lara.doc.data.LaraDocTop;
 import pt.up.fe.specs.lara.doc.jsdocgen.BasicHtmlGenerator;
+import pt.up.fe.specs.lara.doc.parser.LaraDocParser;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
@@ -37,12 +39,22 @@ public class AspectIrDocLauncher {
         String laraDse = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
         LaraDocFiles laraDocFiles = new LaraDoc()
-                .addPath("Clava API", new File(laraApi))
-                .addPath("Clava API", new File(laraiApi))
-                .addPath("Clava API", new File(clavaApi))
-                .addPath("ANTAREX API", new File(antarexApi))
-                // .addPath("Lara DSE", new File(laraDse))
+                // .addPath("Clava API", new File(laraApi))
+                // .addPath("Clava API", new File(laraiApi))
+                // .addPath("Clava API", new File(clavaApi))
+                // .addPath("ANTAREX API", new File(antarexApi))
+                .addPath("Lara DSE", new File(laraDse))
                 .buildLaraDoc();
+
+        // Generate documentation
+        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
+        generator.generateDoc(laraDocFiles);
+
+        LaraDocTop laraDocTop = new LaraDocParser()
+                .addPath("Lara DSE", new File(laraDse))
+                .buildLaraDoc();
+
+        System.out.println("LARA DOC TOP:\n" + laraDocTop);
 
         // System.out.println("TOP LEVEL PACKAGE:" + laraDocFiles.getTopLevelPackage());
         /*
@@ -69,9 +81,7 @@ public class AspectIrDocLauncher {
         // }
         // }
         */
-        // Generate documentation
-        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
-        generator.generateDoc(laraDocFiles);
+
     }
 
 }

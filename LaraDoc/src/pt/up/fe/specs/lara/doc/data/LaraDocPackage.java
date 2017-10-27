@@ -14,7 +14,6 @@
 package pt.up.fe.specs.lara.doc.data;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +35,6 @@ public class LaraDocPackage extends LaraDocNode {
     private final Map<String, LaraDocModule> packageModules;
 
     public LaraDocPackage(String packageName) {
-        super(Collections.emptyList());
         this.packageName = packageName;
         this.packageModules = new HashMap<>();
     }
@@ -47,6 +45,11 @@ public class LaraDocPackage extends LaraDocNode {
         return "Package '" + packageName + "' -> " + packageModules;
     }
     */
+
+    @Override
+    public String getId() {
+        return getPackageName();
+    }
 
     @Override
     public String toContentString() {

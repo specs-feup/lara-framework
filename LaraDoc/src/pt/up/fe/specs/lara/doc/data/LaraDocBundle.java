@@ -14,7 +14,6 @@
 package pt.up.fe.specs.lara.doc.data;
 
 import java.util.Collection;
-import java.util.Collections;
 /**
  * Represents a LARA bundle, which can have several mutually-exclusive LARA packages.
  */
@@ -33,9 +32,13 @@ public class LaraDocBundle extends LaraDocNode {
     private final Map<String, LaraDocPackage> bundlePackages;
 
     public LaraDocBundle(String bundleName) {
-        super(Collections.emptyList());
         this.bundleName = bundleName;
         this.bundlePackages = new HashMap<>();
+    }
+
+    @Override
+    public String getId() {
+        return getBundleName();
     }
 
     /*

@@ -15,7 +15,6 @@ package pt.up.fe.specs.lara.doc.data;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,15 +33,23 @@ import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 public class LaraDocModule extends LaraDocNode {
 
     private final String importPath;
-    private final File mainLara;
+    private File mainLara;
     private File baseLara;
     private AspectIrDoc documentation;
 
+    public LaraDocModule(String importPath) {
+        this(importPath, null);
+    }
+
     public LaraDocModule(String importPath, File mainLara) {
-        super(Collections.emptyList());
         this.importPath = importPath;
         this.mainLara = mainLara;
         documentation = null;
+    }
+
+    @Override
+    public String getId() {
+        return getImportPath();
     }
 
     @Override
@@ -81,6 +88,10 @@ public class LaraDocModule extends LaraDocNode {
 
     public File getMainLara() {
         return mainLara;
+    }
+
+    public void setMainLara(File mainLara) {
+        this.mainLara = mainLara;
     }
 
     public Optional<File> getBaseLara() {
