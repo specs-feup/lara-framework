@@ -65,7 +65,7 @@ public class LaraModuleBuilder {
             htmlCode.append("<h2>Aspects</h2>");
             for (AspectElement aspect : aspects) {
                 String globalAspectId = nextId();
-                toc.addLevelOne("Aspects", globalAspectId, aspect.getAspectName());
+                toc.addLevelOne("Aspects", globalAspectId, aspect.getAspectName(), true);
                 htmlCode.append(HtmlGenerators.generateAspect(globalAspectId, aspect.getComment()));
             }
         }
@@ -78,7 +78,7 @@ public class LaraModuleBuilder {
             String classId = nextId();
             htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
 
-            toc.addLevelOne("Classes", classId, classElement.getClassName());
+            toc.addLevelOne("Classes", classId, classElement.getClassName(), true);
 
             boolean isConstructor = !classElement.getInstanceElements().isEmpty();
             String classCode = HtmlGenerators.generateMember(classId, classElement.getComment(), isConstructor,
@@ -147,7 +147,7 @@ public class LaraModuleBuilder {
             htmlCode.append("<h2>Global Functions</h2>");
             for (FunctionDeclElement functionDecl : functionDecls) {
                 String globalFunctionId = nextId();
-                toc.addLevelOne("Global Functions", globalFunctionId, functionDecl.getFunctionName());
+                toc.addLevelOne("Global Functions", globalFunctionId, functionDecl.getFunctionName(), false);
                 htmlCode.append(HtmlGenerators.generateMember(globalFunctionId, functionDecl.getComment()));
             }
         }

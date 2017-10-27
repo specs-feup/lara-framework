@@ -29,11 +29,19 @@ public class AspectIrDocLauncher {
         // String inputPath =
         // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\metrics\\ExecutionTimeMetric.lara";
         String laraApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
+        String laraiApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LARAI\\src-lara";
+        String clavaApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\clava\\ClavaLaraApi\\src-lara\\clava\\";
+
+        String antarexApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\specs-lara\\ANTAREX\\AntarexClavaApi\\src-lara\\clava\\";
+
         String laraDse = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
         LaraDocFiles laraDocFiles = new LaraDoc()
-                .addPath("Lara API", new File(laraApi))
-                .addPath("Lara DSE", new File(laraDse))
+                .addPath("Clava API", new File(laraApi))
+                .addPath("Clava API", new File(laraiApi))
+                .addPath("Clava API", new File(clavaApi))
+                .addPath("ANTAREX API", new File(antarexApi))
+                // .addPath("Lara DSE", new File(laraDse))
                 .buildLaraDoc();
 
         // System.out.println("TOP LEVEL PACKAGE:" + laraDocFiles.getTopLevelPackage());

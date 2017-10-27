@@ -44,11 +44,12 @@ ul {
 }
 
 .toc_class {
-	margin-bottom: 4px;
+	margin-bottom: 0px;
 }
 
-.toc_class_element {
-	/*padding-top: 4px;*/
+
+.toc_top_element {
+	padding-top: 0.5em;
 }
 
 .toc_sublist {
