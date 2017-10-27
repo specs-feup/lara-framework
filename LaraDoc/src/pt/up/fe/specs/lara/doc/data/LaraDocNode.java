@@ -13,36 +13,29 @@
 
 package pt.up.fe.specs.lara.doc.data;
 
-import java.io.File;
+import java.util.Collection;
 
-import pt.up.fe.specs.lara.doc.LaraDoc;
+import pt.up.fe.specs.util.treenode.ATreeNode;
 
-/**
- * @deprecated
- * @author JoaoBispo
- *
- */
-@Deprecated
-public class LaraFileInfo {
+public abstract class LaraDocNode extends ATreeNode<LaraDocNode> {
 
-    private final File laraFile;
-    private final File baseFolder;
-
-    public LaraFileInfo(File laraFile, File baseFolder) {
-        this.laraFile = laraFile;
-        this.baseFolder = baseFolder;
+    public LaraDocNode(Collection<? extends LaraDocNode> children) {
+        super(children);
     }
 
-    public File getBaseFolder() {
-        return baseFolder;
+    @Override
+    public String toContentString() {
+        return "<content not implemented for node '" + getClass() + "'>";
     }
 
-    public File getLaraFile() {
-        return laraFile;
+    @Override
+    protected LaraDocNode getThis() {
+        return this;
     }
 
-    public String getImportPath() {
-        return LaraDoc.getImportPath(laraFile, baseFolder);
+    @Override
+    protected LaraDocNode copyPrivate() {
+        throw new RuntimeException("Copying not supported");
     }
 
 }

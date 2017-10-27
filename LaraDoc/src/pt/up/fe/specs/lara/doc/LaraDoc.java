@@ -293,7 +293,7 @@ public class LaraDoc {
         }
 
         // Bundle folder
-        if (new File(currentPath, LaraBundle.getLaraBundleFilename()).isFile()) {
+        if (isBundleFolder(currentPath)) {
             collectInformationBundle(currentPath, laraDocFiles);
             return;
         }
@@ -312,6 +312,10 @@ public class LaraDoc {
 
         // Call function recursively for all folders
         SpecsIo.getFolders(currentPath).stream().forEach(folder -> collectInformation(folder, basePath, laraDocFiles));
+    }
+
+    private boolean isBundleFolder(File currentPath) {
+        return new File(currentPath, LaraBundle.getLaraBundleFilename()).isFile();
     }
 
     private void collectInformationFile(File laraFile, File baseFolder, LaraDocFiles laraDocFiles) {
@@ -351,9 +355,15 @@ public class LaraDoc {
         LaraDocBundle laraDocBundle = laraDocFiles.getOrCreateBundle(bundleName);
         laraDocFiles.pushBundle(laraDocBundle);
 
-        // Each folder in the root represents a package of the bundle
+        // Each folder in the root represents a package of the bundle (or a bundle itself)
         List<File> packageFolders = SpecsIo.getFolders(bundleFolder);
         for (File packageFolder : packageFolders) {
+
+            // If folder is a bundle, call function recursively
+            if (isBundleFolder(packageFolder)) {
+                collectInformationBundle(packageFolder, laraDocFiles);
+                continue;
+            }
 
             // Ignore lara folder
             if (packageFolder.getName().equals(LaraBundle.getLaraFolderName())) {

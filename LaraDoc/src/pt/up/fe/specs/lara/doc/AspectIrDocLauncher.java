@@ -35,6 +35,8 @@ public class AspectIrDocLauncher {
                 .addPath("Lara API", new File(laraApi))
                 .addPath("Lara DSE", new File(laraDse))
                 .buildLaraDoc();
+
+        // System.out.println("TOP LEVEL PACKAGE:" + laraDocFiles.getTopLevelPackage());
         /*
         // Add documentation to modules
         // for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {

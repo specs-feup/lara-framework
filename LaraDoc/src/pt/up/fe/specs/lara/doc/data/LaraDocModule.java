@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.doc.data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,10 +24,14 @@ import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 /**
  * Represents a LARA module which can be imported.
  * 
+ * <p>
+ * This is a leaf node, and has no children.
+ * 
+ * 
  * @author JoaoBispo
  *
  */
-public class LaraDocModule {
+public class LaraDocModule extends LaraDocNode {
 
     private final String importPath;
     private final File mainLara;
@@ -34,22 +39,41 @@ public class LaraDocModule {
     private AspectIrDoc documentation;
 
     public LaraDocModule(String importPath, File mainLara) {
+        super(Collections.emptyList());
         this.importPath = importPath;
         this.mainLara = mainLara;
         documentation = null;
     }
 
     @Override
-    public String toString() {
+    public String toContentString() {
         StringBuilder builder = new StringBuilder();
 
+        builder.append("Module '" + importPath + "'");
+
+        builder.append(" (");
         builder.append(mainLara);
         if (baseLara != null) {
             builder.append(" + ").append(baseLara);
         }
+        builder.append(")");
 
         return builder.toString();
     }
+
+    /*
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+    
+        builder.append(mainLara);
+        if (baseLara != null) {
+            builder.append(" + ").append(baseLara);
+        }
+    
+        return builder.toString();
+    }
+    */
 
     public String getImportPath() {
         return importPath;

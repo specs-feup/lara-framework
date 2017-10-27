@@ -44,13 +44,25 @@ public class LaraDocFiles {
     private final Deque<LaraDocBundle> bundleStack;
     private final Deque<String> packageNameStack;
 
+    // Tree-based code
+    // private final LaraDocPackage topLevelPackage;
+    // private final Deque<LaraDocPackage> packageStack;
+
     public LaraDocFiles() {
         this.bundles = new HashMap<>();
         this.packages = new HashMap<>();
         this.baseFiles = new HashMap<>();
         this.bundleStack = new ArrayDeque<>();
         this.packageNameStack = new ArrayDeque<>();
+
+        // Tree-based code
+        // this.topLevelPackage = getOrCreatePackage("Top-level package");
+        // pushPackage(topLevelPackage.getPackageName());
     }
+
+    // public LaraDocPackage getTopLevelPackage() {
+    // return topLevelPackage;
+    // }
 
     public void pushPackage(String packageName) {
         packageNameStack.push(packageName);
@@ -96,7 +108,8 @@ public class LaraDocFiles {
     }
 
     public void addLaraModule(String importPath, File laraFile) {
-        getCurrentPackage().add(importPath, laraFile);
+        getCurrentPackage().addChild(new LaraDocModule(importPath, laraFile));
+        // getCurrentPackage().addModule(importPath, laraFile);
     }
 
     private LaraDocPackage getCurrentPackage() {

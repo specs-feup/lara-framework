@@ -13,8 +13,8 @@
 
 package pt.up.fe.specs.lara.doc.data;
 
-import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,22 +24,33 @@ import pt.up.fe.specs.util.SpecsLogs;
 /**
  * Represents one or more LARA modules.
  * 
+ * <p>
+ * Represents a set of LARA functionality (e.g., modules, bundles...).
+ * 
  * @author JoaoBispo
  *
  */
-public class LaraDocPackage {
+public class LaraDocPackage extends LaraDocNode {
 
     private final String packageName;
     private final Map<String, LaraDocModule> packageModules;
 
     public LaraDocPackage(String packageName) {
+        super(Collections.emptyList());
         this.packageName = packageName;
         this.packageModules = new HashMap<>();
     }
 
+    /*
     @Override
     public String toString() {
         return "Package '" + packageName + "' -> " + packageModules;
+    }
+    */
+
+    @Override
+    public String toContentString() {
+        return "Package '" + packageName + "'";
     }
 
     public String getPackageName() {
@@ -47,10 +58,32 @@ public class LaraDocPackage {
     }
 
     public Collection<LaraDocModule> getModules() {
-        return packageModules.values();
+        return getChildrenOf(LaraDocModule.class);
+        // return packageModules.values();
     }
 
-    public void add(String importPath, File laraFile) {
+    @Override
+    public boolean addChild(LaraDocNode child) {
+        if (child instanceof LaraDocModule) {
+            LaraDocModule module = (LaraDocModule) child;
+            LaraDocModule previousModule = packageModules.put(module.getImportPath(), module);
+            if (previousModule != null) {
+                SpecsLogs.msgInfo("Replacing LARA module with import path '" + module.getImportPath()
+                        + "': current file is ' " + module.getMainLara() + " ' and previous file is '"
+                        + previousModule.getMainLara()
+                        + " '");
+
+                // Remove from tree
+                removeChild(previousModule);
+            }
+
+        }
+
+        return super.addChild(child);
+    }
+
+    /*
+    public void addModule(String importPath, File laraFile) {
         LaraDocModule module = new LaraDocModule(importPath, laraFile);
         LaraDocModule previousModule = packageModules.put(importPath, module);
         if (previousModule != null) {
@@ -58,8 +91,13 @@ public class LaraDocPackage {
                     + "': current file is ' " + laraFile + " ' and previous file is '" + previousModule.getMainLara()
                     + " '");
         }
-
+    
     }
+    */
+
+    // public Map<String, LaraDocModule> getModulesMap() {
+    // return getModules().stream().collect(Collectors.toMap(LaraDocModule::getImportPath, module -> module));
+    // }
 
     public Optional<LaraDocModule> getModule(String importPath) {
         return Optional.ofNullable(packageModules.get(importPath));
