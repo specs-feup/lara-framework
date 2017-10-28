@@ -95,16 +95,21 @@ ul {
 }
 
 .toc_class {
-	margin-bottom: 0px;
+	margin-bottom: 0.5em;
 }
 
 
 .toc_top_element {
-	padding-top: 0.5em;
+	/* padding-top: 0.5em; */
 }
 
 .toc_sublist {
 	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.toc_sublist_title {
+	padding-bottom: 0.1em;
 }
 
 .function_block {

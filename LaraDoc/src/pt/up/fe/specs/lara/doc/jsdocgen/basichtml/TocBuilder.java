@@ -80,7 +80,7 @@ public class TocBuilder {
 
         tocHtml.append("<ul class='toc_sublist'>");
         if (title != null && !title.isEmpty()) {
-            tocHtml.append(title);
+            tocHtml.append("<div class='toc_sublist_title'>").append(title).append("</div>");
         }
         for (int i = 0; i < numElements; i++) {
             tocHtml.append("<li><em><a href='#" + ids.get(i) + "'>" + names.get(i) + "</a></em></li>");
