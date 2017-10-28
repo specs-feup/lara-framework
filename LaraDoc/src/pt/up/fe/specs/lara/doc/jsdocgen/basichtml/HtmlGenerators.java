@@ -99,7 +99,12 @@ public class HtmlGenerators {
         JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
         startTag("pre class='prettyprint'><code class='language-js'", id, functionCode);
-        // assignmentCode.append("<em>" + namePath);
+
+        boolean isDeprecated = laraComment.hasTag(JsDocTagName.DEPRECATED);
+        if (isDeprecated) {
+            functionCode.append("<strike>");
+        }
+
         if (isConstructor) {
             functionCode.append("new ");
         }
@@ -112,11 +117,24 @@ public class HtmlGenerators {
         // String functionParameters = generateFunctionParams(params);
         functionCode.append(functionParameters);
 
+        if (isDeprecated) {
+            functionCode.append("</strike>");
+        }
         functionCode.append("</code></pre>");
 
         // assignmentCode.append(generateInputTags(laraComment));
 
         functionCode.append("<div class='function_content'>");
+
+        if (isDeprecated) {
+            String deprecatedMessage = "This function is deprecated.";
+            String content = laraComment.getTag(JsDocTagName.DEPRECATED).getValue(JsDocTagProperty.CONTENT, "");
+            if (!content.isEmpty()) {
+                deprecatedMessage += " " + content;
+            }
+
+            functionCode.append("<p><em><strong>" + deprecatedMessage + "</strong></em></p>");
+        }
 
         String text = laraComment.getText();
         if (!text.isEmpty()) {

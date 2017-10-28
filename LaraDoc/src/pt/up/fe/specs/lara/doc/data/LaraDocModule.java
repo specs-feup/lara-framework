@@ -90,6 +90,10 @@ public class LaraDocModule extends LaraDocNode {
         return mainLara;
     }
 
+    public boolean hasMainLara() {
+        return mainLara != null;
+    }
+
     public void setMainLara(File mainLara) {
         this.mainLara = mainLara;
     }

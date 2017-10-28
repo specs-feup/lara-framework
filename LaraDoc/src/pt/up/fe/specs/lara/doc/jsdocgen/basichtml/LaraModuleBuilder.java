@@ -15,6 +15,8 @@ package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
@@ -23,6 +25,8 @@ import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsStrings;
 
 public class LaraModuleBuilder {
@@ -30,11 +34,13 @@ public class LaraModuleBuilder {
     private final LaraDocModule module;
     private final StringBuilder htmlCode;
     private final TocBuilder toc;
+    private final Predicate<String> nameFilter;
 
     private int currentIdCounter;
 
-    public LaraModuleBuilder(LaraDocModule module) {
+    public LaraModuleBuilder(LaraDocModule module, Predicate<String> nameFilter) {
         this.module = module;
+        this.nameFilter = nameFilter;
         this.htmlCode = new StringBuilder();
         this.toc = new TocBuilder("import " + module.getImportPath() + ";");
 
@@ -54,12 +60,18 @@ public class LaraModuleBuilder {
         }
 
         AspectIrDoc doc = module.getDocumentation().get();
+        // In case name filter is not defined
+        Predicate<String> filter = nameFilter == null ? string -> true : nameFilter;
+        List<AspectIrElement> elements = doc.getTopLevelElements().stream()
+                .filter(element -> filter.test(element.getName()))
+                .collect(Collectors.toList());
 
         // Table of Contents
         // TocBuilder tocBuilder = new TocBuilder("import " + module.getImportPath() + ";");
 
         // Generate HTML for Aspects
-        List<AspectElement> aspects = doc.getTopLevelElements(AspectElement.class);
+        // List<AspectElement> aspects = doc.getTopLevelElements(AspectElement.class);
+        List<AspectElement> aspects = SpecsCollections.remove(elements, AspectElement.class);
         AspectIrElement.sort(aspects);
         if (!aspects.isEmpty()) {
             htmlCode.append("<h2>Aspects</h2>");
@@ -71,7 +83,9 @@ public class LaraModuleBuilder {
         }
 
         // Generate HTML for Classes
-        List<ClassElement> classes = doc.getTopLevelElements(ClassElement.class);
+        // List<ClassElement> classes = doc.getTopLevelElements(ClassElement.class);
+        List<ClassElement> classes = SpecsCollections.remove(elements, ClassElement.class);
+
         AspectIrElement.sort(classes);
 
         for (ClassElement classElement : classes) {
@@ -101,10 +115,17 @@ public class LaraModuleBuilder {
 
                 for (AssignmentElement staticMember : staticMembers) {
                     String staticId = nextId();
-                    staticIds.add(staticId);
-                    staticNames.add(staticMember.getNamePath());
-
                     boolean isFunction = staticMember.getRightFunctionDecl().isPresent();
+
+                    staticIds.add(staticId);
+                    /*
+                    String staticName = staticMember.getNamePath();
+                    if (isFunction) {
+                        staticName += "()";
+                    }
+                    */
+                    staticNames.add(parseMemberNameToc(staticMember));
+
                     htmlCode.append(
                             HtmlGenerators.generateMember(staticId, staticMember.getComment(), isFunction, false));
                     // htmlCode.append(HtmlGenerators.generateAssignment(staticMember, staticId));
@@ -124,11 +145,17 @@ public class LaraModuleBuilder {
 
                 for (AssignmentElement instanceMember : instanceMembers) {
                     String instanceId = nextId();
+                    boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
                     instanceIds.add(instanceId);
-                    instanceNames.add(instanceMember.getNamePath());
+                    /*
+                    String instanceName = instanceMember.getNamePath();
+                    if (isFunction) {
+                        instanceName += "()";
+                    }
+                    */
+                    instanceNames.add(parseMemberNameToc(instanceMember));
                     // htmlCode.append(HtmlGenerators.generateAssignment(instanceMember, instanceId));
 
-                    boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
                     htmlCode.append(
                             HtmlGenerators.generateMember(instanceId, instanceMember.getComment(), isFunction, false));
 
@@ -140,7 +167,9 @@ public class LaraModuleBuilder {
         }
 
         // Global functions
-        List<FunctionDeclElement> functionDecls = doc.getTopLevelElements(FunctionDeclElement.class);
+        // List<FunctionDeclElement> functionDecls = doc.getTopLevelElements(FunctionDeclElement.class);
+        List<FunctionDeclElement> functionDecls = SpecsCollections.remove(elements, FunctionDeclElement.class);
+
         AspectIrElement.sort(functionDecls);
 
         if (!functionDecls.isEmpty()) {
@@ -152,9 +181,11 @@ public class LaraModuleBuilder {
             }
         }
 
-        // System.out.println("MODULE:" + module.getImportPath());
-        // System.out.println("TOP LEVEL:" + doc.getTopLevelElements().stream()
-        // .map(elem -> elem.getClass().getSimpleName()).collect(Collectors.toSet()));
+        // if (!elements.isEmpty()) {
+        // SpecsLogs.msgWarn("Did not consume all AspectIrElements: "
+        // + elements.stream().map(element -> element.getClass().getName()).collect(Collectors.toSet()));
+        // }
+
         // Add Global assignments?
 
         // Add Global vardecls?
@@ -163,12 +194,20 @@ public class LaraModuleBuilder {
 
         return toc.getHtml() + htmlCode.toString();
 
-        // File moduleHtml = new File(outputFolder, "module.html");
-        // String finalHtml = tocBuilder.getHtml() + htmlCode.toString();
+    }
 
-        // SpecsIo.write(moduleHtml, finalHtml);
-        //
-        // return Optional.of(moduleHtml);
+    private String parseMemberNameToc(AssignmentElement member) {
+        String memberName = member.getNamePath();
+        boolean isFunction = member.getRightFunctionDecl().isPresent();
+        if (isFunction) {
+            memberName += "()";
+        }
+
+        if (member.getComment().hasTag(JsDocTagName.DEPRECATED)) {
+            memberName = "<strike>" + memberName + "</strike>";
+        }
+
+        return memberName;
     }
 
 }

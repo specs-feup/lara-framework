@@ -182,4 +182,21 @@ public abstract class LaraDocNode extends ATreeNode<LaraDocNode> {
         return node;
     }
 
+    public boolean hasNode(LaraDocNode node) {
+        return getNodesRaw(node.getClass()).containsKey(node.getId());
+    }
+
+    public void remove(LaraDocNode node) {
+        if (!hasNode(node)) {
+            SpecsLogs.msgWarn("Removing node that does not exist as child. Node: " + node + "\n Parent:" + this);
+            return;
+        }
+
+        Map<String, LaraDocNode> nodes = getNodesRaw(node.getClass());
+
+        // Remove node from map and from tree
+        nodes.remove(node.getId());
+        removeChild(node);
+    }
+
 }

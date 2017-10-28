@@ -18,12 +18,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
+import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.LaraDocs;
+import pt.up.fe.specs.lara.doc.LaraToJs;
+import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocJs;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
@@ -31,6 +35,7 @@ import pt.up.fe.specs.lara.doc.data.LaraDocNode;
 import pt.up.fe.specs.lara.doc.data.LaraDocPackage;
 import pt.up.fe.specs.lara.doc.data.LaraDocTop;
 import pt.up.fe.specs.util.Preconditions;
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
@@ -46,20 +51,21 @@ public class LaraDocParser {
 
     private static final Set<String> ALLOWED_EXTENSIONS = new HashSet<>(Arrays.asList("lara"));
 
-    private static boolean defaultNameFilter(String name) {
-        if (name.startsWith("_")) {
-            return false;
-        }
-
-        return true;
-    }
+    // private static boolean defaultNameFilter(String name) {
+    // if (name.startsWith("_")) {
+    // return false;
+    // }
+    //
+    // return true;
+    // }
 
     private final MultiMap<String, File> packagesPaths;
     // Filters folders/files based on name
     private final Predicate<String> nameFilter;
 
     public LaraDocParser() {
-        this(LaraDocParser::defaultNameFilter);
+        // this(LaraDocParser::defaultNameFilter);
+        this(null);
     }
 
     public LaraDocParser(Predicate<String> nameFilter) {
@@ -82,16 +88,30 @@ public class LaraDocParser {
 
         // Collect information
         LaraDocTop laraDocumentation = collectInformation();
-        //
-        // // Merge base files information
-        // laraDocFiles.mergeBaseFiles();
-        //
-        // // Build documentation information
-        // buildDocumentationTags(laraDocFiles);
-        //
-        // return laraDocFiles;
+
+        // Clean tree
+        clean(laraDocumentation);
+
+        // Build documentation information
+        buildDocumentationTags(laraDocumentation);
 
         return laraDocumentation;
+    }
+
+    private void clean(LaraDocTop laraDocumentation) {
+        // Remove modules that do not have main file
+        List<LaraDocModule> modules = SpecsCollections.toList(laraDocumentation.getDescendantsStream(),
+                LaraDocModule.class);
+
+        for (LaraDocModule module : modules) {
+            if (module.hasMainLara()) {
+                continue;
+            }
+
+            // Remove module
+            module.getParent().remove(module);
+        }
+
     }
 
     /**
@@ -178,9 +198,6 @@ public class LaraDocParser {
         case "lara":
             String importPath = LaraDocs.getImportPath(laraFile, baseFolder);
 
-            // Get or create module from current node
-            LaraDocModule module = currentNode.getOrCreateNode(LaraDocModule.class, importPath,
-                    () -> new LaraDocModule(importPath));
             /*
             LaraDocModule module = currentNode.getNode(LaraDocModule.class, importPath)
                     .orElse(new LaraDocModule(importPath));
@@ -190,6 +207,14 @@ public class LaraDocParser {
             */
             // Check if base file
             boolean isBaseFile = filename.substring(0, filename.length() - ".lara".length()).endsWith("Base");
+
+            // Get correct module import
+            String moduleImport = isBaseFile ? importPath.substring(0, importPath.length() - "Base".length())
+                    : importPath;
+
+            // Get or create module from current node
+            LaraDocModule module = currentNode.getOrCreateNode(LaraDocModule.class, moduleImport,
+                    () -> new LaraDocModule(moduleImport));
 
             if (isBaseFile) {
                 module.setBaseLara(laraFile);
@@ -225,13 +250,9 @@ public class LaraDocParser {
         File bundleLaraFolder = new File(bundleFolder, LaraBundle.getLaraFolderName());
 
         // Files in the root of the folder and in folder 'lara' belong to all packages in the bundle
-        // List<LaraFileInfo> commonFiles = getBundleCommonFiles(bundleFolder);
 
         LaraDocBundle laraDocBundle = currentNode.getOrCreateNode(LaraDocBundle.class, bundleName,
                 () -> new LaraDocBundle(bundleName));
-
-        // LaraDocBundle laraDocBundle = laraDocFiles.getOrCreateBundle(bundleName);
-        // laraDocFiles.pushBundle(laraDocBundle);
 
         // Each folder in the root represents a package of the bundle (or a bundle itself)
         List<File> packageFolders = SpecsIo.getFolders(bundleFolder);
@@ -242,10 +263,10 @@ public class LaraDocParser {
             }
 
             // If folder is a bundle, call function recursively
-            if (LaraBundle.isBundleFolder(packageFolder)) {
-                collectInformation(packageFolder, packageFolder, laraDocBundle);
-                continue;
-            }
+            // if (LaraBundle.isBundleFolder(packageFolder)) {
+            // collectInformation(packageFolder, packageFolder, laraDocBundle);
+            // continue;
+            // }
 
             // Ignore lara folder
             if (packageFolder.getName().equals(LaraBundle.getLaraFolderName())) {
@@ -255,7 +276,6 @@ public class LaraDocParser {
             String packageName = packageFolder.getName();
             LaraDocPackage currentPackage = laraDocBundle.getOrCreateNode(LaraDocPackage.class, packageName,
                     () -> new LaraDocPackage(packageName));
-            // laraDocFiles.pushPackageName(packageName);
 
             // Add folder
             collectInformation(packageFolder, packageFolder, currentPackage);
@@ -267,10 +287,31 @@ public class LaraDocParser {
             if (bundleLaraFolder.isDirectory()) {
                 collectInformation(bundleLaraFolder, bundleLaraFolder, currentPackage);
             }
-
-            // laraDocFiles.popPackageName();
         }
+    }
 
-        // laraDocFiles.popBundle();
+    private void buildDocumentationTags(LaraDocTop laraDoc) {
+        // Add documentation to modules
+        List<LaraDocModule> modules = SpecsCollections.toList(laraDoc.getDescendantsStream(), LaraDocModule.class);
+
+        for (LaraDocModule module : modules) {
+            // Add info about a module to the same AspectIrDoc
+            AspectIrDocBuilder laraDocBuilder = new AspectIrDocBuilder();
+
+            // Parse files
+            for (File laraFile : module.getLaraFiles()) {
+                Optional<Aspects> aspectIr = LaraToJs.parseLara(laraFile);
+                if (!aspectIr.isPresent()) {
+                    continue;
+                }
+                laraDocBuilder.parse(aspectIr.get());
+            }
+
+            // Add information about import path to class files in module
+            laraDocBuilder.addImportPath(module.getImportPath());
+
+            // Build AspectIrDoc and associate with module
+            module.setDocumentation(laraDocBuilder.build());
+        }
     }
 }
