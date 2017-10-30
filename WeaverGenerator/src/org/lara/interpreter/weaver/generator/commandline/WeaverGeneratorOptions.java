@@ -58,6 +58,7 @@ class WeaverGeneratorOptions extends Options {
         // I("i", "implMode"),
         // G("g", "graph"),
         N("n", "nodeType"),
+        D("d", "defs"),
         J("j", "json"),;
         private String option;
         private String longOption;
@@ -112,6 +113,8 @@ class WeaverGeneratorOptions extends Options {
 
         final Option toJson = newOption(null, GeneratorOption.J, ArgOption.NO_ARGS,
                 "Output a json file of the language specification");
+        final Option useDefs = newOption(null, GeneratorOption.D, ArgOption.NO_ARGS,
+                "Create methods for def action");
         // final Option showGraph = newOption(null, GeneratorOption.G, ArgOption.NO_ARGS,
         // "Show a graph of the join point hierarchy (default: " + GenConstants.getDefaultShowGraph() + ")");
 
@@ -127,6 +130,7 @@ class WeaverGeneratorOptions extends Options {
         // addOption(implMode);
         addOption(nodeType);
         addOption(toJson);
+        addOption(useDefs);
         // addOption(showGraph);
     }
 

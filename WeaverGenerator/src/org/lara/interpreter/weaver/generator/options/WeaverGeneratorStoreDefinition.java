@@ -30,6 +30,7 @@ public class WeaverGeneratorStoreDefinition implements StoreDefinitionProvider {
         builder.addKey(WeaverGeneratorKeys.ABSTRACT_GETTERS);
         builder.addKey(WeaverGeneratorKeys.ADD_EVENTS);
         builder.addKey(WeaverGeneratorKeys.IMPL_MODE);
+        builder.addKey(WeaverGeneratorKeys.DEF_MODE);
         builder.addKey(WeaverGeneratorKeys.NODE_TYPE);
         builder.addKey(WeaverGeneratorKeys.PACKAGE);
         builder.addKey(WeaverGeneratorKeys.OUTPUT_FOLDER);

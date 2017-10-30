@@ -22,11 +22,13 @@ import org.lara.interpreter.weaver.generator.generator.java.helpers.ExceptionGen
 import org.lara.interpreter.weaver.generator.generator.java.helpers.SuperAbstractJoinPointGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.UserAbstractJPClassGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEntitiesGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEnumsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverAbstractGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverImplGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
+import org.lara.language.specification.artifactsmodel.schema.EnumDef;
+import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -53,6 +55,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private String abstractWeaverPackage;
     private String abstractUserJoinPointPackage;
     private String entitiesPackage;
+    private String literalEnumsPackage;
     private String enumsPackage;
     private JavaType superClass;
 
@@ -190,7 +193,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         setAbstractUserJoinPointPackage(weaverPackage + ".abstracts");
         setJoinPointPackage(basePackageName + "abstracts.joinpoints");
         setEntitiesPackage(basePackageName + GenConstants.entity());
-        setEnumsPackage(joinPointPackage + ".enums");
+        setEnumsPackage(basePackageName + GenConstants.enums());
+        setLiteralEnumsPackage(joinPointPackage + ".enums");
 
         /**
          * return javaC.getClassPackage() + ".enums"
@@ -292,14 +296,22 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      *            the class package (will append '.entities')
      */
     private List<String> generateUserDefinedEntities() {
-        final List<NewObject> newObjects = getLanguageSpecification().getArtifacts().getObjects();
         final List<String> userDefinedClasses = new ArrayList<>();
 
-        for (final NewObject newObject : newObjects) {
+        final List<TypeDef> newObjects = getLanguageSpecification().getArtifacts().getTypeDefs();
+        for (final TypeDef newObject : newObjects) {
             final JavaClass uDClass = UserEntitiesGenerator.generate(this, newObject);
             userDefinedClasses.add(newObject.getName());
             Utils.generateToFile(getOutDir(), uDClass, true);
         }
+
+        final List<EnumDef> newEnums = getLanguageSpecification().getArtifacts().getEnumDefs();
+        for (final EnumDef newEnum : newEnums) {
+            final JavaEnum userEnum = UserEnumsGenerator.generate(this, newEnum);
+            userDefinedClasses.add(newEnum.getName());
+            Utils.generateToFile(getOutDir(), userEnum, true);
+        }
+        // System.out.println("USER DEFINED CLASSES: " + userDefinedClasses);
         return userDefinedClasses;
     }
 
@@ -407,12 +419,12 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         this.aUserJoinPointType = aUserJoinPointType;
     }
 
-    public String getEnumsPackage() {
-        return enumsPackage;
+    public String getLiteralEnumsPackage() {
+        return literalEnumsPackage;
     }
 
-    public void setEnumsPackage(String enumsPackage) {
-        this.enumsPackage = enumsPackage;
+    public void setLiteralEnumsPackage(String enumsPackage) {
+        this.literalEnumsPackage = enumsPackage;
     }
 
     public JavaType getNodeJavaType() {
@@ -445,6 +457,14 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     public JavaClass getWeaverImplClass() {
         return weaverImplClass;
+    }
+
+    public String getEnumsPackage() {
+        return enumsPackage;
+    }
+
+    public void setEnumsPackage(String enumsPackage) {
+        this.enumsPackage = enumsPackage;
     }
 
 }

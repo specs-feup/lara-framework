@@ -34,6 +34,7 @@ import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.artifactsmodel.schema.DefArgType;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
@@ -55,6 +56,7 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
+import pt.up.fe.specs.util.SpecsCollections;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -219,6 +221,7 @@ public class GeneratorUtils {
         addSuperGetters(javaC, fieldName, generator, parent);
         addSuperSelect(javaC, fieldName, generator, parent);
         addSuperMethods(javaC, fieldName, generator, parent);
+        addSuperDefs(javaC, fieldName, generator, parent);
     }
 
     /**
@@ -300,7 +303,9 @@ public class GeneratorUtils {
         // the same thing as the code above
         // joinPointOwnActions.addAll(langSpec.getActionModel().getActionsForAll());
         for (final Action action : joinPointOwnActions) {
-
+            if (javaGenerator.hasDefs() && action.getName().equals("def")) {
+                continue;
+            }
             final Method m = generateActionMethod(action, javaGenerator);
             m.setName(m.getName() + GenConstants.getImplementationSufix());
             m.clearCode();
@@ -492,6 +497,17 @@ public class GeneratorUtils {
     public static String UnsupActionExceptionCode(String action) {
         return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
                 + "()+\": Action " + action + " not implemented \");";
+    }
+
+    public static String UnsupDefExceptionCode(String attribute) {
+        return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
+                + "()+\": attribute '\"+" + attribute + "+\"' cannot be defined\");";
+    }
+
+    public static String UnsupDefTypeExceptionCode(String attribute, String valueType) {
+        return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
+                + "()+\": attribute '" + attribute + "' cannot be defined with the input type \"+" + valueType
+                + ");";
     }
 
     /**
@@ -691,7 +707,7 @@ public class GeneratorUtils {
         final String[] items = itemsCollection.substring(1, itemsCollection.length() - 1).split(",");
         // System.out.println(itemsCollection);
         final String javaEnumName = extractEnumName(baseName, attributeName);
-        final JavaEnum enumerator = new JavaEnum(javaEnumName, generator.getEnumsPackage());
+        final JavaEnum enumerator = new JavaEnum(javaEnumName, generator.getLiteralEnumsPackage());
         for (String itemName : items) {
             itemName = itemName.trim();
             String enumName = itemName.toUpperCase();
@@ -967,4 +983,125 @@ public class GeneratorUtils {
         // return arrayCode;
     }
 
+    public static void generateDefMethods(Attribute attribute, JavaType returnType, JavaClass javaC,
+            JavaAbstractsGenerator javaGenerator) {
+
+        Function<String, String> codeProvider = t -> UnsupActionExceptionCode(
+                "def " + attribute.getName() + " with type " + t);
+        generateDefForType(attribute, returnType, javaC, javaGenerator, codeProvider);
+
+    }
+
+    public static void generateDefForType(Attribute attribute, JavaType returnType, JavaClass javaC,
+            JavaAbstractsGenerator javaGenerator, Function<String, String> codeProvider) {
+        List<DefArgType> defs = attribute.getDef();
+        if (defs.isEmpty()) {
+            return;
+        }
+        List<String> processedTypes = SpecsCollections.newArrayList();
+        for (DefArgType defType : defs) {
+            String type = defType.getType();
+            if (processedTypes.contains(type)) {
+                continue;
+            }
+            JavaType defJavaType;
+            if (type == null) {
+                defJavaType = returnType.clone();
+            } else {
+                defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+            }
+            Method defAttrImpl = new Method(JavaTypeFactory.getVoidType(),
+                    GenConstants.getDefAttributeImplName(attribute));
+            defAttrImpl.setPrivacy(Privacy.PUBLIC);
+            defAttrImpl.addArgument(defJavaType, "value");
+            defAttrImpl.appendCode(codeProvider.apply(defJavaType.getName()));
+
+            processedTypes.add(type);
+            javaC.add(defAttrImpl);
+        }
+    }
+
+    public static void addSuperDefs(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
+            JoinPointType parent) {
+
+        final Artifact artifact = generator.getLanguageSpecification().getArtifacts().getArtifact(parent.getClazz());
+        if (artifact != null) {
+            for (final Attribute attribute : artifact.getAttribute()) {
+                List<DefArgType> defs = attribute.getDef();
+                if (defs.isEmpty()) {
+                    continue;
+                }
+                String attrClassStr = attribute.getType().trim();
+
+                if (attrClassStr.startsWith("{")) { // then it is an enumerator
+                    // attrClassStr = extractEnumName(attribute.getName());
+                    attrClassStr = String.class.getSimpleName();
+                }
+                String defMethodName = GenConstants.getDefAttributeImplName(attribute);
+                JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
+
+                Function<String, String> codeProvider = t -> "this." + fieldName + "." + defMethodName + "(value);";
+                generateDefForType(attribute, type, javaC, generator, codeProvider);
+            }
+        }
+    }
+
+    public static void createDefImpl(JavaClass javaC, boolean isFinal,
+            List<Attribute> attributes, JavaAbstractsGenerator javaGenerator) {
+        Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
+        defMethod.add(Annotation.OVERRIDE);
+        if (isFinal) {
+            defMethod.add(Modifier.FINAL);
+        }
+        defMethod.addArgument(String.class, "attribute");
+        defMethod.addArgument(Object.class, "value");
+        defMethod.appendCodeln("switch(attribute){");
+
+        for (Attribute attribute : attributes) {
+            // System.out.println("CREATING DEF FOR " + attribute.getN);
+            List<DefArgType> def = attribute.getDef();
+            JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getType(), javaGenerator);
+            defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
+            List<String> processedTypes = SpecsCollections.newArrayList();
+            for (DefArgType defType : def) {
+                String type = defType.getType();
+                // System.out.println("\tFOR DEF: " + type);
+                if (processedTypes.contains(type)) {
+                    continue;
+                }
+                JavaType defJavaType;
+                if (type == null) {
+                    defJavaType = returnType.clone();
+                } else {
+                    defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+                }
+                javaC.addImport(defJavaType);
+                defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
+                defMethod.appendCode("\t\tthis.");
+                defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
+                defMethod.appendCode("((");
+                defMethod.appendCode(defJavaType.getSimpleType());
+                defMethod.appendCodeln(")value);");
+                defMethod.appendCodeln("\t\treturn;");
+                defMethod.appendCodeln("\t}");
+                processedTypes.add(type);
+            }
+
+            defMethod.appendCodeln("\tthis.unsupportedTypeForDef(attribute, value);");
+            // \tString valueType = value.getClass().getSimpleName();");
+            // defMethod.appendCodeln("\tif(value instanceof JoinPoint){");
+            // defMethod.appendCodeln("\t\tvalueType = ((JoinPoint)value).getJoinPointType();");
+            // defMethod.appendCodeln("\t}");
+            // defMethod.appendCodeln("\t" +
+            // GeneratorUtils.UnsupDefTypeExceptionCode(attribute.getName(), "valueType"));
+            defMethod.appendCodeln("}");
+        }
+
+        defMethod.appendCode("default: ");
+        defMethod.appendCodeln(
+                GeneratorUtils.UnsupDefExceptionCode("attribute"));
+        defMethod.appendCodeln("}");
+        javaC.add(defMethod);
+        javaC.addImport(JoinPoint.class);
+    }
 }

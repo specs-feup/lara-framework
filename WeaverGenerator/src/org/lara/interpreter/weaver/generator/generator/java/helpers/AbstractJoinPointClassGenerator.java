@@ -115,7 +115,12 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         boolean isFinal = !langSpec.getJpModel().isSuper(joinPoint);
 
         GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal, langSpec.getJpModel());
+        if (javaGenerator.hasDefs()) {
+            List<Attribute> allDefinableAttributes = langSpec.getArtifacts()
+                    .getAllDefinableAttributes(joinPoint.getClazz());
 
+            GeneratorUtils.createDefImpl(javaC, isFinal, allDefinableAttributes, javaGenerator);
+        }
         GeneratorUtils.createListOfAvailableAttributes(javaC, langSpec, joinPoint, superTypeName, isFinal);
         GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);
         GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, langSpec, isFinal);
@@ -161,7 +166,9 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
                 Method generateAttributeImpl = GeneratorUtils.generateAttributeImpl(generateAttribute, attribute,
                         javaC, javaGenerator);
                 javaC.add(generateAttributeImpl);
-
+                GeneratorUtils.generateDefMethods(attribute, generateAttribute.getReturnType(), javaC,
+                        javaGenerator);
+                // if(!def.isEmpty())
             }
         }
     }

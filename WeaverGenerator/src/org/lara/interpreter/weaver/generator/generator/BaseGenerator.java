@@ -34,6 +34,7 @@ public abstract class BaseGenerator {
     private boolean showGraph;
     private boolean generated;
     private boolean json;
+    private boolean defs;
 
     public BaseGenerator() {
 
@@ -89,6 +90,7 @@ public abstract class BaseGenerator {
         setShowGraph(GenConstants.getDefaultShowGraph());
         setGenerated(false);
         setJson(false);
+        setDefs(false);
     }
 
     /**
@@ -367,5 +369,13 @@ public abstract class BaseGenerator {
 
     public boolean hasImplMode() {
         return implMode;
+    }
+
+    public void setDefs(boolean b) {
+        this.defs = b;
+    }
+
+    public boolean hasDefs() {
+        return defs;
     }
 }
