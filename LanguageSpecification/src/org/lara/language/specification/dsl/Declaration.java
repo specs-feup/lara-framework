@@ -14,7 +14,7 @@
 package org.lara.language.specification.dsl;
 
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.TypeEnum;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 
 /**
  * A basic class that contains a type and a name
@@ -50,7 +50,7 @@ public class Declaration {
 
     @Override
     public String toString() {
-	if (type instanceof TypeEnum) {
+	if (type instanceof LiteralEnum) {
 	    return type.getType();
 	}
 	return type.getType() + " " + name;

@@ -17,12 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lara.language.specification.dsl.types.ArrayType;
+import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
-import org.lara.language.specification.dsl.types.TypeEnum;
 
 import tdrc.utils.StringUtils;
 
@@ -33,6 +34,7 @@ public class LanguageSpecificationV2 {
     private Map<String, JoinPointClass> joinPoints;
     private JoinPointClass global;
     private Map<String, TypeDef> typeDefs;
+    private Map<String, EnumDef> enumDefs;
 
     public LanguageSpecificationV2(JoinPointClass root, String rootAlias) {
         super();
@@ -40,6 +42,7 @@ public class LanguageSpecificationV2 {
         this.rootAlias = rootAlias == null ? "" : rootAlias;
         joinPoints = new HashMap<>();
         typeDefs = new HashMap<>();
+        setEnumDefs(new HashMap<>());
     }
 
     public LanguageSpecificationV2() {
@@ -54,6 +57,10 @@ public class LanguageSpecificationV2 {
         typeDefs.put(type.getName(), type);
     }
 
+    public void add(EnumDef type) {
+        enumDefs.put(type.getName(), type);
+    }
+
     public JoinPointClass getJoinPoint(String name) {
         return joinPoints.get(name);
     }
@@ -61,7 +68,7 @@ public class LanguageSpecificationV2 {
     public IType getType(String type) {
 
         if (type.startsWith("{")) {// An enum
-            return new TypeEnum(type, type);
+            return new LiteralEnum(type, type);
         }
 
         if (type.endsWith("[]")) {
@@ -89,25 +96,20 @@ public class LanguageSpecificationV2 {
             return new JPType(global);
         }
 
-        if (Primitive.contains(type))
-
-        {
+        if (Primitive.contains(type)) {
             return Primitive.get(type);
         }
-        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(type)))
-
-        {
+        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(type))) {
             return PrimitiveClasses.get(type);
         }
-        if (typeDefs.containsKey(type))
-
-        {
+        if (typeDefs.containsKey(type)) {
             return typeDefs.get(type);
         }
+        if (enumDefs.containsKey(type)) {
+            return enumDefs.get(type);
+        }
 
-        if (joinPoints.containsKey(type))
-
-        {
+        if (joinPoints.containsKey(type)) {
             return new JPType(joinPoints.get(type));
         }
 
@@ -175,5 +177,13 @@ public class LanguageSpecificationV2 {
             string += "\n" + type.toDSLString();
         }
         return string;
+    }
+
+    public Map<String, EnumDef> getEnumDefs() {
+        return enumDefs;
+    }
+
+    public void setEnumDefs(Map<String, EnumDef> enumDefs) {
+        this.enumDefs = enumDefs;
     }
 }

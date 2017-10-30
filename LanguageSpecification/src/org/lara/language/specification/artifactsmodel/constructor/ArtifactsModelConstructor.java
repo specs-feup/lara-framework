@@ -32,13 +32,15 @@ import org.lara.language.specification.IModel;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.ArtifactsList;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.Global;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
 import org.lara.language.specification.artifactsmodel.schema.ObjectFactory;
 import org.lara.language.specification.artifactsmodel.schema.Parameter;
+import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.resources.LanguageSpecificationResources;
 import org.xml.sax.SAXException;
 
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.MarshalUtils;
 
@@ -63,8 +65,8 @@ public class ArtifactsModelConstructor implements IModel {
      * @throws IOException
      */
     public ArtifactsModelConstructor(File attributesModelFile, boolean validate)
-	    throws JAXBException, SAXException, XMLParseException, IOException {
-	this(new StreamSource(attributesModelFile), attributesModelFile.getName(), validate);
+            throws JAXBException, SAXException, XMLParseException, IOException {
+        this(new StreamSource(attributesModelFile), attributesModelFile.getName(), validate);
     }
 
     /**
@@ -82,13 +84,13 @@ public class ArtifactsModelConstructor implements IModel {
      *             If the XML is badly formatted
      */
     public ArtifactsModelConstructor(Source artifactsSource, String sourceName, boolean validate)
-	    throws JAXBException, SAXException, IOException {
-	try (final InputStream iS = SpecsIo
-		.resourceToStream(LanguageSpecificationResources.ArtifactsModelSchema.getResource());) {
+            throws JAXBException, SAXException, IOException {
+        try (final InputStream iS = SpecsIo
+                .resourceToStream(LanguageSpecificationResources.ArtifactsModelSchema.getResource());) {
 
-	    setArtifactsList(MarshalUtils.unmarshal(artifactsSource, sourceName, iS, ArtifactsList.class,
-		    ArtifactsModelConstructor.ArtifactsModelPackageName, validate));
-	}
+            setArtifactsList(MarshalUtils.unmarshal(artifactsSource, sourceName, iS, ArtifactsList.class,
+                    ArtifactsModelConstructor.ArtifactsModelPackageName, validate));
+        }
     }
 
     /**
@@ -98,7 +100,7 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public ArtifactsModelConstructor(ArtifactsList artifactsList) {
 
-	setArtifactsList(artifactsList);
+        setArtifactsList(artifactsList);
     }
 
     /**
@@ -106,7 +108,7 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public ArtifactsModelConstructor() {
 
-	setArtifactsList(getObjFactory().createArtifactsList());
+        setArtifactsList(getObjFactory().createArtifactsList());
     }
 
     /**
@@ -117,19 +119,19 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public boolean add(String paramName, String paramType, String attributeName, String artifactName) {
 
-	final Artifact artifact = getArtifact(artifactName);
-	if (artifact != null) {
+        final Artifact artifact = getArtifact(artifactName);
+        if (artifact != null) {
 
-	    final Attribute attribute = getAttribute(attributeName, artifact);
-	    if (attribute != null) {
-		final Parameter parameter = objFactory.createParameter();
-		parameter.setName(paramName);
-		parameter.setType(paramType);
-		attribute.getParameter().add(parameter);
-	    }
+            final Attribute attribute = getAttribute(attributeName, artifact);
+            if (attribute != null) {
+                final Parameter parameter = objFactory.createParameter();
+                parameter.setName(paramName);
+                parameter.setType(paramType);
+                attribute.getParameter().add(parameter);
+            }
 
-	}
-	return false;
+        }
+        return false;
     }
 
     /**
@@ -140,36 +142,36 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public boolean add(String attributeName, String attributeType, String artifactName) {
 
-	final Artifact artifact = getArtifact(artifactName);
-	if (artifact != null) {
+        final Artifact artifact = getArtifact(artifactName);
+        if (artifact != null) {
 
-	    final Attribute attribute = objFactory.createAttribute();
-	    attribute.setName(attributeName);
-	    attribute.setType(attributeType);
-	    artifact.getAttribute().add(attribute);
-	}
-	return false;
+            final Attribute attribute = objFactory.createAttribute();
+            attribute.setName(attributeName);
+            attribute.setType(attributeType);
+            artifact.getAttribute().add(attribute);
+        }
+        return false;
     }
 
     /**
-     * Add a new {@link NewObject} to the artifact model
+     * Add a new {@link TypeDef} to the artifact model
      * 
      * @param artifactName
      * @return
      */
     public boolean addObject(String objectName, Attribute... params) {
 
-	final NewObject newObject = objFactory.createNewObject();
-	newObject.setName(objectName);
-	if (params != null) {
+        final TypeDef TypeDef = objFactory.createTypeDef();
+        TypeDef.setName(objectName);
+        if (params != null) {
 
-	    for (final Attribute param : params) {
+            for (final Attribute param : params) {
 
-		newObject.getAttribute().add(param);
-	    }
-	}
+                TypeDef.getAttribute().add(param);
+            }
+        }
 
-	return false;
+        return false;
     }
 
     /**
@@ -177,16 +179,33 @@ public class ArtifactsModelConstructor implements IModel {
      * 
      * @return
      */
-    public NewObject getObject(String objName) {
+    public TypeDef getObject(String objName) {
 
-	for (final NewObject obj : artifactsList.getObject()) {
+        for (final TypeDef obj : artifactsList.getObject()) {
 
-	    if (obj.getName().equals(objName)) {
-		return obj;
-	    }
-	}
+            if (obj.getName().equals(objName)) {
+                return obj;
+            }
+        }
 
-	return null;
+        return null;
+    }
+
+    /**
+     * Return a declared object with the given name
+     * 
+     * @return
+     */
+    public EnumDef getEnum(String enumName) {
+
+        for (final EnumDef obj : artifactsList.getEnum()) {
+
+            if (obj.getName().equals(enumName)) {
+                return obj;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -196,7 +215,7 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public boolean hasObject(String objName) {
 
-	return getObject(objName) != null;
+        return getObject(objName) != null;
     }
 
     /**
@@ -204,9 +223,19 @@ public class ArtifactsModelConstructor implements IModel {
      * 
      * @return
      */
-    public List<NewObject> getObjects() {
+    public List<TypeDef> getTypeDefs() {
+        List<TypeDef> allTypeDefs = SpecsCollections.newArrayList();
+        allTypeDefs.addAll(artifactsList.getObject());
+        allTypeDefs.addAll(artifactsList.getTypedef());
+        return artifactsList.getObject();
+    }
 
-	return artifactsList.getObject();
+    public List<EnumDef> getEnumDefs() {
+        return artifactsList.getEnum();
+    }
+
+    public boolean hasEnumDef(String type) {
+        return getEnum(type) != null;
     }
 
     /**
@@ -216,9 +245,9 @@ public class ArtifactsModelConstructor implements IModel {
      * @return
      */
     public boolean add(String artifactType) {
-	final Artifact artifact = objFactory.createArtifact();
-	artifact.setClazz(artifactType);
-	return add(artifact);
+        final Artifact artifact = objFactory.createArtifact();
+        artifact.setClazz(artifactType);
+        return add(artifact);
     }
 
     /**
@@ -229,7 +258,7 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public boolean add(Artifact artifact) {
 
-	return artifactsList.getArtifact().add(artifact);
+        return artifactsList.getArtifact().add(artifact);
     }
 
     /**
@@ -241,8 +270,8 @@ public class ArtifactsModelConstructor implements IModel {
     @Override
     public void toXML(OutputStream oStream) throws JAXBException {
 
-	MarshalUtils.marshal(artifactsList, ArtifactsList.class, ArtifactsModelConstructor.ArtifactsModelPackageName,
-		ArtifactsModelConstructor._Artifacts_QNAME, oStream);
+        MarshalUtils.marshal(artifactsList, ArtifactsList.class, ArtifactsModelConstructor.ArtifactsModelPackageName,
+                ArtifactsModelConstructor._Artifacts_QNAME, oStream);
     }
 
     /**
@@ -254,24 +283,24 @@ public class ArtifactsModelConstructor implements IModel {
      */
     protected Attribute getAttribute(String attributeType, Artifact artifact) {
 
-	if (globalAttributes.containsKey(attributeType)) {
+        if (globalAttributes.containsKey(attributeType)) {
 
-	    return globalAttributes.get(attributeType);
-	}
+            return globalAttributes.get(attributeType);
+        }
 
-	for (final Attribute attribute : artifact.getAttribute()) {
+        for (final Attribute attribute : artifact.getAttribute()) {
 
-	    if (attribute.getName().equals(attributeType)) {
-		return attribute;
-	    }
-	}
+            if (attribute.getName().equals(attributeType)) {
+                return attribute;
+            }
+        }
 
-	final String parent = joinPointHierarchy.get(artifact.getClazz());
-	if (parent != null && !parent.equals(artifact.getClazz())) {
-	    final Artifact parentArtifact = getArtifact(parent);
-	    return getAttribute(attributeType, parentArtifact);
-	}
-	return null;
+        final String parent = joinPointHierarchy.get(artifact.getClazz());
+        if (parent != null && !parent.equals(artifact.getClazz())) {
+            final Artifact parentArtifact = getArtifact(parent);
+            return getAttribute(attributeType, parentArtifact);
+        }
+        return null;
     }
 
     /**
@@ -282,15 +311,15 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public List<Attribute> getAttributes(String artifactType) {
 
-	for (final Artifact artifact : artifactsList.getArtifact()) {
+        for (final Artifact artifact : artifactsList.getArtifact()) {
 
-	    if (artifact.getClazz().equals(artifactType)) {
-		final List<Attribute> attributes = new ArrayList<>(artifact.getAttribute());
-		// attributes.addAll(globalAttributes.values());
-		return attributes;
-	    }
-	}
-	return null;
+            if (artifact.getClazz().equals(artifactType)) {
+                final List<Attribute> attributes = new ArrayList<>(artifact.getAttribute());
+                // attributes.addAll(globalAttributes.values());
+                return attributes;
+            }
+        }
+        return null;
     }
 
     /**
@@ -301,13 +330,13 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public Artifact getArtifact(String artifactType) {
 
-	for (final Artifact artifact : artifactsList.getArtifact()) {
+        for (final Artifact artifact : artifactsList.getArtifact()) {
 
-	    if (artifact.getClazz().equals(artifactType)) {
-		return artifact;
-	    }
-	}
-	return null;
+            if (artifact.getClazz().equals(artifactType)) {
+                return artifact;
+            }
+        }
+        return null;
     }
 
     /**
@@ -318,17 +347,17 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public Artifact getArtifactRecursively(String artifactType) {
 
-	final Artifact artifact = getArtifact(artifactType);
-	if (artifact == null && joinPointHierarchy.containsKey(artifactType)) {
+        final Artifact artifact = getArtifact(artifactType);
+        if (artifact == null && joinPointHierarchy.containsKey(artifactType)) {
 
-	    final String parentType = joinPointHierarchy.get(artifactType);
+            final String parentType = joinPointHierarchy.get(artifactType);
 
-	    if (!parentType.equals(artifactType)) {
-		return getArtifactRecursively(parentType);
-	    }
-	}
+            if (!parentType.equals(artifactType)) {
+                return getArtifactRecursively(parentType);
+            }
+        }
 
-	return artifact;
+        return artifact;
     }
 
     /**
@@ -339,28 +368,28 @@ public class ArtifactsModelConstructor implements IModel {
      */
     public List<Attribute> getAttributesRecursively(String artifactType) {
 
-	List<Attribute> attributes = new ArrayList<>();
+        List<Attribute> attributes = new ArrayList<>();
 
-	fillAttributesListRecursively(artifactType, attributes);
+        fillAttributesListRecursively(artifactType, attributes);
 
-	attributes.addAll(globalAttributes.values());
+        attributes.addAll(globalAttributes.values());
 
-	return attributes;
+        return attributes;
 
     }
 
     private void fillAttributesListRecursively(String artifactType, List<Attribute> attributes) {
 
-	final Artifact artifact = getArtifactRecursively(artifactType);
-	if (artifact != null) {
-	    attributes.addAll(artifact.getAttribute());
+        final Artifact artifact = getArtifactRecursively(artifactType);
+        if (artifact != null) {
+            attributes.addAll(artifact.getAttribute());
 
-	    final String parentType = joinPointHierarchy.get(artifactType);
+            final String parentType = joinPointHierarchy.get(artifactType);
 
-	    if (!parentType.equals(artifactType)) {
-		fillAttributesListRecursively(parentType, attributes);
-	    }
-	}
+            if (!parentType.equals(artifactType)) {
+                fillAttributesListRecursively(parentType, attributes);
+            }
+        }
     }
 
     /**
@@ -370,56 +399,68 @@ public class ArtifactsModelConstructor implements IModel {
      */
     @Override
     public String toString() {
-	String ret = "";
-	ret += "----------- Artifacts -----------\n";
-	if (artifactsList.getGlobal() != null) {
-	    ret += "GLOBAL\n";
-	    for (final Attribute attribute : artifactsList.getGlobal().getAttribute()) {
+        String ret = "";
+        ret += "----------- Artifacts -----------\n";
+        if (artifactsList.getGlobal() != null) {
+            ret += "GLOBAL\n";
+            for (final Attribute attribute : artifactsList.getGlobal().getAttribute()) {
 
-		ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
-		for (final Parameter param : attribute.getParameter()) {
+                ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
+                for (final Parameter param : attribute.getParameter()) {
 
-		    ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
-		}
-	    }
-	}
+                    ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
+                }
+            }
+        }
 
-	for (final Artifact artifact : artifactsList.getArtifact()) {
+        for (final Artifact artifact : artifactsList.getArtifact()) {
 
-	    ret += artifact.getClazz() + "\n";
-	    for (final Attribute attribute : artifact.getAttribute()) {
+            ret += artifact.getClazz() + "\n";
+            for (final Attribute attribute : artifact.getAttribute()) {
 
-		ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
-		for (final Parameter param : attribute.getParameter()) {
+                ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
+                for (final Parameter param : attribute.getParameter()) {
 
-		    ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
-		}
-	    }
-	}
-	if (!artifactsList.getObject().isEmpty()) {
+                    ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
+                }
+            }
+        }
+        if (!artifactsList.getObject().isEmpty()) {
 
-	    ret += "\n----------- Objects -----------\n";
-	    for (final NewObject newObject : artifactsList.getObject()) {
+            ret += "\n----------- Objects -----------\n";
+            for (final TypeDef TypeDef : artifactsList.getObject()) { // Maintaining for backwards compatibility
 
-		ret += newObject.getName() + "\n";
-		for (final Attribute attribute : newObject.getAttribute()) {
+                ret += TypeDef.getName() + "\n";
+                for (final Attribute attribute : TypeDef.getAttribute()) {
 
-		    ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
-		    for (final Parameter param : attribute.getParameter()) {
+                    ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
+                    for (final Parameter param : attribute.getParameter()) {
 
-			ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
-		    }
-		}
-	    }
-	}
-	return ret;
+                        ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
+                    }
+                }
+            }
+            for (final TypeDef TypeDef : artifactsList.getTypedef()) {
+
+                ret += TypeDef.getName() + "\n";
+                for (final Attribute attribute : TypeDef.getAttribute()) {
+
+                    ret += "\t" + attribute.getName() + "(" + attribute.getType() + ")\n";
+                    for (final Parameter param : attribute.getParameter()) {
+
+                        ret += "\t\t" + param.getName() + "(" + param.getType() + ")\n";
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     /**
      * @return the artifactsList
      */
     public ArtifactsList getArtifactsList() {
-	return artifactsList;
+        return artifactsList;
     }
 
     /**
@@ -427,37 +468,37 @@ public class ArtifactsModelConstructor implements IModel {
      *            the artifactsList to set
      */
     public void setArtifactsList(ArtifactsList artifactsList) {
-	this.artifactsList = artifactsList;
-	sanitizeAndMap();
+        this.artifactsList = artifactsList;
+        sanitizeAndMap();
     }
 
     /**
      * Sanitize the artifacts model and create mappings between artifacts and attributes
      */
     private void sanitizeAndMap() {
-	joinPointHierarchy = new HashMap<>();
+        joinPointHierarchy = new HashMap<>();
 
-	if (artifactsList.getGlobal() == null) {
+        if (artifactsList.getGlobal() == null) {
 
-	    artifactsList.setGlobal(new Global());
-	}
-	final List<Attribute> globalAttributesList = artifactsList.getGlobal().getAttribute();
-	final int initCapacity = globalAttributesList.size();
-	globalAttributes = new HashMap<>(initCapacity);
-	for (final Attribute attr : globalAttributesList) {
+            artifactsList.setGlobal(new Global());
+        }
+        final List<Attribute> globalAttributesList = artifactsList.getGlobal().getAttribute();
+        final int initCapacity = globalAttributesList.size();
+        globalAttributes = new HashMap<>(initCapacity);
+        for (final Attribute attr : globalAttributesList) {
 
-	    globalAttributes.put(attr.getName(), attr);
-	}
+            globalAttributes.put(attr.getName(), attr);
+        }
     }
 
     /**
      * @return the objFactory
      */
     public ObjectFactory getObjFactory() {
-	if (objFactory == null) {
-	    objFactory = new ObjectFactory();
-	}
-	return objFactory;
+        if (objFactory == null) {
+            objFactory = new ObjectFactory();
+        }
+        return objFactory;
     }
 
     /**
@@ -465,27 +506,27 @@ public class ArtifactsModelConstructor implements IModel {
      *            the objFactory to set
      */
     public void setObjFactory(ObjectFactory objFactory) {
-	this.objFactory = objFactory;
+        this.objFactory = objFactory;
     }
 
     @Override
     public boolean contains(String name) {
 
-	return getArtifact(name) != null;
+        return getArtifact(name) != null;
     }
 
     @Override
     public boolean contains(String name, String subname) {
-	final Artifact artifact = getArtifact(name);
-	if (artifact == null) {
-	    return false;
-	}
-	if (artifactsList.getGlobal() != null) {
+        final Artifact artifact = getArtifact(name);
+        if (artifact == null) {
+            return false;
+        }
+        if (artifactsList.getGlobal() != null) {
 
-	    if (globalAttributes.containsKey(subname)) {
-		return true;
-	    }
-	}
-	return getAttribute(subname, artifact) != null;
+            if (globalAttributes.containsKey(subname)) {
+                return true;
+            }
+        }
+        return getAttribute(subname, artifact) != null;
     }
 }

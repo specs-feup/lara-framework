@@ -20,7 +20,8 @@ import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.ActionModel;
 import org.lara.language.specification.artifactsmodel.ArtifactsModel;
 import org.lara.language.specification.artifactsmodel.schema.Global;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
+import org.lara.language.specification.dsl.types.EnumDef;
+import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.TypeDef;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
@@ -42,10 +43,21 @@ public class JoinPointFactory {
         /**
          * First create the join points and typedefs so next we can see if they exist and get the reference
          */
-        List<NewObject> objects = artifacts.getObjects();
-        for (NewObject newObject : objects) {
+        List<org.lara.language.specification.artifactsmodel.schema.TypeDef> objects = artifacts.getTypeDefs();
+        for (org.lara.language.specification.artifactsmodel.schema.TypeDef newObject : objects) {
             langSpecV2.add(new TypeDef(newObject.getName()));
         }
+
+        List<org.lara.language.specification.artifactsmodel.schema.EnumDef> enumDefs = artifacts.getEnumDefs();
+        for (org.lara.language.specification.artifactsmodel.schema.EnumDef enumDef : enumDefs) {
+            EnumDef type = new EnumDef(enumDef.getName());
+            langSpecV2.add(type);
+
+            type.setToolTip(enumDef.getTooltip());
+            List<EnumValue> valuesList = convertEnumValues(enumDef.getValue(), langSpecV2);
+            type.setValues(valuesList);
+        }
+
         for (JoinPointType jpType : jpModel.getJoinPointList().getJoinpoint()) {
             JoinPointClass newJPClass = new JoinPointClass(jpType.getClazz(), langSpecV2);
             newJPClass.setToolTip(jpType.getTooltip());
@@ -57,7 +69,7 @@ public class JoinPointFactory {
 
         populateGlobal(jpModel, artifacts, actionModel, langSpecV2, global);
 
-        for (NewObject newObject : objects) {
+        for (org.lara.language.specification.artifactsmodel.schema.TypeDef newObject : objects) {
 
             TypeDef typeDef = langSpecV2.getTypeDefs().get(newObject.getName());
             typeDef.setToolTip(newObject.getTooltip());
@@ -143,7 +155,7 @@ public class JoinPointFactory {
         if (globalSelects != null) {
             for (org.lara.language.specification.joinpointmodel.schema.Select select : globalSelects) {
 
-                JoinPointType selectJPT = (JoinPointType) select.getClazz();
+                JoinPointType selectJPT = select.getClazz();
                 JoinPointClass selectJP = langSpecV2.getJoinPoint(selectJPT.getClazz());
                 String alias = select.getAlias();
                 alias = alias.equals(selectJPT.getClazz()) ? "" : alias;
@@ -163,6 +175,20 @@ public class JoinPointFactory {
             for (org.lara.language.specification.artifactsmodel.schema.Attribute attribute : artifact) {
 
                 Attribute newAttribute = getAttribute(attribute, langSpec);
+                attributes.add(newAttribute);
+            }
+        }
+        return attributes;
+    }
+
+    private static List<EnumValue> convertEnumValues(
+            List<org.lara.language.specification.artifactsmodel.schema.EnumValue> enumValues,
+            LanguageSpecificationV2 langSpec) {
+        List<EnumValue> attributes = new ArrayList<>();
+        if (enumValues != null) {
+            for (org.lara.language.specification.artifactsmodel.schema.EnumValue value : enumValues) {
+
+                EnumValue newAttribute = new EnumValue(value.getName(), value.getString());
                 attributes.add(newAttribute);
             }
         }

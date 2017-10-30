@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import org.lara.language.specification.dsl.types.TypeEnum;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 
 /**
  * A basic class that contains a type and a name
@@ -35,7 +35,7 @@ public class Action extends BaseNode {
 
     static {
         INSERT = new Action(Primitive.VOID, "insert");
-        Action.INSERT.addParameter(new TypeEnum("", "{before,after,replace}"), "position");
+        Action.INSERT.addParameter(new LiteralEnum("", "{before,after,replace}"), "position");
         Action.INSERT.addParameter(PrimitiveClasses.STRING, "code");
         DEF = new Action(Primitive.VOID, "def");
         Action.DEF.addParameter(PrimitiveClasses.STRING, "attribute");
