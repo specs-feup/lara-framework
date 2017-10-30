@@ -29,7 +29,7 @@ import org.dojo.jsl.parser.ast.SimpleNode;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
+import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -207,11 +207,11 @@ public class OrganizeUtils {
         message.append(StringUtils.join(Arrays.asList(Types.values()), ", "));
         // message.append(", Object, Array, Map, Template, Joinpoint");
 
-        final List<NewObject> objects = languageSpecification.getArtifacts().getObjects();
+        final List<TypeDef> objects = languageSpecification.getArtifacts().getTypeDefs();
         if (!objects.isEmpty()) {
 
             message.append("\n\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, NewObject::getName, ", ");
+            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
             message.append(objectsString);
         }
 
