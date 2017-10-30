@@ -42,6 +42,7 @@ import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
+import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -193,8 +194,12 @@ public class LaraToJs {
 
         try {
             aspectIr = larac.compile();
+        } catch (BaseException e) {
+            // If LARA exception, use simple message instead
+            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "': " + e.getSimpleMessage());
+            return Optional.empty();
         } catch (Exception e) {
-            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
+            SpecsLogs.msgWarn("Could not compile file '" + laraFile + "'", e);
             return Optional.empty();
         }
 
