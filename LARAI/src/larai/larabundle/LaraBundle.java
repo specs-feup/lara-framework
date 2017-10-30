@@ -59,6 +59,10 @@ public class LaraBundle {
         return SpecsProperties.newInstance(bundlePath);
     }
 
+    public static boolean isBundleFolder(File path) {
+        return new File(path, LaraBundle.getLaraBundleFilename()).isFile();
+    }
+
     // private final Set<String> languages;
     private final Set<String> weavers;
     private final Map<String, String> tagsMap;

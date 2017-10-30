@@ -44,12 +44,32 @@ public class LaraDocFiles {
     private final Deque<LaraDocBundle> bundleStack;
     private final Deque<String> packageNameStack;
 
+    // Tree-based code
+    // private final LaraDocPackage topLevelPackage;
+    // private final Deque<LaraDocPackage> packageStack;
+
     public LaraDocFiles() {
         this.bundles = new HashMap<>();
         this.packages = new HashMap<>();
         this.baseFiles = new HashMap<>();
         this.bundleStack = new ArrayDeque<>();
         this.packageNameStack = new ArrayDeque<>();
+
+        // Tree-based code
+        // this.topLevelPackage = getOrCreatePackage("Top-level package");
+        // pushPackage(topLevelPackage.getPackageName());
+    }
+
+    // public LaraDocPackage getTopLevelPackage() {
+    // return topLevelPackage;
+    // }
+
+    public void pushPackage(String packageName) {
+        packageNameStack.push(packageName);
+    }
+
+    public String popPackage() {
+        return packageNameStack.pop();
     }
 
     @Override
@@ -88,20 +108,21 @@ public class LaraDocFiles {
     }
 
     public void addLaraModule(String importPath, File laraFile) {
-        // addLaraModule(DEFAULT_PACKAGE_ID, importPath, laraFile);
-        // }
-        //
-        // public void addLaraModule(String packageName, String importPath, File laraFile) {
-        // Give priority to package name stack
+        getCurrentPackage().addChild(new LaraDocModule(importPath, laraFile));
+        // getCurrentPackage().addModule(importPath, laraFile);
+    }
+
+    private LaraDocPackage getCurrentPackage() {
+        if (packageNameStack.isEmpty()) {
+            SpecsLogs.msgWarn("Package name stack is empty, using default name");
+        }
+
         String packageName = !packageNameStack.isEmpty() ? packageNameStack.peek() : DEFAULT_PACKAGE_ID;
 
         // Give priority to bundle stack
         LaraDocPackage laraPackage = !bundleStack.isEmpty() ? bundleStack.peek().getOrCreate(packageName)
                 : getOrCreatePackage(packageName);
-
-        // LaraDocPackage laraPackage = !bundleStack.isEmpty() ? bundleStack.peek().getOrCreate(packageName)
-        // : getOrCreatePackage(packageName);
-        laraPackage.add(importPath, laraFile);
+        return laraPackage;
     }
 
     private LaraDocPackage getOrCreatePackage(String packageName) {

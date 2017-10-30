@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,6 +46,8 @@ import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
@@ -52,7 +55,8 @@ public class LaraDoc {
 
     private static final Set<String> FILES_TO_COPY = new HashSet<>(Arrays.asList("lara.resource", "lara.bundle"));
 
-    private final File inputPath;
+    private final MultiMap<String, File> packagesPaths;
+    // private final File inputPath;
     // private final File outputFolder;
     private final Lazy<AspectClassProcessor> aspectProcessor;
     private final LanguageSpecification languageSpecification;
@@ -60,13 +64,27 @@ public class LaraDoc {
     private final boolean ignoreUnderscoredFolders = true;
 
     // public LaraDoc(WeaverEngine weaverEngine, File inputPath, File outputFolder) {
-    public LaraDoc(File inputPath) {
-        Preconditions.checkArgument(inputPath.exists(), "Given input path '" + inputPath + "' does not exist");
-        this.inputPath = inputPath;
+    // public LaraDoc(File inputPath) {
+    public LaraDoc() {
+        packagesPaths = new MultiMap<>();
+
+        // Preconditions.checkArgument(inputPath.exists(), "Given input path '" + inputPath + "' does not exist");
+        // this.inputPath = inputPath;
         // this.outputFolder = SpecsIo.mkdir(outputFolder);
         // this.aspectProcessor = Lazy.newInstance(() -> LaraDoc.newAspectProcessor(weaverEngine));
         this.aspectProcessor = Lazy.newInstance(LaraDoc::newAspectProcessor);
         this.languageSpecification = new DefaultWeaver().getLanguageSpecification();
+    }
+
+    public LaraDoc addPath(String packageName, File path) {
+        if (!path.exists()) {
+            SpecsLogs.msgInfo("Given input path '" + path + "' for package '" + packageName + "' does not exist");
+            return this;
+        }
+
+        packagesPaths.put(packageName, path);
+
+        return this;
     }
 
     // private static AspectClassProcessor newAspectProcessor(WeaverEngine weaverEngine) {
@@ -223,7 +241,6 @@ public class LaraDoc {
                 if (!aspectIr.isPresent()) {
                     continue;
                 }
-
                 laraDocBuilder.parse(aspectIr.get());
             }
 
@@ -241,7 +258,19 @@ public class LaraDoc {
     public LaraDocFiles collectInformation() {
         LaraDocFiles laraDocFiles = new LaraDocFiles();
 
-        collectInformation(inputPath, inputPath, laraDocFiles);
+        for (Entry<String, List<File>> entry : packagesPaths.entrySet()) {
+            String packageName = entry.getKey();
+            laraDocFiles.pushPackageName(packageName);
+
+            for (File path : entry.getValue()) {
+                collectInformation(path, path, laraDocFiles);
+            }
+
+            laraDocFiles.popPackageName();
+
+        }
+
+        // collectInformation(inputPath, inputPath, laraDocFiles);
 
         return laraDocFiles;
     }
@@ -264,7 +293,7 @@ public class LaraDoc {
         }
 
         // Bundle folder
-        if (new File(currentPath, LaraBundle.getLaraBundleFilename()).isFile()) {
+        if (isBundleFolder(currentPath)) {
             collectInformationBundle(currentPath, laraDocFiles);
             return;
         }
@@ -283,6 +312,10 @@ public class LaraDoc {
 
         // Call function recursively for all folders
         SpecsIo.getFolders(currentPath).stream().forEach(folder -> collectInformation(folder, basePath, laraDocFiles));
+    }
+
+    private boolean isBundleFolder(File currentPath) {
+        return new File(currentPath, LaraBundle.getLaraBundleFilename()).isFile();
     }
 
     private void collectInformationFile(File laraFile, File baseFolder, LaraDocFiles laraDocFiles) {
@@ -322,9 +355,15 @@ public class LaraDoc {
         LaraDocBundle laraDocBundle = laraDocFiles.getOrCreateBundle(bundleName);
         laraDocFiles.pushBundle(laraDocBundle);
 
-        // Each folder in the root represents a package of the bundle
+        // Each folder in the root represents a package of the bundle (or a bundle itself)
         List<File> packageFolders = SpecsIo.getFolders(bundleFolder);
         for (File packageFolder : packageFolders) {
+
+            // If folder is a bundle, call function recursively
+            if (isBundleFolder(packageFolder)) {
+                collectInformationBundle(packageFolder, laraDocFiles);
+                continue;
+            }
 
             // Ignore lara folder
             if (packageFolder.getName().equals(LaraBundle.getLaraFolderName())) {

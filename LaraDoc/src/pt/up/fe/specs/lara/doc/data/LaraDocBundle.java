@@ -20,7 +20,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LaraDocBundle {
+/**
+ * Represents a Lara Bundle, a set of mutually exclusive Lara packages.
+ * 
+ * @author JoaoBispo
+ *
+ */
+public class LaraDocBundle extends LaraDocNode {
 
     private final String bundleName;
     private final Map<String, LaraDocPackage> bundlePackages;
@@ -31,12 +37,24 @@ public class LaraDocBundle {
     }
 
     @Override
+    public String getId() {
+        return getBundleName();
+    }
+
+    /*
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-
+    
         builder.append("Bundle '" + bundleName + "' -> " + bundlePackages);
-
+    
         return builder.toString();
+    }
+    */
+
+    @Override
+    public String toContentString() {
+        return "Bundle '" + bundleName + "'";
     }
 
     public LaraDocPackage getOrCreate(String packageName) {
@@ -44,13 +62,15 @@ public class LaraDocBundle {
         if (laraPackage == null) {
             laraPackage = new LaraDocPackage(packageName);
             bundlePackages.put(packageName, laraPackage);
+            addChild(laraPackage);
         }
 
         return laraPackage;
     }
 
     public Collection<LaraDocPackage> getPackages() {
-        return bundlePackages.values();
+        return getChildren(LaraDocPackage.class);
+        // return bundlePackages.values();
     }
 
     public String getBundleName() {

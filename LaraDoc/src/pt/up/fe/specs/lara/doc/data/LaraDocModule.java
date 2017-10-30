@@ -23,15 +23,23 @@ import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 /**
  * Represents a LARA module which can be imported.
  * 
+ * <p>
+ * This is a leaf node, and has no children.
+ * 
+ * 
  * @author JoaoBispo
  *
  */
-public class LaraDocModule {
+public class LaraDocModule extends LaraDocNode {
 
     private final String importPath;
-    private final File mainLara;
+    private File mainLara;
     private File baseLara;
     private AspectIrDoc documentation;
+
+    public LaraDocModule(String importPath) {
+        this(importPath, null);
+    }
 
     public LaraDocModule(String importPath, File mainLara) {
         this.importPath = importPath;
@@ -40,16 +48,39 @@ public class LaraDocModule {
     }
 
     @Override
-    public String toString() {
+    public String getId() {
+        return getImportPath();
+    }
+
+    @Override
+    public String toContentString() {
         StringBuilder builder = new StringBuilder();
 
+        builder.append("Module '" + importPath + "'");
+
+        builder.append(" (");
         builder.append(mainLara);
         if (baseLara != null) {
             builder.append(" + ").append(baseLara);
         }
+        builder.append(")");
 
         return builder.toString();
     }
+
+    /*
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+    
+        builder.append(mainLara);
+        if (baseLara != null) {
+            builder.append(" + ").append(baseLara);
+        }
+    
+        return builder.toString();
+    }
+    */
 
     public String getImportPath() {
         return importPath;
@@ -57,6 +88,14 @@ public class LaraDocModule {
 
     public File getMainLara() {
         return mainLara;
+    }
+
+    public boolean hasMainLara() {
+        return mainLara != null;
+    }
+
+    public void setMainLara(File mainLara) {
+        this.mainLara = mainLara;
     }
 
     public Optional<File> getBaseLara() {

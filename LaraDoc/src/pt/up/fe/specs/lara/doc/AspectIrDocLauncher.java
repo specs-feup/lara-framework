@@ -15,8 +15,9 @@ package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
 
-import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
+import pt.up.fe.specs.lara.doc.data.LaraDocTop;
 import pt.up.fe.specs.lara.doc.jsdocgen.BasicHtmlGenerator;
+import pt.up.fe.specs.lara.doc.parser.LaraDocParser;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
@@ -28,10 +29,41 @@ public class AspectIrDocLauncher {
         // String inputPath = "C:\\Users\\joaobispo\\Repositories\\lara-dse\\";
         // String inputPath =
         // "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\metrics\\ExecutionTimeMetric.lara";
-        String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
-        // String inputPath = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
+        String laraApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
+        String laraiApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LARAI\\src-lara";
+        String clavaApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\clava\\ClavaLaraApi\\src-lara\\clava\\";
+
+        String antarexApi = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\specs-lara\\ANTAREX\\AntarexClavaApi\\src-lara\\clava\\";
+
+        String laraDse = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
         File outputFolder = SpecsIo.mkdir("C:\\Users\\joaobispo\\Desktop\\laradoc");
-        LaraDocFiles laraDocFiles = new LaraDoc(new File(inputPath)).buildLaraDoc();
+        // LaraDocFiles laraDocFiles = new LaraDoc()
+        // // .addPath("Clava API", new File(laraApi))
+        // // .addPath("Clava API", new File(laraiApi))
+        // // .addPath("Clava API", new File(clavaApi))
+        // // .addPath("ANTAREX API", new File(antarexApi))
+        // .addPath("Lara DSE", new File(laraDse))
+        // .buildLaraDoc();
+        //
+        // // Generate documentation
+        // LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
+        // generator.generateDoc(laraDocFiles);
+
+        LaraDocTop laraDocTop = new LaraDocParser()
+                .addPath("Clava API", new File(laraApi))
+                .addPath("Clava API", new File(laraiApi))
+                .addPath("Clava API", new File(clavaApi))
+                .addPath("ANTAREX API", new File(antarexApi))
+                // .addPath("Lara DSE", new File(laraDse))
+                .buildLaraDoc();
+
+        System.out.println("LARA DOC TOP:\n" + laraDocTop);
+
+        // Generate documentation
+        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
+        generator.generateDoc(laraDocTop);
+
+        // System.out.println("TOP LEVEL PACKAGE:" + laraDocFiles.getTopLevelPackage());
         /*
         // Add documentation to modules
         // for (LaraDocPackage laraPackage : laraDocFiles.getPackages()) {
@@ -56,9 +88,7 @@ public class AspectIrDocLauncher {
         // }
         // }
         */
-        // Generate documentation
-        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
-        generator.generateDoc(laraDocFiles);
+
     }
 
 }

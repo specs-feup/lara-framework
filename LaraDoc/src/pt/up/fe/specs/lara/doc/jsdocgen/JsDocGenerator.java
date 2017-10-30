@@ -14,8 +14,8 @@
 package pt.up.fe.specs.lara.doc.jsdocgen;
 
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 
@@ -29,8 +29,18 @@ public interface JsDocGenerator {
      * @return the file that represents the entry point of the documentation
      */
     // File queue(List<File> inputFiles, File outputFolder);
-//    Optional<File> generate(List<File> inputFiles, File outputFolder);
+    // Optional<File> generate(List<File> inputFiles, File outputFolder);
     Optional<File> generate(LaraDocModule module, File outputFolder);
 
-    // void generate();
+    /**
+     * Filters which kind of names should be shown in the documentation.
+     * 
+     * <p>
+     * By default, filters names that start with underscore ("_").
+     * 
+     * @return
+     */
+    default Predicate<String> getNameFilter() {
+        return string -> string.startsWith("_") ? false : true;
+    }
 }

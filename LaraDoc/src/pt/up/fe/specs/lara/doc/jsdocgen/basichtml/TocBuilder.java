@@ -54,13 +54,18 @@ public class TocBuilder {
         return tocHtml.toString();
     }
 
-    public void addLevelOne(String type, String id, String className) {
+    public void addLevelOne(String type, String id, String className, boolean isClass) {
         if (!currentTitles.contains(type)) {
             currentTitles.add(type);
             tocHtml.append("<p class='toc_class'>" + type + ":" + "</p>");
         }
 
-        tocHtml.append("<li class='toc_class_element'><a href='#" + id + "'>" + className + "</a></li>");
+        String classes = "toc_class_element";
+        if (isClass) {
+            classes += " toc_top_element";
+        }
+
+        tocHtml.append("<li class='" + classes + "'><a href='#" + id + "'>" + className + "</a></li>");
     }
 
     public void addSubList(List<String> ids, List<String> names, String title) {
@@ -73,9 +78,9 @@ public class TocBuilder {
             return;
         }
 
-        tocHtml.append("<ul>");
+        tocHtml.append("<ul class='toc_sublist'>");
         if (title != null && !title.isEmpty()) {
-            tocHtml.append(title);
+            tocHtml.append("<div class='toc_sublist_title'>").append(title).append("</div>");
         }
         for (int i = 0; i < numElements; i++) {
             tocHtml.append("<li><em><a href='#" + ids.get(i) + "'>" + names.get(i) + "</a></em></li>");

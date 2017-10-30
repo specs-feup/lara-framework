@@ -13,36 +13,17 @@
 
 package pt.up.fe.specs.lara.doc.data;
 
-import java.io.File;
-
-import pt.up.fe.specs.lara.doc.LaraDoc;
-
 /**
- * @deprecated
+ * Top-level node of LaraDoc.
+ * 
  * @author JoaoBispo
  *
  */
-@Deprecated
-public class LaraFileInfo {
+public class LaraDocTop extends LaraDocNode {
 
-    private final File laraFile;
-    private final File baseFolder;
-
-    public LaraFileInfo(File laraFile, File baseFolder) {
-        this.laraFile = laraFile;
-        this.baseFolder = baseFolder;
-    }
-
-    public File getBaseFolder() {
-        return baseFolder;
-    }
-
-    public File getLaraFile() {
-        return laraFile;
-    }
-
-    public String getImportPath() {
-        return LaraDoc.getImportPath(laraFile, baseFolder);
+    @Override
+    public String getId() {
+        return "Top-level Documentation Node";
     }
 
 }
