@@ -8,11 +8,13 @@
 		<xsd:sequence>
 			<xsd:element name="global" type="Global" maxOccurs="1" minOccurs="0"/>
 			<xsd:element name="artifact" type="Artifact" maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="object" type="NewObject" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="object" type="TypeDef" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="typedef" type="TypeDef" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="enum" type="EnumDef" maxOccurs="unbounded" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="NewObject">
+	<xsd:complexType name="TypeDef">
 		<xsd:sequence>
 			<xsd:element name="attribute" type="Attribute" maxOccurs="unbounded"
 				minOccurs="0" />
@@ -42,6 +44,8 @@
 		<xsd:sequence>
 			<xsd:element name="parameter" type="Parameter" maxOccurs="unbounded"
 				minOccurs="0" />
+			<xsd:element name="def" type="DefArgType" maxOccurs="unbounded"
+				minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="type" type="xsd:string" use="required" />
@@ -51,5 +55,21 @@
 	<xsd:complexType name="Parameter">
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="type" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="DefArgType">
+		<xsd:attribute name="type" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="EnumDef">
+		<xsd:sequence>
+			<xsd:element name="value" type="EnumValue" maxOccurs="unbounded" minOccurs="1" />
+				
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="EnumValue">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="string" type="xsd:string" use="optional" />
 	</xsd:complexType>
 </xsd:schema>

@@ -27,6 +27,7 @@ public interface WeaverGeneratorKeys {
     DataKey<Boolean> ABSTRACT_GETTERS = KeyFactory.bool("Abstract Getters");
     DataKey<Boolean> ADD_EVENTS = KeyFactory.bool("Add weaving events");
     DataKey<Boolean> IMPL_MODE = KeyFactory.bool("Create \"<attr>Impl\" methods");
+    DataKey<Boolean> DEF_MODE = KeyFactory.bool("Create methods for def action");
     DataKey<ClassProvider> NODE_TYPE = WeaverGeneratorKeyFactory.classProvider("Node Class")
             .setDefault(() -> ClassProvider.newInstance(Object.class.getName()));
     DataKey<String> PACKAGE = KeyFactory.string("Package", GenConstants.getDefaultPackage());

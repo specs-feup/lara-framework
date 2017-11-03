@@ -15,6 +15,10 @@ package org.lara.language.specification.artifactsmodel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.JAXBException;
@@ -27,6 +31,8 @@ import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.xml.sax.SAXException;
+
+import pt.up.fe.specs.util.SpecsCollections;
 
 public class ArtifactsModel extends ArtifactsModelConstructor {
 
@@ -96,7 +102,11 @@ public class ArtifactsModel extends ArtifactsModelConstructor {
         for (final JoinPointType jp : jpm.getJoinPointList().getJoinpoint()) {
             final Object _extends = jp.getExtends();
             if (_extends != null) {
+                // if (!jp.getClazz().equals(((JoinPointType) _extends).getClazz())) { //change code to accept this
+                // condition!
+                // System.out.println("HAPPENING FOR: " + jp.getClazz());
                 joinPointHierarchy.put(jp.getClazz(), ((JoinPointType) _extends).getClazz());
+                // }
             }
         }
     }
@@ -143,6 +153,75 @@ public class ArtifactsModel extends ArtifactsModelConstructor {
             return null;
         }
         return getAttribute(attributeName, artifact);
+    }
+
+    /**
+     * Get a specific attribute from an artifact
+     * 
+     * @param artifactType
+     * @param attributeName
+     * @return the list of {@link Attribute} instance that are definable, or null if the artifact or the attribute does
+     *         not exist
+     */
+    public List<Attribute> getAllDefinableAttributes(String artifactType) {
+
+        Artifact artifact = getArtifact(artifactType);
+
+        if (artifact == null) {
+            if (joinPointHierarchy.containsKey(artifactType)) {
+                final String parentArtifact = joinPointHierarchy.get(artifactType);
+                if (!parentArtifact.equals(artifactType)) {
+                    return getAllDefinableAttributes(parentArtifact);
+                } else {
+                    Predicate<? super Attribute> hasDefs = a -> !a.getDef().isEmpty();
+                    return globalAttributes.values().stream().filter(hasDefs).collect(Collectors.toList());
+                }
+            }
+            return null;
+        }
+        List<Attribute> definables = SpecsCollections.newArrayList();
+        Predicate<? super Attribute> hasDefs = a -> !a.getDef().isEmpty();
+        globalAttributes.values().stream().filter(hasDefs).forEach(definables::add);
+        artifact.getAttribute().stream().filter(hasDefs).forEach(definables::add);
+
+        String parent = joinPointHierarchy.get(artifact.getClazz());
+        while (parent != null && !parent.equals(artifact.getClazz())) {
+            artifact = getArtifact(parent);
+            if (artifact == null) {
+                throw new RuntimeException("Unnexpected problem with join point hierarchy: join point " + parent
+                        + " does not exist in the model");
+            }
+            artifact.getAttribute().stream().filter(hasDefs).forEach(definables::add);
+            parent = joinPointHierarchy.get(artifact.getClazz());
+        }
+        return definables;
+
+    }
+
+    /**
+     * Get a specific attribute from an artifact
+     * 
+     * @param artifactType
+     * @param attributeName
+     * @return the list of {@link Attribute} instance that are definable, or null if the artifact or the attribute does
+     *         not exist
+     */
+    public List<Attribute> getOwnDefinableAttributes(String artifactType) {
+        Artifact artifact = getArtifact(artifactType);
+
+        if (artifact == null) {
+            if (joinPointHierarchy.containsKey(artifactType)) {
+                return Collections.emptyList();
+            }
+            return null;
+        }
+        return getOwnDefinableAttributes(artifact);
+    }
+
+    public List<Attribute> getOwnDefinableAttributes(Artifact artifact) {
+
+        Predicate<? super Attribute> hasDefs = a -> !a.getDef().isEmpty();
+        return artifact.getAttribute().stream().filter(hasDefs).collect(Collectors.toList());
     }
 
 }

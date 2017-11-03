@@ -282,6 +282,9 @@ public class WeaverGenerator {
         if (cmdLine.hasOption(GeneratorOption.J.getOption())) {
             generator.setJson(true);
         }
+        if (cmdLine.hasOption(GeneratorOption.D.getOption())) {
+            generator.setDefs(true);
+        }
 
         // if (cmdLine.hasOption(GeneratorOption.G.getOption())) {
         // generator.setShowGraph(true);

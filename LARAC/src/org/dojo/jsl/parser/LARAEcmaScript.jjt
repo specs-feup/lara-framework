@@ -85,7 +85,7 @@ options {
 	/*
 	 * Ignore case for keywords
 	 */
-	IGNORE_CASE = true;
+	//IGNORE_CASE = true;
 }
 
 PARSER_BEGIN(LARAEcmaScript)
@@ -1360,7 +1360,8 @@ TOKEN :
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > |
-	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> 
+	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
+	  	t=<FOR> | t=<WHILE> |t=<DO> //|t=< REPLACE >
 	  )
 	  {return t;}
 	}
@@ -1376,7 +1377,8 @@ TOKEN :
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > |
-	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> 
+	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
+	  	t=<FOR> | t=<WHILE> |t=<DO> //|t=< REPLACE >
 	  )
 	  { jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
 	   //jjtThis.setCoord(t,t);

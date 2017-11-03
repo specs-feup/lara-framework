@@ -228,6 +228,20 @@ public abstract class JoinPoint {
         throw new UnsupportedOperationException("Join point " + get_class() + ": Action def not implemented ");
     }
 
+    protected void unsupportedTypeForDef(String attribute, Object value) {
+        String valueType;
+        if (value == null) {
+            valueType = "null";
+        } else {
+            valueType = value.getClass().getSimpleName();
+            if (value instanceof JoinPoint) {
+                valueType = ((JoinPoint) value).getJoinPointType();
+            }
+        }
+        throw new UnsupportedOperationException("Join point " + get_class() + ": attribute '" + attribute
+                + "' cannot be defined with the input type '" + valueType + "'");
+    }
+
     /**
      * 
      */

@@ -24,7 +24,8 @@ import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
+import org.lara.language.specification.artifactsmodel.schema.EnumDef;
+import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -172,15 +173,25 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getImportableClasses.add(Annotation.OVERRIDE);
         getImportableClasses.appendComment("Returns a list of classes that may be imported and used in LARA.\n");
         getImportableClasses.addJavaDocTag(JDocTag.RETURN, "a list of importable classes");
-        final List<NewObject> entities = javaGenerator.getLanguageSpecification().getArtifacts().getObjects();
+        final List<TypeDef> entities = javaGenerator.getLanguageSpecification().getArtifacts().getTypeDefs();
+        final List<EnumDef> enums = javaGenerator.getLanguageSpecification().getArtifacts().getEnumDefs();
 
         final String entPackage = javaGenerator.getEntitiesPackage() + ".";
-        final Function<NewObject, String> mapper = ent -> {
+        final String enumPackage = javaGenerator.getEnumsPackage() + ".";
+        final Function<TypeDef, String> mapper = ent -> {
             java.addImport(entPackage + ent.getName());
 
             return ent.getName() + ".class";
         };
-        String joinedClasses = StringUtils.join(entities, mapper, ", ");
+        final Function<EnumDef, String> enumMapper = _enum -> {
+            java.addImport(enumPackage + _enum.getName());
+
+            return _enum.getName() + ".class";
+        };
+        List<String> joined = new ArrayList<>();
+        entities.stream().map(mapper).forEach(joined::add);
+        enums.stream().map(enumMapper).forEach(joined::add);
+        String joinedClasses = StringUtils.join(joined, ", ");
         getImportableClasses.appendCode("Class<?>[] defaultClasses = {");
         getImportableClasses.appendCode(joinedClasses);
         getImportableClasses.appendCodeln("};");

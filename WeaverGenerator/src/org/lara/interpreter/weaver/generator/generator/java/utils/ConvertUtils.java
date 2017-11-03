@@ -21,7 +21,7 @@ import java.util.Map;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.artifactsmodel.schema.NewObject;
+import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
@@ -154,8 +154,13 @@ public class ConvertUtils {
         if (languageSpecification.getArtifacts().hasObject(type)) {
             return new JavaType(type, generator.getEntitiesPackage(), arrayDimension);
         }
+
+        if (languageSpecification.getArtifacts().hasEnumDef(type)) {
+            return new JavaType(type, generator.getEnumsPackage(), arrayDimension);
+        }
+
         // if it is a join point class
-        if (languageSpecification.getJpModel().contains(type)) {
+        if (languageSpecification.getJpModel().containsJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
             final JavaType jpType = new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
             return jpType;
@@ -175,14 +180,15 @@ public class ConvertUtils {
 
     private static StringBuilder reportAvailableTypes(LanguageSpecification languageSpecification) {
         final StringBuilder message = new StringBuilder("\n\t Primitives: ");
-        message.append(StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", "));
-        message.append(", Object, Array, Map, Template, Joinpoint");
+        String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
+                + ", Object, Array, Map, Template, Joinpoint";
+        message.append(join);
 
-        final List<NewObject> objects = languageSpecification.getArtifacts().getObjects();
+        final List<TypeDef> objects = languageSpecification.getArtifacts().getTypeDefs();
         if (!objects.isEmpty()) {
 
             message.append("\n\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, NewObject::getName, ", ");
+            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
             message.append(objectsString);
         }
 

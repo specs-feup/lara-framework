@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Parameter complex type.
+ * <p>Java class for EnumValue complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Parameter">
+ * &lt;complexType name="EnumValue">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="type" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="string" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -33,13 +33,13 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Parameter")
-public class Parameter {
+@XmlType(name = "EnumValue")
+public class EnumValue {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "type", required = true)
-    protected String type;
+    @XmlAttribute(name = "string")
+    protected String string;
 
     /**
      * Gets the value of the name property.
@@ -66,27 +66,27 @@ public class Parameter {
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the string property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getType() {
-        return type;
+    public String getString() {
+        return string;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the string property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setType(String value) {
-        this.type = value;
+    public void setString(String value) {
+        this.string = value;
     }
 
 }

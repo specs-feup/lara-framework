@@ -14,13 +14,16 @@
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.artifactsmodel.schema.DefArgType;
 import org.lara.language.specification.artifactsmodel.schema.Global;
 import org.lara.language.specification.joinpointmodel.schema.GlobalJoinPoints;
 import org.lara.language.specification.joinpointmodel.schema.Select;
@@ -34,6 +37,7 @@ import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 
+import pt.up.fe.specs.util.SpecsCollections;
 import tdrc.utils.StringUtils;
 
 /**
@@ -267,6 +271,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
                     abstJPClass, javaGenerator);
+
+            GeneratorUtils.generateDefMethods(attr, method.getReturnType(), abstJPClass, javaGenerator);
             abstJPClass.add(methodImpl);
 
         }
@@ -321,7 +327,15 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      */
     private void generateGlobalActionsAsMethods(JavaClass abstJPClass) {
 
+        if (javaGenerator.hasDefs()) {
+            List<Attribute> attributes = javaGenerator.getLanguageSpecification().getArtifacts().getArtifactsList()
+                    .getGlobal().getAttribute().stream().filter(a -> !a.getDef().isEmpty())
+                    .collect(Collectors.toList());
+            GeneratorUtils.createDefImpl(abstJPClass, false, attributes, javaGenerator);
+            // generateDefImpl(abstJPClass);
+        }
         List<Action> actionsForAll = javaGenerator.getLanguageSpecification().getActionModel().getActionsForAll();
+
         if (actionsForAll.isEmpty()) {
             return;
         }
@@ -348,6 +362,58 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             abstJPClass.add(cloned);
         }
         // addDefaultActions(abstJPClass, fillWithActions);
+    }
+
+    @Deprecated
+    void generateDefImpl(JavaClass abstJPClass) {
+        List<Attribute> attributes = javaGenerator.getLanguageSpecification().getArtifacts().getArtifactsList()
+                .getGlobal().getAttribute();
+        Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
+        defMethod.add(Annotation.OVERRIDE);
+        defMethod.addArgument(String.class, "attribute");
+        defMethod.addArgument(Object.class, "value");
+        defMethod.appendCodeln("switch(attribute){");
+
+        for (Attribute attribute : attributes) {
+            List<DefArgType> def = attribute.getDef();
+            if (def.isEmpty()) {
+                continue;
+            }
+            JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getType(), javaGenerator);
+            defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
+            List<String> processedTypes = SpecsCollections.newArrayList();
+            for (DefArgType defType : def) {
+                String type = defType.getType();
+                if (processedTypes.contains(type)) {
+                    continue;
+                }
+                JavaType defJavaType;
+                if (type == null) {
+                    defJavaType = returnType.clone();
+                } else {
+                    defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+                }
+                abstJPClass.addImport(defJavaType);
+                defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
+                defMethod.appendCode("\t\tthis.");
+                defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
+                defMethod.appendCode("((");
+                defMethod.appendCode(defJavaType.getSimpleType());
+                defMethod.appendCodeln(")value);");
+                defMethod.appendCodeln("\t\treturn;");
+                defMethod.appendCodeln("\t}");
+                processedTypes.add(type);
+            }
+            defMethod.appendCodeln("\t" +
+                    GeneratorUtils.UnsupDefTypeExceptionCode(attribute.getName(), "value.getClass()"));
+            defMethod.appendCodeln("}");
+        }
+
+        defMethod.appendCode("default: ");
+        defMethod.appendCodeln(
+                GeneratorUtils.UnsupDefExceptionCode("attribute"));
+        defMethod.appendCodeln("}");
+        abstJPClass.add(defMethod);
     }
 
     /**

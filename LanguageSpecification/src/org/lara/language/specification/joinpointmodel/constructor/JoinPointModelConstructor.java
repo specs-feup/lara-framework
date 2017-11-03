@@ -847,6 +847,7 @@ public class JoinPointModelConstructor implements IModel {
     public boolean contains(String name) {
 
         final boolean isJoinPoint = joinPoints.containsKey(name);
+
         if (isJoinPoint) {
             return true;
         }
@@ -858,6 +859,12 @@ public class JoinPointModelConstructor implements IModel {
             }
         }
         return false;
+    }
+
+    public boolean containsJoinPoint(String name) {
+
+        return joinPoints.containsKey(name);
+
     }
 
     @Override

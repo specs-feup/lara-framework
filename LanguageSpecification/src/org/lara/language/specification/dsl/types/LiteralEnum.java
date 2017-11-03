@@ -17,16 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeEnum implements IType {
+public class LiteralEnum implements IType {
 
     private String name;
     private List<String> values;
 
-    public TypeEnum(String name) {
+    public LiteralEnum(String name) {
 	this(name, new ArrayList<>());
     }
 
-    public TypeEnum(String name, String values) {
+    public LiteralEnum(String name, String values) {
 	this(name, parseValues(values));
     }
 
@@ -40,7 +40,7 @@ public class TypeEnum implements IType {
 	return values;
     }
 
-    public TypeEnum(String name, List<String> values) {
+    public LiteralEnum(String name, List<String> values) {
 	this.name = name;
 	this.values = values;
     }
