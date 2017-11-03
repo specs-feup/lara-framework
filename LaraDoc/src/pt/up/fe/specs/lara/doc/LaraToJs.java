@@ -153,6 +153,10 @@ public class LaraToJs {
     }
 
     public static Optional<Aspects> parseLara(File laraFile) {
+        return parseLara(laraFile, new DefaultWeaver().getLanguageSpecification());
+    }
+
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
@@ -188,15 +192,16 @@ public class LaraToJs {
         }
         */
         // LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
-        LaraC larac = new LaraC(args.toArray(new String[0]), new DefaultWeaver().getLanguageSpecification(),
+        LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification,
                 new Output(0));
         Document aspectIr = null;
 
         try {
             aspectIr = larac.compile();
         } catch (BaseException e) {
-            // If LARA exception, use simple message instead
-            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "': " + e.getSimpleMessage());
+            // If LARA exception, generate exception
+            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "': "
+                    + e.generateExceptionBuilder().getRuntimeException());
             return Optional.empty();
         } catch (Exception e) {
             SpecsLogs.msgWarn("Could not compile file '" + laraFile + "'", e);
