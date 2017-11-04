@@ -409,7 +409,7 @@ public class EditorPanel extends GuiTab {
 
     @Override
     public String getTabName() {
-        return "Lara Editor";
+        return "LARA Editor";
     }
 
     public TabsContainerPanel getTabsContainer() {
