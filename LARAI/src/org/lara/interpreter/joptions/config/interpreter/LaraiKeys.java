@@ -61,7 +61,7 @@ public interface LaraiKeys {
     DataKey<Boolean> LOG_JS_OUTPUT = KeyFactory.bool("javascript").setLabel("Log JavaScript Output");
     DataKey<Boolean> DEBUG_MODE = KeyFactory.bool("debug").setLabel("Debug Mode");
 
-    DataKey<Boolean> TRACE_MODE = KeyFactory.bool("stack trace").setLabel("Call Stack Trace");
+    DataKey<Boolean> TRACE_MODE = KeyFactory.bool("stack trace").setLabel("Call Stack Trace (BETA)");
 
     // TODO: Use List<String> instead
     DataKey<String> BUNDLE_TAGS = KeyFactory.string("bundle_tags").setLabel("Bundle tags");
