@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.JAXBException;
@@ -45,6 +45,7 @@ import larac.structure.AspectIR;
 import larac.utils.FileUtils;
 import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import tdrc.utils.StringUtils;
@@ -79,7 +80,8 @@ public class LaraC {
     private LaraCOptions options;
 
     private Document aspectIRXmlRepresentation;
-    private List<String> importedLARA;
+    private Map<String, LaraC> importedLARA;
+    private List<LaraC> previouslyImportedLARA = new ArrayList<>();
 
     private boolean readyToParse = false;
 
@@ -140,7 +142,7 @@ public class LaraC {
      *            the output stream used on the parent LaraC instance
      */
     public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecification langSpec,
-            Output output, List<String> importedFiles) {
+            Output output, Map<String, LaraC> importedFiles) {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraFile(laraC, laraFile);
         laraC.parseForImport(importedFiles);
@@ -162,7 +164,7 @@ public class LaraC {
      *            the output stream used on the parent LaraC instance
      */
     public static LaraC newImporter(ResourceProvider laraResource, LaraCOptions options, LanguageSpecification langSpec,
-            Output output, List<String> importedFiles) {
+            Output output, Map<String, LaraC> importedFiles) {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraResource(laraC, laraResource);
         laraC.parseForImport(importedFiles);
@@ -176,7 +178,7 @@ public class LaraC {
         languageSpec = langSpec;
     }
 
-    private void parseForImport(List<String> importedFiles) {
+    private void parseForImport(Map<String, LaraC> importedFiles) {
         importedLARA = importedFiles;
         aspectIR = new AspectIR(this);
 
@@ -249,7 +251,7 @@ public class LaraC {
 
         setPrint(out);
         printTopic("Setting up LARA");
-        setImportedLARA(new ArrayList<>());
+        setImportedLARA(SpecsCollections.newHashMap());
         setAspectIR(new AspectIR(this));
         setParsed(false);
         setOptions(new LaraCOptions());
@@ -665,7 +667,7 @@ public class LaraC {
             printTopic("Dumping AST");
             getAspectIR().getAst().dump("  ");
         }
-        importedLARA.add(SpecsIo.getCanonicalPath(laraFile));
+        importedLARA.put(SpecsIo.getCanonicalPath(laraFile), this);
 
         // Organize Aspects in AST according to the language specification
         printTopic("Organizing Aspects");
@@ -715,24 +717,29 @@ public class LaraC {
         laraStreamProvider = laraStream;
     }
 
-    public List<String> getImportedLARA() {
+    public Map<String, LaraC> getImportedLARA() {
         return importedLARA;
     }
 
-    public void setImportedLARA(List<String> importedLARA) {
+    public void setImportedLARA(Map<String, LaraC> importedLARA) {
         this.importedLARA = importedLARA;
     }
 
-    public void addImportedLARA(String name) {
-        importedLARA.add(name);
+    public void addImportedLARA(String name, LaraC laraC) {
+
+        importedLARA.put(name, laraC);
     }
 
-    public void addImportedLARA(Collection<String> names) {
-        importedLARA.addAll(names);
+    public void addImportedLARA(Map<String, LaraC> laras) {
+        importedLARA.putAll(laras);
     }
 
     public boolean wasImported(String name) {
-        return importedLARA.contains(name);
+        return importedLARA.containsKey(name);
+    }
+
+    public LaraC getImportedLARA(String name) {
+        return importedLARA.get(name);
     }
 
     public boolean isReadyToParse() {
@@ -741,6 +748,19 @@ public class LaraC {
 
     public void setReadyToParse(boolean readyToParse) {
         this.readyToParse = readyToParse;
+    }
+
+    public List<LaraC> getPreviouslyImportedLARA() {
+        return previouslyImportedLARA;
+    }
+
+    public void setPreviouslyImportedLARA(List<LaraC> previouslyImportedLARA) {
+        this.previouslyImportedLARA = previouslyImportedLARA;
+    }
+
+    public void addPreviouslyImportedLARA(LaraC previouslyImportedLARA) {
+        // LaraLog.debug("PREVIOUSLY IMPORTED: " + previouslyImportedLARA.getLaraPath() + " @ " + getLaraPath());
+        this.previouslyImportedLARA.add(previouslyImportedLARA);
     }
 
 }

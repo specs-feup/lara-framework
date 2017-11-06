@@ -192,6 +192,24 @@ public class AspectIR {
             }
 
         }
+        if (asp != null) {
+            return asp;
+        }
+        for (LaraC laraC : lara.getPreviouslyImportedLARA()) {
+            List<ASTAspectDef> aspectdefs2 = laraC.getAspectIR().getAspectdefs();
+            for (ASTAspectDef astAspectDef : aspectdefs2) {
+                String nameWPrefix = laraC.getPrefix() + astAspectDef.getName();
+                if (nameWPrefix.endsWith(endingName)) {
+
+                    return astAspectDef;
+                }
+            }
+            asp = laraC.getAspectIR().getImportedAspectDef(name);
+            if (asp != null) {
+                System.out.println("FOUND: " + asp);
+                return asp;
+            }
+        }
         return asp;
     }
 
@@ -355,7 +373,7 @@ public class AspectIR {
         addGlobalElement("statement" + newGlobalUID(), element, origin);
     }
 
-    private int newGlobalUID() {
+    private static int newGlobalUID() {
 
         return globalUID++;
     }

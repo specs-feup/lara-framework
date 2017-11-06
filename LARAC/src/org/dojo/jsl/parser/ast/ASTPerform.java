@@ -309,7 +309,7 @@ public class ASTPerform extends SimpleNode {
         }
     }
 
-    private boolean argsAreValid(Map<String, ActionArgument> actionParam) {
+    private static boolean argsAreValid(Map<String, ActionArgument> actionParam) {
         // int i = 0;
         // final List<String> missingArguments = SpecsFactory.newArrayList();
         for (final ActionArgument arg : actionParam.values()) {
@@ -331,26 +331,26 @@ public class ASTPerform extends SimpleNode {
         return true;
     }
 
-    private void organizeArgs(Map<String, ActionArgument> actionParam, ASTActionParameterList params) {
-        int i = 0;
-        for (final ActionArgument arg : actionParam.values()) {
-            if (arg.getValue() == null) {
-                throw new LARACompilerException("Unnexpected error. Please report to LARA developer");
-                // missingArguments.add(arg.getName());
-            } else {
-                if (arg.getType().equals("template")) {
-                    arg.getValue().isTemplate = true;
-                }
-                arg.getValue().organize(this);
-                params.associateChild(arg.getValue(), i++);
-            }
-        }
-        // // if (!missingArguments.isEmpty()) {
-        // // throw newException(
-        // // "Arguments " + missingArguments + " for action '" + action + "' must be defined.");
-        // // }
-        // return true;
-    }
+    // private void organizeArgs(Map<String, ActionArgument> actionParam, ASTActionParameterList params) {
+    // int i = 0;
+    // for (final ActionArgument arg : actionParam.values()) {
+    // if (arg.getValue() == null) {
+    // throw new LARACompilerException("Unnexpected error. Please report to LARA developer");
+    // // missingArguments.add(arg.getName());
+    // } else {
+    // if (arg.getType().equals("template")) {
+    // arg.getValue().isTemplate = true;
+    // }
+    // arg.getValue().organize(this);
+    // params.associateChild(arg.getValue(), i++);
+    // }
+    // }
+    // // // if (!missingArguments.isEmpty()) {
+    // // // throw newException(
+    // // // "Arguments " + missingArguments + " for action '" + action + "' must be defined.");
+    // // // }
+    // // return true;
+    // }
 
     private void throwIllegalParameters(List<Action> actions, Node[] children) {
         String message = "Illegal number of arguments in action '" + action + "'. ";
@@ -371,7 +371,7 @@ public class ASTPerform extends SimpleNode {
         throw new LARACompilerException(message);
     }
 
-    private String getOptionsString(List<Action> actions) {
+    private static String getOptionsString(List<Action> actions) {
         String options = "Options:\n";
         int pos = 1;
         for (Action action : actions) {
@@ -382,7 +382,7 @@ public class ASTPerform extends SimpleNode {
         return options;
     }
 
-    private String action2String(Action action) {
+    private static String action2String(Action action) {
         String args = action.getName() + "("
                 + StringUtils.join(action.getParameter(), p -> p.getType() + " " + p.getName(), ", ") + ")";
         return args;
