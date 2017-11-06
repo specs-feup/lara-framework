@@ -76,7 +76,7 @@ public class ASTCall extends SimpleNode {
             }
             // If it has more children
             if (pos < children.length) {
-                // if we have a filepath means that we are accessing, statically, to an aspect
+                // if we have a filepath means that we are statically accessing an aspect
                 if (jjtGetChild(pos) instanceof ASTFilePath) {
                     final ASTFilePath filePath = (ASTFilePath) jjtGetChild(pos);
                     path = "";
@@ -96,11 +96,12 @@ public class ASTCall extends SimpleNode {
         }
         // Verify if the called aspect exists
         aspectDeclaration = lookup(path);
+
         // System.out.println(path + "->" + aspectDeclaration);
-        Types aspectType = aspectDeclaration.getType();
         if (aspectDeclaration == null && !getLara().getOptions().isDocumentationMode()) {
             throw newException("Called aspect/variable does not exist: \"" + aspName + "\"");
         }
+        Types aspectType = aspectDeclaration.getType();
         /*
         	// and if it is indeed an aspect
         	if (!(aspectType.equals(Types.Aspect) || aspectType.equals(Types.AspectSTATIC))) {
