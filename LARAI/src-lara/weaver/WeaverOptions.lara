@@ -4,6 +4,7 @@ import weaver.util.WeaverDataStore;
 
 /**
  * Contains generic methods related to all weavers. 
+ * @class
  */
 var WeaverOptions = {};
 //var WeaverOptions = new DataStore(LaraI.getThreadLocalData());

@@ -144,7 +144,7 @@ public class HtmlGenerators {
             if (!augmentTags.isEmpty()) {
                 String parentClasses = augmentTags.stream().map(tag -> tag.getValue(JsDocTagProperty.NAME_PATH))
                         .collect(Collectors.joining("</em>, <em>", "<em>", "</em>"));
-                functionCode.append("<div class='augments'>- Extends " + parentClasses + "</div>");
+                functionCode.append("<div class='augments'>(Extends " + parentClasses + ")</div>");
                 // functionCode.append("(Extends " + parentClasses + ") - ");
             }
 

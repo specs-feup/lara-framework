@@ -22,6 +22,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.language.specification.LanguageSpecification;
+
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -62,15 +65,17 @@ public class LaraDocParser {
     private final MultiMap<String, File> packagesPaths;
     // Filters folders/files based on name
     private final Predicate<String> nameFilter;
+    private final LanguageSpecification languageSpecification;
 
     public LaraDocParser() {
         // this(LaraDocParser::defaultNameFilter);
-        this(null);
+        this(null, new DefaultWeaver().getLanguageSpecification());
     }
 
-    public LaraDocParser(Predicate<String> nameFilter) {
+    public LaraDocParser(Predicate<String> nameFilter, LanguageSpecification languageSpecification) {
         this.packagesPaths = new MultiMap<>();
         this.nameFilter = nameFilter;
+        this.languageSpecification = languageSpecification;
     }
 
     public LaraDocParser addPath(String packageName, File path) {
@@ -300,7 +305,7 @@ public class LaraDocParser {
 
             // Parse files
             for (File laraFile : module.getLaraFiles()) {
-                Optional<Aspects> aspectIr = LaraToJs.parseLara(laraFile);
+                Optional<Aspects> aspectIr = LaraToJs.parseLara(laraFile, languageSpecification);
                 if (!aspectIr.isPresent()) {
                     continue;
                 }

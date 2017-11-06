@@ -52,6 +52,10 @@ public abstract class BaseException extends RuntimeException {
         return generateMessage();
     }
 
+    public String getSimpleMessage() {
+        return generateSimpleMessage();
+    }
+
     /**
      * Generate a Runtime exception and use a specific stack trace instead of the one generated based on the chained
      * exceptions
