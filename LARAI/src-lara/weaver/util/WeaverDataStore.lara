@@ -1,6 +1,5 @@
 import lara.Io;
 import lara.util.DataStore;
-import weaver.WeaverOptions;
 
 /**
  * DataStore used in LaraI weavers.
@@ -8,17 +7,18 @@ import weaver.WeaverOptions;
  */
 function WeaverDataStore(data, definition) {
 	data = data !== undefined ? data : "LaraI Options";
-	definition = definition !== undefined ? definition : WeaverOptions.getKeys();
+	definition = definition !== undefined ? definition 
+		: Java.type("org.lara.interpreter.joptions.config.interpreter.LaraiKeys").STORE_DEFINITION;
 	
     // Parent constructor
     DataStore.call(this, data, definition);
 }
+
 // Inheritance
 WeaverDataStore.prototype = Object.create(DataStore.prototype);
 
 
 /*** PRIVATE OVERRIDABLE FUNCTIONS ***/
-
 
 /**
  * Wraps a Java DataStore around a Lara DataStore.
@@ -35,34 +35,38 @@ WeaverDataStore.prototype._dataStoreWrapper = function(javaDataStore) {
  * @return a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
  */
 WeaverDataStore.prototype.getVerboseLevel = function() {
-	return this.get(LaraiKeys.VERBOSE).ordinal();	
+	//return this.get(LaraiKeys.VERBOSE).ordinal();
+	return this.get("verbose").ordinal();
 }
 
 /**
  * @param verboseLevel a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
  */
 WeaverDataStore.prototype.setVerboseLevel = function(verboseLevel) {
+
 	checkTrue(verboseLevel >= 0 && verboseLevel <= 3, "WeaverDataStore.setVerboseLevel: expected a number  between 0 and 3");
 	
-	this.set(LaraiKeys.VERBOSE, VerboseLevel.values()[verboseLevel]);	
+	//this.set(LaraiKeys.VERBOSE, VerboseLevel.values()[verboseLevel]);	
+
+	this.put("verbose", VerboseLevel.values()[verboseLevel]);
 }
 
 /**
  * @return a java.io.File representing the current output folder of the weaver
  */
 WeaverDataStore.prototype.getOutputFolder = function() {
-	return this.get(LaraiKeys.OUTPUT_FOLDER);	
+	//return this.get(LaraiKeys.OUTPUT_FOLDER);
+	return this.get("output");
 }
 
 /**
  * @param outputFolder a java.io.File or a String, representing the current output folder of the weaver
- * @TODO: Implementation is wrong
+ * 
  */
 WeaverDataStore.prototype.setOutputFolder = function(outputFolder) {
-	//var normalizedOutputFolder = Io.getPath(outputFolder);
-	var normalizedOutputFolder = Io.mkdir(outputFolder);
-	
-	this.set(LaraiKeys.OUTPUT_FOLDER, normalizedOutputFolder);	
+	var normalizedOutputFolder = Io.getPath(outputFolder);
+	//var normalizedOutputFolder = Io.mkdir(outputFolder);
+	this.put("output", normalizedOutputFolder);	
 }
 
 /**
@@ -87,11 +91,15 @@ WeaverDataStore.prototype.setLogFile = function(logPath) {
 }
 
 WeaverDataStore.prototype.getLogFile = function() {
+	var optionalFile = this.get("log");
+	return optionalFile !== undefined ? optionalFile.getFile() : undefined;
+	/*	
 	if(!this.hasValue("log")) {
 		return undefined;
 	}
 
 	return this.get("log").getFile();
+	*/
 }
 
 		

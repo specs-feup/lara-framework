@@ -3,13 +3,15 @@ import lara.Io;
 
 aspectdef WeaverData
 
-	println("Original verbose level: " + WeaverOptions.getVerboseLevel());
-	WeaverOptions.setVerboseLevel(3);
-	println("New verbose level: " + WeaverOptions.getVerboseLevel());
+	var data = WeaverOptions.getData();
 
-	println("Original output folder: " + WeaverOptions.getOutputFolder());
-	WeaverOptions.setOutputFolder("subfolder");
-	println("New output folder: " + WeaverOptions.getOutputFolder());
+	println("Original verbose level: " + data.getVerboseLevel());
+	data.setVerboseLevel(3);
+	println("New verbose level: " + data.getVerboseLevel());
+
+	println("Original output folder: " + data.getOutputFolder());
+	data.setOutputFolder("subfolder");
+	println("New output folder: " + data.getOutputFolder());
 	
 	println("Supported languages: " + WeaverOptions.getSupportedLanguages());
 	//println("Weaver keys: " + WeaverOptions.getKeys());	
