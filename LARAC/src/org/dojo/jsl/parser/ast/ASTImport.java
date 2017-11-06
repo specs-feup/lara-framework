@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import larac.LaraC;
+import larac.exceptions.LARACompilerException;
 import larac.utils.output.MessageConstants;
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
@@ -165,16 +166,23 @@ public class ASTImport extends SimpleNode {
     private static void importLaraFile(final LaraC lara, final String importPath, final File importingFile) {
         String canonicalPath = SpecsIo.getCanonicalPath(importingFile);
         if (lara.wasImported(canonicalPath)) {
+            LaraC importedLARA = lara.getImportedLARA(canonicalPath);
+            if (importedLARA == null) {
+                throw new LARACompilerException("Problem with recursive import with file: " + canonicalPath
+                        + " one occurrence is: " + lara.getLaraPath());
+            }
+            // LaraLog.debug("ALREADY IMPORTED:" + importedLARA);
+            lara.addPreviouslyImportedLARA(importedLARA);
             lara.println(" Aspects from file " + importPath + " were already imported. Will ignore this import.");
             return;
         }
         lara.printSubTopic(" Importing aspects from file " + importPath);
-        lara.addImportedLARA(canonicalPath);
+        lara.addImportedLARA(canonicalPath, null);
         final LaraC importingLara = LaraC.newImporter(importingFile, lara.getOptions(), lara.languageSpec(),
                 lara.getPrint(), lara.getImportedLARA());
-
-        importAspects(lara, importPath, importingLara);
+        rearrangeImportedLaraAndImportAspects(lara, importPath, importingLara);
         lara.setImportedLARA(importingLara.getImportedLARA());
+        lara.addImportedLARA(canonicalPath, importingLara);
     }
 
     private static void importLaraResource(final LaraC lara, String filePath,
@@ -182,8 +190,14 @@ public class ASTImport extends SimpleNode {
         String importName = importingResource.getFileLocation();
         String resource = importingResource.getResource();
         // if (lara.wasImported(resource)) {
+
         if (lara.wasImported(importName)) {
-            // lara.println(" Aspects from file " + resource + " were already imported. Will ignore this import.");
+            LaraC importedLARA = lara.getImportedLARA(importName);
+            if (importedLARA == null) {
+                throw new LARACompilerException("Problem with recursive import with resource: " + resource
+                        + " one occurrence is: " + lara.getLaraPath());
+            }
+            lara.addPreviouslyImportedLARA(importedLARA);
             lara.println(" Aspects from import " + importName + " were already imported. Will ignore this import.");
             return;
         }
@@ -195,15 +209,17 @@ public class ASTImport extends SimpleNode {
         }
 
         // lara.addImportedLARA(resource);
-        lara.addImportedLARA(importName);
+        lara.addImportedLARA(importName, null);
         final LaraC importingLara = LaraC.newImporter(importingResource, lara.getOptions(), lara.languageSpec(),
                 lara.getPrint(), lara.getImportedLARA());
-        importAspects(lara, resource.replace("/", File.separator), importingLara);
+        rearrangeImportedLaraAndImportAspects(lara, resource.replace("/", File.separator), importingLara);
         lara.setImportedLARA(importingLara.getImportedLARA());
+        lara.addImportedLARA(importName, importingLara);
 
     }
 
-    private static void importAspects(final LaraC lara, String filePath, final LaraC importingLara) {
+    private static void rearrangeImportedLaraAndImportAspects(final LaraC lara, String filePath,
+            final LaraC importingLara) {
         String prefix = filePath.replace(".lara", MessageConstants.NAME_SEPARATOR);
         prefix = prefix.replace(File.separator, MessageConstants.NAME_SEPARATOR);
 
@@ -211,13 +227,16 @@ public class ASTImport extends SimpleNode {
         lara.println("Organizing imported aspects from " + filePath);
         importingLara.toAspectIR();
         lara.println("Finished organizing imported aspects!");
+        importAspects(lara, filePath, importingLara);
+    }
+
+    public static void importAspects(final LaraC lara, String filePath, final LaraC importingLara) {
         List<ASTAspectDef> importingAspects = importingLara.aspectIR().getAspectdefs();
 
         if (!importingAspects.isEmpty()) {
             for (final ASTAspectDef importingAsp : importingAspects) {
+                final String key = importingLara.getPrefix() + importingAsp.getName();
 
-                final String key = prefix + importingAsp.getName();
-                // System.out.println("--->" + key);
                 lara.aspectIR().getImportedAspectDefs().put(key, importingAsp);
             }
             String importingAspectsStr = StringUtils.join(importingAspects, ASTAspectDef::getName, ", ");
