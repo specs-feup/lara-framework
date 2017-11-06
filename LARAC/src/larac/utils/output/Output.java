@@ -12,6 +12,7 @@
  */
 package larac.utils.output;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +25,7 @@ import java.util.zip.ZipOutputStream;
 
 import larac.exceptions.LARACompilerException;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.logging.MultiOutputStream;
 
 public class Output {
@@ -152,10 +154,16 @@ public class Output {
             // Name of the entry
             String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
 
+            // Streams must stay open after returning
+            FileOutputStream fileOutputStream = null;
+            BufferedOutputStream bufferedOutputStream = null;
+            ZipOutputStream out = null;
+            PrintStream zipPrintStream = null;
             try {
-
-                ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFile));
-                PrintStream zipPrintStream = new PrintStream(out);
+                fileOutputStream = new FileOutputStream(outFile);
+                bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                out = new ZipOutputStream(bufferedOutputStream);
+                zipPrintStream = new PrintStream(out);
 
                 // Create zip entry
                 out.putNextEntry(new ZipEntry(logFilename));
@@ -163,6 +171,13 @@ public class Output {
                 return zipPrintStream;
 
             } catch (IOException e) {
+                // Close streams. At this point we do not know which ones are open
+                // and which were not initialized, try to close all
+                closeStreamAfterError(zipPrintStream);
+                closeStreamAfterError(out);
+                closeStreamAfterError(bufferedOutputStream);
+                closeStreamAfterError(fileOutputStream);
+
                 throw new LARACompilerException("Could not create zipped output file: ", e);
             }
         }
@@ -175,6 +190,20 @@ public class Output {
             throw new LARACompilerException("Could not create output file: ", e);
         }
 
+    }
+
+    private void closeStreamAfterError(OutputStream stream) {
+        // Do nothing if no stream
+        if (stream == null) {
+            return;
+        }
+
+        // Close the stream
+        try {
+            stream.close();
+        } catch (IOException e) {
+            SpecsLogs.msgWarn("Exception while closing a stream", e);
+        }
     }
 
     public void setLevel(int level) {
