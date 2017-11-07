@@ -1,0 +1,85 @@
+import lara.Io;
+
+/**
+ * Methods related with the CSV format.
+ *
+ * @class
+ */
+var Csv = {};
+
+/**
+ * Reads a CSV file and returns an object with the data inside the file.
+ */
+Csv.read = function(path, delimiter) {
+	var file = Io.getPath(path);
+	if(!Io.isFile(file)) {
+		throw "Io.readCsv: path '" + path + "' is not a file";
+	}
+		
+		
+	var CsvReader = Java.type("pt.up.fe.specs.util.csv.CsvReader");	
+	return Csv.parse(new CsvReader(file, ","));
+}
+
+/**
+ * @param {string} contents 
+ */
+Csv.parse = function(contents, delimiter) {
+	if(delimiter === undefined) {
+		delimiter = ",";
+	}
+	
+	var CsvReader = Java.type("pt.up.fe.specs.util.csv.CsvReader");	
+
+	var csvReader = undefined;
+	
+	if(typeof contents === "string") {
+		csvReader = new CsvReader(contents, delimiter);
+	} 
+	// Undocumented option
+	else if(CsvReader.isInstance(contents)) {
+		csvReader = contents;
+	} else {
+		throw "Csv.parse: Unsupported type for argument 'contents'";
+	}
+
+	var csvData = [];
+	
+	var headerList = csvReader.getHeader();
+	
+	var lineCounter = 0;
+	while(csvReader.hasNext()) {
+		lineCounter++;
+		
+		// Read line
+		var values = csvReader.next();
+		
+		// Check line has the same number of elements as headerList
+		if(values.length !== headerList.length) {
+			println("Csv.parse: number of elements mismatch, header has " + headerList.length + "elements, line " + lineCounter + " has " + values.length + ". Skipping line");
+			continue;
+		}
+		
+		// Create line
+		var line = {};
+		for(var i=0; i< values.length; i++) {
+			line[headerList[i]] = values[i];
+		}
+		
+		csvData.push(line);
+	}
+	
+	csvReader.close();
+	
+	return csvData;
+}
+
+/**
+ * Operations concerning the CSV format.
+ * Instance members not implemented yet
+ */
+/*
+var Csv = function() {
+
+};
+*/

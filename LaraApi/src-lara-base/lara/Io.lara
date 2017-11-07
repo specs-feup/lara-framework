@@ -215,3 +215,4 @@ Io.md5 = function(fileOrBaseFolder, optionalFile) {
 Io.getWorkingFolder = function() {
 	return SpecsIo.getWorkingDir();
 }
+

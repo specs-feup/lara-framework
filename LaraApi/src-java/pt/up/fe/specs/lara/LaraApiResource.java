@@ -37,6 +37,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     METRIC_RESULT("metrics/MetricResult.lara"),
 
     // Lara
+    CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),
     JOIN_POINTS("JoinPoints.lara"),
