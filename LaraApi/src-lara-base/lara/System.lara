@@ -125,6 +125,14 @@ System.nanos = function() {
 	return java.lang.System.nanoTime();
 }
 
+System.toc = function(nanoStart, message) {
+	if(message === undefined) {
+		message = "Time";
+	}
+	
+	return SpecsStrings.takeTime(message, nanoStart);
+}
+
 System.getNumLogicalCores = function() {
 	return java.lang.Runtime.getRuntime().availableProcessors();
 }
