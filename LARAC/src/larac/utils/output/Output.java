@@ -147,6 +147,7 @@ public class Output {
     private PrintStream buildFileStream(File outFile) {
         Optional<ZipFormat> zipFormat = ZipFormat.fromExtension(SpecsIo.getExtension(outFile));
 
+        // Compressed log file
         if (zipFormat.isPresent()) {
             // Name of the entry
             String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
@@ -166,42 +167,6 @@ public class Output {
             return zipPrintStream;
 
         }
-        /*
-        // Check extension, use ZipStream is ends with .zip
-        boolean isZip = SpecsIo.getExtension(outFile).equals("zip");
-        
-        if (isZip) {
-            // Name of the entry
-            String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
-        
-            // Streams must stay open after returning
-            FileOutputStream fileOutputStream = null;
-            BufferedOutputStream bufferedOutputStream = null;
-            ZipOutputStream out = null;
-            PrintStream zipPrintStream = null;
-            try {
-                fileOutputStream = new FileOutputStream(outFile);
-                bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-                out = new ZipOutputStream(bufferedOutputStream);
-                zipPrintStream = new PrintStream(out);
-        
-                // Create zip entry
-                out.putNextEntry(new ZipEntry(logFilename));
-                // System.out.println("ZIP STREAM to " + outFile);
-                return zipPrintStream;
-        
-            } catch (IOException e) {
-                // Close streams. At this point we do not know which ones are open
-                // and which were not initialized, try to close all
-                SpecsIo.closeStreamAfterError(zipPrintStream);
-                SpecsIo.closeStreamAfterError(out);
-                SpecsIo.closeStreamAfterError(bufferedOutputStream);
-                SpecsIo.closeStreamAfterError(fileOutputStream);
-        
-                throw new LARACompilerException("Could not create zipped output file: ", e);
-            }
-        }
-        */
 
         // Normal log file
         try {
@@ -212,20 +177,6 @@ public class Output {
         }
 
     }
-
-    // private void closeStreamAfterError(OutputStream stream) {
-    // // Do nothing if no stream
-    // if (stream == null) {
-    // return;
-    // }
-    //
-    // // Close the stream
-    // try {
-    // stream.close();
-    // } catch (IOException e) {
-    // SpecsLogs.msgWarn("Exception while closing a stream", e);
-    // }
-    // }
 
     public void setLevel(int level) {
         this.def.setDef(level);
