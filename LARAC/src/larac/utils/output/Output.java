@@ -16,16 +16,14 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.Optional;
 
 import larac.exceptions.LARACompilerException;
+import pt.up.fe.specs.compress.ZipFormat;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.logging.MultiOutputStream;
 
 public class Output {
@@ -147,13 +145,35 @@ public class Output {
     }
 
     private PrintStream buildFileStream(File outFile) {
-        // Check extension, use ZipStream is ends with .zip
-        boolean isZip = SpecsIo.getExtension(outFile).equals("zip");
+        Optional<ZipFormat> zipFormat = ZipFormat.fromExtension(SpecsIo.getExtension(outFile));
 
-        if (isZip) {
+        if (zipFormat.isPresent()) {
             // Name of the entry
             String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
 
+            // Streams must stay open after returning
+            FileOutputStream fileOutputStream;
+            try {
+                fileOutputStream = new FileOutputStream(outFile);
+            } catch (FileNotFoundException e) {
+                throw new LARACompilerException("Could not use file '" + outFile + "' for zipped output: ", e);
+            }
+
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            OutputStream zipStream = zipFormat.get().newFileCompressor(logFilename, bufferedOutputStream);
+            PrintStream zipPrintStream = new PrintStream(zipStream);
+
+            return zipPrintStream;
+
+        }
+        /*
+        // Check extension, use ZipStream is ends with .zip
+        boolean isZip = SpecsIo.getExtension(outFile).equals("zip");
+        
+        if (isZip) {
+            // Name of the entry
+            String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
+        
             // Streams must stay open after returning
             FileOutputStream fileOutputStream = null;
             BufferedOutputStream bufferedOutputStream = null;
@@ -164,23 +184,24 @@ public class Output {
                 bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
                 out = new ZipOutputStream(bufferedOutputStream);
                 zipPrintStream = new PrintStream(out);
-
+        
                 // Create zip entry
                 out.putNextEntry(new ZipEntry(logFilename));
                 // System.out.println("ZIP STREAM to " + outFile);
                 return zipPrintStream;
-
+        
             } catch (IOException e) {
                 // Close streams. At this point we do not know which ones are open
                 // and which were not initialized, try to close all
-                closeStreamAfterError(zipPrintStream);
-                closeStreamAfterError(out);
-                closeStreamAfterError(bufferedOutputStream);
-                closeStreamAfterError(fileOutputStream);
-
+                SpecsIo.closeStreamAfterError(zipPrintStream);
+                SpecsIo.closeStreamAfterError(out);
+                SpecsIo.closeStreamAfterError(bufferedOutputStream);
+                SpecsIo.closeStreamAfterError(fileOutputStream);
+        
                 throw new LARACompilerException("Could not create zipped output file: ", e);
             }
         }
+        */
 
         // Normal log file
         try {
@@ -192,19 +213,19 @@ public class Output {
 
     }
 
-    private void closeStreamAfterError(OutputStream stream) {
-        // Do nothing if no stream
-        if (stream == null) {
-            return;
-        }
-
-        // Close the stream
-        try {
-            stream.close();
-        } catch (IOException e) {
-            SpecsLogs.msgWarn("Exception while closing a stream", e);
-        }
-    }
+    // private void closeStreamAfterError(OutputStream stream) {
+    // // Do nothing if no stream
+    // if (stream == null) {
+    // return;
+    // }
+    //
+    // // Close the stream
+    // try {
+    // stream.close();
+    // } catch (IOException e) {
+    // SpecsLogs.msgWarn("Exception while closing a stream", e);
+    // }
+    // }
 
     public void setLevel(int level) {
         this.def.setDef(level);

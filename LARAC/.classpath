@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LARAC&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonsCompressPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
