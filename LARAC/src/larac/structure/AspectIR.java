@@ -206,7 +206,6 @@ public class AspectIR {
             }
             asp = laraC.getAspectIR().getImportedAspectDef(name);
             if (asp != null) {
-                System.out.println("FOUND: " + asp);
                 return asp;
             }
         }
