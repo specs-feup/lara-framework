@@ -467,7 +467,10 @@ public class GeneratorUtils {
         final String spaceStr = StringUtils.repeat("\t", position);
         final String nativeArrayVarName = GenConstants.getNativeArrayVarName();
         if (dimension == 1) {
-            return spaceStr + "Bindings " + nativeArrayVarName + position + " = Converter.toNativeArray(" + valueName
+            // return spaceStr + "Bindings " + nativeArrayVarName + position + " = Converter.toNativeArray(" + valueName
+            // + position + ");\n";
+            return spaceStr + "Bindings " + nativeArrayVarName + position
+                    + " = getWeaverEngine().getScriptEngine().toNativeArray(" + valueName
                     + position + ");\n";
         }
         String converted = "";
