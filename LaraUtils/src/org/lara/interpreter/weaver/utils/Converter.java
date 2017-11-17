@@ -36,22 +36,20 @@ public class Converter {
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
      */
-
     public static Bindings newNativeArray() {
-	try {
-	    return (Bindings) Converter.utilEngine.eval(Converter.NEW_ARRAY);
-	} catch (ScriptException e) {
-	    throw new DefaultLARAException("Could not create new array ", e);
-	}
+        try {
+            return (Bindings) Converter.utilEngine.eval(Converter.NEW_ARRAY);
+        } catch (ScriptException e) {
+            throw new DefaultLARAException("Could not create new array ", e);
+        }
     }
 
     public static Bindings toNativeArray(Object[] values) {
-
-	Bindings bindings = newNativeArray();
-	for (int i = 0; i < values.length; i++) {
-	    bindings.put("" + i, values[i]);
-	}
-	return bindings;
+        Bindings bindings = newNativeArray();
+        for (int i = 0; i < values.length; i++) {
+            bindings.put("" + i, values[i]);
+        }
+        return bindings;
     }
 
     /**
@@ -63,7 +61,7 @@ public class Converter {
      */
     public static Bindings toNativeArray(Collection<? extends Object> values) {
 
-	return toNativeArray(values.toArray());
+        return toNativeArray(values.toArray());
     }
 
     /**
@@ -75,11 +73,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(int[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -91,11 +89,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(float[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -107,11 +105,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(double[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -123,11 +121,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(boolean[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -139,11 +137,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(char[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -155,11 +153,11 @@ public class Converter {
      */
     public static Bindings toNativeArray(byte[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     /**
@@ -171,26 +169,26 @@ public class Converter {
      */
     public static Bindings toNativeArray(short[] values) {
 
-	Object[] newObject = new Object[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    newObject[i] = values[i];
-	}
-	return toNativeArray(newObject);
+        Object[] newObject = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            newObject[i] = values[i];
+        }
+        return toNativeArray(newObject);
     }
 
     static Object[] getArray(Object val) {
 
-	if (!val.getClass().isArray()) {
+        if (!val.getClass().isArray()) {
 
-	    throw new IllegalArgumentException("the argument should be an array");
-	}
+            throw new IllegalArgumentException("the argument should be an array");
+        }
 
-	int arrlength = Array.getLength(val);
-	Object[] outputArray = new Object[arrlength];
-	for (int i = 0; i < arrlength; ++i) {
-	    outputArray[i] = Array.get(val, i);
-	}
-	return outputArray;
+        int arrlength = Array.getLength(val);
+        Object[] outputArray = new Object[arrlength];
+        for (int i = 0; i < arrlength; ++i) {
+            outputArray[i] = Array.get(val, i);
+        }
+        return outputArray;
     }
 
 }
