@@ -23,7 +23,6 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.utils.Converter;
 
 import jdk.nashorn.internal.runtime.Undefined;
 
@@ -168,7 +167,8 @@ public abstract class JoinPoint {
         fillWithActions(actions);
         Object[] array = actions.toArray();
         Arrays.sort(array);
-        return Converter.toNativeArray(array);
+        return getWeaverEngine().getScriptEngine().toNativeArray(array);
+        // return Converter.toNativeArray(array);
     }
 
     /**
@@ -181,7 +181,8 @@ public abstract class JoinPoint {
         fillWithSelects(selects);
         Object[] array = selects.toArray();
         Arrays.sort(array);
-        return Converter.toNativeArray(array);
+        return getWeaverEngine().getScriptEngine().toNativeArray(array);
+        // return Converter.toNativeArray(array);
     }
 
     /**
@@ -194,7 +195,8 @@ public abstract class JoinPoint {
         fillWithAttributes(attributes);
         Object[] array = attributes.toArray();
         Arrays.sort(array);
-        return Converter.toNativeArray(array);
+        return getWeaverEngine().getScriptEngine().toNativeArray(array);
+        // return Converter.toNativeArray(array);
     }
 
     /**
