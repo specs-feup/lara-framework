@@ -28,7 +28,6 @@ import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.NamedEnum;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.utils.Converter;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
@@ -447,7 +446,7 @@ public class GeneratorUtils {
         final JavaType returnType = newGetter.getReturnType();
         final String baseType = returnType.getName();
         getter.setReturnType(new JavaType(Bindings.class));
-        javaC.addImport(Converter.class);
+        // javaC.addImport(Converter.class); // No longer needed?
         getter.clearCode();
         getter.appendCode(returnType.getSimpleType());
         final String valueName = StringUtils.firstCharToLower(baseType) + GenConstants.getArrayMethodSufix();
