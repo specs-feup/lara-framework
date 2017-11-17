@@ -1,0 +1,63 @@
+/** @constructor */
+/** @access private */
+/** @private */
+
+/**
+ * Generic dairy product.
+ * @constructor
+ */
+ 
+ /**
+ * Check whether the dairy product is solid at room temperature.
+ * @abstract
+ * @return {boolean}
+ */
+ 
+ // Documenting objectA with @alias
+ 
+ /** Spread your wings and fly, if possible. */
+ 
+ /**
+ * Remove whitespace from around a string.
+ * @param {string} str
+ */
+ 
+ /** @constant {number} */
+ 
+  * @class A class
+ * continueation of doc
+ *
+ * more continuation @param Hello
+ * @param Hello2
+ * Hello222
+ * ggggggg
+ * @arbirarytag aaaaaaaaa
+ *
+ */
+ 
+ 
+ var uninit;
+var simpleVar = 0;
+
+/**
+ * Checkpoint 2
+ * @class
+ */
+var Checkpoint2 = function(checkpointName) {
+
+};
+
+Checkpoint2.prototype.monitor = function(object) {
+};
+
+/**
+ * Checkpoint 3
+ */
+function Checkpoint3(checkpointName) {
+	this.a = 10;
+}
+
+Checkpoint3.prototype.monitor = function(object) {
+};
+ 
+ 

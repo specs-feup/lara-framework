@@ -19,6 +19,7 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 public class NashornUtils {
 
     public static boolean isJSArray(Object object) {
+
         return object instanceof ScriptObjectMirror
                 && ((ScriptObjectMirror) object).isArray();
     }
