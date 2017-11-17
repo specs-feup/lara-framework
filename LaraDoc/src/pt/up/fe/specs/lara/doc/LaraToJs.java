@@ -82,6 +82,7 @@ public class LaraToJs {
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
         NashornScriptEngine jsEngine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+
         FileList folderApplication = FileList.newInstance();
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
