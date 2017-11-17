@@ -188,6 +188,14 @@ public class JsScriptEngine {
         return toNativeArray(newObject);
     }
 
+    public Object eval(String script, Bindings n) throws ScriptException {
+        return engine.eval(script, n);
+    }
+
+    public Bindings createBindings() {
+        return engine.createBindings();
+    }
+
     // private Object[] getArray(Object val) {
     //
     // if (!val.getClass().isArray()) {
