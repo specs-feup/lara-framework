@@ -181,7 +181,8 @@ public class ImportProcessor {
         WeaverEngine engine = laraI.getWeaver().getEngine();
         LanguageSpecification languageSpecification = engine.getLanguageSpecification();
         LanguageSpecificationV2 ls = JoinPointFactory.fromOld(languageSpecification);
-        interpreter.put(MasterWeaver.LANGUAGE_SPECIFICATION_NAME, WeaverSpecification.newInstance(ls));
+        interpreter.put(MasterWeaver.LANGUAGE_SPECIFICATION_NAME,
+                WeaverSpecification.newInstance(ls, engine.getScriptEngine()));
     }
 
     /**

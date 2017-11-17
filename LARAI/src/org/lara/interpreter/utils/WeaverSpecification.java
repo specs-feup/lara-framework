@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import javax.script.Bindings;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.interpreter.weaver.utils.Converter;
+import org.lara.interpreter.weaver.utils.JsScriptEngine;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
@@ -29,13 +29,15 @@ import org.lara.language.specification.dsl.Select;
 
 public class WeaverSpecification {
     private final LanguageSpecificationV2 ls;
+    private final JsScriptEngine engine;
 
-    public static WeaverSpecification newInstance(LanguageSpecificationV2 ls) {
-        return new WeaverSpecification(ls);
+    public static WeaverSpecification newInstance(LanguageSpecificationV2 ls, JsScriptEngine engine) {
+        return new WeaverSpecification(ls, engine);
     }
 
-    private WeaverSpecification(LanguageSpecificationV2 ls) {
+    private WeaverSpecification(LanguageSpecificationV2 ls, JsScriptEngine engine) {
         this.ls = ls;
+        this.engine = engine;
     }
 
     public String getRoot() {
@@ -61,7 +63,7 @@ public class WeaverSpecification {
                 .map(JoinPointClass::getName)
                 .collect(Collectors.toList());
         joinPoints.add(JoinPointClass.getGlobalName());
-        return Converter.toNativeArray(joinPoints);
+        return engine.toNativeArray(joinPoints);
     }
 
     public Bindings attributesOf(String joinPoint) {
@@ -81,7 +83,7 @@ public class WeaverSpecification {
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {
             warnMissingJoinPointType(joinPointName, "attributes");
-            return Converter.newNativeArray();
+            return engine.newNativeArray();
         }
         Collection<Attribute> attributes;
         if (allInformation) {
@@ -92,7 +94,7 @@ public class WeaverSpecification {
         List<String> attributeStrings = attributes.stream()
                 .map(Attribute::toString)
                 .collect(Collectors.toList());
-        return Converter.toNativeArray(attributeStrings);
+        return engine.toNativeArray(attributeStrings);
     }
 
     private static void warnMissingJoinPointType(String joinPointName, String collectionType) {
@@ -107,7 +109,7 @@ public class WeaverSpecification {
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {
             warnMissingJoinPointType(joinPointName, "selects");
-            return Converter.newNativeArray();
+            return engine.newNativeArray();
         }
         Collection<Select> attributes;
         if (allInformation) {
@@ -118,7 +120,7 @@ public class WeaverSpecification {
         List<String> attributeStrings = attributes.stream()
                 .map(Select::toString)
                 .collect(Collectors.toList());
-        return Converter.toNativeArray(attributeStrings);
+        return engine.toNativeArray(attributeStrings);
     }
 
     private JoinPointClass getJoinPoint(String joinPointName) {
@@ -132,7 +134,7 @@ public class WeaverSpecification {
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {
             warnMissingJoinPointType(joinPointName, "actions");
-            return Converter.newNativeArray();
+            return engine.newNativeArray();
         }
         Collection<Action> attributes;
         if (allInformation) {
@@ -143,6 +145,6 @@ public class WeaverSpecification {
         List<String> attributeStrings = attributes.stream()
                 .map(Action::toString)
                 .collect(Collectors.toList());
-        return Converter.toNativeArray(attributeStrings);
+        return engine.toNativeArray(attributeStrings);
     }
 }
