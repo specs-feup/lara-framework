@@ -489,6 +489,14 @@ public class LaraI {
     private void interpret(WeaverEngine weaverEngine) {
         // final Context cx = Context.enter();
         NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+
+        // Set javascript engine in WeaverEngine
+        weaverEngine.setScriptEngine(engine);
+
+        // NashornScriptEngine engine = (NashornScriptEngine) new NashornScriptEngineFactory()
+        // .getScriptEngine(new String[] { "--global-per-engine" });
+
+        // weaverEngine.setScriptEngine(engine);
         // try {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
