@@ -21,8 +21,8 @@ import javax.script.ScriptException;
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-import org.lara.interpreter.weaver.utils.Converter;
 import org.lara.interpreter.weaver.utils.FilterExpression;
+import org.lara.interpreter.weaver.utils.JsScriptEngine;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.internal.objects.NativeFunction;
@@ -38,11 +38,11 @@ public class JoinpointUtils {
     private static final String IS_EMPTY_PROPERTY = "isEmpty";
     private static final String REFERENCE_PROPERTY = "_jp_reference_";
     private static final String PARENT_PROPERTY = "_jp_parent_";
-    private final NashornScriptEngine engine;
+    private final JsScriptEngine scriptEngine;
     private final List<NativeFunction> actions = null;
 
     public JoinpointUtils(NashornScriptEngine engine) {
-        this.engine = engine;
+        this.scriptEngine = new JsScriptEngine(engine);
     }
 
     /**
@@ -56,7 +56,7 @@ public class JoinpointUtils {
 
     public Bindings toJavaScript(LaraJoinPoint root) {
 
-        final Bindings obj = engine.createBindings();
+        final Bindings obj = scriptEngine.createBindings();
         if (root.getChildren() != null) {
 
             for (final LaraJoinPoint child : root.getChildren()) {
@@ -81,11 +81,11 @@ public class JoinpointUtils {
 
     private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
         if (!parent.containsKey(jp.getClassAlias())) {
-            final Bindings jps = Converter.newNativeArray();
+            final Bindings jps = scriptEngine.newNativeArray();
             parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
         }
         final Bindings jps = (Bindings) parent.get(jp.getClassAlias());
-        final Bindings obj = engine.createBindings();// cx.newObject(scope);
+        final Bindings obj = scriptEngine.createBindings();// cx.newObject(scope);
         jps.put("" + jps.size(), obj);
         obj.put(getReferenceProperty(), jp.getReference());
         obj.put(getParentProperty(), parent);
@@ -195,7 +195,7 @@ public class JoinpointUtils {
         // final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);
         boolean res;
         try {
-            res = (Boolean) engine.eval(sb.toString(), localScope);
+            res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
         } catch (ScriptException e) {
             throw new FilterException(jp, filter.toString(), e);
         }
