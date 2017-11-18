@@ -23,6 +23,12 @@ import javax.script.ScriptException;
 
 import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
 
+/**
+ * 
+ * @deprecated Use JsScriptEngine instead
+ *
+ */
+@Deprecated
 public class Converter {
 
     private static final String NEW_ARRAY = "[]"; // Faster
