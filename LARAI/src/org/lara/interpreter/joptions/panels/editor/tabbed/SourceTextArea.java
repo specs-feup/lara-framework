@@ -252,27 +252,27 @@ public class SourceTextArea extends JPanel {
 
     /*
     public boolean open() {
-    
+
     	JFileChooser fc = Factory.newFileChooser(getTabbedParent().getLastOpennedFolder());
-    
+
     	int returnVal = fc.showOpenDialog(this);
-    
+
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
     	    File file = fc.getSelectedFile();
     	    int tabIndex = tabsContainer.getTabIndex(file);
-    
+
     	    if (tabIndex > -1) {// If the file already exists
     		// change the focus to the corresponding tab
     		tabsContainer.getTabbedPane().setSelectedIndex(tabIndex);
     	    } else {
-    
+
     		load(file);
     		getTabbedParent().setLastOpennedFolder(file.getParentFile());
     	    }
     	    return true;
     	}
     	return false;
-    
+
     }
     */
     public void refresh() {
@@ -326,7 +326,7 @@ public class SourceTextArea extends JPanel {
     public int askToSaveIfNonExistant() {
         int choice = JOptionPane.showConfirmDialog(this,
                 sourceFile.getAbsolutePath()
-                        + "\n\nThis file does not exist or was removed. Do you wan to create?",
+                        + "\n\nThis file does not exist or was removed. Do you want to create?",
                 // + "\nTimeStamps: editor=" + lastModified + ", file=" + sourceFile.lastModified()
                 "File does not exist",
                 JOptionPane.YES_NO_OPTION);
