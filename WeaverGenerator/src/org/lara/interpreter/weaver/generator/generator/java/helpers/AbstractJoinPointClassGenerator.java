@@ -32,6 +32,7 @@ import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
+import org.specs.generators.java.enums.Privacy;
 import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
@@ -97,7 +98,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         addActions(javaC);
         String superTypeName = null;
-
         if (!joinPoint.equals(joinPoint.getExtends())) {
             final JoinPointType superType = (JoinPointType) joinPoint.getExtends();
 
@@ -105,9 +105,11 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             superClass = GenConstants.abstractPrefix() + superClass;
 
             superTypeName = addSuperMethods(javaC);
+
             javaC.setSuperClass(new JavaType(superClass, javaGenerator.getJoinPointClassPackage()));
 
         } else {
+            // System.out.println("CODE :" + javaC.generateCode(0));
 
             javaC.setSuperClass(javaGenerator.getSuperClass());
         }
@@ -273,7 +275,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
                 + Utils.firstCharToUpper(superType.getClazz());
         final JavaType joinPointType = new JavaType(superClassName, javaGenerator.getJoinPointClassPackage());
-        javaC.add(new Field(joinPointType, fieldName));
+        javaC.add(new Field(joinPointType, fieldName, Privacy.PROTECTED));
 
         final Constructor constructor = new Constructor(javaC);
         constructor.addArgument(joinPointType, fieldName);
