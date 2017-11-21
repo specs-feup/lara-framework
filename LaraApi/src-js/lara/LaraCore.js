@@ -220,3 +220,10 @@ function arrayFromArgs(args, start) {
 	
     return Array.prototype.slice.call(args, start);
 }
+
+/**
+ * @return true if the given value is an array, false otherwise
+ */
+function isArray(value) {
+	return Array.isArray(value);
+}

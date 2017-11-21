@@ -69,3 +69,12 @@ Strings.asLines = function(string) {
 	return StringLines.getLines(string);
 }
 
+
+/**
+ * @param {*} value - The value to convert to Json.
+ * 
+ * @return {string} A string representing the given value in the Json format.
+ */
+Strings.toJson = function(value) {
+	return JSON.stringify(value);
+}
