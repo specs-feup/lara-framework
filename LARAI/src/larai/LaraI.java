@@ -311,10 +311,15 @@ public class LaraI {
             laraInterp.quit = true;
 
             if (laraInterp.options.useStackTrace()) {
+                if (laraInterp.interpreter == null) {
+                    return prettyRuntimeException(e);
+                }
+
                 CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
                 if (stackStrace.isEmpty()) {
                     return prettyRuntimeException(e);
                 }
+
                 return prettyRuntimeException(e, stackStrace);
             }
             return prettyRuntimeException(e);
