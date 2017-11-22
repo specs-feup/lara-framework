@@ -6,7 +6,7 @@ import lara.code.Energy;
  */
 function EnergyMetric() {
     // Parent constructor
-    Metric.call(this);
+    Metric.call(this, "Energy");
 }
 // Inheritance
 EnergyMetric.prototype = Object.create(Metric.prototype);

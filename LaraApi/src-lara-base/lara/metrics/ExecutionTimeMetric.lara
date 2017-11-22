@@ -9,7 +9,7 @@ import lara.Strings;
  */
 function ExecutionTimeMetric() {
     // Parent constructor
-    Metric.call(this);
+    Metric.call(this, "Execution Time");
 }
 // Inheritance
 ExecutionTimeMetric.prototype = Object.create(Metric.prototype);

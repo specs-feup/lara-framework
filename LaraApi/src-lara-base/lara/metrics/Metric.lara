@@ -1,9 +1,15 @@
 /**
  * Reprents a metric we want to extract.
  * @constructor
+ * @param {string} name - The name of the metric
  */
-function Metric() {
-    
+function Metric(name) {
+	checkDefined(name, "Metric::name");
+	this.name = name;
+}
+
+Metric.prototype.getName = function() {
+	return this.name;
 }
 
 /**
@@ -18,8 +24,8 @@ Metric.prototype.instrument = function($start, $end) {
 /**
  * Extract metric.
  *
- * @param {lara.util.ProcessExecutor} processExecutor - instance after program execution
- * @return {lara.metrics.MetricResult} metric after program execution
+ * @param {L#lara.util.ProcessExecutor} processExecutor - instance after program execution
+ * @return {L#lara.metrics.MetricResult} metric after program execution
  */
 Metric.prototype.report = function(processExecutor) {
 		notImplemented("Metric.report");

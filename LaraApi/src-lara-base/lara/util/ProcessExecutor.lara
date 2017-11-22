@@ -118,6 +118,43 @@ ProcessExecutor.prototype.getCommand = function() {
 	return this.lastCommand;
 }
 
+/**
+ * @return {J#java.io.File} the file of the executable of the command, or undefined if could not locate the file.
+ */
+ProcessExecutor.prototype.getExecutableFile = function() {
+	var command = this.getCommand();
+	if(command === undefined) {
+		return undefined;
+	}
+	
+	// Get index of first space
+	var commandString = command.toString();
+	var endIndex = commandString.indexOf(" ");
+	// If no space, use full command
+	if(endIndex === -1) {
+		endIndex = commandString.length;
+	}
+
+	var exeName = commandString.substring(0, endIndex);
+	
+	// Try to get the file, just with the name
+	var exeFile = Io.getPath(exeName);
+
+	if(Io.isFile(exeFile)) {
+		return exeFile;
+	}
+
+	// Try again, but this time using the working directory
+	exeFile = Io.getPath(this.getWorkingDir(), exeName);
+	 
+	if(Io.isFile(exeFile)) {
+		return exeFile;
+	} 
+	 
+	// Could not find the exe file
+	return undefined;
+}
+
 ProcessExecutor.prototype.getConsoleOutput = function() {
 	if(this.lastOutput === undefined) {
 		println("ProcessExecutor.getConsoleOutput: no execution has been done yet");
