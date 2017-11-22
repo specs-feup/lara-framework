@@ -1,0 +1,30 @@
+import lara.metrics.Metric;
+import lara.code.Energy;
+
+/**
+ * Measures energy consumed during an application.
+ */
+function FileSizeMetric() {
+    // Parent constructor
+    Metric.call(this, "File Size");
+}
+// Inheritance
+FileSizeMetric.prototype = Object.create(Metric.prototype);
+
+
+// Override
+FileSizeMetric.prototype.instrument = function($start, $end) {
+	// Do nothing
+}
+
+// Override
+FileSizeMetric.prototype.report = function(processExecutor) {
+	var exeFile = processExecutor.getExecutableFile();
+	var fileSize = exeFile !== undefined ? exeFile.length() : -1;
+	
+	return new MetricResult(fileSize, "bytes");
+}
+
+FileSizeMetric.prototype.getImport = function() {
+		return "lara.metrics.FileSizeMetric";
+}

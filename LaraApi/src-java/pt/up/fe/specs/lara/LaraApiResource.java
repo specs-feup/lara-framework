@@ -33,6 +33,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     // Metrics
     ENERGY_METRIC("metrics/EnergyMetric.lara"),
     EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"),
+    FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"),
     METRIC("metrics/Metric.lara"),
     METRIC_RESULT("metrics/MetricResult.lara"),
 
