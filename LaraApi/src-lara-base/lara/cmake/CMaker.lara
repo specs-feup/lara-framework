@@ -135,8 +135,9 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	}
 	
 	debug("Executing CMake, calling '"+  cmakeCmd + "' at ' " + builderFolderpath +  " '");
-	var cmakeOutput = new ProcessExecutor()
-		.setPrintToConsole(this.printToConsole)
+	var cmakeOutput = new ProcessExecutor();
+	
+	cmakeOutput.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
 	debug("CMake output:" + cmakeOutput);
@@ -145,8 +146,8 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		
 	// Execute make
 	debug("Building, calling '"+  this.makeCommand + "' at ' " + builderFolderpath +  " '");
-	this._lastMakeOutput = new ProcessExecutor()
-		.setPrintToConsole(this.printToConsole)
+	this._lastMakeOutput = new ProcessExecutor();
+	this._lastMakeOutput.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(this.makeCommand);
 	debug("Make output:" + this._lastMakeOutput);

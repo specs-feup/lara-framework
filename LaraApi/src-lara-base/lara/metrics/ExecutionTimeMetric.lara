@@ -18,7 +18,8 @@ ExecutionTimeMetric._PREFIX = "elapsed:";
 
 // Override
 ExecutionTimeMetric.prototype.instrument = function($start, $end) {
-	var timer = new Timer("NANOSECONDS").setPrintUnit(false);
+	var timer = new Timer("NANOSECONDS");
+	timer.setPrintUnit(false);
 	//timer.time($start, "execution time:" , $end);
 	timer.time($start, ExecutionTimeMetric._PREFIX , $end);
 }
