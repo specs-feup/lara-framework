@@ -145,6 +145,10 @@ function checkNumber(variable, source) {
 	checkType(variable, "number", source);
 };
 
+function checkArray(variable, source) {
+	checkType(variable, "array", source);
+};
+
 function checkJoinPoint($jp, source) {
     
     if(Weaver.isJoinPoint($jp)) {
