@@ -123,6 +123,11 @@ function checkType(value, type, source) {
     if(typeof value === type) {
         return;
     }
+	
+	// Special case: array
+	if(type === "array" && isArray(value)) {
+		return;
+	}
     
     var message = "Expected value to be of type '" + type + "', but is of type '" + (typeof value) + "'";
 
