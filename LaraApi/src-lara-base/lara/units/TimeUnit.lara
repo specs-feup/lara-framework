@@ -1,0 +1,12 @@
+import lara.units.UnitWithModifier;
+
+/**
+ * 
+ */
+var TimeUnit = function(baseUnit, modifier) {
+	// Parent constructor
+    UnitWithModifier.call(this, TimeModifier.getUnitModifier(), baseUnit, modifier);
+};
+
+// Inheritance
+SiUnit.prototype = Object.create(UnitWithModifier.prototype);
