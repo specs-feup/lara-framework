@@ -138,6 +138,7 @@ public class MasterWeaver {
     public boolean begin() {
         try {
             weaverEngine.setWeaver();
+
             setActions(weaverEngine.getActions());
             setRoot(weaverEngine.getRoot());
             weaverEngine.getWeaverProfiler().reset();
