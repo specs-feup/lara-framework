@@ -25,9 +25,10 @@ public class LaraDocLauncher {
 
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
-        String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\lara\\Io.lara";
+        String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\repositories-programming\\lara-framework\\LaraApi\\src-lara-base\\";
         // String inputFolder = "C:\\Users\\JoaoBispo\\Desktop\\shared\\antarex\\lara-dse\\";
-        String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js-laradse-v2";
+        // String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\auto-js-laradse-v2";
+        String outputFolder = "C:\\Users\\JoaoBispo\\Desktop\\jstest\\laradoc-lara_api";
 
         // new LaraDoc(new DefaultWeaver(), new File(inputFolder), new File(outputFolder)).convertFiles();
         long laraDocStart = System.nanoTime();
