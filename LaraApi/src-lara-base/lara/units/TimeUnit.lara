@@ -9,4 +9,4 @@ var TimeUnit = function(baseUnit, modifier) {
 };
 
 // Inheritance
-SiUnit.prototype = Object.create(UnitWithModifier.prototype);
+TimeUnit.prototype = Object.create(UnitWithModifier.prototype);
