@@ -3,7 +3,7 @@ import lara.util.StringSet;
 /**
  *
  */
-var UnitModifier = function(base, unitModifier) {
+var UnitModifier = function(base, baseModifier, newModifier) {
 
 	checkDefined(base);
 
@@ -20,9 +20,15 @@ var UnitModifier = function(base, unitModifier) {
 
 	this._base = base;
 	
-	if(unitModifier !== undefined) {
-		for(var modifier of unitModifier.values()) {
-			this.newModifier(modifier, unitModifier._names[modifier], unitModifier._factorTable[modifier]);
+	if(baseModifier !== undefined) {
+		for(var modifier of baseModifier.values()) {
+			
+			if(newModifier !== undefined) {
+
+				newModifier[baseModifier._names[modifier].toUpperCase()] = modifier;
+			}
+			
+			this.newModifier(modifier, baseModifier._names[modifier], baseModifier._factorTable[modifier]);
 		}
 	}
 

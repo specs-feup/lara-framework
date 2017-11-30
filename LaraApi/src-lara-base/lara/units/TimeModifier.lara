@@ -1,12 +1,12 @@
 import lara.units.UnitModifier;
-//import lara.util.StringSet;
+import lara.units.SiModifier;
 
 /**
  *
  */
 var TimeModifier = {};
 
-TimeModifier._unitModifier = new UnitModifier("s", SiModifier.getUnitModifier());
+TimeModifier._unitModifier = new UnitModifier("s", SiModifier.getUnitModifier(), TimeModifier);
 
 TimeModifier.SECOND = TimeModifier._unitModifier.newModifier("s", "second", 1);
 TimeModifier.MINUTE = TimeModifier._unitModifier.newModifier("min", "minute", 60);
