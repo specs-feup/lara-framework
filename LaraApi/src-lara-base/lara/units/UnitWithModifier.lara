@@ -25,6 +25,10 @@ var UnitWithModifier = function(unitModifier, baseUnit, modifier) {
 // Inheritance
 UnitWithModifier.prototype = Object.create(Unit.prototype);
 
+UnitWithModifier.prototype.getName = function() {
+	
+	return this._modifier + this._baseUnit;
+}
 
 UnitWithModifier.prototype.convert = function(value, unit, unitHasBaseName) {
 	
