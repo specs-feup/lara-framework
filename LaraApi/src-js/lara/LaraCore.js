@@ -211,8 +211,10 @@ function debug(message, origin) {
 /**
  * Converts an arguments object to a JavaScript array (Array).
  * 
- * args  - Mandatory. The original arguments object.
- * start - Optional. The index where we begin the conversion (inclusive).
+ * If there is a single argument after the start index and that argument is an array, that array will be returned.
+ * 
+ * @args {Arguments} args  - The original arguments object.
+ * @args {Number} [start=0] - The index where we begin the conversion (inclusive).
  * */
 function arrayFromArgs(args, start) {
 	
@@ -223,8 +225,8 @@ function arrayFromArgs(args, start) {
     }
     
 	// If only one element and is already an array, just return the array
-	if(args.length === (start + 1) && args[0].constructor === Array) {
-		return args[0];
+	if(args.length === (start + 1) && isArray(args[start])) {
+		return args[start];
 	}
 	
     return Array.prototype.slice.call(args, start);
