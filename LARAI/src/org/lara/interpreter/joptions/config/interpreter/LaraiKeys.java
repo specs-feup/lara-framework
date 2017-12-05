@@ -40,7 +40,7 @@ public interface LaraiKeys {
     // DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.folderList("workspace").setLabel(
     DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.fileList("workspace", JFileChooser.FILES_AND_DIRECTORIES,
             Collections.emptyList())
-            .setLabel("Source Folder");
+            .setLabel("Sources");
 
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
 
