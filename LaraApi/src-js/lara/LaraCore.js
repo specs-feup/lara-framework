@@ -238,3 +238,17 @@ function arrayFromArgs(args, start) {
 function isArray(value) {
 	return Array.isArray(value);
 }
+
+/**
+ * Returns the value if defined or the provided deafult value. This useful for optional parameters of functions.
+ * 
+ * @param {Object} value - the original value
+ * @param {Object} defaultValue - the default value
+ * */
+function orDefault(value, defaultValue) {
+	
+	if(value === undefined) {
+		return defaultValue;
+	}
+	return value;
+}
