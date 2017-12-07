@@ -64,7 +64,7 @@ public class LaraDocParser {
 
     private final MultiMap<String, File> packagesPaths;
     // Filters folders/files based on name
-    private final Predicate<String> nameFilter;
+    private final Predicate<File> nameFilter;
     private final LanguageSpecification languageSpecification;
 
     public LaraDocParser() {
@@ -72,7 +72,7 @@ public class LaraDocParser {
         this(null, new DefaultWeaver().getLanguageSpecification());
     }
 
-    public LaraDocParser(Predicate<String> nameFilter, LanguageSpecification languageSpecification) {
+    public LaraDocParser(Predicate<File> nameFilter, LanguageSpecification languageSpecification) {
         this.packagesPaths = new MultiMap<>();
         this.nameFilter = nameFilter;
         this.languageSpecification = languageSpecification;
@@ -148,7 +148,7 @@ public class LaraDocParser {
     private void collectInformation(File currentPath, File basePath, LaraDocNode currentNode) {
 
         // If name does not pass the filter, ignore
-        if (nameFilter != null && !nameFilter.test(currentPath.getName())) {
+        if (nameFilter != null && !nameFilter.test(currentPath)) {
             return;
         }
 
@@ -184,6 +184,11 @@ public class LaraDocParser {
     }
 
     private void collectInformationFile(File laraFile, File baseFolder, LaraDocNode currentNode) {
+
+        // If name does not pass the filter, ignore
+        if (nameFilter != null && !nameFilter.test(laraFile)) {
+            return;
+        }
 
         // If not a LARA file, ignore
         // String filenameLowercase = filename.toLowerCase();
@@ -263,7 +268,7 @@ public class LaraDocParser {
         List<File> packageFolders = SpecsIo.getFolders(bundleFolder);
         for (File packageFolder : packageFolders) {
 
-            if (nameFilter != null && !nameFilter.test(packageFolder.getName())) {
+            if (nameFilter != null && !nameFilter.test(packageFolder)) {
                 continue;
             }
 
