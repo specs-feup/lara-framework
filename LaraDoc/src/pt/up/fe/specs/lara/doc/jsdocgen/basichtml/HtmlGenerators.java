@@ -84,6 +84,26 @@ public class HtmlGenerators {
         return parameters.stream().collect(Collectors.joining(", ", "(", ")"));
     }
 
+    public static String generateFunctionParamsFromTags(List<JsDocTag> parameters) {
+        return parameters.stream()
+                .map(HtmlGenerators::parseParam)
+                .collect(Collectors.joining(", ", "(", ")"));
+    }
+
+    private static String parseParam(JsDocTag param) {
+        String stringParam = param.getValue(JsDocTagProperty.NAME);
+
+        if (param.hasProperty(JsDocTagProperty.DEFAULT_VALUE)) {
+            stringParam = stringParam + " = " + param.getValue(JsDocTagProperty.DEFAULT_VALUE);
+        }
+
+        if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
+            stringParam = "[" + stringParam + "]";
+        }
+
+        return stringParam;
+    }
+
     // public static String generateFunction(FunctionDeclElement functionDecl, String id) {
     public static String generateMember(String id, LaraDocComment laraComment) {
         return generateMember(id, laraComment, true, false);
@@ -111,7 +131,9 @@ public class HtmlGenerators {
 
         functionCode.append(namePath);
 
-        String functionParameters = isFunction ? generateFunctionParams(laraComment.getParameters()) : "";
+        // String functionParameters = isFunction ? generateFunctionParams(laraComment.getParameters()) : "";
+        String functionParameters = isFunction ? generateFunctionParamsFromTags(laraComment.getTags(JsDocTagName.PARAM))
+                : "";
 
         // List<String> params = laraComment.getParameters();
         // String functionParameters = generateFunctionParams(params);
@@ -228,13 +250,22 @@ public class HtmlGenerators {
             if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
                 if (param.hasProperty(JsDocTagProperty.DEFAULT_VALUE)) {
                     typeInfo += " = " + param.getValue(JsDocTagProperty.DEFAULT_VALUE);
-                } else {
+                }
+                /*
+                else {
                     typeInfo += "?";
                 }
+                */
             }
 
             code.append("(").append(typeInfo).append(")");
+
             code.append("</span>");
+
+            // if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
+            // content = "<em>(optional)</em> " + content;
+            // // code.append("<em>(optional)</em>");
+            // }
 
             if (!content.isEmpty()) {
                 code.append(" ");
@@ -244,6 +275,10 @@ public class HtmlGenerators {
                 }
 
                 code.append(content);
+            }
+
+            if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
+                code.append(" <em>(optional)</em>");
             }
 
             code.append("<br>");
