@@ -1,0 +1,29 @@
+/**
+ * @class
+ */
+var Numbers = {};
+
+
+
+/**
+ * @param {number} number - A number to convert to indexes.
+ * @returns An array with indexes corresponding to the active bits of the given number
+ */
+Numbers.toIndexesArray = function(number) {
+	checkNumber(number, "toIndexesArray");
+
+	// Convert number to binary string
+	var binaryString = number.toString(2);
+
+	var indexesArray = [];
+	var numBits = binaryString.length;
+	for(var i=0; i<numBits; i++) {
+		if(binaryString[i] === "0") {
+			continue;
+		}
+
+		indexesArray.push((numBits-i)-1);
+	}
+
+	return indexesArray.reverse();
+}

@@ -51,6 +51,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     DEBUG("Debug.lara"),
     IO("Io.lara"),
     JOIN_POINTS("JoinPoints.lara"),
+    NUMBERS("Numbers.lara"),
     PLATFORMS("Platforms.lara"),
     STRINGS("Strings.lara"),
     SYSTEM("System.lara"),
@@ -64,6 +65,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     REPLACER("util/Replacer.lara"),
+    SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
     STRING_SET("util/StringSet.lara"),
     TIME_UNITS("util/TimeUnits.lara");
 
