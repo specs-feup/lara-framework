@@ -94,4 +94,9 @@ public class LaraApiTest {
         newTester().test("CsvTest.lara");
     }
 
+    @Test
+    public void testPlatforms() {
+        newTester().test("PlatformsTest.lara");
+    }
+
 }
