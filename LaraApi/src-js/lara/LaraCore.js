@@ -19,8 +19,14 @@ function notImplemented(functionName) {
 	throw "Function " + functionName + " not implemented yet for this weaver implementation";
 }
 
-function defaultValue(variable, defaultValue) {
-	return variable === undefined ? defaultValue : variable;
+/**
+ * Returns the value if defined or the provided default value. This useful for optional parameters of functions.
+ * 
+ * @param {Object} value - the original value
+ * @param {Object} defaultValue - the default value
+ * */
+function defaultValue(value, defaultValue) {
+	return value === undefined ? defaultValue : value;
 }
 
 /**
@@ -237,18 +243,4 @@ function arrayFromArgs(args, start) {
  */
 function isArray(value) {
 	return Array.isArray(value);
-}
-
-/**
- * Returns the value if defined or the provided deafult value. This useful for optional parameters of functions.
- * 
- * @param {Object} value - the original value
- * @param {Object} defaultValue - the default value
- * */
-function orDefault(value, defaultValue) {
-	
-	if(value === undefined) {
-		return defaultValue;
-	}
-	return value;
 }
