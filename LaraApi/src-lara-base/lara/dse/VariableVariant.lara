@@ -4,7 +4,7 @@ import lara.dse.DseVariant;
  * Associates a variable name to a DseValues.
  * @constructor
  */
-var VariableVariant = function(dseValues) {
+var VariableVariant = function(variableNames, dseValues) {
     // Parent constructor
     DseVariant.call(this);
 	
@@ -12,9 +12,11 @@ var VariableVariant = function(dseValues) {
 		throw "VariableVariant: needs at least two arguments, a dseValues and variable names";
 	}
 	
-	this.dseValues = dseValues;
-	
-	this.variableNames = arrayFromArgs(arguments, 1);
+	this.dseValues = dseValues instanceof DseValues ? dseValues : new DseValuesList(dseValues);
+	//this.dseValues = dseValues;
+		
+	this.variableNames = isArray(variableNames) ? variableNames : [variableNames];
+	//this.variableNames = arrayFromArgs(arguments, 1);
 
 	// Verify that the number of variables is the same as the number of values per element
 	checkTrue(this.dseValues.getNumValuesPerElement() === this.variableNames.length);

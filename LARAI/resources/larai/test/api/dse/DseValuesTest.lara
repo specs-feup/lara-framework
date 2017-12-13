@@ -11,7 +11,7 @@ aspectdef DseValuesTest
 	var valuesSet = new DseValuesSet(valuesList, valuesList2);
 	dseValueTester("Set", valuesSet);
 	
-	var varVariant = new VariableVariant(valuesSet, "a", "b");
+	var varVariant = new VariableVariant(["a", "b"], valuesSet);
 	
 end
 
