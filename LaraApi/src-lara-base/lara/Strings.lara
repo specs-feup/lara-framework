@@ -9,6 +9,8 @@ var Strings = {};
  * @return true if the given string is blank or contains only white-space
  */
 Strings.isEmpty = function(string) {
+	//var realString = string.toString();
+	//return (realString.length === 0 || !realString.trim());
 	return (string.length === 0 || !string.trim());
 }
 

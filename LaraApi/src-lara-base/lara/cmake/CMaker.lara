@@ -98,7 +98,7 @@ CMaker.prototype.getMakeOutput = function() {
 		return undefined;
 	}
 	
-	return this._lastMakeOutput;
+	return this._lastMakeOutput.getConsoleOutput();
 }
 
 
