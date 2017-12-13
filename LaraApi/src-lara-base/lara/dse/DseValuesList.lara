@@ -18,6 +18,10 @@ var DseValuesList = function() {
 // Inheritance
 DseValuesList.prototype = Object.create(DseValues.prototype);
 
+DseValuesList.prototype.getType = function() {
+	return "DseValuesList";
+}
+
 /**
  * @returns the next element.
  */

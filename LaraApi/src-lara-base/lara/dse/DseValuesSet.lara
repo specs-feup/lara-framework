@@ -39,6 +39,10 @@ var DseValuesSet = function() {
 // Inheritance
 DseValuesSet.prototype = Object.create(DseValues.prototype);
 
+DseValuesSet.prototype.getType = function() {
+	return "DseValuesSet";
+}
+
 /**
  * @returns the next element.
  */

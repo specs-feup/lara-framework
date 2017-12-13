@@ -8,6 +8,13 @@ var DseValues = function() {
 };
 
 /**
+ * @returns the type of this DseValues.
+ */
+DseValues.prototype.getType = function() {
+	notImplemented("DseValues.getType");
+}
+
+/**
  * @returns the next element.
  */
 DseValues.prototype.next = function() {
