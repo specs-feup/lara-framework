@@ -13,6 +13,7 @@ var VariableVariant = function(dseValues) {
 	}
 	
 	this.dseValues = dseValues;
+	
 	this.variableNames = arrayFromArgs(arguments, 1);
 
 	// Verify that the number of variables is the same as the number of values per element

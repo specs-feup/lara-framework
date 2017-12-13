@@ -31,6 +31,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     TIMER_BASE("code/TimerBase.lara"),
 
     // DSE
+    DSE_LOOP("dse/DseLoop.lara"),
     DSE_VALUES("dse/DseValues.lara"),
     DSE_VALUES_LIST("dse/DseValuesList.lara"),
     DSE_VALUES_SET("dse/DseValuesSet.lara"),
