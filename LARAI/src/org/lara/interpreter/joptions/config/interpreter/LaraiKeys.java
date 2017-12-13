@@ -47,6 +47,9 @@ public interface LaraiKeys {
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
             .setLabel("Includes Folder (LARA, JS scripts, JARs)");
 
+    // DataKey<StringList> EXTERNAL_DEPENDENCIES = KeyFactory.stringList("external_includes")
+    // .setLabel("External dependencies (URLs, git repos)");
+
     DataKey<OptionalFile> TOOLS_FILE = LaraIKeyFactory.optionalFile("tools", true, "xml").setLabel("Tools File");
 
     DataKey<OptionalFile> REPORT_FILE = LaraIKeyFactory.optionalFile("report", false, "js").setLabel("Report File");

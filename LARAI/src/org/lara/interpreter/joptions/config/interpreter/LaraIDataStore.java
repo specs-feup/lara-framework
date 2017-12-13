@@ -38,6 +38,8 @@ import org.xml.sax.SAXException;
 import com.google.common.base.Preconditions;
 
 import larai.LaraI;
+import larai.larabundle.LaraBundle;
+import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.util.SpecsIo;
@@ -285,6 +287,34 @@ public class LaraIDataStore implements LaraiKeys {
         }
 
         return bundleTags;
+    }
+
+    public FileList getProcessedIncludeDirs(WeaverEngine weaverEngine) {
+        FileList includeDirs = getIncludeDirs();
+
+        // Process GIT repositories
+        includeDirs = processGitRepositories(includeDirs);
+
+        // Process Bundles
+        LaraBundle laraBundle = new LaraBundle(weaverEngine.getWeaverNames(), getBundleTags());
+        includeDirs = laraBundle.process(includeDirs);
+
+        // Process LARA Resources
+        LaraResource laraResource = new LaraResource(weaverEngine);
+        includeDirs = laraResource.process(includeDirs);
+
+        return includeDirs;
+    }
+
+    private FileList processGitRepositories(FileList includeDirs) {
+        return includeDirs;
+        // List<File> files = new ArrayList<>();
+        //
+        // for (File file : includeDirs.getFiles()) {
+        // files.add(file);
+        // }
+        //
+        // return includeDirs.newInstance(files);
     }
 
 }

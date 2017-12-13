@@ -44,8 +44,6 @@ import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import Utils.LARASystem;
 import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
-import larai.larabundle.LaraBundle;
-import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -95,15 +93,16 @@ public class ImportProcessor {
         engineScripts.forEach(this::importScript);
 
         /* Load user scripts */
-        FileList includeFolders = interpreter.getOptions().getIncludeDirs();
+        FileList includeFolders = interpreter.getOptions().getProcessedIncludeDirs(engine);
+        /*
         // LaraBundle laraBundle = new LaraBundle(engine.getLanguages(), engine.getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(engine.getWeaverNames(), interpreter.getOptions().getBundleTags());
         includeFolders = laraBundle.process(includeFolders);
-
+        
         // Process LARA Resources
         LaraResource laraResource = new LaraResource(engine);
         includeFolders = laraResource.process(includeFolders);
-
+        */
         if (!includeFolders.isEmpty()) {
 
             interpreter.out().println("Importing scripts/classes in included folders:");

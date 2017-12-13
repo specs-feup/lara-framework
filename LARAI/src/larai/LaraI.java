@@ -55,8 +55,6 @@ import org.w3c.dom.Document;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.LaraC;
 import larac.utils.output.Output;
-import larai.larabundle.LaraBundle;
-import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -402,18 +400,20 @@ public class LaraI {
 
         String path = options.getOutputDir().getPath();
 
-        FileList includeDirs = options.getIncludeDirs();
+        FileList includeDirs = options.getProcessedIncludeDirs(getWeaverEngine());
 
+        // LaraIDataStore.processIncludeDirs(includeDirs);
+        /*
         // Process LARA Bundles
         // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
         FileList processedIncludeDirs = laraBundle.process(includeDirs);
-
+        
         // Process LARA Resources
         LaraResource laraResource = new LaraResource(getWeaverEngine());
         processedIncludeDirs = laraResource.process(processedIncludeDirs);
-
-        String encodedIncludes = processedIncludeDirs.encode();
+        */
+        String encodedIncludes = includeDirs.encode();
         // String encodedIncludes = options.getIncludeDirs().encode();
         List<String> preprocess = new ArrayList<>();
         preprocess.add(fileName.getPath());
