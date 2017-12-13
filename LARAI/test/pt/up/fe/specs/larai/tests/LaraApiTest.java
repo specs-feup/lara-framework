@@ -99,4 +99,9 @@ public class LaraApiTest {
         newTester().test("PlatformsTest.lara");
     }
 
+    @Test
+    public void testDseValues() {
+        newTester().test("dse/DseValuesTest.lara");
+    }
+
 }

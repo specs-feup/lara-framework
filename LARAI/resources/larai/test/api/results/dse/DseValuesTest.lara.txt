@@ -1,0 +1,8 @@
+List size: 3
+List num values per element: 1
+List values: 1,4,5
+List hasNext: true
+Set size: 3
+Set num values per element: 2
+Set values: 1,2,4,8,5,10
+Set hasNext: true
