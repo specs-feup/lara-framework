@@ -34,6 +34,8 @@ public enum LaraApiResource implements LaraResourceProvider {
     DSE_VALUES("dse/DseValues.lara"),
     DSE_VALUES_LIST("dse/DseValuesList.lara"),
     DSE_VALUES_SET("dse/DseValuesSet.lara"),
+    DSE_VARIANT("dse/DseVariant.lara"),
+    VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
     // Metrics
     ENERGY_METRIC("metrics/EnergyMetric.lara"),
