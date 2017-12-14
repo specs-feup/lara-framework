@@ -1,4 +1,5 @@
 import lara.units.UnitWithModifier;
+import lara.units.TimeModifier;
 
 /**
  * 
@@ -10,3 +11,26 @@ var TimeUnit = function(baseUnit, modifier) {
 
 // Inheritance
 TimeUnit.prototype = Object.create(UnitWithModifier.prototype);
+
+/**
+ * Factory methods to create TimeUnits.
+ * */
+TimeUnit.micro = function() {
+	
+	return new TimeUnit('s', TimeModifier.MICRO);
+}
+
+TimeUnit.milli = function() {
+	
+	return new TimeUnit('s', TimeModifier.MILLI);
+}
+
+TimeUnit.second = function() {
+	
+	return new TimeUnit('s', TimeModifier.BASE);
+}
+
+TimeUnit.nano = function() {
+	
+	return new TimeUnit('s', TimeModifier.NANO);
+}
