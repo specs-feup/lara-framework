@@ -12,7 +12,7 @@ var VariableVariant = function(variableNames, dseValues) {
 		throw "VariableVariant: needs at least two arguments, a dseValues and variable names";
 	}
 	
-	this.dseValues = dseValues instanceof DseValues ? dseValues : new DseValuesList(dseValues);
+	this.dseValues = dseValues instanceof DseValues ? dseValues : new DseValuesList(arrayFromArgs(arguments, 1));
 	//this.dseValues = dseValues;
 		
 	this.variableNames = isArray(variableNames) ? variableNames : [variableNames];
