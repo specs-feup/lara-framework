@@ -39,6 +39,8 @@ public enum CLIOption implements WeaverOption {
             "outputs to a log file. If file ends in .zip, compresses the file", LaraiKeys.LOG_FILE),
     includes("i", OptionArguments.ONE_ARG, "dir",
             "includes folder (imports files with extensions: lara, jar, js, class)", LaraiKeys.INCLUDES_FOLDER),
+    dependencies("dep", OptionArguments.ONE_ARG, "urls",
+            "external dependencies (URLs, git repos)", LaraiKeys.EXTERNAL_DEPENDENCIES),
     report("r", OptionArguments.ONE_ARG, "file_name.json", "Output file for the main aspect, in JSON format",
             LaraiKeys.REPORT_FILE),
     metrics("e", OptionArguments.ONE_ARG, "file_name.json", "Output file for the weaving metrics",

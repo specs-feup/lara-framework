@@ -38,5 +38,6 @@
 		<!-- RSyntaxTextArea -->
 		<dependency org="com.fifesoft" name="rsyntaxtextarea" rev="2.5.8"/>
 		<dependency org="com.fifesoft" name="autocomplete" rev="2.5.8"/>
+		
 	</dependencies>
 </ivy-module>

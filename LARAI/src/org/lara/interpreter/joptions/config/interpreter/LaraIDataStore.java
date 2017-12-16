@@ -40,11 +40,14 @@ import com.google.common.base.Preconditions;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
+import pt.up.fe.specs.git.SpecsGit;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.StringList;
 
 public class LaraIDataStore implements LaraiKeys {
     public static final String CONFIG_FILE_NAME = "larai.properties";
@@ -210,6 +213,14 @@ public class LaraIDataStore implements LaraiKeys {
         return FileList.newInstance();
     }
 
+    public StringList getExternalDependencies() {
+        if (dataStore.hasValue(LaraiKeys.EXTERNAL_DEPENDENCIES)) {
+            return dataStore.get(LaraiKeys.EXTERNAL_DEPENDENCIES);
+        }
+
+        return StringList.newInstance();
+    }
+
     public OptionalFile getReportFile() {
         if (dataStore.hasValue(LaraiKeys.REPORT_FILE)) {
             return dataStore.get(LaraiKeys.REPORT_FILE);
@@ -293,7 +304,7 @@ public class LaraIDataStore implements LaraiKeys {
         FileList includeDirs = getIncludeDirs();
 
         // Process GIT repositories
-        includeDirs = processGitRepositories(includeDirs);
+        includeDirs = processExternalDependencies(includeDirs);
 
         // Process Bundles
         LaraBundle laraBundle = new LaraBundle(weaverEngine.getWeaverNames(), getBundleTags());
@@ -306,8 +317,22 @@ public class LaraIDataStore implements LaraiKeys {
         return includeDirs;
     }
 
-    private FileList processGitRepositories(FileList includeDirs) {
-        return includeDirs;
+    private FileList processExternalDependencies(FileList includeDirs) {
+        // Check if there are external dependencies
+        List<String> externalDependencies = getExternalDependencies().getStringList();
+
+        if (externalDependencies.isEmpty()) {
+            return includeDirs;
+        }
+
+        List<File> files = includeDirs.getFiles();
+
+        // Process each dependency
+        for (String externalDependency : externalDependencies) {
+            processExternalDependency(externalDependency, files);
+        }
+
+        return FileList.newInstance(files);
         // List<File> files = new ArrayList<>();
         //
         // for (File file : includeDirs.getFiles()) {
@@ -315,6 +340,32 @@ public class LaraIDataStore implements LaraiKeys {
         // }
         //
         // return includeDirs.newInstance(files);
+    }
+
+    private void processExternalDependency(String externalDependency, List<File> files) {
+        String lowercaseDep = externalDependency.toLowerCase();
+        if (lowercaseDep.endsWith(".git") || lowercaseDep.startsWith("git://")) {
+            processGitDependency(externalDependency, files);
+            return;
+        }
+
+        if (lowercaseDep.startsWith("http://") || lowercaseDep.startsWith("https://")) {
+            LaraLog.info("Pure HTTP links not yet supported as external dependency: '" + externalDependency + "'");
+            return;
+        }
+
+        LaraLog.info("Could not determine the external dependency link kind: '" + externalDependency + "'");
+    }
+
+    private void processGitDependency(String externalDependency, List<File> files) {
+        File gitRepoFolder = SpecsGit.parseRepositoryUrl(externalDependency);
+        if (!gitRepoFolder.isDirectory()) {
+            LaraLog.info("Could not prepare external dependency '" + externalDependency + "'");
+            return;
+        }
+
+        // Add repository
+        files.add(gitRepoFolder);
     }
 
 }

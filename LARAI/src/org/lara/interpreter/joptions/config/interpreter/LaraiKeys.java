@@ -25,6 +25,8 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.util.utilities.StringList;
+
 public interface LaraiKeys {
 
     DataKey<File> LARA_FILE = KeyFactory.file("aspect", "lara", "js").setLabel("Aspect");
@@ -47,8 +49,8 @@ public interface LaraiKeys {
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
             .setLabel("Includes Folder (LARA, JS scripts, JARs)");
 
-    // DataKey<StringList> EXTERNAL_DEPENDENCIES = KeyFactory.stringList("external_includes")
-    // .setLabel("External dependencies (URLs, git repos)");
+    DataKey<StringList> EXTERNAL_DEPENDENCIES = KeyFactory.stringList("external_dependencies")
+            .setLabel("External dependencies (URLs, git repos)");
 
     DataKey<OptionalFile> TOOLS_FILE = LaraIKeyFactory.optionalFile("tools", true, "xml").setLabel("Tools File");
 
@@ -71,9 +73,10 @@ public interface LaraiKeys {
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 
-    StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI")
-            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER, TOOLS_FILE,
-                    REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT, DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS)
+    StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
+            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
+                    EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS)
             .build();
 
     /**

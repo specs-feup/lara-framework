@@ -45,6 +45,7 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.log, LaraiKeys.LOG_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.javascript, LaraiKeys.LOG_JS_OUTPUT);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.includes, LaraiKeys.INCLUDES_FOLDER);
+        JOptionsInterface.CONVERSION_MAP.put(CLIOption.dependencies, LaraiKeys.EXTERNAL_DEPENDENCIES);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.report, LaraiKeys.REPORT_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.metrics, LaraiKeys.METRICS_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.bundle_tags, LaraiKeys.BUNDLE_TAGS);

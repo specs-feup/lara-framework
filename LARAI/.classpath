@@ -15,5 +15,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GitPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
