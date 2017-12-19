@@ -21,7 +21,8 @@ EnergyMetric.prototype.instrument = function($start, $end) {
 
 // Override
 EnergyMetric.prototype.report = function(processExecutor) {
-	println("EnergyMetric.report not implemented yet");
+	var value = Strings.extractValue("energy:", processExecutor.getConsoleOutput());	
+	return new MetricResult(value, "J");
 }
 
 EnergyMetric.prototype.getImport = function() {
