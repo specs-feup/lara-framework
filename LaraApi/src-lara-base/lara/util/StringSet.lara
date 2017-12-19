@@ -10,6 +10,16 @@ var StringSet = function() {
 	this.val = {};
 };
 
+StringSet.prototype.copy = function() {
+	var newStringSet = new StringSet();
+	
+	for(var value of this.values()) {
+		newStringSet.add(value);
+	}
+
+	return newStringSet;
+}
+
 StringSet.prototype.add = function(str) {
 	this.setObj[str] = this.val;
 	return str;
@@ -36,5 +46,16 @@ StringSet.prototype.values = function() {
 }
 
 StringSet.prototype.isEmpty = function() {
-	this.values.length === 0;
+	// If has any property, returns true
+	for (var i in this.setObj) {
+		println("IS NOT EMPTY");
+//		return true;
+	}
+			println("IS EMPTY");
+//	return false;
+	
+	println("IS EMPTY SUPPOSED:" + (this.values().length === 0));
+//	println("IS EMPTY HW:" + this.setObj.length);	
+	var values = this.values();
+	return values.length === 0;
 }
