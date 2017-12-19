@@ -51,6 +51,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     UNIT("units/Unit.lara"),
     TIME_MODIFIER("units/TimeModifier.lara"),
     TIME_UNIT("units/TimeUnit.lara"),
+    ENERGY_UNIT("units/EnergyUnit.lara"),
     UNIT_MODIFIER("units/UnitModifier.lara"),
     UNIT_WITH_MODIFIER("units/UnitWithModifier.lara"),
 
