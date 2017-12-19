@@ -26,6 +26,24 @@ CMaker.prototype._MINIMUM_VERSION = "2.8";
 CMaker.prototype._EXE_VAR = "EXE_NAME";
 
 
+CMaker.prototype.copy = function() {
+	var newCmaker = new CMaker(this.name);
+	
+	newCmaker.makeCommand = this.makeCommand;
+	newCmaker.generator = this.generator;
+	newCmaker.minimumVersion = this.minimumVersion;
+	newCmaker.cxxFlags = this.cxxFlags.slice();
+	newCmaker.libs = this.libs.slice();
+	newCmaker.sources = this.sources.copy();
+	newCmaker.includeFolders = this.includeFolders.copy();
+	newCmaker.printToConsole = this.printToConsole;
+	newCmaker._lastMakeOutput = this._lastMakeOutput;
+	
+	return newCmaker;
+}
+
+
+
 /**
  * Sets the minimum version of the CMake file.
  *
@@ -46,6 +64,9 @@ CMaker.prototype.setPrintToolsOutput = function(printToolsOutput) {
 	return this;
 }
 
+/**
+ * @param {String} generator
+ */ 
 CMaker.prototype.setGenerator = function(generator) {
 	this.generator = generator;
 	

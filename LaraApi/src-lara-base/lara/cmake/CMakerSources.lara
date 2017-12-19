@@ -14,6 +14,19 @@ CMakerSources.prototype._VARIABLE_UNTAGGED_SOURCES = "CMAKER_SOURCES";
 
 
 /**
+ * 
+ */ 
+CMakerSources.prototype.copy = function() {
+	var newCMakerSources = new CMakerSources();
+	
+	this.untaggedSources = this.untaggedSources.slice();
+	this.taggedSources = JSON.parse(JSON.stringify(this.taggedSources));
+	this.tags = this.tags.copy();
+	
+	return newCMakerSources;
+}
+	
+/**
  * Adds the given sources.
  *
  * @param paths array with paths to sources

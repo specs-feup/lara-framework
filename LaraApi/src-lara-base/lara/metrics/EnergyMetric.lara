@@ -14,7 +14,8 @@ EnergyMetric.prototype = Object.create(Metric.prototype);
 
 // Override
 EnergyMetric.prototype.instrument = function($start, $end) {
-	var energy = new Energy().setPrintUnit(false);
+	var energy = new Energy();
+	energy.setPrintUnit(false);
 	energy.measure($start, "energy:" , $end);
 }
 

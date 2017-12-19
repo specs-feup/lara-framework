@@ -35,8 +35,9 @@ UnitWithModifier.prototype.convert = function(value, unit, unitHasBaseName) {
 	if(unitHasBaseName === undefined) {
 		unitHasBaseName = false;
 	}
-	
+		
     var fromModifier = this._extractModifier(unit, unitHasBaseName);
+    
     
     return this._unitModifier.convert(value, fromModifier, this._modifier);
 }
@@ -44,6 +45,7 @@ UnitWithModifier.prototype.convert = function(value, unit, unitHasBaseName) {
 UnitWithModifier.prototype._extractModifier = function(unit, unitHasBaseName) {
 	var currentModifier = unit;
 	
+
 	// Check that unit ends with the baseUnit
 	if(unitHasBaseName) {
 		if(currentModifier.endsWith(this._baseUnit)) {
