@@ -1,5 +1,6 @@
 import lara.Strings;
 import lara.util.StringSet;
+import lara.cmake.CMakerUtils;
 
 /**
  * Contains CMaker sources
@@ -71,7 +72,9 @@ CMakerSources.prototype.addTaggedSources = function(tag, paths) {
 }
 
 CMakerSources.prototype._addSourcePrivate = function(sources, path) {
-	sources.push('\"' + Strings.escapeJson(path) + '\"');
+	var parsedPath = CMakerUtils.parsePath(path);
+	sources.push('\"' + parsedPath + '\"');
+	//sources.push('\"' + Strings.escapeJson(path) + '\"');
 }
 
 

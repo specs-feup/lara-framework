@@ -1,3 +1,5 @@
+import lara.cmake.CMakerUtils;
+
 import lara.Strings;
 import lara.Platforms;
 import lara.cmake.CMakerSources;
@@ -107,8 +109,9 @@ CMaker.prototype.addLibs = function() {
  * param includeFolder String representing an include folder
  */
 CMaker.prototype.addIncludeFolder = function(includeFolder) {
-	
-	this.includeFolders.add(Strings.escapeJson(includeFolder));
+	var parsedFolder = CMakerUtils.parsePath(includeFolder);
+	this.includeFolders.add(parsedFolder);
+	//this.includeFolders.add(Strings.escapeJson(includeFolder));
 	
 	return this;
 }
@@ -244,7 +247,7 @@ CMaker.prototype._getIncludeFoldersCode = function() {
 
 	var code = "include_directories(";
 
-	code += '"' + this.includeFolders.values().join("\", \"") + '"'; 
+	code += '"' + this.includeFolders.values().join("\" \"") + '"'; 
 	
 	code += ")\n\n";
 	return code;	

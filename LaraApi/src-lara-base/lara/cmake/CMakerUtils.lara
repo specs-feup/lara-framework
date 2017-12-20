@@ -1,0 +1,17 @@
+import lara.Strings;
+
+/**
+ * @class
+ */
+var CMakerUtils = {};
+	
+CMakerUtils.parsePath = function(path) {
+	// Escape characters
+	var parsedPath = Strings.escapeJson(path);
+	
+	// Ensure paths use / instead of \
+	parsedPath = Strings.replacer(parsedPath, '\\\\', '/');
+	
+	return parsedPath;
+}	
+	
