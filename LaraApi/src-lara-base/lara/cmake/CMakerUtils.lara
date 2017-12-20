@@ -6,11 +6,16 @@ import lara.Strings;
 var CMakerUtils = {};
 	
 CMakerUtils.parsePath = function(path) {
+	//println("ORIGINAL PATH: " + path);
+
+	// Ensure paths use / instead of \	
+	var parsedPath = Strings.replacer(path, '\\\\', '/');
+	//println("NO SLASH PATH: " + parsedPath);
+
 	// Escape characters
-	var parsedPath = Strings.escapeJson(path);
+	var parsedPath = Strings.escapeJson(parsedPath);
 	
-	// Ensure paths use / instead of \
-	parsedPath = Strings.replacer(parsedPath, '\\\\', '/');
+	//println("ESCAPED PATH: " + parsedPath);
 	
 	return parsedPath;
 }	
