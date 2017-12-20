@@ -27,7 +27,7 @@ import org.lara.language.specification.dsl.types.PrimitiveClasses;
  * @author tiago
  *
  */
-public class Attribute extends BaseNode {
+public class Attribute extends BaseNode implements Comparable<Attribute> {
 
     private static final Attribute ATTRIBUTES;
     private static final Attribute SELECTS;
@@ -106,5 +106,10 @@ public class Attribute extends BaseNode {
 
     public static Attribute getAttributesAttribute() {
         return ATTRIBUTES;
+    }
+
+    @Override
+    public int compareTo(Attribute o) {
+        return getName().compareTo(o.getName());
     }
 }

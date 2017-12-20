@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.types.IType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import org.lara.language.specification.dsl.types.LiteralEnum;
 
 /**
  * A basic class that contains a type and a name
@@ -28,7 +28,7 @@ import org.lara.language.specification.dsl.types.LiteralEnum;
  * @author tiago
  *
  */
-public class Action extends BaseNode {
+public class Action extends BaseNode implements Comparable<Action> {
 
     private static final Action INSERT;
     private static final Action DEF;
@@ -103,5 +103,10 @@ public class Action extends BaseNode {
 
     public Declaration getDeclaration() {
         return declaration;
+    }
+
+    @Override
+    public int compareTo(Action o) {
+        return getName().compareTo(o.getName());
     }
 }

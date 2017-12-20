@@ -14,6 +14,7 @@
 package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.lara.language.specification.LanguageSpecification;
@@ -58,7 +59,10 @@ public class JoinPointFactory {
             type.setValues(valuesList);
         }
 
-        for (JoinPointType jpType : jpModel.getJoinPointList().getJoinpoint()) {
+        List<JoinPointType> joinPoints = new ArrayList<>(jpModel.getJoinPointList().getJoinpoint());
+        Collections.sort(joinPoints);
+        // for (JoinPointType jpType : jpModel.getJoinPointList().getJoinpoint()) {
+        for (JoinPointType jpType : joinPoints) {
             JoinPointClass newJPClass = new JoinPointClass(jpType.getClazz(), langSpecV2);
             newJPClass.setToolTip(jpType.getTooltip());
             langSpecV2.add(newJPClass);
@@ -125,6 +129,8 @@ public class JoinPointFactory {
             newAction.setToolTip(action.getTooltip());
             newActions.add(newAction);
         }
+
+        Collections.sort(newActions);
         return newActions;
     }
 
@@ -164,6 +170,9 @@ public class JoinPointFactory {
                 selects.add(newSelect);
             }
         }
+
+        Collections.sort(selects);
+
         return selects;
     }
 
@@ -176,8 +185,12 @@ public class JoinPointFactory {
 
                 Attribute newAttribute = getAttribute(attribute, langSpec);
                 attributes.add(newAttribute);
+
             }
         }
+
+        Collections.sort(attributes);
+
         return attributes;
     }
 
@@ -192,6 +205,9 @@ public class JoinPointFactory {
                 attributes.add(newAttribute);
             }
         }
+
+        Collections.sort(attributes);
+
         return attributes;
     }
 

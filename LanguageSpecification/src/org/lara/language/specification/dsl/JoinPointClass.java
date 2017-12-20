@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class JoinPointClass extends BaseNode {
+public class JoinPointClass extends BaseNode implements Comparable<JoinPointClass> {
 
     private static final String GLOBAL_NAME = "joinpoint";
     private String name;
@@ -216,5 +216,10 @@ public class JoinPointClass extends BaseNode {
 
     public void setLangSpec(LanguageSpecificationV2 langSpec) {
         this.langSpec = langSpec;
+    }
+
+    @Override
+    public int compareTo(JoinPointClass o) {
+        return getName().compareTo(o.getName());
     }
 }

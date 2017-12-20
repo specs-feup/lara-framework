@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JoinPointType", propOrder = { "select" })
-public class JoinPointType {
+public class JoinPointType implements Comparable<JoinPointType> {
 
     protected List<Select> select;
     @XmlAttribute(name = "class", required = true)
@@ -144,6 +144,11 @@ public class JoinPointType {
      */
     public void setTooltip(String comment) {
         this.tooltip = comment;
+    }
+
+    @Override
+    public int compareTo(JoinPointType o) {
+        return clazz.compareTo(o.clazz);
     }
 
 }

@@ -13,7 +13,7 @@
 
 package org.lara.language.specification.dsl;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.lara.language.specification.dsl.types.ArrayType;
@@ -40,9 +40,9 @@ public class LanguageSpecificationV2 {
         super();
         this.root = root;
         this.rootAlias = rootAlias == null ? "" : rootAlias;
-        joinPoints = new HashMap<>();
-        typeDefs = new HashMap<>();
-        setEnumDefs(new HashMap<>());
+        joinPoints = new LinkedHashMap<>();
+        typeDefs = new LinkedHashMap<>();
+        setEnumDefs(new LinkedHashMap<>());
     }
 
     public LanguageSpecificationV2() {

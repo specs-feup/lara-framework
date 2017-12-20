@@ -13,7 +13,7 @@
 
 package org.lara.language.specification.dsl;
 
-public class Select extends BaseNode {
+public class Select extends BaseNode implements Comparable<Select> {
 
     private JoinPointClass clazz;
     private String alias;
@@ -55,5 +55,10 @@ public class Select extends BaseNode {
 
     public void setSelector(JoinPointClass selector) {
         this.selector = selector;
+    }
+
+    @Override
+    public int compareTo(Select o) {
+        return getClazz().compareTo(o.getClazz());
     }
 }

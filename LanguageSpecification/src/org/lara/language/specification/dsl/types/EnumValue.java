@@ -13,7 +13,7 @@
 
 package org.lara.language.specification.dsl.types;
 
-public class EnumValue {
+public class EnumValue implements Comparable<EnumValue> {
 
     private String value;
     private String string;
@@ -46,5 +46,10 @@ public class EnumValue {
     @Override
     public String toString() {
         return value + "(" + string + ")";
+    }
+
+    @Override
+    public int compareTo(EnumValue o) {
+        return getValue().compareTo(o.getValue());
     }
 }
