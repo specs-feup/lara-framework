@@ -48,10 +48,10 @@ StringSet.prototype.values = function() {
 StringSet.prototype.isEmpty = function() {
 	// If has any property, returns true
 	for (var i in this.setObj) {
-		return true;
+		return false;
 	}
 
-	return false;
+	return true;
 	
 //	println("IS EMPTY SUPPOSED:" + (this.values().length === 0));
 //	println("IS EMPTY HW:" + this.setObj.length);	
