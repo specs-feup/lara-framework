@@ -27,9 +27,9 @@ public enum LaraApiResource implements LaraResourceProvider {
     CMAKER_UTILS("cmake/CMakerUtils.lara"),
 
     // Code
-    ENERGY_BASE("code/EnergyBase.lara"),
-    LOGGER_BASE("code/LoggerBase.lara"),
-    TIMER_BASE("code/TimerBase.lara"),
+    // ENERGY_BASE("code/EnergyBase.lara"),
+    // LOGGER_BASE("code/LoggerBase.lara"),
+    // TIMER_BASE("code/TimerBase.lara"),
 
     // DSE
     DSE_LOOP("dse/DseLoop.lara"),
