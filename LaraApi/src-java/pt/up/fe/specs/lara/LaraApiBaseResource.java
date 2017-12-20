@@ -24,9 +24,10 @@ public enum LaraApiBaseResource implements LaraResourceProvider {
     // Code
     ENERGY_BASE("code/EnergyBase.lara"),
     LOGGER_BASE("code/LoggerBase.lara"),
-    TIMER_BASE("code/TimerBase.lara");
+    TIMER_BASE("code/TimerBase.lara"),
 
     // Lara
+    COMPILATION_BASE("CompilationBase.lara");
 
     private final String resource;
 

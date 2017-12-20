@@ -2,6 +2,7 @@ import lara.cmake.CMakerUtils;
 
 import lara.Strings;
 import lara.Platforms;
+import lara.Compilation;
 import lara.cmake.CMakerSources;
 import lara.util.StringSet;
 import lara.util.ProcessExecutor;
@@ -241,13 +242,32 @@ CMaker.prototype._getCxxFlagsCode = function() {
 
 CMaker.prototype._getIncludeFoldersCode = function() {
 
-	if(this.includeFolders.isEmpty()) {
+
+
+	// Add user includes
+	var includes = [].concat(this.includeFolders.values());
+
+	// Add external includes
+	var extraIncludes = Compilation.getExtraIncludes();
+	
+	for(var extraInclude of extraIncludes) {
+		if(Io.isFolder(extraInclude)) {
+			debug("[CMAKER] Adding external include '" + extraInclude + "'");
+			includes.push(CMakerUtils.parsePath(extraInclude));
+		} else {
+			println("[CMAKER] Extra include ' " + extraInclude +  " ' is not a folder");
+		}
+	}
+	
+	//if(this.includeFolders.isEmpty()) {
+	if(includes.length === 0) {	
 		return "";
 	}
 
 	var code = "include_directories(";
 
-	code += '"' + this.includeFolders.values().join("\" \"") + '"'; 
+	//code += '"' + this.includeFolders.values().join("\" \"") + '"'; 
+	code += '"' + includes.join("\" \"") + '"'; 
 	
 	code += ")\n\n";
 	return code;	

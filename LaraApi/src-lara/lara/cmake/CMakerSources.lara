@@ -1,4 +1,5 @@
 import lara.Strings;
+import lara.Compilation;
 import lara.util.StringSet;
 import lara.cmake.CMakerUtils;
 
@@ -12,7 +13,7 @@ var CMakerSources = function() {
 };
 
 CMakerSources.prototype._VARIABLE_UNTAGGED_SOURCES = "CMAKER_SOURCES";
-
+CMakerSources.prototype._VARIABLE_EXTERNAL_SOURCES = "EXTERNAL_SOURCES";
 
 /**
  * 
@@ -88,12 +89,23 @@ CMakerSources.prototype.getSourceVariables = function() {
 		sources.push(this._VARIABLE_UNTAGGED_SOURCES);
 	}
 	
+	if(Compilation.getExtraSources().length > 0) {
+		sources.push(this._VARIABLE_EXTERNAL_SOURCES);
+	}
+	
+	
 	for(tag of this.tags.values()) {
 		sources.push(tag);
 	}
 	
 	return sources;
 }
+
+CMakerSources.prototype._parseSourcePath = function(path) {
+	var parsedPath = CMakerUtils.parsePath(path);
+	return '\"' + parsedPath + '\"';	
+}
+
 
 /**
  * @return String with the CMake code that declares the current sources
@@ -104,6 +116,31 @@ CMakerSources.prototype.getCode = function() {
 	// Add untagged sources
 	if(this.untaggedSources.length > 0) {
 		code += this._getCodeSource(this._VARIABLE_UNTAGGED_SOURCES, this.untaggedSources);
+	}
+	
+	// Add external sources
+	var extraSources = Compilation.getExtraSources();
+	var extraSourcesArray = [];
+	for(var extraSource of extraSources) {
+		debug("Adding external source '" + extraSource + "'");
+		if(Io.isFile(extraSource)) {
+			extraSourcesArray.push(this._parseSourcePath(extraSource));
+		} else if(Io.isFolder(extraSource)) {
+			for(var sourcePath of Io.getPaths(extraSource)) {
+				extraSourcesArray.push(this._parseSourcePath(sourcePath));
+			}
+			//extraSourcesArray = extraSourcesArray.concat(Io.getPaths(extraSource));
+		} else {
+			println("[CMAKER] Extra source ' " + extraSource +  " ' does not exist");
+		}
+	}	
+	
+	if(extraSourcesArray.length > 0) {
+		if(code.length !== 0) {
+			code += "\n";
+		}
+		
+		code += this._getCodeSource(this._VARIABLE_EXTERNAL_SOURCES, extraSourcesArray);
 	}
 	
 	for(tag of this.tags.values()) {
