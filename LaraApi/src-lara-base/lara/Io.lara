@@ -43,7 +43,16 @@ Io.getPaths = function(baseFolder) {
 	
 	// For each argument after the baseFolder, treat it as a different file/glob
 	var files = [];
-	for(argument of arguments) {
+	
+	var argsArray = arrayFromArgs(arguments);
+
+	// If empty, add all files
+	if(argsArray.length === 1) {
+		argsArray.push("*");
+	}
+	
+	//for(argument of arguments) {
+	for(argument of argsArray) {
 		var foundFiles = SpecsIo.getFilesWithPattern(baseFolderFile, argument);
 		
 		for(file of foundFiles) {
