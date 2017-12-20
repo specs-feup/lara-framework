@@ -166,7 +166,7 @@ public class LaraI {
 
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
-        setDataStoreDefinition(dataStore, weaverEngine);
+        prepareDataStore(dataStore, weaverEngine);
 
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
@@ -212,7 +212,7 @@ public class LaraI {
         }
     }
 
-    private static void setDataStoreDefinition(DataStore dataStore, WeaverEngine weaverEngine) {
+    private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
         String weaverName = weaverEngine.getName().orElse("<unnamed weaver>");
         StoreDefinition weaverKeys = new StoreDefinitionBuilder(weaverName)
                 // Add LaraI keys

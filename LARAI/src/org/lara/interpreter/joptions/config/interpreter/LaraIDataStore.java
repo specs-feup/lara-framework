@@ -40,7 +40,7 @@ import com.google.common.base.Preconditions;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
-import pt.up.fe.specs.git.SpecsGit;
+import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
@@ -57,10 +57,14 @@ public class LaraIDataStore implements LaraiKeys {
     // private final DataStore weaverDataStore;
     private final List<ResourceProvider> laraAPIs;
 
+    private final GitRepos gitRepos;
+
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
         larai = lara;
 
         this.dataStore = dataStore;
+        this.gitRepos = new GitRepos();
+
         // weaverDataStore = DataStore.newInstance("Weaver Arguments");
         laraAPIs = new ArrayList<>();
         laraAPIs.addAll(LaraApis.getApis());
@@ -79,6 +83,7 @@ public class LaraIDataStore implements LaraiKeys {
         // System.out.println("\n\n" + this.dataStore);
         // System.out.println(".........................");
         // System.out.println("\n\n" + dataStore);
+
     }
 
     /**
@@ -358,8 +363,9 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private void processGitDependency(String externalDependency, List<File> files) {
-        File gitRepoFolder = SpecsGit.parseRepositoryUrl(externalDependency);
-        if (!gitRepoFolder.isDirectory()) {
+        File gitRepoFolder = gitRepos.getFolder(externalDependency);
+        // File gitRepoFolder = SpecsGit.parseRepositoryUrl(externalDependency);
+        if (gitRepoFolder == null || !gitRepoFolder.isDirectory()) {
             LaraLog.info("Could not prepare external dependency '" + externalDependency + "'");
             return;
         }
