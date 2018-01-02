@@ -31,7 +31,6 @@ var UnitModifier = function(base, baseModifier, newModifier) {
 			this.newModifier(modifier, baseModifier._names[modifier], baseModifier._factorTable[modifier]);
 		}
 	}
-
 };
 
 
@@ -40,8 +39,8 @@ var UnitModifier = function(base, baseModifier, newModifier) {
  * @param {number} factor - 
  */ 
 UnitModifier.prototype.newModifier = function (modifier, name, factor) {
-	checkString(modifier, "SiModifier._newModifier::modifier");
-	checkNumber(factor, "SiModifier._newModifier::factor");
+	checkString(modifier, "UnitModifier._newModifier::modifier");
+	checkNumber(factor, "UnitModifier._newModifier::factor");
 
 	// Add name
 	this._names[modifier] = name;
@@ -58,8 +57,8 @@ UnitModifier.prototype.newModifier = function (modifier, name, factor) {
 
 UnitModifier.prototype.convert = function(value, fromModifier, toModifier) {
     
-    this.checkModifier(fromModifier, "SiModifier.convert::fromModifier");
-    this.checkModifier(toModifier, "SiModifier.convert::toModifier");
+    this.checkModifier(fromModifier, "UnitModifier.convert::fromModifier");
+    this.checkModifier(toModifier, "UnitModifier.convert::toModifier");
     
     var fromFactor = this._factorTable[fromModifier];
     // test for undefined
@@ -101,7 +100,8 @@ UnitModifier.prototype.values = function() {
 
 UnitModifier.prototype.normalize = function(modifier) {
 	// Check if unit is specified by name
-	var modifierByName = SiModifier.getModifierByName(modifier);
+	//var modifierByName = SiModifier.getModifierByName(modifier);
+	var modifierByName = this.getModifierByName(modifier);
 
 	if(modifierByName !== undefined) {
 		return modifierByName;

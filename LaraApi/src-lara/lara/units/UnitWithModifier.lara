@@ -30,7 +30,14 @@ UnitWithModifier.prototype.getName = function() {
 	return this._modifier + this._baseUnit;
 }
 
+/**
+ * @param {string} unit - Unit of the value.
+ */
 UnitWithModifier.prototype.convert = function(value, unit, unitHasBaseName) {
+	return this._convert(value, unit, unitHasBaseName);
+}
+
+UnitWithModifier.prototype._convert = function(value, unit, unitHasBaseName) {
 	
 	if(unitHasBaseName === undefined) {
 		unitHasBaseName = false;

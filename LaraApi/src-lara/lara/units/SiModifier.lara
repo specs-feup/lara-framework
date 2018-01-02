@@ -8,8 +8,9 @@ var SiModifier = {};
 
 SiModifier._unitModifier = new UnitModifier("");
 
-SiModifier.MEGA = SiModifier._unitModifier.newModifier("M", "mega", 1000000);
-SiModifier.KILO = SiModifier._unitModifier.newModifier("k", "kilo", 1000);
+SiModifier.GIGA = SiModifier._unitModifier.newModifier("G", "giga", 1e9);
+SiModifier.MEGA = SiModifier._unitModifier.newModifier("M", "mega", 1e6);
+SiModifier.KILO = SiModifier._unitModifier.newModifier("k", "kilo", 1e3);
 SiModifier.BASE = SiModifier._unitModifier.newModifier("", "base", 1);
 SiModifier.MILLI = SiModifier._unitModifier.newModifier("m", "milli", 1e-3);
 SiModifier.MICRO = SiModifier._unitModifier.newModifier("u", "micro", 1e-6);
