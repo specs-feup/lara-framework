@@ -41,7 +41,7 @@ public class GenericWeaverTester {
     /*
     private final String compilerFlags;
     
-    private boolean checkWeavedCodeSyntax;
+    private boolean checkWovenCodeSyntax;
     */
     private String srcPackage;
     private String resultPackage;
@@ -174,8 +174,8 @@ public class GenericWeaverTester {
         }
 
         /*
-        if (!keepWeavedFiles) {
-            // File weavedFolder = new File(WEAVED_FOLDER);
+        if (!keepWovenFiles) {
+            // File wovenFolder = new File(WOVEN_FOLDER);
             SpecsIo.deleteFolderContents(outputFolder);
         
             // Recreate dummy
