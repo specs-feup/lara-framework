@@ -45,12 +45,14 @@ public class GenericWeaverTester {
     */
     private String srcPackage;
     private String resultPackage;
+    private boolean useStack;
 
     public GenericWeaverTester(String basePackage) {
         this.basePackage = basePackage;
 
         srcPackage = null;
         resultPackage = null;
+        useStack = false;
     }
 
     public GenericWeaverTester setResultPackage(String resultPackage) {
@@ -63,6 +65,10 @@ public class GenericWeaverTester {
         this.srcPackage = sanitizePackage(srcPackage);
 
         return this;
+    }
+
+    public void setStack() {
+        this.useStack = true;
     }
 
     private String sanitizePackage(String packageName) {
@@ -156,6 +162,10 @@ public class GenericWeaverTester {
         data.add(LaraiKeys.VERBOSE, VerboseLevel.warnings);
         data.add(LaraiKeys.LOG_JS_OUTPUT, Boolean.TRUE);
         data.add(LaraiKeys.LOG_FILE, OptionalFile.newInstance(getWeaverLog().getAbsolutePath()));
+
+        if (useStack) {
+            data.add(LaraiKeys.TRACE_MODE, Boolean.TRUE);
+        }
 
         DefaultWeaver weaver = new DefaultWeaver();
         try {

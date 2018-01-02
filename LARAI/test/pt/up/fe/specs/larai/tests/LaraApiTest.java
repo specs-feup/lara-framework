@@ -104,4 +104,14 @@ public class LaraApiTest {
         newTester().test("dse/DseValuesTest.lara");
     }
 
+    @Test
+    public void testTimeUnit() {
+        newTester().test("units/TimeUnitTest.lara");
+    }
+
+    @Test
+    public void testEnergyUnit() {
+        newTester().test("units/EnergyUnitTest.lara");
+    }
+
 }

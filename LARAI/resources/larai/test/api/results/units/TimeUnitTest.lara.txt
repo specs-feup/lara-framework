@@ -1,0 +1,2 @@
+10ms in us: 10000
+1 day in hours: 24
