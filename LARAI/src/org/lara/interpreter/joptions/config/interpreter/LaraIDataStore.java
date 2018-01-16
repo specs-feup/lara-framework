@@ -312,7 +312,7 @@ public class LaraIDataStore implements LaraiKeys {
         includeDirs = processExternalDependencies(includeDirs);
 
         // Process Bundles
-        LaraBundle laraBundle = new LaraBundle(weaverEngine.getWeaverNames(), getBundleTags());
+        LaraBundle laraBundle = new LaraBundle(weaverEngine.getName(), getBundleTags());
         includeDirs = laraBundle.process(includeDirs);
 
         // Process LARA Resources

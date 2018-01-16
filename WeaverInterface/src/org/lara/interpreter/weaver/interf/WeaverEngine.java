@@ -13,9 +13,7 @@
 package org.lara.interpreter.weaver.interf;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -63,7 +61,7 @@ public abstract class WeaverEngine {
 
     public JsScriptEngine getScriptEngine() {
         if (scriptEngine == null) {
-            throw new RuntimeException("Java script engine has not been set for weaver: " + getWeaverNames());
+            throw new RuntimeException("Java script engine has not been set for weaver: " + getName());
         }
 
         return scriptEngine;
@@ -279,14 +277,14 @@ public abstract class WeaverEngine {
      * @return the names of the weaver. By default, returns the class name in lower-case, and without the suffix
      *         "weaver", if one is present
      */
-    public Set<String> getWeaverNames() {
-        String weaverName = getClass().getSimpleName().toLowerCase();
-        if (weaverName.endsWith("weaver")) {
-            weaverName = weaverName.substring(0, weaverName.length() - "weaver".length());
-        }
-
-        return new HashSet<>(Arrays.asList(weaverName));
-    }
+    // public Set<String> getWeaverNames() {
+    // String weaverName = getClass().getSimpleName().toLowerCase();
+    // if (weaverName.endsWith("weaver")) {
+    // weaverName = weaverName.substring(0, weaverName.length() - "weaver".length());
+    // }
+    //
+    // return new HashSet<>(Arrays.asList(weaverName));
+    // }
 
     /**
      * The languages supported by the weaver. These strings will be used to process folders for LARA bundles.

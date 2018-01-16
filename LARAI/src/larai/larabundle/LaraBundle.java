@@ -16,6 +16,7 @@ package larai.larabundle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.lara.interpreter.joptions.keys.FileList;
 
 import com.google.common.base.Preconditions;
 
+import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
@@ -68,17 +70,24 @@ public class LaraBundle {
     private final Map<String, String> tagsMap;
 
     // public LaraBundle(Set<String> languages, Set<String> weavers) {
-    public LaraBundle(Set<String> weavers, String tagsMap) {
-        this(weavers, parseTags(tagsMap));
+    // public LaraBundle(Set<String> weavers, String tagsMap) {
+    // this(weavers, parseTags(tagsMap));
+    // }
+    //
+    // private static Map<String, String> parseTags(String tagsMap) {
+    // return null;
+    // }
+
+    public LaraBundle(String weaverName, Map<String, String> tagsMap) {
+        this(Arrays.asList(weaverName), tagsMap);
     }
 
-    private static Map<String, String> parseTags(String tagsMap) {
-        return null;
-    }
-
-    public LaraBundle(Set<String> weavers, Map<String, String> tagsMap) {
+    public LaraBundle(Collection<String> names, Map<String, String> tagsMap) {
         // this.languages = languages;
-        this.weavers = weavers;
+        // this.weavers = weavers;
+        // Make sure weaver names are in lower-case
+        this.weavers = SpecsCollections.toSet(names, String::toLowerCase);
+        // this.weavers = names.stream().map(String::toLowerCase).collect(Collectors.toSet());
         this.tagsMap = tagsMap;
     }
 
@@ -195,6 +204,9 @@ public class LaraBundle {
     }
 
     private boolean isFolderSupported(String weaverFoldername, Set<String> supportedNames) {
+        // Do not mind case
+        weaverFoldername = weaverFoldername.toLowerCase();
+
         // LARA is always supported
         if (weaverFoldername.equals("lara")) {
             return true;
