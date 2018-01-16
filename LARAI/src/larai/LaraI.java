@@ -213,7 +213,8 @@ public class LaraI {
     }
 
     private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
-        String weaverName = weaverEngine.getName().orElse("<unnamed weaver>");
+        // String weaverName = weaverEngine.getName().orElse("<unnamed weaver>");
+        String weaverName = weaverEngine.getName();
         StoreDefinition weaverKeys = new StoreDefinitionBuilder(weaverName)
                 // Add LaraI keys
                 .addDefinition(LaraiKeys.STORE_DEFINITION)

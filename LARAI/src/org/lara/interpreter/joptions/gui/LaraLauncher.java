@@ -88,12 +88,13 @@ public class LaraLauncher {
 
         StoreDefinition laraiDefinition = OptionsParser.getLaraStoreDefinition(engine);
 
-        String appName;
-        if (engine.getName().isPresent()) {
-            appName = engine.getName().get();
-        } else {
-            appName = "LaraI + " + engine.getClass().getSimpleName();
-        }
+        String appName = engine.getName();
+        // String appName;
+        // if (engine.getName().isPresent()) {
+        // appName = engine.getName().get();
+        // } else {
+        // appName = "LaraI + " + engine.getClass().getSimpleName();
+        // }
         List<TabProvider> otherTabs = new ArrayList<>();
         XmlPersistence persistence = OptionsParser.getXmlPersistence(laraiDefinition);
 

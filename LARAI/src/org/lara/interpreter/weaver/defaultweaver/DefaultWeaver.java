@@ -15,7 +15,6 @@ package org.lara.interpreter.weaver.defaultweaver;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADefaultWeaver;
@@ -130,10 +129,10 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     @Override
-    public Optional<String> getName() {
+    public String getName() {
 
         // return Optional.of("Lara Interpreter User Interface");
-        return Optional.of("LaraI");
+        return "LaraI";
     }
 
     public static DefaultWeaver getDefaultWeaver() {

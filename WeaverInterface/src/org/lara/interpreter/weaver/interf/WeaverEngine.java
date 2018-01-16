@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -84,7 +83,8 @@ public abstract class WeaverEngine {
     }
 
     private StoreDefinition buildStoreDefinition() {
-        String weaverName = getName().orElse("<unnamed weaver>");
+        // String weaverName = getName().orElse("<unnamed weaver>");
+        String weaverName = getName();
 
         return new StoreDefinitionBuilder(weaverName)
                 // Add weaver custom keys
@@ -220,8 +220,8 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    public Optional<String> getName() {
-        return Optional.empty();
+    public String getName() {
+        return "<unnamed weaver>";
     }
 
     /**
