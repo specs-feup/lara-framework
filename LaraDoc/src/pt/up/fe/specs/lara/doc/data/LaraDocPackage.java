@@ -29,7 +29,7 @@ import pt.up.fe.specs.util.SpecsLogs;
  * @author JoaoBispo
  *
  */
-public class LaraDocPackage extends LaraDocNode {
+public class LaraDocPackage extends LaraDocNode implements Comparable<LaraDocPackage> {
 
     private final String packageName;
     private final Map<String, LaraDocModule> packageModules;
@@ -104,6 +104,11 @@ public class LaraDocPackage extends LaraDocNode {
 
     public Optional<LaraDocModule> getModule(String importPath) {
         return Optional.ofNullable(packageModules.get(importPath));
+    }
+
+    @Override
+    public int compareTo(LaraDocPackage o) {
+        return packageName.compareTo(o.packageName);
     }
 
 }

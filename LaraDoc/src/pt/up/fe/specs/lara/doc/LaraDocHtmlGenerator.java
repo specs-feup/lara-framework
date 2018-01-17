@@ -95,8 +95,10 @@ public class LaraDocHtmlGenerator {
         List<LaraDocNode> laraDocNodes = new ArrayList<>(laraDocTop.getChildren());
 
         // Add code for packages
-
         List<LaraDocPackage> laraDocPackages = SpecsCollections.remove(laraDocNodes, LaraDocPackage.class);
+
+        // Sort packages alphabetically
+        Collections.sort(laraDocPackages);
 
         for (LaraDocPackage laraPackage : laraDocPackages) {
             if (!generator.getNameFilter().test(laraPackage.getPackageName())) {
