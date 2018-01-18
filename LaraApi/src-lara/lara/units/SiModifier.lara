@@ -2,7 +2,7 @@ import lara.units.UnitModifier;
 //import lara.util.StringSet;
 
 /**
- *
+ * @class
  */
 var SiModifier = {};
 
