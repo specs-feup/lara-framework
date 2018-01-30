@@ -16,6 +16,7 @@ System.getCurrentPlatform = function() {
  * @deprecated
  */
 System.getExecutable = function(foldername) {
+	info("DEPRECATED, function is not reliable", "System.getExecutable");
 	return Java.type('pt.up.fe.specs.clang.Platforms').getExecutable(foldername);
 }
 
@@ -52,7 +53,11 @@ System.getExecutableFile = function(executableName, executableFolder) {
 	return exe;
 }
 
+/**
+ * @deprecated
+ */
 System.getExecutableName = function(baseName) {
+	info("DEPRECATED, please use System.getExecutableFile", "System.getExecutableName");
 	var exeName = baseName;
 	if(Platforms.isWindows()) {
 		exeName = exeName + ".exe";
