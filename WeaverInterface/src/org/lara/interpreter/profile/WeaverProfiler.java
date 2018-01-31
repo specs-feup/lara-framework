@@ -25,6 +25,8 @@ import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
 import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 
+import pt.up.fe.specs.util.utilities.StringLines;
+
 /**
  * Abstract profiler providing basic metrics:<br>
  * <ul>
@@ -53,6 +55,10 @@ import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 public abstract class WeaverProfiler extends AGear {
 
     private WeavingReport report = new WeavingReport();
+
+    protected WeavingReport getReport() {
+        return report;
+    }
 
     //////////////////////////////////////////////////////////
     // Methods to be defined by the weaver engine developer //
@@ -167,6 +173,7 @@ public abstract class WeaverProfiler extends AGear {
             if (data.getActionName().equals("insert")) {
                 // System.out.println("[DEBUG] INSERT" + report.getInserts());
                 report.incInserts();
+                // reportNativeLoc(data.getArguments().get(1), true);
             }
         }
     }
@@ -220,6 +227,29 @@ public abstract class WeaverProfiler extends AGear {
         } catch (Exception e) {
             throw new LaraIException("Problems creating the report", e);
         }
+    }
+
+    //////////////////////////////////////////////////////////
+    /// Utility methods for WeaverProfile implementations
+
+    /**
+     * Helper method which receives a list of arguments. Only reports native lines-of-code if it has a single argument
+     * of type String.
+     * 
+     * @param arguments
+     */
+    protected void reportNativeLoc(Object insertObject, boolean isInsert) {
+        if (!(insertObject instanceof String)) {
+            return;
+        }
+
+        reportNativeLoc((String) insertObject, isInsert);
+    }
+
+    protected void reportNativeLoc(String code, boolean isInsert) {
+        // Count lines of code
+        int numLines = StringLines.getLines(code).size();
+        reportLOCs(numLines, isInsert);
     }
 
 }
