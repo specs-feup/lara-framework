@@ -45,7 +45,7 @@
                 <entry>
                   <string>Host</string>
                   <FieldValue>
-                    <rawValue class="string">192.168.55.127</rawValue>
+                    <rawValue class="string">specs.fe.up.pt</rawValue>
                     <type>string</type>
                   </FieldValue>
                 </entry>
