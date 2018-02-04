@@ -51,6 +51,14 @@ public abstract class JoinPoint {
     // }
 
     /**
+     * Returns the tree node reference of this join point.<br>
+     * <b>NOTE</b>This method is essentially used to compare two join points
+     * 
+     * @return Tree node reference
+     */
+    public abstract Object getNode();
+
+    /**
      * Compares the two join points based on their node reference of the used compiler/parsing tool. <br>
      * This is the default implementation for comparing two join points. <br>
      * <b>Note for developers:</b> A weaver may override this implementation in the (editable) abstract join point, so
