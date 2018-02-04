@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
+
 /**
  * A join point root encapsulation for maintainability purposes
  * 
@@ -25,27 +27,32 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
  */
 public class MWRoot extends JoinPoint {
 
-	@Override
-	public boolean same(JoinPoint iJoinPoint) {
-		return equals(iJoinPoint);
-	}
+    @Override
+    public boolean same(JoinPoint iJoinPoint) {
+        return equals(iJoinPoint);
+    }
 
-	@Override
-	public String get_class() {
-		return "MasterWeaverRoot";
-	}
+    @Override
+    public String get_class() {
+        return "MasterWeaverRoot";
+    }
 
-	@Override
-	protected void fillWithActions(List<String> actions) {
-	}
+    @Override
+    protected void fillWithActions(List<String> actions) {
+    }
 
-	@Override
-	protected void fillWithSelects(List<String> selects) {
-	}
+    @Override
+    protected void fillWithSelects(List<String> selects) {
+    }
 
-	@Override
-	protected void fillWithAttributes(List<String> attributes) {
+    @Override
+    protected void fillWithAttributes(List<String> attributes) {
 
-	}
+    }
+
+    @Override
+    public Object getNode() {
+        throw new NotImplementedException(this);
+    }
 
 }
