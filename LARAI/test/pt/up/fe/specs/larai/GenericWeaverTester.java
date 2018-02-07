@@ -52,6 +52,7 @@ public class GenericWeaverTester {
 
         srcPackage = null;
         resultPackage = null;
+        // Set to true by default
         useStack = false;
     }
 
@@ -67,8 +68,9 @@ public class GenericWeaverTester {
         return this;
     }
 
-    public void setStack() {
+    public GenericWeaverTester setStack() {
         this.useStack = true;
+        return this;
     }
 
     private String sanitizePackage(String packageName) {

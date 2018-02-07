@@ -114,4 +114,9 @@ public class LaraApiTest {
         newTester().test("units/EnergyUnitTest.lara");
     }
 
+    @Test
+    public void testLineIterator() {
+        newTester().test("iterators/LineIteratorTest.lara");
+    }
+
 }
