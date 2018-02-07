@@ -39,6 +39,10 @@ public enum LaraApiResource implements LaraResourceProvider {
     DSE_VARIANT("dse/DseVariant.lara"),
     VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
+    // Iterators
+    LARA_ITERATOR("iterators/LaraIterator.lara"),
+    LINE_ITERATOR("iterators/LineIterator.lara"),
+
     // Metrics
     ENERGY_METRIC("metrics/EnergyMetric.lara"),
     EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"),

@@ -22,6 +22,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 public enum JsApiResource implements LaraResourceProvider {
     // DEBUG("Debug.js"),
     // IO("Io.js"),
+    // JS_ITERATOR("JsIterator.js"),
     LARA_CORE("LaraCore.js");
     // SYSTEM("System.js");
 

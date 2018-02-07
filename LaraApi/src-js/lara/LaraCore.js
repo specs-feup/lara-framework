@@ -193,6 +193,16 @@ function checkJoinPointType($jp, type, source) {
     throw message; 
 }
 
+function isString(variable) {
+	return (typeof variable) === "string";
+};
+
+function isJavaClass(variable, javaClassname) {
+	var javaClass = Java.type(javaClassname);
+	return javaClass.class.isInstance(variable);
+};
+
+
 function toArray(objectWithLength) {
 	return Array.prototype.slice.call(objectWithLength);
 }

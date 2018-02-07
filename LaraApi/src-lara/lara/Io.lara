@@ -187,8 +187,28 @@ Io.getExtension = function(path) {
 	return SpecsIo.getExtension(path);
 }
 
-Io.writeFile = writeFile;
-Io.readFile = readFile;
+/**
+ * @param {string} path The path of the file to write.
+ * @param {string} content The contents to write.
+ *
+ * @return {J#java.io.File} the file to where the contents where written.
+ */
+Io.writeFile = function(path, content) {
+	var file = new java.io.File(path);
+	SpecsIo.write(file,content);
+	return file;
+}
+
+/**
+ * @param {string} path The path of the file to read.
+ *
+ * @return {string} the contents of the file.
+ */
+Io.readFile = function(path) {
+	var file = new java.io.File(path);
+	var content = SpecsIo.read(file);
+	return content;
+}
 
 Io.appendFile = function(path, content) {
 	var file = new java.io.File(path);
