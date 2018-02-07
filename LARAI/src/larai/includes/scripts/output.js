@@ -196,6 +196,7 @@ function getFnName(fn){
 function writeFile(path, content) {
 	var file = new java.io.File(path);
 	SpecsIo.write(file,content);
+	return file;
 }
 
 function JSONtoFile(path, object) {
