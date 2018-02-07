@@ -1,0 +1,15 @@
+Insert from string:
+// Inserted line at 1
+Hello
+line2
+// Inserted line at 3
+
+line 4
+
+Insert from file:
+// Inserted line at 1
+Hello
+line2
+// Inserted line at 3
+
+line 4
