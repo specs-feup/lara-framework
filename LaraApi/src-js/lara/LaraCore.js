@@ -254,3 +254,12 @@ function arrayFromArgs(args, start) {
 function isArray(value) {
 	return Array.isArray(value);
 }
+
+/**
+ * Adds the elements of an array into another array.
+ */
+function pushArray(receivingArray, sourceArray) {
+	for(var index in sourceArray) {
+		receivingArray.push(sourceArray[index]);	
+	}
+}
