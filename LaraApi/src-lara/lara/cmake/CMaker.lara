@@ -10,19 +10,23 @@ import lara.util.ProcessExecutor;
 /**
  * Builds CMake configurations.
  */
-var CMaker = function(name) {
+var CMaker = function(name, disableWeaving) {
 	checkDefined(name, "name", "CMaker");
 	
 	this.name = name;
+	this.disableWeaving = defaultValue(disableWeaving, false);
+	
 	this.makeCommand = "make";
 	this.generator = undefined;
 	this.minimumVersion = this._MINIMUM_VERSION;
 	this.cxxFlags = [];
+	this.cFlags = [];
 	this.libs = [];
-	this.sources = new CMakerSources();
+	this.sources = new CMakerSources(this.disableWeaving);
 	this.includeFolders = new StringSet();
 	this.printToConsole = false;
 	this._lastMakeOutput = undefined;
+	
 };
 
 CMaker.prototype._MINIMUM_VERSION = "2.8";
@@ -30,12 +34,13 @@ CMaker.prototype._EXE_VAR = "EXE_NAME";
 
 
 CMaker.prototype.copy = function() {
-	var newCmaker = new CMaker(this.name);
+	var newCmaker = new CMaker(this.name, this.disableWeaving);
 	
 	newCmaker.makeCommand = this.makeCommand;
 	newCmaker.generator = this.generator;
 	newCmaker.minimumVersion = this.minimumVersion;
 	newCmaker.cxxFlags = this.cxxFlags.slice();
+	newCmaker.cFlags = this.cFlags.slice();
 	newCmaker.libs = this.libs.slice();
 	newCmaker.sources = this.sources.copy();
 	newCmaker.includeFolders = this.includeFolders.copy();
@@ -46,6 +51,12 @@ CMaker.prototype.copy = function() {
 }
 
 
+/**
+ * @returns {lara.cmake.CMakerSources} Object that can be used to specify the sources.
+ */
+CMaker.prototype.getSources = function() {
+	return this.sources;
+}
 
 /**
  * Sets the minimum version of the CMake file.
@@ -59,10 +70,21 @@ CMaker.prototype.setMinimumVersion = function(version) {
 }
 
 /**
+ * Sets the name of the executable.
+ *
+ * @param name String with the name of the executable.
+ */
+CMaker.prototype.setName = function(name) {
+	this.name = name;
+	
+	return this;
+}
+
+/**
  * Sets if output of external tools (e.g., cmake, make) should appear in the console. By default it is off.
  */
 CMaker.prototype.setPrintToolsOutput = function(printToolsOutput) {
-	this.printToConsole = printToConsole;
+	this.printToConsole = printToolsOutput;
 	
 	return this;
 }
@@ -87,11 +109,33 @@ CMaker.prototype.setMakeCommand = function(makeCommand) {
  *
  */
 CMaker.prototype.addCxxFlags = function() {
-	for(var flag of arguments) {
+	var flags = arrayFromArgs(arguments);
+
+	for(var flag of flags) {
 		this.cxxFlags.push(flag);
 	}
 	
 	return this;
+}
+
+/**
+ * Adds a variable number of Strings, one for each flag.
+ *
+ */
+CMaker.prototype.addCFlags = function() {
+	var flags = arrayFromArgs(arguments);
+
+	for(var flag of flags) {
+		this.cFlags.push(flag);
+	}
+	
+	return this;
+}
+
+CMaker.prototype.addFlags = function() {
+	var flags = arrayFromArgs(arguments);
+	this.addCFlags(flags);
+	this.addCxxFlags(flags);
 }
 
 /**
@@ -140,6 +184,11 @@ CMaker.prototype._getExecutableName = function() {
 	return executable;
 }
 
+/**
+ * Builds the program currently defined in the CMaker object.
+ *
+ * @returns {J#java.io.File} file to the executable compiled by the build. 
+ */
 CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	// Generate CMakeLists.txt
 	var cmakeFile = Io.getPath(cmakelistsFolder, "CMakeLists.txt");
@@ -206,8 +255,9 @@ CMaker.prototype.getCode = function() {
 	// Executable
 	code += "set (" + this._EXE_VAR +  " \"" + this.name + "\")\n\n";
 	
-	// CXX Flags
+	// Flags
 	code += this._getCxxFlagsCode();
+	code += this._getCFlagsCode();
 	
 	// Sources
 	code += this.sources.getCode() + "\n\n";
@@ -240,6 +290,20 @@ CMaker.prototype._getCxxFlagsCode = function() {
 	return code;
 }
 
+CMaker.prototype._getCFlagsCode = function() {
+	if(this.cFlags.length === 0) {
+		return "";
+	}
+	
+	var code = "set (CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} ";
+	
+	code += this.cFlags.join(" ");
+	code += "\")\n\n";
+	
+	return code;
+}
+
+
 CMaker.prototype._getIncludeFoldersCode = function() {
 
 
@@ -247,7 +311,12 @@ CMaker.prototype._getIncludeFoldersCode = function() {
 	// Add user includes
 	var includes = [].concat(this.includeFolders.values());
 
-	// Add external includes
+	// Add external includes if weaving is not disabled
+	if(!this.disableWeaving) {
+		this._addExtraIncludes(includes);
+	}
+
+	/*
 	var extraIncludes = Compilation.getExtraIncludes();
 	
 	for(var extraInclude of extraIncludes) {
@@ -258,6 +327,7 @@ CMaker.prototype._getIncludeFoldersCode = function() {
 			println("[CMAKER] Extra include ' " + extraInclude +  " ' is not a folder");
 		}
 	}
+	*/
 	
 	//if(this.includeFolders.isEmpty()) {
 	if(includes.length === 0) {	
@@ -273,6 +343,20 @@ CMaker.prototype._getIncludeFoldersCode = function() {
 	return code;	
 	//return "include_directories(<absolute path to srcFolder>)";
 }
+
+CMaker.prototype._addExtraIncludes = function(includes) {
+	var extraIncludes = Compilation.getExtraIncludes();
+	
+	for(var extraInclude of extraIncludes) {
+		if(Io.isFolder(extraInclude)) {
+			debug("[CMAKER] Adding external include '" + extraInclude + "'");
+			includes.push(CMakerUtils.parsePath(extraInclude));
+		} else {
+			println("[CMAKER] Extra include ' " + extraInclude +  " ' is not a folder");
+		}
+	}
+}
+
 
 /*
 .setMinimumVersion("3.0.2") // Could have a standard minimum version

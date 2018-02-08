@@ -6,10 +6,11 @@ import lara.cmake.CMakerUtils;
 /**
  * Contains CMaker sources
  */
-var CMakerSources = function() {
+var CMakerSources = function(disableWeaving) {
 	this.untaggedSources = [];
 	this.taggedSources = {};
 	this.tags = new StringSet();
+	this.disableWeaving = defaultValue(disableWeaving, false);
 };
 
 CMakerSources.prototype._VARIABLE_UNTAGGED_SOURCES = "CMAKER_SOURCES";
@@ -21,9 +22,13 @@ CMakerSources.prototype._VARIABLE_EXTERNAL_SOURCES = "EXTERNAL_SOURCES";
 CMakerSources.prototype.copy = function() {
 	var newCMakerSources = new CMakerSources();
 	
-	this.untaggedSources = this.untaggedSources.slice();
-	this.taggedSources = JSON.parse(JSON.stringify(this.taggedSources));
-	this.tags = this.tags.copy();
+	//this.untaggedSources = this.untaggedSources.slice();
+	//this.taggedSources = JSON.parse(JSON.stringify(this.taggedSources));
+	//this.tags = this.tags.copy();
+	newCMakerSources.untaggedSources = this.untaggedSources.slice();
+	newCMakerSources.taggedSources = JSON.parse(JSON.stringify(this.taggedSources));
+	newCMakerSources.tags = this.tags.copy();
+	newCMakerSources.disableWeaving = this.disableWeaving;
 	
 	return newCMakerSources;
 }
@@ -88,10 +93,13 @@ CMakerSources.prototype.getSourceVariables = function() {
 	if(this.untaggedSources.length > 0) {
 		sources.push(this._VARIABLE_UNTAGGED_SOURCES);
 	}
-	
-	if(Compilation.getExtraSources().length > 0) {
-		sources.push(this._VARIABLE_EXTERNAL_SOURCES);
+
+	if(!this.disableWeaving) {
+		if(Compilation.getExtraSources().length > 0) {
+			sources.push(this._VARIABLE_EXTERNAL_SOURCES);
+		}
 	}
+
 	
 	
 	for(tag of this.tags.values()) {
@@ -118,7 +126,52 @@ CMakerSources.prototype.getCode = function() {
 		code += this._getCodeSource(this._VARIABLE_UNTAGGED_SOURCES, this.untaggedSources);
 	}
 	
-	// Add external sources
+	// Add external sources if weaving is not disabled
+	if(!this.disableWeaving) {
+		this._addExternalSources(code);
+	}
+
+	/*
+	var extraSources = Compilation.getExtraSources();
+	var extraSourcesArray = [];
+	for(var extraSource of extraSources) {
+		debug("Adding external source '" + extraSource + "'");
+		if(Io.isFile(extraSource)) {
+			extraSourcesArray.push(this._parseSourcePath(extraSource));
+		} else if(Io.isFolder(extraSource)) {
+			for(var sourcePath of Io.getPaths(extraSource)) {
+				extraSourcesArray.push(this._parseSourcePath(sourcePath));
+			}
+			//extraSourcesArray = extraSourcesArray.concat(Io.getPaths(extraSource));
+		} else {
+			println("[CMAKER] Extra source ' " + extraSource +  " ' does not exist");
+		}
+	}	
+	
+	if(extraSourcesArray.length > 0) {
+		if(code.length !== 0) {
+			code += "\n";
+		}
+		
+		code += this._getCodeSource(this._VARIABLE_EXTERNAL_SOURCES, extraSourcesArray);
+	}
+	*/
+	
+	for(tag of this.tags.values()) {
+		var tagCode = this._getCodeSource(tag, this.taggedSources[tag]);
+		
+		if(code.length !== 0) {
+			code += "\n";
+		}
+		
+		code += tagCode;
+	}
+	
+	return code;
+}
+
+CMakerSources.prototype._addExternalSources = function(code) {
+
 	var extraSources = Compilation.getExtraSources();
 	var extraSourcesArray = [];
 	for(var extraSource of extraSources) {
@@ -143,17 +196,6 @@ CMakerSources.prototype.getCode = function() {
 		code += this._getCodeSource(this._VARIABLE_EXTERNAL_SOURCES, extraSourcesArray);
 	}
 	
-	for(tag of this.tags.values()) {
-		var tagCode = this._getCodeSource(tag, this.taggedSources[tag]);
-		
-		if(code.length !== 0) {
-			code += "\n";
-		}
-		
-		code += tagCode;
-	}
-	
-	return code;
 }
 
 /**
