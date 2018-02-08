@@ -26,6 +26,7 @@ var CMaker = function(name, disableWeaving) {
 	this.includeFolders = new StringSet();
 	this.printToConsole = false;
 	this._lastMakeOutput = undefined;
+	this.compiler = undefined;
 	
 };
 
@@ -46,6 +47,7 @@ CMaker.prototype.copy = function() {
 	newCmaker.includeFolders = this.includeFolders.copy();
 	newCmaker.printToConsole = this.printToConsole;
 	newCmaker._lastMakeOutput = this._lastMakeOutput;
+	newCmaker.compiler = this.compiler;
 	
 	return newCmaker;
 }
@@ -76,6 +78,19 @@ CMaker.prototype.setMinimumVersion = function(version) {
  */
 CMaker.prototype.setName = function(name) {
 	this.name = name;
+	
+	return this;
+}
+
+/**
+ * @param {string|lara.cmake.compilers.CMakeCompiler}
+ */
+CMaker.prototype.setCompiler = function(compiler) {
+	if(isString(compiler)) {
+		this.compiler = CMakerUtils.getCompiler(compiler);
+	} else {
+		this.compiler = compiler;
+	}
 	
 	return this;
 }
@@ -206,6 +221,10 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	
 	if(this.generator !== undefined) {
 		cmakeCmd += " -G \"" + this.generator + "\"";
+	}
+
+	if(this.compiler !== undefined) {
+		cmakeCmd += " " + this.compiler.getCommandArgs();
 	}
 	
 	debug("Executing CMake, calling '"+  cmakeCmd + "' at ' " + builderFolderpath +  " '");

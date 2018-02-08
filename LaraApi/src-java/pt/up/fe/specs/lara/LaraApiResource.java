@@ -26,6 +26,10 @@ public enum LaraApiResource implements LaraResourceProvider {
     CMAKER_SOURCES("cmake/CMakerSources.lara"),
     CMAKER_UTILS("cmake/CMakerUtils.lara"),
 
+    // CMake/Compilers
+    CMAKE_COMPILER("cmake/compilers/CMakeCompiler.lara"),
+    GENERIC_CMAKE_COMPILER("cmake/compilers/GenericCMakeCompiler.lara"),
+
     // Code
     // ENERGY_BASE("code/EnergyBase.lara"),
     // LOGGER_BASE("code/LoggerBase.lara"),
