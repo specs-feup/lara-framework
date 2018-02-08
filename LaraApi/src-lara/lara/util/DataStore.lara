@@ -92,6 +92,11 @@ DataStore.prototype.put = function(key, value) {
 	//println("DATA AFTER:" + this.data.toString());
 }
 
+DataStore.prototype.disableKeyChecking = function() {
+	//println("Disabling key checking");
+	this.checkKeys = false;
+}
+
 /**
  * @return java.lang.Class representing the type of the value of the given key
  */
@@ -171,6 +176,7 @@ DataStore.prototype._processKey = function(key, functionName) {
 }
 
 DataStore.prototype._checkKey = function(key, functionName) {
+
 	if(!this.checkKeys) {
 		return;
 	}

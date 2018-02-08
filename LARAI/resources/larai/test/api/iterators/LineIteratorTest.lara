@@ -35,7 +35,9 @@ aspectdef LineIteratorTest
 	//printObject(jsIterator);
 	
 	//println("Iterator next:" + jsIterator.next().value);
-	
+	//println("Symbol.iterator before: " + fileLineIterator[Symbol.iterator]);
+//	fileLineIterator[Symbol.iterator] = function() {return new _JsIterator(fileLineIterator)};
+//	println("Symbol.iterator after: " + fileLineIterator[Symbol.iterator]);
 	// Use javascript iterator
 	while(fileLineIterator.hasNext()) {
 		var line = fileLineIterator.next();
