@@ -24,7 +24,7 @@ import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
-import jdk.nashorn.internal.runtime.Undefined;
+// import jdk.nashorn.internal.runtime.Undefined;
 
 /**
  * Abstract class used by the LARA interpreter to define a join point instance
@@ -310,6 +310,8 @@ public abstract class JoinPoint {
     }
 
     public static Object getUndefinedValue() {
-        return Undefined.getUndefined();
+        // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
+        return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
+        // return Undefined.getUndefined();
     }
 }

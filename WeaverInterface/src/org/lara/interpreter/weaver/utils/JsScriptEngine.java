@@ -19,6 +19,7 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
 
 /**
@@ -194,6 +195,20 @@ public class JsScriptEngine {
 
     public Bindings createBindings() {
         return engine.createBindings();
+    }
+
+    /**
+     * Based on this site: http://programmaticallyspeaking.com/nashorns-jsobject-in-context.html
+     * 
+     * @return
+     */
+    public Object getUndefined() {
+        try {
+            ScriptObjectMirror arrayMirror = (ScriptObjectMirror) engine.eval("[undefined]");
+            return arrayMirror.getSlot(0);
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // private Object[] getArray(Object val) {
