@@ -39,5 +39,9 @@
 		<dependency org="com.fifesoft" name="rsyntaxtextarea" rev="2.5.8"/>
 		<dependency org="com.fifesoft" name="autocomplete" rev="2.5.8"/>
 		
+		<!-- XmlBind -->
+		<dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.0"/>
+		
+		
 	</dependencies>
 </ivy-module>
