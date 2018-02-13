@@ -189,6 +189,14 @@ public class JsScriptEngine {
         return toNativeArray(newObject);
     }
 
+    public Object eval(String script) {
+        try {
+            return engine.eval(script);
+        } catch (ScriptException e) {
+            throw new RuntimeException("Exception while evaluation code '" + script + "'", e);
+        }
+    }
+
     public Object eval(String script, Bindings n) throws ScriptException {
         return engine.eval(script, n);
     }
@@ -225,5 +233,10 @@ public class JsScriptEngine {
     // }
     // return outputArray;
     // }
+
+    public String stringify(Object object) {
+        ScriptObjectMirror json = (ScriptObjectMirror) eval("JSON");
+        return json.callMember("stringify", object).toString();
+    }
 
 }

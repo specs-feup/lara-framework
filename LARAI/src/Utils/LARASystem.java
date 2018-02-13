@@ -207,6 +207,7 @@ public class LARASystem {
 
             Object json;
             if (!(value instanceof String)) {
+                // TODO: Replace with WeaverEngine.getThreadLocalWeaver().getScriptEngine().stringify(value);?
                 json = NativeJSON.stringify(arguments, value, null, null);
             } else {
                 json = value;
