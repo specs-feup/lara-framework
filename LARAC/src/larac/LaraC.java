@@ -97,7 +97,8 @@ public class LaraC {
      * @throws JAXBException
      */
     public LaraC(String args[])
-            throws IOException, ParserConfigurationException, SAXException, JAXBException, XMLParseException {
+            // throws IOException, ParserConfigurationException, SAXException, JAXBException, XMLParseException {
+            throws IOException, ParserConfigurationException, SAXException, JAXBException {
         this(args, new Output());
     }
 
