@@ -74,6 +74,18 @@ public class LARASystem {
         workingDir = dir;
     }
 
+    /**
+     * 
+     * @param app
+     * @param arguments
+     * @param jpname
+     * @param name
+     * @param verbose
+     * @param pipe
+     * @param argsStr
+     * @return
+     * @throws IOException
+     */
     public Object run(String app, Object arguments[], String jpname, String name, int verbose, Object pipe,
             String argsStr) throws IOException {
         // System.out.println("PIPE: "+pipe+" class: "+(pipe !=
@@ -125,12 +137,7 @@ public class LARASystem {
                 after.add(extra);
             }
         }
-        /*
-                if (!(arguments instanceof NativeArray)) {
-                    ErrorMsg.say("The arguments must be inside an Array");
-                    return "";
-                }
-         */
+
         stringifyArgs(arguments, jarLoc, commandArgs);
 
         commandArgs.addAll(after);
@@ -194,7 +201,7 @@ public class LARASystem {
     }
 
     private static void stringifyArgs(Object[] arguments, String jarLoc, List<String> args) {
-        // final NativeArray nativeArray = (NativeArray) arguments;
+
         for (final Object value : arguments) {// nativeArray.getArray().asObjectArray()) {
             // final Object value = nativeArray.get(obj);
 
@@ -265,10 +272,13 @@ public class LARASystem {
             }
         }
 
+        // TODO: Replace with NashornUtils.isJSArray(arguments)?
         if (!(arguments instanceof NativeArray)) {
             ErrorMsg.say("The arguments must be inside an Array");
             return "";
         }
+
+        // TODO: Replace with NashornUtils.getValues()?
         for (final Object obj : ((NativeArray) arguments).getArray().asObjectArray()) {
             args.add(((NativeArray) arguments).get(obj).toString());
         }
@@ -519,13 +529,17 @@ public class LARASystem {
         return code;
     }
 
-    public static Object[] toJavaArray(NativeArray arr) {
-        /*final Object[] array = new Object[(int) arr.getLength()];
-            for (final Object o : arr.getIds()) {
-                final int index = (Integer) o;
-                array[index] = arr.get(index, null);
-            }*/
-        return arr.asObjectArray();
+    public static Object[] toJavaArray(Object arr) {
+        if (!NashornUtils.isJSArray(arr)) {
+            // Object[] objectArray = new Object[1];
+            // objectArray[0] = arr;
+            // return objectArray;
+            return new Object[] { arr };
+        }
+
+        return NashornUtils.getValues(arr).toArray(new Object[0]);
+        // public static Object[] toJavaArray(NativeArray arr) {
+        // return arr.asObjectArray();
     }
 
     public static String decode(String encoded, String encoder) {
