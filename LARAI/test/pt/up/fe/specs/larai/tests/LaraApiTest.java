@@ -75,11 +75,6 @@ public class LaraApiTest {
     }
 
     @Test
-    public void testLocalFolder() {
-        newTester().test("LocalFolderTest.lara");
-    }
-
-    @Test
     public void testDataStore() {
         newTester().test("util/DataStoreTest.lara");
     }
