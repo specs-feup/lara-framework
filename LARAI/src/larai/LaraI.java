@@ -20,8 +20,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.script.ScriptEngineManager;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -53,8 +51,10 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import larac.LaraC;
 import larac.utils.output.Output;
+import larai.filters.RestrictModeFilter;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -494,7 +494,7 @@ public class LaraI {
 
     private void interpret(WeaverEngine weaverEngine) {
         // final Context cx = Context.enter();
-        NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+        NashornScriptEngine engine = createJsEngine();
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -544,6 +544,19 @@ public class LaraI {
         weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
                 options.getLaraFile().getPath());
 
+    }
+
+    private NashornScriptEngine createJsEngine() {
+        // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
+        // If restric mode is enabled, use ClassFilter
+        if (getOptions().isRestricMode()) {
+            return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
+        }
+
+        return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
+
+        // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+        // return engine;
     }
 
     public DataStore getWeaverArgs() {

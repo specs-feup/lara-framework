@@ -184,6 +184,10 @@ public class LaraIDataStore implements LaraiKeys {
         return false;
     }
 
+    public boolean isRestricMode() {
+        return dataStore.get(LaraiKeys.RESTRICT_MODE);
+    }
+
     public boolean useStackTrace() {
         if (dataStore.hasValue(LaraiKeys.TRACE_MODE)) {
             return dataStore.get(LaraiKeys.TRACE_MODE);
