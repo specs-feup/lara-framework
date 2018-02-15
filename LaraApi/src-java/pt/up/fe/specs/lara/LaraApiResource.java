@@ -65,6 +65,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     UNIT_WITH_MODIFIER("units/UnitWithModifier.lara"),
 
     // Lara
+    _JAVA_TYPES("_JavaTypes.lara"),
     CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),

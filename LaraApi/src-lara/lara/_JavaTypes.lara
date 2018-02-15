@@ -1,0 +1,22 @@
+/**
+ * Static variables with class names of Java classes used in the API.
+ * @class
+ */
+var _JavaTypes = {};
+
+//_JavaTypes.LaraSystemTools = "pt.up.fe.specs.lara.LaraSystemTools";
+//_JavaTypes.LaraApiTools = "pt.up.fe.specs.lara.LaraApiTools";
+
+_JavaTypes.getType = function(javaType) {
+	checkString(javaType, "_JavaTypes.getType::javaType");
+	
+	return Java.type(javaType);
+}
+
+_JavaTypes.getLaraApiTools = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.lara.LaraApiTools");
+}
+
+_JavaTypes.getLaraSystemTools = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.lara.LaraSystemTools");
+}

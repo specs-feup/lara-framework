@@ -1,4 +1,5 @@
 import lara.System;
+import lara._JavaTypes;
 
 /**
  * Launches processes.
@@ -85,8 +86,10 @@ ProcessExecutor.prototype.execute = function(command) {
 	}
 	
 	// TODO: Can change LaraApiTools.runCommand to accept a file and append flag, to be able to write to a file in stream mode
-	this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
-	
+	//this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
+	//this.lastOutput = Java.type(_JavaTypes.LaraSystemTools).runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
+	this.lastOutput = _JavaTypes.getLaraSystemTools().runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
+
 	var executeOutput = this.lastOutput.getOutput();
 	if(executeOutput !== undefined) {
 		checkType(executeOutput, "string");

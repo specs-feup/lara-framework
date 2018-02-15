@@ -1,4 +1,5 @@
 import lara.util.TimeUnits;
+import lara._JavaTypes;
 
 /**
  * @class
@@ -109,7 +110,9 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 		timeoutNanos = timeunit.toNanos(timeout);
 	}
 
-	var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, printToConsole, timeoutNanos)
+	//var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, printToConsole, timeoutNanos)
+	//.getOutput();
+	var executeOutput = _JavaTypes.getLaraApiTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
 	.getOutput();
 	
 	if(executeOutput !== undefined) {

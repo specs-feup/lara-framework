@@ -1,3 +1,5 @@
+import lara._JavaTypes;
+
 /**
  * @class
  */
@@ -15,7 +17,9 @@ Strings.isEmpty = function(string) {
 }
 
 Strings.replacer = function(string, oldSequence, newSequence) {
-	return LaraApiTools.replacer(string, oldSequence, newSequence);
+	//_JavaTypes.getType(_JavaTypes.LaraApiTools);
+	//return LaraApiTools.replacer(string, oldSequence, newSequence);
+	return _JavaTypes.getLaraApiTools().replacer(string, oldSequence, newSequence);
 }
 
 /**

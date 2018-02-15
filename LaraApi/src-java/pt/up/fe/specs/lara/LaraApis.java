@@ -32,7 +32,7 @@ public class LaraApis {
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
             ApacheStrings.class, SpecsStrings.class, SpecsSystem.class, ProcessOutputAsString.class,
-            LaraApiTools.class, StringLines.class);
+            StringLines.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;
