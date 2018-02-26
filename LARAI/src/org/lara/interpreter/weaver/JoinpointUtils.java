@@ -36,13 +36,15 @@ public class JoinpointUtils {
 
     private static final String LARA_JOIN_POINT_PROPERTY = "laraJoinPoint";
     private static final String IS_EMPTY_PROPERTY = "isEmpty";
-    private static final String REFERENCE_PROPERTY = "_jp_reference_";
+    private static final String REFERENCE_PROPERTY = "getReference";
+    private static final String ALIAS_PROPERTY = "classAlias";
     private static final String PARENT_PROPERTY = "_jp_parent_";
+    private static final String HAS_CHILDREN_FUNCTION = "hasChildren";
     private final JsScriptEngine scriptEngine;
     private final List<NativeFunction> actions = null;
 
     public JoinpointUtils(NashornScriptEngine engine) {
-        this.scriptEngine = new JsScriptEngine(engine);
+        scriptEngine = new JsScriptEngine(engine);
     }
 
     /**
@@ -53,9 +55,9 @@ public class JoinpointUtils {
      *            Usual structure for first joinpoint is to only contain children and no other information.
      * @return A javascript native object.
      */
-
+    @Deprecated
     public Bindings toJavaScript(LaraJoinPoint root) {
-
+        // TODO - must be removed as it is making the program use 10x more memory than needed
         final Bindings obj = scriptEngine.createBindings();
         if (root.getChildren() != null) {
 
@@ -78,7 +80,7 @@ public class JoinpointUtils {
      * @param parent
      *            the parent of the joinpoint
      */
-
+    @Deprecated
     private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
         if (!parent.containsKey(jp.getClassAlias())) {
             final Bindings jps = scriptEngine.newNativeArray();
@@ -210,12 +212,23 @@ public class JoinpointUtils {
         return actions;
     }
 
+    // public static String getReferenceProperty() {
+    // return REFERENCE_PROPERTY;
+    // }
     public static String getReferenceProperty() {
-        return REFERENCE_PROPERTY;
+        return REFERENCE_PROPERTY + "()";
+    }
+
+    public static String getAliasProperty() {
+        return ALIAS_PROPERTY;
     }
 
     public static String getParentProperty() {
         return PARENT_PROPERTY;
+    }
+
+    public static String invokeHasChildren() {
+        return HAS_CHILDREN_FUNCTION + "()";
     }
 
 }

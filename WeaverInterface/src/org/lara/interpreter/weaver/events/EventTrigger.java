@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.events.LaraIEvent;
@@ -131,13 +129,13 @@ public class EventTrigger {
      * @param params
      */
     public void triggerApply(Stage stage, String aspect_name, String label, String select_label,
-            Bindings select) {
+            LaraJoinPoint select) {
         Optional<LaraJoinPoint> root;
-        if (select == null || select.get("isEmpty").equals(true)) {
+        if (select == null || !select.hasChildren()) {
             root = Optional.empty();
         } else {
-            final LaraJoinPoint laraRoot = (LaraJoinPoint) select.get("laraJoinPoint");
-            LaraJoinPoint weaverRoot = laraRoot.getChild(0); // Master root only has one child (weaver root);
+            // final LaraJoinPoint laraRoot = (LaraJoinPoint) select.get("laraJoinPoint");
+            LaraJoinPoint weaverRoot = select.getChild(0); // Master root only has one child (weaver root);
             root = Optional.of(weaverRoot);
         }
 

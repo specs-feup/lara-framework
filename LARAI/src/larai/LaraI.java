@@ -517,6 +517,7 @@ public class LaraI {
         weaver = new MasterWeaver(this, weaverEngine, folderApplication, engine);
 
         try {
+            // Create interpreter
             interpreter = new Interpreter(this, engine);
         } catch (Exception e) {
             throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
@@ -528,12 +529,12 @@ public class LaraI {
         out.println(MessageConstants.getElapsedTimeMessage(end));
 
         if (!isWorking) {
+            finish(engine);
             return;
         }
 
-        {
-            interpreter.interpret(asps);
-        }
+        // Start interpretation
+        interpreter.interpret(asps);
 
         String main = options.getMainAspect();
         if (main == null) {
@@ -543,7 +544,12 @@ public class LaraI {
 
         weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
                 options.getLaraFile().getPath());
+        finish(engine);
 
+    }
+
+    private void finish(NashornScriptEngine engine) {
+        // if cleaning is needed
     }
 
     private NashornScriptEngine createJsEngine() {

@@ -54,6 +54,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.runtime.Undefined;
 import larai.LaraI;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
@@ -198,7 +199,8 @@ public class MasterWeaver {
      * @return a javascript variable with the pointcut
      * @throws IOException
      */
-    public Bindings select(String selectName, String[] jpChain, String[] aliasChain, FilterExpression[][] filterChain,
+    public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
+            FilterExpression[][] filterChain,
             String aspect_name, Bindings localScope, int lineNumber) throws IOException {
 
         // TRIGGER SELECT BEGIN EVENT
@@ -213,7 +215,6 @@ public class MasterWeaver {
             if (weaverEngine instanceof DefaultWeaver) {
                 selectWithDefaultWeaver(jpChain, aliasChain, filterChain, localScope, root);
             } else {
-
                 selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root);
             }
             // if (handlesApplicationFolder) {
@@ -232,8 +233,10 @@ public class MasterWeaver {
                 eventTrigger.triggerSelect(Stage.END, aspect_name, selectName, jpChain, aliasChain, filterChain,
                         pointcut);
             }
-            final Bindings javascriptObject = jpUtils.toJavaScript(root);
-            return javascriptObject;
+            LaraLog.printMemory("before converting to javascript");
+            // final Bindings javascriptObject = jpUtils.toJavaScript(root);
+            LaraLog.printMemory("after converting to javascript");
+            return root;
         } catch (Exception e) {
             throw processSelectException(selectName, jpChain, e, lineNumber);
         }
@@ -336,7 +339,7 @@ public class MasterWeaver {
      * @return
      * @throws IOException
      */
-    public Bindings select(Object joinPointReferences, String selectName, String[] jpChain, String[] aliasChain,
+    public LaraJoinPoint select(Object joinPointReferences, String selectName, String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain, String aspect_name, Bindings localScope, int lineNumber)
             throws IOException {
         final LaraJoinPoint root = LaraJoinPoint.createRoot();
@@ -383,8 +386,8 @@ public class MasterWeaver {
                 throw new RuntimeException(errorMsg);
             }
 
-            final Bindings javascriptObject = jpUtils.toJavaScript(root);
-            return javascriptObject;
+            // final Bindings javascriptObject = jpUtils.toJavaScript(root);
+            return root;
         } catch (Exception e) {
             throw processSelectException(selectName, jpChain, e, lineNumber);
         }
@@ -436,14 +439,16 @@ public class MasterWeaver {
 
         try {
             // ret = jpMethod.invoke(lastJP);
+            LaraLog.printMemory("before joinpoint selection of " + selectName);
 
             // WeaverEngine weavingEngine = lastJP.getWeaverEngine();
             List<? extends JoinPoint> joinPointList = lastJP.select(selectName);
-
+            LaraLog.printMemory("after joinpoint selection of " + selectName);
             if (joinPointList == null) {
                 throw new NullPointerException(
                         "Select '" + selectName + "' from '" + lastJP.get_class() + "' returned null");
             }
+            LaraLog.printMemory("when converting to LaraJoinPoint");
 
             for (final JoinPoint joinPoint : joinPointList) {
                 // joinPoint.setWeaverEngine(weavingEngine);
@@ -470,65 +475,62 @@ public class MasterWeaver {
     }
 
     private void warnJoin(String left, String right, String reason) {
-        // LoggingUtils
-        // .msgInfo("[Warning] Could not join the selects " + left + " and " + right
-        // + ", " + reason);
         larai.out.warnln("Could not join the selects " + left + " and " + right
                 + ", " + reason);
     }
 
-    public Bindings defaultOfJoin() {
-        return jpUtils.toJavaScript(LaraJoinPoint.createRoot());
+    public LaraJoinPoint defaultOfJoin() {
+        return LaraJoinPoint.createRoot();
+        // return jpUtils.toJavaScript(LaraJoinPoint.createRoot());
     }
 
-    public Bindings natural_join(String leftName, Bindings left, String rightName, Bindings right) {
+    public LaraJoinPoint natural_join(String leftName, LaraJoinPoint left, String rightName, LaraJoinPoint right) {
 
         if (left == null) {
 
-            warnJoin(leftName, rightName, "the first is null");
+            warnJoin(leftName, rightName, "the left-hand side for the join operation is null");
             return defaultOfJoin();
         }
 
         if (right == null) {
-            warnJoin(leftName, rightName, "the second is null");
+            warnJoin(leftName, rightName, "the right-hand side for the join operation is null");
             return defaultOfJoin();
         }
 
         // final LaraJoinPoint leftJP = (LaraJoinPoint) Context.jsToJava(leftScriptable, LaraJoinPoint.class);
         // final LaraJoinPoint rightJP = (LaraJoinPoint) Context.jsToJava(rightScriptable, LaraJoinPoint.class);
 
-        final LaraJoinPoint leftJP = (LaraJoinPoint) left.get("laraJoinPoint");
-        if (leftJP == null) {
-            warnJoin(leftName, rightName, "the first is empty");
-            return defaultOfJoin();
-        }
-        final LaraJoinPoint rightJP = (LaraJoinPoint) right.get("laraJoinPoint");
-        if (rightJP == null) {
-            warnJoin(leftName, rightName, "the second is empty");
-            return defaultOfJoin();
-        }
+        // final LaraJoinPoint leftJP = (LaraJoinPoint) left.get("laraJoinPoint");
+        // if (leftJP == null) {
+        // warnJoin(leftName, rightName, "the first is empty");
+        // return defaultOfJoin();
+        // }
+        // final LaraJoinPoint rightJP = (LaraJoinPoint) right.get("laraJoinPoint");
+        // if (rightJP == null) {
+        // warnJoin(leftName, rightName, "the second is empty");
+        // return defaultOfJoin();
+        // }
 
-        final List<LaraJoinPoint> aChildren = leftJP.getChildren();
-        final List<LaraJoinPoint> bChildren = rightJP.getChildren();
-
-        if (aChildren.size() == 0) {
-            warnJoin(leftName, rightName, "the first is empty");
+        if (!left.hasChildren()) {
+            warnJoin(leftName, rightName, "the left-hand side for the join operation is empty");
             return defaultOfJoin();
         }
-        if (bChildren.size() == 0) {
-            warnJoin(leftName, rightName, "the second is empty");
+        if (!right.hasChildren()) {
+            warnJoin(leftName, rightName, "the right-hand side for the join operation is empty");
             return defaultOfJoin();
         }
+        // final List<LaraJoinPoint> aChildren = left.getChildren();
+        // final List<LaraJoinPoint> bChildren = right.getChildren();
 
-        final LaraJoinPoint joined = SelectUtils.join(leftJP, rightJP);
+        final LaraJoinPoint joined = SelectUtils.join(left, right);
 
         if (joined == null) {
             warnJoin(leftName, rightName, "the result was null");
             return defaultOfJoin();
         }
 
-        final Bindings javascriptObject = jpUtils.toJavaScript(joined);
-        return javascriptObject;
+        // final Bindings javascriptObject = jpUtils.toJavaScript(joined);
+        return joined;
     }
 
     /**
@@ -636,6 +638,6 @@ public class MasterWeaver {
     }
 
     public void setInitialTime(long begin) {
-        this.initialTime = begin;
+        initialTime = begin;
     }
 }
