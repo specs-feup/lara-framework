@@ -1,9 +1,10 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.weaver;
 
-import org.lara.interpreter.weaver.interf.WeaverEngine;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
+
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver<br>

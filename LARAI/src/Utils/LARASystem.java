@@ -29,13 +29,11 @@ import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.NashornUtils;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import jdk.nashorn.api.scripting.JSObject;
-import jdk.nashorn.internal.objects.NativeArray;
-import jdk.nashorn.internal.objects.NativeJSON;
-import jdk.nashorn.internal.objects.NativeObject;
 import larac.objects.Enums.Types;
 import larac.utils.output.ErrorMsg;
 import larac.utils.output.WarningMsg;
@@ -43,6 +41,7 @@ import larai.LaraI;
 import pt.up.fe.specs.lang.SpecsPlatforms;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.system.ProcessOutputAsString;
 
 public class LARASystem {
@@ -88,6 +87,10 @@ public class LARASystem {
      */
     public Object run(String app, Object arguments[], String jpname, String name, int verbose, Object pipe,
             String argsStr) throws IOException {
+        // List<String> testArgs = new ArrayList<>();
+        // stringifyArgs(arguments, LaraIUtils.getJarFoldername(), testArgs);
+        // System.out.println("ARGS:" + testArgs);
+
         // System.out.println("PIPE: "+pipe+" class: "+(pipe !=
         // null?pipe.getClass():"none"));
         // System.out.println("UNDEFINED: "+Undefined.instance+" class:
@@ -207,8 +210,8 @@ public class LARASystem {
 
             Object json;
             if (!(value instanceof String)) {
-                // TODO: Replace with WeaverEngine.getThreadLocalWeaver().getScriptEngine().stringify(value);?
-                json = NativeJSON.stringify(arguments, value, null, null);
+                // json = NativeJSON.stringify(arguments, value, null, null);
+                json = WeaverEngine.getThreadLocalWeaver().getScriptEngine().stringify(value);
             } else {
                 json = value;
             }
@@ -273,16 +276,20 @@ public class LARASystem {
             }
         }
 
-        // TODO: Replace with NashornUtils.isJSArray(arguments)?
-        if (!(arguments instanceof NativeArray)) {
+        if (!NashornUtils.isJSArray(arguments)) {
+            // if (!(arguments instanceof NativeArray)) {
             ErrorMsg.say("The arguments must be inside an Array");
             return "";
         }
 
-        // TODO: Replace with NashornUtils.getValues()?
+        for (final Object obj : NashornUtils.getValues(arguments)) {
+            args.add(obj.toString());
+        }
+        /*
         for (final Object obj : ((NativeArray) arguments).getArray().asObjectArray()) {
             args.add(((NativeArray) arguments).get(obj).toString());
         }
+        */
         args.addAll(after);
 
         executeRun(toolExec, args, verbose);
@@ -385,8 +392,11 @@ public class LARASystem {
                 toolReportMethod = toolClass.getMethod(javaMethod, classTypes.toArray(new Class<?>[] {}));
                 ret = toolReportMethod.invoke(null, objects.toArray(new Object[] {}));
             } else {
-                toolReportMethod = toolClass.getMethod(javaMethod, NativeObject.class);
-                ret = toolReportMethod.invoke(null, arguments);
+                throw new NotImplementedException(
+                        "For Java 9 it is necessary to replace the use of NativeObject.class, however currently it seems tools need to receive a NativeObject as interface? Check this.");
+                // TODO: Replace NativeObject
+                // toolReportMethod = toolClass.getMethod(javaMethod, NativeObject.class);
+                // ret = toolReportMethod.invoke(null, arguments);
             }
             return ret;
         } catch (final Exception e) {
