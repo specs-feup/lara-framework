@@ -139,7 +139,8 @@ public abstract class JoinPoint {
      */
     protected void fillWithActions(List<String> actions) {
         // DEFAULT ACTIONS
-        actions.add("insert(String position, String code)");
+        actions.add("insert(String position, String code [, boolean farthestInsertion])");
+        actions.add("insert(String position, JoinPoint joinPoint [, boolean farthestInsertion])");
         actions.add("def(String attribute, Object value)");
     }
 
@@ -208,14 +209,44 @@ public abstract class JoinPoint {
     }
 
     /**
-     * 
+     * @see JoinPoint#insert(String, JoinPoint)
      */
-    public void insertImpl(String position, String code) {
-        throw new UnsupportedOperationException("Join point " + get_class() + ": Action insert not implemented ");
+    public <T extends JoinPoint> void insertImpl(String position, T JoinPoint) {
+        throw new UnsupportedOperationException(
+                "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");
     }
 
     /**
+     * @see JoinPoint#insert(String, String)
+     */
+    public void insertImpl(String position, String code) {
+        throw new UnsupportedOperationException(
+                "Join point " + get_class() + ": Action insert(String,String) not implemented ");
+    }
+
+    /**
+     * @see JoinPoint#insert(String, JoinPoint, boolean)
+     */
+    public <T extends JoinPoint> void insertFarImpl(String position, T JoinPoint) {
+        throw new UnsupportedOperationException(
+                "Join point " + get_class() + ": Action insert(String,joinpoint,boolean) not implemented ");
+    }
+
+    /**
+     * @see JoinPoint#insert(String, String, boolean)
+     */
+    public void insertFarImpl(String position, String code) {
+        throw new UnsupportedOperationException(
+                "Join point " + get_class() + ": Action insert far(String,String) not implemented ");
+    }
+
+    /**
+     * Action insert that accepts a string containing the code snippet to inject
      * 
+     * @param position
+     *            before|after|replace|around
+     * @param code
+     *            the code to inject
      */
     public final void insert(String position, String code) {
         try {
@@ -225,6 +256,80 @@ public abstract class JoinPoint {
             this.insertImpl(position, code);
             if (hasListeners()) {
                 eventTrigger().triggerAction(Stage.END, "insert", this, Optional.empty(), position, code);
+            }
+        } catch (Exception e) {
+            throw new ActionException(get_class(), "insert", e);
+        }
+    }
+
+    /**
+     * Action insert that accepts a join point to inject
+     * 
+     * @param position
+     *            before|after|replace|around
+     * @param code
+     *            the code to inject
+     */
+    public final <T extends JoinPoint> void insert(String position, T joinPoint) {
+        try {
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.BEGIN, "insert", this, Optional.empty(), position, joinPoint);
+            }
+            this.insertImpl(position, joinPoint);
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.END, "insert", this, Optional.empty(), position, joinPoint);
+            }
+        } catch (Exception e) {
+            throw new ActionException(get_class(), "insert", e);
+        }
+    }
+
+    /**
+     * Action insert that accepts a string containing the code snippet to inject as far as possible from the join point
+     * based on other insertions over the targeted join point
+     * 
+     * @param position
+     *            before|after|replace|around
+     * @param code
+     *            the code to inject
+     */
+    public final void insertFar(String position, String code) {
+        try {
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.BEGIN, "insertFar", this, Optional.empty(), position, code);
+            }
+
+            this.insertFarImpl(position, code);
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, code);
+            }
+        } catch (Exception e) {
+            throw new ActionException(get_class(), "insert", e);
+        }
+    }
+
+    /**
+     * Action insert that accepts a join point to inject and a boolean to indicate if the insertion must be as close as
+     * possible to the join point (false) or as far as possible to the join point (true) based on other insertions over
+     * the targeted join point
+     * 
+     * @param position
+     *            before|after|replace|around
+     * @param code
+     *            the code to inject
+     * @param farthestInsertion
+     *            if true will insert the code as far as possible from the join point, based on the other insertions
+     *            over this targeted join point
+     */
+    public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
+        try {
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.BEGIN, "insertFar", this, Optional.empty(), position, joinPoint);
+            }
+
+            this.insertFarImpl(position, joinPoint);
+            if (hasListeners()) {
+                eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, joinPoint);
             }
         } catch (Exception e) {
             throw new ActionException(get_class(), "insert", e);

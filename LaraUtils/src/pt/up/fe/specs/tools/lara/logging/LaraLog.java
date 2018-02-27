@@ -22,8 +22,8 @@ public class LaraLog extends SpecsLogger {
     private static final String LARAI_TAG = buildLoggerName(LaraLog.class);
     private static final Lazy<LaraLog> LOGGER = buildLazy(LaraLog::new);
     private static boolean debug;
-    // private static String default_debug = "false";
-    private static String default_debug = "true";
+    private static String default_debug = "false";
+    // private static String default_debug = "true";
 
     static {
         String laraLog = System.getProperty("LARA_LOG", default_debug);
@@ -68,6 +68,18 @@ public class LaraLog extends SpecsLogger {
         // KadabraLog.debug("Debug mode is active, to deativate use " + KadabraLog.class.getCanonicalName()
         // + ".seDebug(false)");
         // }
+    }
+
+    public static void printMemory(String message) {
+        long heapSize = Runtime.getRuntime().totalMemory();
+        long heapFreeSize = Runtime.getRuntime().freeMemory();
+        long usedMemory = heapSize - heapFreeSize;
+        // long kbFactor = (long) Math.pow(1024, 1);
+        long mbFactor = (long) Math.pow(1_048_576, 1);
+
+        long heapSizeMb = (int) (heapSize / mbFactor);
+        long currentSizeMb = (int) (usedMemory / mbFactor);
+        debug(message + ": " + currentSizeMb + "/" + heapSizeMb + "Mb");
     }
 
 }

@@ -48,77 +48,68 @@ public class SelectEvent extends BaseEvent {
      *            the resulting pointcut of the selection
      */
     public SelectEvent(Stage stage, String aspectName, String selectLable, String[] pointcutChain, String[] aliases,
-	    FilterExpression[][] filters, Optional<LaraJoinPoint> pointcut2) {
-	super(stage);
-	aspect_name = aspectName;
-	label = selectLable;
-	this.pointcutChain = pointcutChain;
-	this.aliases = aliases;
-	this.filters = filters;
-	pointcut = pointcut2;
+            FilterExpression[][] filters, Optional<LaraJoinPoint> pointcut2) {
+        super(stage);
+        aspect_name = aspectName;
+        label = selectLable;
+        this.pointcutChain = pointcutChain;
+        this.aliases = aliases;
+        this.filters = filters;
+        pointcut = pointcut2;
     }
 
     @Override
     public String toString() {
-	String ret = super.toString();
-	ret += ", aspect " + aspect_name;
-	ret += ", select label " + label;
-	ret += ", pointcut " + arrayToString(pointcutChain);
-	ret += ", aliases " + arrayToString(aliases);
-	ret += ", filters " + "{" + StringUtils.join(Arrays.asList(filters), ",") + "}";
-	if (pointcut != null) {
-	    ret += ", result: " + pointcut;
-	}
-	return ret;
+        String ret = super.toString();
+        ret += ", aspect " + aspect_name;
+        ret += ", select label " + label;
+        ret += ", pointcut " + arrayToString(pointcutChain);
+        ret += ", aliases " + arrayToString(aliases);
+        ret += ", filters " + "{" + StringUtils.join(Arrays.asList(filters), ",") + "}";
+        if (pointcut != null) {
+            ret += ", result: " + pointcut;
+        }
+        return ret;
     }
 
     public String arrayToString(String[] array) {
-	String ret = "{";
-	ret += StringUtils.joinStrings(Arrays.asList(array), ",");
-	/*if (array.length != 0) {
-	    String argument = "'" + array[0] + "'";
-	    ret += argument;
-	    for (int i = 1; i < array.length; i++) {
-		argument = "'" + array[i] + "'";
-		ret += ", " + argument;
-	    }
-	}*/
-	return ret + "}";
+        String ret = "{" + StringUtils.joinStrings(Arrays.asList(array), ",") + "}";
+        return ret + "}";
     }
 
     /**
      * @return the label of the select
      */
     public String getLabel() {
-	return label;
+        return label;
     }
 
     /**
      * @return the pointcut
      */
     public String[] getPointcutChain() {
-	return pointcutChain;
+        return pointcutChain;
     }
 
     /**
      * @return the aliases
      */
     public String[] getAliases() {
-	return aliases;
+        return aliases;
     }
 
     /**
      * @return the filters
      */
     public FilterExpression[][] getFilters() {
-	return filters;
+        return filters;
     }
 
     /**
      * @return the resulting pointcut
      */
     public Optional<LaraJoinPoint> getPointcut() {
-	return pointcut;
+        return pointcut;
     }
 
     /**
@@ -126,7 +117,7 @@ public class SelectEvent extends BaseEvent {
      *            the label of the select to set
      */
     protected void setLabel(String selectLabel) {
-	label = selectLabel;
+        label = selectLabel;
     }
 
     /**
@@ -134,7 +125,7 @@ public class SelectEvent extends BaseEvent {
      *            the joinPointChain to set
      */
     protected void setPointcutChain(String[] joinPointChain) {
-	pointcutChain = joinPointChain;
+        pointcutChain = joinPointChain;
     }
 
     /**
@@ -142,7 +133,7 @@ public class SelectEvent extends BaseEvent {
      *            the aliases to set
      */
     protected void setAliases(String[] aliases) {
-	this.aliases = aliases;
+        this.aliases = aliases;
     }
 
     /**
@@ -150,7 +141,7 @@ public class SelectEvent extends BaseEvent {
      *            the filters to set
      */
     protected void setFilters(FilterExpression[][] filters) {
-	this.filters = filters;
+        this.filters = filters;
     }
 
     /**
@@ -158,14 +149,14 @@ public class SelectEvent extends BaseEvent {
      *            the laraJoinPoint to set
      */
     protected void setPointcut(Optional<LaraJoinPoint> jpset) {
-	pointcut = jpset;
+        pointcut = jpset;
     }
 
     /**
      * @return the aspect_name
      */
     public String getAspect_name() {
-	return aspect_name;
+        return aspect_name;
     }
 
     /**
@@ -173,6 +164,6 @@ public class SelectEvent extends BaseEvent {
      *            the aspect_name to set
      */
     protected void setAspect_name(String aspect_name) {
-	this.aspect_name = aspect_name;
+        this.aspect_name = aspect_name;
     }
 }

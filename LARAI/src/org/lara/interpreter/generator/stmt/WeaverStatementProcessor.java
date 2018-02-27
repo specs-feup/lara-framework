@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.script.Bindings;
-
 import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
@@ -34,6 +32,7 @@ import org.lara.interpreter.weaver.JoinpointUtils;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.events.EventTriggerGenerator;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 
 import larac.objects.Enums;
 import larac.objects.Enums.JoinOperator;
@@ -173,29 +172,47 @@ public class WeaverStatementProcessor {
         final List<String> pointcutChainNames = new ArrayList<>();
         final StringBuilder ret = new StringBuilder(LaraIUtils.getSpace(depth));
         // TODO: change select.get(0) with "children"
-        ret.append("if (" + selectLabel + " != null && " + selectLabel + "[" + select.get(0) + "] != undefined){\n");
+
+        ret.append(LaraIUtils.getSpace(depth) + "if (" + selectLabel + " != null && " + selectLabel
+                + ".hasChildren()){\n");
         final int oldDepth = depth++;
         String finalCode = "";
         for (String jpAlias : select) {
 
             final String simpleJPName = jpAlias.substring(1, jpAlias.length() - 1);
-            final String jpArrayName = "__" + simpleJPName + "Array__";
-            final String assignment = before + "[" + jpAlias + "]"; // TODO: change jpAlias with "children"
+            final String jpArrayName = "__" + simpleJPName + "List__";
+            final String assignment = before + ".getChildren(); // get " + simpleJPName + " join points"; // TODO:
+                                                                                                          // change
+            // jpAlias with
+            // "children"
             ret.append(LaraIUtils.getSpace(depth) + "var " + jpArrayName + " = " + assignment + ";\n");
             final String counterName = getApplyCounter();
             ret.append(LaraIUtils.getSpace(depth));
             ret.append(WeaverStatementProcessor.CARDINAL + simpleJPName + ": ");
             ret.append("for( var " + counterName + "= 0; ");
-            ret.append(counterName + " < " + jpArrayName + ".length; ");
+            ret.append(counterName + " < " + jpArrayName + ".size(); ");
             ret.append(counterName + "++){\n");
 
             finalCode = LaraIUtils.getSpace(depth) + "}\n" + finalCode;
             depth++;
+            String jpWrapper = "__" + simpleJPName + "Wrapper_";
             jpAlias = '$' + simpleJPName;
-            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = " + jpArrayName + "[" + counterName
-                    + "]." + JoinpointUtils.getReferenceProperty() + ";\n");
+            // var __appWrapper_ = __appList__.get(_apply_counter_0); //foreach app
+            ret.append(LaraIUtils.getSpace(depth) + "var " + jpWrapper + " = " + jpArrayName + ".get(" + counterName
+                    + ");\n");
+            ret.append(LaraIUtils.getSpace(depth) + "if(!" + jpWrapper + "." + JoinpointUtils.getAliasProperty()
+                    + ".equals('" + simpleJPName + "')) {\n");
+            ret.append(LaraIUtils.getSpace(depth + 1) + "continue;\n");
+            ret.append(LaraIUtils.getSpace(depth) + "}\n");
+            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = " + jpWrapper + "."
+                    + JoinpointUtils.getReferenceProperty() + ";\n");
+            // ret.append(LaraIUtils.getSpace(depth) + "println('current wrapper: '+" + jpWrapper + ");\n");
+            // ret.append(LaraIUtils.getSpace(depth) + "println('current ref: '+" + jpWrapper + "."
+            // + JoinpointUtils.getReferenceProperty() + ");\n");
+            // ret.append(LaraIUtils.getSpace(depth) + "println('current join point: '+" + jpAlias +
+            // ".joinPointType);\n");
             pointcutChainNames.add(jpAlias);
-            before = jpArrayName + "[" + counterName + "]";
+            before = jpWrapper;// jpArrayName + "[" + counterName + "]";
         }
         if (!conditionExpr.exprs.isEmpty()) {
             ret.append(LaraIUtils.getSpace(depth) + "if(!(");
@@ -301,8 +318,8 @@ public class WeaverStatementProcessor {
         final StringBuilder ret = new StringBuilder(MasterWeaver.WEAVER_NAME);
         final String joinFunctionName = exprOp.name.toLowerCase();
         try {
-            MasterWeaver.class.getMethod(joinFunctionName, String.class, Bindings.class, String.class,
-                    Bindings.class);
+            MasterWeaver.class.getMethod(joinFunctionName, String.class, LaraJoinPoint.class, String.class,
+                    LaraJoinPoint.class);
         } catch (final NoSuchMethodException e) {
             final JoinOperator op = JoinOperator.valueOf(joinFunctionName.toUpperCase());
             throw new RuntimeException(

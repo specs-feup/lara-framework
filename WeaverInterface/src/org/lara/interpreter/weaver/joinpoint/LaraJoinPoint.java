@@ -15,6 +15,7 @@ package org.lara.interpreter.weaver.joinpoint;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
@@ -167,7 +168,7 @@ public class LaraJoinPoint {
      *            the parent to set
      */
     public void setParent(LaraJoinPoint parent) {
-        this._jp_parent_ = parent;
+        _jp_parent_ = parent;
     }
 
     /**
@@ -175,6 +176,17 @@ public class LaraJoinPoint {
      */
     public List<LaraJoinPoint> getChildren() {
         return children;
+    }
+
+    /**
+     * @return the children with the given alias
+     */
+    public List<LaraJoinPoint> getChildren(String alias) {
+        return children.stream().filter(c -> c.getClassAlias().equals(alias)).collect(Collectors.toList());
+    }
+
+    public boolean hasChildren() {
+        return !children.isEmpty();
     }
 
     /**
@@ -212,7 +224,7 @@ public class LaraJoinPoint {
      *            the reference to set
      */
     public void setReference(JoinPoint reference) {
-        this._jp_reference_ = reference;
+        _jp_reference_ = reference;
     }
 
     @Override
