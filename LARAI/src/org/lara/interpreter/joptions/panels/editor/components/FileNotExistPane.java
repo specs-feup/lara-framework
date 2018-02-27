@@ -23,9 +23,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 import org.lara.interpreter.joptions.panels.editor.utils.Colors;
+
+import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class FileNotExistPane extends Panel {
 

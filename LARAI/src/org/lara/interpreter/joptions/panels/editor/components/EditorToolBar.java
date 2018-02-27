@@ -13,8 +13,8 @@
 
 package org.lara.interpreter.joptions.panels.editor.components;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -37,12 +37,13 @@ import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.FocusGainedListener;
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
 import org.lara.interpreter.joptions.panels.editor.listeners.StrokesAndActions;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 import org.lara.interpreter.joptions.panels.editor.tabbed.TabsContainerPanel;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.swing.GenericActionListener;
+import pt.up.fe.specs.util.utilities.heapwindow.HeapBar;
 
 public class EditorToolBar extends JPanel {
 
@@ -65,14 +66,18 @@ public class EditorToolBar extends JPanel {
     private JButton debugButton;
     private JComboBox<Integer> editorCombo;
     private JComboBox<Integer> consoleCombo;
+    private HeapBar heapBar;
 
     public EditorToolBar(EditorPanel editorPanel) {
-        super(new FlowLayout(FlowLayout.LEFT));
+        // super(new FlowLayout(FlowLayout.LEFT));
+        super(new BorderLayout());
+
+        // FlowLayout leftArea = new FlowLayout(FlowLayout.LEFT);
         // setBackground(Colors.BLUE_GREY);
         editor = editorPanel;
         // menuBar = new JToolBar();
         // add(menuBar);
-        toolBar = newToolBar("Tool Bar");
+        toolBar = newLeftToolBar("Tool Bar");
         // toolBar.setBackground(Colors.BLUE_GREY);
         addFileButtons();
         toolBar.addSeparator();
@@ -83,16 +88,19 @@ public class EditorToolBar extends JPanel {
         addFontControls();
 
         addFocusListener(new FocusGainedListener(e -> getCurrentTab().requestFocus()));
-
+        add(new JLabel(), BorderLayout.CENTER);
+        heapBar = new HeapBar();
+        add(heapBar, BorderLayout.EAST);
+        heapBar.run();
     }
 
     private void addFontControls() {
 
         Integer[] values = { 10, 12, 14, 16, 18, 20 };
 
-        editorCombo = addSizeCombo(values, 12, "Editor Font Size", "Editor Font Size", editor::setTabsFont);
+        editorCombo = addSizeCombo(values, 12, "Editor Font Size", " Editor Font Size ", editor::setTabsFont);
 
-        consoleCombo = addSizeCombo(values, EditorPanel.DEFAULT_FONT, "Output Font Size", "Output Font Size",
+        consoleCombo = addSizeCombo(values, EditorPanel.DEFAULT_FONT, "Output Font Size", " Output Font Size ",
                 editor::setOutputAreaFont);
 
     }
@@ -117,7 +125,7 @@ public class EditorToolBar extends JPanel {
             Consumer<Float> c) {
 
         JLabel sizeLabel = new JLabel(label);
-        add(sizeLabel);
+        toolBar.add(sizeLabel);
 
         JComboBox<Integer> combo = new JComboBox<>(values);
 
@@ -139,15 +147,16 @@ public class EditorToolBar extends JPanel {
             }
         });
 
-        add(combo);
+        toolBar.add(combo);
         return combo;
     }
 
-    private JToolBar newToolBar(String name) {
+    private JToolBar newLeftToolBar(String name) {
         JToolBar toolBar = new JToolBar(name);
+        // toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         toolBar.setFloatable(false);
 
-        add(toolBar);
+        add(toolBar, BorderLayout.WEST);
         return toolBar;
     }
 

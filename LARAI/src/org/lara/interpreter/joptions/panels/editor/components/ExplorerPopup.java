@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
+import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class ExplorerPopup extends JPopupMenu {
 

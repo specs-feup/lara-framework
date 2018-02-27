@@ -41,11 +41,11 @@ import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
 import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.lara.interpreter.joptions.panels.editor.TextEditorDemo;
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class EditorConfigurer {
 

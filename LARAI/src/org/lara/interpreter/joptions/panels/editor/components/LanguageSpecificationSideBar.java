@@ -37,7 +37,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericActionListener;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
@@ -47,6 +46,8 @@ import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.Select;
+
+import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class LanguageSpecificationSideBar extends JPanel {
 

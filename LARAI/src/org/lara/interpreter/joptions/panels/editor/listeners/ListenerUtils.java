@@ -25,6 +25,8 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import pt.up.fe.specs.util.swing.GenericActionListener;
+
 public class ListenerUtils {
 
     // tab.getTextArea()

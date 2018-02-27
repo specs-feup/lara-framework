@@ -49,8 +49,9 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.FileTreeCellRenderer;
 import org.lara.interpreter.joptions.panels.editor.listeners.GenericKeyListener;
-import org.lara.interpreter.joptions.panels.editor.listeners.GenericMouseListener;
 import org.lara.interpreter.joptions.panels.editor.utils.Factory;
+
+import pt.up.fe.specs.util.swing.GenericMouseListener;
 
 public class Explorer extends JPanel {
 

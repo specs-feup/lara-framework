@@ -60,7 +60,6 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.properties.SpecsProperty;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
@@ -658,7 +657,7 @@ public class LaraI {
      */
     public static void main(String args[]) {
         SpecsSystem.programStandardInit();
-        SpecsProperty.ShowStackTrace.applyProperty("true");
+        // SpecsProperty.ShowStackTrace.applyProperty("true");
         exec(args, new DefaultWeaver());
     }
 
