@@ -39,8 +39,8 @@ import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.CodeElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -231,7 +231,17 @@ public class AspectIrParser {
         // laraComment.addTag(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH, aspectName));
         // }
 
-        laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH, aspectName));
+        JsDocTag aspectTag = laraComment.getLastTag(JsDocTagName.ASPECT);
+        if (aspectTag == null) {
+            aspectTag = new JsDocTag(JsDocTagName.ASPECT);
+            laraComment.addTag(aspectTag);
+        }
+
+        // Set aspect name
+        aspectTag.setValue(JsDocTagProperty.NAME_PATH, aspectName);
+        // laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ASPECT).setValue(JsDocTagProperty.NAME_PATH,
+        // aspectName));
+
         laraComment.addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, aspectName));
 
         // Process each input

@@ -2,6 +2,9 @@ package pt.up.fe.specs.lara.doc.jsdoc;
 
 public enum JsDocTagName {
 
+    /**
+     * Properties NAME_PATH
+     */
     ASPECT("aspect"),
     /**
      * Properties NAME_PATH

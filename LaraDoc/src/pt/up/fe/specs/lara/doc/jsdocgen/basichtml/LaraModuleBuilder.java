@@ -62,6 +62,7 @@ public class LaraModuleBuilder {
         AspectIrDoc doc = module.getDocumentation().get();
         // In case name filter is not defined
         Predicate<String> filter = nameFilter == null ? string -> true : nameFilter;
+
         List<AspectIrElement> elements = doc.getTopLevelElements().stream()
                 .filter(element -> filter.test(element.getName()))
                 .collect(Collectors.toList());
