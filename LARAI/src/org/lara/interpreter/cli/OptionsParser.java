@@ -316,7 +316,6 @@ public class OptionsParser {
     }
 
     public static XmlPersistence getXmlPersistence(StoreDefinition laraiDefinition) {
-        System.out.println("LARAI DEF:" + laraiDefinition);
 
         XmlPersistence persistence = new XmlPersistence(laraiDefinition);
 
