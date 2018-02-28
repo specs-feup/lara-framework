@@ -1,13 +1,14 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import org.lara.interpreter.weaver.interf.events.Stage;
-import java.util.Optional;
-import org.lara.interpreter.exception.AttributeException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import java.util.stream.Collectors;
-import java.util.Arrays;
+import org.lara.interpreter.weaver.interf.events.Stage;
 
 /**
  * Auto-Generated class for join point AFolder

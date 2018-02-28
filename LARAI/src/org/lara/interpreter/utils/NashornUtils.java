@@ -22,6 +22,10 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 
 public class NashornUtils {
 
+    public static boolean isUndefined(Object object) {
+        return ScriptObjectMirror.isUndefined(object);
+    }
+
     public static boolean isJSArray(Object object) {
 
         return object instanceof ScriptObjectMirror

@@ -25,7 +25,6 @@ import org.lara.interpreter.weaver.utils.FilterExpression;
 import org.lara.interpreter.weaver.utils.JsScriptEngine;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.internal.objects.NativeFunction;
 
 /**
  * Utility class for handling the LaraJoinpoint class
@@ -41,7 +40,8 @@ public class JoinpointUtils {
     private static final String PARENT_PROPERTY = "_jp_parent_";
     private static final String HAS_CHILDREN_FUNCTION = "hasChildren";
     private final JsScriptEngine scriptEngine;
-    private final List<NativeFunction> actions = null;
+    // TODO: Java 9 replace
+    // private final List<NativeFunction> actions = null;
 
     public JoinpointUtils(NashornScriptEngine engine) {
         scriptEngine = new JsScriptEngine(engine);
@@ -206,11 +206,11 @@ public class JoinpointUtils {
     }
 
     /**
-     * @return the actions
+     * @return the actions TODO: Java 9 Replace
      */
-    public List<NativeFunction> getActions() {
-        return actions;
-    }
+    // public List<NativeFunction> getActions() {
+    // return actions;
+    // }
 
     // public static String getReferenceProperty() {
     // return REFERENCE_PROPERTY;

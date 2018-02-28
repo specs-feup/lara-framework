@@ -51,7 +51,6 @@ import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.internal.runtime.Undefined;
 import larai.LaraI;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
@@ -376,7 +375,8 @@ public class MasterWeaver {
             } else {
 
                 String errorMsg = "Select from variable " + jpChain[0] + " is not supported: variable is ";
-                if (joinPointReferences instanceof Undefined) {
+                // if (joinPointReferences instanceof Undefined) {
+                if (NashornUtils.isUndefined(joinPointReferences)) {
                     errorMsg += "undefined.";
                 } else {
                     errorMsg += " variable is of type " + joinPointReferences.getClass().getSimpleName() + ".";

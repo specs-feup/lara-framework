@@ -1,7 +1,7 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.interf.JoinPoint;
 
 /**
  * Abstract class containing the global attributes and default action exception.
