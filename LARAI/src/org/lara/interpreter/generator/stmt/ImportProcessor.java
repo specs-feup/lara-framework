@@ -48,6 +48,8 @@ import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public class ImportProcessor {
@@ -242,9 +244,18 @@ public class ImportProcessor {
     }
 
     private void importClassPaths(final List<File> jarFolderFiles) {
+        // Check if Java 9 or greater
+        if (SpecsSystem.getJavaVersionNumber() > 1.8) {
+            SpecsLogs.msgInfo("Importing classes dynamically not supported for Java 9 or greater");
+            return;
+        }
 
         URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        // URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        // Class.forName("nameofclass", true, new URLClassLoader(urlarrayofextrajarsordirs));
+
         Class<URLClassLoader> sysclass = URLClassLoader.class;
+
         for (final File classPath : jarFolderFiles) {
             interpreter.out().println(" " + MessageConstants.BRANCH_STR + SpecsIo.getCanonicalPath(classPath));
 
