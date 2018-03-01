@@ -16,7 +16,7 @@ public class AspectElement extends AAspectIrElement {
         // System.out.println("LAST TAG ASPECT:" + getComment().getLastTag(JsDocTagName.ASPECT));
         // System.out.println("LAST TAG ASPECT NAME_PATH:"
         // + getComment().getLastTag(JsDocTagName.ASPECT).getValue(JsDocTagProperty.NAME_PATH));
-        String aspectName = getComment().getLastTag(JsDocTagName.ASPECT).getValue(JsDocTagProperty.NAME_PATH);
+        String aspectName = getComment().getTag(JsDocTagName.ASPECT).getValue(JsDocTagProperty.NAME_PATH);
         Preconditions.checkNotNull(aspectName, "AspectElements should always have a name");
         return aspectName;
     }

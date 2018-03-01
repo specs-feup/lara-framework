@@ -22,7 +22,6 @@ import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.comments.LaraCommentsParser;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
-import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 
@@ -87,10 +86,14 @@ public class AspectIrDocBuilder {
     }
 
     public void addImportPath(String importPath) {
-        JsDocTag importTag = new JsDocTag(JsDocTagName.IMPORT).setValue(JsDocTagProperty.NAME_PATH, importPath);
+        // JsDocTag importTag = new JsDocTag(JsDocTagName.IMPORT).setValue(JsDocTagProperty.NAME_PATH, importPath);
         // Add import tag to class elements
         aspectIrElements.stream()
                 .filter(ClassElement.class::isInstance)
-                .forEach(classElement -> classElement.getComment().addTagIfMissing(importTag));
+                // .forEach(classElement -> classElement.getComment().addTagIfMissing(importTag));
+                .forEach(classElement -> classElement.getComment()
+                        .getTag(JsDocTagName.IMPORT)
+                        .setValueIfMissing(JsDocTagProperty.NAME_PATH, importPath));
+
     }
 }

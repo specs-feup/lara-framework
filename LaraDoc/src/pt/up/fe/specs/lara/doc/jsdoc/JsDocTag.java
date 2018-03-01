@@ -87,6 +87,14 @@ public class JsDocTag {
     //
     // }
 
+    public JsDocTag setValueIfMissing(JsDocTagProperty property, String value) {
+        if (!hasProperty(property)) {
+            setValue(property, value);
+        }
+
+        return this;
+    }
+
     public JsDocTag setValue(JsDocTagProperty property, String value) {
         setValue(property.getPropertyName(), value);
         return this;

@@ -112,8 +112,9 @@ public class AspectIrDoc {
             topLevelElements.add(assignment);
 
             // Add alias
-            assignment.getComment()
-                    .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, parts[0]));
+            // assignment.getComment()
+            // .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, parts[0]));
+            assignment.getComment().getTag(JsDocTagName.ALIAS).setValueIfMissing(JsDocTagProperty.NAME_PATH, parts[0]);
 
             return;
         }
@@ -131,8 +132,9 @@ public class AspectIrDoc {
             // In both cases, they are added to top-level elements
             topLevelElements.add(assignment);
             // Add alias
-            assignment.getComment()
-                    .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, parts[0]));
+            // assignment.getComment()
+            // .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, parts[0]));
+            assignment.getComment().getTag(JsDocTagName.ALIAS).setValueIfMissing(JsDocTagProperty.NAME_PATH, parts[0]);
             return;
         }
 
@@ -177,8 +179,9 @@ public class AspectIrDoc {
         }
 
         // Add alias
-        assignment.getComment()
-                .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, memberName));
+        // assignment.getComment()
+        // .addTagIfMissing(new JsDocTag(JsDocTagName.ALIAS).setValue(JsDocTagProperty.NAME_PATH, memberName));
+        assignment.getComment().getTag(JsDocTagName.ALIAS).setValueIfMissing(JsDocTagProperty.NAME_PATH, memberName);
     }
 
     private static String extractParentClass(AspectIrElement rightHand) {
