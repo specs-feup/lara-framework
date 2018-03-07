@@ -20,8 +20,11 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import larai.LaraI;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 
 public class LaraUnitTester {
+
+    private static final String DEFAULT_TEST_FOLDERNAME = "test";
 
     private final WeaverEngine weaverEngine;
 
@@ -33,7 +36,19 @@ public class LaraUnitTester {
         return LaraI.exec(args, weaverEngine);
     }
 
+    /**
+     * 
+     * @param baseFolder
+     * @param testFolder
+     *            can be null
+     * @return
+     */
     public boolean testFolder(File baseFolder, File testFolder) {
+        testFolder = checkTestFolder(baseFolder, testFolder);
+        if (testFolder == null) {
+            return false;
+        }
+
         // Get test files
         List<File> testFiles = SpecsIo.getFilesRecursive(testFolder, "lara");
 
@@ -74,6 +89,27 @@ public class LaraUnitTester {
         }
 
         return passedAllTest;
+    }
+
+    private File checkTestFolder(File baseFolder, File testFolder) {
+
+        // If test folder is null, check if default folder exists
+        if (testFolder == null) {
+            File defaultTestFolder = new File(baseFolder, DEFAULT_TEST_FOLDERNAME);
+
+            // If folder does not exist, exit with warning
+            if (!defaultTestFolder.isDirectory()) {
+                SpecsLogs.msgInfo("No test folder specified and no default 'test' folder found, returning");
+                return null;
+            }
+
+            // Test folder exists, inform user
+            SpecsLogs.msgInfo("Using default test folder '" + defaultTestFolder.getAbsolutePath() + "'");
+            return defaultTestFolder;
+        }
+
+        // Check if test folder exists
+        return testFolder.isDirectory() ? testFolder : null;
     }
 
     // private LaraArgs getTestArguments(LaraArgs globalArguments, File baseFolder, File testFolder) {
