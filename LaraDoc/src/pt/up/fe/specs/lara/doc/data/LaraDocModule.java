@@ -121,8 +121,12 @@ public class LaraDocModule extends LaraDocNode {
         this.documentation = documentation;
     }
 
-    public Optional<AspectIrDoc> getDocumentation() {
+    public Optional<AspectIrDoc> getDocumentationTry() {
         return Optional.ofNullable(documentation);
+    }
+
+    public AspectIrDoc getDocumentation() {
+        return getDocumentationTry().orElseThrow(() -> new RuntimeException("Documentation not set"));
     }
 
 }

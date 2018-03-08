@@ -39,6 +39,7 @@ public class JsDocTagParser {
         DEFAULT_PARSERS.put("augments", (tagName, contents) -> JsDocTagParser.parseAugments(contents));
         DEFAULT_PARSERS.put("extends", (tagName, contents) -> JsDocTagParser.parseAugments(contents));
         DEFAULT_PARSERS.put("deprecated", JsDocTagParser::parseTagOnly);
+        DEFAULT_PARSERS.put("test", JsDocTagParser::parseTagOnly);
         DEFAULT_PARSERS.put("param", (tagName, contents) -> JsDocTagParser.parseParam(contents));
         DEFAULT_PARSERS.put("arg", (tagName, contents) -> JsDocTagParser.parseParam(contents));
         DEFAULT_PARSERS.put("argument", (tagName, contents) -> JsDocTagParser.parseParam(contents));

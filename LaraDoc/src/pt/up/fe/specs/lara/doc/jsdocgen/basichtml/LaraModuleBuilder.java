@@ -54,12 +54,12 @@ public class LaraModuleBuilder {
 
     public String getHtml() {
 
-        if (!module.getDocumentation().isPresent()) {
+        if (!module.getDocumentationTry().isPresent()) {
             return "";
             // return "[no module documentation found]";
         }
 
-        AspectIrDoc doc = module.getDocumentation().get();
+        AspectIrDoc doc = module.getDocumentationTry().get();
         // In case name filter is not defined
         Predicate<String> filter = nameFilter == null ? string -> true : nameFilter;
 
