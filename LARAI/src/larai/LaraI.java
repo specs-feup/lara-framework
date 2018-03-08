@@ -532,18 +532,27 @@ public class LaraI {
             return;
         }
 
-        // Start interpretation
-        interpreter.interpret(asps);
+        try {
+            // Start interpretation
+            interpreter.interpret(asps);
 
-        String main = options.getMainAspect();
-        if (main == null) {
+            String main = options.getMainAspect();
+            if (main == null) {
 
-            main = asps.main;
+                main = asps.main;
+            }
+
+            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
+                    options.getLaraFile().getPath());
+            finish(engine);
+        } catch (Exception e) {
+            // Close weaver
+            weaver.close();
+
+            // Rethrow exception
+            throw e;
+            // throw new RuntimeException("Exception during weaving:", e);
         }
-
-        weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
-                options.getLaraFile().getPath());
-        finish(engine);
 
     }
 
