@@ -33,10 +33,11 @@ public interface LaraUnitOptions {
             .setLabel("LARA base folder");
 
     /**
-     * Folder with files to test. Can be null.
+     * Folder with files to test. Can be empty.
      */
     DataKey<File> TEST_FOLDER = KeyFactory.folder("lara-unit-test", false)
             .setLabel("Folder with tests")
+            // Disables default
             .setDefault(() -> null);
 
     /**

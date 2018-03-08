@@ -14,7 +14,9 @@
 package pt.up.fe.specs.lara.unit;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
@@ -43,10 +45,13 @@ public class LaraUnitTester {
      *            can be null
      * @return
      */
-    public boolean testFolder(File baseFolder, File testFolder) {
+    public LaraUnitReport testFolder(File baseFolder, File testFolder) {
+        // Using LinkedHashMap to maitain the order of entries
+        Map<File, List<TestResult>> testResults = new LinkedHashMap<>();
+
         testFolder = checkTestFolder(baseFolder, testFolder);
         if (testFolder == null) {
-            return false;
+            return new LaraUnitReport(testResults);
         }
 
         // Get test files
@@ -59,12 +64,13 @@ public class LaraUnitTester {
                 globalArguments);) {
 
             // Test each file
-            boolean passedAllTest = true;
+            // boolean passedAllTest = true;
             for (File testFile : testFiles) {
-                boolean testResult = laraUnitHarness.testFile(testFile);
-                if (!testResult) {
-                    passedAllTest = false;
-                }
+                List<TestResult> results = laraUnitHarness.testFile(testFile);
+                testResults.put(testFile, results);
+                // if (!testResult) {
+                // passedAllTest = false;
+                // }
                 /*            // For each file, build an iterable
                 Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
                 
@@ -92,7 +98,7 @@ public class LaraUnitTester {
                 */
             }
 
-            return passedAllTest;
+            return new LaraUnitReport(testResults);
         }
 
     }

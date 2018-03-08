@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.unit;
 import java.io.File;
 import java.util.Arrays;
 
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -36,7 +37,6 @@ public class LaraUnitLauncher {
         App laraUnitApp = buildApp();
 
         JOptionsUtils.executeApp(laraUnitApp, Arrays.asList(args));
-
     }
 
     private static App buildApp() {
@@ -54,28 +54,42 @@ public class LaraUnitLauncher {
      * @return
      */
     private static int execute(DataStore options) {
+
         // Get the base folder
         File baseFolder = options.get(LaraUnitOptions.BASE_FOLDER);
 
         // Get the test folder
-        File testFolder = options.get(LaraUnitOptions.TEST_FOLDER);
+        File testFolder = options.hasValue(LaraUnitOptions.TEST_FOLDER) ? options.get(LaraUnitOptions.TEST_FOLDER)
+                : null;
 
         String weaverClassname = options.get(LaraUnitOptions.WEAVER_CLASS);
+        if (weaverClassname.isEmpty()) {
+            weaverClassname = DefaultWeaver.class.getName();
+        }
 
         WeaverEngine weaverEngine = null;
         try {
             Class<?> weaverEngineClass = Class.forName(weaverClassname);
             weaverEngine = (WeaverEngine) weaverEngineClass.newInstance();
         } catch (Exception e) {
-            SpecsLogs.msgInfo("Could not create weaver engine: " + e.getMessage());
+            SpecsLogs.msgInfo("Could not create weaver engine:");
+            String message = e.getMessage();
+            if (message.isEmpty()) {
+                message = "Could not find class '" + weaverClassname + "', please verify if the classpath is correct";
+            }
+
+            SpecsLogs.msgInfo(message);
             return -1;
         }
 
         LaraUnitTester laraUnitTester = new LaraUnitTester(weaverEngine);
 
-        boolean result = laraUnitTester.testFolder(baseFolder, testFolder);
+        LaraUnitReport laraUnitResport = laraUnitTester.testFolder(baseFolder, testFolder);
 
-        return result ? 0 : -1;
+        SpecsLogs.msgInfo("LaraUnit test report");
+        SpecsLogs.msgInfo(laraUnitResport.getReport());
+
+        return laraUnitResport.isSuccess() ? 0 : -1;
 
     }
 }

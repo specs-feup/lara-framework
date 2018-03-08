@@ -18,10 +18,12 @@ import java.io.File;
 /**
  * Represents a single LaraUnit test.
  * 
+ * @deprecated
  * @author JoaoBispo
  *
  */
 // public class LaraUnitHarness implements Closeable {
+@Deprecated
 public class LaraUnitHarness {
 
     private final File laraTest;

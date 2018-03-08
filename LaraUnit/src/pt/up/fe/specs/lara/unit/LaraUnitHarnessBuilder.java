@@ -16,7 +16,6 @@ package pt.up.fe.specs.lara.unit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,7 @@ import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.data.LaraDocTop;
+import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.parser.LaraDocParser;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
@@ -99,29 +99,31 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
     }
     */
 
-    public Iterable<LaraUnitHarness> buildTests(File testFile) {
-        // Get all methods in test file to iterate over
+    // public Iterable<LaraUnitHarness> buildTests(File testFile) {
+    // // Get all methods in test file to iterate over
+    //
+    // return () -> new LaraUnitHarnessIterator();
+    // }
+    //
+    // private class LaraUnitHarnessIterator implements Iterator<LaraUnitHarness> {
+    //
+    // @Override
+    // public boolean hasNext() {
+    // // TODO Auto-generated method stub
+    // return false;
+    // }
+    //
+    // @Override
+    // public LaraUnitHarness next() {
+    //
+    // return new LaraUnitHarness(null);
+    // }
+    //
+    // }
 
-        return () -> new LaraUnitHarnessIterator();
-    }
+    public List<TestResult> testFile(File testFile) {
 
-    private class LaraUnitHarnessIterator implements Iterator<LaraUnitHarness> {
-
-        @Override
-        public boolean hasNext() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public LaraUnitHarness next() {
-
-            return new LaraUnitHarness(null);
-        }
-
-    }
-
-    public boolean testFile(File testFile) {
+        List<TestResult> testResults = new ArrayList<>();
 
         // Build arguments for the test file
         List<String> testFileArgs = buildFileArgs(testFile);
@@ -130,15 +132,19 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         String importPath = module.getImportPath();
         List<AspectIrElement> elements = module.getDocumentation().getTopLevelElements().stream()
+                // Only aspects and functions
                 .filter(element -> element instanceof AspectElement || element instanceof FunctionDeclElement)
+                // Only if marked as test
+                .filter(element -> element.getComment().hasTag(JsDocTagName.TEST))
                 .collect(Collectors.toList());
 
-        boolean allPassed = true;
+        // boolean allPassed = true;
         for (AspectIrElement element : elements) {
-            boolean passed = testElement(element, testFileArgs, importPath);
-            if (!passed) {
-                allPassed = false;
-            }
+            TestResult testResult = testElement(element, testFileArgs, importPath);
+            testResults.add(testResult);
+            // if (!testResult.isSuccess()) {
+            // allPassed = false;
+            // }
         }
 
         // Import path
@@ -150,11 +156,13 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         // - import
         // - name of the function
 
-        return allPassed;
+        return testResults;
     }
 
-    private boolean testElement(AspectIrElement element, List<String> testFileArgs, String importPath) {
+    private TestResult testElement(AspectIrElement element, List<String> testFileArgs, String importPath) {
         File testAspect = buildTestAspect(element, importPath);
+
+        String testName = importPath + "." + element.getName();
 
         // Prepend args with generated aspect file
         String[] args = new String[testFileArgs.size() + 1];
@@ -165,25 +173,40 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         // Call LaraI
         boolean success = false;
+        Throwable cause = null;
+
+        long tic = System.nanoTime();
+        long toc = -1;
         try {
             success = LaraI.exec(args, weaverEngine);
+            toc = System.nanoTime();
         } catch (Exception e) {
-            System.out.println("EXCEPTION");
-            String testName = importPath + "::" + element.getName();
+            // Measure failed test time
+            toc = System.nanoTime();
+
+            // Flag failure
+            success = false;
+
+            // Store cause
+            cause = e;
+
             // Get primary cause
-            Throwable cause = e;
-            while (cause.getCause() != null) {
-                cause = cause.getCause();
+            Throwable firstCause = cause;
+            while (firstCause.getCause() != null) {
+                firstCause = firstCause.getCause();
             }
 
-            SpecsLogs.msgInfo("Test '" + testName + "' failed: " + cause.getMessage());
-            success = false;
+            SpecsLogs.msgInfo("[FAIL] Test '" + testName + "': " + firstCause.getMessage());
+
         }
+
+        long nanoTime = toc - tic;
 
         // After testing, delete file
         SpecsIo.delete(testAspect);
 
-        return success;
+        return success ? TestResult.success(importPath, element.getName(), nanoTime)
+                : TestResult.fail(importPath, element.getName(), nanoTime, cause);
     }
 
     private File buildTestAspect(AspectIrElement element, String importPath) {
