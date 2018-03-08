@@ -689,6 +689,9 @@ public class GeneratorUtils {
      * @return
      */
     public static JavaType generateJoinPointBaseType(String _package, String type) {
+        if (type.equals("joinpoint")) {
+            type = "joinPoint"; // otherwise it will generate code with an error
+        }
         return new JavaType(GenConstants.abstractPrefix() + Utils.firstCharToUpper(type), _package);
     }
 
