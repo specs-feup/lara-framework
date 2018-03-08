@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.parsing.arguments.ArgumentsParser;
 import pt.up.fe.specs.util.utilities.StringLines;
 
@@ -26,6 +28,10 @@ public class LaraArgs {
     private static final String GLOBAL_ARGS_FILENAME = "test." + ARGS_EXTENSION;
     private static final String ARGS_COMMENT = "#";
 
+    private static final String BASE_MACRO = "$BASE";
+
+    private int includeIndex;
+
     public static String getArgsExtension() {
         return ARGS_EXTENSION;
     }
@@ -34,18 +40,26 @@ public class LaraArgs {
         return GLOBAL_ARGS_FILENAME;
     }
 
-    private final List<String> currentArgs;
-
-    public LaraArgs() {
-        this(new ArrayList<>());
+    public static String getLocalArgsFilename(File testFile) {
+        return testFile.getName() + "." + ARGS_EXTENSION;
     }
 
-    private LaraArgs(List<String> currentArgs) {
+    private final File baseFolder;
+    private final List<String> currentArgs;
+
+    public LaraArgs(File baseFolder) {
+        this(baseFolder, new ArrayList<>());
+    }
+
+    private LaraArgs(File baseFolder, List<String> currentArgs) {
+        this.baseFolder = baseFolder;
         this.currentArgs = currentArgs;
+
+        includeIndex = -1;
     }
 
     public LaraArgs copy() {
-        return new LaraArgs(new ArrayList<>(currentArgs));
+        return new LaraArgs(baseFolder, new ArrayList<>(currentArgs));
     }
 
     public void addArgs(File argsFile) {
@@ -68,8 +82,29 @@ public class LaraArgs {
             }
 
             // Parse arguments
-            currentArgs.addAll(parser.parse(trimmedLine));
+            // currentArgs.addAll(parser.parse(trimmedLine));
+            addArgs(parser.parse(trimmedLine));
         }
+    }
+
+    public void addArgs(List<String> args) {
+        args.stream().forEach(this::addArg);
+    }
+
+    public void addArg(String arg) {
+        // Check if include
+        if (arg.equals("-i")) {
+            if (includeIndex != -1) {
+                SpecsLogs.msgInfo("Detected multiple include argument '-i'");
+            }
+
+            includeIndex = currentArgs.size();
+        }
+
+        // Preprocess arg
+        arg = arg.replace(BASE_MACRO, baseFolder.getAbsolutePath());
+
+        currentArgs.add(arg);
     }
 
     public List<String> getCurrentArgs() {
@@ -85,6 +120,48 @@ public class LaraArgs {
         }
 
         addArgs(globalArgsFile);
+    }
+
+    @Override
+    public String toString() {
+        return currentArgs.toString();
+    }
+
+    public void addLocalArgs(File testFile) {
+        // Check if there is a local arguments file
+
+        File parentFile = SpecsIo.getParent(testFile);
+        File localArgsFile = new File(parentFile, LaraArgs.getLocalArgsFilename(testFile));
+
+        if (!localArgsFile.isFile()) {
+            return;
+        }
+
+        addArgs(localArgsFile);
+    }
+
+    public void addInclude(File baseFolder) {
+        // If no includes flag, add it
+        if (includeIndex == -1) {
+            includeIndex = currentArgs.size();
+            currentArgs.add("-i");
+            currentArgs.add("");
+        }
+
+        // Includes
+        int includesIndex = includeIndex + 1;
+
+        String currentIncludes = currentArgs.get(includesIndex);
+        String updatedIncludes = updateIncludes(currentIncludes, baseFolder.getAbsolutePath());
+        currentArgs.set(includesIndex, updatedIncludes);
+    }
+
+    private String updateIncludes(String currentIncludes, String path) {
+        if (currentIncludes.isEmpty()) {
+            return path;
+        }
+
+        return currentIncludes + File.pathSeparator + path;
     }
 
 }

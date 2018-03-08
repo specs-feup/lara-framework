@@ -52,43 +52,49 @@ public class LaraUnitTester {
         // Get test files
         List<File> testFiles = SpecsIo.getFilesRecursive(testFolder, "lara");
 
-        LaraArgs globalArguments = new LaraArgs();
+        LaraArgs globalArguments = new LaraArgs(baseFolder);
         globalArguments.addGlobalArgs(testFolder);
 
-        LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(baseFolder, globalArguments);
+        try (LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(weaverEngine, baseFolder,
+                globalArguments);) {
 
-        // Test each file
-        boolean passedAllTest = true;
-        for (File testFile : testFiles) {
-
-            /*            // For each file, build an iterable
-            Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
-            
-            Iterator<LaraUnitHarness> iterator = harnessIterable.iterator();
-            while (iterator.hasNext()) {
-            
-                try (LaraUnitHarness laraTest = iterator.next()) {
-            
+            // Test each file
+            boolean passedAllTest = true;
+            for (File testFile : testFiles) {
+                boolean testResult = laraUnitHarness.testFile(testFile);
+                if (!testResult) {
+                    passedAllTest = false;
                 }
-            
-            }
-            
-            // Create test harness and arguments
-            // Pair<File, String[]> testAndArgs = laraUnitHarness.buildTestAndArguments(testFile);
-            // File testHarness = laraUnitHarness.buildTest(testFile);
-            
-            // Create arguments
-            String[] args = laraUnitHarness.buildArguments(testFile);
-            // LaraArgs testArguments = getTestArguments(globalArguments, baseFolder, testFolder);
-            
-            boolean success = test(args);
-            if (!success) {
+                /*            // For each file, build an iterable
+                Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
+                
+                Iterator<LaraUnitHarness> iterator = harnessIterable.iterator();
+                while (iterator.hasNext()) {
+                
+                try (LaraUnitHarness laraTest = iterator.next()) {
+                
+                }
+                
+                }
+                
+                // Create test harness and arguments
+                // Pair<File, String[]> testAndArgs = laraUnitHarness.buildTestAndArguments(testFile);
+                // File testHarness = laraUnitHarness.buildTest(testFile);
+                
+                // Create arguments
+                String[] args = laraUnitHarness.buildArguments(testFile);
+                // LaraArgs testArguments = getTestArguments(globalArguments, baseFolder, testFolder);
+                
+                boolean success = test(args);
+                if (!success) {
                 passedAllTest = false;
+                }
+                */
             }
-            */
+
+            return passedAllTest;
         }
 
-        return passedAllTest;
     }
 
     private File checkTestFolder(File baseFolder, File testFolder) {
