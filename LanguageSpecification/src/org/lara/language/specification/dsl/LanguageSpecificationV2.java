@@ -62,6 +62,9 @@ public class LanguageSpecificationV2 {
     }
 
     public JoinPointClass getJoinPoint(String name) {
+        if (name.equals("joinpoint")) {
+            return global;
+        }
         return joinPoints.get(name);
     }
 
