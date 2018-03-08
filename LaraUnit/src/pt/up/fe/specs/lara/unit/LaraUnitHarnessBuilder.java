@@ -15,7 +15,6 @@ package pt.up.fe.specs.lara.unit;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
     private final File baseFolder;
     private final LaraArgs globalArguments;
 
-    private Collection<File> filesToDelete;
     private File temporaryFolder;
 
     public LaraUnitHarnessBuilder(WeaverEngine weaverEngine, File baseFolder, LaraArgs globalArguments) {
@@ -50,76 +48,11 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         this.baseFolder = baseFolder;
         this.globalArguments = globalArguments;
 
-        this.filesToDelete = new ArrayList<>();
         temporaryFolder = SpecsIo.mkdir(SpecsIo.getTempFolder(), "LaraUnitTestFolder");
+
         // Clean contents of folder
         SpecsIo.deleteFolderContents(temporaryFolder);
     }
-
-    // public Pair<File, String[]> buildTestAndArguments(File testFile) {
-    // return null;
-    // }
-
-    // public File buildTest(File testFile) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
-    /*
-    public String[] buildArguments(File testFile) {
-        // Create test harness
-        File testHarnessFile = new File(SpecsIo.getTempFolder(), UUID.randomUUID().toString());
-        filesToDelete.add(testHarnessFile);
-    
-        // First argument is the harness test
-    
-        // Add global arguments
-    
-        // Add test arguments
-    
-        // Add base folder as LARA include
-    
-        // Return args
-    
-        // LaraArgs testArguments = new LaraArgs();
-        //
-        // // Add lara file to test as first argument
-        //
-        // // Check if there is a custom args file
-        // String customArgsFilename = SpecsIo.removeExtension(testFile) + LaraArgs.getArgsExtension();
-        // File customArgsFile = new File(testFile.getParentFile(), customArgsFilename);
-        //
-        // if (customArgsFile.isFile()) {
-        // testArguments = testArguments.copy();
-        // globalArguments.addArgs(customArgsFile);
-        // }
-    
-        // TODO Auto-generated method stub
-        return null;
-    }
-    */
-
-    // public Iterable<LaraUnitHarness> buildTests(File testFile) {
-    // // Get all methods in test file to iterate over
-    //
-    // return () -> new LaraUnitHarnessIterator();
-    // }
-    //
-    // private class LaraUnitHarnessIterator implements Iterator<LaraUnitHarness> {
-    //
-    // @Override
-    // public boolean hasNext() {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // @Override
-    // public LaraUnitHarness next() {
-    //
-    // return new LaraUnitHarness(null);
-    // }
-    //
-    // }
 
     public List<TestResult> testFile(File testFile) {
 
@@ -138,23 +71,10 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
                 .filter(element -> element.getComment().hasTag(JsDocTagName.TEST))
                 .collect(Collectors.toList());
 
-        // boolean allPassed = true;
         for (AspectIrElement element : elements) {
             TestResult testResult = testElement(element, testFileArgs, importPath);
             testResults.add(testResult);
-            // if (!testResult.isSuccess()) {
-            // allPassed = false;
-            // }
         }
-
-        // Import path
-        // System.out.println("IMPORT PATH:" + module.getImportPath());
-        // System.out.println("DOC:" + module.getDocumentation());
-
-        // - Detect if function or aspect
-        // - If has no arguments
-        // - import
-        // - name of the function
 
         return testResults;
     }
@@ -266,13 +186,5 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
     public void close() {
         SpecsIo.deleteFolder(temporaryFolder);
     }
-
-    // @Override
-    // public void close() throws IOException {
-    // // Delete temporary files
-    // for (File temporaryFile : filesToDelete) {
-    // SpecsIo.delete(temporaryFile);
-    // }
-    // }
 
 }

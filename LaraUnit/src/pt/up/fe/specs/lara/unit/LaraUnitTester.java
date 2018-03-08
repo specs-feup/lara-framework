@@ -46,7 +46,8 @@ public class LaraUnitTester {
      * @return
      */
     public LaraUnitReport testFolder(File baseFolder, File testFolder) {
-        // Using LinkedHashMap to maitain the order of entries
+
+        // Using LinkedHashMap to maintain the order of entries
         Map<File, List<TestResult>> testResults = new LinkedHashMap<>();
 
         testFolder = checkTestFolder(baseFolder, testFolder);
@@ -64,38 +65,9 @@ public class LaraUnitTester {
                 globalArguments);) {
 
             // Test each file
-            // boolean passedAllTest = true;
             for (File testFile : testFiles) {
                 List<TestResult> results = laraUnitHarness.testFile(testFile);
                 testResults.put(testFile, results);
-                // if (!testResult) {
-                // passedAllTest = false;
-                // }
-                /*            // For each file, build an iterable
-                Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
-                
-                Iterator<LaraUnitHarness> iterator = harnessIterable.iterator();
-                while (iterator.hasNext()) {
-                
-                try (LaraUnitHarness laraTest = iterator.next()) {
-                
-                }
-                
-                }
-                
-                // Create test harness and arguments
-                // Pair<File, String[]> testAndArgs = laraUnitHarness.buildTestAndArguments(testFile);
-                // File testHarness = laraUnitHarness.buildTest(testFile);
-                
-                // Create arguments
-                String[] args = laraUnitHarness.buildArguments(testFile);
-                // LaraArgs testArguments = getTestArguments(globalArguments, baseFolder, testFolder);
-                
-                boolean success = test(args);
-                if (!success) {
-                passedAllTest = false;
-                }
-                */
             }
 
             return new LaraUnitReport(testResults);
@@ -124,25 +96,4 @@ public class LaraUnitTester {
         return testFolder.isDirectory() ? testFolder : null;
     }
 
-    // private LaraArgs getTestArguments(LaraArgs globalArguments, File baseFolder, File testFolder) {
-    //
-    // LaraArgs testArguments = new LaraArgs();
-    //
-    // // Add lara file to test as first argument
-    //
-    // // Check if there is a custom args file
-    // String customArgsFilename = SpecsIo.removeExtension(testFile) + LaraArgs.getArgsExtension();
-    // File customArgsFile = new File(testFile.getParentFile(), customArgsFilename);
-    //
-    // if (customArgsFile.isFile()) {
-    // testArguments = testArguments.copy();
-    // globalArguments.addArgs(customArgsFile);
-    // }
-    // }
-
-    // private boolean testFile(File baseFolder, File testFile) {
-    // //
-    // // TODO Auto-generated method stub
-    // return true;
-    // }
 }

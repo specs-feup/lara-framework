@@ -94,14 +94,10 @@ public class LaraUnitReport {
 
     private void addPassedTest(StringBuilder passedTests, File testFile, TestResult testResult) {
         passedTests.append(getTestStatus(testFile, testResult));
-        // passedTests.append(" - ").append(testFile.getName()).append("::").append(testResult.getTestName())
-        // .append(" (").append(SpecsStrings.parseTime(testResult.getTimeNanos())).append(")\n");
     }
 
     private void addFailedTest(StringBuilder failedTests, File testFile, TestResult testResult) {
         failedTests.append(getTestStatus(testFile, testResult));
-        // failedTests.append(" - ").append(testFile.getName()).append("::").append(testResult.getTestName())
-        // .append(" (").append(SpecsStrings.parseTime(testResult.getTimeNanos())).append(")\n");
         failedTests.append(" [ERROR] ").append(testResult.getSimpleError()).append("\n");
         failedTests.append(" [STACK] ").append(testResult.getCause().getMessage()).append("\n\n");
 
