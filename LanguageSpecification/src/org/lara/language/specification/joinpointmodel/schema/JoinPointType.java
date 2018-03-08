@@ -143,7 +143,7 @@ public class JoinPointType implements Comparable<JoinPointType> {
      *            the comment to set
      */
     public void setTooltip(String comment) {
-        this.tooltip = comment;
+        tooltip = comment;
     }
 
     @Override

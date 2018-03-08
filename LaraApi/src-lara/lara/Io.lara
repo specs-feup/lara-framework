@@ -29,6 +29,9 @@ Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	return new java.io.File(fileOrBaseFolder, optionalFile);
 }	
 
+/**
+ * @returns {String} the absolute path of the given file 
+ */
 Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
 	return SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile));
 }
