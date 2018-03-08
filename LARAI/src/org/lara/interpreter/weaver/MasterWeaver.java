@@ -64,6 +64,7 @@ import pt.up.fe.specs.util.SpecsLogs;
  *
  */
 public class MasterWeaver {
+    // public class MasterWeaver implements AutoCloseable {
 
     public static final String WEAVER_NAME = "__weaver";
     public static final String GET_EVENT_TRIGGER = MasterWeaver.WEAVER_NAME + ".eventTrigger()";
@@ -588,7 +589,6 @@ public class MasterWeaver {
     }
 
     public boolean close() {
-
         try {
             weaverEngine.close();
             // for (final WeaverEngine weaver : weavers.values()) {

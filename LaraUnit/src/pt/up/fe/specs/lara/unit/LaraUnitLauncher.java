@@ -13,6 +13,19 @@
 
 package pt.up.fe.specs.lara.unit;
 
+import java.io.File;
+import java.util.Arrays;
+
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.suikasoft.jOptions.JOptionsUtils;
+import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.app.App;
+import org.suikasoft.jOptions.app.AppKernel;
+import org.suikasoft.jOptions.app.AppPersistence;
+import org.suikasoft.jOptions.persistence.XmlPersistence;
+import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 
 public class LaraUnitLauncher {
@@ -20,6 +33,49 @@ public class LaraUnitLauncher {
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
 
+        App laraUnitApp = buildApp();
+
+        JOptionsUtils.executeApp(laraUnitApp, Arrays.asList(args));
+
     }
 
+    private static App buildApp() {
+
+        StoreDefinition definition = LaraUnitOptions.STORE_DEFINITION;
+        AppPersistence persistence = new XmlPersistence(definition);
+        AppKernel kernel = LaraUnitLauncher::execute;
+
+        return App.newInstance(definition, persistence, kernel);
+    }
+
+    /**
+     * The main method of the app.
+     * 
+     * @return
+     */
+    private static int execute(DataStore options) {
+        // Get the base folder
+        File baseFolder = options.get(LaraUnitOptions.BASE_FOLDER);
+
+        // Get the test folder
+        File testFolder = options.get(LaraUnitOptions.TEST_FOLDER);
+
+        String weaverClassname = options.get(LaraUnitOptions.WEAVER_CLASS);
+
+        WeaverEngine weaverEngine = null;
+        try {
+            Class<?> weaverEngineClass = Class.forName(weaverClassname);
+            weaverEngine = (WeaverEngine) weaverEngineClass.newInstance();
+        } catch (Exception e) {
+            SpecsLogs.msgInfo("Could not create weaver engine: " + e.getMessage());
+            return -1;
+        }
+
+        LaraUnitTester laraUnitTester = new LaraUnitTester(weaverEngine);
+
+        boolean result = laraUnitTester.testFolder(baseFolder, testFolder);
+
+        return result ? 0 : -1;
+
+    }
 }

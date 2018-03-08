@@ -2,6 +2,9 @@ package pt.up.fe.specs.lara.doc.jsdoc;
 
 public enum JsDocTagName {
 
+    /**
+     * Properties NAME_PATH
+     */
     ASPECT("aspect"),
     /**
      * Properties NAME_PATH
@@ -27,6 +30,7 @@ public enum JsDocTagName {
      */
     AUGMENTS("augments"),
     DEPRECATED("deprecated"),
+    TEST("test"),
     /**
      * The import this element belongs to.
      * <p>

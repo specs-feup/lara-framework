@@ -20,8 +20,11 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import larai.LaraI;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 
 public class LaraUnitTester {
+
+    private static final String DEFAULT_TEST_FOLDERNAME = "test";
 
     private final WeaverEngine weaverEngine;
 
@@ -33,47 +36,86 @@ public class LaraUnitTester {
         return LaraI.exec(args, weaverEngine);
     }
 
+    /**
+     * 
+     * @param baseFolder
+     * @param testFolder
+     *            can be null
+     * @return
+     */
     public boolean testFolder(File baseFolder, File testFolder) {
+        testFolder = checkTestFolder(baseFolder, testFolder);
+        if (testFolder == null) {
+            return false;
+        }
+
         // Get test files
         List<File> testFiles = SpecsIo.getFilesRecursive(testFolder, "lara");
 
-        LaraArgs globalArguments = new LaraArgs();
+        LaraArgs globalArguments = new LaraArgs(baseFolder);
         globalArguments.addGlobalArgs(testFolder);
 
-        LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(baseFolder, globalArguments);
+        try (LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(weaverEngine, baseFolder,
+                globalArguments);) {
 
-        // Test each file
-        boolean passedAllTest = true;
-        for (File testFile : testFiles) {
-
-            /*            // For each file, build an iterable
-            Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
-            
-            Iterator<LaraUnitHarness> iterator = harnessIterable.iterator();
-            while (iterator.hasNext()) {
-            
-                try (LaraUnitHarness laraTest = iterator.next()) {
-            
+            // Test each file
+            boolean passedAllTest = true;
+            for (File testFile : testFiles) {
+                boolean testResult = laraUnitHarness.testFile(testFile);
+                if (!testResult) {
+                    passedAllTest = false;
                 }
-            
-            }
-            
-            // Create test harness and arguments
-            // Pair<File, String[]> testAndArgs = laraUnitHarness.buildTestAndArguments(testFile);
-            // File testHarness = laraUnitHarness.buildTest(testFile);
-            
-            // Create arguments
-            String[] args = laraUnitHarness.buildArguments(testFile);
-            // LaraArgs testArguments = getTestArguments(globalArguments, baseFolder, testFolder);
-            
-            boolean success = test(args);
-            if (!success) {
+                /*            // For each file, build an iterable
+                Iterable<LaraUnitHarness> harnessIterable = laraUnitHarness.buildTests(testFile);
+                
+                Iterator<LaraUnitHarness> iterator = harnessIterable.iterator();
+                while (iterator.hasNext()) {
+                
+                try (LaraUnitHarness laraTest = iterator.next()) {
+                
+                }
+                
+                }
+                
+                // Create test harness and arguments
+                // Pair<File, String[]> testAndArgs = laraUnitHarness.buildTestAndArguments(testFile);
+                // File testHarness = laraUnitHarness.buildTest(testFile);
+                
+                // Create arguments
+                String[] args = laraUnitHarness.buildArguments(testFile);
+                // LaraArgs testArguments = getTestArguments(globalArguments, baseFolder, testFolder);
+                
+                boolean success = test(args);
+                if (!success) {
                 passedAllTest = false;
+                }
+                */
             }
-            */
+
+            return passedAllTest;
         }
 
-        return passedAllTest;
+    }
+
+    private File checkTestFolder(File baseFolder, File testFolder) {
+
+        // If test folder is null, check if default folder exists
+        if (testFolder == null) {
+            File defaultTestFolder = new File(baseFolder, DEFAULT_TEST_FOLDERNAME);
+
+            // If folder does not exist, exit with warning
+            if (!defaultTestFolder.isDirectory()) {
+                SpecsLogs.msgInfo("No test folder specified and no default 'test' folder found, returning");
+                return null;
+            }
+
+            // Test folder exists, inform user
+            SpecsLogs.msgInfo("Using default test folder '" + defaultTestFolder.getAbsolutePath() + "'");
+            return defaultTestFolder;
+        }
+
+        // Check if test folder exists
+        return testFolder.isDirectory() ? testFolder : null;
     }
 
     // private LaraArgs getTestArguments(LaraArgs globalArguments, File baseFolder, File testFolder) {

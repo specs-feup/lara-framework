@@ -1,0 +1,8 @@
+import <IMPORT_PATH>;
+
+// Test aspect
+aspectdef Main
+
+	<TEST_CALL>;
+
+end

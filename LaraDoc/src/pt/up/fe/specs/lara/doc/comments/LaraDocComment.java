@@ -19,10 +19,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
-import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
 
@@ -66,20 +67,28 @@ public class LaraDocComment {
     // public List<JsDocTag> getTags() {
     // return tags;
     // }
-
+    /*
     public JsDocTag getLastTag(JsDocTagName tagName) {
         return getLastTag(tagName.getTagName());
     }
-
+    */
+    /**
+     * If tag does not exist, creates and adds a new one.
+     * 
+     * @param tagName
+     * @return
+     */
+    /*
     public JsDocTag getLastTag(String tagName) {
         // return currentTags.get(tagName);
         List<JsDocTag> tags = currentTags.get(tagName);
         if (tags.isEmpty()) {
             return null;
         }
-
+    
         return SpecsCollections.last(tags);
     }
+    */
 
     public String getText() {
         return text;
@@ -96,7 +105,6 @@ public class LaraDocComment {
     }
 
     private boolean processTag(JsDocTag tag) {
-
         if (tag.getTagName().equals("param")) {
 
             // If param tag, force name parameter
@@ -126,6 +134,12 @@ public class LaraDocComment {
         return true;
     }
 
+    /**
+     * Useful for setting default values, in case they are missing.
+     * 
+     * @param tag
+     * @return
+     */
     public LaraDocComment addTagIfMissing(JsDocTag tag) {
         if (currentTags.containsKey(tag.getTagName())) {
             return this;
@@ -148,8 +162,22 @@ public class LaraDocComment {
         return currentInputs;
     }
 
+    /**
+     * If tag does not exist, creates and adds a new one.
+     * 
+     * @param tagName
+     * @return
+     */
     public JsDocTag getTag(JsDocTagName tagName) {
-        return tryTag(tagName).orElseThrow(() -> new RuntimeException("Tag '" + tagName + "' not found"));
+        return tryTag(tagName).orElseGet(() -> createAndAdd(tagName));
+        // return tryTag(tagName).orElseThrow(() -> new RuntimeException("Tag '" + tagName + "' not found"));
+    }
+
+    private JsDocTag createAndAdd(JsDocTagName tagName) {
+        Preconditions.checkArgument(!hasTag(tagName), "Already has tag " + tagName);
+        JsDocTag newTag = new JsDocTag(tagName);
+        addTag(newTag);
+        return newTag;
     }
 
     public Optional<JsDocTag> tryTag(JsDocTagName tagName) {
