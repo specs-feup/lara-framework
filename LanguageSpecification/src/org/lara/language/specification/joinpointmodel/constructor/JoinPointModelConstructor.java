@@ -28,6 +28,8 @@ import java.util.function.Function;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -58,6 +60,12 @@ public class JoinPointModelConstructor implements IModel {
 
     private final static QName _JoinPoints_QNAME = new QName("", "joinpoints");
     public static final String JoinPointModelPackageName = ObjectFactory.class.getPackage().getName();
+    public static final JoinPointType DEFAULT_JOIN_POINT_TYPE = new JoinPointType();
+    static {
+        JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE.setClazz("joinpoint");
+        JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE.setExtends(JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE);
+        JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE.setTooltip("basic join point type");
+    }
 
     private boolean alreadyFound; // Auxiliary field
     protected JoinPointsList joinPointList;
@@ -112,8 +120,17 @@ public class JoinPointModelConstructor implements IModel {
             throws JAXBException, SAXException, XMLParseException, IOException {
         try (InputStream iS = SpecsIo
                 .resourceToStream(LanguageSpecificationResources.JoinPointModelSchema.getResource());) {
+            final ValidationEventCollector vec = new ValidationEventCollector();
+            ValidationEventHandler handler = e -> {
+
+                if (e.getMessage().contains("IDREF 'joinpoint'")
+                        || e.getMessage().contains("ID \"joinpoint\"")) {
+                    return true;
+                }
+                return vec.handleEvent(e);
+            };
             joinPointList = MarshalUtils.unmarshal(joinPointModelSource, sourceName, iS, JoinPointsList.class,
-                    JoinPointModelConstructor.JoinPointModelPackageName, validate);
+                    JoinPointModelConstructor.JoinPointModelPackageName, validate, handler);
             sanitizeAndMap();
         }
     }
@@ -901,5 +918,10 @@ public class JoinPointModelConstructor implements IModel {
         }
 
         return isSuper(joinPoint);
+    }
+
+    public static JoinPointType defaultJoinPointType() {
+        // TODO Auto-generated method stub
+        return JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE;
     }
 }
