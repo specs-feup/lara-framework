@@ -17,11 +17,18 @@ import java.util.Arrays;
 
 import org.lara.interpreter.exception.LaraIException;
 
+import pt.up.fe.specs.util.providers.StringProvider;
 import tdrc.utils.StringUtils;
 
-public interface NamedEnum {
+// public interface NamedEnum<T extends Enum<T>> extends StringProvider {
+public interface NamedEnum extends StringProvider {
 
     public String getName();
+
+    @Override
+    default String getString() {
+        return getName();
+    }
 
     public static <T extends Enum<T> & NamedEnum> T fromString(Class<T> clazz, String name, String sourceName) {
 
