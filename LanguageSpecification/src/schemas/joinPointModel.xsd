@@ -31,7 +31,8 @@
 <!-- 			default="false" /> -->
 	</xsd:complexType>
 	<xsd:complexType name="Select">
-		<xsd:attribute name="class" type="xsd:IDREF" use="required" />
+		<xsd:attribute name="class" type="xsd:IDREF" use="required">
+		</xsd:attribute>
 		<xsd:attribute name="alias" type="xsd:string" use="optional" />
 		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
 	</xsd:complexType>

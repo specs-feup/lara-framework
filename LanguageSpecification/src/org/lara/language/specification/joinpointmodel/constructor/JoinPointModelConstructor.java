@@ -123,14 +123,17 @@ public class JoinPointModelConstructor implements IModel {
             final ValidationEventCollector vec = new ValidationEventCollector();
             ValidationEventHandler handler = e -> {
 
-                if (e.getMessage().contains("IDREF 'joinpoint'")
-                        || e.getMessage().contains("ID \"joinpoint\"")) {
+                String lowerCaseMessage = e.getMessage().toLowerCase();
+                if (lowerCaseMessage.contains("idref 'joinpoint'")
+                        || e.getMessage().contains("id \"joinpoint\"")) {
+                    // System.out.println("Using joinpoint in select");
                     return true;
                 }
                 return vec.handleEvent(e);
             };
+
             joinPointList = MarshalUtils.unmarshal(joinPointModelSource, sourceName, iS, JoinPointsList.class,
-                    JoinPointModelConstructor.JoinPointModelPackageName, validate, handler);
+                    JoinPointModelConstructor.JoinPointModelPackageName, validate, handler, new JoinPointResolver());
             sanitizeAndMap();
         }
     }

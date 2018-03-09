@@ -15,8 +15,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
-
 /**
  * <p>
  * Java class for Select complex type.
@@ -59,9 +57,9 @@ public class Select {
      * 
      */
     public JoinPointType getClazz() {
-        if (clazz == null) {
-            return JoinPointModelConstructor.defaultJoinPointType();
-        }
+        // if (clazz == null) {
+        // return JoinPointModelConstructor.defaultJoinPointType();
+        // }
         return clazz;
     }
 
@@ -118,11 +116,12 @@ public class Select {
         String clazz2;
         if (getClazz() == null) {
 
-            clazz2 = "joinpoint";
+            clazz2 = "unknown";
         } else {
             clazz2 = getClazz().getClazz();
         }
-        if (!getAlias().equals(clazz2)) {
+
+        if (getAlias() != null && !getAlias().equals(clazz2)) {
             value += "(" + clazz2 + ")";
         }
         return value;
