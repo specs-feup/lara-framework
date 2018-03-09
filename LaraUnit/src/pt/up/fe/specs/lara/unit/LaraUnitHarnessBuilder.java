@@ -60,6 +60,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         // Build arguments for the test file
         List<String> testFileArgs = buildFileArgs(testFile);
+        SpecsLogs.debug(() -> "Test file arguments: " + testFileArgs);
 
         LaraDocModule module = getModule(testFile);
 

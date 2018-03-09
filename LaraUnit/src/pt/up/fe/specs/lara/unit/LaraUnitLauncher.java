@@ -86,7 +86,7 @@ public class LaraUnitLauncher {
 
         LaraUnitReport laraUnitResport = laraUnitTester.testFolder(baseFolder, testFolder);
 
-        SpecsLogs.msgInfo("LaraUnit test report");
+        SpecsLogs.msgInfo("\nLaraUnit test report");
         SpecsLogs.msgInfo(laraUnitResport.getReport());
 
         return laraUnitResport.isSuccess() ? 0 : -1;

@@ -74,9 +74,6 @@ public class LaraUnitReport {
 
         StringBuilder report = new StringBuilder();
 
-        report.append("Total Tests: " + testCounter).append("\n");
-        report.append("Passed / Failed: " + passedTestsCount + " / " + failedTestsCounter).append("\n");
-
         String failedTestsReport = failedTests.toString();
         if (!failedTestsReport.isEmpty()) {
             report.append("\nFailed tests:\n");
@@ -87,6 +84,15 @@ public class LaraUnitReport {
         if (!passedTestsReport.isEmpty()) {
             report.append("\nPassed tests:\n");
             report.append(passedTestsReport);
+        }
+
+        report.append("\nTotal Tests: " + testCounter).append("\n");
+        report.append("Passed / Failed: " + passedTestsCount + " / " + failedTestsCounter).append("\n");
+
+        if (passedTestsCount == testCounter) {
+            report.append("\n ALL TEST PASSED!");
+        } else {
+            report.append("\n SOME TESTS FAILED");
         }
 
         return report.toString();
