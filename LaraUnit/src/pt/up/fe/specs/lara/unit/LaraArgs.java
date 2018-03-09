@@ -63,8 +63,6 @@ public class LaraArgs {
     }
 
     public void addArgs(File argsFile) {
-        // List of arguments
-        // List<String> arguments = new ArrayList<>();
 
         ArgumentsParser parser = ArgumentsParser.newCommandLine();
 
@@ -82,7 +80,6 @@ public class LaraArgs {
             }
 
             // Parse arguments
-            // currentArgs.addAll(parser.parse(trimmedLine));
             addArgs(parser.parse(trimmedLine));
         }
     }
