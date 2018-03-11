@@ -25,10 +25,11 @@ import pt.up.fe.specs.util.utilities.StringLines;
 public class LaraArgs {
 
     private static final String ARGS_EXTENSION = "args";
-    private static final String GLOBAL_ARGS_FILENAME = "test." + ARGS_EXTENSION;
+    private static final String GLOBAL_ARGS_FILENAME = "global." + ARGS_EXTENSION;
     private static final String ARGS_COMMENT = "#";
 
     private static final String BASE_MACRO = "$BASE";
+    private static final String SEPARATOR_MACRO = "$SEP";
 
     private int includeIndex;
 
@@ -41,7 +42,7 @@ public class LaraArgs {
     }
 
     public static String getLocalArgsFilename(File testFile) {
-        return testFile.getName() + "." + ARGS_EXTENSION;
+        return SpecsIo.removeExtension(testFile.getName()) + "." + ARGS_EXTENSION;
     }
 
     private final File baseFolder;
@@ -100,6 +101,7 @@ public class LaraArgs {
 
         // Preprocess arg
         arg = arg.replace(BASE_MACRO, baseFolder.getAbsolutePath());
+        arg = arg.replace(SEPARATOR_MACRO, File.pathSeparator);
 
         currentArgs.add(arg);
     }

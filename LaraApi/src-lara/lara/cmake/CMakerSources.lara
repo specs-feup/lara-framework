@@ -128,7 +128,7 @@ CMakerSources.prototype.getCode = function() {
 	
 	// Add external sources if weaving is not disabled
 	if(!this.disableWeaving) {
-		this._addExternalSources(code);
+		code = this._addExternalSources(code);
 	}
 
 	/*
@@ -179,6 +179,7 @@ CMakerSources.prototype._addExternalSources = function(code) {
 		if(Io.isFile(extraSource)) {
 			extraSourcesArray.push(this._parseSourcePath(extraSource));
 		} else if(Io.isFolder(extraSource)) {
+
 			for(var sourcePath of Io.getPaths(extraSource)) {
 				extraSourcesArray.push(this._parseSourcePath(sourcePath));
 			}
@@ -187,7 +188,7 @@ CMakerSources.prototype._addExternalSources = function(code) {
 			println("[CMAKER] Extra source ' " + extraSource +  " ' does not exist");
 		}
 	}	
-	
+
 	if(extraSourcesArray.length > 0) {
 		if(code.length !== 0) {
 			code += "\n";
@@ -196,6 +197,7 @@ CMakerSources.prototype._addExternalSources = function(code) {
 		code += this._getCodeSource(this._VARIABLE_EXTERNAL_SOURCES, extraSourcesArray);
 	}
 	
+	return code;
 }
 
 /**
