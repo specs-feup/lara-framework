@@ -19,11 +19,18 @@ import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.EnumValue;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.JDocTag;
+import org.specs.generators.java.enums.Modifier;
+import org.specs.generators.java.enums.Privacy;
+import org.specs.generators.java.exprs.GenericExpression;
 import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.EnumItem;
 import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
+import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
+
+import pt.up.fe.specs.util.enums.EnumHelper;
+import pt.up.fe.specs.util.lazy.Lazy;
 
 public class UserEnumsGenerator extends GeneratorHelper {
     private final EnumDef enumDef;
@@ -78,14 +85,44 @@ public class UserEnumsGenerator extends GeneratorHelper {
         for (final EnumValue enumValue : enumDef.getValue()) {
 
             final String fieldName = enumValue.getName();
-            final String classType = enumValue.getString();
+            String fieldType = enumValue.getString();
+            if (fieldType == null) {
+                fieldType = fieldName.toLowerCase();
+            }
             EnumItem item = new EnumItem(fieldName);
-            item.addParameter('"' + classType + '"');
+            item.addParameter('"' + fieldType + '"');
             userEnum.add(item);
         }
+        generateLazyHelper(userEnum);
         // generateToString(userEnum);
         return userEnum;
     }
+
+    private void generateLazyHelper(JavaEnum userEnum) {
+
+        JavaType lazyType = JavaTypeFactory.convert(Lazy.class);
+        JavaType enumHelperType = JavaTypeFactory.convert(EnumHelper.class);
+        JavaType enumType = JavaTypeFactory.convert(userEnum);
+        JavaTypeFactory.addGenericType(enumHelperType, enumType);
+        JavaTypeFactory.addGenericType(lazyType, enumHelperType);
+        Field enumHelper = new Field(lazyType, "ENUM_HELPER", Privacy.PRIVATE);
+        enumHelper.setDefaultInitializer(false);
+        enumHelper.addModifier(Modifier.STATIC);
+        enumHelper.addModifier(Modifier.FINAL);
+        enumHelper.setInitializer(
+                GenericExpression.fromString("EnumHelper.newLazyHelper(" + userEnum.getName() + ".class)"));
+
+        Method getHelper = new Method(enumHelperType/*.clone()*/, "getHelper", Modifier.STATIC);
+        getHelper.appendCode("return " + enumHelper.getName() + ".get();");
+
+        userEnum.add(enumHelper);
+        userEnum.add(getHelper);
+    }
+    // private static final Lazy<EnumHelper<LoopType>> ENUM_HELPER = EnumHelper.newLazyHelper(LoopType.class);
+    //
+    // public static EnumHelper<LoopType> getHelper() {
+    // return ENUM_HELPER.get();
+    // }
 
     // /**
     // * Generate the toString method based on a json format
