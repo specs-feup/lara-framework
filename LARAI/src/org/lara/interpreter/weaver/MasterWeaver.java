@@ -597,7 +597,10 @@ public class MasterWeaver {
         } catch (Exception e) {
             throw new WeaverEngineException("closing", e);
         } finally {
-            weaverEngine.removeWeaver();
+            // Remove if it is set
+            if (weaverEngine.isWeaverSet()) {
+                weaverEngine.removeWeaver();
+            }
 
             // Delete weaver folder, if created
             if (weaverEngine.hasTemporaryWeaverFolder()) {
