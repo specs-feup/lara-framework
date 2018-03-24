@@ -197,7 +197,17 @@ function isString(variable) {
 	return (typeof variable) === "string";
 };
 
+/**
+ * @param {*} variable
+ * @param {string} [javaClassname = java.lang.Object] 
+ *
+ * @return {boolean} true if the given object is an instance of the given Java class name
+ */
 function isJavaClass(variable, javaClassname) {
+	if(javaClassname === undefined) {
+		javaClassname = "java.lang.Object";
+	}
+	
 	var javaClass = Java.type(javaClassname);
 	return javaClass.class.isInstance(variable);
 };
