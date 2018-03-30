@@ -93,7 +93,10 @@ public class LaraUnitTester {
         }
 
         // Check if test folder exists
-        return testFolder.isDirectory() ? testFolder : null;
+        // return testFolder.isDirectory() ? testFolder : null;
+
+        // Check if file exists
+        return testFolder.exists() ? testFolder : null;
     }
 
 }

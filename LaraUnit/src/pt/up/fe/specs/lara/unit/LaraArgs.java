@@ -110,7 +110,10 @@ public class LaraArgs {
         return currentArgs;
     }
 
-    public void addGlobalArgs(File testFolder) {
+    public void addGlobalArgs(File testPath) {
+
+        File testFolder = testPath.isDirectory() ? testPath : testPath.getParentFile();
+
         // Check if there is a global arguments file
         File globalArgsFile = new File(testFolder, LaraArgs.getGlobalArgsFilename());
 
