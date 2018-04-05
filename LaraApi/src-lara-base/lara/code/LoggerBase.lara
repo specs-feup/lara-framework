@@ -28,7 +28,8 @@ Logger.prototype.Type = {
     CHAR: 5,
     HEX: 6,
     OCTAL: 7,
-	LITERAL: 8
+	LITERAL: 8,
+	LONG: 9
 }
 
 /**
@@ -42,6 +43,8 @@ Logger.prototype.printfFormat = {
     5: "%c",
     6: "%x",
     7: "%o",
+	8: undefined,
+	9: "%ld"
 }
 Logger.prototype.isGlobalFn = function() {
     println("Is Global Fn:" + this.isGlobal);
@@ -92,15 +95,24 @@ Logger.prototype.append = function(expr) {
     return this._append_private(expr, this.Type.NORMAL);
 }
 
+/**
+ * The same as 'append'.
+ */
+Logger.prototype.text = function(expr) {
+	return this.append(expr);
+}
+
 Logger.prototype.appendln = function(expr) {
 	return this.append(expr).ln();
 }
 
-Logger.prototype.ln = function(expr) {
+//Logger.prototype.ln = function(expr) {
+Logger.prototype.ln = function() {
     return this._append_private("\\n", this.Type.NORMAL);
 }
 
-Logger.prototype.tab = function(expr) {
+//Logger.prototype.tab = function(expr) {
+Logger.prototype.tab = function() {
     return this.append("\\t");
 }
 
@@ -108,8 +120,26 @@ Logger.prototype.appendDouble = function(expr) {
     return this._append_private(expr, this.Type.DOUBLE);
 }
 
+/**
+ * The same as 'appendDouble'.
+ */
+Logger.prototype.double = function(expr) {
+    return this.appendDouble(expr);
+}
+
 Logger.prototype.appendInt = function(expr) {
     return this._append_private(expr, this.Type.INT);
+}
+
+Logger.prototype.appendLong = function(expr) {
+    return this._append_private(expr, this.Type.LONG);
+}
+
+/**
+ * The same as 'appendLong'.
+ */
+Logger.prototype.long = function(expr) {
+	return this.appendLong(expr);
 }
 
 Logger.prototype.appendString = function(expr) {
