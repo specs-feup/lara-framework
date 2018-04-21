@@ -177,8 +177,15 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         // Add base folder as include
         testArgs.addInclude(baseFolder);
+
         // Add test folder as include
         testArgs.addInclude(SpecsIo.getParent(testFile));
+
+        // If -of option is not set, add option with name of the test file as argument
+        if (!testArgs.hasArg("-of")) {
+            testArgs.addArg("-of");
+            testArgs.addArg(SpecsIo.removeExtension(testFile));
+        }
 
         return testArgs.getCurrentArgs();
     }

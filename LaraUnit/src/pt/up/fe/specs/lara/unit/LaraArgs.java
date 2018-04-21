@@ -166,4 +166,10 @@ public class LaraArgs {
         return currentIncludes + File.pathSeparator + path;
     }
 
+    public boolean hasArg(String arg) {
+        return currentArgs.stream()
+                .filter(currentArg -> currentArg.equals(arg))
+                .findFirst()
+                .isPresent();
+    }
 }
