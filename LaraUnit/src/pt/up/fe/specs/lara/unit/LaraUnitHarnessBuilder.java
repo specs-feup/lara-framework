@@ -42,6 +42,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
     private final LaraArgs globalArguments;
 
     private File temporaryFolder;
+    private boolean logMetrics;
 
     public LaraUnitHarnessBuilder(WeaverEngine weaverEngine, File baseFolder, LaraArgs globalArguments) {
         this.weaverEngine = weaverEngine;
@@ -49,7 +50,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         this.globalArguments = globalArguments;
 
         temporaryFolder = SpecsIo.mkdir(SpecsIo.getTempFolder(), "LaraUnitTestFolder");
-
+        logMetrics = false;
         // Clean contents of folder
         SpecsIo.deleteFolderContents(temporaryFolder);
     }
@@ -187,12 +188,22 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
             testArgs.addArg(SpecsIo.removeExtension(testFile));
         }
 
+        // If log metrics is enabled and there is no -e option, add it
+        if (logMetrics && !testArgs.hasArg("-e")) {
+            testArgs.addArg("-e");
+            testArgs.addArg("metrics/" + SpecsIo.removeExtension(testFile) + ".json");
+        }
+
         return testArgs.getCurrentArgs();
     }
 
     @Override
     public void close() {
         SpecsIo.deleteFolder(temporaryFolder);
+    }
+
+    public void setLogMetrics(boolean logMetrics) {
+        this.logMetrics = logMetrics;
     }
 
 }

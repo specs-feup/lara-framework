@@ -29,9 +29,11 @@ public class LaraUnitTester {
     private static final String DEFAULT_TEST_FOLDERNAME = "test";
 
     private final WeaverEngine weaverEngine;
+    private final boolean logMetrics;
 
-    public LaraUnitTester(WeaverEngine weaverEngine) {
+    public LaraUnitTester(WeaverEngine weaverEngine, boolean logMetrics) {
         this.weaverEngine = weaverEngine;
+        this.logMetrics = logMetrics;
     }
 
     public boolean test(String[] args) {
@@ -63,6 +65,8 @@ public class LaraUnitTester {
 
         try (LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(weaverEngine, baseFolder,
                 globalArguments);) {
+
+            laraUnitHarness.setLogMetrics(logMetrics);
 
             // Test each file
             for (File testFile : testFiles) {

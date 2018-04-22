@@ -71,6 +71,8 @@ public class LaraUnitLauncher {
             weaverClassname = DefaultWeaver.class.getName();
         }
 
+        boolean logMetrics = options.get(LaraUnitOptions.METRICS);
+
         WeaverEngine weaverEngine = null;
         try {
             Class<?> weaverEngineClass = Class.forName(weaverClassname);
@@ -86,7 +88,7 @@ public class LaraUnitLauncher {
             return -1;
         }
 
-        LaraUnitTester laraUnitTester = new LaraUnitTester(weaverEngine);
+        LaraUnitTester laraUnitTester = new LaraUnitTester(weaverEngine, logMetrics);
 
         LaraUnitReport laraUnitResport = laraUnitTester.testFolder(baseFolder, testFolder);
 

@@ -48,7 +48,10 @@ public interface LaraUnitOptions {
     DataKey<String> WEAVER_CLASS = KeyFactory.string("lara-unit-weaver")
             .setLabel("Weaver class name");
 
+    DataKey<Boolean> METRICS = KeyFactory.bool("metrics")
+            .setLabel("Enable logging of metrics");
+
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder(getAppName())
-            .addKeys(BASE_FOLDER, TEST_FOLDER, WEAVER_CLASS)
+            .addKeys(BASE_FOLDER, TEST_FOLDER, WEAVER_CLASS, METRICS)
             .build();
 }
