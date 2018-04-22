@@ -32,11 +32,15 @@ import pt.up.fe.specs.util.SpecsSystem;
 public class LaraUnitLauncher {
 
     public static void main(String[] args) {
+        execute(args);
+    }
+
+    public static int execute(String[] args) {
         SpecsSystem.programStandardInit();
 
         App laraUnitApp = buildApp();
 
-        JOptionsUtils.executeApp(laraUnitApp, Arrays.asList(args));
+        return JOptionsUtils.executeApp(laraUnitApp, Arrays.asList(args));
     }
 
     private static App buildApp() {
