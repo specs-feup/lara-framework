@@ -72,6 +72,7 @@ public class OptionsParser {
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
 
         final Option scripts = OptionsBuilderUtils.newOption(CLIOption.includes);
+        final Option dependencies = OptionsBuilderUtils.newOption(CLIOption.dependencies);
 
         final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
 
@@ -92,6 +93,7 @@ public class OptionsParser {
                 .addOption(tools)
                 .addOption(report)
                 .addOption(scripts)
+                .addOption(dependencies)
                 .addOption(javascript)
                 .addOption(log)
                 .addOption(metrics)
