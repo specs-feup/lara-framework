@@ -175,8 +175,15 @@ public class LaraI {
             if (dataStore == null) {
                 throw new NullPointerException("The DataStore cannot be null");
             }
+
             long start = getCurrentTime();
             THREAD_LOCAL_WEAVER_DATA.setWithWarning(dataStore);
+
+            // Check if unit-testing mode
+            if (dataStore.get(LaraiKeys.UNIT_TEST_MODE)) {
+                return weaverEngine.executeUnitTestMode(dataStore);
+            }
+
             larai = new LaraI(dataStore, weaverEngine);
 
             if (larai.options.isDebug()) {
