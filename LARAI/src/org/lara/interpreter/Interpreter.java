@@ -341,6 +341,10 @@ public class Interpreter {
     // ================================================================================//
     public StringBuilder getJavascriptString(ExprCall exprCall, int depth) {
         boolean newInstance = this.newInstance;
+        // if (newInstance) {
+        // System.out.println("EXPR CALL:");
+        // exprCall.print(System.out, 0);
+        // }
         this.newInstance = false;
         final StringBuilder encapsule = new StringBuilder();
         StringBuilder call = getJavascriptString(exprCall.method, depth);
@@ -424,6 +428,9 @@ public class Interpreter {
             StringBuilder temp = call;
             call = new StringBuilder("new ");
             call.append(temp);
+            // call = new StringBuilder("(new ");
+            // call.append(temp);
+            // call.append(")");
         }
         if (encapsule.length() != 0) {
             // This code is more feasible if done at weaver-side
@@ -459,13 +466,23 @@ public class Interpreter {
     }
 
     private StringBuilder encapsuleCall(StringBuilder callCode, Pair<String, String> methodName, boolean newInstance) {
+        // if (newInstance) {
+        // System.out.println("ENCAPSULATE CALL CODE:" + callCode);
+        // }
+
         if (options.useStackTrace()) {
+            // Ignore if newInstance
+            // if (newInstance) {
+            // return callCode;
+            // }
+
             String called = methodName.getRight();
             if (methodName.getLeft() != null && !methodName.getLeft().isEmpty()) {
                 called = methodName.getLeft() + "." + called;
             }
             if (newInstance) {
                 called = "new " + called;
+                // called = "(new " + called + ")";
             }
             called = StringEscapeUtils.escapeEcmaScript(called);
             String position = "unknown";

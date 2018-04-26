@@ -14,7 +14,9 @@
 package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 
@@ -28,6 +30,10 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import pt.up.fe.specs.util.utilities.StringList;
 
 public interface LaraiKeys {
+
+    static String getUnitTestFlag() {
+        return "ut";
+    }
 
     DataKey<File> LARA_FILE = KeyFactory.file("aspect", "lara", "js").setLabel("Aspect");
 
@@ -73,6 +79,11 @@ public interface LaraiKeys {
 
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restric mode (some Java classes are not allowed)");
+
+    DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
+    // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
+    // .setLabel("Unit-testing arguments");
+    DataKey<List<String>> UNIT_TEST_ARGS = KeyFactory.generic("unit_test_args", new ArrayList<>());
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 

@@ -263,9 +263,12 @@ public class LaraI {
             if (LaraIUtils.printHelp(cmd, finalOptions)) {
                 return true;
             }
+
             ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
             DataStore dataStore;
             switch (mode) {
+            // case UNIT_TEST:
+            // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
             case CONFIG: // convert configuration file to data store and run
                 // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
                 dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);

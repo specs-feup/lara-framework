@@ -50,6 +50,7 @@ public class EditorToolBar extends JPanel {
     private static final String RUN_LARA_IN_DEBUG_MODE_TEXT = "Run LARA in debug mode";
     private static final String DEBUG_LARA_TEXT = "Debug LARA";
     private static final String RUN_LARA_TEXT = "Run LARA";
+    private static final String TEST_LARA_TEXT = "Test LARA";
     /**
      *
      */
@@ -64,6 +65,7 @@ public class EditorToolBar extends JPanel {
     private JButton execButton;
     private boolean running;
     private JButton debugButton;
+    private JButton testButton;
     private JComboBox<Integer> editorCombo;
     private JComboBox<Integer> consoleCombo;
     private HeapBar heapBar;
@@ -204,6 +206,7 @@ public class EditorToolBar extends JPanel {
     private void addRunButtons() {
         addExecButton();
         addDebugButton();
+        addTestButton();
         addNewItem("Clear Console", "clear", 0, null, o -> editor.getConsoleArea().setText(""));
         addNewItem("Show/Hide Console", "console", 0, StrokesAndActions.CTRL_SHIFT_O,
                 o -> editor.swapConsoleVisibility());
@@ -291,6 +294,35 @@ public class EditorToolBar extends JPanel {
         debugButton.addFocusListener(new FocusGainedListener(e -> getCurrentTab().requestFocus()));
         toolBar.add(debugButton);
         return debugButton;
+    }
+
+    private JButton addTestButton() {
+
+        testButton = new JButton();
+        setIcon(testButton, "test", EditorToolBar.RUN_LARA_TEXT);
+
+        running = false;
+
+        Consumer<ActionEvent> listener = e -> {
+
+            if (!running) {
+                editor.test();
+                ;
+            } else {
+                editor.cancelExecution();
+
+            }
+        };
+        testButton.addActionListener(new GenericActionListener(listener));
+        // String replace = StrokesAndActions.prettyString(StrokesAndActions.F11);
+        // testButton.setToolTipText(EditorToolBar.TEST_LARA_TEXT + " (" + replace + ")");
+        testButton.setToolTipText(EditorToolBar.TEST_LARA_TEXT);
+        // testButton.registerKeyboardAction(new GenericActionListener(listener), StrokesAndActions.F11,
+        // JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        testButton.addFocusListener(new FocusGainedListener(e -> getCurrentTab().requestFocus()));
+        toolBar.add(testButton);
+        return testButton;
     }
 
     public static void setIcon(JButton execButton2, String icon, String fallbackText) {

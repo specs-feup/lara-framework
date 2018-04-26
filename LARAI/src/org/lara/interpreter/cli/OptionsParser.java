@@ -221,6 +221,11 @@ public class OptionsParser {
         // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
         // .findFirst();
 
+        // TODO: Find a better way to detect mode (e.g., -ut flag?)
+        // if (firstArg.startsWith("lara-unit-test=") || firstArg.startsWith("lara-unit-base==")) {
+        // return ExecutionMode.UNIT_TEST;
+        // }
+
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
         boolean guiPresent = cmd.hasOption(CLIConfigOption.gui.getShortOpt());
 
@@ -290,6 +295,10 @@ public class OptionsParser {
          * Open GUI with the overriding options (means creating a temporary config file)
          */
         // OPTIONS_GUI //FUTURE WORK!
+        /**
+         * Unit testing mode
+         */
+        // UNIT_TEST
     }
 
     /**

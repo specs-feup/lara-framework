@@ -16,6 +16,8 @@ package org.lara.interpreter.joptions.panels.editor;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -486,6 +488,45 @@ public class EditorPanel extends GuiTab {
         updateDataStore();
         runDebug = false;
         worker.execute(optionsDataStore);
+    }
+
+    public void test() {
+
+        getConsoleArea().setText("");
+        if (optionsDataStore == null) {
+            JOptionPane.showMessageDialog(this, EditorToolBar.NO_CONFIG_MESSAGE);
+            return;
+        }
+
+        boolean success = getTabsContainer().askSave();
+        if (!success) {
+            return;
+        }
+
+        updateDataStore();
+        runDebug = false;
+
+        // Build DataStore for testing
+        DataStore testOptions = DataStore.newInstance("Unit testing options");
+        testOptions.add(LaraiKeys.UNIT_TEST_MODE, true);
+
+        List<String> args = new ArrayList<>();
+        // args.add("-" + LaraiKeys.getUnitTestFlag());
+        args.add("lara-unit-test=" + optionsDataStore.get(LaraiKeys.LARA_FILE).getAbsolutePath());
+
+        List<File> includes = optionsDataStore.get(LaraiKeys.INCLUDES_FOLDER).getFiles();
+        if (includes.isEmpty()) {
+            SpecsLogs.msgInfo("Expected one include, the base folder of the tests");
+            return;
+        }
+        args.add("lara-unit-base=" + includes.get(0).getAbsolutePath());
+        // TODO: Config file is not being set
+        // args.add("lara-unit-base=" + optionsDataStore.get(AppKeys.CONFIG_FILE));
+
+        testOptions.add(LaraiKeys.UNIT_TEST_ARGS, args);
+        // testOptions.add(LaraiKeys.UNIT_TEST_ARGS, new ArrayList<>(Arrays.asList("--help")));
+
+        worker.execute(testOptions);
     }
 
     public void runDebug() {
