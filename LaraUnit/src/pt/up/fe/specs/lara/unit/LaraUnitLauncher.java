@@ -57,7 +57,7 @@ public class LaraUnitLauncher {
      * 
      * @return
      */
-    private static int execute(DataStore options) {
+    public static int execute(DataStore options) {
 
         // Get the base folder
         File baseFolder = options.get(LaraUnitOptions.BASE_FOLDER);
