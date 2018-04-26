@@ -15,7 +15,9 @@ package pt.up.fe.specs.lara.unit;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.suikasoft.jOptions.JOptionsUtils;
@@ -97,5 +99,27 @@ public class LaraUnitLauncher {
 
         return laraUnitResport.isSuccess() ? 0 : -1;
 
+    }
+
+    public static int execute(DataStore dataStore, String weaverClassname) {
+
+        DataStore laraUnitData = DataStore.newInstance("LaraUnitData");
+
+        laraUnitData.add(LaraUnitOptions.WEAVER_CLASS, weaverClassname);
+
+        File testFile = dataStore.get(LaraiKeys.LARA_FILE);
+
+        laraUnitData.add(LaraUnitOptions.TEST_FOLDER, testFile);
+
+        List<File> includes = dataStore.get(LaraiKeys.INCLUDES_FOLDER).getFiles();
+        if (includes.isEmpty()) {
+            SpecsLogs.msgInfo("Expected one include, the base folder of the tests");
+            return -1;
+        }
+        laraUnitData.add(LaraUnitOptions.BASE_FOLDER, includes.get(0));
+
+        SpecsLogs.debug("Launching lara-unit with the following options: " + laraUnitData);
+
+        return LaraUnitLauncher.execute(laraUnitData);
     }
 }
