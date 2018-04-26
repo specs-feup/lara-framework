@@ -32,6 +32,7 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
@@ -332,6 +333,11 @@ public abstract class WeaverEngine {
 
     public void removeWeaver() {
         THREAD_LOCAL_WEAVER.remove();
+    }
+
+    public boolean executeUnitTestMode(List<String> unitTestArgs) {
+        SpecsLogs.msgInfo("Unit testing mode not implemented yet for this weaver");
+        return false;
     }
 
 }
