@@ -335,7 +335,7 @@ public abstract class WeaverEngine {
         THREAD_LOCAL_WEAVER.remove();
     }
 
-    public boolean executeUnitTestMode(List<String> unitTestArgs) {
+    public boolean executeUnitTestMode(DataStore dataStore) {
         SpecsLogs.msgInfo("Unit testing mode not implemented yet for this weaver");
         return false;
     }
