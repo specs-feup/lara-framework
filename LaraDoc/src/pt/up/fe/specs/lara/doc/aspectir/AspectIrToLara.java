@@ -77,14 +77,14 @@ public class AspectIrToLara {
                 return getCode(exprOp.exprs.get(0)) + "++";
             }
 
-            UnaryOperator unaryOp = Enums.UnaryOperator.getHelper().valueOf(op);
+            UnaryOperator unaryOp = Enums.UnaryOperator.getHelper().fromValue(op);
 
             return unaryOp.getOp() + getCode(exprOp.exprs.get(0));
             // return getUnaryOpCode(exprOp, unaryOp);
         }
 
         if (exprOp.exprs.size() == 2) {
-            BinaryOperator binaryOp = Enums.BinaryOperator.getHelper().valueOf(op);
+            BinaryOperator binaryOp = Enums.BinaryOperator.getHelper().fromValue(op);
 
             return getCode(exprOp.exprs.get(0)) + " " + binaryOp.getOp() + " " + getCode(exprOp.exprs.get(1));
         }

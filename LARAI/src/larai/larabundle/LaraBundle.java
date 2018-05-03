@@ -127,7 +127,7 @@ public class LaraBundle {
 
         BundleType bundleType = null;
         try {
-            bundleType = BundleType.getHelper().valueOf(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
+            bundleType = BundleType.getHelper().fromValue(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
         } catch (Exception e) {
             throw new RuntimeException("Problems while loading bundle folder '" + includeFolder + "'", e);
         }

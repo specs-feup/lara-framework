@@ -13,7 +13,7 @@
 
 package larai.larabundle;
 
-import pt.up.fe.specs.util.enums.EnumHelper;
+import pt.up.fe.specs.util.enums.EnumHelperWithValue;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.StringProvider;
 
@@ -21,9 +21,9 @@ public enum BundleType implements StringProvider {
     WEAVER("weaver"),
     CUSTOM("custom");
 
-    private static final Lazy<EnumHelper<BundleType>> ENUM_HELPER = EnumHelper.newLazyHelper(BundleType.class);
+    private static final Lazy<EnumHelperWithValue<BundleType>> ENUM_HELPER = EnumHelperWithValue.newLazyHelper(BundleType.class);
 
-    public static EnumHelper<BundleType> getHelper() {
+    public static EnumHelperWithValue<BundleType> getHelper() {
         return ENUM_HELPER.get();
     }
 

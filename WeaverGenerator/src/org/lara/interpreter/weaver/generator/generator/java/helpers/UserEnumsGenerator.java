@@ -29,7 +29,7 @@ import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 
-import pt.up.fe.specs.util.enums.EnumHelper;
+import pt.up.fe.specs.util.enums.EnumHelperWithValue;
 import pt.up.fe.specs.util.lazy.Lazy;
 
 public class UserEnumsGenerator extends GeneratorHelper {
@@ -101,7 +101,7 @@ public class UserEnumsGenerator extends GeneratorHelper {
     private void generateLazyHelper(JavaEnum userEnum) {
 
         JavaType lazyType = JavaTypeFactory.convert(Lazy.class);
-        JavaType enumHelperType = JavaTypeFactory.convert(EnumHelper.class);
+        JavaType enumHelperType = JavaTypeFactory.convert(EnumHelperWithValue.class);
         JavaType enumType = JavaTypeFactory.convert(userEnum);
         JavaTypeFactory.addGenericType(enumHelperType, enumType);
         JavaTypeFactory.addGenericType(lazyType, enumHelperType);

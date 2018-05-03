@@ -12,7 +12,7 @@
  */
 package larac.objects;
 
-import pt.up.fe.specs.util.enums.EnumHelper;
+import pt.up.fe.specs.util.enums.EnumHelperWithValue;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.StringProvider;
 import tdrc.utils.StringUtils;
@@ -110,7 +110,7 @@ public class Enums {
 
         ;
 
-        private static final Lazy<EnumHelper<BinaryOperator>> ENUM_HELPER = EnumHelper
+        private static final Lazy<EnumHelperWithValue<BinaryOperator>> ENUM_HELPER = EnumHelperWithValue
                 .newLazyHelper(BinaryOperator.class);
 
         private String op;
@@ -160,7 +160,7 @@ public class Enums {
             return name();
         }
 
-        public static EnumHelper<BinaryOperator> getHelper() {
+        public static EnumHelperWithValue<BinaryOperator> getHelper() {
             return ENUM_HELPER.get();
         }
     }
@@ -174,10 +174,10 @@ public class Enums {
         DECP("--"),
         TYPEOF("typeof"),
         DELETE("delete"),
-        VOID(
-                "void");
+        VOID("void");
+        // NEW("new");
 
-        private static final Lazy<EnumHelper<UnaryOperator>> ENUM_HELPER = EnumHelper
+        private static final Lazy<EnumHelperWithValue<UnaryOperator>> ENUM_HELPER = EnumHelperWithValue
                 .newLazyHelper(UnaryOperator.class);
 
         private String op;
@@ -221,7 +221,7 @@ public class Enums {
             return name();
         }
 
-        public static EnumHelper<UnaryOperator> getHelper() {
+        public static EnumHelperWithValue<UnaryOperator> getHelper() {
             return ENUM_HELPER.get();
         }
     }

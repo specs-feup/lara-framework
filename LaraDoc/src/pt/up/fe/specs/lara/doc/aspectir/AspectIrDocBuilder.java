@@ -49,6 +49,7 @@ public class AspectIrDocBuilder {
     }
 
     public void parse(Aspects aspects) {
+
         // For each element, create LaraDocComment
 
         for (Aspect aspect : aspects.aspects.values()) {

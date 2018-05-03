@@ -411,7 +411,7 @@ public class LaraDoc {
     }
     */
     private String getBundleName(SpecsProperties laraBundle) {
-        BundleType bundleType = BundleType.getHelper().valueOf(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
+        BundleType bundleType = BundleType.getHelper().fromValue(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
 
         switch (bundleType) {
         case WEAVER:
