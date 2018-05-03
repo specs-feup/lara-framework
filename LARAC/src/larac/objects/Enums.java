@@ -111,7 +111,7 @@ public class Enums {
         ;
 
         private static final Lazy<EnumHelperWithValue<BinaryOperator>> ENUM_HELPER = EnumHelperWithValue
-                .newLazyHelper(BinaryOperator.class);
+                .newLazyHelperWithValue(BinaryOperator.class);
 
         private String op;
         private final int precedence;
@@ -178,7 +178,7 @@ public class Enums {
         // NEW("new");
 
         private static final Lazy<EnumHelperWithValue<UnaryOperator>> ENUM_HELPER = EnumHelperWithValue
-                .newLazyHelper(UnaryOperator.class);
+                .newLazyHelperWithValue(UnaryOperator.class);
 
         private String op;
 

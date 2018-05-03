@@ -21,7 +21,7 @@ public enum BundleType implements StringProvider {
     WEAVER("weaver"),
     CUSTOM("custom");
 
-    private static final Lazy<EnumHelperWithValue<BundleType>> ENUM_HELPER = EnumHelperWithValue.newLazyHelper(BundleType.class);
+    private static final Lazy<EnumHelperWithValue<BundleType>> ENUM_HELPER = EnumHelperWithValue.newLazyHelperWithValue(BundleType.class);
 
     public static EnumHelperWithValue<BundleType> getHelper() {
         return ENUM_HELPER.get();
