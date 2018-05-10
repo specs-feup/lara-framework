@@ -110,7 +110,9 @@ public class UserEnumsGenerator extends GeneratorHelper {
         enumHelper.addModifier(Modifier.STATIC);
         enumHelper.addModifier(Modifier.FINAL);
         enumHelper.setInitializer(
-                GenericExpression.fromString("EnumHelper.newLazyHelper(" + userEnum.getName() + ".class)"));
+                GenericExpression
+                        .fromString(enumHelperType.getName() + ".newLazyHelperWithValue(" + userEnum.getName()
+                                + ".class)"));
 
         Method getHelper = new Method(enumHelperType/*.clone()*/, "getHelper", Modifier.STATIC);
         getHelper.appendCode("return " + enumHelper.getName() + ".get();");
@@ -118,11 +120,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
         userEnum.add(enumHelper);
         userEnum.add(getHelper);
     }
-    // private static final Lazy<EnumHelper<LoopType>> ENUM_HELPER = EnumHelper.newLazyHelper(LoopType.class);
-    //
-    // public static EnumHelper<LoopType> getHelper() {
-    // return ENUM_HELPER.get();
-    // }
 
     // /**
     // * Generate the toString method based on a json format
