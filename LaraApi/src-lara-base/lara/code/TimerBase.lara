@@ -12,6 +12,14 @@ var Timer = function(unit, filename) {
 };
 
 
+/**
+ * Times the code of a given section.
+ * 
+ * @param $start [Mandatory] Starting point of the time measure
+ * @param prefix Message that will appear before the time measure. If undefined, empty string will be used.
+ * @param $end Ending point of the time measure. If undefined, measure is done around starting point.
+ * @return name of the variable that contains the value of the elapsed time.
+ */
 Timer.prototype.time = function($start, prefix, $end) {
 	throw "Timer.time: Not implemented yet";
 }
@@ -28,6 +36,10 @@ Timer.prototype.setPrintUnit = function(printUnit) {
 Timer.prototype.setPrint = function(print) {
     this.print = print;
     return this;
+}
+
+Timer.prototype.getUnit = function() {
+    return this.timeUnits;
 }
 
 /**
