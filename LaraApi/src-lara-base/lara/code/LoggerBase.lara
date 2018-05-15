@@ -16,6 +16,7 @@ var Logger = function(isGlobal, filename) {
 
     this.isGlobal = isGlobal === undefined ? false : isGlobal;
     this.filename = filename;
+	this.afterJp = undefined;
 
 };
 
@@ -49,6 +50,14 @@ Logger.prototype.printfFormat = {
 Logger.prototype.isGlobalFn = function() {
     println("Is Global Fn:" + this.isGlobal);
 }
+
+/**
+ *  The 'last' join point after .log() is called.
+ */
+Logger.prototype.getAfterJp = function() {
+	return this.afterJp;
+}
+
 
 Logger.prototype._clear = function() {
     this.currentElements = [];
@@ -84,8 +93,15 @@ Logger.prototype._validateJp = function($jp, functionJpName) {
 Logger.prototype._insert = function($jp, insertBefore, code) {
 
     var insertBeforeString = insertBefore ? "before" : "after";
+
+	if(insertBefore) {
+	    $jp.insert(insertBeforeString, code);
+		this.afterJp = $jp;
+	} else {
+		this.afterJp = $jp.insertAfter(code);
+	}
 	
-    $jp.insert(insertBeforeString, code);
+    //$jp.insert(insertBeforeString, code);
 
     // Clear internal state
     this._clear();
