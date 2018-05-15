@@ -9,6 +9,7 @@ var Timer = function(unit, filename) {
     this.filename = filename;
     this.printUnit = true;
 	this.print = true;
+	this.afterJp = undefined;
 };
 
 
@@ -40,6 +41,15 @@ Timer.prototype.setPrint = function(print) {
 
 Timer.prototype.getUnit = function() {
     return this.timeUnits;
+}
+
+/**
+ * @return the last join point that was inserted after the $end mark
+ */
+Timer.prototype.getAfterJp = function() {
+//	println("Timer.getAfterJp: not implemented yet, returning undefined");
+//    return undefined;
+	return this.afterJp;
 }
 
 /**
@@ -75,4 +85,8 @@ Timer.prototype._timeValidate = function($start, $end, functionJpName) {
     }
 
     return true;
+}
+
+Timer.prototype._setAfterJp = function($afterJp) {
+	this.afterJp = $afterJp;
 }
