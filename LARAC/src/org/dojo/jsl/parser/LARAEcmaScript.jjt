@@ -2165,16 +2165,24 @@ TOKEN :
 		"[" ( 
 				(ElisionFirst())? 
 				(
-					 LOOKAHEAD(ElementList() Elision()) ElementList() Elision() 
-					| ( ElementList() )?
-				)
+				  ElementList()
+					 //LOOKAHEAD(ElementList() Elision()) ElementList() Elision() 
+					//| ( ElementList() )?
+				)?
 		) "]"
 	}		 
+
+
 
 	void ElementList() #void :
 	{}
 	{
-		AssignmentExpression() ( LOOKAHEAD(Elision()	AssignmentExpression()) Elision()  AssignmentExpression())*
+		AssignmentExpression()
+		
+	    (	    LOOKAHEAD(2)
+	    	Elision() 	  	    AssignmentExpression()	  	)*	    [Elision()]
+		//(Elision() AssignmentExpression() )*
+		//(Elision())?
 	}
 
 	void Elision() #void:
