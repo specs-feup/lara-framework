@@ -264,7 +264,8 @@ public class StatementProcessor {
     private void declareVariables(Statement stat, String prefix, int depth, String sufix, final StringBuilder ret) {
         for (int i = 0; i < stat.components.size(); i += 2) {
             final Expression leftExpr = (Expression) stat.components.get(i);
-            final Expression rightExpr = (Expression) stat.components.get(i + 1);
+            final Expression rightExpr = (Expression) stat.components.get(i + 1); // always has an expression, even if
+                                                                                  // it is empty!
             ret.append(LaraIUtils.getSpace(depth) + prefix
                     + interpreter.getJavascriptString(leftExpr, -1));
             ret.append(" = ");

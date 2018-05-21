@@ -1806,11 +1806,19 @@ TOKEN :
 	 * Actions that can be used to influence the join points.
 	 * A join point variable can be used to specify the targeted join point where the action takes place 
 	 **/
-	void Action() #Action:
+	void Action() #void:
 	{
 	  Token t;
 	}
 	{
+//
+//	  LOOKAHEAD(LeftHandSideExpression() AssignmentOperator() ) (
+//	    LeftHandSideExpression() AssignmentOperator()
+//	    ActionOnAssign() 
+//	   
+//	  )#AssignmentExpression
+//	| 
+	  (	    
 		(
 		  	  (
 		  	    (  
@@ -1831,8 +1839,36 @@ TOKEN :
 		  Define() |
 		  Perform() |
 		  OutputAct()
-		)  
+		)
+	   )#Action
 		  EndStatement() 
+	}
+
+
+void ActionOnAssign() #Action:
+	{
+	  Token t;
+	}
+	{
+
+		(		  (
+		  	  (
+		  	    (  
+					  t=<IDENTIFIER_NAME>
+					  {
+					    jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
+					    //jjtThis.setCoord(t,t);
+					  }
+				)#Identifier
+			  )
+
+			  (LOOKAHEAD(MemberExpressionPart())MemberExpressionPart())*
+			  < DOT >
+			
+         )#CompositeReference(>1))?
+
+		 
+		 ExecOnAssign()
 	}
 	
 	/** Call
@@ -1842,17 +1878,27 @@ TOKEN :
 	void Call() #Call:
 	{Token aspVarName,aspName,ref, end;}
 	{
+	  (	    
 	   <CALL> [LOOKAHEAD(LeftHandSideExpression() <COLON>)
 	   					LeftHandSideExpression() <COLON>]
    			  [LOOKAHEAD(2)FilePathNoSTar()]
    			  	aspName=<IDENTIFIER_NAME>
 					
-	    	[Arguments()] end=EndStatement() 
+	    	[Arguments()] end=EndStatement()
+	 |
+	 	[< VAR > ] Identifier() < ASSIGN >  <CALL> 	  [LOOKAHEAD(2)FilePathNoSTar()]
+   			  	aspName=<IDENTIFIER_NAME>
+					
+	    	[Arguments()] end=EndStatement()
+	 )
+	 	
 	   {
 		 jjtThis.setAspName(aspName.image);
 	    // jjtThis.setCoord(aspName,end);
 	   }
 	}
+
+	
 
 	/** Run
 	 * Execution of an external tool.
@@ -1970,6 +2016,25 @@ TOKEN :
 	   			Arguments()
 	   	]
 	}
+
+	/** Perform
+	 * Perform an action over the join point
+	 **/
+	void ExecOnAssign() #Perform:
+	{Token action, begin, end, t;}
+	{
+		<EXEC>
+		//[LOOKAHEAD(< IDENTIFIER_NAME > < COLON > ) t=< IDENTIFIER_NAME > < COLON >{jjtThis.setVariable(t.image);} ]
+		action=getNoReservedIdentifier()
+ 		{jjtThis.setAction(action.image);}
+		//{jjtThis.setCoord(begin,action);}
+	   	(	   	  
+	   			(TemplateLiteral()) #FunctionCallParameters
+			| 
+	   			Arguments()
+	  	)
+	}
+	
 
 // 	void CodeLiteralOnlyArgument()  #FunctionCallParameters: {}
 //	{
@@ -2570,14 +2635,18 @@ TOKEN :
 	void AssignmentExpression() #AssignmentExpression(>1) :
 	{}
 	{
-		LOOKAHEAD(LeftHandSideExpression() AssignmentOperator()) LeftHandSideExpression() AssignmentOperator() AssignmentExpression() 
+		LOOKAHEAD(LeftHandSideExpression() AssignmentOperator()) LeftHandSideExpression() AssignmentOperator()
+		 (LOOKAHEAD(ActionOnAssign())ActionOnAssign() |AssignmentExpression()) 
 		| ConditionalExpression() 
 	}
 
 	void AssignmentExpressionNoIn() #AssignmentExpression(>1) : 
 	{}
 	{
-		LOOKAHEAD(LeftHandSideExpression() AssignmentOperator()) LeftHandSideExpression() AssignmentOperator() AssignmentExpressionNoIn()
+		LOOKAHEAD(LeftHandSideExpression() AssignmentOperator())
+
+		  LeftHandSideExpression() AssignmentOperator()
+		  	(LOOKAHEAD(ActionOnAssign())ActionOnAssign() | AssignmentExpressionNoIn())
 		| ConditionalExpressionNoIn() 
 	}
 
@@ -2627,10 +2696,10 @@ TOKEN :
 		try
 		{
 	    
-	  	 SimpleAction()
-		 	| LOOKAHEAD(Action())
+	  	  SimpleAction()
+	 	| LOOKAHEAD(Action())
 		 		Action()
-	 	| Call()
+	 	| LOOKAHEAD(< CALL > | [< VAR >] < IDENTIFIER_NAME > <ASSIGN > <CALL >) Call()
 		 	| LOOKAHEAD([<RUN >] <CMD >)
 		 		Cmd()
 	 	| Run() 
@@ -2738,7 +2807,7 @@ TOKEN :
 	void Initialiser() #void :
 	{}
 	{
-		"=" AssignmentExpression()
+		"=" (LOOKAHEAD(ActionOnAssign() ) ActionOnAssign()   | AssignmentExpression())
 	}
 
 	void InitialiserNoIn() #void :

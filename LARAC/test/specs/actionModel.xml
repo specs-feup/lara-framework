@@ -7,6 +7,9 @@
 			<parameter name="l" type="int" default="0"/>
 			<parameter name="m" type="int" default="0"/>
 	</action>
+	
+	<action name="x" class="function"/>
+	
 	<action name="map">
 		<parameter name="to" type="string"/>
 		<parameter name="id" type="string" default="0"/>
