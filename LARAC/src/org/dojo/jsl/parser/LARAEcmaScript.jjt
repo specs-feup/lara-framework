@@ -1881,16 +1881,17 @@ void ActionOnAssign() #Action:
 	  (	    
 	   <CALL> [LOOKAHEAD(LeftHandSideExpression() <COLON>)
 	   					LeftHandSideExpression() <COLON>]
-   			  [LOOKAHEAD(2)FilePathNoSTar()]
-   			  	aspName=<IDENTIFIER_NAME>
-					
-	    	[Arguments()] end=EndStatement()
+   			 
 	 |
-	 	[< VAR > ] Identifier() < ASSIGN >  <CALL> 	  [LOOKAHEAD(2)FilePathNoSTar()]
+	 	< VAR >  Identifier() < ASSIGN >  <CALL>
+     |
+        LeftHandSideExpression() < ASSIGN > <CALL >
+	 )
+
+	  [LOOKAHEAD(2)FilePathNoSTar()]
    			  	aspName=<IDENTIFIER_NAME>
 					
 	    	[Arguments()] end=EndStatement()
-	 )
 	 	
 	   {
 		 jjtThis.setAspName(aspName.image);
@@ -2699,7 +2700,7 @@ void ActionOnAssign() #Action:
 	  	  SimpleAction()
 	 	| LOOKAHEAD(Action())
 		 		Action()
-	 	| LOOKAHEAD(< CALL > | [< VAR >] < IDENTIFIER_NAME > <ASSIGN > <CALL >) Call()
+	 	| LOOKAHEAD(< CALL > | (< VAR > < IDENTIFIER_NAME > | LeftHandSideExpression() ) <ASSIGN > <CALL >) Call()
 		 	| LOOKAHEAD([<RUN >] <CMD >)
 		 		Cmd()
 	 	| Run() 
