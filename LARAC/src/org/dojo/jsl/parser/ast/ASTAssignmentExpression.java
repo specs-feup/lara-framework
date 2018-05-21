@@ -23,22 +23,23 @@ public class ASTAssignmentExpression extends SimpleNode {
     }
 
     public SimpleNode solveInitializeAssignment(HashMap<String, Variable> vars) {
-        final String operator = ((ASTOperator) getChildren()[1]).value.toString();
-        final String varName = ((SimpleNode) getChildren()[0]).value.toString();
+        final String operator = ((ASTOperator) getChild(1)).value.toString();
+        final String varName = getChild(0).value.toString();
+
         if (!operator.equals("=")) {
             throw newException("Variable initizalization only supports the assignment operator \"=\"\n" + "\tUsed: \""
                     + operator + "\" for variable \"" + varName + "\"");
         }
-        if (!(getChildren()[2] instanceof ASTAssignmentExpression)) {
-            final SimpleNode expr = (SimpleNode) getChildren()[2];
+        SimpleNode rhs = getChild(2);
+        if (!(rhs instanceof ASTAssignmentExpression)) {
             if (vars.containsKey(varName)) {
                 throw newException("Variable '" + varName + "' already defined on this scope");
             }
 
             vars.put(varName, new Variable(varName));// , expr));
-            return expr;
+            return rhs;
         }
-        final ASTAssignmentExpression assignExpr = (ASTAssignmentExpression) getChildren()[2];
+        final ASTAssignmentExpression assignExpr = getChildAs(2, ASTAssignmentExpression.class);
         final SimpleNode expr = assignExpr.solveInitializeAssignment(vars);
         if (vars.containsKey(varName)) {
             throw newException("Variable '" + varName + "' already defined on this scope");
@@ -50,20 +51,15 @@ public class ASTAssignmentExpression extends SimpleNode {
 
     @Override
     public void declareGlobal(LaraC lara) {
-        final SimpleNode assignee = (SimpleNode) getChildren()[0];
-        final ASTOperator operator = (ASTOperator) getChildren()[1];
-        final SimpleNode assignment = (SimpleNode) getChildren()[2];
-        operator.organize(this);
-        assignment.organize(this);
-        assignee.organizeLHS(assignment.getExpressionType());
+        organize(null);
         getLara().aspectIR().addGlobalStatement(this, lara.getLaraPath());
     }
 
     @Override
     public Object organize(Object obj) {
-        final SimpleNode assignee = (SimpleNode) getChildren()[0];
-        final ASTOperator operator = (ASTOperator) getChildren()[1];
-        final SimpleNode assignment = (SimpleNode) getChildren()[2];
+        final SimpleNode assignee = getChild(0);
+        final ASTOperator operator = getChildAs(1, ASTOperator.class);
+        final SimpleNode assignment = getChild(2);
         operator.organize(this);
         assignment.organize(this);
         assignee.organizeLHS(assignment.getExpressionType());
@@ -85,15 +81,19 @@ public class ASTAssignmentExpression extends SimpleNode {
     @Override
     public void toXML(Document doc, Element parent) {
 
-        final SimpleNode assignee = (SimpleNode) getChildren()[0];
-        final ASTOperator operator = (ASTOperator) getChildren()[1];
-        final SimpleNode assignment = (SimpleNode) getChildren()[2];
+        final SimpleNode assignee = getChild(0);
+        final ASTOperator operator = getChildAs(1, ASTOperator.class);
+        final SimpleNode assignment = getChild(2);
         final Element assignEl = doc.createElement("op");
         // addCoords(assignEl);
         parent.appendChild(assignEl);
         assignEl.setAttribute("name", operator.getTag());
         assignee.toXML(doc, assignEl);
-        assignment.toXML(doc, assignEl);
+        if (assignment instanceof ASTAction) {
+            ((ASTAction) assignment).actionExprToXML(doc, assignEl, false);
+        } else {
+            assignment.toXML(doc, assignEl);
+        }
     }
 }
 /*

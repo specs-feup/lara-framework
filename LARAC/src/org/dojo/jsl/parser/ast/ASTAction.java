@@ -63,10 +63,40 @@ public class ASTAction extends SimpleNode {
         statEl.setAttribute("coord", getCoords());
         parent.appendChild(statEl);
 
-        final Element exprEl = doc.createElement("expression");
-        exprEl.setAttribute("desc", "action");
+        if (varName != null) {
+            statEl.setAttribute("name", "vardecl");
+
+            final Element nameExprEl = doc.createElement("expression");
+            statEl.appendChild(nameExprEl);
+            // if(var.getName().startsWith("$"))
+            // nameExprEl.setAttribute("type", Types.Joinpoint.toString());
+            final Element literalNameEl = doc.createElement("literal");
+            literalNameEl.setAttribute("value", varName);
+            literalNameEl.setAttribute("type", Types.String.toString());
+            nameExprEl.appendChild(literalNameEl);
+            // final Element initEl = doc.createElement("expression");
+            // initEl.setAttribute("desc", "init");
+            // statEl.appendChild(initEl);
+            // initEl.appendChild(exprEl);
+        } else {
+            statEl.setAttribute("name", "expr");
+        }
+        actionExprToXML(doc, statEl, true);
+    }
+
+    public void actionExprToXML(Document doc, final Element statEl, boolean encapsulateWithExpression) {
+
         final Element callEl = doc.createElement("call");
-        exprEl.appendChild(callEl);
+
+        if (encapsulateWithExpression) {
+            final Element exprEl = doc.createElement("expression");
+            exprEl.setAttribute("desc", "action");
+            exprEl.appendChild(callEl);
+            statEl.appendChild(exprEl);
+        } else {
+            statEl.appendChild(callEl);
+        }
+
         final Element methodEl = doc.createElement("method");
         callEl.appendChild(methodEl);
 
@@ -105,26 +135,6 @@ public class ASTAction extends SimpleNode {
 
             // }
         }
-
-        if (varName != null) {
-            statEl.setAttribute("name", "vardecl");
-
-            final Element nameExprEl = doc.createElement("expression");
-            statEl.appendChild(nameExprEl);
-            // if(var.getName().startsWith("$"))
-            // nameExprEl.setAttribute("type", Types.Joinpoint.toString());
-            final Element literalNameEl = doc.createElement("literal");
-            literalNameEl.setAttribute("value", varName);
-            literalNameEl.setAttribute("type", Types.String.toString());
-            nameExprEl.appendChild(literalNameEl);
-            // final Element initEl = doc.createElement("expression");
-            // initEl.setAttribute("desc", "init");
-            // statEl.appendChild(initEl);
-            // initEl.appendChild(exprEl);
-        } else {
-            statEl.setAttribute("name", "expr");
-        }
-        statEl.appendChild(exprEl);
 
     }
 

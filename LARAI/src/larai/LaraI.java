@@ -558,7 +558,6 @@ public class LaraI {
         } catch (Exception e) {
             // Close weaver
             weaver.close();
-
             // Rethrow exception
             throw e;
             // throw new RuntimeException("Exception during weaving:", e);

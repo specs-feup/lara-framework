@@ -37,6 +37,7 @@ import larac.objects.Enums;
 import larac.objects.Enums.Types;
 import larac.objects.Variable;
 import larac.utils.OrganizeUtils;
+import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import tdrc.utils.StringUtils;
 
@@ -130,6 +131,14 @@ public class SimpleNode implements Node {
      */
     public SimpleNode getChild(int i) {
         return (SimpleNode) getChildren()[i];
+    }
+
+    public <T extends SimpleNode> T getChildAs(int i, Class<T> cast) {
+        Node childI = children[i];
+        Preconditions.checkArgument(cast.isInstance(childI),
+                "Cannot cast node of type " + LARAEcmaScriptTreeConstants.jjtNodeName[this.id] + " to "
+                        + cast.getName());
+        return cast.cast(childI);
     }
 
     @Override

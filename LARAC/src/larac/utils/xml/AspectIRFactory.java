@@ -15,6 +15,7 @@ package larac.utils.xml;
 
 import java.util.Optional;
 
+import org.dojo.jsl.parser.ast.ASTAction;
 import org.dojo.jsl.parser.ast.SimpleNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -86,12 +87,19 @@ public class AspectIRFactory {
         literalNameEl.setAttribute("value", name);
         literalNameEl.setAttribute("type", Types.String.toString());
         nameExprEl.appendChild(literalNameEl);
-        final Element initEl = doc.createElement("expression");
-        initEl.setAttribute("desc", "init");
-        parent.appendChild(initEl);
-        if (init != null) {
-            init.toXML(doc, initEl);
+
+        if (init instanceof ASTAction) {
+            ((ASTAction) init).actionExprToXML(doc, parent, true);
+        } else {
+
+            final Element initEl = doc.createElement("expression");
+            initEl.setAttribute("desc", "init");
+            parent.appendChild(initEl);
+            if (init != null) {
+                init.toXML(doc, initEl);
+            }
         }
+
     }
 
     public static void idRef(Document doc, Element parent, String name) {
