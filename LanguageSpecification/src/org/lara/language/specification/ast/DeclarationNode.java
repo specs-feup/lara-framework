@@ -22,30 +22,49 @@ public class DeclarationNode extends LangSpecNode {
     private final String name;
     private final String type;
 
+    private String nameAttributeString = "name";
+    private String typeAttributeString = "type";
+
     public DeclarationNode(Declaration declaration) {
-	this(declaration.getName(), declaration.getType().toString());
+        this(declaration.getName(), declaration.getType().toString());
     }
 
     public DeclarationNode(String name, String type) {
-	super();
-	this.name = name;
-	this.type = type;
+        super();
+        this.name = name;
+        this.type = type;
     }
 
     @Override
     public String toContentString() {
-	return "name: " + name + ", type: " + type;
+        return getNameAttributeString() + ": " + name + ", " + getTypeAttributeString() + ": " + type;
     }
 
     @Override
     public String toJson(BuilderWithIndentation builder) {
-	builder.addLines("{");
-	builder.increaseIndentation();
+        builder.addLines("{");
+        builder.increaseIndentation();
 
-	builder.addLines("\"type\": \"" + type + "\",");
-	builder.addLines("\"name\": \"" + name + "\"");
-	builder.decreaseIndentation();
-	builder.add("}");
-	return builder.toString();
+        builder.addLines("\"" + getTypeAttributeString() + "\": \"" + type + "\",");
+        builder.addLines("\\" + getNameAttributeString() + "\": \"" + name + "\"");
+        builder.decreaseIndentation();
+        builder.add("}");
+        return builder.toString();
+    }
+
+    public String getTypeAttributeString() {
+        return typeAttributeString;
+    }
+
+    public void setTypeAttributeString(String typeAttributeString) {
+        this.typeAttributeString = typeAttributeString;
+    }
+
+    public String getNameAttributeString() {
+        return nameAttributeString;
+    }
+
+    public void setNameAttributeString(String nameAttributeString) {
+        this.nameAttributeString = nameAttributeString;
     }
 }

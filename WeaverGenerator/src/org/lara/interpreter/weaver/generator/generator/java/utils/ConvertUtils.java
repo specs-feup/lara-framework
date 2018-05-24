@@ -151,7 +151,7 @@ public class ConvertUtils {
         }
         // if the object declaration exist in the artifacts
         final LanguageSpecification languageSpecification = generator.getLanguageSpecification();
-        if (languageSpecification.getArtifacts().hasObject(type)) {
+        if (languageSpecification.getArtifacts().hasTypeDef(type)) {
             return new JavaType(type, generator.getEntitiesPackage(), arrayDimension);
         }
 

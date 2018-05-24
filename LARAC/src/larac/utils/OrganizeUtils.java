@@ -183,7 +183,7 @@ public class OrganizeUtils {
         }
 
         // if the object declaration exist in the artifacts
-        if (spec.getArtifacts().hasObject(typeStr)) {
+        if (spec.getArtifacts().hasTypeDef(typeStr)) {
             return Types.Object;
         }
         // if it is a join point class

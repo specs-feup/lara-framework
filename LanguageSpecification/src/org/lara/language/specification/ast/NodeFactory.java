@@ -24,6 +24,9 @@ import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.Select;
+import org.lara.language.specification.dsl.types.EnumDef;
+import org.lara.language.specification.dsl.types.EnumValue;
+import org.lara.language.specification.dsl.types.TypeDef;
 
 public class NodeFactory {
 
@@ -40,7 +43,42 @@ public class NodeFactory {
             child = toNode(joinPoint);
             node.addChild(child);
         }
+
+        for (TypeDef typeDef : langSpec.getTypeDefs().values()) {
+            TypeDefNode tdNode = toNode(typeDef);
+            node.addChild(tdNode);
+        }
+        for (EnumDef enumDef : langSpec.getEnumDefs().values()) {
+            TypeDefNode tdNode = toNode(enumDef);
+            node.addChild(tdNode);
+        }
+
         return node;
+    }
+
+    private static TypeDefNode toNode(TypeDef typeDef) {
+        TypeDefNode tdNode = new TypeDefNode(typeDef.getName());
+        tdNode.getToolTip().ifPresent(tdNode::setToolTip);
+
+        for (Attribute attr : typeDef.getFields()) {
+            AttributeNode attrNode = toNode(attr);
+            tdNode.addChild(attrNode);
+        }
+        return tdNode;
+    }
+
+    private static TypeDefNode toNode(EnumDef enumDef) {
+        // for now they both have the same attributes (only name)
+        TypeDefNode tdNode = new TypeDefNode(enumDef.getName(), "enum");
+        tdNode.getToolTip().ifPresent(tdNode::setToolTip);
+
+        for (EnumValue value : enumDef.getValues()) {
+            DeclarationNode dNode = new DeclarationNode(value.getValue(), value.getString());
+            dNode.setNameAttributeString("value");
+            dNode.setTypeAttributeString("string");
+            tdNode.addChild(dNode);
+        }
+        return tdNode;
     }
 
     public static JoinPointNode toNode(JoinPointClass joinPoint) {

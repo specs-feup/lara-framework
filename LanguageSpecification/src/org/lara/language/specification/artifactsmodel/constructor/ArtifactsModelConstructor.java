@@ -40,7 +40,6 @@ import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.resources.LanguageSpecificationResources;
 import org.xml.sax.SAXException;
 
-import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.MarshalUtils;
 
@@ -159,15 +158,29 @@ public class ArtifactsModelConstructor implements IModel {
      * @param artifactName
      * @return
      */
-    public boolean addObject(String objectName, Attribute... params) {
+    // public boolean addObject(String objectName, Attribute... params) {
+    //
+    // final TypeDef TypeDef = objFactory.createTypeDef();
+    // TypeDef.setName(objectName);
+    // if (params != null) {
+    //
+    // for (final Attribute param : params) {
+    //
+    // TypeDef.getAttribute().add(param);
+    // }
+    // }
+    //
+    // return false;
+    // }
+    public boolean addtypeDef(String typeDefName, Attribute... params) {
 
-        final TypeDef TypeDef = objFactory.createTypeDef();
-        TypeDef.setName(objectName);
+        final TypeDef typeDef = objFactory.createTypeDef();
+        typeDef.setName(typeDefName);
         if (params != null) {
 
             for (final Attribute param : params) {
 
-                TypeDef.getAttribute().add(param);
+                typeDef.getAttribute().add(param);
             }
         }
 
@@ -179,9 +192,20 @@ public class ArtifactsModelConstructor implements IModel {
      * 
      * @return
      */
-    public TypeDef getObject(String objName) {
+    // public TypeDef getObject(String objName) {
+    //
+    // for (final TypeDef obj : artifactsList.getObject()) {
+    //
+    // if (obj.getName().equals(objName)) {
+    // return obj;
+    // }
+    // }
+    //
+    // return null;
+    // }
+    public TypeDef getTypeDef(String objName) {
 
-        for (final TypeDef obj : artifactsList.getObject()) {
+        for (final TypeDef obj : artifactsList.getTypedef()) {
 
             if (obj.getName().equals(objName)) {
                 return obj;
@@ -213,9 +237,13 @@ public class ArtifactsModelConstructor implements IModel {
      * 
      * @return
      */
-    public boolean hasObject(String objName) {
+    // public boolean hasObject(String objName) {
+    //
+    // return getObject(objName) != null;
+    // }
+    public boolean hasTypeDef(String objName) {
 
-        return getObject(objName) != null;
+        return getTypeDef(objName) != null;
     }
 
     /**
@@ -224,10 +252,11 @@ public class ArtifactsModelConstructor implements IModel {
      * @return
      */
     public List<TypeDef> getTypeDefs() {
-        List<TypeDef> allTypeDefs = SpecsCollections.newArrayList();
-        allTypeDefs.addAll(artifactsList.getObject());
-        allTypeDefs.addAll(artifactsList.getTypedef());
-        return artifactsList.getObject();
+        // List<TypeDef> allTypeDefs = SpecsCollections.newArrayList();
+        // allTypeDefs.addAll(artifactsList.getObject());
+        // allTypeDefs.addAll(artifactsList.getTypedef());
+        // return allTypeDefs;
+        return artifactsList.getTypedef();
     }
 
     public List<EnumDef> getEnumDefs() {
@@ -488,6 +517,13 @@ public class ArtifactsModelConstructor implements IModel {
         for (final Attribute attr : globalAttributesList) {
 
             globalAttributes.put(attr.getName(), attr);
+        }
+
+        // migrate every "object" declaration to typedefs list
+        List<TypeDef> objects = artifactsList.getObject();
+        List<TypeDef> typedefs = artifactsList.getTypedef();
+        while (!objects.isEmpty()) {
+            typedefs.add(objects.remove(0));
         }
     }
 

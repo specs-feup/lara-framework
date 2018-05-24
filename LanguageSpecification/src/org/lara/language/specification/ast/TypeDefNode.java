@@ -15,29 +15,33 @@ package org.lara.language.specification.ast;
 
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
-public class JoinPointNode extends LangSpecNode {
+public class TypeDefNode extends LangSpecNode {
 
     private final String name;
-    private final String extend;
+    private String nodeType;
 
-    public JoinPointNode(String name, String extend) {
+    public TypeDefNode(String name) {
+        this(name, "typedef");
+
+    }
+
+    public TypeDefNode(String name, String nodeType) {
         this.name = name;
-        this.extend = extend;
+        this.nodeType = nodeType;
+
     }
 
     @Override
     public String toContentString() {
-        return "name: " + name + (extend.isEmpty() ? "" : (", extends: " + extend));
+        return "name: " + name;
     }
 
     @Override
     public String toJson(BuilderWithIndentation builder) {
         builder.addLines("{");
         builder.increaseIndentation();
-
-        builder.addLines("\"type\": \"joinpoint\",");
-        builder.addLines("\"name\": \"" + name + "\",");
-        builder.add("\"extends\": \"" + extend + "\"");
+        builder.addLines("\"type\": \"" + getNodeType() + "\"");
+        builder.addLines("\"name\": \"" + name + "\"");
         if (this.hasChildren()) {
             builder.addLine(",");
             builder.addLines(childrenToJson(builder.getCurrentIdentation() + 1));
@@ -45,5 +49,13 @@ public class JoinPointNode extends LangSpecNode {
         builder.decreaseIndentation();
         builder.add("}");
         return builder.toString();
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 }
