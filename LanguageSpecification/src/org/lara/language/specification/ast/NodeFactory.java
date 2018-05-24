@@ -27,11 +27,11 @@ import org.lara.language.specification.dsl.Select;
 
 public class NodeFactory {
 
-    public static LangSpecNode toNode(LanguageSpecification languageSpecification) {
+    public static RootNode toNode(LanguageSpecification languageSpecification) {
         return toNode(JoinPointFactory.fromOld(languageSpecification));
     }
 
-    public static LangSpecNode toNode(LanguageSpecificationV2 langSpec) {
+    public static RootNode toNode(LanguageSpecificationV2 langSpec) {
         RootNode node = new RootNode(langSpec.getRoot().getName(), langSpec.getRootAlias());
         JoinPointNode child = toNode(langSpec.getGlobal());
         node.addChild(child);
