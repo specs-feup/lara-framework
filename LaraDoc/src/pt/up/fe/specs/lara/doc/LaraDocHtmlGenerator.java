@@ -23,9 +23,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.ast.EnumDefNode;
 import org.lara.language.specification.ast.JoinPointNode;
 import org.lara.language.specification.ast.NodeFactory;
 import org.lara.language.specification.ast.RootNode;
+import org.lara.language.specification.ast.TypeDefNode;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
@@ -152,29 +154,31 @@ public class LaraDocHtmlGenerator {
 
         StringBuilder languageSpecCode = new StringBuilder();
 
-        StringBuilder joinPoints = new StringBuilder();
-        for (JoinPointNode jp : languageSpecificationRoot.getChildren(JoinPointNode.class)) {
-            String folderName = Integer.toString(counter);
-            counter++;
-
-            File jpFolder = SpecsIo.mkdir(outputFolder, folderName);
-
-            Optional<File> indexFile = generator.generate(jp, jpFolder);
-            if (!indexFile.isPresent()) {
-                continue;
-            }
-
-            String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
-
-            joinPoints.append("<li><a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
-                    + jp.getName() + "</a></li>");
-        }
+        StringBuilder joinPoints = getJoinpointsList(languageSpecificationRoot);
+        StringBuilder typeDefs = getTypeDefsList(languageSpecificationRoot);
+        StringBuilder enumDefs = getEnumDefsList(languageSpecificationRoot);
 
         // Add join points
         if (joinPoints.length() > 0) {
             languageSpecCode.append("<h2>Join Points</h2>");
             languageSpecCode.append("<ul>");
             languageSpecCode.append(joinPoints);
+            languageSpecCode.append("</ul>");
+
+        }
+        // Add join points
+        if (typeDefs.length() > 0) {
+            languageSpecCode.append("<h2>TypeDefs</h2>");
+            languageSpecCode.append("<ul>");
+            languageSpecCode.append(typeDefs);
+            languageSpecCode.append("</ul>");
+
+        }
+        // Add join points
+        if (enumDefs.length() > 0) {
+            languageSpecCode.append("<h2>Enums</h2>");
+            languageSpecCode.append("<ul>");
+            languageSpecCode.append(enumDefs);
             languageSpecCode.append("</ul>");
 
         }
@@ -200,6 +204,69 @@ public class LaraDocHtmlGenerator {
         
         return moduleTemplate;
         */
+    }
+
+    public StringBuilder getJoinpointsList(RootNode languageSpecificationRoot) {
+        StringBuilder joinPoints = new StringBuilder();
+        for (JoinPointNode jp : languageSpecificationRoot.getChildrenOf(JoinPointNode.class)) {
+            String folderName = Integer.toString(counter);
+            counter++;
+
+            File jpFolder = SpecsIo.mkdir(outputFolder, folderName);
+
+            Optional<File> indexFile = generator.generate(jp, jpFolder);
+            if (!indexFile.isPresent()) {
+                continue;
+            }
+
+            String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
+
+            joinPoints.append("<li><a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
+                    + jp.getName() + "</a></li>");
+        }
+        return joinPoints;
+    }
+
+    public StringBuilder getTypeDefsList(RootNode languageSpecificationRoot) {
+        StringBuilder joinPoints = new StringBuilder();
+        for (TypeDefNode tdef : languageSpecificationRoot.getChildrenOf(TypeDefNode.class)) {
+            String folderName = Integer.toString(counter);
+            counter++;
+
+            File jpFolder = SpecsIo.mkdir(outputFolder, folderName);
+
+            Optional<File> indexFile = generator.generate(tdef, jpFolder);
+            if (!indexFile.isPresent()) {
+                continue;
+            }
+
+            String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
+
+            joinPoints.append("<li><a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
+                    + tdef.getName() + "</a></li>");
+        }
+        return joinPoints;
+    }
+
+    public StringBuilder getEnumDefsList(RootNode languageSpecificationRoot) {
+        StringBuilder joinPoints = new StringBuilder();
+        for (EnumDefNode tdef : languageSpecificationRoot.getChildrenOf(EnumDefNode.class)) {
+            String folderName = Integer.toString(counter);
+            counter++;
+
+            File jpFolder = SpecsIo.mkdir(outputFolder, folderName);
+
+            Optional<File> indexFile = generator.generate(tdef, jpFolder);
+            if (!indexFile.isPresent()) {
+                continue;
+            }
+
+            String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
+
+            joinPoints.append("<li><a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
+                    + tdef.getName() + "</a></li>");
+        }
+        return joinPoints;
     }
 
     private String generateDoc(LaraDocBundle bundle) {

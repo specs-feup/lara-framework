@@ -15,11 +15,11 @@ package org.lara.language.specification.ast;
 
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
-public class TypeDefNode extends LangSpecNode {
+public class EnumDefNode extends LangSpecNode {
 
     private final String name;
 
-    public TypeDefNode(String name) {
+    public EnumDefNode(String name) {
         this.name = name;
 
     }
@@ -33,7 +33,7 @@ public class TypeDefNode extends LangSpecNode {
     public String toJson(BuilderWithIndentation builder) {
         builder.addLines("{");
         builder.increaseIndentation();
-        builder.addLines("\"type\": \"typedef\",");
+        builder.addLines("\"type\": \"enum\",");
         builder.addLines("\"name\": \"" + getName() + "\"");
         if (this.hasChildren()) {
             builder.addLine(",");

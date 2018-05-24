@@ -49,7 +49,7 @@ public class NodeFactory {
             node.addChild(tdNode);
         }
         for (EnumDef enumDef : langSpec.getEnumDefs().values()) {
-            TypeDefNode tdNode = toNode(enumDef);
+            EnumDefNode tdNode = toNode(enumDef);
             node.addChild(tdNode);
         }
 
@@ -67,9 +67,9 @@ public class NodeFactory {
         return tdNode;
     }
 
-    private static TypeDefNode toNode(EnumDef enumDef) {
+    private static EnumDefNode toNode(EnumDef enumDef) {
         // for now they both have the same attributes (only name)
-        TypeDefNode tdNode = new TypeDefNode(enumDef.getName(), "enum");
+        EnumDefNode tdNode = new EnumDefNode(enumDef.getName());
         tdNode.getToolTip().ifPresent(tdNode::setToolTip);
 
         for (EnumValue value : enumDef.getValues()) {
