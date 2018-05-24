@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -51,16 +52,21 @@ public class LaraDocLauncher {
             .setLabel("Maps package names to a list of existing folders")
             .setDecoder(PackagesMap::decode);
 
+    public static final DataKey<Boolean> INCLUDE_LANGUAGE_SPECIFICATION = KeyFactory
+            .bool("INCLUDE_LANGUAGE_SPECIFICATION")
+            .setLabel("Adds language specification to the documentation");
+
     private static final ArgumentsParser ARGUMENTS_PARSER = new ArgumentsParser()
             .add(OUTPUT_FOLDER, "--output", "-o")
             .addBool(CLEAN, "--clean", "-c")
             .add(EXCLUDE_PREFIX, "--exclude", "-e")
             .add(WEAVER_CLASS, "--weaver", "-w")
-            .add(PACKAGES_MAP, "--packages", "-p");
+            .add(PACKAGES_MAP, "--packages", "-p")
+            .addBool(INCLUDE_LANGUAGE_SPECIFICATION, "--langspec", "-l");
+    // .addIgnore("#", "//");
 
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
-
         ARGUMENTS_PARSER.execute(LaraDocLauncher::execute, Arrays.asList(args));
 
     }
@@ -108,7 +114,10 @@ public class LaraDocLauncher {
 
         // Generate documentation
         LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
-        generator.generateDoc(laraDocTop);
+
+        LanguageSpecification langSpec = data.get(INCLUDE_LANGUAGE_SPECIFICATION)
+                ? weaverEngine.getLanguageSpecification() : null;
+        generator.generateDoc(laraDocTop, langSpec);
 
         SpecsLogs.msgInfo("Wrote documentation to folder '" + outputFolder.getAbsolutePath() + "'");
 

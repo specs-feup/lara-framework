@@ -26,6 +26,12 @@ Io.getPath = function(fileOrBaseFolder, optionalFile) {
 		return new java.io.File(fileOrBaseFolder); 
 	}
 	
+	// Test if optionalFile is absolute
+	var optionalFilePath = new java.io.File(optionalFile);
+	if(optionalFilePath.isAbsolute()) {
+		return optionalFilePath;
+	}
+	
 	return new java.io.File(fileOrBaseFolder, optionalFile);
 }	
 

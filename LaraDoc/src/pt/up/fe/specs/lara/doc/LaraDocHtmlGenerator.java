@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.ast.JoinPointNode;
+import org.lara.language.specification.ast.NodeFactory;
+import org.lara.language.specification.ast.RootNode;
+
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
@@ -89,6 +94,10 @@ public class LaraDocHtmlGenerator {
     }
 
     public void generateDoc(LaraDocTop laraDocTop) {
+        generateDoc(laraDocTop, null);
+    }
+
+    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecification languageSpecification) {
         StringBuilder moduleList = new StringBuilder();
 
         // Get direct children
@@ -106,6 +115,12 @@ public class LaraDocHtmlGenerator {
             }
 
             moduleList.append(generateDoc(laraPackage));
+        }
+
+        // Add language specification, if present
+        if (languageSpecification != null) {
+            RootNode rootNode = NodeFactory.toNode(languageSpecification);
+            moduleList.append(generateDoc(rootNode));
         }
 
         // // Add code for bundles
@@ -128,6 +143,63 @@ public class LaraDocHtmlGenerator {
         indexContents.replace("[[IMPORT_COLUMN]]", moduleList.toString());
         SpecsIo.write(new File(outputFolder, "index.html"), indexContents.toString());
 
+    }
+
+    private String generateDoc(RootNode languageSpecificationRoot) {
+        if (languageSpecificationRoot == null) {
+            return "";
+        }
+
+        StringBuilder languageSpecCode = new StringBuilder();
+
+        StringBuilder joinPoints = new StringBuilder();
+        for (JoinPointNode jp : languageSpecificationRoot.getChildren(JoinPointNode.class)) {
+            String folderName = Integer.toString(counter);
+            counter++;
+
+            File jpFolder = SpecsIo.mkdir(outputFolder, folderName);
+
+            Optional<File> indexFile = generator.generate(jp, jpFolder);
+            if (!indexFile.isPresent()) {
+                continue;
+            }
+
+            String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
+
+            joinPoints.append("<li><a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
+                    + jp.getName() + "</a></li>");
+        }
+
+        // Add join points
+        if (joinPoints.length() > 0) {
+            languageSpecCode.append("<h2>Join Points</h2>");
+            languageSpecCode.append("<ul>");
+            languageSpecCode.append(joinPoints);
+            languageSpecCode.append("</ul>");
+
+        }
+
+        return languageSpecCode.toString();
+
+        /*
+        String folderName = Integer.toString(counter);
+        counter++;
+        
+        File moduleDocFolder = SpecsIo.mkdir(outputFolder, folderName);
+        
+        Optional<File> indexFile = generator.generate(module, moduleDocFolder);
+        
+        if (!indexFile.isPresent()) {
+            return module.getImportPath();
+        }
+        
+        String indexRelativePath = SpecsIo.getRelativePath(indexFile.get(), outputFolder);
+        
+        String moduleTemplate = "<a onclick=\"update_doc('" + indexRelativePath + " ')\" href=\"#\">"
+                + module.getImportPath() + "</a>";
+        
+        return moduleTemplate;
+        */
     }
 
     private String generateDoc(LaraDocBundle bundle) {

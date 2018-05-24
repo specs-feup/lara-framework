@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.lara.language.specification.ast.LangSpecNode;
+
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 
 public interface JsDocGenerator {
@@ -31,6 +33,19 @@ public interface JsDocGenerator {
     // File queue(List<File> inputFiles, File outputFolder);
     // Optional<File> generate(List<File> inputFiles, File outputFolder);
     Optional<File> generate(LaraDocModule module, File outputFolder);
+
+    /**
+     * Generates HTML for Language Specification nodes.
+     * 
+     * Default implementation returns empty.
+     * 
+     * @param langNode
+     * @param outputFolder
+     * @return
+     */
+    default Optional<File> generate(LangSpecNode langNode, File outputFolder) {
+        return Optional.empty();
+    }
 
     /**
      * Filters which kind of names should be shown in the documentation.

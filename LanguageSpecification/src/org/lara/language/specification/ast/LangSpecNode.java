@@ -75,6 +75,10 @@ public abstract class LangSpecNode extends ATreeNode<LangSpecNode> {
         toolTip = tooltip;
     }
 
+    public String toHtml() {
+        throw new RuntimeException("Not yet implemented");
+    }
+
     // public Optional<BaseNode> getComment() {
     // return getChildrenStream().filter(predicate)
     // }

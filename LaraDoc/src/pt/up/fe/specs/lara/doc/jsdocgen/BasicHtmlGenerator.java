@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.lara.language.specification.ast.LangSpecNode;
+
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.jsdocgen.basichtml.LaraModuleBuilder;
 import pt.up.fe.specs.util.SpecsIo;
@@ -43,6 +45,20 @@ public class BasicHtmlGenerator implements JsDocGenerator {
         SpecsIo.write(moduleHtmlFile, moduleHtml);
 
         return Optional.of(moduleHtmlFile);
+    }
+
+    @Override
+    public Optional<File> generate(LangSpecNode langNode, File outputFolder) {
+        String langNodeHtml = langNode.toHtml();
+
+        if (langNodeHtml.isEmpty()) {
+            return Optional.empty();
+        }
+
+        File langSpecFile = new File(outputFolder, "language_spec_node.html");
+        SpecsIo.write(langSpecFile, langNodeHtml);
+
+        return Optional.of(langSpecFile);
     }
 
 }

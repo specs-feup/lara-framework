@@ -25,6 +25,14 @@ public class JoinPointNode extends LangSpecNode {
         this.extend = extend;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getExtend() {
+        return extend;
+    }
+
     @Override
     public String toContentString() {
         return "name: " + name + (extend.isEmpty() ? "" : (", extends: " + extend));
@@ -45,5 +53,19 @@ public class JoinPointNode extends LangSpecNode {
         builder.decreaseIndentation();
         builder.add("}");
         return builder.toString();
+    }
+
+    @Override
+    public String toHtml() {
+        StringBuilder html = new StringBuilder();
+
+        // Using styles from LaraDoc
+        html.append("<div id='toc_container'>");
+
+        html.append("<p class='toc_title'>").append(name).append("</p>");
+
+        html.append("</div>");
+
+        return html.toString();
     }
 }
