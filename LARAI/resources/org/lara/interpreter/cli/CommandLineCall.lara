@@ -1,0 +1,10 @@
+import <QUALIFIED_ASPECT>;
+
+aspectdef CommandLineCall
+
+	var result = call <ASPECT_NAME>(<ARGS>);
+
+	println("Output of aspect '<ASPECT_NAME>'");
+	printObject(result);	
+end
+

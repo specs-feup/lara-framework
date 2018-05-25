@@ -32,8 +32,13 @@ import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.Replacer;
 
 public class OptionsConverter {
+
+    private static final ResourceProvider COMMAND_LINE_CALL = ResourceProvider
+            .newInstance("org/lara/interpreter/cli/CommandLineCall.lara");
 
     /**
      * Adds the commandline options into an existing datastore, using the Mapping in {@link JOptionsInterface}
@@ -138,6 +143,12 @@ public class OptionsConverter {
         String args = dataStore.get(LaraiKeys.CALL_ARGS);
 
         // Build file to call
+        Replacer replacer = new Replacer(COMMAND_LINE_CALL);
+        replacer.replace("<QUALIFIED_ASPECT>", aspectQualifiedName);
+        replacer.replace("<ASPECT_NAME>", aspectName);
+        replacer.replace("<ARGS>", args);
+
+        /*
         StringBuilder aspectContents = new StringBuilder();
         aspectContents.append("import ").append(aspectQualifiedName).append(";\n\n");
         aspectContents.append("aspectdef CommandLineCall\n");
@@ -147,11 +158,11 @@ public class OptionsConverter {
                 "println('Output of aspect "
                         + aspectName + ":'); printObject(result);\n");
         aspectContents.append("end\n");
-
+        */
         // Write temporary file
         String filename = "clava/command_line_call_" + UUID.randomUUID().toString() + ".lara";
         File tempFile = new File(SpecsIo.getTempFolder(), filename);
-        SpecsIo.write(tempFile, aspectContents.toString());
+        SpecsIo.write(tempFile, replacer.toString());
 
         // Schedule file for deletion
         tempFile.deleteOnExit();
