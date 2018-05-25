@@ -3,8 +3,34 @@ import <QUALIFIED_ASPECT>;
 aspectdef CommandLineCall
 
 	var result = call <ASPECT_NAME>(<ARGS>);
-
-	println("Output of aspect '<ASPECT_NAME>'");
+	
+	println("Output of aspect '<ASPECT_NAME>':");		
 	printObject(result);	
+
+	/*
+	// Collect results
+	var parsedResults = {};
+	for(var key in result) {
+		var value = result[key];
+		
+		if(value === undefined || value === null) {
+			continue;
+		}
+	
+		if(value["Output"] !== undefined) {
+			parsedResults[key] = value;
+		}
+	}
+	
+	// Print results if any
+	if(Object.keys(parsedResults).length === 0) {
+		println("Aspect '<ASPECT_NAME>' has no outputs");
+	} else {
+		println("Output of aspect '<ASPECT_NAME>':");	
+		printObject(parsedResults);	
+	}
+	*/	
+
+
 end
 
