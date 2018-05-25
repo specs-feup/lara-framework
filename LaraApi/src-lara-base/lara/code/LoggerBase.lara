@@ -123,6 +123,9 @@ Logger.prototype.appendln = function(expr) {
 }
 
 //Logger.prototype.ln = function(expr) {
+/**
+ * Adds a new line.
+ */
 Logger.prototype.ln = function() {
     return this._append_private("\\n", this.Type.NORMAL);
 }
@@ -132,6 +135,9 @@ Logger.prototype.tab = function() {
     return this.append("\\t");
 }
 
+/**
+ * Appends an expression that represents a double.
+ */
 Logger.prototype.appendDouble = function(expr) {
     return this._append_private(expr, this.Type.DOUBLE);
 }
@@ -143,10 +149,23 @@ Logger.prototype.double = function(expr) {
     return this.appendDouble(expr);
 }
 
+/**
+ * Appends an expression that represents a int.
+ */
 Logger.prototype.appendInt = function(expr) {
     return this._append_private(expr, this.Type.INT);
 }
 
+/**
+ * The same as 'appendInt'.
+ */
+Logger.prototype.int = function(expr) {
+    return this.appendInt(expr);
+}
+
+/**
+ * Appends an expression that represents a long.
+ */
 Logger.prototype.appendLong = function(expr) {
     return this._append_private(expr, this.Type.LONG);
 }
@@ -158,20 +177,63 @@ Logger.prototype.long = function(expr) {
 	return this.appendLong(expr);
 }
 
+/**
+ * Appends an expression that represents a string.
+ */
 Logger.prototype.appendString = function(expr) {
     return this._append_private(expr, this.Type.STRING);
 }
 
+/**
+ * The same as 'appendString'.
+ */
+Logger.prototype.string = function(expr) {
+    return this.appendString(expr);
+}
+
+
+/**
+ * Appends an expression that represents a char.
+ */
 Logger.prototype.appendChar = function(expr) {
     return this._append_private(expr, this.Type.CHAR);
 }
 
+
+/**
+ * The same as 'appendChar'.
+ */
+Logger.prototype.char = function(expr) {
+    return this.appendChar(expr);
+}
+
+
+/**
+ * Appends an expression that represents a hex.
+ */
 Logger.prototype.appendHex = function(expr) {
     return this._append_private(expr, this.Type.HEX);
 }
 
+/**
+ * The same as 'appendHex'.
+ */
+Logger.prototype.hex = function(expr) {
+    return this.appendHex(expr);
+}
+
+/**
+ * Appends an expression that represents an octal.
+ */
 Logger.prototype.appendOctal = function(expr) {
     return this._append_private(expr, this.Type.OCTAL);
+}
+
+/**
+ * The same as 'appendOctal'.
+ */
+Logger.prototype.octal = function(expr) {
+    return this.appendOctal(expr);
 }
 
 
