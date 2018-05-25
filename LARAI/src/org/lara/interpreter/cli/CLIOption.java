@@ -49,7 +49,8 @@ public enum CLIOption implements WeaverOption {
             "Bundle tags, in the following format: <TAG1>=<VALUE1>[,<TAG_N>=<VALUE_N>]*",
             LaraiKeys.BUNDLE_TAGS),
     restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restric mode (some Java classes are not allowed)",
-            LaraiKeys.RESTRICT_MODE);
+            LaraiKeys.RESTRICT_MODE),
+    call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS);
 
     // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec
     // XMLspec("x"),
