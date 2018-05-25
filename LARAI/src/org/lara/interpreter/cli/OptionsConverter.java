@@ -153,6 +153,9 @@ public class OptionsConverter {
         File tempFile = new File(SpecsIo.getTempFolder(), filename);
         SpecsIo.write(tempFile, aspectContents.toString());
 
+        // Schedule file for deletion
+        tempFile.deleteOnExit();
+
         // Replace LARA_FILE value
         dataStore.put(LaraiKeys.LARA_FILE, tempFile);
         // System.out.println("ASPECT:" + dataStore.get(LaraiKeys.LARA_FILE));
