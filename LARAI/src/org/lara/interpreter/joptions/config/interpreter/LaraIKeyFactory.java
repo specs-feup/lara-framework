@@ -263,7 +263,8 @@ public class LaraIKeyFactory {
         }
 
         return KeyFactory.object(id, OptionalFile.class)
-                .setDecoder(OptionalFile::newInstance) // .setDecoder(s -> new OptionalFile(new File(s), false))
+                // .setDecoder(OptionalFile::newInstance) // .setDecoder(s -> new OptionalFile(new File(s), false))
+                .setDecoder(OptionalFile.getCodec()) // .setDecoder(s -> new OptionalFile(new File(s), false))
                 .setDefault(() -> OptionalFile.newInstance(null))
                 .setKeyPanelProvider((key, data) -> new FileWithCheckBoxPanel(key, data, fileChooser, extensions))
                 .setCustomGetter((optFile, dataStore) -> {

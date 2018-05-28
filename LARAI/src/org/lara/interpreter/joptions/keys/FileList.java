@@ -95,10 +95,6 @@ public class FileList implements Iterable<File> {
                 .map(file -> file.toString())
                 .collect(Collectors.joining(File.pathSeparator));
 
-        if (string.contains(" ")) {
-            string = "\"" + string + "\"";
-        }
-
         return string;
     }
 

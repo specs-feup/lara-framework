@@ -15,6 +15,8 @@ package org.lara.interpreter.joptions.keys;
 
 import java.io.File;
 
+import pt.up.fe.specs.util.parsing.StringCodec;
+
 public class OptionalFile {
 
     private File file;
@@ -52,5 +54,18 @@ public class OptionalFile {
     @Override
     public String toString() {
         return "[" + (isUsed() ? 'X' : ' ') + "] " + file.toString();
+    }
+
+    public static String encode(OptionalFile optionalFile) {
+        if (optionalFile.isUsed()) {
+            System.out.println("ENCODER: '" + optionalFile.file.toString() + "'");
+            return optionalFile.file.toString();
+        }
+
+        return "";
+    }
+
+    public static StringCodec<OptionalFile> getCodec() {
+        return StringCodec.newInstance(OptionalFile::encode, OptionalFile::newInstance);
     }
 }

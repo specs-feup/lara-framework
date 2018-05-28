@@ -49,6 +49,10 @@ public class LaraCli {
     }
 
     public static WeaverOptions getWeaverOptions(WeaverEngine weaverEngine) {
+        return getWeaverOptions(weaverEngine.getOptions());
+    }
+
+    public static WeaverOptions getWeaverOptions(Collection<WeaverOption> customWeaverOptions) {
         List<WeaverOption> weaverOptions = new ArrayList<>();
 
         // Config options do not have equivalent DataKeys
@@ -59,7 +63,7 @@ public class LaraCli {
         }
 
         // Add weaver specific options
-        weaverOptions.addAll(weaverEngine.getOptions());
+        weaverOptions.addAll(customWeaverOptions);
 
         return new WeaverOptions(weaverOptions);
     }

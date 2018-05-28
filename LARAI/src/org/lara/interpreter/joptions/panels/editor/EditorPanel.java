@@ -16,6 +16,7 @@ package org.lara.interpreter.joptions.panels.editor;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.io.File;
+import java.util.Collection;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -38,7 +39,8 @@ import org.lara.interpreter.joptions.panels.editor.tabbed.MainLaraTab;
 import org.lara.interpreter.joptions.panels.editor.tabbed.TabsContainerPanel;
 import org.lara.interpreter.joptions.panels.editor.utils.LaraWorker;
 import org.lara.interpreter.joptions.panels.editor.utils.SettingsManager;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.gui.panels.app.AppKeys;
@@ -62,10 +64,12 @@ public class EditorPanel extends GuiTab {
      */
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_FONT = 12;
+
     private final SettingsManager settings;
     private final TabsContainerPanel tabsContainer;
     // private final LanguageSpecificationSideBar langSpecSideBar;
     private final AppPersistence persistence;
+    private final Collection<WeaverOption> customWeaverOptions;
     private File canonicalAspectFile;
     private DataStore optionsDataStore;
     private File outputFile;
@@ -99,15 +103,16 @@ public class EditorPanel extends GuiTab {
     // }
 
     public static EditorPanel newInstance(DataStore dataStore, AppPersistence persistence,
-            LanguageSpecification langSpec) {
-        return new EditorPanel(dataStore, persistence, langSpec);
+            WeaverEngine weaverEngine) {
+        return new EditorPanel(dataStore, persistence, weaverEngine);
     }
 
-    public EditorPanel(DataStore dataStore, AppPersistence persistence, LanguageSpecification langSpec) {
+    private EditorPanel(DataStore dataStore, AppPersistence persistence, WeaverEngine weaverEngine) {
         super(dataStore);
         setLayout(new BorderLayout());
         settings = new SettingsManager(this, getAppName());
         this.persistence = persistence;
+        this.customWeaverOptions = weaverEngine.getOptions();
         canonicalAspectFile = null;
         explorer = new Explorer(this);
         worker = new LaraWorker(this);
@@ -130,7 +135,7 @@ public class EditorPanel extends GuiTab {
         DefaultCaret caret = (DefaultCaret) outputArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-        langSpecSideBar = new LanguageSpecificationSideBar(this, langSpec);
+        langSpecSideBar = new LanguageSpecificationSideBar(this, weaverEngine.getLanguageSpecification());
         add(menu, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
@@ -592,5 +597,13 @@ public class EditorPanel extends GuiTab {
 
     public OutlinePanel getOutline() {
         return outline;
+    }
+
+    public AppPersistence getPersistence() {
+        return persistence;
+    }
+
+    public Collection<WeaverOption> getCustomWeaverOptions() {
+        return customWeaverOptions;
     }
 }

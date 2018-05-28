@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
@@ -28,18 +29,23 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
+import org.lara.interpreter.cli.LaraCli;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.FocusGainedListener;
 import org.lara.interpreter.joptions.panels.editor.listeners.StrokesAndActions;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 import org.lara.interpreter.joptions.panels.editor.tabbed.TabsContainerPanel;
+import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.gui.panels.app.AppKeys;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.swing.GenericActionListener;
@@ -212,6 +218,8 @@ public class EditorToolBar extends JPanel {
                 o -> editor.swapConsoleVisibility());
         addNewItem("Show/Hide Language Specification Bar", "sidebar", 0, StrokesAndActions.CTRL_SHIFT_B,
                 o -> showLS());
+        addNewItem("Show Equivalent Command-Line", "command_prompt", 0, StrokesAndActions.CTRL_SHIFT_C,
+                o -> showCLI());
     }
 
     private void showLS() {
@@ -221,6 +229,30 @@ public class EditorToolBar extends JPanel {
         // Preferences.userRoot().putBoolean(editor.getShowLangSpecSetting(), sideBar.isVisible());
         // editor.revalidate();
         editor.updateUI();
+    }
+
+    private void showCLI() {
+        // Get config file
+        File configFile = editor.getData().get(AppKeys.CONFIG_FILE);
+
+        if (configFile == null) {
+            JOptionPane.showMessageDialog(null, "Config file not defined");
+            return;
+        }
+
+        if (!configFile.isFile()) {
+            JOptionPane.showMessageDialog(null, "Could not find config file '" + configFile + "'");
+            return;
+        }
+
+        DataStore dataStore = editor.getPersistence().loadData(configFile);
+
+        String string = "clava " + LaraCli.getWeaverOptions(editor.getCustomWeaverOptions()).toCli(dataStore);
+        JTextArea text = new JTextArea(string);
+        text.setEditable(false);
+        // text.setLineWrap(true);
+        JOptionPane.showMessageDialog(null, text);
+        // JOptionPane.showMessageDialog(null, text, "Equivalent Command-Line Arguments", JOptionPane.OK_OPTION);
     }
 
     private JButton addExecButton() {

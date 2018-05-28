@@ -98,7 +98,7 @@ public class LaraLauncher {
         List<TabProvider> otherTabs = new ArrayList<>();
         XmlPersistence persistence = OptionsParser.getXmlPersistence(laraiDefinition);
 
-        otherTabs.add(dataStore -> EditorPanel.newInstance(dataStore, persistence, engine.getLanguageSpecification()));
+        otherTabs.add(dataStore -> EditorPanel.newInstance(dataStore, persistence, engine));
 
         App app = App.newInstance(appName, laraiDefinition, persistence, kernel)
                 .setOtherTabs(otherTabs)

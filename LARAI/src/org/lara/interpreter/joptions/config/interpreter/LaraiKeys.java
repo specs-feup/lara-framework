@@ -27,6 +27,7 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.util.parsing.StringCodec;
 import pt.up.fe.specs.util.utilities.StringList;
 
 public interface LaraiKeys {
@@ -65,7 +66,9 @@ public interface LaraiKeys {
     DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
 
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
-            .setDefault(() -> VerboseLevel.all);
+            .setDefault(() -> VerboseLevel.all)
+            .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
+                    string -> VerboseLevel.values()[Integer.parseInt(string)]));
 
     DataKey<OptionalFile> LOG_FILE = LaraIKeyFactory.optionalFile("log", false).setLabel("Use Log File");
 
