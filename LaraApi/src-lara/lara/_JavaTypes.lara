@@ -20,3 +20,9 @@ _JavaTypes.getLaraApiTools = function() {
 _JavaTypes.getLaraSystemTools = function() {
 	return _JavaTypes.getType("pt.up.fe.specs.lara.LaraSystemTools");
 }
+
+_JavaTypes.getLaraCli = function() {
+	return _JavaTypes.getType("org.lara.interpreter.cli.LaraCli");
+}
+
+
