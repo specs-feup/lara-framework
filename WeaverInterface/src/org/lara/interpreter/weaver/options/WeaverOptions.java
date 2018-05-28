@@ -35,7 +35,21 @@ public class WeaverOptions {
     }
 
     private static Map<String, WeaverOption> buildMap(List<WeaverOption> options) {
+        // Map<String, WeaverOption> optionsMap = new HashMap<>();
+        //
+        // for (WeaverOption option : options) {
+        // if (option.dataKey() == null) {
+        // System.out.println("OPTION " + option.shortOption() + " has no DataKey");
+        // continue;
+        // }
+        //
+        // optionsMap.put(option.dataKey().getName(), option);
+        // }
+        //
+        // return optionsMap;
         return options.stream()
+                // Only options that have a DataKey
+                .filter(option -> option.dataKey() != null)
                 .collect(Collectors.toMap(option -> option.dataKey().getName(), option -> option));
     }
 
@@ -49,11 +63,23 @@ public class WeaverOptions {
     public String toCli(DataStore dataStore) {
 
         List<String> arguments = new ArrayList<>();
-
+        String aspect = null;
+        System.out.println("DATASTORE:" + dataStore);
         for (String keyName : dataStore.getKeysWithValues()) {
 
             WeaverOption weaverOption = this.optionsMap.get().get(keyName);
             if (weaverOption == null) {
+
+                // Special case: 'aspect'
+                // This option does not have a CLI flag, it is just the argument
+                if (keyName.equals("aspect")) {
+                    aspect = dataStore.get(keyName).toString();
+                    if (aspect.contains(" ")) {
+                        aspect = "\"" + aspect + "\"";
+                    }
+                    continue;
+                }
+
                 SpecsLogs.msgInfo("toCli: Could not obtain weaver option for key '" + keyName + "'");
                 continue;
             }
@@ -73,6 +99,12 @@ public class WeaverOptions {
 
             // Encode arguments
             arguments.add(((DataKey<Object>) weaverOption.dataKey()).encode(dataStore.get(keyName)));
+        }
+
+        if (aspect == null) {
+            SpecsLogs.msgInfo("WeaverOptions.toCli(): Given DataStore did not contain an 'aspect' option");
+        } else {
+            arguments.add(0, aspect);
         }
 
         return arguments.stream().collect(Collectors.joining(" "));
