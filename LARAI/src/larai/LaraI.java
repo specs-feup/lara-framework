@@ -265,7 +265,7 @@ public class LaraI {
             // configOptions.forEach(finalOptions::addOption); // So the config options appear on the top
             // mainOptions.forEach(finalOptions::addOption);
 
-            Options finalOptions = LaraCli.getCompleteOptions(weaverEngine);
+            Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 
             CommandLine cmd = OptionsParser.parse(args, finalOptions);
             if (LaraIUtils.printHelp(cmd, finalOptions)) {

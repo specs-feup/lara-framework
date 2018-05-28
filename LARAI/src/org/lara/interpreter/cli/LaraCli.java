@@ -13,21 +13,29 @@
 
 package org.lara.interpreter.cli;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.interpreter.weaver.options.WeaverOptions;
 
 public class LaraCli {
 
     /**
      * Builds the list of command-line interface options available to the given weaver.
      * 
+     * <p>
+     * This is a super-set of getWeaverOptions(), which includes launch-specific flags, and returns an instance of the
+     * Apache Commons CLI package.
+     * 
      * @param weaverEngine
      * @return
      */
-    public static Options getCompleteOptions(WeaverEngine weaverEngine) {
+    public static Options getCliOptions(WeaverEngine weaverEngine) {
         Collection<Option> configOptions = OptionsParser.buildConfigOptions();
         Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
         OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
@@ -38,5 +46,21 @@ public class LaraCli {
         mainOptions.forEach(completeOptions::addOption);
 
         return completeOptions;
+    }
+
+    public static WeaverOptions getWeaverOptions(WeaverEngine weaverEngine) {
+        List<WeaverOption> weaverOptions = new ArrayList<>();
+
+        // Config options do not have equivalent DataKeys
+
+        // Add LARAI options
+        for (WeaverOption option : CLIOption.values()) {
+            weaverOptions.add(option);
+        }
+
+        // Add weaver specific options
+        weaverOptions.addAll(weaverEngine.getOptions());
+
+        return new WeaverOptions(weaverOptions);
     }
 }
