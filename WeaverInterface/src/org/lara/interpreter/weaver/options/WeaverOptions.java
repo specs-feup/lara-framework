@@ -64,7 +64,7 @@ public class WeaverOptions {
 
         List<String> arguments = new ArrayList<>();
         String aspect = null;
-        System.out.println("DATASTORE:" + dataStore);
+
         for (String keyName : dataStore.getKeysWithValues()) {
 
             WeaverOption weaverOption = this.optionsMap.get().get(keyName);
@@ -74,9 +74,6 @@ public class WeaverOptions {
                 // This option does not have a CLI flag, it is just the argument
                 if (keyName.equals("aspect")) {
                     aspect = dataStore.get(keyName).toString();
-                    if (aspect.contains(" ")) {
-                        aspect = "\"" + aspect + "\"";
-                    }
                     continue;
                 }
 
@@ -84,29 +81,69 @@ public class WeaverOptions {
                 continue;
             }
 
-            if (weaverOption.shortOption() != null) {
-                arguments.add("-" + weaverOption.shortOption());
-            } else if (weaverOption.longOption() != null) {
-                arguments.add("--" + weaverOption.longOption());
-            } else {
-                throw new RuntimeException("Should not arrive here, means that no short nor long option were defined");
+            DataKey<Object> dataKey = (DataKey<Object>) weaverOption.dataKey();
+            Object value = dataStore.get(keyName);
+
+            // If no args, value must be a boolean
+            if (weaverOption.args() == OptionArguments.NO_ARGS) {
+                boolean isEnabled = Boolean.parseBoolean(dataKey.encode(value));
+                if (isEnabled) {
+                    addWeaverFlag(arguments, weaverOption);
+                }
+                continue;
             }
 
-            // If no args, just continue
-            if (weaverOption.args() == OptionArguments.NO_ARGS) {
+            // If default value, ignore
+            boolean isDefault = dataKey.getDefault().map(defaultValue -> defaultValue.equals(value)).orElse(false);
+            if (isDefault) {
                 continue;
             }
 
             // Encode arguments
-            arguments.add(((DataKey<Object>) weaverOption.dataKey()).encode(dataStore.get(keyName)));
+            // System.out.println("ENCODING value '" + dataStore.get(keyName) + "'");
+            String encodedArgs = dataKey.encode(dataStore.get(keyName)).trim();
+            // System.out.println("ENCODED value '" + encodedArgs + "'");
+
+            if (!encodedArgs.isEmpty()) {
+                addWeaverFlag(arguments, weaverOption);
+                addArgument(arguments, encodedArgs);
+            }
+
         }
 
         if (aspect == null) {
             SpecsLogs.msgInfo("WeaverOptions.toCli(): Given DataStore did not contain an 'aspect' option");
         } else {
-            arguments.add(0, aspect);
+            addArgument(arguments, 0, aspect);
         }
 
         return arguments.stream().collect(Collectors.joining(" "));
+    }
+
+    public void addWeaverFlag(List<String> arguments, WeaverOption weaverOption) {
+        if (weaverOption.shortOption() != null) {
+            arguments.add("-" + weaverOption.shortOption());
+        } else if (weaverOption.longOption() != null) {
+            arguments.add("--" + weaverOption.longOption());
+        } else {
+            throw new RuntimeException("Should not arrive here, means that no short nor long option were defined");
+        }
+    }
+
+    public void addArgument(List<String> arguments, String argument) {
+        addArgument(arguments, -1, argument);
+    }
+
+    public void addArgument(List<String> arguments, int position, String argument) {
+        if (argument.contains(" ")) {
+            argument = "\"" + argument + "\"";
+        }
+
+        if (position < 0) {
+            arguments.add(argument);
+        } else {
+            arguments.add(position, argument);
+        }
+
     }
 }
