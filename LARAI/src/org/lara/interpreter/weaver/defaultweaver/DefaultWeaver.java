@@ -139,4 +139,7 @@ public class DefaultWeaver extends ADefaultWeaver {
         return (DefaultWeaver) getThreadLocalWeaver();
     }
 
+    public DataStore getArgs() {
+        return args;
+    }
 }

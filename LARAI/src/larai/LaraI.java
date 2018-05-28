@@ -14,17 +14,16 @@ package larai;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.cli.CLIConfigOption;
+import org.lara.interpreter.cli.LaraCli;
 import org.lara.interpreter.cli.OptionsConverter;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.cli.OptionsParser.ExecutionMode;
@@ -257,21 +256,24 @@ public class LaraI {
         }
 
         try {
-            Collection<Option> configOptions = OptionsParser.buildConfigOptions();
-            Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
-            OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
+            // Collection<Option> configOptions = OptionsParser.buildConfigOptions();
+            // Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
+            // OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
+            //
+            // Options finalOptions = new Options();
+            //
+            // configOptions.forEach(finalOptions::addOption); // So the config options appear on the top
+            // mainOptions.forEach(finalOptions::addOption);
 
-            Options finalOptions = new Options();
-
-            configOptions.forEach(finalOptions::addOption); // So the config options appear on the top
-            mainOptions.forEach(finalOptions::addOption);
+            Options finalOptions = LaraCli.getCompleteOptions(weaverEngine);
 
             CommandLine cmd = OptionsParser.parse(args, finalOptions);
             if (LaraIUtils.printHelp(cmd, finalOptions)) {
                 return true;
             }
 
-            ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
+            // ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
+            ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
             DataStore dataStore;
             switch (mode) {
             // case UNIT_TEST:

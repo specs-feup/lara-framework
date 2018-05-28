@@ -216,8 +216,9 @@ public class OptionsParser {
         return options;
     }
 
-    public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Collection<Option> mainOptions,
-            Options finalOptions) {
+    // public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Collection<Option> mainOptions,
+    // Options finalOptions) {
+    public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Options finalOptions) {
         // validateExclusiveOptions(cmd, configOptions, options);
         // Optional<CLIConfigOption> configOption = Arrays.asList(CLIConfigOption.values()).stream()
         // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
@@ -250,7 +251,8 @@ public class OptionsParser {
             }
             return ExecutionMode.CONFIG_OPTIONS;
         }
-        for (Option option : mainOptions) {
+        // for (Option option : mainOptions) {
+        for (Option option : finalOptions.getOptions()) {
             if (cmd.hasOption(option.getOpt())) {
                 if (guiPresent) {
 
