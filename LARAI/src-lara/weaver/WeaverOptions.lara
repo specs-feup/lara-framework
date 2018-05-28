@@ -1,6 +1,7 @@
 import lara.Io;
 import lara.util.DataStore;
 import weaver.util.WeaverDataStore;
+import lara._JavaTypes;
 
 /**
  * Contains generic methods related to all weavers. 
@@ -15,6 +16,14 @@ WeaverOptions.getData = function() {
 	return new WeaverDataStore(LaraI.getThreadLocalData());
 }
 
+/**
+ * @return {String} a string with the command-line flags for the current options
+ */
+WeaverOptions.toCli = function() {
+	return _JavaTypes.getLaraCli()
+		.getWeaverOptions(WeaverOptions.getWeaverEngine())
+		.toCli(WeaverOptions.getData().getData());
+}
 
 /**
  * @return the current WeaverEngine

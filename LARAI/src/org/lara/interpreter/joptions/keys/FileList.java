@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
@@ -90,7 +91,15 @@ public class FileList implements Iterable<File> {
 
     @Override
     public String toString() {
-        return fileList.toString();
+        String string = fileList.stream()
+                .map(file -> file.toString())
+                .collect(Collectors.joining(File.pathSeparator));
+
+        if (string.contains(" ")) {
+            string = "\"" + string + "\"";
+        }
+
+        return string;
     }
 
     @Override
