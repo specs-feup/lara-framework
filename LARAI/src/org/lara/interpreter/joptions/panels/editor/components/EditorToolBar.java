@@ -248,6 +248,11 @@ public class EditorToolBar extends JPanel {
         DataStore dataStore = editor.getPersistence().loadData(configFile);
 
         String string = "clava " + LaraCli.getWeaverOptions(editor.getCustomWeaverOptions()).toCli(dataStore);
+
+        // Show in the console
+        // editor.getConsoleArea().append(string + "\n");
+
+        // Show in a dialog
         JTextArea text = new JTextArea(string);
         text.setEditable(false);
         // text.setLineWrap(true);
