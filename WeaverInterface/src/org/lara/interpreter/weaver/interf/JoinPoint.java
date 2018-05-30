@@ -12,6 +12,7 @@
  */
 package org.lara.interpreter.weaver.interf;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,9 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
+
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.api.scripting.ScriptUtils;
 
 // import jdk.nashorn.internal.runtime.Undefined;
 
@@ -365,6 +369,9 @@ public abstract class JoinPoint {
             if (hasListeners()) {
                 eventTrigger().triggerAction(Stage.BEGIN, "def", this, Optional.empty(), attribute, value);
             }
+
+            value = parseDefValue(value);
+
             this.defImpl(attribute, value);
             if (hasListeners()) {
                 eventTrigger().triggerAction(Stage.BEGIN, "def", this, Optional.empty(), attribute, value);
@@ -397,6 +404,29 @@ public abstract class JoinPoint {
     // public void setWeaverEngine(JoinPoint reference) {
     // // engine = reference.getWeaverEngine();
     // }
+
+    /**
+     * Handles special cases in def.
+     * 
+     * @param value
+     * @return
+     */
+    private Object parseDefValue(Object value) {
+        // Convert value to a Java array, if necessary
+        if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
+
+            if (((ScriptObjectMirror) value).isEmpty()) {
+                throw new RuntimeException("Cannot pass an empty array to a 'def'");
+            }
+
+            ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
+            Object firstValue = jsObject.values().stream().findFirst().get();
+            return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
+        }
+
+        return value;
+
+    }
 
     public WeaverEngine getWeaverEngine() {
         return WeaverEngine.getThreadLocalWeaver();
