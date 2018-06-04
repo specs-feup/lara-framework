@@ -67,8 +67,11 @@ public class LaraDocLauncher {
 
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
-        ARGUMENTS_PARSER.execute(LaraDocLauncher::execute, Arrays.asList(args));
+        execute(args);
+    }
 
+    public static int execute(String[] args) {
+        return ARGUMENTS_PARSER.execute(LaraDocLauncher::execute, Arrays.asList(args));
     }
 
     public static int execute(DataStore data) {
