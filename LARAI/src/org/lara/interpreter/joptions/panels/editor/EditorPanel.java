@@ -514,22 +514,6 @@ public class EditorPanel extends GuiTab {
         testOptions.addAll(optionsDataStore);
         testOptions.add(LaraiKeys.UNIT_TEST_MODE, true);
 
-        // List<String> args = new ArrayList<>();
-        // // args.add("-" + LaraiKeys.getUnitTestFlag());
-        // args.add("lara-unit-test=" + optionsDataStore.get(LaraiKeys.LARA_FILE).getAbsolutePath());
-        //
-        // List<File> includes = optionsDataStore.get(LaraiKeys.INCLUDES_FOLDER).getFiles();
-        // if (includes.isEmpty()) {
-        // SpecsLogs.msgInfo("Expected one include, the base folder of the tests");
-        // return;
-        // }
-        // args.add("lara-unit-base=" + includes.get(0).getAbsolutePath());
-        // // TODO: Config file is not being set
-        // // args.add("lara-unit-base=" + optionsDataStore.get(AppKeys.CONFIG_FILE));
-        //
-        // testOptions.add(LaraiKeys.UNIT_TEST_ARGS, args);
-        // testOptions.add(LaraiKeys.UNIT_TEST_ARGS, new ArrayList<>(Arrays.asList("--help")));
-
         worker.execute(testOptions);
     }
 
