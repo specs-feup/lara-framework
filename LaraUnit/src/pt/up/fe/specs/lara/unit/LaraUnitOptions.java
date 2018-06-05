@@ -30,15 +30,15 @@ public interface LaraUnitOptions {
      * Folder that will be the LARA workspace folder. By default returns ./
      */
     DataKey<File> BASE_FOLDER = KeyFactory.folder("lara-unit-base", false)
-            .setLabel("LARA base folder");
+            .setLabel("Folder that will be the LARA workspace folder. By default returns ./");
 
     /**
      * Folder with files to test. Can be empty.
      */
     // DataKey<File> TEST_FOLDER = KeyFactory.folder("lara-unit-test", false)
-    DataKey<File> TEST_FOLDER = KeyFactory.file("lara-unit-test")
+    DataKey<File> TEST_FOLDER = KeyFactory.path("lara-unit-test")
             // .setLabel("Folder with tests")
-            .setLabel("Path with tests")
+            .setLabel("Path with files to test. Can be empty")
             // Disables default
             .setDefault(() -> null);
 
@@ -46,7 +46,7 @@ public interface LaraUnitOptions {
      * The full class name of the weaver to be used. It must be present in the classpath
      */
     DataKey<String> WEAVER_CLASS = KeyFactory.string("lara-unit-weaver")
-            .setLabel("Weaver class name");
+            .setLabel("The full class name of the weaver to be used. It must be present in the classpath");
 
     DataKey<Boolean> METRICS = KeyFactory.bool("metrics")
             .setLabel("Enable logging of metrics");

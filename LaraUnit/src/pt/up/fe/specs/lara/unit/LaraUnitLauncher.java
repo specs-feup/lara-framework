@@ -13,6 +13,8 @@
 
 package pt.up.fe.specs.lara.unit;
 
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.*;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -20,18 +22,19 @@ import java.util.List;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.app.App;
-import org.suikasoft.jOptions.app.AppKernel;
-import org.suikasoft.jOptions.app.AppPersistence;
-import org.suikasoft.jOptions.persistence.XmlPersistence;
-import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+import org.suikasoft.jOptions.arguments.ArgumentsParser;
 
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 
 public class LaraUnitLauncher {
+
+    private static final ArgumentsParser ARGUMENTS_PARSER = new ArgumentsParser()
+            .add(BASE_FOLDER, "--workspace", "-p")
+            .add(TEST_FOLDER, "--test", "-t")
+            .add(WEAVER_CLASS, "--weaver", "-w")
+            .add(METRICS, "--metrics", "-m");
 
     public static void main(String[] args) {
         execute(args);
@@ -40,19 +43,24 @@ public class LaraUnitLauncher {
     public static int execute(String[] args) {
         SpecsSystem.programStandardInit();
 
+        return ARGUMENTS_PARSER.execute(LaraUnitLauncher::execute, Arrays.asList(args));
+        /*
         App laraUnitApp = buildApp();
-
+        
         return JOptionsUtils.executeApp(laraUnitApp, Arrays.asList(args));
+        */
     }
 
+    /*
     private static App buildApp() {
-
+    
         StoreDefinition definition = LaraUnitOptions.STORE_DEFINITION;
         AppPersistence persistence = new XmlPersistence(definition);
         AppKernel kernel = LaraUnitLauncher::execute;
-
+    
         return App.newInstance(definition, persistence, kernel);
     }
+    */
 
     /**
      * The main method of the app.
