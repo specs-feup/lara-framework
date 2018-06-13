@@ -14,6 +14,7 @@
 package pt.up.fe.specs.lara.doc.jsdocgen.basichtml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -91,14 +92,25 @@ public class LaraModuleBuilder {
 
         for (ClassElement classElement : classes) {
             String classId = nextId();
-            htmlCode.append("<h1 id='" + classId + "'>" + classElement.getClassName() + "</h1>");
+            String className = classElement.getClassName();
+            htmlCode.append("<h1 id='" + classId + "'>" + className + "</h1>");
 
-            toc.addLevelOne("Classes", classId, classElement.getClassName(), true);
+            toc.addLevelOne("Classes", classId, className, true);
 
             boolean isConstructor = !classElement.getInstanceElements().isEmpty();
-            String classCode = HtmlGenerators.generateMember(classId, classElement.getComment(), isConstructor,
+
+            if (isConstructor) {
+                htmlCode.append("<h2>Constructor</h2>");
+            }
+
+            String ctorId = nextId();
+
+            String classCode = HtmlGenerators.generateMember(ctorId, classElement.getComment(), isConstructor,
                     isConstructor);
             htmlCode.append(classCode);
+
+            toc.addSubList(Arrays.asList(ctorId), Arrays.asList(className), "Constructor");
+
             // if (!comment.getText().isEmpty()) {
             // String text = StringLines.getLines(comment.getText()).stream().collect(Collectors.joining("<br>"));
             // htmlCode.append("<p>" + text + "</p>");

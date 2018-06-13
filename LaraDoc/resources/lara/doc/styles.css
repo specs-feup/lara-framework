@@ -1,34 +1,34 @@
 body {
-	font-family: "Open Sans",arial,x-locale-body,sans-serif;
+	font-family: "Open Sans", arial, x-locale-body, sans-serif;
 }
 
 /* unvisited link */
 a:link {
-    color: #004444;
-    text-decoration: none;
+	color: #004444;
+	text-decoration: none;
 }
 
 /* visited link */
 a:visited {
-    color: #004444;
-    text-decoration: none;
+	color: #004444;
+	text-decoration: none;
 }
 
 /* mouse over link */
 a:hover {
-    color: #004444;
-    text-decoration: underline;
+	color: #004444;
+	text-decoration: underline;
 }
 
 /* selected link */
 a:active {
-    color: #004444;
-    text-decoration: underline;
+	color: #004444;
+	text-decoration: underline;
 }
 
-#row1{
-    display:flex;
-    flex-direction:row;
+#row1 {
+	display: flex;
+	flex-direction: row;
 	/* justify-content: space-around; */
 }
 
@@ -49,8 +49,7 @@ a:active {
 */
 
 /** fixed version **/
-
-#column1{
+#column1 {
 	position: fixed;
 	overflow-y: auto;
 	left: 0px;
@@ -61,8 +60,7 @@ a:active {
 	word-wrap: break-word;
 }
 
-
-#column2{
+#column2 {
 	width: 66%;
 	overflow: hidden;
 	left: 32%;
@@ -77,33 +75,32 @@ ul {
 /**
  * Taken from here: https://www.tipsandtricks-hq.com/simple-table-of-contents-toc-using-pure-html-and-css-code-9217
  */
-
 #toc_container {
-    background: #f9f9f9 none repeat scroll 0 0;
-    border: 1px solid #aaa;
-    display: table;
-    font-size: 95%;
-    margin-bottom: 1em;
-    padding: 20px;
-    width: auto;
+	background: #f9f9f9 none repeat scroll 0 0;
+	border: 1px solid #aaa;
+	display: table;
+	font-size: 95%;
+	margin-bottom: 1em;
+	padding: 20px;
+	width: auto;
 }
 
 .toc_title {
-    font-weight: 700;
-    text-align: center;
+	font-weight: 700;
+	text-align: center;
 }
 
-#toc_container li, #toc_container ul, #toc_container ul li{
-    list-style: outside none none !important;
+#toc_container li, #toc_container ul, #toc_container ul li {
+	list-style: outside none none !important;
 }
 
 .toc_class {
 	margin-bottom: 0.5em;
 }
 
-
 .toc_top_element {
 	/* padding-top: 0.5em; */
+	
 }
 
 .toc_sublist {
@@ -117,7 +114,8 @@ ul {
 
 .function_block {
 	/* padding-top: 1em; */
-	padding-bottom: 1em;
+	/* 	padding-bottom: 1em; */
+	
 }
 
 .function_content {
@@ -125,16 +123,39 @@ ul {
 }
 
 code {
-	padding-left: 10px;
+	/* 	padding-left: 10px; */
+	font-family: monospace;
 }
 
 .parameters {
-    unicode-bidi: embed;
-    font-family: monospace;
-    white-space: pre;
+	padding-left: 30px;
+}
+
+.parameter {
+	unicode-bidi: embed;
+	font-family: monospace;
+	white-space: pre;
 }
 
 .augments {
-    padding-bottom: 0.5em;
+	padding-bottom: 0.5em;
 }
 
+h3 {
+	margin-bottom: 20px;
+}
+
+h4 {
+	margin-bottom: 5px;
+}
+
+hr {
+	margin-top: 15px;
+	margin-bottom: 25px;
+}
+
+.top {
+	font-size: small;
+	float: right;
+	margin-right: 5px;
+}
