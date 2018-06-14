@@ -39,6 +39,16 @@ public class PackagesMap {
     }
 
     public static PackagesMap decode(String contents) {
+
+        // Add curly braces, if they are not present
+        if (!contents.startsWith("{")) {
+            contents = "{" + contents;
+        }
+
+        if (!contents.endsWith("}")) {
+            contents = contents + "}";
+        }
+
         // Use Gson to decode string
         Type type = new TypeToken<Map<String, String[]>>() {
         }.getType();
