@@ -118,7 +118,15 @@ public class HtmlGenerators {
 
         JsDocTag alias = laraComment.getTag(JsDocTagName.ALIAS);
         String namePath = alias.getValue(JsDocTagProperty.NAME_PATH);
-        startTag("pre class='prettyprint'><code class='language-js'", id, functionCode);
+
+        // add large member name
+        functionCode.append("<h3 id='");
+        functionCode.append(id);
+        functionCode.append("'>");
+        functionCode.append(namePath);
+        functionCode.append("</h3>");
+
+        startTag("pre class='signature'><code class='language-js'", "", functionCode);
 
         boolean isDeprecated = laraComment.hasTag(JsDocTagName.DEPRECATED);
         if (isDeprecated) {
@@ -129,7 +137,9 @@ public class HtmlGenerators {
             functionCode.append("new ");
         }
 
+        functionCode.append("<strong>");
         functionCode.append(namePath);
+        functionCode.append("</strong>");
 
         // String functionParameters = isFunction ? generateFunctionParams(laraComment.getParameters()) : "";
         String functionParameters = isFunction ? generateFunctionParamsFromTags(laraComment.getTags(JsDocTagName.PARAM))
@@ -185,6 +195,10 @@ public class HtmlGenerators {
         // List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
         // functionCode.append(generateParameters("Parameters", inputTags));
 
+        functionCode.append("<a href='#' class='top'><i class='fas fa-angle-double-up'></i></a>");
+
+        functionCode.append("<hr>");
+
         functionCode.append("</div>");
 
         return functionCode.toString();
@@ -233,14 +247,16 @@ public class HtmlGenerators {
 
         StringBuilder code = new StringBuilder();
 
-        code.append("<h3>" + paramsName + "</h3>");
+        code.append("<h4>" + paramsName + "</h4>");
+
+        code.append("<div class='parameters'>");
 
         for (JsDocTag param : params) {
             String name = param.getValue(JsDocTagProperty.NAME);
             String type = param.getValue(JsDocTagProperty.TYPE_NAME, "");
             String content = param.getValue(JsDocTagProperty.CONTENT, "").trim();
 
-            code.append("<span class='parameters'>");
+            code.append("<span class='parameter'>");
             code.append("<strong>" + name + "</strong>");
 
             // code.append("<br> - ").append(name);
@@ -283,6 +299,8 @@ public class HtmlGenerators {
 
             code.append("<br>");
         }
+
+        code.append("</div>");
 
         return code.toString();
     }
