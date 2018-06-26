@@ -195,8 +195,6 @@ public class HtmlGenerators {
         // List<JsDocTag> inputTags = laraComment.getTags(JsDocTagName.PARAM);
         // functionCode.append(generateParameters("Parameters", inputTags));
 
-        functionCode.append("<a href='#' class='top'><i class='fas fa-angle-double-up'></i></a>");
-
         functionCode.append("<hr>");
 
         functionCode.append("</div>");
