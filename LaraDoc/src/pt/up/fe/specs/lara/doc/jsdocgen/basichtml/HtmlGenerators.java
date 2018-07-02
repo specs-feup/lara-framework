@@ -211,7 +211,7 @@ public class HtmlGenerators {
         String aspectName = aspectTag.getValue(JsDocTagProperty.NAME_PATH);
 
         // Name of the aspect
-        aspectCode.append("<div id='" + id + "'>").append(aspectName).append("</div>");
+        aspectCode.append("<h3 id='" + id + "'>").append(aspectName).append("</h3>");
 
         // Description
         String text = laraComment.getText();
@@ -232,6 +232,7 @@ public class HtmlGenerators {
 
         List<JsDocTag> outputTags = laraComment.getTags(JsDocTagName.OUTPUT);
         aspectCode.append(generateParameters("Outputs", outputTags));
+        aspectCode.append("<hr>");
 
         return aspectCode.toString();
 
