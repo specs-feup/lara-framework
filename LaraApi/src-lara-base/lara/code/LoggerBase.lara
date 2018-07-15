@@ -91,20 +91,45 @@ Logger.prototype._validateJp = function($jp, functionJpName) {
 }
 
 Logger.prototype._insert = function($jp, insertBefore, code) {
-
+	this._insertCode($jp, insertBefore, code);
+/*
     var insertBeforeString = insertBefore ? "before" : "after";
 
 	if(insertBefore) {
 	    $jp.insert(insertBeforeString, code);
 		this.afterJp = $jp;
 	} else {
+		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
+		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
+		//println("PARENT TYPE:" + $jp.parent.joinPointType);
+		//println("JP BODY?:" + $jp.instanceOf("body"));
 		this.afterJp = $jp.insertAfter(code);
 	}
 	
     //$jp.insert(insertBeforeString, code);
-
+*/
     // Clear internal state
     this._clear();
+}
+
+/**
+ * Inserts the given code before/after the given join point.
+ *
+ * Override this method if you need to specialize the insertion.
+ */
+Logger.prototype._insertCode = function($jp, insertBefore, code) {
+    var insertBeforeString = insertBefore ? "before" : "after";
+
+	if(insertBefore) {
+	    $jp.insert(insertBeforeString, code);
+		this.afterJp = $jp;
+	} else {
+		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
+		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
+		//println("PARENT TYPE:" + $jp.parent.joinPointType);
+		//println("JP BODY?:" + $jp.instanceOf("body"));
+		this.afterJp = $jp.insertAfter(code);
+	}
 }
 
 Logger.prototype.append = function(expr) {
