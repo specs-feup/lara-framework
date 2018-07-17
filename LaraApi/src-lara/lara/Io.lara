@@ -20,6 +20,25 @@ function mkdir(fileOrBaseFolder, optionalFile) {
 	//return SpecsIo.mkdir(path);
 }
 
+/**
+ * Creates a temporary folder. If no name is given, generates a random one
+ */
+ /*
+Io.mkTempDir = function(foldername) {
+	if(foldername === undefined) {
+		foldername
+	}
+	return SpecsIo.mkdir(Io.getPath(fileOrBaseFolder, optionalFile));
+}
+*/
+
+/**
+ * The OS temporary folder.
+ */
+Io.getTempFolder = function() {
+	return SpecsIo.getTempFolder();
+}
+
 
 Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	if(optionalFile === undefined) {
@@ -128,6 +147,14 @@ Io.deleteFiles = function() {
 Io.deleteFolder = function(folderPath) {
 	var folder = Io.getPath(folderPath);
 	return SpecsIo.deleteFolder(folder);
+}
+
+/**
+ * Deletes the contents of a folder.
+ */
+Io.deleteFolderContents = function(folderPath) {
+	var folder = Io.getPath(folderPath);
+	return SpecsIo.deleteFolderContents(folder);
 }
 
 /**

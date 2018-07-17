@@ -1,3 +1,5 @@
+import lara.Numbers;
+
 /**
  * Generates sequential sequences of combinations, according to the given number of elements.
  */
