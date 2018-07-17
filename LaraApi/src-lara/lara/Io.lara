@@ -33,10 +33,17 @@ Io.mkTempDir = function(foldername) {
 */
 
 /**
- * The OS temporary folder.
+ * If folderName is undefined, returns the OS temporary folder.
+ * If defined, creates a new folder inside the system's temporary folder and returns it.
+ *
  */
-Io.getTempFolder = function() {
-	return SpecsIo.getTempFolder();
+Io.getTempFolder = function(folderName) {
+	
+	if(folderName === undefined) {
+		return SpecsIo.getTempFolder();
+	}
+	
+	return SpecsIo.getTempFolder(folderName);
 }
 
 
