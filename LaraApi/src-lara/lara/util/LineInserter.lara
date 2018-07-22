@@ -35,7 +35,7 @@ LineInserter.prototype.add = function(contents, linesToInsert) {
 	while(lineIterator.hasNext()) {
 		var line = lineIterator.next();
 		currentLine++;
-
+		
 		// Check if there is a mapping for the current line
 		var toInsert = linesToInsert[currentLine];
 		if(toInsert !== undefined) {
