@@ -69,7 +69,7 @@ Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
 }
 
 /**
- * Gets the paths corresponding to the given base folder and argument patterns.
+ * Gets the paths (files and folders) in the given folder, corresponding to the given base folder and argument patterns.
  */
 Io.getPaths = function(baseFolder) {
 	var argsArray = arrayFromArgs(arguments);
@@ -90,7 +90,8 @@ Io.getPaths = function(baseFolder) {
 	
 	//for(argument of arguments) {
 	for(argument of argsArray.slice(1)) {
-		var foundFiles = SpecsIo.getFilesWithPattern(baseFolderFile, argument);
+		//var foundFiles = SpecsIo.getFilesWithPattern(baseFolderFile, argument);
+		var foundFiles = SpecsIo.getPathsWithPattern(baseFolderFile, argument, false, "FILES_AND_FOLDERS");
 		
 		for(file of foundFiles) {
 			files.push(file);
@@ -100,6 +101,26 @@ Io.getPaths = function(baseFolder) {
 	return files;
 }
 
+/**
+ * The files inside the given folder that respects the given pattern.
+ */
+Io.getFiles = function(baseFolder, pattern, isRecursive) {
+	if(baseFolder === undefined) {
+		baseFolder = "./";
+	}
+
+	if(pattern === undefined) {
+		pattern = "*";
+	}
+	
+	if(isRecursive === undefined) {
+		isRecursive = false;
+	}
+
+	return SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern, isRecursive, "FILES");
+}
+
+/*
 Io.getFilesRecursive = function(baseFolder) {
 	var files = [];
 
@@ -132,7 +153,7 @@ Io.getFilesRecursive = function(baseFolder) {
 	
 	return files;
 }
-
+*/
 /**
  * Returns a List with a string for each line of the given file
  */
