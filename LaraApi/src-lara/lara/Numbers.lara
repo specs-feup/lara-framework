@@ -27,3 +27,15 @@ Numbers.toIndexesArray = function(number) {
 
 	return indexesArray.reverse();
 }
+
+/**
+ * Taken from here: https://stackoverflow.com/questions/3959211/fast-factorial-function-in-javascript#3959275
+ */ 
+Numbers.factorial = function(num) {
+    var rval=1;
+    for (var i = 2; i <= num; i++) {
+        rval = rval * i;
+	}
+
+    return rval;
+}

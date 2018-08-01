@@ -4,7 +4,7 @@
  */
 var Energy = function(filename) {
     this.filename = filename;
-    this.printUnit = false;
+    this.printUnit = true;
 	this.print = true;
 };
 

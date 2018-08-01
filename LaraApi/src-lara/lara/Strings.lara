@@ -84,3 +84,10 @@ Strings.asLines = function(string) {
 Strings.toJson = function(value) {
 	return JSON.stringify(value);
 }
+
+/**
+ * Returns a random unique identifier.
+ */
+Strings.uuid = function() {
+	return _JavaTypes.getUuid().randomUUID().toString();
+}

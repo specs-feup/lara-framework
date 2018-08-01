@@ -64,78 +64,78 @@ public class FileListPanel extends KeyPanel<FileList> {
      * @param extensions
      */
     public FileListPanel(DataKey<FileList> key, DataStore data, int fileSelectionMode, Collection<String> extensions) {
-	super(key, data);
-	// JFileChooser.DIRECTORIES_ONLY, Collections.emptyList());
-	// this.foldersOnly = foldersOnly;
+        super(key, data);
+        // JFileChooser.DIRECTORIES_ONLY, Collections.emptyList());
+        // this.foldersOnly = foldersOnly;
 
-	// comboBoxValues = new JComboBox<String>();
-	listValues = new JList<>();
-	listValues.setModel(files = new DefaultListModel<>());
-	listValues.setCellRenderer(new CellRenderer());
-	removeButton = new JButton("Remove");
-	addButton = new JButton("Add");
+        // comboBoxValues = new JComboBox<String>();
+        listValues = new JList<>();
+        listValues.setModel(files = new DefaultListModel<>());
+        listValues.setCellRenderer(new CellRenderer());
+        removeButton = new JButton("Remove");
+        addButton = new JButton("Add");
 
-	fileKey = LaraIKeyFactory.file("", fileSelectionMode, false, extensions);
+        fileKey = LaraIKeyFactory.file("", fileSelectionMode, false, extensions);
 
-	file = new FilePanel(fileKey, data, fileSelectionMode, extensions);
+        file = new FilePanel(fileKey, data, fileSelectionMode, extensions);
 
-	file.setOnFileOpened(this::onFileOpen);
-	// file = new FilePanel(fileKey, fileStore = DataStore.newInstance("dummy"));
+        file.setOnFileOpened(this::onFileOpen);
+        // file = new FilePanel(fileKey, fileStore = DataStore.newInstance("dummy"));
 
-	addButton.addActionListener(this::addButtonActionPerformed);
-	removeButton.addActionListener(this::removeButtonActionPerformed);
+        addButton.addActionListener(this::addButtonActionPerformed);
+        removeButton.addActionListener(this::removeButtonActionPerformed);
 
-	setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
-	GridBagConstraints c = new GridBagConstraints();
-	c.weightx = 1;
-	c.weighty = 0;
-	c.gridx = 0;
-	c.gridy = 0;
-	c.fill = GridBagConstraints.HORIZONTAL;
-	add(file, c);
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1;
+        c.weighty = 0;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        add(file, c);
 
-	c.gridx = 0;
-	c.gridy = 1;
-	c.gridwidth = 2;
-	c.gridheight = 2;
-	c.weighty = 1;
-	c.fill = GridBagConstraints.BOTH;
-	add(new JScrollPane(listValues), c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        c.gridheight = 2;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        add(new JScrollPane(listValues), c);
 
-	c.fill = GridBagConstraints.HORIZONTAL;
-	c.gridheight = 1;
-	c.weightx = 0;
-	c.weighty = 0;
-	c.gridx = 1;
-	c.gridy = 0;
-	add(addButton, c);
-	c.gridy = 1;
-	add(removeButton, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridheight = 1;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.gridx = 1;
+        c.gridy = 0;
+        add(addButton, c);
+        c.gridy = 1;
+        add(removeButton, c);
     }
 
     static class CellRenderer extends JLabel implements ListCellRenderer<File> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
 
-	public CellRenderer() {
-	    setVisible(true);
-	    setOpaque(true);
-	}
+        public CellRenderer() {
+            setVisible(true);
+            setOpaque(true);
+        }
 
-	@Override
-	public Component getListCellRendererComponent(JList<? extends File> list,
-		File value, int index,
-		boolean isSelected, boolean cellHasFocus) {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends File> list,
+                File value, int index,
+                boolean isSelected, boolean cellHasFocus) {
 
-	    setText(value.getAbsolutePath());
-	    setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-	    setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-	    return this;
-	}
+            setText(value.getAbsolutePath());
+            setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+            setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+            return this;
+        }
 
     }
 
@@ -145,16 +145,17 @@ public class FileListPanel extends KeyPanel<FileList> {
      * @param evt
      */
     private void addButtonActionPerformed(ActionEvent evt) {
-	// System.out.println("Current item number:"+values.getSelectedIndex());
-	// Check if there is text in the textfield
-	File newValue = file.getValue();
+        // System.out.println("Current item number:"+values.getSelectedIndex());
+        // Check if there is text in the textfield
+        File newValue = file.getValue();
 
-	addFile(newValue);
+        addFile(newValue);
     }
 
     private void addFile(File newValue) {
-	files.addElement(newValue);
-	listValues.setSelectedIndex(files.size() - 1);
+        // files.addElement(SpecsIo.normalizePath(newValue));
+        files.addElement(newValue);
+        listValues.setSelectedIndex(files.size() - 1);
     }
 
     /**
@@ -163,68 +164,67 @@ public class FileListPanel extends KeyPanel<FileList> {
      * @param evt
      */
     private void removeButtonActionPerformed(ActionEvent evt) {
-	int valueIndex = listValues.getSelectedIndex();
-	if (valueIndex == -1) {
-	    return;
-	}
+        int valueIndex = listValues.getSelectedIndex();
+        if (valueIndex == -1) {
+            return;
+        }
 
-	files.remove(valueIndex);
-	if (files.size() > valueIndex) {
-	    listValues.setSelectedIndex(valueIndex);
-	} else {
-	    if (!files.isEmpty()) {
-		listValues.setSelectedIndex(files.size() - 1);
-	    }
-	}
+        files.remove(valueIndex);
+        if (files.size() > valueIndex) {
+            listValues.setSelectedIndex(valueIndex);
+        } else {
+            if (!files.isEmpty()) {
+                listValues.setSelectedIndex(files.size() - 1);
+            }
+        }
     }
 
     @Override
     public FileList getValue() {
-	List<File> newValues = new ArrayList<>();
+        List<File> newValues = new ArrayList<>();
 
-	for (int i = 0; i < files.size(); i++) {
-	    newValues.add(files.getElementAt(i));
-	}
+        for (int i = 0; i < files.size(); i++) {
+            newValues.add(files.getElementAt(i));
+        }
 
-	return FileList.newInstance(newValues);
-	/*
-	FileList newFileList = FileList.newInstance(newValues);
-	
-	Optional<String> currentFolderPath = getData().getTry(JOptionKeys.CURRENT_FOLDER_PATH);
-	if (!currentFolderPath.isPresent()) {
-	    // LoggingUtils.msgWarn("CHECK THIS CASE, WHEN CONFIG IS NOT DEFINED");
-	    return newFileList;
-	}
-	
-	DataStore tempData = DataStore.newInstance("FileListPanelTemp", getData());
-	// When reading a value from the GUI to the user DataStore, use absolute path
-	
-	tempData.set(JOptionKeys.CURRENT_FOLDER_PATH, currentFolderPath.get());
-	tempData.set(JOptionKeys.USE_RELATIVE_PATHS, false);
-	tempData.setString(getKey(), newFileList.encode());
-	
-	FileList value = tempData.get(getKey());
-	
-	return value;
-	*/
+        return FileList.newInstance(newValues);
+        /*
+        FileList newFileList = FileList.newInstance(newValues);
+        
+        Optional<String> currentFolderPath = getData().getTry(JOptionKeys.CURRENT_FOLDER_PATH);
+        if (!currentFolderPath.isPresent()) {
+        // LoggingUtils.msgWarn("CHECK THIS CASE, WHEN CONFIG IS NOT DEFINED");
+        return newFileList;
+        }
+        
+        DataStore tempData = DataStore.newInstance("FileListPanelTemp", getData());
+        // When reading a value from the GUI to the user DataStore, use absolute path
+        
+        tempData.set(JOptionKeys.CURRENT_FOLDER_PATH, currentFolderPath.get());
+        tempData.set(JOptionKeys.USE_RELATIVE_PATHS, false);
+        tempData.setString(getKey(), newFileList.encode());
+        
+        FileList value = tempData.get(getKey());
+        
+        return value;
+        */
 
     }
 
     @Override
     public <ET extends FileList> void setValue(ET fileList) {
 
-	SpecsSwing.runOnSwing(() -> {
-	    files.clear();
-	    for (File v : fileList) {
-		// String path = FilePanel.processFile(getData(), v);
-		// files.addElement(new File(path));
-
-		files.addElement(v);
-	    }
-	});
+        SpecsSwing.runOnSwing(() -> {
+            files.clear();
+            for (File v : fileList) {
+                // String path = FilePanel.processFile(getData(), v);
+                files.addElement(v);
+                // files.addElement(SpecsIo.normalizePath(v));
+            }
+        });
     }
 
     public void onFileOpen(File f) {
-	addFile(f);
+        addFile(f);
     }
 }

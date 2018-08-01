@@ -126,12 +126,14 @@ public class LaraCOptions {
      * @param args
      */
     public void setLaraFile(LaraC larac, File laraFile) {
+
         if (!laraFile.exists()) {
             throw new LARACompilerException("when loading file",
                     new FileNotFoundException("The file does not exist: " + laraFile.getPath()));
         }
 
         final File absoluteLaraFile = SpecsIo.getCanonicalFile(laraFile);
+
         // try {
         // laraFile = laraFile.getCanonicalFile();
         // } catch (final IOException e) {
@@ -282,6 +284,7 @@ public class LaraCOptions {
 
         final List<File> importPaths = SpecsFactory.newArrayList();
         for (final String path : paths) {
+
             final File includeFile = new File(path);
             if (!includeFile.isDirectory()) {
                 larac.warnln("Tried to add folder '" + includeFile + "' to the includes, but the path was not found.");

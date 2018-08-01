@@ -25,4 +25,10 @@ _JavaTypes.getLaraCli = function() {
 	return _JavaTypes.getType("org.lara.interpreter.cli.LaraCli");
 }
 
+_JavaTypes.getUuid = function() {
+	return _JavaTypes.getType("java.util.UUID");
+}
 
+_JavaTypes.getGprofer = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.gprofer.Gprofer");
+}
