@@ -20,6 +20,7 @@ import pt.up.fe.specs.util.collections.AccumulatorMap;
 public class WeavingReport {
     private AccumulatorMap<String> calledAspects;
     private AccumulatorMap<String> actions;
+    private AccumulatorMap<String> iteratedJoinPoints;
     // TODO (aka NEVERDO) - replace fields with AccumulatorMap and use an enum with names of fields
     private int inserts;
     private int selects;

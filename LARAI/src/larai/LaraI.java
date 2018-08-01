@@ -100,6 +100,7 @@ public class LaraI {
     private WeaverProfiler weavingProfile;
 
     private final WeaverEngine weaverEngine;
+    private int mainLaraTokens = -1;
 
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
@@ -456,7 +457,10 @@ public class LaraI {
         // lara.compileAndSave();
         // Document compile = lara.getAspectIRXmlRepresentation();
         // return compile;
-        return lara.compile();
+        Document compile = lara.compile();
+        this.setNumMainLaraTokens(lara.getNumTokens());
+        out.println("Processed " + getNumMainLaraTokens() + " tokens from the LARA file.");
+        return compile;
 
     }
 
@@ -693,6 +697,14 @@ public class LaraI {
     public static long getCurrentTime() {
 
         return timeProvider.get();
+    }
+
+    public int getNumMainLaraTokens() {
+        return mainLaraTokens;
+    }
+
+    public void setNumMainLaraTokens(int mainLaraTokens) {
+        this.mainLaraTokens = mainLaraTokens;
     }
 
 }
