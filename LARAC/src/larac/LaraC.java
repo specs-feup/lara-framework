@@ -31,6 +31,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.dojo.jsl.parser.ast.ASTStart;
 import org.dojo.jsl.parser.ast.LARAEcmaScript;
 import org.dojo.jsl.parser.ast.ParseException;
+import org.dojo.jsl.parser.ast.Token;
 import org.dojo.jsl.parser.ast.TokenMgrError;
 import org.lara.language.specification.LanguageSpecification;
 import org.w3c.dom.Document;
@@ -329,6 +330,20 @@ public class LaraC {
         }
         return abstractTree;
 
+    }
+
+    public static int getNumTokens(ASTStart abstractTree) {
+        Token token = abstractTree.jjtGetFirstToken();
+        int count = 0;
+        while (token != null) {
+            count++;
+            token = token.next;
+        }
+        return count;
+    }
+
+    public int getNumTokens() {
+        return getNumTokens(this.aspectIR.getAst());
     }
 
     /**
