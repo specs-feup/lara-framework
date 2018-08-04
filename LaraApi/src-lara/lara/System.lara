@@ -25,7 +25,12 @@ System.prepareExe = function(executable) {
 	return LARASystem.prepareExe(executable);
 }
 
-System.getExecutableFile = function(executableName, executableFolder) {
+System.getExecutableFile = function(executableName, executableFolder, isInPath) {
+
+	if(isInPath === undefined) {
+		isInPath = false;
+	}
+	
 	var exe = undefined;
 	if(executableFolder === undefined) {
 	  exe = executableName;
@@ -37,7 +42,7 @@ System.getExecutableFile = function(executableName, executableFolder) {
 	exe = exe.toString();
 	
 	if(Platforms.isUnix()) {
-		var addDotSlash = (!exe.startsWith("./")) && (!exe.startsWith("/"));
+		var addDotSlash = (!exe.startsWith("./")) && (!exe.startsWith("/")) && !isInPath;
 		if(addDotSlash) {
 			exe = "./" + exe;
 		}
