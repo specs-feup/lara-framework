@@ -13,47 +13,39 @@
 
 package pt.up.fe.specs.lara.doc;
 
-import java.io.File;
-
-import com.eclipsesource.v8.NodeJS;
-import com.eclipsesource.v8.V8;
-
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.providers.ResourceProvider;
-
 public class JsDocHelper {
     public static void main(String[] args) {
-        nodeJsExample();
+        // nodeJsExample();
     }
 
     /**
      * Taken from here: https://eclipsesource.com/blogs/tutorials/getting-started-with-j2v8/
      */
-    public static void firstExemple() {
-        V8 runtime = V8.createV8Runtime();
-        int result = runtime.executeIntegerScript(""
-                + "require('jsdoc')\n"
-                + "var hello = 'hello, ';\n"
-                + "var world = 'world!';\n"
-                + "hello.concat(world).length;\n");
-        System.out.println(result);
-        runtime.release();
-    }
+    // public static void firstExemple() {
+    // V8 runtime = V8.createV8Runtime();
+    // int result = runtime.executeIntegerScript(""
+    // + "require('jsdoc')\n"
+    // + "var hello = 'hello, ';\n"
+    // + "var world = 'world!';\n"
+    // + "hello.concat(world).length;\n");
+    // System.out.println(result);
+    // runtime.release();
+    // }
 
     /**
      * Taken from here: https://eclipsesource.com/blogs/2016/07/20/running-node-js-on-the-jvm/
      */
-    public static void nodeJsExample() {
-        final NodeJS nodeJS = NodeJS.createNodeJS();
-        File nodeScript = ResourceProvider.newInstance("lara/doc/JsDoc.js")
-                .write(SpecsIo.getWorkingDir());
-
-        nodeJS.exec(nodeScript);
-
-        while (nodeJS.isRunning()) {
-            nodeJS.handleMessage();
-        }
-        nodeJS.release();
-        SpecsIo.delete(nodeScript);
-    }
+    // public static void nodeJsExample() {
+    // final NodeJS nodeJS = NodeJS.createNodeJS();
+    // File nodeScript = ResourceProvider.newInstance("lara/doc/JsDoc.js")
+    // .write(SpecsIo.getWorkingDir());
+    //
+    // nodeJS.exec(nodeScript);
+    //
+    // while (nodeJS.isRunning()) {
+    // nodeJS.handleMessage();
+    // }
+    // nodeJS.release();
+    // SpecsIo.delete(nodeScript);
+    // }
 }

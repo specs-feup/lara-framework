@@ -25,10 +25,11 @@
         status="release">
 	</info>
 	<dependencies>
+<!--
 		<dependency org="com.eclipsesource.j2v8" name="j2v8" rev="4.6.0"/>
 		<dependency org="com.eclipsesource.j2v8" name="j2v8_win32_x86_64" rev="4.6.0"/>
 		<dependency org="com.eclipsesource.j2v8" name="j2v8_linux_x86_64" rev="4.6.0"/>
-		
+-->	
 		<dependency org="com.google.guava" name="guava" rev="19.0"/>	
 	</dependencies>
 </ivy-module>
