@@ -29,6 +29,7 @@ import org.lara.interpreter.generator.stmt.StatementProcessor;
 import org.lara.interpreter.generator.stmt.WeaverStatementProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.keys.OptionalFile;
+import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Operators;
@@ -156,7 +157,8 @@ public class Interpreter {
         }
 
         File file = reportFile.getFile();
-        SpecsIo.write(file, laraInterp.getWeavingProfile().buildJsonReport());
+        WeaverProfiler weavingProfile = laraInterp.getWeavingProfile();
+        SpecsIo.write(file, weavingProfile.buildJsonReport());
     }
 
     /**

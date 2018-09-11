@@ -29,6 +29,9 @@ public class WeavingReport {
     private int nativeLOCs;
     private int totalLOCs;
     private int runs;
+    private int joinPoints;
+    private int filteredJoinPoints;
+    private int numTokens = -1;
 
     public WeavingReport() {
         calledAspects = new AccumulatorMap<>();
@@ -153,6 +156,9 @@ public class WeavingReport {
         nativeLOCs = 0;
         totalLOCs = 0;
         runs = 0;
+        setJoinPoints(0);
+        setFilteredJoinPoints(0);
+
     }
 
     public void incAttributes() {
@@ -165,6 +171,38 @@ public class WeavingReport {
 
     public Map<String, Integer> getActionsMap() {
         return actions.getAccMap();
+    }
+
+    public void incJoinPoints() {
+        setJoinPoints(getJoinPoints() + 1);
+    }
+
+    public void incFilteredJoinPoints() {
+        setFilteredJoinPoints(getFilteredJoinPoints() + 1);
+    }
+
+    public int getJoinPoints() {
+        return joinPoints;
+    }
+
+    public void setJoinPoints(int joinPoints) {
+        this.joinPoints = joinPoints;
+    }
+
+    public int getFilteredJoinPoints() {
+        return filteredJoinPoints;
+    }
+
+    public void setFilteredJoinPoints(int filteredJoinPoints) {
+        this.filteredJoinPoints = filteredJoinPoints;
+    }
+
+    public void setNumTokens(int numMainLaraTokens) {
+        this.numTokens = numMainLaraTokens;
+    }
+
+    public int getNumTokens() {
+        return this.numTokens;
     }
 
 }

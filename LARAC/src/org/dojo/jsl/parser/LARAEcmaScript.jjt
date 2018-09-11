@@ -1358,7 +1358,7 @@ TOKEN :
 	    t= <IDENTIFIER_NAME> |
 	    t=<CALL > | t=<BEGIN > | t=< END > |
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
-	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
+	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> | t=< SWITCH > | t=< CASE > |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
 	  	t=<FOR> | t=<WHILE> |t=<DO> //|t=< REPLACE >
@@ -1375,7 +1375,7 @@ TOKEN :
 	    t= <IDENTIFIER_NAME> |
 	    t=<CALL > | t=<BEGIN > | t=< END > |
 	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
-	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> |
+	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> | t=< SWITCH > | t=< CASE > |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
 	  	t=<FOR> | t=<WHILE> |t=<DO> //|t=< REPLACE >

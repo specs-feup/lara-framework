@@ -27,6 +27,7 @@ import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
 import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
+import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
 import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
@@ -170,6 +171,15 @@ public class EventTrigger {
         final SelectEvent data = new SelectEvent(stage, aspect_name, selectLable, pointcutChain, aliases, filters,
                 pointcut);
         final Event event = new SimpleEvent(LaraIEvent.OnSelect, data);
+        eventController.notifyEvent(event);
+    }
+
+    public void triggerJoinPoint(Stage stage, String joinPointClass, String alias,
+            FilterExpression[] filter, JoinPoint joinPoint, boolean approvedByFilter) {
+
+        final JoinPointEvent data = new JoinPointEvent(stage, joinPointClass, alias, filter, joinPoint,
+                approvedByFilter);
+        final Event event = new SimpleEvent(LaraIEvent.OnJoinPoint, data);
         eventController.notifyEvent(event);
     }
 
