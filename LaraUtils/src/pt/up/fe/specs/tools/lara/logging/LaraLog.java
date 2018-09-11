@@ -13,14 +13,14 @@
 
 package pt.up.fe.specs.tools.lara.logging;
 
-import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.lazy.Lazy;
-import pt.up.fe.specs.util.logging.SpecsLogger;
+import pt.up.fe.specs.util.logging.StringLogger;
 
-public class LaraLog extends SpecsLogger {
+// public class LaraLog extends SpecsLogger {
+public class LaraLog {
 
-    private static final String LARAI_TAG = buildLoggerName(LaraLog.class);
-    private static final Lazy<LaraLog> LOGGER = buildLazy(LaraLog::new);
+    // private static final String LARAI_TAG = buildLoggerName(LaraLog.class);
+    // private static final Lazy<LaraLog> LOGGER = buildLazy(LaraLog::new);
+    private static final StringLogger LOGGER = new StringLogger(LaraLog.class.getName());
     private static boolean debug;
     private static String default_debug = "false";
     // private static String default_debug = "true";
@@ -30,16 +30,19 @@ public class LaraLog extends SpecsLogger {
         LaraLog.setDebug(Boolean.parseBoolean(laraLog));
     }
 
-    public static LaraLog logger() {
-        return LOGGER.get();
+    // public static LaraLog logger() {
+    public static StringLogger logger() {
+        // return LOGGER.get();
+        return LOGGER;
     }
 
-    private LaraLog() {
-        super(LARAI_TAG);
-    }
+    // private LaraLog() {
+    // super(LARAI_TAG);
+    // }
 
     public static void info(String message) {
-        logger().msgInfo(message);
+        // logger().msgInfo(message);
+        logger().info(message);
     }
 
     // public static void warning(Pragma pragma, String message) {
@@ -48,13 +51,13 @@ public class LaraLog extends SpecsLogger {
     // }
 
     public static void warning(String message) {
-
-        SpecsLogs.msgInfo("[Warning] " + message);
+        // SpecsLogs.msgInfo("[Warning] " + message);
+        logger().info("Warning", message);
     }
 
     public static void debug(String message) {
         if (isDebug()) {
-            SpecsLogs.msgInfo("[DEBUG] " + message);
+            logger().debug(message);
         }
     }
 

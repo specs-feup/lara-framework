@@ -49,6 +49,7 @@ import pt.up.fe.specs.util.SpecsSystem;
 public class LaraLauncher {
 
     public static void main(String[] args) {
+        SpecsSystem.programStandardInit();
 
         launch(args, new DefaultWeaver());
     }
@@ -64,7 +65,7 @@ public class LaraLauncher {
      */
     public static boolean launch(String[] args, WeaverEngine engine) {
 
-        SpecsSystem.programStandardInit();
+        // SpecsSystem.programStandardInit();
 
         return LaraI.exec(args, engine);
         //
