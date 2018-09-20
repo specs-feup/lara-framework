@@ -15,87 +15,99 @@ package org.lara.interpreter.weaver.interf.events.data;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.interpreter.weaver.utils.FilterExpression;
 
 public class JoinPointEvent extends BaseEvent {
 
-	private String joinPointClass;
-	private String alias;
-	private String filter;
-	private JoinPoint joinPoint;
+    private String joinPointClass;
+    private String alias;
+    private FilterExpression[] filter;
+    private JoinPoint joinPoint;
+    private boolean approvedByFilter;
 
-	/**
-	 * @param stage
-	 * @param joinPointClass
-	 * @param alias
-	 * @param filter
-	 * @param joinPoint
-	 */
-	public JoinPointEvent(Stage stage, String joinPointClass, String alias, String filter, JoinPoint joinPoint) {
-		super(stage);
-		this.joinPointClass = joinPointClass;
-		this.alias = alias;
-		this.filter = filter;
-		this.joinPoint = joinPoint;
-	}
+    /**
+     * @param stage
+     * @param joinPointClass
+     * @param alias
+     * @param filter2
+     * @param joinPoint
+     */
+    public JoinPointEvent(Stage stage, String joinPointClass, String alias, FilterExpression[] filter2,
+            JoinPoint joinPoint,
+            boolean approvedByFilter) {
+        super(stage);
+        this.joinPointClass = joinPointClass;
+        this.alias = alias;
+        this.filter = filter2;
+        this.joinPoint = joinPoint;
+    }
 
-	/**
-	 * @return the joinPointClass
-	 */
-	public String getJoinPointClass() {
-		return joinPointClass;
-	}
+    /**
+     * @return the joinPointClass
+     */
+    public String getJoinPointClass() {
+        return joinPointClass;
+    }
 
-	/**
-	 * @return the alias
-	 */
-	public String getAlias() {
-		return alias;
-	}
+    /**
+     * @return the alias
+     */
+    public String getAlias() {
+        return alias;
+    }
 
-	/**
-	 * @return the filter
-	 */
-	public String getFilter() {
-		return filter;
-	}
+    /**
+     * @return the filter
+     */
+    public FilterExpression[] getFilter() {
+        return filter;
+    }
 
-	/**
-	 * @return the joinPoint
-	 */
-	public JoinPoint getJoinPoint() {
-		return joinPoint;
-	}
+    /**
+     * @return the joinPoint
+     */
+    public JoinPoint getJoinPoint() {
+        return joinPoint;
+    }
 
-	/**
-	 * @param joinPointClass
-	 *            the joinPointClass to set
-	 */
-	protected void setJoinPointClass(String joinPointClass) {
-		this.joinPointClass = joinPointClass;
-	}
+    /**
+     * @param joinPointClass
+     *            the joinPointClass to set
+     */
+    protected void setJoinPointClass(String joinPointClass) {
+        this.joinPointClass = joinPointClass;
+    }
 
-	/**
-	 * @param alias
-	 *            the alias to set
-	 */
-	protected void setAlias(String alias) {
-		this.alias = alias;
-	}
+    /**
+     * @param alias
+     *            the alias to set
+     */
+    protected void setAlias(String alias) {
+        this.alias = alias;
+    }
 
-	/**
-	 * @param filter
-	 *            the filter to set
-	 */
-	protected void setFilter(String filter) {
-		this.filter = filter;
-	}
+    /**
+     * @param filter
+     *            the filter to set
+     */
+    protected void setFilter(FilterExpression[] filter) {
+        this.filter = filter;
+    }
 
-	/**
-	 * @param joinPoint
-	 *            the joinPoint to set
-	 */
-	protected void setJoinPoint(JoinPoint joinPoint) {
-		this.joinPoint = joinPoint;
-	}
+    /**
+     * @param joinPoint
+     *            the joinPoint to set
+     */
+    protected void setJoinPoint(JoinPoint joinPoint) {
+        this.joinPoint = joinPoint;
+    }
+
+    public boolean isApprovedByFilter() {
+        return approvedByFilter;
+    }
+
+    public void setApprovedByFilter(boolean approvedByFilter) {
+        this.approvedByFilter = approvedByFilter;
+    }
 
 }

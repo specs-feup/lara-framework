@@ -158,7 +158,7 @@ public class MasterWeaver {
 
                     main = larai.getAsps().main;
                 }
-
+                larai.getWeavingProfile().reportLaraNumTokens(larai.getNumMainLaraTokens());
                 eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), sources, main,
                         larai.getOptions().getLaraFile().getName());
             }
@@ -451,10 +451,15 @@ public class MasterWeaver {
             }
             LaraLog.printMemory("when converting to LaraJoinPoint");
 
+            FilterExpression[] filter = filterChain[pos];
+            String alias = aliasChain[pos];
             for (final JoinPoint joinPoint : joinPointList) {
                 // joinPoint.setWeaverEngine(weavingEngine);
                 // if(!true)
-                if (!jpUtils.evalFilter(joinPoint, filterChain[pos], localScope)) {
+                eventTrigger.triggerJoinPoint(Stage.BEGIN, selectName, alias, filter, joinPoint, true);
+                boolean approvedByFilter = jpUtils.evalFilter(joinPoint, filterChain[pos], localScope);
+                eventTrigger.triggerJoinPoint(Stage.END, selectName, alias, filter, joinPoint, approvedByFilter);
+                if (!approvedByFilter) {
                     continue;
                 }
                 final LaraJoinPoint child = new LaraJoinPoint(joinPoint);

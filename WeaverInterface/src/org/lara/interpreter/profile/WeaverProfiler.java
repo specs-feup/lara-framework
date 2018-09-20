@@ -141,6 +141,19 @@ public abstract class WeaverProfiler extends AGear {
     @Override
     public final void onJoinPoint(JoinPointEvent data) {
         onJoinPointImpl(data);
+        switch (data.getStage()) {
+
+        case BEGIN:
+            report.incJoinPoints();
+            break;
+        case END:
+            if (data.isApprovedByFilter()) {
+                report.incFilteredJoinPoints();
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     @Override
@@ -209,8 +222,11 @@ public abstract class WeaverProfiler extends AGear {
 
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
+                    .report("tokens", report.getNumTokens())
                     .report("aspects", report.getNumAspectCalls())
                     .report("selects", report.getSelects())
+                    .report("joinPoints", report.getJoinPoints())
+                    .report("filteredJoinPoints", report.getFilteredJoinPoints())
                     .report("applies", report.getApplies())
                     .report("actions", report.getNumActions())
                     .report("inserts", report.getInserts())
@@ -250,6 +266,10 @@ public abstract class WeaverProfiler extends AGear {
         // Count lines of code
         int numLines = StringLines.getLines(code).size();
         reportLOCs(numLines, isInsert);
+    }
+
+    public void reportLaraNumTokens(int numMainLaraTokens) {
+        report.setNumTokens(numMainLaraTokens);
     }
 
 }
