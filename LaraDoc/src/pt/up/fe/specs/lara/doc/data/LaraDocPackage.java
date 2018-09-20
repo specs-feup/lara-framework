@@ -66,7 +66,8 @@ public class LaraDocPackage extends LaraDocNode implements Comparable<LaraDocPac
     }
 
     @Override
-    public boolean addChild(LaraDocNode child) {
+    // public boolean addChild(LaraDocNode child) {
+    public void addChild(LaraDocNode child) {
         if (child instanceof LaraDocModule) {
             LaraDocModule module = (LaraDocModule) child;
             LaraDocModule previousModule = packageModules.put(module.getImportPath(), module);
@@ -82,7 +83,8 @@ public class LaraDocPackage extends LaraDocNode implements Comparable<LaraDocPac
 
         }
 
-        return super.addChild(child);
+        // return super.addChild(child);
+        super.addChild(child);
     }
 
     /*
