@@ -82,6 +82,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     COMBINATION("util/Combinations.lara"),
     DATA_STORE("util/DataStore.lara"),
     ID_GENERATOR("util/IdGenerator.lara"),
+    JP_FILTER("util/JpFilter.lara"),
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PRINT_ONCE("util/PrintOnce.lara"),
