@@ -54,7 +54,8 @@ public class LaraUnitTester {
 
         testFolder = checkTestFolder(baseFolder, testFolder);
         if (testFolder == null) {
-            return new LaraUnitReport(testResults);
+            // return new LaraUnitReport(testResults);
+            return LaraUnitReport.failedReport();
         }
 
         // Get test files

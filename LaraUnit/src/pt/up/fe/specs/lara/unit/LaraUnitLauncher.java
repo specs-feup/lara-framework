@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.unit;
 import static pt.up.fe.specs.lara.unit.LaraUnitOptions.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.suikasoft.jOptions.arguments.ArgumentsParser;
 
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.utilities.LineStream;
 
 public class LaraUnitLauncher {
 
@@ -76,6 +78,11 @@ public class LaraUnitLauncher {
         File testFolder = options.hasValue(LaraUnitOptions.TEST_FOLDER) ? options.get(LaraUnitOptions.TEST_FOLDER)
                 : null;
 
+        // If test folder is a file, interpret it as a list of tests
+        if (testFolder.isFile()) {
+            return executeTestFileScript(testFolder, options);
+        }
+
         String weaverClassname = options.get(LaraUnitOptions.WEAVER_CLASS);
         if (weaverClassname.isEmpty()) {
             weaverClassname = DefaultWeaver.class.getName();
@@ -105,8 +112,82 @@ public class LaraUnitLauncher {
         SpecsLogs.msgInfo("\nLaraUnit test report");
         SpecsLogs.msgInfo(laraUnitResport.getReport());
 
-        return laraUnitResport.isSuccess() ? 0 : -1;
+        return laraUnitResport.isSuccess() ? 0 : 1;
 
+    }
+
+    private static int executeTestFileScript(File testScript, DataStore options) {
+        // Read script, line-by-line
+
+        boolean success = true;
+        try (LineStream scriptLines = LineStream.newInstance(testScript)) {
+            int lineNumber = 0;
+            while (scriptLines.hasNextLine()) {
+                String line = scriptLines.nextLine().trim();
+                lineNumber++;
+
+                // Ignore empty line
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                // If starts with #, ignore
+                if (line.startsWith("#")) {
+                    continue;
+                }
+
+                boolean lineSuccess = executeLine(options, line, lineNumber);
+                if (!lineSuccess) {
+                    success = false;
+                }
+            }
+        }
+
+        return success ? 0 : 1;
+    }
+
+    private static boolean executeLine(DataStore options, String line, int lineNumber) {
+        // Split string one white spaces
+        String[] splittedLine = line.split(" ");
+        List<String> args = new ArrayList<>();
+        for (String splittedArg : splittedLine) {
+            String trimmedArg = splittedArg.trim();
+            if (trimmedArg.isEmpty()) {
+                continue;
+            }
+
+            args.add(trimmedArg);
+        }
+
+        if (args.size() != 1) {
+            SpecsLogs.msgInfo("Could not parse line " + lineNumber
+                    + " of test script, expecting a single argument, the folder with a 'test' folder. Line: " + line);
+            return false;
+        }
+
+        File baseFolder = new File(args.get(0));
+        if (!baseFolder.isDirectory()) {
+            SpecsLogs.msgInfo("Folder '" + baseFolder + "' in line" + lineNumber + " of test script not found");
+            return false;
+        }
+
+        File testFolder = new File(baseFolder, "test");
+        if (!testFolder.isDirectory()) {
+            SpecsLogs.msgInfo("Could not find 'test' folder inside base folder '" + baseFolder + "' in line"
+                    + lineNumber + " of test script");
+            return false;
+        }
+
+        // Copy datastore
+        DataStore newOptions = DataStore.newInstance("lara unit", options);
+
+        // Set base folder and test folder
+        newOptions.set(LaraUnitOptions.BASE_FOLDER, baseFolder);
+        newOptions.set(LaraUnitOptions.TEST_FOLDER, testFolder);
+
+        int result = execute(newOptions);
+
+        return result == 0;
     }
 
     public static int execute(DataStore dataStore, String weaverClassname) {
