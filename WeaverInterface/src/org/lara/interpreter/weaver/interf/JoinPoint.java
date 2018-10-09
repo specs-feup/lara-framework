@@ -426,8 +426,7 @@ public abstract class JoinPoint {
             // Object firstValue = jsObject.values().stream().findFirst().get();
             List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
             // Get common class of given instances
-            List<Class<?>> superClasses = SpecsSystem.getCommonSuperClass(classes);
-            System.out.println("SUPPER CLASSES:" + superClasses);
+            List<Class<?>> superClasses = SpecsSystem.getCommonSuperClasses(classes);
             Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
 
             // return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
