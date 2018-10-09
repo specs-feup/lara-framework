@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 
@@ -27,6 +28,7 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import pt.up.fe.specs.util.SpecsSystem;
 
 // import jdk.nashorn.internal.runtime.Undefined;
 
@@ -416,12 +418,20 @@ public abstract class JoinPoint {
         if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
 
             if (((ScriptObjectMirror) value).isEmpty()) {
+                // return new Object[0];
                 throw new RuntimeException("Cannot pass an empty array to a 'def'");
             }
 
             ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
-            Object firstValue = jsObject.values().stream().findFirst().get();
-            return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
+            // Object firstValue = jsObject.values().stream().findFirst().get();
+            List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
+            // Get common class of given instances
+            List<Class<?>> superClasses = SpecsSystem.getCommonSuperClass(classes);
+            System.out.println("SUPPER CLASSES:" + superClasses);
+            Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
+
+            // return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
+            return ScriptUtils.convert(value, Array.newInstance(superClass, 0).getClass());
         }
 
         return value;
