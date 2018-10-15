@@ -15,8 +15,10 @@ package org.lara.interpreter.weaver.interf;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
@@ -414,6 +416,17 @@ public abstract class JoinPoint {
      * @return
      */
     private Object parseDefValue(Object value) {
+        return parseDefValue(value, new HashSet<>());
+    }
+
+    private Object parseDefValue(Object value, Set<Object> seenObjects) {
+        // If object already appear stop, cyclic dependencies not supported
+        if (seenObjects.contains(value)) {
+            throw new RuntimeException("Detected a cyclic dependency in 'def' value: " + value);
+        }
+
+        seenObjects.add(value);
+
         // Convert value to a Java array, if necessary
         if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
 
@@ -430,7 +443,15 @@ public abstract class JoinPoint {
             Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
 
             // return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
-            return ScriptUtils.convert(value, Array.newInstance(superClass, 0).getClass());
+            Object[] objectArray = (Object[]) ScriptUtils.convert(value, Array.newInstance(superClass, 0).getClass());
+
+            // Recursively convert the elements of the array
+            Object[] convertedArray = (Object[]) Array.newInstance(superClass, objectArray.length);
+            for (int i = 0; i < objectArray.length; i++) {
+                convertedArray[i] = parseDefValue(objectArray[i], seenObjects);
+            }
+
+            return convertedArray;
         }
 
         return value;
