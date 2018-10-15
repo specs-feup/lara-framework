@@ -319,6 +319,7 @@ public class WeaverGenerator {
         LanguageSpecification languageSpecification = generator.getLanguageSpecification();
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
+
         // String json = jw.toJson(languageSpecification);
         SpecsIo.write(jsonOutFile, json);
     }

@@ -44,9 +44,8 @@ public class DeclarationNode extends LangSpecNode {
     public String toJson(BuilderWithIndentation builder) {
         builder.addLines("{");
         builder.increaseIndentation();
-
         builder.addLines("\"" + getTypeAttributeString() + "\": \"" + type + "\",");
-        builder.addLines("\\" + getNameAttributeString() + "\": \"" + name + "\"");
+        builder.addLines("\"" + getNameAttributeString() + "\": \"" + name + "\"");
         builder.decreaseIndentation();
         builder.add("}");
         return builder.toString();
