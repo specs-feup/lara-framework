@@ -124,8 +124,14 @@ public class JoinPointModelConstructor implements IModel {
             ValidationEventHandler handler = e -> {
 
                 String lowerCaseMessage = e.getMessage().toLowerCase();
+                // SpecsLogs.debug("JoinPointModelConstructor() lowerCaseMessage: '" + lowerCaseMessage + "'");
+
+                // HACK: This looks like a hack. Had to add the more general rule for 'joinpoint' since in some systems,
+                // the message might be translated to the system language and fail the check
+                // E.g., non esiste alcuna associazione ID/IDREF per l'IDREF "joinpoint".
                 if (lowerCaseMessage.contains("idref 'joinpoint'")
-                        || e.getMessage().contains("id \"joinpoint\"")) {
+                        || e.getMessage().contains("id \"joinpoint\"")
+                        || lowerCaseMessage.contains("joinpoint")) {
                     // System.out.println("Using joinpoint in select");
                     return true;
                 }

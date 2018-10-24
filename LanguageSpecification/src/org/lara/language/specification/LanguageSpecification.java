@@ -59,13 +59,13 @@ public class LanguageSpecification {
     private ActionModel actionModel;
 
     private LanguageSpecification(JoinPointModel jpModel, ArtifactsModel artifacts, ActionModel actionModel) {
-	this.artifacts = artifacts;
-	this.jpModel = jpModel;
-	this.actionModel = actionModel;
-	this.artifacts.sanitizeByJoinPointModel(jpModel); // Required to access
-							  // attributes of
-							  // extending join
-							  // points
+        this.artifacts = artifacts;
+        this.jpModel = jpModel;
+        this.actionModel = actionModel;
+        this.artifacts.sanitizeByJoinPointModel(jpModel); // Required to access
+        // attributes of
+        // extending join
+        // points
     }
 
     /**
@@ -80,30 +80,30 @@ public class LanguageSpecification {
      */
     public static LanguageSpecification newInstance(File specDir, boolean validate) {
 
-	if (!specDir.exists() || !specDir.isDirectory()) {
-	    throw new RuntimeException("Language Specification directory is invalid: " + specDir.getAbsolutePath());
-	}
+        if (!specDir.exists() || !specDir.isDirectory()) {
+            throw new RuntimeException("Language Specification directory is invalid: " + specDir.getAbsolutePath());
+        }
 
-	try {
-	    // Language specification files
-	    final File artifactsFile = getSpecificationFile(specDir,
-		    LanguageSpecification.ARTIFACTS_NAME + LanguageSpecification.XML_EXTENSION);
-	    final File jpModelFile = getSpecificationFile(specDir,
-		    LanguageSpecification.JOIN_POINT_MODEL_NAME + LanguageSpecification.XML_EXTENSION);
-	    final File actionModelFile = getSpecificationFile(specDir,
-		    LanguageSpecification.ACTION_MODEL_NAME + LanguageSpecification.XML_EXTENSION);
+        try {
+            // Language specification files
+            final File artifactsFile = getSpecificationFile(specDir,
+                    LanguageSpecification.ARTIFACTS_NAME + LanguageSpecification.XML_EXTENSION);
+            final File jpModelFile = getSpecificationFile(specDir,
+                    LanguageSpecification.JOIN_POINT_MODEL_NAME + LanguageSpecification.XML_EXTENSION);
+            final File actionModelFile = getSpecificationFile(specDir,
+                    LanguageSpecification.ACTION_MODEL_NAME + LanguageSpecification.XML_EXTENSION);
 
-	    return new LanguageSpecification(new JoinPointModel(jpModelFile, validate),
-		    new ArtifactsModel(artifactsFile, validate), ActionModel.newInstance(actionModelFile, validate));
-	} catch (final Exception e) {
-	    throw new LanguageSpecificationException(
-		    "Could not create a Language Specification from folder '" + specDir + "'", e);
-	}
-	/*
-	 * // Instantiations setArtifacts(new ArtifactsModel(artifactsFile,
-	 * validate)); setJpModel(new JoinPointModel(jpModelFile, validate));
-	 * setActionModel(new ActionModel(actionModelFile, validate));
-	 */
+            return new LanguageSpecification(new JoinPointModel(jpModelFile, validate),
+                    new ArtifactsModel(artifactsFile, validate), ActionModel.newInstance(actionModelFile, validate));
+        } catch (final Exception e) {
+            throw new LanguageSpecificationException(
+                    "Could not create a Language Specification from folder '" + specDir + "'", e);
+        }
+        /*
+         * // Instantiations setArtifacts(new ArtifactsModel(artifactsFile,
+         * validate)); setJpModel(new JoinPointModel(jpModelFile, validate));
+         * setActionModel(new ActionModel(actionModelFile, validate));
+         */
 
     }
 
@@ -138,34 +138,34 @@ public class LanguageSpecification {
      */
     public static LanguageSpecification newInstance(String packageName, boolean validate) {
 
-	final String resourceRoot = SpecsStrings.packageNameToResource(packageName);
-	/*
-	 * if (!packageName.endsWith("/")) { packageName += "/"; }
-	 */
-	final String joinPointModelResource = resourceRoot + LanguageSpecification.JOIN_POINT_MODEL_NAME
-		+ LanguageSpecification.XML_EXTENSION;
-	final String artifactsModelResource = resourceRoot + LanguageSpecification.ARTIFACTS_NAME
-		+ LanguageSpecification.XML_EXTENSION;
-	final String actionModelResource = resourceRoot + LanguageSpecification.ACTION_MODEL_NAME
-		+ LanguageSpecification.XML_EXTENSION;
+        final String resourceRoot = SpecsStrings.packageNameToResource(packageName);
+        /*
+         * if (!packageName.endsWith("/")) { packageName += "/"; }
+         */
+        final String joinPointModelResource = resourceRoot + LanguageSpecification.JOIN_POINT_MODEL_NAME
+                + LanguageSpecification.XML_EXTENSION;
+        final String artifactsModelResource = resourceRoot + LanguageSpecification.ARTIFACTS_NAME
+                + LanguageSpecification.XML_EXTENSION;
+        final String actionModelResource = resourceRoot + LanguageSpecification.ACTION_MODEL_NAME
+                + LanguageSpecification.XML_EXTENSION;
 
-	return LanguageSpecification.newInstance(() -> joinPointModelResource, () -> artifactsModelResource,
-		() -> actionModelResource, validate);
-	/*
-	 * Source jpmSource = new
-	 * StreamSource(IoUtils.resourceToStream(joinPointModelResource));
-	 * Source armSource = new
-	 * StreamSource(IoUtils.resourceToStream(artifactsModelResource));
-	 * Source acmSource = new
-	 * StreamSource(IoUtils.resourceToStream(actionModelResource));
-	 * 
-	 * LanguageSpecification langSpec = null; try { langSpec = new
-	 * LanguageSpecification(jpmSource, armSource, acmSource, false); }
-	 * catch (Exception e) { LoggingUtils.msgWarn(
-	 * "Problem parsing default weaver", e);
-	 * 
-	 * } return langSpec;
-	 */
+        return LanguageSpecification.newInstance(() -> joinPointModelResource, () -> artifactsModelResource,
+                () -> actionModelResource, validate);
+        /*
+         * Source jpmSource = new
+         * StreamSource(IoUtils.resourceToStream(joinPointModelResource));
+         * Source armSource = new
+         * StreamSource(IoUtils.resourceToStream(artifactsModelResource));
+         * Source acmSource = new
+         * StreamSource(IoUtils.resourceToStream(actionModelResource));
+         * 
+         * LanguageSpecification langSpec = null; try { langSpec = new
+         * LanguageSpecification(jpmSource, armSource, acmSource, false); }
+         * catch (Exception e) { LoggingUtils.msgWarn(
+         * "Problem parsing default weaver", e);
+         * 
+         * } return langSpec;
+         */
     }
 
     /*
@@ -188,20 +188,42 @@ public class LanguageSpecification {
      * @return
      */
     public static LanguageSpecification newInstance(ResourceProvider joinPointModelResource,
-	    ResourceProvider artifactsModelResource, ResourceProvider actionModelResource, boolean validate) {
+            ResourceProvider artifactsModelResource, ResourceProvider actionModelResource, boolean validate) {
 
-	try (InputStream joinpointStream = SpecsIo.resourceToStream(joinPointModelResource);
-		InputStream artifactsStream = SpecsIo.resourceToStream(artifactsModelResource)) {
+        JoinPointModel jpModel = null;
+        try (InputStream joinpointStream = SpecsIo.resourceToStream(joinPointModelResource)) {
+            jpModel = new JoinPointModel(new StreamSource(joinpointStream), "default", validate);
+        } catch (final Exception e) {
+            throw new LanguageSpecificationException(
+                    "Could not create Language Specification from join point model '" + joinPointModelResource + "'",
+                    e);
+        }
 
-	    final JoinPointModel jpModel = new JoinPointModel(new StreamSource(joinpointStream), "default", validate);
-	    final ArtifactsModel artifactsModel = new ArtifactsModel(new StreamSource(artifactsStream), "default",
-		    validate);
-	    final ActionModel actionModel = ActionModel.newInstance(actionModelResource, "default", validate);
+        ArtifactsModel artifactsModel = null;
+        try (InputStream artifactsStream = SpecsIo.resourceToStream(artifactsModelResource)) {
+            artifactsModel = new ArtifactsModel(new StreamSource(artifactsStream), "default",
+                    validate);
+        } catch (final Exception e) {
+            throw new LanguageSpecificationException(
+                    "Could not create Language Specification from artifacts model '" + artifactsModelResource + "'",
+                    e);
+        }
 
-	    return new LanguageSpecification(jpModel, artifactsModel, actionModel);
-	} catch (final Exception e) {
-	    throw new LanguageSpecificationException("Could not create Language Specification from resources", e);
-	}
+        final ActionModel actionModel = ActionModel.newInstance(actionModelResource, "default", validate);
+
+        return new LanguageSpecification(jpModel, artifactsModel, actionModel);
+        // try (InputStream joinpointStream = SpecsIo.resourceToStream(joinPointModelResource);
+        // InputStream artifactsStream = SpecsIo.resourceToStream(artifactsModelResource)) {
+        //
+        // final JoinPointModel jpModel = new JoinPointModel(new StreamSource(joinpointStream), "default", validate);
+        // final ArtifactsModel artifactsModel = new ArtifactsModel(new StreamSource(artifactsStream), "default",
+        // validate);
+        // final ActionModel actionModel = ActionModel.newInstance(actionModelResource, "default", validate);
+        //
+        // return new LanguageSpecification(jpModel, artifactsModel, actionModel);
+        // } catch (final Exception e) {
+        // throw new LanguageSpecificationException("Could not create Language Specification from resources", e);
+        // }
     }
 
     /**
@@ -244,27 +266,27 @@ public class LanguageSpecification {
      * @throws SAXException
      */
     private static File getSpecificationFile(File xmlSourceDir, String specificationFileName)
-	    throws IOException, ParserConfigurationException, SAXException {
-	File specFile;
-	specFile = new File(xmlSourceDir, specificationFileName);
+            throws IOException, ParserConfigurationException, SAXException {
+        File specFile;
+        specFile = new File(xmlSourceDir, specificationFileName);
 
-	if (!specFile.exists()) {
-	    throw new IOException("The specification file " + specificationFileName + " could not be found in: "
-		    + xmlSourceDir.getAbsolutePath());
-	}
-	return specFile;
+        if (!specFile.exists()) {
+            throw new IOException("The specification file " + specificationFileName + " could not be found in: "
+                    + xmlSourceDir.getAbsolutePath());
+        }
+        return specFile;
     }
 
     @Override
     public String toString() {
-	return "########## Language Specification ##########\n" + jpModel + artifacts + actionModel;
+        return "########## Language Specification ##########\n" + jpModel + artifacts + actionModel;
     }
 
     /**
      * @return the artifacts
      */
     public ArtifactsModel getArtifacts() {
-	return artifacts;
+        return artifacts;
     }
 
     /**
@@ -272,14 +294,14 @@ public class LanguageSpecification {
      *            the artifacts to set
      */
     public void setArtifacts(ArtifactsModel artifacts) {
-	this.artifacts = artifacts;
+        this.artifacts = artifacts;
     }
 
     /**
      * @return the jpModel
      */
     public JoinPointModel getJpModel() {
-	return jpModel;
+        return jpModel;
     }
 
     /**
@@ -287,14 +309,14 @@ public class LanguageSpecification {
      *            the jpModel to set
      */
     public void setJpModel(JoinPointModel jpModel) {
-	this.jpModel = jpModel;
+        this.jpModel = jpModel;
     }
 
     /**
      * @return the actionModel
      */
     public ActionModel getActionModel() {
-	return actionModel;
+        return actionModel;
     }
 
     /**
@@ -302,41 +324,41 @@ public class LanguageSpecification {
      *            the actionModel to set
      */
     public void setActionModel(ActionModel actionModel) {
-	this.actionModel = actionModel;
+        this.actionModel = actionModel;
     }
 
     public JPMGraph createGraph(String graphName, File outputDir, String outputPackage) {
-	final JPMGraph graph = new JPMGraph("TestWeaver");
-	for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
-	    final String clazz = joinPoint.getClazz();
-	    final JoinPointType extend = (JoinPointType) joinPoint.getExtends();
-	    if (!joinPoint.equals(extend)) {
+        final JPMGraph graph = new JPMGraph("TestWeaver");
+        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
+            final String clazz = joinPoint.getClazz();
+            final JoinPointType extend = (JoinPointType) joinPoint.getExtends();
+            if (!joinPoint.equals(extend)) {
 
-		graph.addExtend(clazz, extend.getClazz());
-	    }
+                graph.addExtend(clazz, extend.getClazz());
+            }
 
-	    joinPoint.getSelect().forEach(select -> {
+            joinPoint.getSelect().forEach(select -> {
 
-		String alias = null;
-		final JoinPointType superJoinPoint = (JoinPointType) select.getClazz();
-		final String aliasText = select.getAlias();
-		if (!aliasText.equals(superJoinPoint.getClazz())) {
-		    alias = aliasText;
-		}
+                String alias = null;
+                final JoinPointType superJoinPoint = (JoinPointType) select.getClazz();
+                final String aliasText = select.getAlias();
+                if (!aliasText.equals(superJoinPoint.getClazz())) {
+                    alias = aliasText;
+                }
 
-		graph.addSelect(alias, clazz, superJoinPoint.getClazz());
-	    });
-	}
-	//
-	// graph.addNode("File", new JPNodeInfo("File"));
-	// graph.addNode("Function", new JPNodeInfo("Function"));
-	// graph.addNode("Node", new JPNodeInfo("Function"));
-	// graph.addConnection("File", "Function", JPEdgeInfo.newSelects("File",
-	// "Function"));
-	// graph.addConnection("Function", "Node",
-	// JPEdgeInfo.newExtends("Function", "Node"));
-	// // System.out.println(graph);
-	return graph;
+                graph.addSelect(alias, clazz, superJoinPoint.getClazz());
+            });
+        }
+        //
+        // graph.addNode("File", new JPNodeInfo("File"));
+        // graph.addNode("Function", new JPNodeInfo("Function"));
+        // graph.addNode("Node", new JPNodeInfo("Function"));
+        // graph.addConnection("File", "Function", JPEdgeInfo.newSelects("File",
+        // "Function"));
+        // graph.addConnection("Function", "Node",
+        // JPEdgeInfo.newExtends("Function", "Node"));
+        // // System.out.println(graph);
+        return graph;
     }
 
     /**
@@ -345,81 +367,81 @@ public class LanguageSpecification {
      * @param engine
      */
     public void print() {
-	JoinPointModel jpModel = getJpModel();
-	ArtifactsModel artifacts = getArtifacts();
-	ActionModel actionModel = getActionModel();
-	List<JoinPointType> joinpoints = jpModel.getJoinPointList().getJoinpoint();
-	for (JoinPointType joinPointType : joinpoints) {
-	    String clazz = joinPointType.getClazz();
-	    JoinPointType extend = (JoinPointType) joinPointType.getExtends();
-	    System.out.print("joinpoint " + clazz);
-	    if (!extend.equals(joinPointType)) {
-		System.out.print(" extends " + extend.getClazz());
-	    }
-	    System.out.println(" {");
+        JoinPointModel jpModel = getJpModel();
+        ArtifactsModel artifacts = getArtifacts();
+        ActionModel actionModel = getActionModel();
+        List<JoinPointType> joinpoints = jpModel.getJoinPointList().getJoinpoint();
+        for (JoinPointType joinPointType : joinpoints) {
+            String clazz = joinPointType.getClazz();
+            JoinPointType extend = (JoinPointType) joinPointType.getExtends();
+            System.out.print("joinpoint " + clazz);
+            if (!extend.equals(joinPointType)) {
+                System.out.print(" extends " + extend.getClazz());
+            }
+            System.out.println(" {");
 
-	    List<Attribute> artifact = artifacts.getAttributes(clazz);
+            List<Attribute> artifact = artifacts.getAttributes(clazz);
 
-	    System.out.println("\n\t// artifacts");
-	    // System.out.println("\tartifacts {");
-	    if (artifact != null) {
-		for (Attribute attribute : artifact) {
-		    System.out.print("\t" + attribute.getType() + " " + attribute.getName());
-		    List<Parameter> parameters = attribute.getParameter();
-		    if (parameters != null && !parameters.isEmpty()) {
-			System.out.print("(");
-			String params = parameters.stream()
-				.map(param -> param.getType() + " " + param.getType())
-				.collect(Collectors.joining(", "));
-			System.out.print(params + ")");
-		    }
-		    System.out.println();
-		}
-	    }
-	    // System.out.println("\t}");
+            System.out.println("\n\t// artifacts");
+            // System.out.println("\tartifacts {");
+            if (artifact != null) {
+                for (Attribute attribute : artifact) {
+                    System.out.print("\t" + attribute.getType() + " " + attribute.getName());
+                    List<Parameter> parameters = attribute.getParameter();
+                    if (parameters != null && !parameters.isEmpty()) {
+                        System.out.print("(");
+                        String params = parameters.stream()
+                                .map(param -> param.getType() + " " + param.getType())
+                                .collect(Collectors.joining(", "));
+                        System.out.print(params + ")");
+                    }
+                    System.out.println();
+                }
+            }
+            // System.out.println("\t}");
 
-	    List<Select> selects = jpModel.getAllSelects(joinPointType);
+            List<Select> selects = jpModel.getAllSelects(joinPointType);
 
-	    System.out.println("\n\tselects {");
-	    // if (selects != null) {
-	    for (Select select : selects) {
-		JoinPointType clazz2 = (JoinPointType) select.getClazz();
-		String jpSelect = clazz2.getClazz();
-		System.out.print("\t\t" + jpSelect);
-		if (!jpSelect.equals(select.getAlias())) {
-		    System.out.print(" as " + select.getAlias());
-		}
-		System.out.println();
+            System.out.println("\n\tselects {");
+            // if (selects != null) {
+            for (Select select : selects) {
+                JoinPointType clazz2 = (JoinPointType) select.getClazz();
+                String jpSelect = clazz2.getClazz();
+                System.out.print("\t\t" + jpSelect);
+                if (!jpSelect.equals(select.getAlias())) {
+                    System.out.print(" as " + select.getAlias());
+                }
+                System.out.println();
 
-	    }
-	    // }
+            }
+            // }
 
-	    System.out.println("\t}");
+            System.out.println("\t}");
 
-	    List<Action> actions = actionModel.getAllJoinPointActions(joinPointType,
-		    jpModel);
+            List<Action> actions = actionModel.getAllJoinPointActions(joinPointType,
+                    jpModel);
 
-	    System.out.println("\n\tactions {");
-	    for (Action action : actions) {
+            System.out.println("\n\tactions {");
+            for (Action action : actions) {
 
-		List<org.lara.language.specification.actionsmodel.schema.Parameter> parameters = action
-			.getParameter();
-		String params = "";
-		if (parameters != null && !parameters.isEmpty()) {
-		    params = parameters.stream()
-			    .map(param -> param.getType() + " " + param.getType())
-			    .collect(Collectors.joining(", "));
+                List<org.lara.language.specification.actionsmodel.schema.Parameter> parameters = action
+                        .getParameter();
+                String params = "";
+                if (parameters != null && !parameters.isEmpty()) {
+                    params = parameters.stream()
+                            .map(param -> param.getType() + " " + param.getType())
+                            .collect(Collectors.joining(", "));
 
-		}
+                }
 
-		System.out.println("\t\t" + action.getName() + "(" + params + ")");
-	    }
-	    System.out.println("\t\tinsert [ before | after | replace ] [ %{<code>}% | '<code>' ]");
-	    System.out.println("\t\tdef <attribute> = <expr>");
-	    System.out.println("\t}");
+                System.out.println("\t\t" + action.getName() + "(" + params + ")");
+            }
+            System.out.println("\t\tinsert [ before | after | replace ] [ %{<code>}% | '<code>' ]");
+            System.out.println("\t\tdef <attribute> = <expr>");
+            System.out.println("\t}");
 
-	    System.out.println("}\n");
+            System.out.println("}\n");
 
-	}
+        }
     }
 }
