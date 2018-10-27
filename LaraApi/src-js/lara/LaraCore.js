@@ -55,6 +55,7 @@ function checkTrue(booleanExpr, message, source) {
 }
 
 function checkDefined(value, varName, source) {
+	//println("checkDefined() deprecated, use instead lara.Check");
 	if(!isUndefined(value)) {
 		return;
 	}

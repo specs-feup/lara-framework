@@ -66,6 +66,7 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Lara
     _JAVA_TYPES("_JavaTypes.lara"),
+    CHECK("Check.lara"),
     CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),

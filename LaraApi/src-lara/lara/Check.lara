@@ -1,0 +1,172 @@
+/**
+ * Utility methods to check preconditions. 
+ *
+ * @class
+ */
+var Check = {};
+
+Check.isJoinPoint = function($jp, source) {
+    
+    if(Weaver.isJoinPoint($jp)) {
+        
+        return;
+    }
+    
+    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
+    
+    if(source !== undefined) {
+        message = source + ": " + message;
+    }
+
+    throw message; 
+}
+
+
+
+
+
+/**
+ * Throws an exception if the given expression evaluates to false.
+ */
+Check.isTrue = function(booleanExpr, message, source) {
+	if(!booleanExpr) {
+		if(message === undefined) {
+			message = "Check.isTrue failed";
+		}
+		
+		if(source !== undefined) {
+			message = source + ": " + message;
+		}
+		
+		throw message;
+	}
+}
+
+/**
+ * @param value
+ * @param varName
+ * @param source
+ */
+Check.defined = function(value, varName, source) {
+	if(!isUndefined(value)) {
+		return;
+	}
+	
+	// Undefined, throw exception
+	var message = "Value ";
+	if(varName !== undefined) {
+		message += varName + " ";
+	}
+	if(source !== undefined) {
+		message = source + ": " + message;
+		//message += "from " + source + " ";
+	}
+	message += "is undefined";
+	
+	throw message;
+}
+
+Check.instance = function(value, type, source, userTypeName) {
+    if(typeof type !== "function")  {
+        throw "Check.instance: parameter type must be a function";       
+    }
+    
+    if(value instanceof type) {
+        return;
+    }    
+
+    // Try to get name from type
+    var typeName = type.name;
+    
+    // If no name, try to use user type name
+    if(typeName === undefined || typeName.length === 0) {
+        typeName = userTypeName;
+    }
+
+    // If still undefined, add placeholder
+    if(typeName === undefined) {
+        typeName = "<could not determine>";
+    }
+
+    var valueName = value.constructor.name;
+    if(valueName.length === 0) {
+        valueName = undefined;
+    }
+    
+
+    var message = "Expected value to be of type '" + typeName + "'";
+
+    if(valueName !== undefined) {
+        message +=  ", but is of type '" + valueName + "'";
+    } else {
+        message += ", but is of another type. The code of the constructor function is:\n" + value.constructor;
+    }
+
+	
+    if(source !== undefined) {
+		message = source + ": " + message;
+	}
+    
+	throw message;
+    
+    //_throwTypeException(value.constructor.name, type.name, source);
+    //_throwTypeException(value, type.name, source);
+}
+
+
+Check.type = function(value, type, source) {
+    if(typeof type !== "string")  {
+        throw "Check.type: parameter type must be a string";       
+    }
+    
+    if(typeof value === type) {
+        return;
+    }
+	
+	// Special case: array
+	if(type === "array" && isArray(value)) {
+		return;
+	}
+    
+    var message = "Expected value to be of type '" + type + "', but is of type '" + (typeof value) + "'";
+
+	if(source !== undefined) {
+		message = source + ": " + message;
+	}
+	
+	throw message;
+}	 
+
+Check.boolean = function(variable, source) {
+	Check.type(variable, "boolean", source);
+};
+
+Check.string = function(variable, source) {
+	Check.type(variable, "string", source);
+};
+
+Check.number = function(variable, source) {
+	Check.type(variable, "number", source);
+};
+
+Check.array = function(variable, source) {
+	Check.type(variable, "array", source);
+};
+
+
+Check.isJoinPointType = function($jp, type, source) {
+   
+    Check.isJoinPoint($jp, source);
+   
+    if(Weaver.isJoinPoint($jp, type)) {
+        
+        return;
+    }
+
+    var message = "Expected variable to be a join point of type '" + type + "', but it's of type '" + $jp.joinPointType + "'";
+    if(source !== undefined) {
+        message = source + ": " + message;
+    }
+
+    throw message; 
+}
