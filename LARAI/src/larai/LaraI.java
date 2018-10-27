@@ -14,6 +14,7 @@ package larai;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -58,6 +59,7 @@ import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -257,6 +259,8 @@ public class LaraI {
     }
 
     public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
+        SpecsLogs.debug("Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
+
         // Reset global state
         MessageConstants.order = 1;
         if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
