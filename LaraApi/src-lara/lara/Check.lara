@@ -47,7 +47,7 @@ Check.isTrue = function(booleanExpr, message, source) {
  * @param varName
  * @param source
  */
-Check.defined = function(value, varName, source) {
+Check.isDefined = function(value, varName, source) {
 	if(!isUndefined(value)) {
 		return;
 	}
@@ -137,19 +137,19 @@ Check.type = function(value, type, source) {
 	throw message;
 }	 
 
-Check.boolean = function(variable, source) {
+Check.isBoolean = function(variable, source) {
 	Check.type(variable, "boolean", source);
 };
 
-Check.string = function(variable, source) {
+Check.isString = function(variable, source) {
 	Check.type(variable, "string", source);
 };
 
-Check.number = function(variable, source) {
+Check.isNumber = function(variable, source) {
 	Check.type(variable, "number", source);
 };
 
-Check.array = function(variable, source) {
+Check.isArray = function(variable, source) {
 	Check.type(variable, "array", source);
 };
 
