@@ -1,0 +1,59 @@
+import weaver.JoinPoints;
+import lara.util.JpFilter;
+import lara.Check;
+
+/**
+ * Selects join points according to their type and filter ruler.
+ *
+ */
+var Selector = function() {
+	this._$currentJps = undefined;
+	this._joinPoints = new JoinPoints();
+};
+
+Selector.prototype.search = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints) {return joinPoints.descendants($jp);});
+}
+
+Selector.prototype.children = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints) {return joinPoints.children($jp);});
+}
+
+Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
+
+	Check.isDefined(selectFunction, "selectFunction");
+
+	if(filter === undefined) {
+		filter = {};
+	}
+	
+	var jpFilter = new JpFilter(filter);
+	
+	var $newJps = [];
+	
+	var $currentJps = this._$currentJps === undefined ? [this._joinPoints.root()] : this._$currentJps;
+	for(var $jp of $currentJps) {
+		
+		var $allJps = selectFunction($jp, this._joinPoints);
+		//var $allJps = this._joinPoints.descendants($jp);
+		
+		var $filteredJps = jpFilter.filter($allJps);
+		
+		for(var $finalJp of $filteredJps) {
+			
+			$newJps.push($finalJp);
+		}
+	}
+
+	// Update
+	this._$currentJps = $newJps;
+	
+	return this;
+}
+
+Selector.prototype.get = function() {
+	var returnJps = this._$currentJps;
+	this._$currentJps = undefined;
+	return returnJps;
+}
+

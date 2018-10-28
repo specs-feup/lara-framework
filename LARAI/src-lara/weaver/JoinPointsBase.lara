@@ -1,0 +1,30 @@
+/**
+ * Object which provides low-level join point-related methods.
+ * @constructor
+ */
+function JoinPoints() {
+}
+
+/**
+ * 
+ * @return {$jp} the current root node of the AST
+ */
+JoinPoints.prototype.root = function() {
+	throw "_WeaverHelper.rootNode: not implemented";
+}
+
+/**
+ * 
+ * @return {$jp[]} the children of the given node
+ */
+JoinPoints.prototype.children = function($jp) {
+	throw "_WeaverHelper.children: not implemented";
+}
+
+/**
+ * 
+ * @return {$jp[]} the descendants of the given node
+ */
+JoinPoints.prototype.descendants = function($jp) {
+	throw "_WeaverHelper.descendants: not implemented";
+}
