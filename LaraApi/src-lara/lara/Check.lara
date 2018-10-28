@@ -43,12 +43,19 @@ Check.isTrue = function(booleanExpr, message, source) {
 }
 
 /**
+ * @return true if the given value is either undefined or null.
+ */
+Check.isUndefined = function(value) {
+	return value === undefined || value === null;
+}
+
+/**
  * @param value
  * @param varName
  * @param source
  */
 Check.isDefined = function(value, varName, source) {
-	if(!isUndefined(value)) {
+	if(!Check.isUndefined(value)) {
 		return;
 	}
 	

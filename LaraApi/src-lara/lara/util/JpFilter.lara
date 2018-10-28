@@ -1,4 +1,5 @@
 import lara.util.StringSet;
+import lara.Check;
 
 /**
  * Filters join points according to the given rules.
@@ -101,7 +102,8 @@ JpFilter.prototype._filterOr = function($jps) {
 JpFilter.prototype._match = function($jp, i) {
 	var attributeValue = $jp[this.attributes[i]];
 	
-	if(attributeValue === undefined) {
+	//if(attributeValue === undefined) {
+	if(Check.isUndefined(attributeValue)) {
 		return false;
 	}
 	
