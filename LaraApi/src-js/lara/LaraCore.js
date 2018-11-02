@@ -9,6 +9,10 @@ function setDebug(value) {
 	LARA_DEBUG = value;
 }
 
+function isDebug() {
+	return LARA_DEBUG;
+}
+
 function notImplemented(functionName) {
 	
 	functionName = defaultValue(functionName, "<unknown>");
