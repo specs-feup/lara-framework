@@ -17,7 +17,7 @@ JoinPoints.prototype.root = function() {
  * 
  * @return {$jp[]} the children of the given node
  */
-JoinPoints.prototype.children = function($jp) {
+JoinPoints.prototype.children = function($jp, jpType) {
 	throw "_WeaverHelper.children: not implemented";
 }
 
@@ -25,6 +25,6 @@ JoinPoints.prototype.children = function($jp) {
  * 
  * @return {$jp[]} the descendants of the given node
  */
-JoinPoints.prototype.descendants = function($jp) {
+JoinPoints.prototype.descendants = function($jp, jpType) {
 	throw "_WeaverHelper.descendants: not implemented";
 }
