@@ -3,11 +3,11 @@ import lara.util.JpFilter;
 import lara.Check;
 
 /**
- * Selects join points according to their type and filter ruler.
+ * Selects join points according to their type and filter rules.
  *
  */
-var Selector = function() {
-	this._$currentJps = undefined;
+var Selector = function($baseJp) {
+	this._$currentJps = $baseJp === undefined ? undefined : [$baseJp];
 	this._joinPoints = new JoinPoints();
 };
 
@@ -36,9 +36,12 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 		
 		var $allJps = selectFunction($jp, this._joinPoints, name);
 		//var $allJps = this._joinPoints.descendants($jp);
-		
+		//println("All jps: " + $allJps.length);
+		//for(var $jp of $allJps) {
+		//	println("jp " + $jp.joinPointType + ":" + $jp.location);
+		//}
 		var $filteredJps = jpFilter.filter($allJps);
-		
+		//println("filteredJps: " + $filteredJps.length);
 		for(var $finalJp of $filteredJps) {
 			
 			$newJps.push($finalJp);
@@ -52,8 +55,22 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 }
 
 Selector.prototype.get = function() {
+	if(this._$currentJps === undefined) {
+		println("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
+		return [];
+	}
+	
 	var returnJps = this._$currentJps;
 	this._$currentJps = undefined;
 	return returnJps;
 }
 
+Selector.prototype.getFirst = function() {
+	var $jps = this.get();
+	if($jps.length === 0) {
+		println("Selector.getFirst(): no join point found");
+		return undefined;
+	}
+
+	return $jps[0];
+}
