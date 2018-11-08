@@ -54,12 +54,17 @@ Check.isUndefined = function(value) {
  * @param varName
  * @param source
  */
-Check.isDefined = function(value, varName, source) {
+Check.isDefined = function(value, message) {
+//Check.isDefined = function(value, varName, source) {
 	if(!Check.isUndefined(value)) {
 		return;
 	}
 	
 	// Undefined, throw exception
+	if(message === undefined) {
+		message = "Value is undefined";
+	}
+	/*	
 	var message = "Value ";
 	if(varName !== undefined) {
 		message += varName + " ";
@@ -69,7 +74,7 @@ Check.isDefined = function(value, varName, source) {
 		//message += "from " + source + " ";
 	}
 	message += "is undefined";
-	
+	*/
 	throw message;
 }
 
