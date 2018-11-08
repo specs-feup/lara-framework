@@ -70,7 +70,7 @@ public interface LaraiKeys {
     DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
 
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
-            .setDefault(() -> VerboseLevel.all)
+            .setDefault(() -> VerboseLevel.warnings)
             .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
                     string -> VerboseLevel.values()[Integer.parseInt(string)]));
 
