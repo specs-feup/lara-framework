@@ -12,11 +12,11 @@ var Selector = function() {
 };
 
 Selector.prototype.search = function(name, filter) {
-	return this._searchPrivate(name, filter, function($jp, joinPoints) {return joinPoints.descendants($jp);});
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
 }
 
 Selector.prototype.children = function(name, filter) {
-	return this._searchPrivate(name, filter, function($jp, joinPoints) {return joinPoints.children($jp);});
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.children($jp, name);});
 }
 
 Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
@@ -34,7 +34,7 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 	var $currentJps = this._$currentJps === undefined ? [this._joinPoints.root()] : this._$currentJps;
 	for(var $jp of $currentJps) {
 		
-		var $allJps = selectFunction($jp, this._joinPoints);
+		var $allJps = selectFunction($jp, this._joinPoints, name);
 		//var $allJps = this._joinPoints.descendants($jp);
 		
 		var $filteredJps = jpFilter.filter($allJps);
