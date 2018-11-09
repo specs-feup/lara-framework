@@ -41,6 +41,10 @@ public abstract class JoinPoint {
 
     static final String BASE_JOINPOINT_CLASS = "joinpoint";
 
+    public static boolean isJoinPoint(Object value) {
+        return value instanceof JoinPoint;
+    }
+
     /**
      * Function used by the lara interpreter to verify if a join point is the same (equals) as another join point
      * 

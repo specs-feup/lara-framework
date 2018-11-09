@@ -1,28 +1,11 @@
+import lara._JavaTypes;
+
 /**
  * Utility methods to check preconditions. 
  *
  * @class
  */
 var Check = {};
-
-Check.isJoinPoint = function($jp, source) {
-    
-    if(Weaver.isJoinPoint($jp)) {
-        
-        return;
-    }
-    
-    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
-    
-    if(source !== undefined) {
-        message = source + ": " + message;
-    }
-
-    throw message; 
-}
-
-
-
 
 
 /**
@@ -166,6 +149,56 @@ Check.isArray = function(variable, source) {
 };
 
 
+/**
+ * Checks if the given value is a join point. If a type is given, checks if the join point is an instance of the given type. Otherwise, throws an exception.
+ *
+ * @param $jp
+ * @param type
+ */
+Check.isJoinPoint = function($jp, type) {
+		
+	if(!_JavaTypes.getJoinPoint().isJoinPoint($jp)) {
+		throw "Expected variable to be of type join point, but it is of type '" + (typeof $jp) + "'";
+	}
+
+	if(type !== undefined && !$jp.instanceOf(type)) {
+		throw "Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'";		
+	}
+
+/*    
+    if(Weaver.isJoinPoint($jp)) {
+        return;
+    }
+    
+    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
+    
+    if(source !== undefined) {
+        message = source + ": " + message;
+    }
+
+    throw message; 
+*/	
+}
+
+/*
+Check.isJoinPoint = function($jp, source) {
+    
+    if(Weaver.isJoinPoint($jp)) {
+        
+        return;
+    }
+    
+    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
+    
+    if(source !== undefined) {
+        message = source + ": " + message;
+    }
+
+    throw message; 
+}
+*/
+
+/*
 Check.isJoinPointType = function($jp, type, source) {
    
     Check.isJoinPoint($jp, source);
@@ -182,3 +215,4 @@ Check.isJoinPointType = function($jp, type, source) {
 
     throw message; 
 }
+*/
