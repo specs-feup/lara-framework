@@ -188,6 +188,12 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
             testArgs.addArg(SpecsIo.removeExtension(testFile));
         }
 
+        // If no verbose level is set, automatically set it to 2 (warnings)
+        if (!testArgs.hasArg("-b")) {
+            testArgs.addArg("-b");
+            testArgs.addArg("2");
+        }
+
         // If log metrics is enabled and there is no -e option, add it
         if (logMetrics && !testArgs.hasArg("-e")) {
             testArgs.addArg("-e");
