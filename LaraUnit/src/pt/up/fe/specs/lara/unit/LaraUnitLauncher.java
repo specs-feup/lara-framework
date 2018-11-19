@@ -79,7 +79,7 @@ public class LaraUnitLauncher {
                 : null;
 
         // If test folder is a file, interpret it as a list of tests
-        if (testFolder.isFile()) {
+        if (testFolder != null && testFolder.isFile()) {
             return executeTestFileScript(testFolder, options);
         }
 
