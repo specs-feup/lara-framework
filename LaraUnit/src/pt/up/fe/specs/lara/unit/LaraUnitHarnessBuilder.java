@@ -200,6 +200,16 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
             testArgs.addArg("metrics/" + SpecsIo.removeExtension(testFile) + ".json");
         }
 
+        // Enable stack trace
+        if (!testArgs.hasArg("-s")) {
+            testArgs.addArg("-s");
+        }
+
+        // Disable Clava output
+        if (!testArgs.hasArg("-nci")) {
+            testArgs.addArg("-nci");
+        }
+
         return testArgs.getCurrentArgs();
     }
 
