@@ -91,3 +91,17 @@ Strings.toJson = function(value) {
 Strings.uuid = function() {
 	return _JavaTypes.getUuid().randomUUID().toString();
 }
+
+/**
+ *  Normalizes a given string:
+ * 1) Replaces \r\n with \n
+ * 2) Trims lines and removes empty lines
+ */
+Strings.normalize = function(string) {
+	return _JavaTypes.getSpecsStrings().normalizeFileContents(string, true);
+}
+
+
+
+// * Comparison is done line-by-line, and 
+// Compare strings line-by-line

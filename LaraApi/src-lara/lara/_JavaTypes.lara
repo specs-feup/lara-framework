@@ -42,3 +42,7 @@ _JavaTypes.getGprofer = function() {
 _JavaTypes.getJoinPoint = function() {
 	return _JavaTypes.getType("org.lara.interpreter.weaver.interf.JoinPoint");
 }
+
+_JavaTypes.getSpecsStrings = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.util.SpecsStrings");
+}

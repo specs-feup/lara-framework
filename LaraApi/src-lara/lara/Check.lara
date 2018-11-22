@@ -165,54 +165,22 @@ Check.isJoinPoint = function($jp, type) {
 		throw "Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'";		
 	}
 
-/*    
-    if(Weaver.isJoinPoint($jp)) {
-        return;
-    }
-    
-    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
-    
-    if(source !== undefined) {
-        message = source + ": " + message;
-    }
-
-    throw message; 
-*/	
 }
 
-/*
-Check.isJoinPoint = function($jp, source) {
-    
-    if(Weaver.isJoinPoint($jp)) {
-        
-        return;
-    }
-    
-    var message = "Expected variable to be of type join point, but it's of type '" + (typeof $jp) + "'";
-    
-    if(source !== undefined) {
-        message = source + ": " + message;
-    }
 
-    throw message; 
+/**
+ * Checks if two strings are identical, not considering empty spaces. Throws and exception if strings do not match.
+ */
+Check.strings = function(currentString, expectedString) {
+	//Check.isString(currentString);
+	//Check.isString(expectedString);
+	
+	// Normalize both strings
+	currentString = _JavaTypes.getSpecsStrings().normalizeFileContents(currentString, true);
+	expectedString = _JavaTypes.getSpecsStrings().normalizeFileContents(expectedString, true);
+		
+	if(currentString !== expectedString) {
+		throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
+	}
+	
 }
-*/
-
-/*
-Check.isJoinPointType = function($jp, type, source) {
-   
-    Check.isJoinPoint($jp, source);
-   
-    if(Weaver.isJoinPoint($jp, type)) {
-        
-        return;
-    }
-
-    var message = "Expected variable to be a join point of type '" + type + "', but it's of type '" + $jp.joinPointType + "'";
-    if(source !== undefined) {
-        message = source + ": " + message;
-    }
-
-    throw message; 
-}
-*/
