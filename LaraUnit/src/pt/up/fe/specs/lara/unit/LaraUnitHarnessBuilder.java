@@ -210,6 +210,11 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
             testArgs.addArg("-nci");
         }
 
+        // Disable code generation
+        if (!testArgs.hasArg("-ncg")) {
+            testArgs.addArg("-ncg");
+        }
+
         return testArgs.getCurrentArgs();
     }
 
