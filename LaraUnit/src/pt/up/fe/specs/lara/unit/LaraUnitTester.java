@@ -31,9 +31,16 @@ public class LaraUnitTester {
     private final WeaverEngine weaverEngine;
     private final boolean logMetrics;
 
+    private boolean printInfo;
+
     public LaraUnitTester(WeaverEngine weaverEngine, boolean logMetrics) {
         this.weaverEngine = weaverEngine;
         this.logMetrics = logMetrics;
+        printInfo = false;
+    }
+
+    public void setPrintInfo(boolean printInfo) {
+        this.printInfo = printInfo;
     }
 
     public boolean test(String[] args) {
@@ -68,6 +75,7 @@ public class LaraUnitTester {
                 globalArguments);) {
 
             laraUnitHarness.setLogMetrics(logMetrics);
+            laraUnitHarness.setPrintInfo(printInfo);
 
             // Test each file
             for (File testFile : testFiles) {

@@ -43,6 +43,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
     private File temporaryFolder;
     private boolean logMetrics;
+    private boolean printInfo;
 
     public LaraUnitHarnessBuilder(WeaverEngine weaverEngine, File baseFolder, LaraArgs globalArguments) {
         this.weaverEngine = weaverEngine;
@@ -51,6 +52,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         temporaryFolder = SpecsIo.mkdir(SpecsIo.getTempFolder(), "LaraUnitTestFolder");
         logMetrics = false;
+        printInfo = false;
         // Clean contents of folder
         SpecsIo.deleteFolderContents(temporaryFolder);
     }
@@ -206,7 +208,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         }
 
         // Disable Clava output
-        if (!testArgs.hasArg("-nci")) {
+        if (!printInfo && !testArgs.hasArg("-nci")) {
             testArgs.addArg("-nci");
         }
 
@@ -225,6 +227,10 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
     public void setLogMetrics(boolean logMetrics) {
         this.logMetrics = logMetrics;
+    }
+
+    public void setPrintInfo(boolean printInfo) {
+        this.printInfo = printInfo;
     }
 
 }

@@ -36,7 +36,8 @@ public class LaraUnitLauncher {
             .add(BASE_FOLDER, "--workspace", "-p")
             .add(TEST_FOLDER, "--test", "-t")
             .add(WEAVER_CLASS, "--weaver", "-w")
-            .add(METRICS, "--metrics", "-m");
+            .add(METRICS, "--metrics", "-m")
+            .add(INFO, "--info", "-i");
 
     public static void main(String[] args) {
         execute(args);
@@ -106,6 +107,7 @@ public class LaraUnitLauncher {
         }
 
         LaraUnitTester laraUnitTester = new LaraUnitTester(weaverEngine, logMetrics);
+        laraUnitTester.setPrintInfo(options.get(LaraUnitOptions.INFO));
 
         LaraUnitReport laraUnitResport = laraUnitTester.testFolder(baseFolder, testFolder);
 

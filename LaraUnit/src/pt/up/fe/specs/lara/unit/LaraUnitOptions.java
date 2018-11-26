@@ -51,7 +51,10 @@ public interface LaraUnitOptions {
     DataKey<Boolean> METRICS = KeyFactory.bool("metrics")
             .setLabel("Enable logging of metrics");
 
+    DataKey<Boolean> INFO = KeyFactory.bool("info")
+            .setLabel("Show Clava logging messages");
+
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder(getAppName())
-            .addKeys(BASE_FOLDER, TEST_FOLDER, WEAVER_CLASS, METRICS)
+            .addKeys(BASE_FOLDER, TEST_FOLDER, WEAVER_CLASS, METRICS, INFO)
             .build();
 }
