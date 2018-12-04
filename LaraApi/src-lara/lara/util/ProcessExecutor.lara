@@ -46,6 +46,9 @@ ProcessExecutor.prototype.setAppend = function(append) {
 	return this;
 }
 
+/** 
+ * Sets the time unit of the timeout value. By defaults, is SECONDS.
+ */
 ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
 	this.timeUnit = new TimeUnits(timeUnit);
 	return this;

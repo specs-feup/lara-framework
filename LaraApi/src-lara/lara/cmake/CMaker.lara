@@ -47,6 +47,8 @@ CMaker.prototype._EXE_VAR = "EXE_NAME";
  */
 CMaker.prototype.setCustomCMakeCode = function(customCMakeCode) {
 	this.customCMakeCode = customCMakeCode;
+	
+	return this;
 }
 
 CMaker.prototype.copy = function() {
