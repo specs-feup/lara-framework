@@ -94,6 +94,12 @@ function printObject(obj, space){
 	print(str);
 }
 
+function printlnObject(obj, space){
+	var str = object2string(obj, space);
+	print(str);
+	println("");
+}
+
 function object2string(obj, space){
 	if(space === undefined)
 		space = '';
