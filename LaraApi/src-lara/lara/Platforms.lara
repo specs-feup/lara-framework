@@ -1,4 +1,6 @@
 /**
+ * Information about the current platform (e.g., if it is Linux, Windows or Mac)
+ *
  * @class
  */
 var Platforms = {};

@@ -1,6 +1,8 @@
 import lara._JavaTypes;
 
 /**
+ *  Utility methods related to Strings.
+ *
  * @class
  */
 var Strings = {};

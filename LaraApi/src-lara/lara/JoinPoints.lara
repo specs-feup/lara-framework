@@ -20,7 +20,7 @@ JoinPoints.getAttribute = function($jp, attributeNames) {
 }
 
 /**
- * Helper method of getAttribute which throws an exception if not value is found
+ * Helper method of getAttribute which throws an exception if no value is found
  */
 JoinPoints.getAttributeStrict = function($jp, attributeNames) {
 	var value = this.getAttribute($jp, attributeNames);
