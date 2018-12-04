@@ -11,7 +11,11 @@ import lara.util.ProcessExecutor;
  * Builds CMake configurations.
  */
 var CMaker = function(name, disableWeaving) {
-	checkDefined(name, "name", "CMaker");
+	//checkDefined(name, "name", "CMaker");
+	if(name === undefined) {
+		name = "cmaker-project";
+	}
+	
 	
 	this.name = name;
 	this.disableWeaving = defaultValue(disableWeaving, false);
@@ -28,11 +32,22 @@ var CMaker = function(name, disableWeaving) {
 	this._lastMakeOutput = undefined;
 	this.compiler = undefined;
 	
+	this.customCMakeCode = undefined;
+	
 };
 
 CMaker.prototype._MINIMUM_VERSION = "2.8";
 CMaker.prototype._EXE_VAR = "EXE_NAME";
 
+
+/**
+ * Custom CMake code that will be appended to the end of the CMake file.
+ *
+ * @param {string} customCMakeCode - The code to append at the end of the CMake file.
+ */
+CMaker.prototype.setCustomCMakeCode = function(customCMakeCode) {
+	this.customCMakeCode = customCMakeCode;
+}
 
 CMaker.prototype.copy = function() {
 	var newCmaker = new CMaker(this.name, this.disableWeaving);
@@ -151,6 +166,8 @@ CMaker.prototype.addFlags = function() {
 	var flags = arrayFromArgs(arguments);
 	this.addCFlags(flags);
 	this.addCxxFlags(flags);
+	
+	return this;
 }
 
 /**
@@ -330,6 +347,11 @@ CMaker.prototype.getCode = function() {
 	// Libs
 	code += "target_link_libraries(${" + this._EXE_VAR + "} ";
 	code += '"' + this.libs.join('" "') + '")\n\n';
+		
+	// Custom code
+	if(this.customCMakeCode !== undefined) {
+		code += this.customCMakeCode;
+	}
 		
 	return code;
 }
