@@ -45,7 +45,7 @@ Logger.prototype.printfFormat = {
     6: "%x",
     7: "%o",
 	8: undefined,
-	9: "%ld"
+	9: "%lld"
 }
 Logger.prototype.isGlobalFn = function() {
     println("Is Global Fn:" + this.isGlobal);
