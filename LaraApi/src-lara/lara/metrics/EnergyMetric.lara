@@ -7,6 +7,8 @@ import lara.code.Energy;
 function EnergyMetric() {
     // Parent constructor
     Metric.call(this, "Energy");
+    
+    this.energy = new Energy();
 }
 // Inheritance
 EnergyMetric.prototype = Object.create(Metric.prototype);
@@ -14,15 +16,15 @@ EnergyMetric.prototype = Object.create(Metric.prototype);
 
 // Override
 EnergyMetric.prototype.instrument = function($start, $end) {
-	var energy = new Energy();
-	energy.setPrintUnit(false);
-	energy.measure($start, "energy:" , $end);
+
+	this.energy.setPrintUnit(false);
+	this.energy.measure($start, "energy:" , $end);
 }
 
 // Override
 EnergyMetric.prototype.report = function(processExecutor) {
 	var value = Strings.extractValue("energy:", processExecutor.getConsoleOutput());	
-	return new MetricResult(value, "J");
+	return new MetricResult(value, this.energy.getPrintUnit());
 }
 
 EnergyMetric.prototype.getImport = function() {
