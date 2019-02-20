@@ -984,7 +984,7 @@ public class GeneratorUtils {
         method.addArgument(SelectOp.class, "op");
         method.appendCode(
                 "throw new RuntimeException(\"Generic select function not implemented yet. Implement it in order to use the default implementations of select\");");
-        System.out.println("GENERIC:\n" + method.generateCode(2));
+
         return method;
     }
 
