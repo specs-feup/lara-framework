@@ -27,6 +27,7 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.NamedEnum;
+import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
@@ -683,6 +684,35 @@ public class GeneratorUtils {
     }
 
     /**
+     * Generic implementation of the select method which uses the select() function in the global join point class.
+     * 
+     * @param selectName
+     * @param type
+     * @return
+     */
+    public static Method generateSelectMethodGeneric(Select sel, String _package) {
+        final String selectName = sel.getAlias();
+        final String type = JoinPointModelConstructor.getJoinPointClass(sel);
+        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
+        final String methodName = "select" + firstCharToUpper;
+        final JavaType baseType = generateJoinPointBaseType(_package, type);
+        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
+        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
+        // Method selectMethod = new Method("List<? extends A" +
+        // typeFirstCharToUpper + ">", methodName);
+        final Method selectMethod = new Method(listType, methodName);
+        selectMethod.addJavaDocTag(JDocTag.RETURN);
+        String comment = Optional.ofNullable(sel.getTooltip())
+                .orElse("Default implementation of the method used by the lara interpreter to select " + selectName
+                        + "s");
+        selectMethod.appendComment(comment);
+
+        selectMethod.appendCode("return select(" + baseType + ".class, SelectOp.DESCENDANTS);");
+
+        return selectMethod;
+    }
+
+    /**
      *
      * @param _package
      * @param typeFirstCharToUpper
@@ -934,6 +964,27 @@ public class GeneratorUtils {
                         + "This is the default implementation for comparing two join points. <br>\n"
                         + "<b>Note for developers:</b> A weaver may override this implementation in the editable abstract join point, so\n"
                         + "the changes are made for all join points, or override this method in specific join points.");
+        return method;
+    }
+
+    /**
+     * Generate the default implementation of the generic selection method.
+     *
+     * @param superClass
+     * @return
+     */
+    public static Method generateSelectGeneric(JavaClass globalJpClass) {
+
+        JavaType returnType = new JavaType("<T extends " + globalJpClass.getName() + "> List<? extends T>");
+
+        final Method method = new Method(returnType, "select");
+        method.appendComment("Generic select function, used by the default select implementations.");
+
+        method.addArgument(new JavaType("Class<T>"), "joinPointClass");
+        method.addArgument(SelectOp.class, "op");
+        method.appendCode(
+                "throw new RuntimeException(\"Generic select function not implemented yet. Implement it in order to use the default implementations of select\");");
+        System.out.println("GENERIC:\n" + method.generateCode(2));
         return method;
     }
 
