@@ -101,6 +101,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         generateGlobalJoinPointData(abstJPClass);
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
         addWeaverEngineField(abstJPClass);
+
+        // Add abstract version of generic select
+        abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass, true));
+
         return abstJPClass;
     }
 

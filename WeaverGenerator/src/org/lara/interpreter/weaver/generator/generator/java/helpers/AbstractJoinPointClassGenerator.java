@@ -96,8 +96,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         addFieldsAndConstructors(javaC);
         addSelects(javaC);
-
         addActions(javaC);
+
         String superTypeName = null;
         if (!joinPoint.equals(joinPoint.getExtends())) {
             final JoinPointType superType = (JoinPointType) joinPoint.getExtends();

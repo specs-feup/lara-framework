@@ -974,6 +974,10 @@ public class GeneratorUtils {
      * @return
      */
     public static Method generateSelectGeneric(JavaClass globalJpClass) {
+        return generateSelectGeneric(globalJpClass, false);
+    }
+
+    public static Method generateSelectGeneric(JavaClass globalJpClass, boolean isAbstract) {
 
         JavaType returnType = new JavaType("<T extends " + globalJpClass.getName() + "> List<? extends T>");
 
@@ -982,8 +986,14 @@ public class GeneratorUtils {
 
         method.addArgument(new JavaType("Class<T>"), "joinPointClass");
         method.addArgument(SelectOp.class, "op");
-        method.appendCode(
-                "throw new RuntimeException(\"Generic select function not implemented yet. Implement it in order to use the default implementations of select\");");
+
+        if (isAbstract) {
+            method.add(Modifier.ABSTRACT);
+        } else {
+            method.add(Annotation.OVERRIDE);
+            method.appendCode(
+                    "throw new RuntimeException(\"Generic select function not implemented yet. Implement it in order to use the default implementations of select\");");
+        }
 
         return method;
     }
