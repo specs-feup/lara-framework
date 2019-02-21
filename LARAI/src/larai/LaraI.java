@@ -309,7 +309,6 @@ public class LaraI {
                 success = true;
                 isRunningGui = true;
                 break;
-            // break;
             case OPTIONS: // convert options to data store and run
                 dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
                 // return execPrivate(dataStore, weaverEngine);
