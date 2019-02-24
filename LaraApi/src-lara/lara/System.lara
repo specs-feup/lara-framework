@@ -149,3 +149,21 @@ System.toc = function(nanoStart, message) {
 System.getNumLogicalCores = function() {
 	return java.lang.Runtime.getRuntime().availableProcessors();
 }
+
+/**
+ * Read an environment variable. 
+ *
+ * @param {string} variable name of the environment variable
+ * @return {string} the value for the given environment variable name, or undefined if not present
+ */
+System.getEnv = function(variable) {
+	checkString(variable);
+
+	var envValue = _JavaTypes.getJavaSystem().getenv(variable);
+	
+	if(isUndefined(envValue)) {
+		return undefined;
+	}
+	
+	return envValue;
+}

@@ -85,7 +85,7 @@ public class LaraCOptions {
      * @return
      */
     public boolean setOptions(LaraC larac, String args[]) {
-
+        // SpecsLogs.debug(() -> "LARAC args: " + Arrays.asList(args));
         options = OptionUtils.optionsBuilder(LaraOptionProvider.class);
         // LaraC requires at least one input: the aspect file
         if ((args.length < 1)) {

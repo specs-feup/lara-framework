@@ -46,3 +46,7 @@ _JavaTypes.getJoinPoint = function() {
 _JavaTypes.getSpecsStrings = function() {
 	return _JavaTypes.getType("pt.up.fe.specs.util.SpecsStrings");
 }
+
+_JavaTypes.getJavaSystem = function() {
+	return _JavaTypes.getType("java.lang.System");
+}
