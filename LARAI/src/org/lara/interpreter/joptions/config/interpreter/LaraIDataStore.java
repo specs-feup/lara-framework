@@ -45,6 +45,7 @@ import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
@@ -312,18 +313,23 @@ public class LaraIDataStore implements LaraiKeys {
     public FileList getProcessedIncludeDirs(WeaverEngine weaverEngine) {
         FileList includeDirs = getIncludeDirs();
 
+        SpecsLogs.debug(() -> "Original LARA include dirs: " + includeDirs);
+
         // Process GIT repositories
-        includeDirs = processExternalDependencies(includeDirs);
+        FileList includeDirsAfterGit = processExternalDependencies(includeDirs);
+        SpecsLogs.debug(() -> "Include dirs after GIT repositories: " + includeDirsAfterGit);
 
         // Process Bundles
         LaraBundle laraBundle = new LaraBundle(weaverEngine.getName(), getBundleTags());
-        includeDirs = laraBundle.process(includeDirs);
+        FileList includeDirsAfterBundles = laraBundle.process(includeDirsAfterGit);
+        SpecsLogs.debug(() -> "Include dirs after bundles: " + includeDirsAfterBundles);
 
-        // Process LARA Resources
+        // Process LARA Resources, but only of active bundles
         LaraResource laraResource = new LaraResource(weaverEngine);
-        includeDirs = laraResource.process(includeDirs);
+        FileList includeDirsAfterResources = laraResource.process(includeDirsAfterBundles);
+        SpecsLogs.debug(() -> "Include dirs after LARA resources: " + includeDirsAfterResources);
 
-        return includeDirs;
+        return includeDirsAfterResources;
     }
 
     private FileList processExternalDependencies(FileList includeDirs) {

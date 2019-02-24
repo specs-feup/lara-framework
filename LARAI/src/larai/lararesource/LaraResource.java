@@ -23,6 +23,7 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.utilities.LineStream;
 
@@ -41,26 +42,48 @@ public class LaraResource {
         List<File> processedFolders = new ArrayList<>();
         boolean addedResourceFolder = false;
         for (File includeFolder : includeFolders.getFiles()) {
-
+            // System.out.println("ADDING FOLDER: " + includeFolder);
             // If no resource folder, add it
-            // Recursively look for resource folders inside
+            // Add resource folders recursively, unless it is a bundle folder
+            // Check if folder as a 'resources' folder
             if (!isLaraResource(includeFolder)) {
                 processedFolders.add(includeFolder);
 
+                // if (isFromBundle(includeFolder)) {
+                // System.out.println("SKIPPING: " + includeFolder);
+                // continue;
+                // }
+                // If lara.bundle file, skip folder
+                // File laraBundleFile = new File(includeFolder, "lara.bundle");
+                // if (laraBundleFile.isFile()) {
+                // System.out.println("LARA RESOURCE SKIPPING FOLDER " + includeFolder);
+                // continue;
+                // }
+
+                File resourceFolder = new File(includeFolder, "resources");
+                if (isLaraResource(resourceFolder)) {
+                    addedResourceFolder = addResourceFolder(resourceFolder, processedFolders, addedResourceFolder);
+                }
+                /*
                 for (File subfolder : SpecsIo.getFoldersRecursive(includeFolder)) {
+                    // if (isFromBundle(subfolder)) {
+                    // System.out.println("SKIPPING: " + subfolder);
+                    // continue;
+                    // }
+                
                     if (isLaraResource(subfolder)) {
                         addedResourceFolder = addResourceFolder(subfolder, processedFolders, addedResourceFolder);
-                        /*
-                        File laraResourceFolder = processLaraFolder(subfolder);
-                        
-                        if (!addedResourceFolder) {
-                            processedFolders.add(laraResourceFolder);
-                            addedResourceFolder = true;
-                        }
-                        */
+                
+                        // File laraResourceFolderLARA RESOURCE FOLDER: = processLaraFolder(subfolder);
+                        //
+                        // if (!addedResourceFolder) {
+                        // processedFolders.add(laraResourceFolder);
+                        // addedResourceFolder = true;
+                        // }
+                
                     }
                 }
-
+                */
                 continue;
             }
 
@@ -83,6 +106,28 @@ public class LaraResource {
 
     }
 
+    /**
+     * Check folder and all its parents
+     * 
+     * @param includeFolder
+     * @return
+     */
+    private boolean isFromBundle(File includeFolder) {
+        File currentFolder = includeFolder;
+
+        while (currentFolder != null) {
+
+            File laraBundleFile = new File(currentFolder, "lara.bundle");
+            if (laraBundleFile.isFile()) {
+                return true;
+            }
+
+            currentFolder = currentFolder.getParentFile();
+        }
+
+        return false;
+    }
+
     private boolean addResourceFolder(File includeFolder, List<File> processedFolders, boolean addedResourceFolder) {
         // Process folder. Returns include resource folder,
         // which is the same for all Lara resources, add it
@@ -94,7 +139,7 @@ public class LaraResource {
             processedFolders.add(laraResourceFolder);
             addedResourceFolder = true;
         }
-
+        // System.out.println("LARA RESOURCE FOLDER: " + includeFolder);
         return addedResourceFolder;
     }
 
@@ -108,7 +153,7 @@ public class LaraResource {
         String laraFileContents = buildLaraFileContents(includeFolder, resourceName);
 
         File laraFile = getLaraFile(importPath);
-
+        SpecsLogs.debug(() -> "Creating LARA resource helper file in " + laraFile.getAbsolutePath());
         SpecsIo.write(laraFile, laraFileContents);
 
         return getLaraResourceFolder();
