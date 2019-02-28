@@ -34,7 +34,7 @@ import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
-public class WeaverTester<T extends WeaverEngine> {
+public class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> {
 
     private static final boolean DEBUG = false;
 
@@ -73,19 +73,21 @@ public class WeaverTester<T extends WeaverEngine> {
 
     }
 
-    public <D, ED extends D> WeaverTester<T> set(DataKey<D> key, ED value) {
+    @SuppressWarnings("unchecked")
+    public <D, ED extends D> K set(DataKey<D> key, ED value) {
         customData.set(key, value);
-        return this;
+        return (K) this;
     }
 
     protected DataStore getCustomData() {
         return customData;
     }
 
-    public WeaverTester<T> setKeepWeavedFiles(boolean keepWeavedFiles) {
+    @SuppressWarnings("unchecked")
+    public K setKeepWeavedFiles(boolean keepWeavedFiles) {
         this.keepWeavedFiles = keepWeavedFiles;
 
-        return this;
+        return (K) this;
     }
 
     /**
@@ -105,16 +107,18 @@ public class WeaverTester<T extends WeaverEngine> {
     // this(basePackage, standard, "");
     // }
 
-    public WeaverTester<T> setResultPackage(String resultPackage) {
+    @SuppressWarnings("unchecked")
+    public K setResultPackage(String resultPackage) {
         this.resultPackage = sanitizePackage(resultPackage);
 
-        return this;
+        return (K) this;
     }
 
-    public WeaverTester<T> setSrcPackage(String srcPackage) {
+    @SuppressWarnings("unchecked")
+    public K setSrcPackage(String srcPackage) {
         this.srcPackage = sanitizePackage(srcPackage);
 
-        return this;
+        return (K) this;
     }
 
     private String sanitizePackage(String packageName) {
