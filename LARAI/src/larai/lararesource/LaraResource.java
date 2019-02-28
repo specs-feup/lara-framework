@@ -15,7 +15,10 @@ package larai.lararesource;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -39,7 +42,7 @@ public class LaraResource {
     }
 
     public FileList process(FileList includeFolders) {
-        List<File> processedFolders = new ArrayList<>();
+        Set<File> processedFolders = new HashSet<>();
         boolean addedResourceFolder = false;
         for (File includeFolder : includeFolders.getFiles()) {
             // System.out.println("ADDING FOLDER: " + includeFolder);
@@ -54,36 +57,36 @@ public class LaraResource {
                 // continue;
                 // }
                 // If lara.bundle file, skip folder
-                // File laraBundleFile = new File(includeFolder, "lara.bundle");
-                // if (laraBundleFile.isFile()) {
-                // System.out.println("LARA RESOURCE SKIPPING FOLDER " + includeFolder);
-                // continue;
+                File laraBundleFile = new File(includeFolder, "lara.bundle");
+                if (laraBundleFile.isFile()) {
+                    // System.out.println("LARA RESOURCE SKIPPING FOLDER " + includeFolder);
+                    continue;
+                }
+
+                // File resourceFolder = new File(includeFolder, "resources");
+                // if (isLaraResource(resourceFolder)) {
+                // addedResourceFolder = addResourceFolder(resourceFolder, processedFolders, addedResourceFolder);
                 // }
 
-                File resourceFolder = new File(includeFolder, "resources");
-                if (isLaraResource(resourceFolder)) {
-                    addedResourceFolder = addResourceFolder(resourceFolder, processedFolders, addedResourceFolder);
-                }
-                /*
-                for (File subfolder : SpecsIo.getFoldersRecursive(includeFolder)) {
+                for (File subfolder : getFoldersRecursiveExludingBundles(includeFolder)) {
                     // if (isFromBundle(subfolder)) {
                     // System.out.println("SKIPPING: " + subfolder);
                     // continue;
                     // }
-                
+
                     if (isLaraResource(subfolder)) {
                         addedResourceFolder = addResourceFolder(subfolder, processedFolders, addedResourceFolder);
-                
+
                         // File laraResourceFolderLARA RESOURCE FOLDER: = processLaraFolder(subfolder);
                         //
                         // if (!addedResourceFolder) {
                         // processedFolders.add(laraResourceFolder);
                         // addedResourceFolder = true;
                         // }
-                
+
                     }
                 }
-                */
+
                 continue;
             }
 
@@ -103,6 +106,34 @@ public class LaraResource {
         }
 
         return FileList.newInstance(processedFolders);
+
+    }
+
+    private List<File> getFoldersRecursiveExludingBundles(File includeFolder) {
+
+        Predicate<File> exclude = bundleFolder -> new File(bundleFolder, "lara.bundle").isFile();
+        List<File> collecterFolders = new ArrayList<>();
+
+        getFoldersRecursiveExludingBundles(includeFolder, collecterFolders, exclude);
+
+        return collecterFolders;
+    }
+
+    private void getFoldersRecursiveExludingBundles(File baseFolder, List<File> collecterFolders,
+            Predicate<File> exclude) {
+
+        // Check if subfolder should be considered
+        if (exclude.test(baseFolder)) {
+            return;
+        }
+
+        collecterFolders.add(baseFolder);
+
+        // Process children
+        List<File> subFolders = SpecsIo.getFolders(baseFolder);
+        for (File subFolder : subFolders) {
+            getFoldersRecursiveExludingBundles(subFolder, collecterFolders, exclude);
+        }
 
     }
 
@@ -128,7 +159,7 @@ public class LaraResource {
         return false;
     }
 
-    private boolean addResourceFolder(File includeFolder, List<File> processedFolders, boolean addedResourceFolder) {
+    private boolean addResourceFolder(File includeFolder, Set<File> processedFolders, boolean addedResourceFolder) {
         // Process folder. Returns include resource folder,
         // which is the same for all Lara resources, add it
         // only once.
