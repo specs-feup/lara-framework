@@ -207,6 +207,6 @@ function writeFile(path, content) {
 
 function JSONtoFile(path, object) {
 	
-	var content = JSON.stringify(object);
+	var content = JSON.stringify(object, undefined, '\t');
 	writeFile(path,content);
 }
