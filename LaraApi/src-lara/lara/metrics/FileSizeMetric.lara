@@ -1,8 +1,7 @@
 import lara.metrics.Metric;
-import lara.code.Energy;
 
 /**
- * Measures energy consumed during an application.
+ * Measures the size of the compiled executable.
  */
 function FileSizeMetric() {
     // Parent constructor
