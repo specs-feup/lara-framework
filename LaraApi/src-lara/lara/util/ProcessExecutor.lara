@@ -14,6 +14,7 @@ var ProcessExecutor = function() {
 	this.timeout = undefined;
 	this.outputPrefix = undefined;
 	this.stopOnError = false;
+	this.logErrorsOnly = false;
 	
 	// Private state
 	this.lastOutput = undefined;
@@ -55,6 +56,14 @@ ProcessExecutor.prototype.setStopOnError = function(stopOnError) {
 	this.stopOnError = stopOnError;
 	return this;
 }
+
+
+ProcessExecutor.prototype.setLogErrorsOnly = function(logErrorsOnly) {
+	checkType(logErrorsOnly, "boolean", "ProcessExecutor.prototype.setLogErrorsOnly");
+	this.logErrorsOnly = logErrorsOnly;
+	return this;
+}
+
 
 /** 
  * Sets the time unit of the timeout value. By defaults, is SECONDS.
@@ -111,7 +120,14 @@ ProcessExecutor.prototype.execute = function(command) {
 		throw "Problem while running command '"+command+"'\nError: " + this.getConsoleOutput();
 	}
 
-	var executeOutput = this.lastOutput.getOutput();
+	var executeOutput = undefined;
+	if(this.logErrorsOnly) {
+		executeOutput = this.getStdErr();
+	} else {
+		executeOutput = this.lastOutput.getOutput();
+	}
+	//var executeOutput = this.lastOutput.getOutput();
+	
 	if(executeOutput !== undefined) {
 		checkType(executeOutput, "string");
 	}
