@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -29,12 +30,24 @@ public class LaraSystemTools {
         ArgumentsParser argsParser = ArgumentsParser.newCommandLine();
         List<String> commandList = argsParser.parse(command);
 
+        return runCommand(commandList, workingDir, printToConsole, timeoutNanos);
+    }
+
+    public static ProcessOutputAsString runCommand(List<String> commandList, String workingDir,
+            boolean printToConsole, Long timeoutNanos) {
+
         // System.out.println("CURRENT FOLDER:" + SpecsIo.getWorkingDir().getAbsolutePath());
         try {
             return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole, timeoutNanos);
         } catch (Exception e) {
+            String command = commandList.stream().collect(Collectors.joining(" "));
+
+            // if (stopOnError) {
+            // throw new RuntimeException("Problems while running command '" + command + "':" + e.getMessage(), e);
+            // }
+
             SpecsLogs.msgInfo("Problems while running command '" + command + "':" + e.getMessage());
-            return new ProcessOutputAsString(-1, "", "");
+            return new ProcessOutputAsString(-1, "", e.getMessage());
         }
 
     }

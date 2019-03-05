@@ -90,6 +90,22 @@ System.defaultPrintToConsole = true;
 System.execute = function(command, workingDir, printToConsole, outputFile, append, timeout, timeunit) {
 	//println("System.execute is deprecated, use ProcessExecutor instead");
 	
+	/*
+	if(!isString(command) && !isArray(command)) {
+		throw "System.execute: 'command' must be either a String or an array, it is a " + (typeof command);
+	}
+	*/
+	/*
+	var isCommandList = undefined;
+	if(isString(command)) {
+		isCommandList = false;
+	} else if(isArray(command)) {
+		isCommandList = true;
+	} else {
+		throw "System.execute: 'command' must be either a String or an array";
+	}
+	*/
+	
 	if(workingDir === undefined) {
 		workingDir = "./";
 	}
@@ -115,8 +131,7 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 		timeoutNanos = timeunit.toNanos(timeout);
 	}
 
-	//var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, printToConsole, timeoutNanos)
-	//.getOutput();
+
 	var executeOutput = _JavaTypes.getLaraApiTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
 	.getOutput();
 	
