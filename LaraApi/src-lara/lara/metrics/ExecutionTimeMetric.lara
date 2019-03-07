@@ -7,42 +7,28 @@ import lara.Strings;
 /**
  * Measures execution time of an application.
  */
-function ExecutionTimeMetric() {
+function ExecutionTimeMetric(prefix) {
     // Parent constructor
     Metric.call(this, "Execution Time");
+	
+	this._prefix = prefix === undefined ? "time:" : prefix;
 }
 // Inheritance
 ExecutionTimeMetric.prototype = Object.create(Metric.prototype);
 
-ExecutionTimeMetric._PREFIX = "elapsed:";
 
 // Override
 ExecutionTimeMetric.prototype.instrument = function($start, $end) {
 	var timer = new Timer("NANOSECONDS");
 	timer.setPrintUnit(false);
-	//timer.time($start, "execution time:" , $end);
-	timer.time($start, ExecutionTimeMetric._PREFIX , $end);
+	timer.time($start, this._prefix , $end);
 }
 
 // Override
 ExecutionTimeMetric.prototype.report = function(processExecutor) {
-	var value = Strings.extractValue(ExecutionTimeMetric._PREFIX, processExecutor.getConsoleOutput());	
-	return new MetricResult(value, "ns");
-/*
-	var lines = StringLines.newInstance(processExecutor.getConsoleOutput());
-	while(lines.hasNextLine()) {
-		var line = lines.nextLine().trim();
-		
-		if(!line.startsWith(ExecutionTimeMetric._PREFIX)) {
-			continue;
-		}
-		
-		return new MetricResult(line.substring(ExecutionTimeMetric._PREFIX.length), "ns");
-	}
+	var value = Strings.extractValue(this._prefix, processExecutor.getConsoleOutput());	
 
-	return undefined;
-	//throw "ExecutionTimeMetric.report: Could not extract metric from console output:\n" + processExecutor.getConsoleOutput();
-	*/
+	return new MetricResult(value, "ns");
 }
 
 ExecutionTimeMetric.prototype.getImport = function() {
