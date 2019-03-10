@@ -5,7 +5,7 @@ import lara.Check;
  * Filters join points according to the given rules.
  *
  * @param rules Object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
- * The pattern can either be a string (exact match) or a regex.
+ * The pattern can be a string (exact match), a regex or a function that receives the attribute and returns a boolean.
  */
 var JpFilter = function(rules) {
 	this.attributes = [];
@@ -13,6 +13,7 @@ var JpFilter = function(rules) {
 	//this.kind = 'and';
 	
 	for(key in rules) {	
+		//println("IS FUNCTION?:" + (typeof rules[key] === 'function'));
 		// Specific keys
 		/*
 		if(key === "jpFilterKind") {
@@ -113,9 +114,14 @@ JpFilter.prototype._match = function($jp, i) {
 
 	var pattern = this.patterns[i];
 
+	// Regex
 	if(pattern instanceof RegExp) {
 		return attributeValue.match(pattern);
 	} 
+	// Function
+	else if(typeof pattern === 'function') {
+		return pattern(attributeValue);
+	}
 	else {
 		return attributeValue === pattern;
 	}
