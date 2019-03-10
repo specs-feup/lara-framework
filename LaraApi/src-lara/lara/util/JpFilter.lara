@@ -5,15 +5,14 @@ import lara.Check;
  * Filters join points according to the given rules.
  *
  * @param rules Object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
- * If the key starts with 'rx_', the pattern will be interpreted as a regex.
+ * The pattern can either be a string (exact match) or a regex.
  */
 var JpFilter = function(rules) {
 	this.attributes = [];
 	this.patterns = [];
-	this.isRegex = [];
 	//this.kind = 'and';
 	
-	for(key in rules) {
+	for(key in rules) {	
 		// Specific keys
 		/*
 		if(key === "jpFilterKind") {
@@ -25,17 +24,16 @@ var JpFilter = function(rules) {
 		var attribute = undefined;
 		var rxPrefix = "rx_";
 		if(key.startsWith(rxPrefix)) {
+			println("JpFilter: using prefix 'rx_' to identify regexes is deprecated, just use a regex as value (e.g., /a/)");
 			//println("Key:" + key);
 			//println("Substr:" + key.substr(3));
 			//println("RX_ length" + (rxPrefix.length));
 			//println("Substring:" + key.substring(rxPrefix.length));
 			//println("Split:" + key.split(3));
 			this.attributes.push(key.substr(rxPrefix.length));
-			this.isRegex.push(true);
 			this.patterns.push(new RegExp(rules[key]));
 		} else {
 			this.attributes.push(key);
-			this.isRegex.push(false);		
 			this.patterns.push(rules[key]);
 		}
 		
@@ -112,15 +110,14 @@ JpFilter.prototype._match = function($jp, i) {
 //	if(!isString(attributeValue)) {
 //		return false;
 //	}
-	
 
-	if(this.isRegex[i]) {
-		return attributeValue.match(this.patterns[i]);
+	var pattern = this.patterns[i];
+
+	if(pattern instanceof RegExp) {
+		return attributeValue.match(pattern);
 	} 
 	else {
-		//println("Attribute value: " + attributeValue);
-		//println("Pattern: " + this.patterns[i]);
-		return attributeValue === this.patterns[i];
+		return attributeValue === pattern;
 	}
 
 }
