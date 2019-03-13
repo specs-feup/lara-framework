@@ -246,7 +246,7 @@ public class ImportProcessor {
     private void importClassPaths(final List<File> jarFolderFiles) {
         // Check if Java 9 or greater
         if (SpecsSystem.getJavaVersionNumber() > 1.8) {
-            SpecsLogs.msgInfo("Importing classes dynamically not supported for Java 9 or greater");
+            SpecsLogs.debug("Importing classes dynamically not supported for Java 9 or greater");
             return;
         }
 
