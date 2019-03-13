@@ -70,7 +70,6 @@ public enum LaraApiResource implements LaraResourceProvider {
     CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),
-    JOIN_POINTS("JoinPoints.lara"),
     NUMBERS("Numbers.lara"),
     PLATFORMS("Platforms.lara"),
     STRINGS("Strings.lara"),
