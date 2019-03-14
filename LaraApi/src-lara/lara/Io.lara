@@ -344,3 +344,20 @@ Io.getWorkingFolder = function() {
 	return SpecsIo.getWorkingDir();
 }
 
+/**
+ * If value is a string that ends in .json, assume it is a file to a json object and parses it. 
+ * If it is a string but does not end in json, assume it is a stringified object.
+ * Otherwise, returns the object as it is.
+ */ 
+Io.jsonObject = function(value) {
+	if(isString(value)) {
+		if(value.endsWith(".json")) {
+			return Io.readJson(Io.getPath(value));
+		} else {
+			return JSON.parse(value);
+		}	
+	}
+		
+	return value;
+}
+
