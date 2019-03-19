@@ -102,6 +102,7 @@ public class AspectClassProcessor {
             interpreter.out().warnln("No aspects to execute!");
             code = new StringBuilder();
         } else {
+            // code = generateAspects(asps, true);
             code = generateAspects(asps, true);
             // System.out.println("--- LARADOC V1 START ---");
             // System.out.println(generateJavaScriptDocV1(asps));
