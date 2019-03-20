@@ -132,7 +132,7 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 	}
 
 
-	var executeOutput = _JavaTypes.getLaraApiTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
+	var executeOutput = _JavaTypes.getLaraSystemTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
 	.getOutput();
 	
 	if(executeOutput !== undefined) {
