@@ -51,6 +51,10 @@ public class WeavingReport {
         selects++;
     }
 
+    public void incSelects(int numSelects) {
+        selects += numSelects;
+    }
+
     public void incApplies() {
         applies++;
     }
@@ -174,11 +178,21 @@ public class WeavingReport {
     }
 
     public void incJoinPoints() {
-        setJoinPoints(getJoinPoints() + 1);
+        this.joinPoints++;
+        // setJoinPoints(getJoinPoints() + 1);
+    }
+
+    public void incJoinPoints(int increment) {
+        this.joinPoints += increment;
     }
 
     public void incFilteredJoinPoints() {
-        setFilteredJoinPoints(getFilteredJoinPoints() + 1);
+        this.filteredJoinPoints++;
+        // setFilteredJoinPoints(getFilteredJoinPoints() + 1);
+    }
+
+    public void incFilteredJoinPoints(int increment) {
+        this.filteredJoinPoints += increment;
     }
 
     public int getJoinPoints() {
