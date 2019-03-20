@@ -91,7 +91,11 @@ Strings.toJson = function(value) {
  * Returns a random unique identifier.
  */
 Strings.uuid = function() {
-	return _JavaTypes.getUuid().randomUUID().toString();
+	var uuid = _JavaTypes.getUuid().randomUUID().toString();
+	
+	uuid = Strings.replacer(uuid, "-", "_");
+	
+	return uuid;
 }
 
 /**
