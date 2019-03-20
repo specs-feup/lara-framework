@@ -95,7 +95,7 @@ Strings.uuid = function() {
 	
 	uuid = Strings.replacer(uuid, "-", "_");
 	
-	return uuid;
+	return "id_" + uuid;
 }
 
 /**
