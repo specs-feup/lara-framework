@@ -21,20 +21,7 @@ public class WeavingReport {
 
     private AccumulatorMap<String> calledAspects;
     private AccumulatorMap<String> actions;
-    // private AccumulatorMap<String> iteratedJoinPoints;
-
     private AccumulatorMap<ReportField> metrics;
-    // TODO (aka NEVERDO) - replace fields with AccumulatorMap and use an enum with names of fields
-    // private int inserts;
-    // private int selects;
-    // private int applies;
-    // private int attributes;
-    // private int nativeLOCs;
-    // private int totalLOCs;
-    // private int runs;
-    // private int joinPoints;
-    // private int filteredJoinPoints;
-    // private int numTokens = -1;
 
     public WeavingReport() {
         metrics = new AccumulatorMap<>();
@@ -77,73 +64,12 @@ public class WeavingReport {
         return metrics.set(field, value);
     }
 
-    // public void incSelects() {
-    // selects++;
-    // }
-
-    // public void incSelects(int numSelects) {
-    // selects += numSelects;
-    // }
-
-    // public void incApplies() {
-    // applies++;
-    // }
-
-    // public void incInserts() {
-    // inserts++;
-    // }
-
-    // /**
-    // * Increment NativeLOCs. Also increments total LOCs
-    // *
-    // * @param LOCs
-    // */
-    // public void incNativeLOCs(int LOCs) {
-    // nativeLOCs += LOCs;
-    // incTotalLOCs(LOCs);
-    // }
-
-    /**
-     * Increment NativeLOCs
-     * 
-     * @param LOCs
-     */
-    // public void incTotalLOCs(int LOCs) {
-    // totalLOCs += LOCs;
-    // }
-
-    // public void runs() {
-    // runs++;
-    // }
-
     /**
      * @return the actions
      */
     public long getNumActions() {
         return actions.getSum();
     }
-
-    // /**
-    // *
-    // * @return
-    // */
-    // public int getInserts() {
-    // return inserts;
-    // }
-
-    /**
-     * @return the selects
-     */
-    // public int getSelects() {
-    // return selects;
-    // }
-
-    // /**
-    // * @return the applies
-    // */
-    // public int getApplies() {
-    // return applies;
-    // }
 
     /**
      * @return the aspectCalls
@@ -152,53 +78,11 @@ public class WeavingReport {
         return calledAspects.getSum();
     }
 
-    // /**
-    // * @return the attributes
-    // */
-    // public int getAttributes() {
-    // return attributes;
-    // }
-
-    // /**
-    // * @return the nativeLOCs
-    // */
-    // public int getNativeLOCs() {
-    // return nativeLOCs;
-    // }
-
-    /**
-     * @return the totalNativeLOCs
-     */
-    // public int getTotalLOCs() {
-    // return totalLOCs;
-    // }
-
-    /**
-     * @return the runs
-     */
-    // public int getRuns() {
-    // return runs;
-    // }
-
     public void reset() {
         metrics = new AccumulatorMap<>();
         calledAspects = new AccumulatorMap<>();
         actions = new AccumulatorMap<>();
-        // inserts = 0;
-        // selects = 0;
-        // applies = 0;
-        // attributes = 0;
-        // nativeLOCs = 0;
-        // totalLOCs = 0;
-        // runs = 0;
-        // setJoinPoints(0);
-        // setFilteredJoinPoints(0);
-
     }
-
-    // public void incAttributes() {
-    // attributes++;
-    // }
 
     public Map<String, Integer> getAspectsMap() {
         return calledAspects.getAccMap();
@@ -207,47 +91,5 @@ public class WeavingReport {
     public Map<String, Integer> getActionsMap() {
         return actions.getAccMap();
     }
-
-    // public void incJoinPoints() {
-    // this.joinPoints++;
-    // // setJoinPoints(getJoinPoints() + 1);
-    // }
-
-    // public void incJoinPoints(int increment) {
-    // this.joinPoints += increment;
-    // }
-
-    // public void incFilteredJoinPoints() {
-    // this.filteredJoinPoints++;
-    // // setFilteredJoinPoints(getFilteredJoinPoints() + 1);
-    // }
-
-    // public void incFilteredJoinPoints(int increment) {
-    // this.filteredJoinPoints += increment;
-    // }
-
-    // public int getJoinPoints() {
-    // return joinPoints;
-    // }
-
-    // public void setJoinPoints(int joinPoints) {
-    // this.joinPoints = joinPoints;
-    // }
-
-    // public int getFilteredJoinPoints() {
-    // return filteredJoinPoints;
-    // }
-
-    // public void setFilteredJoinPoints(int filteredJoinPoints) {
-    // this.filteredJoinPoints = filteredJoinPoints;
-    // }
-
-    // public void setNumTokens(int numMainLaraTokens) {
-    // this.numTokens = numMainLaraTokens;
-    // }
-
-    // public int getNumTokens() {
-    // return this.numTokens;
-    // }
 
 }
