@@ -193,7 +193,8 @@ public abstract class WeaverProfiler extends AGear {
 
     @Override
     public final void reset() {
-        report.reset();
+        // report.reset();
+        report = new WeavingReport();
     }
 
     /**

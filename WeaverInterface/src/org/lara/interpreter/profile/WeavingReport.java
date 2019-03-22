@@ -27,7 +27,7 @@ public class WeavingReport {
         metrics = new AccumulatorMap<>();
         calledAspects = new AccumulatorMap<>();
         actions = new AccumulatorMap<>();
-        reset();
+        // reset();
     }
 
     public void aspectCalled(String aspectName) {
@@ -78,11 +78,11 @@ public class WeavingReport {
         return calledAspects.getSum();
     }
 
-    public void reset() {
-        metrics = new AccumulatorMap<>();
-        calledAspects = new AccumulatorMap<>();
-        actions = new AccumulatorMap<>();
-    }
+    // public void reset() {
+    // metrics = new AccumulatorMap<>();
+    // calledAspects = new AccumulatorMap<>();
+    // actions = new AccumulatorMap<>();
+    // }
 
     public Map<String, Integer> getAspectsMap() {
         return calledAspects.getAccMap();
