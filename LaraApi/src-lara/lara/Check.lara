@@ -26,7 +26,7 @@ Check.isTrue = function(booleanExpr, message, source) {
 }
 
 /**
- * @return true if the given value is either undefined or null.
+ * @return {boolean} true if the given value is either undefined or null.
  */
 Check.isUndefined = function(value) {
 	return value === undefined || value === null;
