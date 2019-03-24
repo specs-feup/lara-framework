@@ -64,6 +64,8 @@ public class HtmlGenerators {
         }
 
         assignmentCode.append(generateParameters("Parameters", assignment.getComment().getTags(JsDocTagName.PARAM)));
+        // assignmentCode.append(generateParameters("Returns", assignment.getComment().getTags(JsDocTagName.RETURNS)));
+
         assignmentCode.append("</div>");
 
         return assignmentCode.toString();
@@ -188,6 +190,8 @@ public class HtmlGenerators {
         }
 
         functionCode.append(generateParameters("Parameters", laraComment.getTags(JsDocTagName.PARAM)));
+        functionCode.append(generateParameters("Returns", laraComment.getTags(JsDocTagName.RETURNS)));
+
         functionCode.append("</div>");
 
         // Input parameters
@@ -256,7 +260,10 @@ public class HtmlGenerators {
             String content = param.getValue(JsDocTagProperty.CONTENT, "").trim();
 
             code.append("<span class='parameter'>");
-            code.append("<strong>" + name + "</strong>");
+
+            if (name != null) {
+                code.append("<strong>" + name + "</strong>");
+            }
 
             // code.append("<br> - ").append(name);
 
