@@ -400,6 +400,13 @@ public class Expression extends CodeElem implements IElement {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public void visitDepthFirst(Visitor visitor) {
+        exprs.stream().forEach(node -> node.visitDepthFirst(visitor));
+
+        accept(visitor);
+    }
 }
 
 /********************************************************************************/
