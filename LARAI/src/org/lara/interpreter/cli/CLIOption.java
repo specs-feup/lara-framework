@@ -45,6 +45,8 @@ public enum CLIOption implements WeaverOption {
             LaraiKeys.REPORT_FILE),
     metrics("e", OptionArguments.ONE_ARG, "file_name.json", "Output file for the weaving metrics",
             LaraiKeys.METRICS_FILE),
+    loc("lc", OptionArguments.NO_ARGS, "loc", "LARA CSV with stats (LoC, #aspects, etc)",
+            LaraiKeys.LARA_LOC),
     bundle_tags("bt", OptionArguments.ONE_ARG, "bundle tags",
             "Bundle tags, in the following format: <TAG1>=<VALUE1>[,<TAG_N>=<VALUE_N>]*",
             LaraiKeys.BUNDLE_TAGS),

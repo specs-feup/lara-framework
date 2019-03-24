@@ -244,6 +244,13 @@ public class LaraIDataStore implements LaraiKeys {
         return OptionalFile.newInstance(null);
     }
 
+    public boolean isLaraLoc() {
+        if (dataStore.hasValue(LaraiKeys.LARA_LOC)) {
+            return dataStore.get(LaraiKeys.LARA_LOC);
+        }
+        return false;
+    }
+
     public String getAspectArgumentsStr() {
         if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
