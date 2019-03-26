@@ -256,10 +256,14 @@ function arrayFromArgs(args, start) {
     }
     
 	// If only one element and is already an array, just return the array
-	if(args.length === (start + 1) && isArray(args[start])) {
+	if(args.length === (start + 1) && isArray(args[start])) {		
 		return args[start];
 	}
 	
+	if(args.length === (start + 1) && isJavaList(args[start])) {
+		return toArray(args[start]);
+	}
+
     return Array.prototype.slice.call(args, start);
 }
 
@@ -279,3 +283,29 @@ function pushArray(receivingArray, sourceArray) {
 	}
 }
 
+/**
+ * @returns {Object[]} if given argument is an array, returns it. If it is a Java list, converts the list to an array. Otherwise, throws an exception.
+ */ 
+function toArray(array) {
+
+	if(isArray(array)){
+		return array;
+	}
+
+	if(isJavaList(array)) {
+		
+		var newArray = [];
+		for(var index in array) {
+			newArray.push(array[index]);
+		}
+		
+		return newArray;
+	}
+
+	throw "The argument provided is not an array nor a List."
+}
+
+
+function isJavaList(list) {
+	return list instanceof Java.type("java.util.List");
+}
