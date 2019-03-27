@@ -219,7 +219,14 @@ function isJavaClass(variable, javaClassname) {
 
 
 function toArray(objectWithLength) {
-	return Array.prototype.slice.call(objectWithLength);
+	//return Array.prototype.slice.call(objectWithLength);
+	
+	var newArray = [];
+	for(var index in objectWithLength) {		
+		newArray.push(objectWithLength[index]);
+	}
+		
+	return newArray;
 }
 
 function info(message, origin) {
@@ -251,20 +258,38 @@ function arrayFromArgs(args, start) {
 	
     checkDefined(args, 'args', 'LaraCore arrayFromArgs');
     
-    if(start === undefined) {
+    if(start === undefined || start < 0) {
         start = 0;
     }
-    
+        
 	// If only one element and is already an array, just return the array
 	if(args.length === (start + 1) && isArray(args[start])) {		
 		return args[start];
 	}
-	
+
 	if(args.length === (start + 1) && isJavaList(args[start])) {
-		return listToArray(args[start]);
+	//	return listToArray(args[start]);
+		return toArray(args[start]);
 	}
+	
+	
+	//println("Slicing");
 
     return Array.prototype.slice.call(args, start);
+    /*
+    var newArray = [];
+    var skip = start;
+	for(var index in args) {
+		if(skip > 0) {
+			skip--;
+			continue;
+		}
+		
+		newArray.push(args[index]);
+	}
+		
+	return newArray;
+	*/
 }
 
 /**
@@ -284,26 +309,42 @@ function pushArray(receivingArray, sourceArray) {
 }
 
 /**
- * @returns {Object[]} if given argument is an array, returns it. If it is a Java list, converts the list to an array. Otherwise, throws an exception.
+ * @param {J#java.util.List} array
+ * @returns {Object[]} If the array is a Java list, converts the list to an array. Otherwise, throws an exception.
  */ 
+ /*
 function listToArray(array) {
 
-	if(isArray(array)){
-		return array;
+	var newArray = [];
+	for(var index in array) {
+		newArray.push(array[index]);
 	}
-
-	if(isJavaList(array)) {
 		
-		var newArray = [];
-		for(var index in array) {
-			newArray.push(array[index]);
-		}
-		
-		return newArray;
-	}
+	return newArray;
 
-	throw "The argument provided is not an array nor a List."
+
+//	if(!isJavaList(array)) {
+//		throw "The argument provided is not a Java List."	
+//	}
+//
+//	if(isArray(array)){
+//		return array;
+//	}
+//
+//	if(isJavaList(array)) {
+//		
+//		var newArray = [];
+//		for(var index in array) {
+//			newArray.push(array[index]);
+//		}
+//		
+//		return newArray;
+//	}
+//
+//	throw "The argument provided is not an array nor a List."
+
 }
+*/
 
 
 function isJavaList(list) {
