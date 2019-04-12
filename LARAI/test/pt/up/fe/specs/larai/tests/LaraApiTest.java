@@ -119,7 +119,7 @@ public class LaraApiTest {
         newTester().setStack().test("util/LineInserterTest.lara");
     }
 
-    // @Test
+    @Test
     public void testCallInFunction() {
         newTester().test("CallInFunction.lara");
     }
