@@ -25,13 +25,15 @@ public class ASTStart extends SimpleNode {
     @Override
     public Object organize(Object obj) {
         lara = (LaraC) obj;
+        var declList = new ArrayList<SimpleNode>();
         final ArrayList<ASTAspectDef> aspectsList = new ArrayList<>();
         if (getChildren() == null) {
             return null;
         }
         for (final SimpleNode n : getSimpleNodeChildren()) {
             if (!(n instanceof ASTAspectDef)) {
-                n.declareGlobal(lara);
+                // n.declareGlobal(lara);
+                declList.add(n); // delay declaring global symbols
                 // ((SimpleNode) n).organize(obj);
             } else {
                 aspectsList.add((ASTAspectDef) n);
@@ -40,6 +42,11 @@ public class ASTStart extends SimpleNode {
         for (final ASTAspectDef asp : aspectsList) {
             asp.createAspect(lara);
             asp.createVar();
+        }
+
+        // declare global symbols after aspects have been created
+        for (var n : declList) {
+            n.declareGlobal(lara);
         }
 
         for (final ASTAspectDef asp : aspectsList) {
