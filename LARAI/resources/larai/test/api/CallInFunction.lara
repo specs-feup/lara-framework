@@ -1,0 +1,11 @@
+aspectdef CallInFunction
+	ACaller();
+end
+
+aspectdef A
+	println("Calling A");
+end
+
+function ACaller() {
+	call A;
+}
