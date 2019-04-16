@@ -13,6 +13,9 @@
 
 package pt.up.fe.specs.lara.loc.visitors;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.GenericVisitor;
 import pt.up.fe.specs.lara.aspectir.ParameterList;
@@ -21,13 +24,22 @@ import pt.up.fe.specs.lara.aspectir.Statement;
 public class StatementsVisitor implements GenericVisitor {
 
     private int numStmts;
+    private Set<String> seenLocations;
 
     public StatementsVisitor() {
         numStmts = 0;
+        seenLocations = new HashSet<>();
+
     }
 
     @Override
     public void visit(Statement statement) {
+        // AspectIR processing can insert new statements, distinguish them by location
+        if (seenLocations.contains(statement.coord)) {
+            return;
+        }
+
+        seenLocations.add(statement.coord);
         numStmts++;
     }
 

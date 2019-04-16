@@ -47,98 +47,103 @@ public class CommentVisitor implements Visitor {
 
     @Override
     public void visit(Base base) {
-        commentLines += SpecsStrings.countLines(base.comment);
+        // System.out.println("COMMENT BASE");
+        commentLines += SpecsStrings.countLines(base.comment, true);
     }
 
     @Override
     public void visit(CodeElem codeElem) {
-        commentLines += SpecsStrings.countLines(codeElem.comment);
+        commentLines += SpecsStrings.countLines(codeElem.comment, true);
     }
 
     @Override
     public void visit(Expression expression) {
-        commentLines += SpecsStrings.countLines(expression.comment);
+        commentLines += SpecsStrings.countLines(expression.comment, true);
 
     }
 
     @Override
     public void visit(Argument argument) {
-        commentLines += SpecsStrings.countLines(argument.comment);
+        commentLines += SpecsStrings.countLines(argument.comment, true);
 
     }
 
     @Override
     public void visit(ExprCall exprCall) {
-        commentLines += SpecsStrings.countLines(exprCall.comment);
+        // System.out.println("COMMENT EXPRCALL: " + SpecsStrings.countLines(exprCall.comment, true));
+        commentLines += SpecsStrings.countLines(exprCall.comment, true);
 
     }
 
     @Override
     public void visit(ExprId exprId) {
-        commentLines += SpecsStrings.countLines(exprId.comment);
+        commentLines += SpecsStrings.countLines(exprId.comment, true);
 
     }
 
     @Override
     public void visit(ExprKey exprKey) {
-        commentLines += SpecsStrings.countLines(exprKey.comment);
+        commentLines += SpecsStrings.countLines(exprKey.comment, true);
 
     }
 
     @Override
     public void visit(ExprLiteral exprLiteral) {
-        commentLines += SpecsStrings.countLines(exprLiteral.comment);
+        commentLines += SpecsStrings.countLines(exprLiteral.comment, true);
     }
 
     @Override
     public void visit(ExprOp exprOp) {
-        commentLines += SpecsStrings.countLines(exprOp.comment);
+        commentLines += SpecsStrings.countLines(exprOp.comment, true);
     }
 
     @Override
     public void visit(Parameter parameter) {
-        commentLines += SpecsStrings.countLines(parameter.comment);
+        commentLines += SpecsStrings.countLines(parameter.comment, true);
 
     }
 
     @Override
     public void visit(ParameterList parameterList) {
-        commentLines += SpecsStrings.countLines(parameterList.comment);
+        commentLines += SpecsStrings.countLines(parameterList.comment, true);
 
     }
 
     @Override
     public void visit(ParameterSection parameterSection) {
-        commentLines += SpecsStrings.countLines(parameterSection.comment);
+        commentLines += SpecsStrings.countLines(parameterSection.comment, true);
 
     }
 
     @Override
     public void visit(Statement statement) {
-        commentLines += SpecsStrings.countLines(statement.comment);
+        // System.out.println("COMMENT STMT: " + statement.comment);
+        // System.out.println("COMMENT STMT LINES: " + SpecsStrings.countLines(statement.comment, true));
+        // System.out.println("STAT: " + statement.coord);
+        commentLines += SpecsStrings.countLines(statement.comment, true);
 
     }
 
     @Override
     public void visit(Code code) {
-        commentLines += SpecsStrings.countLines(code.comment);
+        commentLines += SpecsStrings.countLines(code.comment, true);
 
     }
 
     @Override
     public void visit(Aspect aspect) {
-        commentLines += SpecsStrings.countLines(aspect.comment);
+        commentLines += SpecsStrings.countLines(aspect.comment, true);
     }
 
     @Override
     public void visit(Aspects aspects) {
-        commentLines += SpecsStrings.countLines(aspects.comment);
+        commentLines += SpecsStrings.countLines(aspects.comment, true);
 
     }
 
     @Override
     public void visit(ExprBody exprBody) {
-        commentLines += SpecsStrings.countLines(exprBody.comment);
+        commentLines += SpecsStrings.countLines(exprBody.comment, true);
 
     }
 
