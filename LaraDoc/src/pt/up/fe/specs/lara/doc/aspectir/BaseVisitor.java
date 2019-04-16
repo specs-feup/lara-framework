@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.doc.aspectir;
 
 import java.util.stream.Stream;
 
+import larac.code.CodeElems;
 import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.lara.aspectir.Code;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
