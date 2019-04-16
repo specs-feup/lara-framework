@@ -32,6 +32,10 @@ public class LaraLoc {
     private static final String VERSION = "2.0";
     private static final String TOTALS_KEY = "%totals%";
 
+    public static String getTotalsKey() {
+        return TOTALS_KEY;
+    }
+
     // private static final Pattern REGEX_ASPECTDEF = Pattern.compile("(\\baspectdef\\b)");
 
     // // Just for tests
