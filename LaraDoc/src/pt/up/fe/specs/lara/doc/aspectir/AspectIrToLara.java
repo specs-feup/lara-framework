@@ -12,6 +12,7 @@ import pt.up.fe.specs.lara.aspectir.ExprId;
 import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
 import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.classmap.FunctionClassMap;
 
@@ -66,7 +67,21 @@ public class AspectIrToLara {
     }
 
     public String getExprLiteralCode(ExprLiteral exprLiteral) {
-        return exprLiteral.value;
+        // if ("Integer.parseInt(System.getProperty(".equals(exprLiteral.value) || "stringify".equals(exprLiteral.value)
+        // || "weaver.kadabra.concurrent".equals(exprLiteral.value)) {
+        // System.out.println("EXPR LITERAL: " + CodeElems.toXml(exprLiteral));
+        // System.out.println("PARENT:" + exprLiteral.parent);
+        // }
+
+        String value = exprLiteral.value;
+
+        // HACK: Is there a better way?
+        if ((exprLiteral.parent instanceof ExprOp || exprLiteral.parent instanceof Parameter)
+                && "string".equals(exprLiteral.type)) {
+            return "\"" + value + "\"";
+        }
+
+        return value;
     }
 
     public String getExprOpCode(ExprOp exprOp) {
