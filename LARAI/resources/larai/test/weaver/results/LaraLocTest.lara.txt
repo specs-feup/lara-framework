@@ -1,0 +1,1 @@
+LaraLoc Totals:LaraStats [laraStmts: 8, aspects: 2, functions: 1, comments: 4]

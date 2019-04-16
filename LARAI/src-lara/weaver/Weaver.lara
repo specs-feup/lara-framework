@@ -10,3 +10,12 @@ var Weaver = {};
 Weaver.getWeaverEngine = function() {
 	return Java.type("org.lara.interpreter.weaver.interf.WeaverEngine").getThreadLocalWeaver();
 }
+
+Weaver.getLaraLoc = function() {
+	return Java.type("org.lara.interpreter.utils.LaraIUtils").getLaraLoc(Weaver.getWeaverEngine(), LaraI.getThreadLocalData());
+}
+
+Weaver.getLaraLocTotals = function() {
+	var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
+	return Java.type("org.lara.interpreter.utils.LaraIUtils").getLaraLoc(Weaver.getWeaverEngine(), LaraI.getThreadLocalData()).get(laraLoc.getTotalsKey());
+}
