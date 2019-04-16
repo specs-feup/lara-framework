@@ -1,15 +1,18 @@
 package pt.up.fe.specs.lara.doc.aspectir;
 
-import com.google.common.base.Preconditions;
+import java.util.stream.Collectors;
 
 import larac.objects.Enums;
 import larac.objects.Enums.BinaryOperator;
 import larac.objects.Enums.UnaryOperator;
+import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
+import pt.up.fe.specs.lara.aspectir.ExprCall;
 import pt.up.fe.specs.lara.aspectir.ExprId;
 import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
 import pt.up.fe.specs.lara.aspectir.Expression;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.classmap.FunctionClassMap;
 
 public class AspectIrToLara {
@@ -22,9 +25,11 @@ public class AspectIrToLara {
     }
 
     private void buildCodeGenerators() {
+        codeGenerators.put(Argument.class, this::getArgumentCode);
         codeGenerators.put(ExprId.class, this::getExprIdCode);
         codeGenerators.put(ExprLiteral.class, this::getExprLiteralCode);
         codeGenerators.put(ExprOp.class, this::getExprOpCode);
+        codeGenerators.put(ExprCall.class, this::getExprCallCode);
         codeGenerators.put(Expression.class, this::getExpressionCode);
     }
 
@@ -33,9 +38,9 @@ public class AspectIrToLara {
     }
 
     public String getExpressionCode(Expression expression) {
-        // If Expression, xmltag should be defined?
+        // If Expression, xmltag should be defined? Implement as normal call
         if (expression.xmltag == null) {
-            throw new RuntimeException("Generator not implemented for class " + expression.getClass() + ".\nXML IR:"
+            throw new RuntimeException("Generator not implemented for class " + expression.getClass() + ".\nXML IR: "
                     + CodeElems.toXml(expression));
         }
 
@@ -49,8 +54,9 @@ public class AspectIrToLara {
     }
 
     private String getPropertyCode(Expression expression) {
-        Preconditions.checkArgument(expression.exprs.size() == 2,
-                "Expected expression property to have two expressions, has " + expression.exprs.size());
+        // SpecsCheck.checkArgument(expression.exprs.size() == 2,
+        // () -> "Expected expression property to have two expressions, has " + expression.exprs.size());
+        SpecsCheck.checkSize(expression.exprs, 2);
 
         return codeGenerators.apply(expression.exprs.get(0)) + "." + codeGenerators.apply(expression.exprs.get(1));
     }
@@ -85,13 +91,38 @@ public class AspectIrToLara {
 
         if (exprOp.exprs.size() == 2) {
             BinaryOperator binaryOp = Enums.BinaryOperator.getHelper().fromValue(op);
-
             return getCode(exprOp.exprs.get(0)) + " " + binaryOp.getOp() + " " + getCode(exprOp.exprs.get(1));
         }
 
         throw new RuntimeException(
                 "Expected operator two have one or two parameters, it has '" + exprOp.exprs.size() + "'");
 
+    }
+
+    public String getExprCallCode(ExprCall exprCall) {
+        String args = exprCall.arguments.stream().map(this::getCode).collect(Collectors.joining(", "));
+
+        SpecsCheck.checkSize(exprCall.method.exprs, 1);
+        Expression methodExpr = exprCall.method.exprs.get(0);
+
+        SpecsCheck.checkSize(methodExpr.exprs, 2);
+
+        Expression instance = methodExpr.exprs.get(0);
+        Expression memberName = methodExpr.exprs.get(1);
+
+        String exprCode = getCode(instance) + "." + getCode(memberName) + "(" + args + ")";
+        // System.out.println("EXPR CALL CODE: " + exprCode);
+
+        return exprCode;
+
+        // throw new RuntimeException("Generator not implemented for class " + exprCall.getClass() + ".\nXML IR: "
+        // + CodeElems.toXml(exprCall));
+    }
+
+    public String getArgumentCode(Argument argument) {
+        SpecsCheck.checkSize(argument.exprs, 1);
+
+        return getCode(argument.exprs.get(0));
     }
 
 }
