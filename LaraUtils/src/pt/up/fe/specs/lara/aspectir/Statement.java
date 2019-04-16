@@ -43,6 +43,7 @@ public class Statement extends Base implements IElement {
 
     public Statement(Element e,
             String rootName, Document doc) throws DOMException, Exception {
+
         if (e == null)
             return;
         xmltag = e.getTagName();

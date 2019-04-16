@@ -32,6 +32,7 @@ public class Aspects extends Base implements IElement {
 
     public Aspects(Element e,
             String rootName, Document doc) throws DOMException, Exception {
+
         if (e == null)
             return;
         xmltag = e.getTagName();
@@ -90,6 +91,7 @@ public class Aspects extends Base implements IElement {
 
     public Aspects(Document doc,
             String rootName) throws Exception {
+
         main = "";
         Element e = (Element) doc.getFirstChild();
         if (e == null)
@@ -202,6 +204,7 @@ public class Aspects extends Base implements IElement {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         Element tagEl = doc.createElement(xmltag);
         doc.appendChild(tagEl);
         tagEl.setAttribute("comment", "" + comment);

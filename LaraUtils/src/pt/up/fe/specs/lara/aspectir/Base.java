@@ -30,6 +30,7 @@ public class Base implements IElement {
 
     public Base(Element e,
             String rootName, Document doc) throws DOMException, Exception {
+
         if (e == null)
             return;
         xmltag = e.getTagName();
@@ -67,6 +68,7 @@ public class Base implements IElement {
 
     public Base(Document doc,
             String rootName) throws Exception {
+
         comment = "";
         Element e = (Element) doc.getFirstChild();
         if (e == null)
