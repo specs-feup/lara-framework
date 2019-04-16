@@ -1,0 +1,12 @@
+/**
+ * Contains utility methods related to the weaver. 
+ * @class
+ */
+var Weaver = {};
+
+/**
+ * @return the current WeaverEngine
+ */
+Weaver.getWeaverEngine = function() {
+	return Java.type("org.lara.interpreter.weaver.interf.WeaverEngine").getThreadLocalWeaver();
+}

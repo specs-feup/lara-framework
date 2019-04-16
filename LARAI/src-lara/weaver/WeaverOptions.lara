@@ -1,5 +1,6 @@
 import lara.Io;
 import lara.util.DataStore;
+import weaver.Weaver;
 import weaver.util.WeaverDataStore;
 import lara._JavaTypes;
 
@@ -21,22 +22,17 @@ WeaverOptions.getData = function() {
  */
 WeaverOptions.toCli = function() {
 	return _JavaTypes.getLaraCli()
-		.getWeaverOptions(WeaverOptions.getWeaverEngine())
+		.getWeaverOptions(Weaver.getWeaverEngine())
 		.toCli(WeaverOptions.getData().getData());
 }
 
-/**
- * @return the current WeaverEngine
- */
-WeaverOptions.getWeaverEngine = function() {
-	return Java.type("org.lara.interpreter.weaver.interf.WeaverEngine").getThreadLocalWeaver();
-}
+
 
 /**
  * @return java.util.Set<String> with the languages supported by the current weaver 
  */
 WeaverOptions.getSupportedLanguages = function() {
-	return this.getWeaverEngine().getLanguages(); 
+	return Weaver.getWeaverEngine().getLanguages(); 
 }
 
 /**

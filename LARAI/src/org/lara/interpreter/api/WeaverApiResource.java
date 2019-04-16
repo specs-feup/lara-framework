@@ -27,6 +27,7 @@ public enum WeaverApiResource implements LaraResourceProvider {
     // Weaver
     JOIN_POINTS("JoinPointsBase.lara"),
     SELECTOR("Selector.lara"),
+    WEAVER("Weaver.lara"),
     WEAVER_JPS("WeaverJps.lara"),
     WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara"),
     WEAVER_OPTIONS("WeaverOptions.lara");
