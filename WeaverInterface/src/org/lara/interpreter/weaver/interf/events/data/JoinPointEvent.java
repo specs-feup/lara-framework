@@ -40,6 +40,7 @@ public class JoinPointEvent extends BaseEvent {
         this.alias = alias;
         this.filter = filter2;
         this.joinPoint = joinPoint;
+        this.approvedByFilter = approvedByFilter;
     }
 
     /**

@@ -215,7 +215,7 @@ public class MasterWeaver {
             if (weaverEngine instanceof DefaultWeaver) {
                 selectWithDefaultWeaver(jpChain, aliasChain, filterChain, localScope, root);
             } else {
-                selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root);
+                selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root, aspect_name, selectName);
             }
             // if (handlesApplicationFolder) {
             // }
@@ -256,9 +256,15 @@ public class MasterWeaver {
     // private void selectByWeaver(WeaverEngine currentWeaver, String[] jpChain, String[] aliasChain,
     private void selectWithWeaver(String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
-            Bindings localScope, LaraJoinPoint root)
+            Bindings localScope, LaraJoinPoint root, String aspect_name, String selectName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final JoinPoint rootSelect = weaverEngine.select();
+        // TRIGGER SELECT BEGIN EVENT
+        if (eventTrigger.hasListeners()) {
+
+            eventTrigger.triggerJoinPoint(Stage.BEGIN, selectName, weaverEngine.getRoot(), filterChain[0], rootSelect,
+                    true);
+        }
         // rootSelect.setWeaverEngine(weaverEngine);
         final MWRoot mwRoot = new MWRoot();
         root.setReference(mwRoot);
@@ -344,7 +350,11 @@ public class MasterWeaver {
             throws IOException {
         final LaraJoinPoint root = LaraJoinPoint.createRoot();
         root.setReference(null);
-
+        // TRIGGER SELECT BEGIN EVENT
+        if (eventTrigger.hasListeners()) {
+            eventTrigger.triggerSelect(Stage.BEGIN, aspect_name, selectName, jpChain, aliasChain, filterChain,
+                    Optional.empty());
+        }
         try {
 
             boolean isArray = NashornUtils.isJSArray(joinPointReferences);
@@ -388,6 +398,14 @@ public class MasterWeaver {
             }
 
             // final Bindings javascriptObject = jpUtils.toJavaScript(root);
+            if (eventTrigger.hasListeners()) {
+
+                Optional<LaraJoinPoint> pointcut = root.getChildren().isEmpty() ? Optional.empty()
+                        : Optional.of(root.getChild(0));
+                eventTrigger.triggerSelect(Stage.END, aspect_name, selectName, jpChain, aliasChain, filterChain,
+                        pointcut);
+            }
+
             return root;
         } catch (Exception e) {
             throw processSelectException(selectName, jpChain, e, lineNumber);
@@ -456,9 +474,12 @@ public class MasterWeaver {
             for (final JoinPoint joinPoint : joinPointList) {
                 // joinPoint.setWeaverEngine(weavingEngine);
                 // if(!true)
-                eventTrigger.triggerJoinPoint(Stage.BEGIN, selectName, alias, filter, joinPoint, true);
+                if (eventTrigger.hasListeners()) {
+
+                    eventTrigger.triggerJoinPoint(Stage.BEGIN, selectName, alias, filter, joinPoint, true);
+
+                }
                 boolean approvedByFilter = jpUtils.evalFilter(joinPoint, filterChain[pos], localScope);
-                eventTrigger.triggerJoinPoint(Stage.END, selectName, alias, filter, joinPoint, approvedByFilter);
                 if (!approvedByFilter) {
                     continue;
                 }

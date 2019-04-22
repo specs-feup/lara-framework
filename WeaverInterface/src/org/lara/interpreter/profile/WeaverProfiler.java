@@ -13,8 +13,12 @@
 
 package org.lara.interpreter.profile;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
@@ -24,6 +28,7 @@ import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
 import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
+import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 
 import pt.up.fe.specs.util.utilities.StringLines;
 
@@ -63,6 +68,9 @@ public abstract class WeaverProfiler extends AGear {
     //////////////////////////////////////////////////////////
     // Methods to be defined by the weaver engine developer //
     //////////////////////////////////////////////////////////
+
+    protected abstract void resetImpl();
+
     /**
      * Create a report by means of a {@link ReportWriter}. When invoked, the {@link ReportWriter} instance already
      * contains some metrics (see {@link WeaverProfiler})
@@ -133,8 +141,42 @@ public abstract class WeaverProfiler extends AGear {
     @Override
     public final void onSelect(SelectEvent data) {
         onSelectImpl(data);
-        if (data.getStage().equals(Stage.BEGIN)) {
+
+        switch (data.getStage()) {
+
+        case BEGIN:
             report.incSelects();
+
+            break;
+        case END:
+            Optional<LaraJoinPoint> pointcut = data.getPointcut();
+            if (pointcut.isPresent()) {
+                LaraJoinPoint laraJoinPoint = pointcut.get();
+                // String key = data.getAspect_name() + data.getLabel();
+                // iterateJPs(laraJoinPoint, jp -> filteredSelects.addNode(key, jp));
+                int total = countJPs(laraJoinPoint, 0);
+                report.incFilteredJoinPoints(total);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
+    protected int countJPs(LaraJoinPoint laraJoinPoint, int acc) {
+        acc++;
+        if (!laraJoinPoint.isLeaf()) {
+            for (LaraJoinPoint childJP : laraJoinPoint.getChildren()) {
+                acc = countJPs(childJP, acc);
+            }
+        }
+        return acc;
+    }
+
+    protected void iterateJPs(LaraJoinPoint laraJoinPoint, Consumer<JoinPoint> jp) {
+        jp.accept(laraJoinPoint.getReference());
+        if (!laraJoinPoint.isLeaf()) {
+            laraJoinPoint.getChildren().forEach(ljp -> iterateJPs(ljp, jp));
         }
     }
 
@@ -147,9 +189,9 @@ public abstract class WeaverProfiler extends AGear {
             report.incJoinPoints();
             break;
         case END:
-            if (data.isApprovedByFilter()) {
-                report.incFilteredJoinPoints();
-            }
+            // if (data.isApprovedByFilter()) {
+            // report.incFilteredJoinPoints();
+            // }
             break;
         default:
             break;
@@ -165,7 +207,9 @@ public abstract class WeaverProfiler extends AGear {
     public final void onApply(ApplyIterationEvent data) {
         onApplyImpl(data);
         if (data.getStage().equals(Stage.BEGIN)) {
+
             report.incApplies();
+            // report.addApplyIteration(data.getPointcutChain());
         }
     }
 
@@ -181,7 +225,7 @@ public abstract class WeaverProfiler extends AGear {
     public final void onAction(ActionEvent data) {
         onActionImpl(data);
         if (data.getStage().equals(Stage.END)) {
-            report.actionPerformed(data.getActionName());
+            report.actionPerformed(data.getActionName(), data.getJoinPoint());
             // System.out.println("[DEBUG] ACTION " + data.getActionName());
             if (data.getActionName().equals("insert")) {
                 // System.out.println("[DEBUG] INSERT" + report.getInserts());
@@ -194,6 +238,7 @@ public abstract class WeaverProfiler extends AGear {
     @Override
     public final void reset() {
         report.reset();
+        resetImpl();
     }
 
     /**

@@ -21,6 +21,8 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.java2cpp.JavaImplGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.actionsmodel.schema.Action;
+import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
 
@@ -317,6 +319,17 @@ public class WeaverGenerator {
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
         LanguageSpecification languageSpecification = generator.getLanguageSpecification();
+        String ret = "";
+        for (final Action action : languageSpecification.getActionModel().getActionsList().getAction()) {
+
+            ret += action.getClazz() + "\t" + action.getName() + "(";
+            for (final Parameter parameter : action.getParameter()) {
+
+                ret += "" + parameter.getName() + "[" + parameter.getType() + "], ";
+            }
+            ret += ")\n";
+        }
+        System.out.println(ret);
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
         // String json = jw.toJson(languageSpecification);

@@ -96,6 +96,17 @@ public class EventTriggerGenerator {
         aspectConstructor.append(")");
     }
 
+    /**
+     * Trigger an apply iteration event
+     * 
+     * @param stage
+     * @param aspect_name
+     * @param label
+     * @param select_label
+     * @param indentLevel
+     * @param aspectConstructor
+     * @param rootName
+     */
     public static void triggerApply(Stage stage, String aspect_name, String label, String select_label, int indentLevel,
             StringBuilder aspectConstructor, List<String> pointcutChainNames) {
         aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);
@@ -108,6 +119,17 @@ public class EventTriggerGenerator {
         aspectConstructor.append(");\n");
     }
 
+    /**
+     * Trigger an apply event
+     * 
+     * @param stage
+     * @param aspect_name
+     * @param label
+     * @param select_label
+     * @param indentLevel
+     * @param aspectConstructor
+     * @param rootName
+     */
     public static void triggerApply(Stage stage, String aspect_name, String label, String select_label, int indentLevel,
             StringBuilder aspectConstructor, String rootName) {
         aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);

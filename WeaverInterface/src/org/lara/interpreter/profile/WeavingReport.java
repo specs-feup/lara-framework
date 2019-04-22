@@ -13,7 +13,12 @@
 
 package org.lara.interpreter.profile;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.lara.interpreter.profile.utils.UniqueMap;
+import org.lara.interpreter.weaver.interf.JoinPoint;
 
 import pt.up.fe.specs.util.collections.AccumulatorMap;
 
@@ -21,6 +26,12 @@ public class WeavingReport {
     private AccumulatorMap<String> calledAspects;
     private AccumulatorMap<String> actions;
     private AccumulatorMap<String> iteratedJoinPoints;
+
+    private UniqueMap<String, Object> applyIteration = new UniqueMap<>();
+    private UniqueMap<String, Object> selectsMap = new UniqueMap<>();
+    private UniqueMap<String, Object> filteredSelects = new UniqueMap<>();
+    private Set<Object> advisedJPs;
+
     // TODO (aka NEVERDO) - replace fields with AccumulatorMap and use an enum with names of fields
     private int inserts;
     private int selects;
@@ -34,8 +45,7 @@ public class WeavingReport {
     private int numTokens = -1;
 
     public WeavingReport() {
-        calledAspects = new AccumulatorMap<>();
-        actions = new AccumulatorMap<>();
+
         reset();
     }
 
@@ -43,8 +53,10 @@ public class WeavingReport {
         calledAspects.add(aspectName.replace("$", "."));
     }
 
-    public void actionPerformed(String actionName) {
+    public void actionPerformed(String actionName, JoinPoint joinPoint) {
         actions.add(actionName);
+        advisedJPs.add(joinPoint.getNode());
+
     }
 
     public void incSelects() {
@@ -158,6 +170,7 @@ public class WeavingReport {
         runs = 0;
         setJoinPoints(0);
         setFilteredJoinPoints(0);
+        advisedJPs = new HashSet<>();
 
     }
 
@@ -174,11 +187,15 @@ public class WeavingReport {
     }
 
     public void incJoinPoints() {
-        setJoinPoints(getJoinPoints() + 1);
+        joinPoints++;
     }
 
     public void incFilteredJoinPoints() {
-        setFilteredJoinPoints(getFilteredJoinPoints() + 1);
+        filteredJoinPoints++;
+    }
+
+    public void incFilteredJoinPoints(int value) {
+        filteredJoinPoints += value;
     }
 
     public int getJoinPoints() {

@@ -25,6 +25,12 @@ import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 public abstract class BasicWeaverProfiler extends WeaverProfiler {
 
     @Override
+    protected void resetImpl() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     protected void onWeaverImpl(WeaverEvent data) {
 
     }
