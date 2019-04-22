@@ -155,7 +155,8 @@ public abstract class WeaverProfiler extends AGear {
                 // String key = data.getAspect_name() + data.getLabel();
                 // iterateJPs(laraJoinPoint, jp -> filteredSelects.addNode(key, jp));
                 int total = countJPs(laraJoinPoint, 0);
-                report.incFilteredJoinPoints(total);
+                report.inc(ReportField.FILTERED_JOIN_POINTS, total);
+                // report.incFilteredJoinPoints(total);
             }
             break;
         default:
@@ -272,7 +273,6 @@ public abstract class WeaverProfiler extends AGear {
      * @return
      */
     public String buildJsonReport() {
-
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
                     .report("tokens", report.get(ReportField.TOKENS))

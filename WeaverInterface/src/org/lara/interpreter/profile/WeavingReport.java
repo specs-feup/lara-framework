@@ -13,11 +13,8 @@
 
 package org.lara.interpreter.profile;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.lara.interpreter.profile.utils.UniqueMap;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
 import pt.up.fe.specs.util.collections.AccumulatorMap;
@@ -41,8 +38,7 @@ public class WeavingReport {
 
     public void actionPerformed(String actionName, JoinPoint joinPoint) {
         actions.add(actionName);
-        advisedJPs.add(joinPoint.getNode());
-
+        // advisedJPs.add(joinPoint.getNode());
     }
 
     public void inc(ReportField field) {
@@ -99,41 +95,41 @@ public class WeavingReport {
         return actions.getAccMap();
     }
 
-/* 
-   public void incJoinPoints() {
+    /* 
+       public void incJoinPoints() {
         joinPoints++;
     }
-
+    
     public void incFilteredJoinPoints() {
         filteredJoinPoints++;
     }
-
+    
     public void incFilteredJoinPoints(int value) {
         filteredJoinPoints += value;
     }
-
+    
     public int getJoinPoints() {
         return joinPoints;
     }
-
+    
     public void setJoinPoints(int joinPoints) {
         this.joinPoints = joinPoints;
     }
-
+    
     public int getFilteredJoinPoints() {
         return filteredJoinPoints;
     }
-
+    
     public void setFilteredJoinPoints(int filteredJoinPoints) {
         this.filteredJoinPoints = filteredJoinPoints;
     }
-
+    
     public void setNumTokens(int numMainLaraTokens) {
         this.numTokens = numMainLaraTokens;
     }
-
+    
     public int getNumTokens() {
         return this.numTokens;
     }
-*/
+    */
 }
