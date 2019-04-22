@@ -43,6 +43,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
     private File temporaryFolder;
     private boolean logMetrics;
+    private boolean printInfo;
 
     public LaraUnitHarnessBuilder(WeaverEngine weaverEngine, File baseFolder, LaraArgs globalArguments) {
         this.weaverEngine = weaverEngine;
@@ -51,6 +52,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         temporaryFolder = SpecsIo.mkdir(SpecsIo.getTempFolder(), "LaraUnitTestFolder");
         logMetrics = false;
+        printInfo = false;
         // Clean contents of folder
         SpecsIo.deleteFolderContents(temporaryFolder);
     }
@@ -188,10 +190,31 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
             testArgs.addArg(SpecsIo.removeExtension(testFile));
         }
 
+        // If no verbose level is set, automatically set it to 2 (warnings)
+        if (!testArgs.hasArg("-b")) {
+            testArgs.addArg("-b");
+            testArgs.addArg("2");
+        }
+
         // If log metrics is enabled and there is no -e option, add it
         if (logMetrics && !testArgs.hasArg("-e")) {
             testArgs.addArg("-e");
             testArgs.addArg("metrics/" + SpecsIo.removeExtension(testFile) + ".json");
+        }
+
+        // Enable stack trace
+        if (!testArgs.hasArg("-s")) {
+            testArgs.addArg("-s");
+        }
+
+        // Disable Clava output
+        if (!printInfo && !testArgs.hasArg("-nci")) {
+            testArgs.addArg("-nci");
+        }
+
+        // Disable code generation
+        if (!testArgs.hasArg("-ncg")) {
+            testArgs.addArg("-ncg");
         }
 
         return testArgs.getCurrentArgs();
@@ -204,6 +227,10 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
     public void setLogMetrics(boolean logMetrics) {
         this.logMetrics = logMetrics;
+    }
+
+    public void setPrintInfo(boolean printInfo) {
+        this.printInfo = printInfo;
     }
 
 }

@@ -23,30 +23,16 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import pt.up.fe.specs.util.collections.AccumulatorMap;
 
 public class WeavingReport {
+
     private AccumulatorMap<String> calledAspects;
     private AccumulatorMap<String> actions;
-    private AccumulatorMap<String> iteratedJoinPoints;
-
-    private UniqueMap<String, Object> applyIteration = new UniqueMap<>();
-    private UniqueMap<String, Object> selectsMap = new UniqueMap<>();
-    private UniqueMap<String, Object> filteredSelects = new UniqueMap<>();
-    private Set<Object> advisedJPs;
-
-    // TODO (aka NEVERDO) - replace fields with AccumulatorMap and use an enum with names of fields
-    private int inserts;
-    private int selects;
-    private int applies;
-    private int attributes;
-    private int nativeLOCs;
-    private int totalLOCs;
-    private int runs;
-    private int joinPoints;
-    private int filteredJoinPoints;
-    private int numTokens = -1;
+    private AccumulatorMap<ReportField> metrics;
 
     public WeavingReport() {
-
-        reset();
+        metrics = new AccumulatorMap<>();
+        calledAspects = new AccumulatorMap<>();
+        actions = new AccumulatorMap<>();
+        // reset();
     }
 
     public void aspectCalled(String aspectName) {
@@ -59,39 +45,30 @@ public class WeavingReport {
 
     }
 
-    public void incSelects() {
-        selects++;
+    public void inc(ReportField field) {
+        metrics.add(field);
+        //
+        // // When incrementing native locs, increment also total locs
+        // if (field == ReportField.NATIVE_LOCS) {
+        // metrics.add(ReportField.TOTAL_LOCS);
+        // }
     }
 
-    public void incApplies() {
-        applies++;
+    public void inc(ReportField field, int amount) {
+        metrics.add(field, amount);
+        //
+        // // When incrementing native locs, increment also total locs
+        // if (field == ReportField.NATIVE_LOCS) {
+        // metrics.add(ReportField.TOTAL_LOCS, amount);
+        // }
     }
 
-    public void incInserts() {
-        inserts++;
+    public int get(ReportField field) {
+        return metrics.getCount(field);
     }
 
-    /**
-     * Increment NativeLOCs. Also increments total LOCs
-     * 
-     * @param LOCs
-     */
-    public void incNativeLOCs(int LOCs) {
-        nativeLOCs += LOCs;
-        incTotalLOCs(LOCs);
-    }
-
-    /**
-     * Increment NativeLOCs
-     * 
-     * @param LOCs
-     */
-    public void incTotalLOCs(int LOCs) {
-        totalLOCs += LOCs;
-    }
-
-    public void runs() {
-        runs++;
+    public int set(ReportField field, int value) {
+        return metrics.set(field, value);
     }
 
     /**
@@ -102,81 +79,17 @@ public class WeavingReport {
     }
 
     /**
-     * 
-     * @return
-     */
-    public int getInserts() {
-        return inserts;
-    }
-
-    /**
-     * @return the selects
-     */
-    public int getSelects() {
-        return selects;
-    }
-
-    /**
-     * @return the applies
-     */
-    public int getApplies() {
-        return applies;
-    }
-
-    /**
      * @return the aspectCalls
      */
     public long getNumAspectCalls() {
         return calledAspects.getSum();
     }
 
-    /**
-     * @return the attributes
-     */
-    public int getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * @return the nativeLOCs
-     */
-    public int getNativeLOCs() {
-        return nativeLOCs;
-    }
-
-    /**
-     * @return the totalNativeLOCs
-     */
-    public int getTotalLOCs() {
-        return totalLOCs;
-    }
-
-    /**
-     * @return the runs
-     */
-    public int getRuns() {
-        return runs;
-    }
-
-    public void reset() {
-        calledAspects = new AccumulatorMap<>();
-        actions = new AccumulatorMap<>();
-        inserts = 0;
-        selects = 0;
-        applies = 0;
-        attributes = 0;
-        nativeLOCs = 0;
-        totalLOCs = 0;
-        runs = 0;
-        setJoinPoints(0);
-        setFilteredJoinPoints(0);
-        advisedJPs = new HashSet<>();
-
-    }
-
-    public void incAttributes() {
-        attributes++;
-    }
+    // public void reset() {
+    // metrics = new AccumulatorMap<>();
+    // calledAspects = new AccumulatorMap<>();
+    // actions = new AccumulatorMap<>();
+    // }
 
     public Map<String, Integer> getAspectsMap() {
         return calledAspects.getAccMap();
@@ -186,7 +99,8 @@ public class WeavingReport {
         return actions.getAccMap();
     }
 
-    public void incJoinPoints() {
+/* 
+   public void incJoinPoints() {
         joinPoints++;
     }
 
@@ -221,5 +135,5 @@ public class WeavingReport {
     public int getNumTokens() {
         return this.numTokens;
     }
-
+*/
 }

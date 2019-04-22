@@ -15,8 +15,11 @@ package org.lara.interpreter.weaver.interf;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 
@@ -27,6 +30,7 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import pt.up.fe.specs.util.SpecsSystem;
 
 // import jdk.nashorn.internal.runtime.Undefined;
 
@@ -36,6 +40,10 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 public abstract class JoinPoint {
 
     static final String BASE_JOINPOINT_CLASS = "joinpoint";
+
+    public static boolean isJoinPoint(Object value) {
+        return value instanceof JoinPoint;
+    }
 
     /**
      * Function used by the lara interpreter to verify if a join point is the same (equals) as another join point
@@ -412,16 +420,42 @@ public abstract class JoinPoint {
      * @return
      */
     private Object parseDefValue(Object value) {
+        return parseDefValue(value, new HashSet<>());
+    }
+
+    private Object parseDefValue(Object value, Set<Object> seenObjects) {
+        // If object already appear stop, cyclic dependencies not supported
+        if (seenObjects.contains(value)) {
+            throw new RuntimeException("Detected a cyclic dependency in 'def' value: " + value);
+        }
+
+        seenObjects.add(value);
+
         // Convert value to a Java array, if necessary
         if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
 
             if (((ScriptObjectMirror) value).isEmpty()) {
+                // return new Object[0];
                 throw new RuntimeException("Cannot pass an empty array to a 'def'");
             }
 
             ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
-            Object firstValue = jsObject.values().stream().findFirst().get();
-            return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
+            // Object firstValue = jsObject.values().stream().findFirst().get();
+            List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
+            // Get common class of given instances
+            List<Class<?>> superClasses = SpecsSystem.getCommonSuperClasses(classes);
+            Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
+
+            // return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
+            Object[] objectArray = (Object[]) ScriptUtils.convert(value, Array.newInstance(superClass, 0).getClass());
+
+            // Recursively convert the elements of the array
+            Object[] convertedArray = (Object[]) Array.newInstance(superClass, objectArray.length);
+            for (int i = 0; i < objectArray.length; i++) {
+                convertedArray[i] = parseDefValue(objectArray[i], seenObjects);
+            }
+
+            return convertedArray;
         }
 
         return value;

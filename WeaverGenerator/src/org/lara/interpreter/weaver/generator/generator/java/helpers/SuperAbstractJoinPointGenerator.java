@@ -20,6 +20,7 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
@@ -100,6 +101,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         generateGlobalJoinPointData(abstJPClass);
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
         addWeaverEngineField(abstJPClass);
+
+        // Add abstract version of generic select
+        abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass, true));
+
         return abstJPClass;
     }
 
@@ -309,10 +314,13 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         // abstJPClass.addImport(List.class.getCanonicalName());
         for (final Select select : selects) {
 
-            final Method selectMethod = GeneratorUtils.generateSelectMethod(select,
-                    javaGenerator.getJoinPointClassPackage(),
-                    true);
+            // final Method selectMethod = GeneratorUtils.generateSelectMethod(select,
+            // javaGenerator.getJoinPointClassPackage(),
+            // true);
+            final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(select,
+                    javaGenerator.getJoinPointClassPackage());
             abstJPClass.add(selectMethod);
+            abstJPClass.addImport(SelectOp.class);
 
             fillWithSelects.appendCode("selects.add(\"" + select + "\");\r\n");
         }

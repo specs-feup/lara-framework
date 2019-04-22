@@ -9,6 +9,10 @@ function setDebug(value) {
 	LARA_DEBUG = value;
 }
 
+function isDebug() {
+	return LARA_DEBUG;
+}
+
 function notImplemented(functionName) {
 	
 	functionName = defaultValue(functionName, "<unknown>");
@@ -55,6 +59,7 @@ function checkTrue(booleanExpr, message, source) {
 }
 
 function checkDefined(value, varName, source) {
+	//println("checkDefined() deprecated, use instead lara.Check");
 	if(!isUndefined(value)) {
 		return;
 	}
@@ -214,7 +219,14 @@ function isJavaClass(variable, javaClassname) {
 
 
 function toArray(objectWithLength) {
-	return Array.prototype.slice.call(objectWithLength);
+	//return Array.prototype.slice.call(objectWithLength);
+	
+	var newArray = [];
+	for(var index in objectWithLength) {		
+		newArray.push(objectWithLength[index]);
+	}
+		
+	return newArray;
 }
 
 function info(message, origin) {
@@ -246,16 +258,38 @@ function arrayFromArgs(args, start) {
 	
     checkDefined(args, 'args', 'LaraCore arrayFromArgs');
     
-    if(start === undefined) {
+    if(start === undefined || start < 0) {
         start = 0;
     }
-    
+        
 	// If only one element and is already an array, just return the array
-	if(args.length === (start + 1) && isArray(args[start])) {
+	if(args.length === (start + 1) && isArray(args[start])) {		
 		return args[start];
 	}
+
+	if(args.length === (start + 1) && isJavaList(args[start])) {
+	//	return listToArray(args[start]);
+		return toArray(args[start]);
+	}
 	
+	
+	//println("Slicing");
+
     return Array.prototype.slice.call(args, start);
+    /*
+    var newArray = [];
+    var skip = start;
+	for(var index in args) {
+		if(skip > 0) {
+			skip--;
+			continue;
+		}
+		
+		newArray.push(args[index]);
+	}
+		
+	return newArray;
+	*/
 }
 
 /**
@@ -272,4 +306,47 @@ function pushArray(receivingArray, sourceArray) {
 	for(var index in sourceArray) {
 		receivingArray.push(sourceArray[index]);	
 	}
+}
+
+/**
+ * @param {J#java.util.List} array
+ * @returns {Object[]} If the array is a Java list, converts the list to an array. Otherwise, throws an exception.
+ */ 
+ /*
+function listToArray(array) {
+
+	var newArray = [];
+	for(var index in array) {
+		newArray.push(array[index]);
+	}
+		
+	return newArray;
+
+
+//	if(!isJavaList(array)) {
+//		throw "The argument provided is not a Java List."	
+//	}
+//
+//	if(isArray(array)){
+//		return array;
+//	}
+//
+//	if(isJavaList(array)) {
+//		
+//		var newArray = [];
+//		for(var index in array) {
+//			newArray.push(array[index]);
+//		}
+//		
+//		return newArray;
+//	}
+//
+//	throw "The argument provided is not an array nor a List."
+
+}
+*/
+
+
+function isJavaList(list) {
+	return list instanceof Java.type("java.util.List");
 }

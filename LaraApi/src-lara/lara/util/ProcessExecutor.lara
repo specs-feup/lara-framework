@@ -13,6 +13,8 @@ var ProcessExecutor = function() {
 	this.timeUnit = new TimeUnits("SECONDS");
 	this.timeout = undefined;
 	this.outputPrefix = undefined;
+	this.stopOnError = false;
+	this.logErrorsOnly = false;
 	
 	// Private state
 	this.lastOutput = undefined;
@@ -46,6 +48,26 @@ ProcessExecutor.prototype.setAppend = function(append) {
 	return this;
 }
 
+/**
+ * If true, throws an exception if there is a problem when running the process. By default is set to 'false'.
+ */
+ProcessExecutor.prototype.setStopOnError = function(stopOnError) {
+	checkType(stopOnError, "boolean", "ProcessExecutor.prototype.setStopOnError");
+	this.stopOnError = stopOnError;
+	return this;
+}
+
+
+ProcessExecutor.prototype.setLogErrorsOnly = function(logErrorsOnly) {
+	checkType(logErrorsOnly, "boolean", "ProcessExecutor.prototype.setLogErrorsOnly");
+	this.logErrorsOnly = logErrorsOnly;
+	return this;
+}
+
+
+/** 
+ * Sets the time unit of the timeout value. By defaults, is SECONDS.
+ */
 ProcessExecutor.prototype.setTimeUnit = function(timeUnit) {
 	this.timeUnit = new TimeUnits(timeUnit);
 	return this;
@@ -78,6 +100,10 @@ ProcessExecutor.prototype.setOutputPrefix = function(outputPrefix) {
 
 
 ProcessExecutor.prototype.execute = function(command) {
+	//if(!isString(command) && !isArray(command)) {
+	//	throw "ProcessExecutor.execute: 'command' must be either a String or an array";
+	//}
+	
 	this.lastCommand = command;
 	
 	var timeoutNanos = null;
@@ -90,7 +116,18 @@ ProcessExecutor.prototype.execute = function(command) {
 	//this.lastOutput = Java.type(_JavaTypes.LaraSystemTools).runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
 	this.lastOutput = _JavaTypes.getLaraSystemTools().runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
 
-	var executeOutput = this.lastOutput.getOutput();
+	if(this.stopOnError && this.getReturnValue() !== 0) {
+		throw "Problem while running command '"+command+"'\nError: " + this.getConsoleOutput();
+	}
+
+	var executeOutput = undefined;
+	if(this.logErrorsOnly) {
+		executeOutput = this.getStdErr();
+	} else {
+		executeOutput = this.lastOutput.getOutput();
+	}
+	//var executeOutput = this.lastOutput.getOutput();
+	
 	if(executeOutput !== undefined) {
 		checkType(executeOutput, "string");
 	}

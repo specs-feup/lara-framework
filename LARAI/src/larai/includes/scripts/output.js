@@ -94,6 +94,12 @@ function printObject(obj, space){
 	print(str);
 }
 
+function printlnObject(obj, space){
+	var str = object2string(obj, space);
+	print(str);
+	println("");
+}
+
 function object2string(obj, space){
 	if(space === undefined)
 		space = '';
@@ -201,6 +207,6 @@ function writeFile(path, content) {
 
 function JSONtoFile(path, object) {
 	
-	var content = JSON.stringify(object);
+	var content = JSON.stringify(object, undefined, '\t');
 	writeFile(path,content);
 }

@@ -66,10 +66,10 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Lara
     _JAVA_TYPES("_JavaTypes.lara"),
+    CHECK("Check.lara"),
     CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),
-    JOIN_POINTS("JoinPoints.lara"),
     NUMBERS("Numbers.lara"),
     PLATFORMS("Platforms.lara"),
     STRINGS("Strings.lara"),
@@ -82,6 +82,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     COMBINATION("util/Combinations.lara"),
     DATA_STORE("util/DataStore.lara"),
     ID_GENERATOR("util/IdGenerator.lara"),
+    JP_FILTER("util/JpFilter.lara"),
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PRINT_ONCE("util/PrintOnce.lara"),

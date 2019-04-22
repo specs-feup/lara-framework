@@ -1,6 +1,8 @@
 import lara._JavaTypes;
 
 /**
+ *  Utility methods related to Strings.
+ *
  * @class
  */
 var Strings = {};
@@ -89,5 +91,23 @@ Strings.toJson = function(value) {
  * Returns a random unique identifier.
  */
 Strings.uuid = function() {
-	return _JavaTypes.getUuid().randomUUID().toString();
+	var uuid = _JavaTypes.getUuid().randomUUID().toString();
+	
+	uuid = Strings.replacer(uuid, "-", "_");
+	
+	return "id_" + uuid;
 }
+
+/**
+ *  Normalizes a given string:
+ * 1) Replaces \r\n with \n
+ * 2) Trims lines and removes empty lines
+ */
+Strings.normalize = function(string) {
+	return _JavaTypes.getSpecsStrings().normalizeFileContents(string, true);
+}
+
+
+
+// * Comparison is done line-by-line, and 
+// Compare strings line-by-line

@@ -14,6 +14,7 @@
 package pt.up.fe.specs.lara.unit;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,13 +23,27 @@ import pt.up.fe.specs.util.SpecsStrings;
 
 public class LaraUnitReport {
 
+    public static LaraUnitReport failedReport() {
+        return new LaraUnitReport(new HashMap<>(), true);
+    }
+
     private final Map<File, List<TestResult>> results;
+    private final boolean failed;
 
     public LaraUnitReport(Map<File, List<TestResult>> results) {
+        this(results, false);
+    }
+
+    private LaraUnitReport(Map<File, List<TestResult>> results, boolean failed) {
         this.results = results;
+        this.failed = failed;
     }
 
     public boolean isSuccess() {
+        if (failed) {
+            return false;
+        }
+
         // Iterate over all test results, looking for a failure
         return results.values().stream()
                 .flatMap(list -> list.stream())

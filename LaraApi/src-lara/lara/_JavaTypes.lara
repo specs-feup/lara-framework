@@ -6,6 +6,12 @@ var _JavaTypes = {};
 
 //_JavaTypes.LaraSystemTools = "pt.up.fe.specs.lara.LaraSystemTools";
 //_JavaTypes.LaraApiTools = "pt.up.fe.specs.lara.LaraApiTools";
+/*
+_JavaTypes.isInstance(value, javaClass) {
+
+	//return value.getClass().isAssignableFrom(javaClass);
+}
+*/
 
 _JavaTypes.getType = function(javaType) {
 	checkString(javaType, "_JavaTypes.getType::javaType");
@@ -31,4 +37,16 @@ _JavaTypes.getUuid = function() {
 
 _JavaTypes.getGprofer = function() {
 	return _JavaTypes.getType("pt.up.fe.specs.gprofer.Gprofer");
+}
+
+_JavaTypes.getJoinPoint = function() {
+	return _JavaTypes.getType("org.lara.interpreter.weaver.interf.JoinPoint");
+}
+
+_JavaTypes.getSpecsStrings = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.util.SpecsStrings");
+}
+
+_JavaTypes.getJavaSystem = function() {
+	return _JavaTypes.getType("java.lang.System");
 }

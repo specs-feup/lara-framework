@@ -3,8 +3,10 @@
  * @constructor
  */
 function MetricResult(value, unit) {
+//function MetricResult(value, unit, name) {
 	this.value = value;
 	this.unit = unit;
+	//this.name = name;
 }
 
 /**
@@ -20,3 +22,12 @@ MetricResult.prototype.getValue = function() {
 MetricResult.prototype.getUnit = function() {
 	return this.unit;
 }
+
+/**
+ * @return {string} the name of the metric associated with this result
+ */
+ /*
+MetricResult.prototype.getName = function() {
+	return this.name;
+}
+*/

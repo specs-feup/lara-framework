@@ -188,8 +188,8 @@ public class ArtifactsModel extends ArtifactsModelConstructor {
         while (parent != null && !parent.equals(artifact.getClazz())) {
             artifact = getArtifact(parent);
             if (artifact == null) {
-                throw new RuntimeException("Unnexpected problem with join point hierarchy: join point " + parent
-                        + " does not exist in the model");
+                throw new RuntimeException("Unexpected problem with join point hierarchy: join point " + parent
+                        + " does not have a corresponding artifact");
             }
             artifact.getAttribute().stream().filter(hasDefs).forEach(definables::add);
             parent = joinPointHierarchy.get(artifact.getClazz());

@@ -942,7 +942,7 @@ public class Interpreter {
     // ================================================================================//
     public StringBuilder getJavascriptString(Statement stat, int depth) {
         currentStatement = stat;
-        return processStatement(stat, "var ", depth, ";\n"); // TODO - add label
+        return processStatement(stat, "var ", depth, ";\n");
     }
 
     public StringBuilder processStatement(Statement stat, String varStr, int depth, String sufix) {

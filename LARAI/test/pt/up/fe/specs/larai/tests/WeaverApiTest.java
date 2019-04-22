@@ -44,4 +44,9 @@ public class WeaverApiTest {
         newTester().test("WeaverOptionsTest.lara");
     }
 
+    @Test
+    public void testLaraLoc() {
+        newTester().test("LaraLocTest.lara");
+    }
+
 }

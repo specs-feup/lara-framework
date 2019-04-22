@@ -69,8 +69,10 @@ public interface LaraiKeys {
 
     DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
 
+    DataKey<Boolean> LARA_LOC = KeyFactory.bool("loc").setLabel("LARA CSV with stats (LoC, #aspects, etc)");
+
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
-            .setDefault(() -> VerboseLevel.all)
+            .setDefault(() -> VerboseLevel.warnings)
             .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
                     string -> VerboseLevel.values()[Integer.parseInt(string)]));
 
@@ -99,7 +101,8 @@ public interface LaraiKeys {
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
-                    EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
+                    EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
+                    LOG_JS_OUTPUT,
                     DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE)
             .build();
 

@@ -14,15 +14,27 @@ package org.lara.interpreter.utils;
 
 import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.LanguageSpecification;
+import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import larai.LaraI;
 import pt.up.fe.specs.lara.aspectir.Base;
+import pt.up.fe.specs.lara.loc.LaraLoc;
+import pt.up.fe.specs.lara.loc.LaraStats;
+import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
@@ -191,7 +203,7 @@ public class LaraIUtils {
     /*
     public static void includeClassPath(List<File> file, Output stream) {
         final ClassLoader classLoader;
-
+    
         // Thread currentThread = Thread.currentThread();
         try {
             // currentThreadClassLoader = currentThread.getContextClassLoader();
@@ -199,12 +211,12 @@ public class LaraIUtils {
         } catch (Exception e) {
             throw new BuildException(e);
         }
-
+    
         // Add the conf dir to the classpath
         // Chain the current thread classloader
-
+    
         // try (URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { f.toURI().toURL() },
-
+    
         Function<? super File, ? extends URL> mapper = f -> {
             try {
                 stream.println(" " + MessageConstants.BRANCH_STR + SpecsIo.getCanonicalPath(f));
@@ -216,10 +228,10 @@ public class LaraIUtils {
         URL[] urls = file.stream().map(mapper).collect(Collectors.toList()).toArray(new URL[0]);
         try (URLClassLoader urlClassLoader = new URLClassLoader(urls, classLoader)) {
             System.out.println("..>" + Arrays.asList(urls));
-
+    
             // Replace the thread classloader - assumes you have permissions to do so
             currentThread.setContextClassLoader(urlClassLoader);
-
+    
             Class<?> forName = Class.forName("org.Test", true, urlClassLoader);
             System.out.println("..>" + forName);
         } catch (final Exception e) {
@@ -228,23 +240,23 @@ public class LaraIUtils {
     }*/
     /*
     public static void includeClassPath(File f) {
-
+    
         final ClassLoader currentThreadClassLoader;
-
+    
         try {
             currentThreadClassLoader = Thread.currentThread().getContextClassLoader();
         } catch (Exception e) {
             throw new BuildException(e);
         }
-
+    
         // Add the conf dir to the classpath
         // Chain the current thread classloader
         try (URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { f.toURI().toURL() },
                 currentThreadClassLoader)) {
-
+    
             // Replace the thread classloader - assumes you have permissions to do so
             Thread.currentThread().setContextClassLoader(urlClassLoader);
-
+    
         } catch (final Exception e) {
             throw new JavaImportException(f, e);
         }
@@ -257,4 +269,49 @@ public class LaraIUtils {
             ret.append(unescapeJava);
         }
     }
+
+    public static Map<String, LaraStats> getLaraLoc(WeaverEngine engine, DataStore args) {
+        // Collect LARA files and folders
+        List<File> laraFiles = getLaraFiles(args);
+        return new LaraLoc(engine).getStats(laraFiles);
+    }
+
+    /**
+     * Returns all the LARA files defined as inputs in the arguments.
+     * 
+     * @param args
+     * @return
+     */
+    public static List<File> getLaraFiles(DataStore args) {
+        // Collect LARA files and folders
+        List<File> laraPaths = new ArrayList<>();
+        laraPaths.add(args.get(LaraiKeys.LARA_FILE));
+        args.get(LaraiKeys.INCLUDES_FOLDER).forEach(path -> laraPaths.add(path));
+
+        return SpecsIo.getFiles(laraPaths, true, Arrays.asList("lara"));
+        /*
+        List<File> existingPaths = new ArrayList<>();
+        for (String laraPath : laraPaths) {
+            File path = new File(laraPath);
+            if (!path.exists()) {
+                SpecsLogs.info("Ignoring path '" + laraPath + "', it does not exist");
+                continue;
+            }
+        
+            existingPaths.add(path);
+        }
+        
+        List<File> laraFiles = new ArrayList<>();
+        for (File existingPath : existingPaths) {
+            if (existingPath.isDirectory()) {
+                laraFiles.addAll(SpecsIo.getFilesRecursive(existingPath, "lara"));
+            } else {
+                laraFiles.add(existingPath);
+            }
+        }
+        
+        return laraFiles;
+        */
+    }
+
 }

@@ -31,7 +31,14 @@ public class FileList implements Iterable<File> {
         this(new ArrayList<File>());
     }
 
-    private FileList(Collection<File> stringFile) {
+    /**
+     * Creates a StringList with the file names from the files on the list passed as parameter.
+     * 
+     * @param files
+     *            - the list of files
+     * @return a new StringList instance
+     */
+    public FileList(Collection<File> stringFile) {
         fileList = new ArrayList<>();
         fileList.addAll(stringFile);
     }
@@ -43,10 +50,10 @@ public class FileList implements Iterable<File> {
      *            - the list of files
      * @return a new StringList instance
      */
-    public static FileList newInstance(List<File> files) {
-
-        return new FileList(files);
-    }
+    // public static FileList newInstance(List<File> files) {
+    //
+    // return new FileList(files);
+    // }
 
     /**
      * Helper constructor with variadic inputs.
@@ -57,6 +64,10 @@ public class FileList implements Iterable<File> {
      */
     public static FileList newInstance(File... values) {
         return new FileList(Arrays.asList(values));
+    }
+
+    public static FileList newInstance(Collection<File> values) {
+        return new FileList(values);
     }
 
     public static FileList newInstance(String fileListStrs) {

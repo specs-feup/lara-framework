@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.JAXBException;
@@ -46,8 +47,11 @@ import larac.structure.AspectIR;
 import larac.utils.FileUtils;
 import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
+import pt.up.fe.specs.lara.aspectir.Aspects;
+import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import tdrc.utils.StringUtils;
 
@@ -777,6 +781,40 @@ public class LaraC {
     public void addPreviouslyImportedLARA(LaraC previouslyImportedLARA) {
         // LaraLog.debug("PREVIOUSLY IMPORTED: " + previouslyImportedLARA.getLaraPath() + " @ " + getLaraPath());
         this.previouslyImportedLARA.add(previouslyImportedLARA);
+    }
+
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
+        // Pass through LaraC
+        List<String> args = new ArrayList<>();
+
+        args.add(laraFile.getAbsolutePath());
+        args.add("--doc");
+        args.add("--verbose");
+        args.add("0");
+
+        LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification,
+                new Output(0));
+        Document aspectIr = null;
+
+        try {
+            aspectIr = larac.compile();
+        } catch (BaseException e) {
+            // If LARA exception, generate exception
+            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "': "
+                    + e.generateExceptionBuilder().getRuntimeException());
+            return Optional.empty();
+        } catch (Exception e) {
+            SpecsLogs.msgWarn("Could not compile file '" + laraFile + "'", e);
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(new Aspects(aspectIr, ""));
+        } catch (Exception e) {
+            SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
+            return Optional.empty();
+        }
+
     }
 
 }

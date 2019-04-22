@@ -21,6 +21,7 @@ import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
@@ -95,8 +96,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         addFieldsAndConstructors(javaC);
         addSelects(javaC);
-
         addActions(javaC);
+
         String superTypeName = null;
         if (!joinPoint.equals(joinPoint.getExtends())) {
             final JoinPointType superType = (JoinPointType) joinPoint.getExtends();
@@ -225,8 +226,11 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     private void addSelect(Select sel, JavaClass javaC) {
 
         final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
-        final Method selectMethod = GeneratorUtils.generateSelectMethod(sel, joinPointPackage, true);
+        // final Method selectMethod = GeneratorUtils.generateSelectMethod(sel, joinPointPackage, true);
+        final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(sel, joinPointPackage);
+
         javaC.add(selectMethod);
+        javaC.addImport(SelectOp.class);
 
         // addSelectWithTryCatch(selectName, javaC, selectMethod);
     }

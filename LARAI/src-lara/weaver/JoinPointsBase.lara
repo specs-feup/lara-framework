@@ -1,0 +1,59 @@
+/**
+ * Object which provides low-level join point-related methods.
+ * @constructor
+ */
+function JoinPoints() {
+}
+
+/**
+ * 
+ * @return {$jp} the current root node of the AST
+ */
+JoinPoints.prototype.root = function() {
+	throw "_WeaverHelper.rootNode: not implemented";
+}
+
+/**
+ * 
+ * @return {$jp[]} the children of the given node
+ */
+JoinPoints.prototype.children = function($jp, jpType) {
+	throw "_WeaverHelper.children: not implemented";
+}
+
+/**
+ * 
+ * @return {$jp[]} the descendants of the given node
+ */
+JoinPoints.prototype.descendants = function($jp, jpType) {
+	throw "_WeaverHelper.descendants: not implemented";
+}
+
+/**
+ * Iterates of attributeNames, returns the first value that is not null or undefined.
+ * If no value is found for the given attributes, returns undefined
+ * 
+ */
+JoinPoints.getAttribute = function($jp, attributeNames) {
+	for(attribute of attributeNames) {
+		var value = $jp[attribute];
+		if(!isUndefined(value)) {
+			return value;
+		}
+	}
+	
+	return undefined;
+}
+
+/**
+ * Helper method of getAttribute which throws an exception if no value is found
+ */
+JoinPoints.getAttributeStrict = function($jp, attributeNames) {
+	var value = this.getAttribute($jp, attributeNames);
+	
+	if(value === undefined) {
+		throw "Could not find any of the given attributes in " + $jp + ":" + attributeNames.join(", ");
+	}
+
+	return value;
+}

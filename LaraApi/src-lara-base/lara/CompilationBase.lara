@@ -1,3 +1,5 @@
+import lara.Io;
+
 /**
  * Utility methods related with compilation. 
  *
@@ -57,4 +59,26 @@ Compilation.addExtraSource = function(path) {
  */
 Compilation.addExtraSourceFromGit = function(gitRepository, path) {
 	notImplemented("Compilation.addExtraSourceFromGit");
+}
+
+
+Compilation.getExtraSourceFiles = function() {
+	var extraSourcesArray = [];
+	
+	for(var extraSource of Compilation.getExtraSources()) {
+		debug("Compilation.getExtraSourceFiles(): Adding external source '" + extraSource + "'");
+		if(Io.isFile(extraSource)) {
+			extraSourcesArray.push(extraSource);
+			//println("Extra source 1:" + extraSource);
+		} else if(Io.isFolder(extraSource)) {
+			for(var sourcePath of Io.getPaths(extraSource)) {
+				extraSourcesArray.push(sourcePath);
+				//println("Extra source 2:" + sourcePath);
+			}
+		} else {
+			println("Compilation.getExtraSourceFiles: Extra source ' " + extraSource +  " ' does not exist");
+		}
+	}	
+	//println("Extra sources:" + extraSourcesArray);
+	return extraSourcesArray;
 }

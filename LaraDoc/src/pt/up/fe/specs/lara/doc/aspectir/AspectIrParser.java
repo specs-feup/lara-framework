@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import com.google.common.base.Preconditions;
 
+import larac.code.CodeElems;
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.lara.aspectir.CodeElem;

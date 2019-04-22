@@ -90,6 +90,22 @@ System.defaultPrintToConsole = true;
 System.execute = function(command, workingDir, printToConsole, outputFile, append, timeout, timeunit) {
 	//println("System.execute is deprecated, use ProcessExecutor instead");
 	
+	/*
+	if(!isString(command) && !isArray(command)) {
+		throw "System.execute: 'command' must be either a String or an array, it is a " + (typeof command);
+	}
+	*/
+	/*
+	var isCommandList = undefined;
+	if(isString(command)) {
+		isCommandList = false;
+	} else if(isArray(command)) {
+		isCommandList = true;
+	} else {
+		throw "System.execute: 'command' must be either a String or an array";
+	}
+	*/
+	
 	if(workingDir === undefined) {
 		workingDir = "./";
 	}
@@ -115,9 +131,8 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 		timeoutNanos = timeunit.toNanos(timeout);
 	}
 
-	//var executeOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, workingDir, printToConsole, timeoutNanos)
-	//.getOutput();
-	var executeOutput = _JavaTypes.getLaraApiTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
+
+	var executeOutput = _JavaTypes.getLaraSystemTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
 	.getOutput();
 	
 	if(executeOutput !== undefined) {
@@ -148,4 +163,22 @@ System.toc = function(nanoStart, message) {
 
 System.getNumLogicalCores = function() {
 	return java.lang.Runtime.getRuntime().availableProcessors();
+}
+
+/**
+ * Read an environment variable. 
+ *
+ * @param {string} variable name of the environment variable
+ * @return {string} the value for the given environment variable name, or undefined if not present
+ */
+System.getEnv = function(variable) {
+	checkString(variable);
+
+	var envValue = _JavaTypes.getJavaSystem().getenv(variable);
+	
+	if(isUndefined(envValue)) {
+		return undefined;
+	}
+	
+	return envValue;
 }

@@ -49,10 +49,10 @@ public class JsDocNodeGenerator implements JsDocGenerator {
     @Override
     // public File queue(List<File> inputFiles, File outputFolder) {
     public Optional<File> generate(LaraDocModule module, File outputFolder) {
-        
-    	List<File> inputFiles = LaraToJs.convertModuleToJs(module);
-    	
-    	// Copy files to a temporary folder
+
+        List<File> inputFiles = LaraToJs.convertModuleToJs(module);
+
+        // Copy files to a temporary folder
         File documentationFolder = new File(SpecsIo.getTempFolder(), "jsdocumentation");
         File commandFolder = SpecsIo.mkdir(documentationFolder, Integer.toString(counter));
         counter++;

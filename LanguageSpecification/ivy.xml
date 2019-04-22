@@ -30,9 +30,11 @@
 		<dependency org="org.apache.commons" name="commons-lang3" rev="3.4"/>
 	
 		<!-- XmlBind -->
-		<dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.0"/>
-		<dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.3.0"/>
-		<dependency org="org.glassfish.jaxb" name="jaxb-runtime" rev="2.3.0"/>
+		<dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.1"/>
+		<dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.4.0-b180830.0438" conf="default->master,runtime,compile,default,system,optional"/>
+		<!-- <dependency org="javax.xml.bind" name="jaxb-api" rev="2.4.0-b180830.0359"/> -->
+		<!-- <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.4.0-b180830.0438"/> -->
+		<!-- <dependency org="org.glassfish.jaxb" name="jaxb-runtime" rev="2.4.0-b180830.0438"/> -->
 		<dependency org="javax.activation" name="activation" rev="1.1.1"/>
 	</dependencies>
 </ivy-module>

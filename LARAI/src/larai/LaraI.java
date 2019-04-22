@@ -14,6 +14,7 @@ package larai;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -58,7 +59,9 @@ import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
@@ -77,6 +80,12 @@ public class LaraI {
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
+
+    private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
+
+    public static boolean isRunningGui() {
+        return RUNNING_GUI.get();
+    }
 
     /**
      * Thread-scope DataStore
@@ -244,16 +253,21 @@ public class LaraI {
      */
     public static boolean exec(String[] args, WeaverEngine weaverEngine) {
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        return SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
+        LaraiResult result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
+        RUNNING_GUI.set(result.get(LaraiResult.IS_RUNNING_GUI));
+        return result.get(LaraiResult.IS_SUCCESS);
     }
 
-    public static boolean execPrivate(String[] args, WeaverEngine weaverEngine) {
+    public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
+        SpecsLogs.debug("Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
+
         // Reset global state
         MessageConstants.order = 1;
         if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
 
             LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-            return true;
+            // return true;
+            return LaraiResult.newInstance(true, true);
         }
 
         try {
@@ -270,32 +284,53 @@ public class LaraI {
 
             CommandLine cmd = OptionsParser.parse(args, finalOptions);
             if (LaraIUtils.printHelp(cmd, finalOptions)) {
-                return true;
+                // return true;
+                return LaraiResult.newInstance(true, false);
             }
 
             // ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
             ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
             DataStore dataStore;
+            boolean success;
+            boolean isRunningGui;
             switch (mode) {
             // case UNIT_TEST:
             // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
             case CONFIG: // convert configuration file to data store and run
                 // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
                 dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
-                return execPrivate(dataStore, weaverEngine);
+                success = execPrivate(dataStore, weaverEngine);
+                isRunningGui = false;
+                break;
+            // return execPrivate(dataStore, weaverEngine);
             case CONFIG_GUI: // get the configuration file and execute GUI
                 File guiFile = OptionsParser.getConfigFile(cmd);
                 LaraLauncher.launchGUI(weaverEngine, Optional.of(guiFile));
+                success = true;
+                isRunningGui = true;
                 break;
             case OPTIONS: // convert options to data store and run
                 dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
-                return execPrivate(dataStore, weaverEngine);
+                // return execPrivate(dataStore, weaverEngine);
+                success = execPrivate(dataStore, weaverEngine);
+                isRunningGui = false;
+                break;
             case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
                 dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
-                return execPrivate(dataStore, weaverEngine);
+                // return execPrivate(dataStore, weaverEngine);
+                success = execPrivate(dataStore, weaverEngine);
+                isRunningGui = false;
+                break;
             case GUI:
                 LaraLauncher.launchGUI(weaverEngine, Optional.empty());
+                success = true;
+                isRunningGui = true;
+                break;
+            default:
+                throw new NotImplementedException(mode);
             }
+
+            return LaraiResult.newInstance(success, isRunningGui);
 
         } catch (final Exception e) {
 
@@ -305,7 +340,7 @@ public class LaraI {
                 weaverEngine.removeWeaver();
             }
         }
-        return true;
+        // return true;
     }
 
     /**
@@ -683,7 +718,11 @@ public class LaraI {
     public static void main(String args[]) {
         SpecsSystem.programStandardInit();
         // SpecsProperty.ShowStackTrace.applyProperty("true");
-        exec(args, new DefaultWeaver());
+        exec(args);
+    }
+
+    public static boolean exec(String args[]) {
+        return exec(args, new DefaultWeaver());
     }
 
     public WeaverEngine getEngine() {

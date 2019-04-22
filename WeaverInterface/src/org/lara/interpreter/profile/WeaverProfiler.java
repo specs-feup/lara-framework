@@ -145,7 +145,7 @@ public abstract class WeaverProfiler extends AGear {
         switch (data.getStage()) {
 
         case BEGIN:
-            report.incSelects();
+            report.inc(ReportField.SELECTS);
 
             break;
         case END:
@@ -186,12 +186,12 @@ public abstract class WeaverProfiler extends AGear {
         switch (data.getStage()) {
 
         case BEGIN:
-            report.incJoinPoints();
+            report.inc(ReportField.JOIN_POINTS);
             break;
         case END:
-            // if (data.isApprovedByFilter()) {
-            // report.incFilteredJoinPoints();
-            // }
+            if (data.isApprovedByFilter()) {
+                report.inc(ReportField.FILTERED_JOIN_POINTS);
+            }
             break;
         default:
             break;
@@ -207,8 +207,7 @@ public abstract class WeaverProfiler extends AGear {
     public final void onApply(ApplyIterationEvent data) {
         onApplyImpl(data);
         if (data.getStage().equals(Stage.BEGIN)) {
-
-            report.incApplies();
+            report.inc(ReportField.APPLIES);
             // report.addApplyIteration(data.getPointcutChain());
         }
     }
@@ -217,7 +216,7 @@ public abstract class WeaverProfiler extends AGear {
     public final void onAttribute(AttributeEvent data) {
         onAttributeImpl(data);
         if (data.getStage().equals(Stage.END)) {
-            report.incAttributes();
+            report.inc(ReportField.ATTRIBUTES);
         }
     }
 
@@ -229,7 +228,7 @@ public abstract class WeaverProfiler extends AGear {
             // System.out.println("[DEBUG] ACTION " + data.getActionName());
             if (data.getActionName().equals("insert")) {
                 // System.out.println("[DEBUG] INSERT" + report.getInserts());
-                report.incInserts();
+                report.inc(ReportField.INSERTS);
                 // reportNativeLoc(data.getArguments().get(1), true);
             }
         }
@@ -237,7 +236,8 @@ public abstract class WeaverProfiler extends AGear {
 
     @Override
     public final void reset() {
-        report.reset();
+        // report.reset();
+        report = new WeavingReport();
         resetImpl();
     }
 
@@ -251,11 +251,19 @@ public abstract class WeaverProfiler extends AGear {
      */
     public final void reportLOCs(int locs, boolean insertAction) {
 
+        // if (insertAction) {
+        // report.incNativeLOCs(locs);
+        // } else {
+        // report.incTotalLOCs(locs);
+        // }
+
         if (insertAction) {
-            report.incNativeLOCs(locs);
-        } else {
-            report.incTotalLOCs(locs);
+            report.inc(ReportField.NATIVE_LOCS, locs);
         }
+
+        // Always increase total locs
+        report.inc(ReportField.TOTAL_LOCS, locs);
+
     }
 
     /**
@@ -267,18 +275,18 @@ public abstract class WeaverProfiler extends AGear {
 
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
-                    .report("tokens", report.getNumTokens())
+                    .report("tokens", report.get(ReportField.TOKENS))
                     .report("aspects", report.getNumAspectCalls())
-                    .report("selects", report.getSelects())
-                    .report("joinPoints", report.getJoinPoints())
-                    .report("filteredJoinPoints", report.getFilteredJoinPoints())
-                    .report("applies", report.getApplies())
+                    .report("selects", report.get(ReportField.SELECTS))
+                    .report("joinPoints", report.get(ReportField.JOIN_POINTS))
+                    .report("filteredJoinPoints", report.get(ReportField.FILTERED_JOIN_POINTS))
+                    .report("applies", report.get(ReportField.APPLIES))
                     .report("actions", report.getNumActions())
-                    .report("inserts", report.getInserts())
-                    .report("attributes", report.getAttributes())
-                    .report("insertNativeLOCs", report.getNativeLOCs())
-                    .report("totalNativeLOCs", report.getTotalLOCs())
-                    .report("runs", report.getRuns())
+                    .report("inserts", report.get(ReportField.INSERTS))
+                    .report("attributes", report.get(ReportField.ATTRIBUTES))
+                    .report("insertNativeLOCs", report.get(ReportField.NATIVE_LOCS))
+                    .report("totalNativeLOCs", report.get(ReportField.TOTAL_LOCS))
+                    .report("runs", report.get(ReportField.RUNS))
                     .report("aspectsCalled", report.getAspectsMap())
                     .report("actionsPerformed", report.getActionsMap());
 
@@ -314,7 +322,7 @@ public abstract class WeaverProfiler extends AGear {
     }
 
     public void reportLaraNumTokens(int numMainLaraTokens) {
-        report.setNumTokens(numMainLaraTokens);
+        report.set(ReportField.TOKENS, numMainLaraTokens);
     }
 
 }

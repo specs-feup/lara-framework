@@ -244,6 +244,13 @@ public class LaraIDataStore implements LaraiKeys {
         return OptionalFile.newInstance(null);
     }
 
+    public boolean isLaraLoc() {
+        if (dataStore.hasValue(LaraiKeys.LARA_LOC)) {
+            return dataStore.get(LaraiKeys.LARA_LOC);
+        }
+        return false;
+    }
+
     public String getAspectArgumentsStr() {
         if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
@@ -312,18 +319,23 @@ public class LaraIDataStore implements LaraiKeys {
     public FileList getProcessedIncludeDirs(WeaverEngine weaverEngine) {
         FileList includeDirs = getIncludeDirs();
 
+        // SpecsLogs.debug(() -> "Original LARA include dirs: " + includeDirs);
+
         // Process GIT repositories
-        includeDirs = processExternalDependencies(includeDirs);
+        FileList includeDirsAfterGit = processExternalDependencies(includeDirs);
+        // SpecsLogs.debug(() -> "Include dirs after GIT repositories: " + includeDirsAfterGit);
 
         // Process Bundles
         LaraBundle laraBundle = new LaraBundle(weaverEngine.getName(), getBundleTags());
-        includeDirs = laraBundle.process(includeDirs);
+        FileList includeDirsAfterBundles = laraBundle.process(includeDirsAfterGit);
+        // SpecsLogs.debug(() -> "Include dirs after bundles: " + includeDirsAfterBundles);
 
-        // Process LARA Resources
+        // Process LARA Resources, but only of active bundles
         LaraResource laraResource = new LaraResource(weaverEngine);
-        includeDirs = laraResource.process(includeDirs);
+        FileList includeDirsAfterResources = laraResource.process(includeDirsAfterBundles);
+        // SpecsLogs.debug(() -> "Include dirs after LARA resources: " + includeDirsAfterResources);
 
-        return includeDirs;
+        return includeDirsAfterResources;
     }
 
     private FileList processExternalDependencies(FileList includeDirs) {

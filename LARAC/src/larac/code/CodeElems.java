@@ -1,4 +1,4 @@
-package pt.up.fe.specs.lara.doc.aspectir;
+package larac.code;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import com.google.common.base.Preconditions;
 
 import pt.up.fe.specs.lara.aspectir.Code;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
@@ -17,9 +15,9 @@ import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
 import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Statement;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.classmap.FunctionClassMap;
 import pt.up.fe.specs.util.lazy.Lazy;
-import pt.up.fe.specs.util.providers.StringProvider;
 import tdrc.utils.StringUtils;
 
 public class CodeElems {
@@ -98,18 +96,18 @@ public class CodeElems {
         // Preconditions.checkArgument(stringLiteralExpr instanceof
         // Expression.class, "Expected a code element of type Expression, got
         // "+stringLiteralExpr.);
-        Preconditions.checkArgument(stringLiteral.exprs.size() == 1,
-                "Expected to have one expression, has " + stringLiteral.exprs.size());
+        // Preconditions.checkArgument(stringLiteral.exprs.size() == 1,
+        // "Expected to have one expression, has " + stringLiteral.exprs.size());
+        SpecsCheck.checkSize(stringLiteral.exprs, 1);
         Expression expression = stringLiteral.exprs.get(0);
 
-        Preconditions.checkArgument(expression instanceof ExprLiteral,
-                (StringProvider) (() -> "Expected first expression to be a literal, is a "
-                        + expression.getClass().getSimpleName()));
+        SpecsCheck.checkArgument(expression instanceof ExprLiteral,
+                () -> "Expected first expression to be a literal, is a " + expression.getClass().getSimpleName());
 
         ExprLiteral exprLiteral = (ExprLiteral) expression;
 
-        Preconditions.checkArgument(exprLiteral.type.equals("string"),
-                "Expected type to be string, is " + exprLiteral.type);
+        SpecsCheck.checkArgument(exprLiteral.type.equals("string"),
+                () -> "Expected type to be string, is " + exprLiteral.type);
 
         return exprLiteral.value;
 
@@ -130,8 +128,8 @@ public class CodeElems {
     public static <T extends CodeElem> T get(int index, List<? extends CodeElem> elements, Class<T> elemClass) {
         CodeElem element = elements.get(index);
 
-        Preconditions.checkArgument(elemClass.isInstance(element),
-                "Expected code element at index " + index + " to be a " + elemClass.getSimpleName());
+        SpecsCheck.checkArgument(elemClass.isInstance(element),
+                () -> "Expected code element at index " + index + " to be a " + elemClass.getSimpleName());
 
         return elemClass.cast(element);
     }
