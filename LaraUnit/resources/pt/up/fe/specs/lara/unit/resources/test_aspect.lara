@@ -1,5 +1,8 @@
 import <IMPORT_PATH>;
 
+// Global variable with base folder
+LARA_UNIT_BASE_FOLDER = "<BASE_FOLDER>";
+
 // Test aspect
 aspectdef Main
 

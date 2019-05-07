@@ -33,6 +33,7 @@ import pt.up.fe.specs.lara.doc.parser.LaraDocParser;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.utilities.Replacer;
 
 public class LaraUnitHarnessBuilder implements AutoCloseable {
@@ -149,6 +150,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         Replacer replacer = new Replacer(LaraUnitResource.TEST_ASPECT);
         replacer.replace("<IMPORT_PATH>", importPath);
         replacer.replace("<TEST_CALL>", testCall);
+        replacer.replace("<BASE_FOLDER>", SpecsStrings.escapeJson(baseFolder.getAbsolutePath()));
 
         String suffix = isAspect ? "_aspect" : "_function";
 
