@@ -102,7 +102,8 @@ public class LaraUnitReport {
         }
 
         report.append("\nTotal Tests: " + testCounter).append("\n");
-        report.append("Passed / Failed: " + passedTestsCount + " / " + failedTestsCounter).append("\n");
+        report.append("Passed / Total: " + passedTestsCount + " / " + testCounter).append("\n");
+        report.append("Failed: " + failedTestsCounter).append("\n");
 
         if (passedTestsCount == testCounter) {
             report.append("\n ALL TEST PASSED!");
