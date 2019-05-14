@@ -19,3 +19,21 @@ Weaver.getLaraLocTotals = function() {
 	var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
 	return Java.type("org.lara.interpreter.utils.LaraIUtils").getLaraLoc(Weaver.getWeaverEngine(), LaraI.getThreadLocalData()).get(laraLoc.getTotalsKey());
 }
+
+/**
+ * @param $joinpoint
+ * @param {String} type 
+ */
+Weaver.isJoinPoint = function($joinpoint, type) {
+	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
+
+	if(type === undefined) {
+		return isJoinPoint;
+	}
+
+	if(!isJoinPoint) {
+		throw "Weaver.isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point";
+	}
+	
+	return $joinpoint.instanceof(type);
+}
