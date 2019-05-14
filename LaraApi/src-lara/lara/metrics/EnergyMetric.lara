@@ -1,4 +1,5 @@
 import lara.metrics.Metric;
+import lara.metrics.MetricResult;
 import lara.code.Energy;
 import lara.Strings;
 
