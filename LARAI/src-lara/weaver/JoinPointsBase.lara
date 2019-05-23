@@ -1,3 +1,5 @@
+import weaver.Weaver;
+
 /**
  * Object which provides low-level join point-related methods.
  * @constructor
@@ -10,7 +12,7 @@ function JoinPoints() {
  * @return {$jp} the current root node of the AST
  */
 JoinPoints.prototype.root = function() {
-	throw "_WeaverHelper.rootNode: not implemented";
+	return Weaver.getWeaverEngine().getRootJp();
 }
 
 /**
