@@ -33,6 +33,7 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
@@ -347,6 +348,10 @@ public abstract class WeaverEngine {
     public boolean executeUnitTestMode(DataStore dataStore) {
         SpecsLogs.msgInfo("Unit testing mode not implemented yet for this weaver");
         return false;
+    }
+
+    public void writeCode(File outputFolder) {
+        throw new NotImplementedException(getClass().getSimpleName() + ".writeCode() not yet implemented!");
     }
 
 }
