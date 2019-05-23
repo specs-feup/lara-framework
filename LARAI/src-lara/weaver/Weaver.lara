@@ -20,6 +20,15 @@ Weaver.getLaraLocTotals = function() {
 	return Java.type("org.lara.interpreter.utils.LaraIUtils").getLaraLoc(Weaver.getWeaverEngine(), LaraI.getThreadLocalData()).get(laraLoc.getTotalsKey());
 }
 
+Weaver.writeCode = function(outputFolder) {
+	if(outputFolder === undefined) {
+		println("Weaver.writeCode: Output folder not defined");
+		return;
+	}
+	
+	Weaver.getWeaverEngine().writeCode(outputFolder);
+}
+
 /**
  * @param $joinpoint
  * @param {String} type 
