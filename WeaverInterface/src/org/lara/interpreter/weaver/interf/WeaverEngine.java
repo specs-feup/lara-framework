@@ -152,6 +152,15 @@ public abstract class WeaverEngine {
     public abstract String getRoot();
 
     /**
+     * Function that can be called from LARA code to retrieve the root join point
+     * 
+     * @return
+     */
+    public JoinPoint getRootJp() {
+        return select();
+    }
+
+    /**
      * Returns a list of options the weaver accepts
      *
      * @return
