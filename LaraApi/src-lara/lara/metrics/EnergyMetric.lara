@@ -33,3 +33,7 @@ EnergyMetric.prototype.report = function(processExecutor) {
 EnergyMetric.prototype.getImport = function() {
 		return "lara.metrics.EnergyMetric";
 }
+
+EnergyMetric.prototype.getUnit = function() {
+		return this.energy.getPrintUnit();
+}

@@ -28,9 +28,13 @@ ExecutionTimeMetric.prototype.instrument = function($start, $end) {
 ExecutionTimeMetric.prototype.report = function(processExecutor) {
 	var value = Strings.extractValue(this._prefix, processExecutor.getConsoleOutput());	
 
-	return new MetricResult(parseFloat(value), "ns");
+	return new MetricResult(parseFloat(value), this.getUnit());
 }
 
 ExecutionTimeMetric.prototype.getImport = function() {
 	return "lara.metrics.ExecutionTimeMetric";
+}
+
+ExecutionTimeMetric.prototype.getUnit = function() {
+		return "ns";
 }

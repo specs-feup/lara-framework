@@ -21,9 +21,13 @@ FileSizeMetric.prototype.report = function(processExecutor) {
 	var exeFile = processExecutor.getExecutableFile();
 	var fileSize = exeFile !== undefined ? exeFile.length() : -1;
 	
-	return new MetricResult(fileSize, "bytes");
+	return new MetricResult(fileSize, this.getUnit());
 }
 
 FileSizeMetric.prototype.getImport = function() {
 		return "lara.metrics.FileSizeMetric";
+}
+
+FileSizeMetric.prototype.getUnit = function() {
+		return "bytes";
 }
