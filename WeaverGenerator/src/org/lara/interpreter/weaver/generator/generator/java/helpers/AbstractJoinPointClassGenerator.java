@@ -300,7 +300,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
     /**
      * E.g.: Optional&lt;? extends AExpression&gt;
-     * 
+     *
      * @param javaC
      * @param joinPointType
      * @param fieldName
