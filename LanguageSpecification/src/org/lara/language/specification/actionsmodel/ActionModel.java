@@ -1,11 +1,11 @@
 /**
  * Copyright 2013 SPeCS Research Group.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -53,7 +53,7 @@ public class ActionModel implements IModel {
     /**
      * Create a new instance of the {@link ActionModel} according to an xml file specification, plus an xsd schema for
      * validation
-     * 
+     *
      * @param actionsModelFile
      * @param schema
      * @throws JAXBException
@@ -63,24 +63,24 @@ public class ActionModel implements IModel {
     /*
      * public ActionModel(File actionsModelFile, boolean validate) throws
      * JAXBException, SAXException, XMLParseException {
-     * 
+     *
      * this(new StreamSource(actionsModelFile), actionsModelFile.getName(),
      * validate); }
      */
 
     /*
      * public ActionModel(ResourceProvider actions, boolean validate) {
-     * 
-     * 
+     *
+     *
      * try(InputStream actionStream = IoUtils.resourceToStream(actions); new
      * StreamSource(actionStream)) {
-     * 
+     *
      * }
-     * 
+     *
      * ActionModel actionModel = new ActionModel(new StreamSource(actionStream),
      * "default", validate);
-     * 
-     * 
+     *
+     *
      * }
      */
 
@@ -134,7 +134,7 @@ public class ActionModel implements IModel {
     /*
      * public ActionModel(Source joinPointModelSource, String sourceName,
      * boolean validate) throws JAXBException, SAXException {
-     * 
+     *
      * InputStream iS = null; if (validate) { iS =
      * IoUtils.resourceToStream(LanguageSpecificationResources.ActionModelSchema
      * .getResource()); } this.actionsList =
@@ -153,7 +153,7 @@ public class ActionModel implements IModel {
 
     /**
      * Create a new instance with a predefined list of artifacts
-     * 
+     *
      * @param actionsList
      */
     public ActionModel(ActionsList actionsList) {
@@ -172,7 +172,7 @@ public class ActionModel implements IModel {
 
     /**
      * Returns a list of specific actions pertaining to a join point. Excludes global actions
-     * 
+     *
      * @param joinPointType
      *            the join point owner of the actions
      * @return
@@ -197,7 +197,7 @@ public class ActionModel implements IModel {
 
     /**
      * Returns a list of actions pertaining to a join point. Includes global actions
-     * 
+     *
      * @param joinPointType
      *            the join point owner of the actions
      * @return
@@ -217,6 +217,8 @@ public class ActionModel implements IModel {
         final Action insertAct = new Action();
         insertAct.setName("insert");
         insertAct.setClazz("*");
+        // action 'insert' returns an array of join points
+        insertAct.setReturn("Joinpoint[]");
         final Parameter positionParam = new Parameter();
         positionParam.setName("position");
         positionParam.setType("String");
@@ -251,20 +253,20 @@ public class ActionModel implements IModel {
      * "throw new UnsupportedOperationException(\"Join point \"+" +
      * GET_CLASS_NAME + "()+\": Action insert not implemented \");");
      * abstJPClass.add(insertMethod);
-     * 
+     *
      * Method defMethod = new Method(void.class.getSimpleName(), "def");
      * defMethod.addArgument("String", "attribute");
      * defMethod.addArgument("Object", "value"); defMethod.appendCode(
      * "throw new UnsupportedOperationException(\"Join point \"+" +
      * GET_CLASS_NAME + "()+\": Action def not implemented \");");
      * abstJPClass.add(defMethod);
-     * 
+     *
      */
 
     /**
      * Returns a list of all actions pertaining to a join point. Includes global actions and actions pertaining to the
      * super join point
-     * 
+     *
      * @param joinPointType
      *            the join point owner of the actions
      * @return
@@ -312,7 +314,7 @@ public class ActionModel implements IModel {
 
     /**
      * Returns a list of actions pertaining to all join points.
-     * 
+     *
      * @return
      */
     public List<Action> getActionsForAll() {
@@ -331,7 +333,7 @@ public class ActionModel implements IModel {
      * <b>NOTE:</b> This method should not be used as we accept method overloading. Please use
      * {@link ActionModel#getActions}. <br>
      * Get an {@link Action} with the specified name.
-     * 
+     *
      * @param actionName
      * @return the {@link Action}; or null if there is no action with the specified name
      */
@@ -350,7 +352,7 @@ public class ActionModel implements IModel {
 
     /**
      * Returns a list of actions with the given name
-     * 
+     *
      * @param actionName
      * @return
      */
@@ -368,7 +370,7 @@ public class ActionModel implements IModel {
 
     /**
      * Get a specific parameter
-     * 
+     *
      * @param parameterName
      * @param act
      * @return
@@ -387,7 +389,7 @@ public class ActionModel implements IModel {
 
     /**
      * Generate an XML representation of the Artifacts list
-     * 
+     *
      * @param oStream
      * @throws JAXBException
      */
