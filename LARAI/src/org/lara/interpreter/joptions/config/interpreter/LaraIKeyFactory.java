@@ -286,9 +286,13 @@ public class LaraIKeyFactory {
                 .setKeyPanelProvider((key, data) -> new EnumRadioButtonPanel<>(key, data));
     }
 
-    public static String customSetterLaraArgs(String args, DataStore dataStore) {
+    public static String customGetterLaraArgs(String args, DataStore dataStore) {
         String finalArgs = args;
         String trimmedArgs = args.strip();
+
+        if (trimmedArgs.isEmpty()) {
+            return args;
+        }
 
         if (!trimmedArgs.startsWith("{")) {
             finalArgs = "{" + finalArgs;

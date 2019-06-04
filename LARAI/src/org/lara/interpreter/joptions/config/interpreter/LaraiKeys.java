@@ -45,7 +45,7 @@ public interface LaraiKeys {
     DataKey<String> MAIN_ASPECT = KeyFactory.string("main").setLabel("Main Aspect");
 
     DataKey<String> ASPECT_ARGS = KeyFactory.string("argv").setLabel("Aspect Arguments")
-            .setCustomSetter(LaraIKeyFactory::customSetterLaraArgs);
+            .setCustomGetter(LaraIKeyFactory::customGetterLaraArgs);
 
     // DataKey<DataStore> WEAVER_ARGS = KeyFactory.dataStore("argw", new StoreDefinitionBuilder("Weaver Options"))
     // .setLabel("Weaver Options");
