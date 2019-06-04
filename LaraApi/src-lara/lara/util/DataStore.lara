@@ -1,4 +1,5 @@
 import lara.util.StringSet;
+import lara.Io;
 
 /**
  * Interface with Java class DataStore, used for storing arbitrary information.
@@ -170,7 +171,8 @@ DataStore.prototype._processKey = function(key, functionName) {
 	realKey = realKey === undefined ? key : realKey;
 	
 	// Check the correct key
-	this._checkKey(realKey, functionName);
+	// Disabled check in order to use extra information, such as the folder of the configuration file, when present
+	//this._checkKey(realKey, functionName);
 	
 	return realKey;
 }
@@ -224,3 +226,34 @@ DataStore.prototype.hasValue = function(key) {
 	return this.data.hasValueRaw(key);
 }
 
+
+/**
+ * The folder of the configuration file, it one was used, or undefined otherwise.
+ */
+DataStore.prototype.getConfigurationFolder = function() {
+	var currentFolder = this.data.getTry("joptions_current_folder_path").orElse(null);
+	
+	if(isUndefined(currentFolder)) {
+		return undefined;
+	}
+	
+	return currentFolder;
+}; 
+
+/**
+ * The folder that is considered the working folder of the current context.
+ *  
+ * 1) If a configuration file was used, returns the path of the configuration file;
+ * 2) Otherwise, returns the folder from where the weaver was launched.
+ *
+ * @return {J#java.io.File} The folder where the code represented by the AST will be written at the end of execution.
+ */
+DataStore.prototype.getContextFolder = function() {
+	var currentFolder = this.getConfigurationFolder();
+	
+	if(currentFolder === undefined) {
+		currentFolder = Io.getWorkingFolder();
+	}
+	
+	return currentFolder;
+}; 
