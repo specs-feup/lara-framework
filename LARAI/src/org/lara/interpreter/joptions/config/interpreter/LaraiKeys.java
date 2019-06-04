@@ -99,12 +99,21 @@ public interface LaraiKeys {
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 
+    /// Keys outside of the definition
+
+    // If DataStore comes from a configuration file, stores the path to the file
+    // DataKey<Optional<File>> CONFIGURATION_FILE = KeyFactory.optional("configurationFile");
+
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
                     EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
                     LOG_JS_OUTPUT,
                     DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE)
             .build();
+
+    // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")
+    // .addKeys(CONFIGURATION_FILE)
+    // .build();
 
     /**
      * Backup code

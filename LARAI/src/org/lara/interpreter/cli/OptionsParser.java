@@ -334,11 +334,40 @@ public class OptionsParser {
         return persistence;
     }
 
+    /**
+     * The 'public' StoreDefinition that will be used for the user interface. It is a subset of the complete definition.
+     *
+     * @param engine
+     * @return
+     */
     public static StoreDefinition getLaraStoreDefinition(WeaverEngine engine) {
         StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
         builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
         builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
         StoreDefinition laraiDefinition = builder.build();
         return laraiDefinition;
+        // return getLaraStoreDefinition(engine, false);
     }
+
+    // /**
+    // *
+    // * @param engine
+    // * @return
+    // */
+    // public static StoreDefinition getLaraStoreDefinitionComplete(WeaverEngine engine) {
+    // return getLaraStoreDefinition(engine, true);
+    // }
+    //
+    // private static StoreDefinition getLaraStoreDefinition(WeaverEngine engine, boolean isComplete) {
+    // StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
+    // builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
+    // builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
+    //
+    // if (isComplete) {
+    // builder.addDefinition(LaraiKeys.STORE_DEFINITION_EXTRA);
+    // }
+    //
+    // StoreDefinition laraiDefinition = builder.build();
+    // return laraiDefinition;
+    // }
 }

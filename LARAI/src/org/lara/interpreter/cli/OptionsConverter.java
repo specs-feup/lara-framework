@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -42,7 +42,7 @@ public class OptionsConverter {
 
     /**
      * Adds the commandline options into an existing datastore, using the Mapping in {@link JOptionsInterface}
-     * 
+     *
      * @param laraFileName
      * @param cmd
      * @return
@@ -87,7 +87,7 @@ public class OptionsConverter {
 
     /**
      * Convert the commandline into a datastore, using the Mapping in {@link JOptionsInterface}
-     * 
+     *
      * @param laraFileName
      * @param cmd
      * @return
@@ -219,7 +219,7 @@ public class OptionsConverter {
 
     /**
      * Convert the varargs into a DataStore
-     * 
+     *
      * @param args
      */
     private static DataStore getDataStoreFromArgs(CommandLine cmd) {
