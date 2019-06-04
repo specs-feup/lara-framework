@@ -32,6 +32,7 @@ import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Datakey.CustomGetter;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
+import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.Utils.EnumCodec;
 import org.suikasoft.jOptions.gui.panels.option.FilePanel;
 
@@ -105,14 +106,14 @@ public class LaraIKeyFactory {
     	if (!file.getAbsoluteFile().exists()) {
     	    LoggingUtils
     		    .msgInfo("Path '" + file.getAbsolutePath() + "' does not exist, treating it as a folder");
-    
+
     	    isFolder = true;
     	}
-    
+
     	File processedFile = KeyFactory.customGetterFile(isFolder, create).get(file, dataStore);
     	processedFiles.add(processedFile);
         }
-    
+
         return FileList.newInstance(processedFiles);
     };
     }
@@ -283,6 +284,21 @@ public class LaraIKeyFactory {
                 .setDefault(() -> anEnum.getEnumConstants()[0])
                 .setDecoder(new EnumCodec<>(anEnum))
                 .setKeyPanelProvider((key, data) -> new EnumRadioButtonPanel<>(key, data));
+    }
+
+    public static String customSetterLaraArgs(String args, DataStore dataStore) {
+        String finalArgs = args;
+        String trimmedArgs = args.strip();
+
+        if (!trimmedArgs.startsWith("{")) {
+            finalArgs = "{" + finalArgs;
+        }
+
+        if (!trimmedArgs.endsWith("}")) {
+            finalArgs = finalArgs + "}";
+        }
+
+        return finalArgs;
     }
 
 }
