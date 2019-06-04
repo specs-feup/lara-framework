@@ -231,7 +231,7 @@ DataStore.prototype.hasValue = function(key) {
  * The folder of the configuration file, it one was used, or undefined otherwise.
  */
 DataStore.prototype.getConfigurationFolder = function() {
-	var currentFolder = this.data.getTry("joptions_current_folder_path").orElse(null);
+	var currentFolder = this.data.get("joptions_current_folder_path");
 	
 	if(isUndefined(currentFolder)) {
 		return undefined;
