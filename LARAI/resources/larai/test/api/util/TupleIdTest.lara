@@ -11,9 +11,11 @@ aspectdef TupleIdTest
 	println(tupleId.getId("a", "hasOwnProperty", "d"));
 	println(tupleId.getId("a", "hasOwnProperty"));
 	
-	printlnObject(tupleId);
 	
 	println("Tuples:");
-	printlnObject(tupleId.getTuples());
+	var tuples = tupleId.getTuples();
+	for(var key in tuples) {
+		println(key + " -> " + tuples[key]);
+	}
 	
 end
