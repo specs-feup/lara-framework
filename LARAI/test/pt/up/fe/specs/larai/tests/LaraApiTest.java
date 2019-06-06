@@ -123,4 +123,9 @@ public class LaraApiTest {
     public void testCallInFunction() {
         newTester().test("CallInFunction.lara");
     }
+
+    @Test
+    public void testTupleId() {
+        newTester().test("util/TupleIdTest.lara");
+    }
 }
