@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
+import org.lara.interpreter.weaver.js.JsEngineType;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -90,6 +91,11 @@ public interface LaraiKeys {
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restric mode (some Java classes are not allowed)");
 
+    DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
+            .setLabel("JavaScript Engine")
+            // TODO: Change to GraalVM when transition is done
+            .setDefault(() -> JsEngineType.NASHORN);
+
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
     // .setLabel("Unit-testing arguments");
@@ -109,7 +115,7 @@ public interface LaraiKeys {
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
                     EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
                     LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE)
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)
             .build();
 
     // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")

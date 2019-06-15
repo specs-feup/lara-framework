@@ -38,10 +38,10 @@ import org.lara.interpreter.weaver.events.EventTriggerGenerator;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.interpreter.weaver.js.JsEngine;
 
 import com.google.common.base.Preconditions;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.objects.Enums.Types;
 import larac.utils.output.Output;
 import larac.utils.xml.Pair;
@@ -75,7 +75,7 @@ public class Interpreter {
     private final LaraI laraInterp;
     private final LaraIDataStore options;
     private Output out = new Output();
-    private final NashornScriptEngine engine;
+    private final JsEngine engine;
     private final WeaverStatementProcessor wStmtProcessor;
     private final AspectClassProcessor aspectProcessor;
     private final ImportProcessor importProcessor;
@@ -94,7 +94,7 @@ public class Interpreter {
      * @param scope
      *            the scope for this interpreter
      */
-    public Interpreter(LaraI laraInt, NashornScriptEngine engine) {
+    public Interpreter(LaraI laraInt, JsEngine engine) {
         laraInterp = laraInt;
         options = laraInterp.getOptions();
         out = laraInterp.out;
@@ -111,6 +111,10 @@ public class Interpreter {
             setprintStream(out.getOutStream());
         }
 
+    }
+
+    public JsEngine getEngine() {
+        return engine;
     }
 
     /**
@@ -171,7 +175,7 @@ public class Interpreter {
     public Object evaluate(String code) {
 
         try {
-            return engine.eval(code);
+            return engine.getEngine().eval(code);
         } catch (ScriptException e) {
             throw new EvaluationException(e);
         }
@@ -518,7 +522,7 @@ public class Interpreter {
 
     /**
      * Returns a pair in which the left is the target object (if any) and the right side is the actual method invoked
-     * 
+     *
      * @param exprCall
      * @param call
      * @return
@@ -1022,8 +1026,8 @@ public class Interpreter {
      */
     private void setprintStream(PrintStream printStream) {
         // private void setprintStream(OutputStream printStream) {
-        engine.put("outputStream", printStream);
-        engine.put("errorStream", printStream);
+        engine.getEngine().put("outputStream", printStream);
+        engine.getEngine().put("errorStream", printStream);
     }
 
     /**
@@ -1033,7 +1037,7 @@ public class Interpreter {
      * @param value
      */
     public void put(String key, Object value) {
-        engine.put(key, value);
+        engine.getEngine().put(key, value);
 
     }
 

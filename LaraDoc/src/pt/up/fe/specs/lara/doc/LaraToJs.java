@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngineManager;
-
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
@@ -32,11 +30,12 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.js.JsEngine;
+import org.lara.interpreter.weaver.js.NashornEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.w3c.dom.Document;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.LaraC;
 import larac.utils.output.Output;
 import larai.LaraI;
@@ -49,7 +48,7 @@ import pt.up.fe.specs.util.lazy.Lazy;
 
 /**
  * Convert Lara to JS.
- * 
+ *
  * @author JoaoBispo
  *
  */
@@ -81,7 +80,7 @@ public class LaraToJs {
         // data.add(LaraiKeys.VERBOSE, VerboseLevel.errors);
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
-        NashornScriptEngine jsEngine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+        JsEngine jsEngine = new NashornEngine();
         larai.getWeaverEngine().setScriptEngine(jsEngine);
 
         FileList folderApplication = FileList.newInstance();
@@ -105,7 +104,7 @@ public class LaraToJs {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
-        
+
         args.add(laraFile.getAbsolutePath());
         args.add("--doc");
         args.add("--verbose");
@@ -117,24 +116,24 @@ public class LaraToJs {
         // preprocess.add("-i");
         // preprocess.add(encodedIncludes);
         // }
-        
+
         // lara files as resources
         // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
         // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
         // laraAPIs.addAll(options.getLaraAPIs());
-        
+
         LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
         Document aspectIr = null;
-        
+
         try {
             aspectIr = larac.compile();
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
             return;
         }
-        
+
         // String aspectXml = toXml(aspectIr);
-        
+
         // LaraI.main(args);
         Aspects asps = null;
         try {
@@ -142,7 +141,7 @@ public class LaraToJs {
             // System.out.println("--- IR BEFORE ---");
             // lara.printAspectIR();
             // System.out.println("--- IR AFTER ---");
-        
+
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
             return;
@@ -247,7 +246,7 @@ public class LaraToJs {
 
     /**
      * Applies several cleaning passes to the generated JS code (removes for each, with, quotes...)
-     * 
+     *
      * @param string
      * @return
      */
@@ -294,7 +293,7 @@ public class LaraToJs {
     }
 
     /**
-     * 
+     *
      * @param module
      * @return the JavaScript files generated from the LARA files in the given module
      */

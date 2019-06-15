@@ -49,9 +49,9 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
+import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import larai.LaraI;
 import pt.up.fe.specs.lara.loc.LaraLoc;
@@ -97,7 +97,7 @@ public class MasterWeaver {
      * @param scope
      *            the current javascript context
      */
-    public MasterWeaver(LaraI larai, WeaverEngine weaverEngine, FileList sources, NashornScriptEngine engine) {
+    public MasterWeaver(LaraI larai, WeaverEngine weaverEngine, FileList sources, JsEngine engine) {
         eventTrigger = new EventTrigger();
         weaverEngine.setEventTrigger(eventTrigger);
 

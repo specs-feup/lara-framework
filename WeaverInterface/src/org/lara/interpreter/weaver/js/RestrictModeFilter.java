@@ -11,37 +11,43 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package larai.filters;
+package org.lara.interpreter.weaver.js;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import jdk.nashorn.api.scripting.ClassFilter;
-import pt.up.fe.specs.lara.LaraSystemTools;
 
 /**
- * @deprecated Moved class to WeaverInterface
+ * @deprecated Uses Nashorn classes
  * @author JoaoBispo
  *
  */
 @Deprecated
 public class RestrictModeFilter implements ClassFilter {
 
+    private final Set<String> blacklistedClasses;
+
+    public RestrictModeFilter(Collection<Class<?>> blacklistedClasses) {
+        this.blacklistedClasses = buildForbiddenClasses(blacklistedClasses);
+    }
+
     // TODO: Put LARASystem.class eventually
-    private static final Set<String> FORBIDDEN_CLASSES = buildForbiddenClasses(ProcessBuilder.class,
-            LaraSystemTools.class);
+    // private static final Set<String> FORBIDDEN_CLASSES = buildForbiddenClasses(ProcessBuilder.class,
+    // LaraSystemTools.class);
 
     @Override
     public boolean exposeToScripts(String classname) {
         // System.out.println("CLASS NAME:" + classname);
-        if (FORBIDDEN_CLASSES.contains(classname)) {
+        if (blacklistedClasses.contains(classname)) {
             return false;
         }
         // System.out.println("PASSED");
         return true;
     }
 
-    private static Set<String> buildForbiddenClasses(Class<?>... classes) {
+    private static Set<String> buildForbiddenClasses(Collection<Class<?>> classes) {
         Set<String> forbiddenClasses = new HashSet<>();
 
         for (Class<?> aClass : classes) {
