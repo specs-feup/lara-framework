@@ -13,27 +13,8 @@
 
 package org.lara.interpreter.weaver.js;
 
-import java.util.Collection;
+public enum JsEngineType {
 
-import javax.script.ScriptEngine;
-
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
-
-public interface JsEngine {
-
-    ScriptEngine getEngine();
-
-    ForOfType getForOfType();
-
-    static JsEngine getEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
-        switch (type) {
-        case NASHORN:
-            return new NashornEngine(forbiddenClasses);
-        case GRAALVM:
-            return new GraalvmJsEngine(forbiddenClasses);
-        default:
-            throw new NotImplementedException(type);
-        }
-    }
-
+    NASHORN,
+    GRAALVM;
 }
