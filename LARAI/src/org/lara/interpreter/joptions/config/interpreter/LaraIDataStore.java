@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -30,6 +30,7 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.js.JsEngineType;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -152,7 +153,7 @@ public class LaraIDataStore implements LaraiKeys {
 
     /**
      * Right now the arguments are going as a single String!
-     * 
+     *
      * @return
      */
     public DataStore getWeaverArgs() {
@@ -290,6 +291,13 @@ public class LaraIDataStore implements LaraiKeys {
             return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
         }
         return Collections.emptyMap();
+    }
+
+    public JsEngineType getJsEngine() {
+        if (dataStore.hasValue(LaraiKeys.JS_ENGINE)) {
+            return dataStore.get(LaraiKeys.JS_ENGINE);
+        }
+        return JS_ENGINE.getDefault().get();
     }
 
     private Map<String, String> parseBundleTags(String bundleTagsString) {

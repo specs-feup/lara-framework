@@ -45,6 +45,7 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.js.JsEngine;
+import org.lara.interpreter.weaver.js.JsEngineType;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -461,7 +462,7 @@ public class LaraI {
         // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
         FileList processedIncludeDirs = laraBundle.process(includeDirs);
-        
+
         // Process LARA Resources
         LaraResource laraResource = new LaraResource(getWeaverEngine());
         processedIncludeDirs = laraResource.process(processedIncludeDirs);
@@ -549,7 +550,7 @@ public class LaraI {
 
     private void interpret(WeaverEngine weaverEngine) {
         // NashornScriptEngine engine = createJsEngine();
-        JsEngine engine = createJsEngine();
+        JsEngine engine = createJsEngine(options.getJsEngine());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -629,13 +630,13 @@ public class LaraI {
     //
     // }
 
-    private JsEngine createJsEngine() {
+    private JsEngine createJsEngine(JsEngineType engineType) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return JsEngine.defaultEngine(FORBIDDEN_CLASSES);
+            return JsEngine.getEngine(engineType, FORBIDDEN_CLASSES);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return JsEngine.defaultEngine(Collections.emptyList());
+        return JsEngine.getEngine(engineType, Collections.emptyList());
         // return new NashornEngine();
     }
 
