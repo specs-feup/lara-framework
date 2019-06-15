@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.script.ScriptEngineManager;
-
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
@@ -30,10 +28,11 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.js.JsEngine;
+import org.lara.interpreter.weaver.js.NashornEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
@@ -94,7 +93,7 @@ public class LaraDoc {
         // data.add(LaraiKeys.VERBOSE, VerboseLevel.errors);
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
-        NashornScriptEngine jsEngine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+        JsEngine jsEngine = new NashornEngine();
         FileList folderApplication = FileList.newInstance();
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
@@ -108,16 +107,16 @@ public class LaraDoc {
     }
     /*
     public void convertFilesV1() {
-    
+
         List<File> allFiles = SpecsIo.getFilesRecursive(inputPath);
-    
+
         // TODO: Filter contents of folders that have file lara.resource
-    
+
         List<File> resourceFiles = allFiles.stream()
                 .filter(file -> file.getName().equals("lara.resource"))
                 .collect(Collectors.toList());
-    
-    
+
+
         List<File> filteredFiles = new ArrayList<>(allFiles);
         for (File resourceFile : resourceFiles) {
             String resourceFolder = resourceFile.getParentFile().getAbsolutePath();
@@ -125,20 +124,20 @@ public class LaraDoc {
                     .filter(file -> !file.getAbsolutePath().startsWith(resourceFolder))
                     .collect(Collectors.toList());
         }
-    
+
         // Parse LARA files
         filteredFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .forEach(this::convertLara);
-    
+
         System.out.println("ALL LARA FILES:" + allFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .count());
-    
+
         System.out.println("FILTERED LARA FILES:" + filteredFiles.stream()
                 .filter(file -> file.getName().endsWith(".lara"))
                 .count());
-    
+
         // Copy JS files, bundle files and resource files
         filteredFiles.stream()
                 .filter(LaraDoc::copyFileFilter)
@@ -151,23 +150,23 @@ public class LaraDoc {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
-    
+
         args.add(laraFile.getAbsolutePath());
         args.add("--doc");
         args.add("--verbose");
         args.add("0");
         LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
         Document aspectIr = null;
-    
+
         try {
             aspectIr = larac.compile();
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
             return;
         }
-    
+
         // String aspectXml = toXml(aspectIr);
-    
+
         // LaraI.main(args);
         Aspects asps = null;
         try {
@@ -175,21 +174,21 @@ public class LaraDoc {
             // System.out.println("--- IR BEFORE ---");
             // lara.printAspectIR();
             // System.out.println("--- IR AFTER ---");
-    
+
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
             return;
             // throw new RuntimeException("Could not create aspects", e);
         }
-    
+
         // Pass through LaraI
         AspectClassProcessor aspectClassProcessor = aspectProcessor.get();
         StringBuilder jsCode = aspectClassProcessor.generateJavaScriptDoc(asps);
-    
+
         // Save js to the same relative location as the original file
         String relativePath = SpecsIo.getRelativePath(laraFile, inputPath);
         File jsFile = new File(outputFolder, SpecsIo.removeExtension(relativePath) + ".js");
-    
+
         SpecsIo.write(jsFile, jsCode.toString());
     }
     */
@@ -212,7 +211,7 @@ public class LaraDoc {
         // Save to the same relative location as the original file
         String relativePath = SpecsIo.getRelativePath(file, inputPath);
         File newFile = new File(outputFolder, relativePath);
-    
+
         SpecsIo.copy(file, newFile);
     }
     */
@@ -393,12 +392,12 @@ public class LaraDoc {
     /*
     private List<LaraFileInfo> getBundleCommonFiles(File bundleFolder) {
         List<LaraFileInfo> commonFiles = new ArrayList<>();
-    
+
         // Add root folder files
         SpecsIo.getFiles(bundleFolder).stream()
                 .map(file -> new LaraFileInfo(file, bundleFolder))
                 .forEach(commonFiles::add);
-    
+
         // Add lara folder files
         File laraFolder = new File(bundleFolder, LaraBundle.getLaraFolderName());
         if (laraFolder.isDirectory()) {
@@ -406,7 +405,7 @@ public class LaraDoc {
                     .map(file -> new LaraFileInfo(file, laraFolder))
                     .forEach(commonFiles::add);
         }
-    
+
         return commonFiles;
     }
     */
