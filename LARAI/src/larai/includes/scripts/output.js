@@ -1,4 +1,5 @@
 //Print a message
+//var outputStream = Java.type("java.lang.System").out;
 var outputStream = java.lang.System.out;
 var errorStream = java.lang.System.err;
 

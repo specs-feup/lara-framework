@@ -15,6 +15,8 @@ package larai;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,6 +44,7 @@ import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -50,11 +53,9 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import larac.LaraC;
 import larac.utils.output.Output;
-import larai.filters.RestrictModeFilter;
+import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -82,6 +83,10 @@ public class LaraI {
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
 
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
+
+    // TODO: Put LARASystem.class eventually
+    private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
+            LaraSystemTools.class);
 
     public static boolean isRunningGui() {
         return RUNNING_GUI.get();
@@ -543,8 +548,8 @@ public class LaraI {
     }
 
     private void interpret(WeaverEngine weaverEngine) {
-        // final Context cx = Context.enter();
-        NashornScriptEngine engine = createJsEngine();
+        // NashornScriptEngine engine = createJsEngine();
+        JsEngine engine = createJsEngine();
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -606,22 +611,32 @@ public class LaraI {
 
     }
 
-    private void finish(NashornScriptEngine engine) {
+    private void finish(JsEngine engine) {
         // if cleaning is needed
     }
 
-    private NashornScriptEngine createJsEngine() {
-        // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
-        // If restric mode is enabled, use ClassFilter
+    // private NashornScriptEngine createJsEngine() {
+    // // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
+    // // If restric mode is enabled, use ClassFilter
+    // if (getOptions().isRestricMode()) {
+    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
+    // }
+    //
+    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
+    //
+    // // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+    // // return engine;
+    //
+    // }
+
+    private JsEngine createJsEngine() {
+        // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
+            return JsEngine.defaultEngine(FORBIDDEN_CLASSES);
+            // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-
-        return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
-
-        // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
-        // return engine;
-
+        return JsEngine.defaultEngine(Collections.emptyList());
+        // return new NashornEngine();
     }
 
     public DataStore getWeaverArgs() {

@@ -21,10 +21,9 @@ import javax.script.ScriptException;
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
+import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 import org.lara.interpreter.weaver.utils.JsScriptEngine;
-
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 
 /**
  * Utility class for handling the LaraJoinpoint class
@@ -43,7 +42,7 @@ public class JoinpointUtils {
     // TODO: Java 9 replace
     // private final List<NativeFunction> actions = null;
 
-    public JoinpointUtils(NashornScriptEngine engine) {
+    public JoinpointUtils(JsEngine engine) {
         scriptEngine = new JsScriptEngine(engine);
     }
 
