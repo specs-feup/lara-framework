@@ -1,11 +1,11 @@
 /**
  * < * Copyright 2017 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -19,12 +19,14 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.lara.interpreter.weaver.js.JsEngine;
+
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
 
 /**
  * Represents the JavaScript engine used by LARA.
- * 
+ *
  * @author JoaoBispo
  *
  */
@@ -33,10 +35,12 @@ public class JsScriptEngine {
     private static final String NEW_ARRAY = "[]"; // Faster
     // private static final String NEW_ARRAY_CODE = "new Array()";
 
+    private final JsEngine jsEngine;
     private final ScriptEngine engine;
 
-    public JsScriptEngine(ScriptEngine engine) {
-        this.engine = engine;
+    public JsScriptEngine(JsEngine jsEngine) {
+        this.jsEngine = jsEngine;
+        this.engine = jsEngine.getEngine();
     }
 
     // public Bindings toNativeArray(Object[] values) {
@@ -45,7 +49,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of objects to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -68,7 +72,7 @@ public class JsScriptEngine {
 
     /**
      * Converts a list of objects to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -79,7 +83,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of ints to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -95,7 +99,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of floats to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -111,7 +115,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of doubles to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -127,7 +131,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of booleans to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -143,7 +147,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of chars to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -159,7 +163,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of bytes to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -175,7 +179,7 @@ public class JsScriptEngine {
 
     /**
      * Converts an array of shorts to a JavaScript array
-     * 
+     *
      * @param values
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
@@ -207,7 +211,7 @@ public class JsScriptEngine {
 
     /**
      * Based on this site: http://programmaticallyspeaking.com/nashorns-jsobject-in-context.html
-     * 
+     *
      * @return
      */
     public Object getUndefined() {
