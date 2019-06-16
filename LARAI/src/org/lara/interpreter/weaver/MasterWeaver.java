@@ -621,6 +621,9 @@ public class MasterWeaver {
 
     }
 
+    /**
+     * @return
+     */
     public EventTrigger eventTrigger() {
 
         return eventTrigger;

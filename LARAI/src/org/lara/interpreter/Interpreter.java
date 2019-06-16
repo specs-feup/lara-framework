@@ -177,7 +177,9 @@ public class Interpreter {
         try {
             return engine.getEngine().eval(code);
         } catch (ScriptException e) {
+            // SpecsLogs.info("Could not evaluate code:\n" + code);
             throw new EvaluationException(e);
+            // throw new EvaluationException("Could not evaluate code:\n" + code, e);
         }
 
     }

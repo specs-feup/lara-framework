@@ -8,7 +8,7 @@ aspectdef ReplacerTest
 
 	var tempTemplate = "temp_template.txt";
 	Io.writeFile(tempTemplate, "another template <string_to_replace>");
-	
+
 	var replacer2 = new Replacer(Io.getPath(tempTemplate));
 	replacer2.replaceAll("<string_to_replace>", "string");
 	println("Replacer 2: " + replacer2.getString());
@@ -25,5 +25,6 @@ aspectdef ReplacerTest
 	println("Replacer 4: " + string4);
 	
 	Io.deleteFile(tempTemplate);
+	
 end
 
