@@ -30,8 +30,12 @@ import org.lara.interpreter.weaver.js.JsEngineType;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.lazy.Lazy;
 
 public class JsEngineTest {
+
+    private static final Lazy<JsEngine> GRAAL_JS = Lazy.newInstance(() -> JsEngine.getEngine(JsEngineType.GRAALVM));
+    private static final Lazy<JsEngine> NASHORN = Lazy.newInstance(() -> JsEngine.getEngine(JsEngineType.NASHORN));
 
     @Test
     public void testModifyThis() {
@@ -99,7 +103,24 @@ public class JsEngineTest {
 
     @Test
     public void testUndefined() {
-        assertEquals("undefined", JsEngine.getEngine(JsEngineType.GRAALVM_COMPAT).getUndefined().toString());
+        assertEquals("undefined", GRAAL_JS.get().getUndefined().toString());
+    }
+
+    @Test
+    public void testStringify() {
+        JsEngine engine = GRAAL_JS.get();
+        // System.out.println("RESULT: " + engine.stringify(engine.eval("var test = {'a': 'aString', 'b':10};")));
+        assertEquals("{\"a\":\"aString\",\"b\":10}",
+                engine.stringify(engine.eval("var test = {a: 'aString', b: 10}; test;")));
+    }
+
+    @Test
+    public void testEvalWithBindings() {
+        JsEngine engine1 = GRAAL_JS.get();
+
+        Object scope = engine1.eval("var a = {aString: 'Hello', aNumber: 10}; a;");
+        assertEquals("Hello", engine1.eval("var b = this.aString; b;", scope).toString());
+        assertEquals("undefined", engine1.eval("var b = this.aString; b;").toString());
     }
 
     public static void test(Bindings bindings) {
