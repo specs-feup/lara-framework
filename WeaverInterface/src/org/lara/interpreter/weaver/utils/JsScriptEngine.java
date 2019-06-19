@@ -16,13 +16,14 @@ package org.lara.interpreter.weaver.utils;
 import java.util.Collection;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.lara.interpreter.weaver.js.JsEngine;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
+import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * Represents the JavaScript engine used by LARA.
@@ -32,9 +33,6 @@ import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
  */
 public class JsScriptEngine {
 
-    private static final String NEW_ARRAY = "[]"; // Faster
-    // private static final String NEW_ARRAY_CODE = "new Array()";
-
     private final JsEngine jsEngine;
     private final ScriptEngine engine;
 
@@ -43,9 +41,21 @@ public class JsScriptEngine {
         this.engine = jsEngine.getEngine();
     }
 
+    public JsEngine getJsEngine() {
+        return jsEngine;
+    }
+
+    public Bindings getBindings() {
+        return engine.getBindings(ScriptContext.ENGINE_SCOPE);
+    }
+
     // public Bindings toNativeArray(Object[] values) {
     // return Converter.toNativeArray(engine, values);
     // }
+
+    public Bindings newNativeArray() {
+        return jsEngine.newNativeArray();
+    }
 
     /**
      * Converts an array of objects to a JavaScript array
@@ -54,14 +64,6 @@ public class JsScriptEngine {
      *            the array of values
      * @return a javascript array containing all the elements in values, with the same indexes
      */
-    public Bindings newNativeArray() {
-        try {
-            return (Bindings) engine.eval(NEW_ARRAY);
-        } catch (ScriptException e) {
-            throw new DefaultLARAException("Could not create new array ", e);
-        }
-    }
-
     public Bindings toNativeArray(Object[] values) {
         Bindings bindings = newNativeArray();
         for (int i = 0; i < values.length; i++) {
@@ -215,6 +217,7 @@ public class JsScriptEngine {
      * @return
      */
     public Object getUndefined() {
+        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         try {
             ScriptObjectMirror arrayMirror = (ScriptObjectMirror) engine.eval("[undefined]");
             return arrayMirror.getSlot(0);
@@ -239,6 +242,7 @@ public class JsScriptEngine {
     // }
 
     public String stringify(Object object) {
+        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         ScriptObjectMirror json = (ScriptObjectMirror) eval("JSON");
         return json.callMember("stringify", object).toString();
     }
