@@ -13,9 +13,38 @@
 
 package org.lara.interpreter.weaver.js;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
+
 public enum JsEngineType {
 
     NASHORN,
     GRAALVM_COMPAT,
     GRAALVM;
+
+    /**
+     * Creates a new engine, according to the type. TODO: Move to JsEngineType
+     * 
+     * @param type
+     * @param forbiddenClasses
+     * @return
+     */
+    public JsEngine newEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
+        switch (this) {
+        case NASHORN:
+            return new NashornEngine(forbiddenClasses);
+        case GRAALVM_COMPAT:
+            return new GraalvmJsEngine(forbiddenClasses, true);
+        case GRAALVM:
+            return new GraalvmJsEngine(forbiddenClasses);
+        default:
+            throw new NotImplementedException(type);
+        }
+    }
+
+    public JsEngine newEngine() {
+        return newEngine(this, Collections.emptyList());
+    }
 }

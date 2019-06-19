@@ -644,10 +644,10 @@ public class LaraI {
     private JsEngine createJsEngine(JsEngineType engineType) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return JsEngine.getEngine(engineType, FORBIDDEN_CLASSES);
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return JsEngine.getEngine(engineType, Collections.emptyList());
+        return engineType.newEngine(engineType, Collections.emptyList());
         // return new NashornEngine();
     }
 

@@ -14,13 +14,10 @@
 package org.lara.interpreter.weaver.js;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 /**
  * Represents the JavaScript engine used by LARA.
@@ -31,30 +28,6 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  *
  */
 public interface JsEngine {
-
-    /**
-     * Creates a new engine, according to the type. TODO: Move to JsEngineType
-     * 
-     * @param type
-     * @param forbiddenClasses
-     * @return
-     */
-    static JsEngine getEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
-        switch (type) {
-        case NASHORN:
-            return new NashornEngine(forbiddenClasses);
-        case GRAALVM_COMPAT:
-            return new GraalvmJsEngine(forbiddenClasses, true);
-        case GRAALVM:
-            return new GraalvmJsEngine(forbiddenClasses);
-        default:
-            throw new NotImplementedException(type);
-        }
-    }
-
-    static JsEngine getEngine(JsEngineType type) {
-        return getEngine(type, Collections.emptyList());
-    }
 
     ScriptEngine getEngine();
 
