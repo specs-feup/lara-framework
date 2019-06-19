@@ -22,12 +22,12 @@ import javax.swing.JFileChooser;
 
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
-import org.lara.interpreter.weaver.js.JsEngineType;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.util.parsing.StringCodec;
 import pt.up.fe.specs.util.utilities.StringList;
 
@@ -94,9 +94,9 @@ public interface LaraiKeys {
     DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
             .setLabel("JavaScript Engine")
             // TODO: Change to GraalVM when transition is done
-            .setDefault(() -> JsEngineType.NASHORN);
-    // .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
-    // .setDefault(() -> JsEngineType.GRAALVM);
+            // .setDefault(() -> JsEngineType.NASHORN);
+            // .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
+            .setDefault(() -> JsEngineType.GRAALVM);
 
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");

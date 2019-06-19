@@ -21,9 +21,10 @@ import javax.script.ScriptException;
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 import org.lara.interpreter.weaver.utils.JsScriptEngine;
+
+import pt.up.fe.specs.jsengine.JsEngine;
 
 /**
  * Utility class for handling the LaraJoinpoint class

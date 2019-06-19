@@ -49,11 +49,11 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import larai.LaraI;
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;

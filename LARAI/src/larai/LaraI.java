@@ -44,8 +44,6 @@ import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.js.JsEngine;
-import org.lara.interpreter.weaver.js.JsEngineType;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -56,6 +54,8 @@ import org.w3c.dom.Document;
 
 import larac.LaraC;
 import larac.utils.output.Output;
+import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;

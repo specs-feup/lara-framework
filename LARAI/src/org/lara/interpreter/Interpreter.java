@@ -38,7 +38,6 @@ import org.lara.interpreter.weaver.events.EventTriggerGenerator;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.js.JsEngine;
 
 import com.google.common.base.Preconditions;
 
@@ -46,6 +45,7 @@ import larac.objects.Enums.Types;
 import larac.utils.output.Output;
 import larac.utils.xml.Pair;
 import larai.LaraI;
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Aspects;

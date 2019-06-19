@@ -17,9 +17,9 @@ import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Statements;
-import org.lara.interpreter.weaver.js.ForOfType;
 
 import larac.objects.Enums.LoopTypes;
+import pt.up.fe.specs.jsengine.ForOfType;
 import pt.up.fe.specs.lara.aspectir.Code;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
