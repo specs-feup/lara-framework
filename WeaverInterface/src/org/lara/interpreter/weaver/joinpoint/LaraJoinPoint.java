@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -22,7 +22,7 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 /**
  * Encapsulation of a {@link JoinPoint} to define a selection, containing the current {@link JoinPoint} reference,
  * alias, children, parent and a boolean defining if this join point is a leaf (has no childs, i.e., end of chain)
- * 
+ *
  * @author Tiago
  *
  */
@@ -58,7 +58,7 @@ public class LaraJoinPoint {
     // //////////////////////////METHODS////////////////////////////
     /**
      * Generate an empty join point to be used as root.
-     * 
+     *
      * @return
      */
     public static LaraJoinPoint createRoot() {
@@ -86,7 +86,7 @@ public class LaraJoinPoint {
 
     /**
      * Add a child to the join point children
-     * 
+     *
      * @param jp
      *            the child to add
      */
@@ -98,7 +98,7 @@ public class LaraJoinPoint {
 
     /**
      * Add all children in the collection to the join point children
-     * 
+     *
      * @param jp
      *            the collection of children to add
      */
@@ -110,7 +110,7 @@ public class LaraJoinPoint {
 
     /**
      * Remove a child from the join point children
-     * 
+     *
      * @param jp
      *            the child to remove
      * @return true if this list contained the specified join point
@@ -121,7 +121,7 @@ public class LaraJoinPoint {
 
     /**
      * Removes the child in the specific position
-     * 
+     *
      * @param index
      *            the position of the child to be removed
      * @return the join point at the specified position
@@ -132,7 +132,7 @@ public class LaraJoinPoint {
 
     /**
      * Returns the join point in the specific position
-     * 
+     *
      * @param index
      *            index of the join point to return
      * @return the join point at the specified position in the children list
@@ -216,6 +216,7 @@ public class LaraJoinPoint {
      * @return the reference
      */
     public JoinPoint getReference() {
+        // TODO: In Graal mode, return a JavaScript object which emulates nashorn behaviour when accessing attributes
         return _jp_reference_;
     }
 
@@ -288,7 +289,7 @@ public class LaraJoinPoint {
 
     /**
      * Get the leaves on the join point chain. If this is a leave, then adds himself
-     * 
+     *
      * @return a list containing all the leaves in the join point chain
      */
     public List<LaraJoinPoint> getLeaves() {
@@ -300,7 +301,7 @@ public class LaraJoinPoint {
 
     /**
      * Auxiliary function that complements the getLeaves() function
-     * 
+     *
      * @param leaves
      *            the list to use to add leaves
      */
