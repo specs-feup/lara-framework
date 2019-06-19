@@ -13,6 +13,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LaraUtils"/>
 	<classpathentry kind="src" path="/tdrcLibrary"/>
 	<classpathentry kind="src" path="/SpecsUtils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JsEngine"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
