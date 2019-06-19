@@ -79,17 +79,29 @@ function checkDefined(value, varName, source) {
 }
 
 function checkInstance(value, type, source, userTypeName) {
-    if(typeof type !== "function")  {
-        throw "checkInstance: parameter type must be a function";       
-    }
-    
+	//println("Instance of class? " + (type instanceof Java.type("java.lang.Class")));
+	//println("Value is instance? " + (value instanceof type));
+	
+	// Not supported in Graal
+    //if(typeof type !== "function")  {
+    //    throw "checkInstance: parameter type must be a function";       
+    //}
+        // Try to get name from type
+
+
+ 
     if(value instanceof type) {
         return;
     }    
 
+
+    //var typeClass = new type;
+    //var typeName = typeClass.getSimpleName();
+
     // Try to get name from type
-    var typeName = type.name;
-    
+    var typeName = type.class;
+    //println("Type name: " + typeName);
+
     // If no name, try to use user type name
     if(typeName === undefined || typeName.length === 0) {
         typeName = userTypeName;
@@ -100,7 +112,7 @@ function checkInstance(value, type, source, userTypeName) {
         typeName = "<could not determine>";
     }
 
-    var valueName = value.constructor.name;
+    var valueName = value.getClass().getName();
     if(valueName.length === 0) {
         valueName = undefined;
     }
