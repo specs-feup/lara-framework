@@ -15,30 +15,51 @@ package org.lara.interpreter.weaver.js;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 
+import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
+
 public class GraalvmJsEngine implements JsEngine {
 
-    private final ScriptEngine engine;
+    private static final String NEW_ARRAY = "[]"; // Faster
+
+    private final GraalJSScriptEngine engine;
+    private final boolean nashornCompatibility;
 
     public GraalvmJsEngine(Collection<Class<?>> blacklistedClasses) {
+        this(blacklistedClasses, false);
+    }
+
+    public GraalvmJsEngine(Collection<Class<?>> blacklistedClasses, boolean nashornCompatibility) {
 
         Set<String> forbiddenClasses = blacklistedClasses.stream().map(Class::getName).collect(Collectors.toSet());
 
         Context.Builder contextBuilder = Context.newBuilder("js")
-                // .allowAllAccess(true);
+                // .allowAllAccess(true)
                 .allowHostAccess(HostAccess.ALL)
-                .allowCreateThread(true)
+                // .allowIO(true)
+                // .allowCreateThread(true)
+                // .allowNativeAccess(true)
+                // .allowPolyglotAccess(PolyglotAccess.ALL)
                 .allowHostClassLookup(name -> !forbiddenClasses.contains(name));
+
+        if (nashornCompatibility) {
+            contextBuilder.allowExperimentalOptions(true).option("js.nashorn-compat", "true");
+        }
+
         this.engine = GraalJSScriptEngine.create(null, contextBuilder);
+        this.nashornCompatibility = nashornCompatibility;
     }
 
     public GraalvmJsEngine() {
@@ -53,5 +74,26 @@ public class GraalvmJsEngine implements JsEngine {
     @Override
     public ForOfType getForOfType() {
         return ForOfType.NATIVE;
+    }
+
+    @Override
+    public boolean supportsModifyingThis() {
+        if (nashornCompatibility) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public Bindings newNativeArray() {
+        try {
+            Map<String, Object> array = (Map<String, Object>) engine.eval(NEW_ARRAY);
+            System.out.println("ARRAY: " + array);
+            System.out.println("CLASS: " + array.getClass());
+
+            return new GenericBindings(array);
+        } catch (ScriptException e) {
+            throw new DefaultLARAException("Could not create new array ", e);
+        }
     }
 }

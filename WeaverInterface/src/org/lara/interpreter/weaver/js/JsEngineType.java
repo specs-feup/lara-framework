@@ -16,5 +16,6 @@ package org.lara.interpreter.weaver.js;
 public enum JsEngineType {
 
     NASHORN,
+    GRAALVM_COMPAT,
     GRAALVM;
 }

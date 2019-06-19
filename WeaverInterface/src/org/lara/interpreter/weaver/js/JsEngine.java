@@ -15,6 +15,7 @@ package org.lara.interpreter.weaver.js;
 
 import java.util.Collection;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
@@ -25,10 +26,25 @@ public interface JsEngine {
 
     ForOfType getForOfType();
 
+    /**
+     *
+     * @return true, if you can pass a reference to 'this' from JS and modify it through a Bindings object.
+     */
+    boolean supportsModifyingThis();
+
+    /**
+     * Creates a new JavaScript array.
+     *
+     * @return a
+     */
+    Bindings newNativeArray();
+
     static JsEngine getEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
         switch (type) {
         case NASHORN:
             return new NashornEngine(forbiddenClasses);
+        case GRAALVM_COMPAT:
+            return new GraalvmJsEngine(forbiddenClasses, true);
         case GRAALVM:
             return new GraalvmJsEngine(forbiddenClasses);
         default:

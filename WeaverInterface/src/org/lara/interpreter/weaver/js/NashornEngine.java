@@ -16,10 +16,13 @@ package org.lara.interpreter.weaver.js;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
 
 /**
  * @deprecated uses Nashorn classes, should be replaced with GraalvmJsEngine
@@ -28,6 +31,8 @@ import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
  */
 @Deprecated
 public class NashornEngine implements JsEngine {
+
+    private static final String NEW_ARRAY = "[]"; // Faster
 
     private final NashornScriptEngine engine;
 
@@ -54,6 +59,20 @@ public class NashornEngine implements JsEngine {
     @Override
     public ForOfType getForOfType() {
         return ForOfType.FOR_EACH;
+    }
+
+    @Override
+    public boolean supportsModifyingThis() {
+        return true;
+    }
+
+    @Override
+    public Bindings newNativeArray() {
+        try {
+            return (Bindings) engine.eval(NEW_ARRAY);
+        } catch (ScriptException e) {
+            throw new DefaultLARAException("Could not create new array ", e);
+        }
     }
 
 }
