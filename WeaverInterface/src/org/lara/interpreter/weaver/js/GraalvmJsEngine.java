@@ -121,18 +121,7 @@ public class GraalvmJsEngine implements JsEngine {
     public Object getUndefined() {
         var array = engine.getPolyglotContext().eval("js", "[undefined]");
 
-        // var array = new GenericBindings(eval("[undefined]"));
-
-        System.out.println("ARRAY WITH UNDEFINED: " + array);
-        System.out.println("UNDEFINED: " + array.getArrayElement(0));
-        return array;
-        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
-        // try {
-        // ScriptObjectMirror arrayMirror = (ScriptObjectMirror) engine.eval("[undefined]");
-        // return arrayMirror.getSlot(0);
-        // } catch (ScriptException e) {
-        // throw new RuntimeException(e);
-        // }
+        return array.getArrayElement(0);
     }
 
     @Override

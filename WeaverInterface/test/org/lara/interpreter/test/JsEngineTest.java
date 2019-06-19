@@ -13,6 +13,8 @@
 
 package org.lara.interpreter.test;
 
+import static org.junit.Assert.*;
+
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptException;
@@ -20,7 +22,10 @@ import javax.script.ScriptException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotAccess;
+import org.graalvm.polyglot.Value;
 import org.junit.Test;
+import org.lara.interpreter.weaver.js.JsEngine;
+import org.lara.interpreter.weaver.js.JsEngineType;
 
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 
@@ -37,8 +42,8 @@ public class JsEngineTest {
         Context.Builder contextBuilder = Context.newBuilder("js")
                 .allowAllAccess(true)
                 .allowHostAccess(HostAccess.ALL)
-                // .allowIO(true)
-                // .allowCreateThread(true)
+                .allowIO(true)
+                .allowCreateThread(true)
                 .allowNativeAccess(true)
                 .allowPolyglotAccess(PolyglotAccess.ALL);
         var engine = GraalJSScriptEngine.create(null, contextBuilder);
@@ -54,11 +59,12 @@ public class JsEngineTest {
                 + "Accumulator.prototype.add = function() {\n"
                 + "this.value++;"
                 + "console.log(this.value);\n"
-                + "Java.type('org.lara.interpreter.test.JsEngineTest').test(this);"
+                + "Java.type('org.lara.interpreter.test.JsEngineTest').testValue(this);"
                 + "return this.value;"
                 + "}\n"
 
                 + "var acc = new Accumulator();"
+                + "acc.add();"
                 + "let user = {\r\n" +
                 "  get name() {\r\n" +
                 "    return this._name;\r\n" +
@@ -91,7 +97,20 @@ public class JsEngineTest {
         }
     }
 
+    @Test
+    public void testUndefined() {
+        assertEquals("undefined", JsEngine.getEngine(JsEngineType.GRAALVM_COMPAT).getUndefined().toString());
+    }
+
     public static void test(Bindings bindings) {
         System.out.println("INSIDE JAVA: " + bindings);
     }
+
+    public static void testValue(Value value) {
+
+        System.out.println("INSIDE JAVA (GRAAL VALUE): " + value);
+        value.putMember("aString", "Hello");
+        System.out.println("After adding: " + value);
+    }
+
 }
