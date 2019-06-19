@@ -299,7 +299,10 @@ public class WeaverStatementProcessor {
         ret.append(aliasChain);
         ret.append(filterChain);
         ret.append(",'" + interpreter.getCurrentAspect() + "'");
-        ret.append(",this,");
+        if (interpreter.getEngine().supportsModifyingThis()) {
+            ret.append(",this");
+        }
+        ret.append(",");
         ret.append(new Coordinates(stat.coord).getLineBegin());
         ret.append(");\n");
         // out.println("---> "+ret);

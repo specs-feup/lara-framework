@@ -369,6 +369,10 @@ public class AspectClassProcessor {
         String aspectCoords = coord.replace("\\", "\\\\");
         aspectConstructor.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
                 + ".throwAspectException(e, '" + asp.name + "','" + aspectCoords + "',this.__currentLine__);\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw " + ExceptionUtils.class.getSimpleName()
+        // + ".processAspectException(e, '" + asp.name + "','" + aspectCoords
+        // + "',this.__currentLine__).toString();\n");
+
         // + ".throwAspectException(e, e.rhinoException, '" + asp.name +
         // "'," + json + ");\n");
         // aspectConstructor.append(LaraIUtils.getSpace(3) + "var

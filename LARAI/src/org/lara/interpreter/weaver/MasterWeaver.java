@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import javax.script.Bindings;
 
+import org.graalvm.polyglot.Value;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
@@ -214,6 +215,18 @@ public class MasterWeaver {
     public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
             String aspect_name, Bindings localScope, int lineNumber) throws IOException {
+        return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
+    }
+
+    public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
+            FilterExpression[][] filterChain,
+            String aspect_name, Value localScope, int lineNumber) throws IOException {
+        return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
+    }
+
+    private LaraJoinPoint selectPrivate(String selectName, String[] jpChain, String[] aliasChain,
+            FilterExpression[][] filterChain,
+            String aspect_name, Object localScope, int lineNumber) throws IOException {
 
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
@@ -225,9 +238,10 @@ public class MasterWeaver {
             final LaraJoinPoint root = LaraJoinPoint.createRoot();
 
             if (weaverEngine instanceof DefaultWeaver) {
-                selectWithDefaultWeaver(jpChain, aliasChain, filterChain, localScope, root);
+                selectWithDefaultWeaver(jpChain, aliasChain, filterChain, (Bindings) localScope, root);
             } else {
-                selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root, aspect_name, selectName);
+                selectWithWeaver(jpChain, aliasChain, filterChain, (Bindings) localScope, root, aspect_name,
+                        selectName);
             }
             // if (handlesApplicationFolder) {
             // }
@@ -248,6 +262,9 @@ public class MasterWeaver {
             LaraLog.printMemory("before converting to javascript");
             // final Bindings javascriptObject = jpUtils.toJavaScript(root);
             LaraLog.printMemory("after converting to javascript");
+            // System.out.println("LOCAL SCOPE: " + localScope);
+            // System.out.println("ROOT: " + root);
+
             return root;
         } catch (Exception e) {
             throw processSelectException(selectName, jpChain, e, lineNumber);
@@ -256,12 +273,14 @@ public class MasterWeaver {
 
     private static PointcutExprException processSelectException(String selectName, String[] jpChain, Exception e,
             int lineNumber) {
+
         Throwable cause = e.getCause();
         if (cause != null) {
             if (cause instanceof BaseException) {
                 e = (Exception) cause;
             }
         }
+
         return new PointcutExprException(selectName, jpChain, lineNumber, e);
     }
 
@@ -370,8 +389,8 @@ public class MasterWeaver {
         try {
 
             boolean isArray = NashornUtils.isJSArray(joinPointReferences);
+            SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
             if (isArray) {
-
                 final ScriptObjectMirror jpReferences = (ScriptObjectMirror) joinPointReferences;
 
                 for (int i = 0; i < jpReferences.size(); i++) {
@@ -507,7 +526,6 @@ public class MasterWeaver {
             }
 
         } catch (Exception e) {
-
             throw new SelectException(lastJP.get_class(), selectName, e);
         }
 

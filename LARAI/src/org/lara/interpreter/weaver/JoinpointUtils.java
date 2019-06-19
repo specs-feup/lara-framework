@@ -161,7 +161,9 @@ public class JoinpointUtils {
         // obj.put("reference", obj, jp);
         // localScope.put(" ", localScope, jp);
         // localScope.setMember("_EVAL_", jp);
+        // System.out.println("BINDINGS: " + scriptEngine.getBindings());
         localScope.put(JoinpointUtils.EVAL_NAME, jp);
+
         final StringBuilder sb = new StringBuilder();
         // final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
         // Object.bindProperties({},
@@ -177,6 +179,7 @@ public class JoinpointUtils {
             }
             String attributeVar = "_expected_" + i;
             localScope.put(attributeVar, filterExpression.getExpected());
+
             toClear.add(attributeVar);
             if (filterExpression.isMatch()) {
                 sb.append("String(");
@@ -191,6 +194,7 @@ public class JoinpointUtils {
             }
 
         }
+
         // nonScriptObject)
         // sb.append("}");
         // final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);

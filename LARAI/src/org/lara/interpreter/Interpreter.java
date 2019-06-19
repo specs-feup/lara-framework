@@ -177,9 +177,26 @@ public class Interpreter {
         try {
             return engine.getEngine().eval(code);
         } catch (ScriptException e) {
+
+            // Check is there is any BaseException as cause
+            // Throwable current = e;
+            // while (current != null && !(current instanceof BaseException)) {
+            // current = current.getCause();
+            // }
+            //
+            // if (current != null) {
+            // throw (BaseException) current;
+            // }
+
+            // System.out.println("SCRIPT EXCEPTION: " + e.getClass());
+            // System.out.println(e);
+            // System.out.println("CAUSE:" + e.getCause().getCause());
             // SpecsLogs.info("Could not evaluate code:\n" + code);
-            throw new EvaluationException(e);
+
             // throw new EvaluationException("Could not evaluate code:\n" + code, e);
+
+            throw new EvaluationException(e);
+            // throw new RuntimeException(e);
         }
 
     }

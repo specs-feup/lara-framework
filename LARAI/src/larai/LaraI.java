@@ -220,9 +220,13 @@ public class LaraI {
             larai.out.close();
             return true;
 
-        } catch (final Throwable e) {
+            // } catch (final Throwable e) {
+        } catch (Exception e) {
+            // throw new RuntimeException(e);
 
             throw treatExceptionInInterpreter(larai, e);
+            // var finalException = treatExceptionInInterpreter(larai, e);
+            // System.out.println(finalException);
         } finally {
             if (weaverEngine.isWeaverSet()) {
                 weaverEngine.removeWeaver();
@@ -231,6 +235,8 @@ public class LaraI {
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
 
         }
+
+        // return false;
     }
 
     private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
@@ -357,18 +363,22 @@ public class LaraI {
      * @return
      */
     private static RuntimeException treatExceptionInInterpreter(LaraI laraInterp, Throwable e) {
+
         if (laraInterp != null) {
 
             laraInterp.out.close();
             laraInterp.quit = true;
 
             if (laraInterp.options.useStackTrace()) {
+
                 if (laraInterp.interpreter == null) {
+
                     return prettyRuntimeException(e);
                 }
 
                 CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
                 if (stackStrace.isEmpty()) {
+
                     return prettyRuntimeException(e);
                 }
 
@@ -383,6 +393,7 @@ public class LaraI {
     }
 
     private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
+
         BaseException laraException;
 
         if (!(e instanceof BaseException)) {
@@ -462,7 +473,7 @@ public class LaraI {
         // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
         LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
         FileList processedIncludeDirs = laraBundle.process(includeDirs);
-
+        
         // Process LARA Resources
         LaraResource laraResource = new LaraResource(getWeaverEngine());
         processedIncludeDirs = laraResource.process(processedIncludeDirs);
