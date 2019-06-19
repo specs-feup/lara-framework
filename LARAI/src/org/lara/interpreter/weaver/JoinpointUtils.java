@@ -16,13 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
-import org.lara.interpreter.weaver.utils.JsScriptEngine;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 
@@ -39,12 +37,12 @@ public class JoinpointUtils {
     private static final String ALIAS_PROPERTY = "classAlias";
     private static final String PARENT_PROPERTY = "_jp_parent_";
     private static final String HAS_CHILDREN_FUNCTION = "hasChildren";
-    private final JsScriptEngine scriptEngine;
+    private final JsEngine scriptEngine;
     // TODO: Java 9 replace
     // private final List<NativeFunction> actions = null;
 
     public JoinpointUtils(JsEngine engine) {
-        scriptEngine = new JsScriptEngine(engine);
+        scriptEngine = engine;
     }
 
     /**
@@ -203,7 +201,7 @@ public class JoinpointUtils {
         boolean res;
         try {
             res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
-        } catch (ScriptException e) {
+        } catch (Exception e) {
             throw new FilterException(jp, filter.toString(), e);
         }
         toClear.forEach(localScope::remove);

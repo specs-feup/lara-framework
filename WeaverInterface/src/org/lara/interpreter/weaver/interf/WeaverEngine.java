@@ -23,7 +23,6 @@ import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.interpreter.weaver.utils.JsScriptEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -51,7 +50,7 @@ public abstract class WeaverEngine {
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
 
-    private JsScriptEngine scriptEngine;
+    private JsEngine scriptEngine;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
@@ -60,7 +59,7 @@ public abstract class WeaverEngine {
         scriptEngine = null;
     }
 
-    public JsScriptEngine getScriptEngine() {
+    public JsEngine getScriptEngine() {
         if (scriptEngine == null) {
             throw new RuntimeException("Java script engine has not been set for weaver: " + getName());
         }
@@ -69,10 +68,6 @@ public abstract class WeaverEngine {
     }
 
     public void setScriptEngine(JsEngine scriptEngine) {
-        setScriptEngine(new JsScriptEngine(scriptEngine));
-    }
-
-    public void setScriptEngine(JsScriptEngine scriptEngine) {
         this.scriptEngine = scriptEngine;
     }
 
