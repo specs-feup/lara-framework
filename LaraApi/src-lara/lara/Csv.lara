@@ -92,6 +92,45 @@ Csv.parse = function(contents, delimiter) {
 }
 
 /**
+ * Converts an object in a specific format to a CSV string.
+ *
+ * @param {object} data an aggregate of values with the same keys, uses the keys of the given aggregate as the name of the entries, and the keys of the values as column entries.
+ * @param {string} separator the separator character to use. By default is ;.
+ * @return {string} the CSV corresponding to the object.
+ */
+Csv.generate = function(data, separator) {
+
+	if(separator === undefined) {
+		separator = ";";
+	}
+	
+	var csv = "";
+	var ln = "\n";
+
+	// Read one of the objects, to build header
+	csv = "Name";
+	for(var benchData of data) {
+		for(var benchKey  in benchData) {
+			csv += separator + benchKey;
+		}
+		break;
+	}
+	csv += ln;
+	
+	for(var benchName in data) {
+		csv += benchName;
+		benchData = data[benchName];
+		
+		for(var benchValue of benchData) {
+			csv += separator + benchValue;
+		}
+		csv += ln;
+	}
+
+	return csv;
+}
+
+/**
  * Operations concerning the CSV format.
  * Instance members not implemented yet
  */

@@ -39,3 +39,31 @@ Numbers.factorial = function(num) {
 
     return rval;
 }
+
+/**
+ * @return {number} Arithmetic mean of the given values.
+ */
+Numbers.mean = function(values) {
+
+	var acc = 0;
+	var total = 0;
+	for(var value of values) {
+		acc += value;
+		total++;
+	}
+	
+	return acc / total;
+}
+
+/**
+ * @return {number} Sum of the given values.
+ */
+Numbers.sum = function(values) {
+	
+	var acc = 0;
+	for(var value of values) {
+		acc += value;
+	}
+	
+	return acc;
+}
