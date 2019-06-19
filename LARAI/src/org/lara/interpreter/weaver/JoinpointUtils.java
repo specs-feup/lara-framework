@@ -162,6 +162,7 @@ public class JoinpointUtils {
         // localScope.put(" ", localScope, jp);
         // localScope.setMember("_EVAL_", jp);
         // System.out.println("BINDINGS: " + scriptEngine.getBindings());
+        // scriptEngine.getJsEngine().put(localScope, JoinpointUtils.EVAL_NAME, jp);
         localScope.put(JoinpointUtils.EVAL_NAME, jp);
 
         final StringBuilder sb = new StringBuilder();

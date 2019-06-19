@@ -34,7 +34,6 @@ import java.util.Optional;
 
 import javax.script.Bindings;
 
-import org.graalvm.polyglot.Value;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
@@ -200,6 +199,18 @@ public class MasterWeaver {
     private final static String PATH_MODEL_BEGIN = "(path())==('";
     private final static String PATH_MODEL_END = "')";
 
+    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
+    // FilterExpression[][] filterChain,
+    // String aspect_name, Bindings localScope, int lineNumber) throws IOException {
+    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
+    // }
+
+    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
+    // FilterExpression[][] filterChain,
+    // String aspect_name, Value localScope, int lineNumber) throws IOException {
+    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
+    // }
+
     /**
      * Select method that invokes the weaver(s) to get the desired pointcuts
      *
@@ -215,18 +226,6 @@ public class MasterWeaver {
     public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
             String aspect_name, Bindings localScope, int lineNumber) throws IOException {
-        return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    }
-
-    public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            String aspect_name, Value localScope, int lineNumber) throws IOException {
-        return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    }
-
-    private LaraJoinPoint selectPrivate(String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            String aspect_name, Object localScope, int lineNumber) throws IOException {
 
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
@@ -238,9 +237,9 @@ public class MasterWeaver {
             final LaraJoinPoint root = LaraJoinPoint.createRoot();
 
             if (weaverEngine instanceof DefaultWeaver) {
-                selectWithDefaultWeaver(jpChain, aliasChain, filterChain, (Bindings) localScope, root);
+                selectWithDefaultWeaver(jpChain, aliasChain, filterChain, localScope, root);
             } else {
-                selectWithWeaver(jpChain, aliasChain, filterChain, (Bindings) localScope, root, aspect_name,
+                selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root, aspect_name,
                         selectName);
             }
             // if (handlesApplicationFolder) {
