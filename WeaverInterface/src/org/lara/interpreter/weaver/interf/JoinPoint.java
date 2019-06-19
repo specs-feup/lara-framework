@@ -30,6 +30,7 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 
 // import jdk.nashorn.internal.runtime.Undefined;
@@ -433,6 +434,7 @@ public abstract class JoinPoint {
         }
 
         seenObjects.add(value);
+        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
 
         // Convert value to a Java array, if necessary
         if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
