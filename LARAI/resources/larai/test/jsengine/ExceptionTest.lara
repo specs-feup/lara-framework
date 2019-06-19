@@ -1,0 +1,14 @@
+aspectdef ExceptionTest
+
+	foo();
+
+end
+
+
+function foo() {
+	bar();
+}
+
+function bar() {
+	throw "throwing exception in bar()";
+}
