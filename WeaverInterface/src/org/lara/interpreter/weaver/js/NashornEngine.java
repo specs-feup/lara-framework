@@ -106,4 +106,18 @@ public class NashornEngine implements JsEngine {
         }
     }
 
+    @Override
+    public void put(Bindings var, String member, Object value) {
+        var.put(member, value);
+    }
+
+    @Override
+    public Object eval(String script, Object scope) {
+        try {
+            return engine.eval(script, (Bindings) scope);
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

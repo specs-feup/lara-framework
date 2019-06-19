@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.graalvm.polyglot.Context;
@@ -68,7 +67,7 @@ public class GraalvmJsEngine implements JsEngine {
     }
 
     @Override
-    public ScriptEngine getEngine() {
+    public GraalJSScriptEngine getEngine() {
         return engine;
     }
 
@@ -126,9 +125,62 @@ public class GraalvmJsEngine implements JsEngine {
 
     @Override
     public String stringify(Object object) {
-        return null;
-        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
-        // ScriptObjectMirror json = (ScriptObjectMirror) eval("JSON");
-        // return json.callMember("stringify", object).toString();
+        Value json = eval("JSON");
+
+        return json.invokeMember("stringify", object).toString();
+        // return json.invokeMember("stringify", asValue(object).asProxyObject()).toString();
+    }
+
+    @Override
+    public Value getBindings() {
+        return engine.getPolyglotContext().getBindings("js");
+        // return engine.getPolyglotContext().getPolyglotBindings();
+    }
+
+    @Override
+    public void put(Bindings object, String member, Object value) {
+        Value valueObject = asValue(object);
+        valueObject.putMember(member, value);
+    }
+
+    /**
+     * This implementation is slow, since Graal does not support sharing Contexts between engines.
+     * 
+     * <p>
+     * A new engine will be created, and the contents of the given scope will be converted to code and loaded into the
+     * new engine, before executing the code.
+     */
+    @Override
+    public Object eval(String code, Object scope) {
+        GraalvmJsEngine newEngine = new GraalvmJsEngine();
+        Value scopeValue = asValue(scope);
+
+        // Add scope code
+        for (String key : scopeValue.getMemberKeys()) {
+            newEngine.eval(key + " = " + stringify(scopeValue.getMember(key)));
+        }
+
+        // Execute new code
+        return newEngine.eval(code);
+
+        // newEngine.getPolyglotContext().
+        // var newScriptContext = new SimpleScriptContext();
+        // newScriptContext.setBindings(scope, ScriptContext.ENGINE_SCOPE);
+        // try {
+        // return newEngine.eval(code, newScriptContext);
+        // } catch (ScriptException e) {
+        // throw new RuntimeException(e);
+        // }
+        // newEngine.getEngine().setBindings(scope, ScriptContext.ENGINE_SCOPE);
+        // return newEngine.eval(code);
+        // Bindings previousBindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        // engine.setBindings(scope, ScriptContext.ENGINE_SCOPE);
+        // Value result = eval(code);
+        // engine.setBindings(previousBindings, ScriptContext.ENGINE_SCOPE);
+        // return result;
+    }
+
+    public Value asValue(Object object) {
+        return engine.getPolyglotContext().asValue(object);
     }
 }

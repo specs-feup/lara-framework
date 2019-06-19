@@ -17,12 +17,44 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
+/**
+ * Represents the JavaScript engine used by LARA.
+ * 
+ * TODO: Replace 'Bindings' with 'Object'. Only JsEngine should manipulate JS objects
+ * 
+ * @author JoaoBispo
+ *
+ */
 public interface JsEngine {
+
+    /**
+     * Creates a new engine, according to the type. TODO: Move to JsEngineType
+     * 
+     * @param type
+     * @param forbiddenClasses
+     * @return
+     */
+    static JsEngine getEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
+        switch (type) {
+        case NASHORN:
+            return new NashornEngine(forbiddenClasses);
+        case GRAALVM_COMPAT:
+            return new GraalvmJsEngine(forbiddenClasses, true);
+        case GRAALVM:
+            return new GraalvmJsEngine(forbiddenClasses);
+        default:
+            throw new NotImplementedException(type);
+        }
+    }
+
+    static JsEngine getEngine(JsEngineType type) {
+        return getEngine(type, Collections.emptyList());
+    }
 
     ScriptEngine getEngine();
 
@@ -55,21 +87,12 @@ public interface JsEngine {
 
     String stringify(Object object);
 
-    static JsEngine getEngine(JsEngineType type, Collection<Class<?>> forbiddenClasses) {
-        switch (type) {
-        case NASHORN:
-            return new NashornEngine(forbiddenClasses);
-        case GRAALVM_COMPAT:
-            return new GraalvmJsEngine(forbiddenClasses, true);
-        case GRAALVM:
-            return new GraalvmJsEngine(forbiddenClasses);
-        default:
-            throw new NotImplementedException(type);
-        }
-    }
-
-    static JsEngine getEngine(JsEngineType type) {
-        return getEngine(type, Collections.emptyList());
+    /**
+     * 
+     * @return the Bindings of the engine scope
+     */
+    default Object getBindings() {
+        return getEngine().getBindings(ScriptContext.ENGINE_SCOPE);
     }
 
     /**
@@ -212,12 +235,12 @@ public interface JsEngine {
 
     Object eval(String code);
 
-    default Object eval(String script, Bindings n) throws ScriptException {
-        return getEngine().eval(script, n);
-    }
+    Object eval(String script, Object scope);
 
     default Bindings createBindings() {
         return getEngine().createBindings();
     }
+
+    void put(Bindings var, String member, Object value);
 
 }
