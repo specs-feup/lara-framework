@@ -1,5 +1,6 @@
 package pt.up.fe.specs.lara.aspectir;
 import java.io.PrintStream;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
