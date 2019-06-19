@@ -28,6 +28,8 @@ import pt.up.fe.specs.util.SpecsLogs;
 /**
  * Represents the JavaScript engine used by LARA.
  *
+ * TODO: Replace with JsEngine
+ *
  * @author JoaoBispo
  *
  */

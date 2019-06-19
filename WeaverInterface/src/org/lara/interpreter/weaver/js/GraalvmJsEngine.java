@@ -25,6 +25,7 @@ import javax.script.ScriptException;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Value;
 
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 
@@ -78,22 +79,67 @@ public class GraalvmJsEngine implements JsEngine {
 
     @Override
     public boolean supportsModifyingThis() {
-        if (nashornCompatibility) {
-            return true;
-        }
+        return true;
+        // if (nashornCompatibility) {
+        // return true;
+        // }
+        //
+        // return false;
+    }
 
-        return false;
+    public Value eval(String code) {
+        return engine.getPolyglotContext().eval("js", code);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> evalOld(String code) {
+
+        try {
+            return (Map<String, Object>) engine.eval(code);
+        } catch (ScriptException e) {
+            throw new DefaultLARAException("Could not execute code: '" + code + "'", e);
+        }
     }
 
     public Bindings newNativeArray() {
-        try {
-            Map<String, Object> array = (Map<String, Object>) engine.eval(NEW_ARRAY);
-            System.out.println("ARRAY: " + array);
-            System.out.println("CLASS: " + array.getClass());
+        return new GenericBindings(evalOld(NEW_ARRAY));
+        // try {
+        // Map<String, Object> array = (Map<String, Object>) engine.eval(NEW_ARRAY);
+        //
+        // return new GenericBindings(array);
+        // } catch (ScriptException e) {
+        // throw new DefaultLARAException("Could not create new array ", e);
+        // }
+    }
 
-            return new GenericBindings(array);
-        } catch (ScriptException e) {
-            throw new DefaultLARAException("Could not create new array ", e);
-        }
+    /**
+     * Based on this site: http://programmaticallyspeaking.com/nashorns-jsobject-in-context.html
+     *
+     * @return
+     */
+    @Override
+    public Object getUndefined() {
+        var array = engine.getPolyglotContext().eval("js", "[undefined]");
+
+        // var array = new GenericBindings(eval("[undefined]"));
+
+        System.out.println("ARRAY WITH UNDEFINED: " + array);
+        System.out.println("UNDEFINED: " + array.getArrayElement(0));
+        return array;
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // try {
+        // ScriptObjectMirror arrayMirror = (ScriptObjectMirror) engine.eval("[undefined]");
+        // return arrayMirror.getSlot(0);
+        // } catch (ScriptException e) {
+        // throw new RuntimeException(e);
+        // }
+    }
+
+    @Override
+    public String stringify(Object object) {
+        return null;
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // ScriptObjectMirror json = (ScriptObjectMirror) eval("JSON");
+        // return json.callMember("stringify", object).toString();
     }
 }

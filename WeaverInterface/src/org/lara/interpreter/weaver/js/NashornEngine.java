@@ -22,6 +22,7 @@ import javax.script.ScriptException;
 
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import pt.up.fe.specs.tools.lara.exception.DefaultLARAException;
 
 /**
@@ -72,6 +73,36 @@ public class NashornEngine implements JsEngine {
             return (Bindings) engine.eval(NEW_ARRAY);
         } catch (ScriptException e) {
             throw new DefaultLARAException("Could not create new array ", e);
+        }
+    }
+
+    /**
+     * Based on this site: http://programmaticallyspeaking.com/nashorns-jsobject-in-context.html
+     *
+     * @return
+     */
+    @Override
+    public Object getUndefined() {
+        try {
+            ScriptObjectMirror arrayMirror = (ScriptObjectMirror) engine.eval("[undefined]");
+            return arrayMirror.getSlot(0);
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String stringify(Object object) {
+        ScriptObjectMirror json = (ScriptObjectMirror) eval("JSON");
+        return json.callMember("stringify", object).toString();
+    }
+
+    @Override
+    public Object eval(String script) {
+        try {
+            return getEngine().eval(script);
+        } catch (ScriptException e) {
+            throw new RuntimeException("Exception while evaluation code '" + script + "'", e);
         }
     }
 
