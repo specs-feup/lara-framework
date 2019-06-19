@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
-import org.lara.interpreter.weaver.js.JsEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.utils.JsScriptEngine;
 import org.lara.language.specification.LanguageSpecification;
@@ -30,6 +29,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;

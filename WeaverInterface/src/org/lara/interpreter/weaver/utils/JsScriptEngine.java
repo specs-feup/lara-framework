@@ -20,9 +20,8 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import org.lara.interpreter.weaver.js.JsEngine;
-
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsLogs;
 
 /**
