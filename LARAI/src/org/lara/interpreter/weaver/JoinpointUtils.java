@@ -162,6 +162,8 @@ public class JoinpointUtils {
         // localScope.setMember("_EVAL_", jp);
         // System.out.println("BINDINGS: " + scriptEngine.getBindings());
         // scriptEngine.getJsEngine().put(localScope, JoinpointUtils.EVAL_NAME, jp);
+
+        // TODO: Use JS JP wrapper instead of "naked" JP
         localScope.put(JoinpointUtils.EVAL_NAME, jp);
 
         final StringBuilder sb = new StringBuilder();
@@ -200,7 +202,28 @@ public class JoinpointUtils {
         // final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);
         boolean res;
         try {
-            res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
+            // System.out.println("LOCAL SCOPE: " + localScope);
+            // System.out.println("CODE: " + sb);
+            // System.out.println("BEFORE");
+            // res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
+            /*
+            Object result1 = scriptEngine.eval("_EVAL_.name", localScope);
+            System.out.println("_EVAL_.name: " + result1);
+            
+            Object result2 = scriptEngine.eval("_expected_0", localScope);
+            System.out.println("_expected_0: " + result2);
+            
+            Object result3 = scriptEngine.eval("_EVAL_.name == _expected_0", localScope);
+            System.out.println("_EVAL_.name == _expected_0: " + result3);
+            */
+            Object result = scriptEngine.eval(sb.toString(), localScope);
+            res = scriptEngine.asBoolean(result);
+            // res = false;
+
+            // System.out.println("CODE: " + sb);
+            // System.out.println("RESULT: " + res);
+            // System.out.println("RESULT: " + result);
+            // System.out.println("AFTER");
         } catch (Exception e) {
             throw new FilterException(jp, filter.toString(), e);
         }

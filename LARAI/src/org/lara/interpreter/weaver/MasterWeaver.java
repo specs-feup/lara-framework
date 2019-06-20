@@ -227,6 +227,9 @@ public class MasterWeaver {
             FilterExpression[][] filterChain,
             String aspect_name, Bindings localScope, int lineNumber) throws IOException {
 
+        // localScope comes from JS, convert first to compatible Bindings
+        localScope = getEngine().getScriptEngine().asBindings(localScope);
+
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
 
