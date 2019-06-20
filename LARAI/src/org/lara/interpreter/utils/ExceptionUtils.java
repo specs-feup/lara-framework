@@ -54,6 +54,7 @@ public class ExceptionUtils {
         var exception = processAspectException(original, aspectName, aspectCoords, lineMapping);
 
         // Graal is removing the cause chain when this exception is thrown, printing it here
+        SpecsLogs.msgWarn("Original exception:", (Throwable) original);
         SpecsLogs.msgWarn("Aspect exception:", exception);
 
         throw exception;
