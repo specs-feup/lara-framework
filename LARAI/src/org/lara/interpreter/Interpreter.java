@@ -175,6 +175,8 @@ public class Interpreter {
     public Object evaluate(String code) {
 
         try {
+            // System.out.println("CODE:\n" + code);
+            // System.out.println("\nCODE END");
             return engine.getEngine().eval(code);
         } catch (ScriptException e) {
 

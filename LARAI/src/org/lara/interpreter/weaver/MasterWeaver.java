@@ -391,7 +391,7 @@ public class MasterWeaver {
         try {
 
             boolean isArray = NashornUtils.isJSArray(joinPointReferences);
-            SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+            weaverEngine.getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
             if (isArray) {
                 final ScriptObjectMirror jpReferences = (ScriptObjectMirror) joinPointReferences;
 

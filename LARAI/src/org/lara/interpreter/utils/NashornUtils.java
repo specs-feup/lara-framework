@@ -19,23 +19,28 @@ import com.google.common.base.Preconditions;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
-import pt.up.fe.specs.util.SpecsLogs;
 
+/**
+ * @deprecated this should be moved to JsEngine project
+ * @author JoaoBispo
+ *
+ */
+@Deprecated
 public class NashornUtils {
 
     public static boolean isUndefined(Object object) {
-        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         return ScriptObjectMirror.isUndefined(object);
     }
 
     public static boolean isJSArray(Object object) {
-        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         return object instanceof ScriptObjectMirror
                 && ((ScriptObjectMirror) object).isArray();
     }
 
     public static Collection<Object> getValues(Object object) {
-        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         Preconditions.checkArgument(object instanceof ScriptObjectMirror, "Expected object of class '"
                 + ScriptObjectMirror.class.getSimpleName() + "', got " + object.getClass());
 
@@ -43,7 +48,7 @@ public class NashornUtils {
     }
 
     public static <T> T convert(Object object, Class<T> toConvert) {
-        SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
         return toConvert.cast(ScriptUtils.convert(object, toConvert));
     }
 
