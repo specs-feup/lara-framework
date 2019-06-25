@@ -133,8 +133,13 @@ Io.getPaths = function(baseFolder) {
 
 /**
  * The files inside the given folder that respects the given pattern.
+ *
+ * @param {string|File} baseFolder
+ * @param {string|Object[]} pattern
+ * @param {boolean} isRecursive
  */
 Io.getFiles = function(baseFolder, pattern, isRecursive) {
+	// Initialize inputs
 	if(baseFolder === undefined) {
 		baseFolder = "./";
 	}
@@ -147,7 +152,22 @@ Io.getFiles = function(baseFolder, pattern, isRecursive) {
 		isRecursive = false;
 	}
 
-	return SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern, isRecursive, "FILES");
+	// If pattern is an array, call function recursively
+	if(isArray(pattern)) {
+		var files = [];
+
+		for(var singlePattern of pattern) {
+			var newFiles = Io.getFiles(baseFolder, singlePattern, isRecursive);
+			for(var newFile of newFiles) {
+				files.push(newFile);
+			}
+		}
+		
+		return files;
+	}
+
+
+	return SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern.toString(), isRecursive, "FILES");
 }
 
 /*
