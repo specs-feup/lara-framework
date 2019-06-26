@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.script.Bindings;
 import javax.xml.bind.DatatypeConverter;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -33,7 +34,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import jdk.nashorn.api.scripting.JSObject;
 import larac.objects.Enums.Types;
 import larac.utils.output.ErrorMsg;
 import larac.utils.output.WarningMsg;
@@ -529,15 +529,38 @@ public class LARASystem {
      * File(fileName); return IoUtils.read(file); }
      */
 
-    public static String createCodeTemplate(JSObject obj) {
-        String code = obj.getMember("code").toString();
-        // String code = IoUtils.read(new File(codeFileName));
-        obj.removeMember("code");
+    // public static String createCodeTemplate(JSObject obj) {
+    // String code = obj.getMember("code").toString();
+    // // String code = IoUtils.read(new File(codeFileName));
+    // obj.removeMember("code");
+    // for (final String key : obj.keySet()) {
+    // final Object property = obj.getMember(key);
+    // code = code.replace(key.toString(), property.toString());
+    // }
+    // return code;
+    // }
+
+    /**
+     * Creates a code template.
+     * 
+     * Function for LARA.
+     * 
+     * @param obj
+     * @return
+     */
+    public static String createCodeTemplate(Bindings obj) {
+        // For compatibility
+        obj = WeaverEngine.getThreadLocalWeaver().getScriptEngine().asBindings(obj);
+
+        String code = obj.get("code").toString();
+
+        obj.remove("code");
         for (final String key : obj.keySet()) {
-            final Object property = obj.getMember(key);
+            final Object property = obj.get(key);
             code = code.replace(key.toString(), property.toString());
         }
         return code;
+
     }
 
     public static Object[] toJavaArray(Object arr) {
