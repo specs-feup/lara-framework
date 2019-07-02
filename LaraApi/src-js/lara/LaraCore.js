@@ -225,8 +225,9 @@ function isJavaClass(variable, javaClassname) {
 		javaClassname = "java.lang.Object";
 	}
 	
-	var javaClass = Java.type(javaClassname);
-	return javaClass.class.isInstance(variable);
+	//var javaClass = Java.type(javaClassname);
+	//return javaClass.class.isInstance(variable);
+	return SpecsSystem.isInstance(javaClassname, variable);
 };
 
 

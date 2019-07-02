@@ -6,29 +6,36 @@ var Io = {};
 
 
 Io._newFile = function(path) {
-	var File = Java.type("java.io.File");
+	
+	var fileClass = "java.io.File";
 	
 	// If path is a file, convert to String first
-	if(File.class.isInstance(path)) {
+	//if(File.class.isInstance(path)) {
+	if(isJavaClass(path, fileClass)) {	
 		path = path.toString();
 	}
 	
+	var File = Java.type(fileClass);
 	return new File(path);
 }
 
 Io._newFileWithBase = function(base, path) {
-	var File = Java.type("java.io.File");
+	var fileClass = "java.io.File";
+	
 	
 	// If path is a file, convert to String first
-	if(File.class.isInstance(path)) {
+	//if(File.class.isInstance(path)) {
+	if(isJavaClass(path, fileClass)) {	
 		path = path.toString();
 	}
 
 	// If base is not a file, convert to File first
-	if(!File.class.isInstance(base)) {
+	//if(!File.class.isInstance(base)) {
+	if(!isJavaClass(base, fileClass)) {	
 		base = Io._newFile(base);
 	}
 	
+	var File = Java.type(fileClass);
 	return new File(base, path);
 }
 
