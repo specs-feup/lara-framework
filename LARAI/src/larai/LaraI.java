@@ -573,7 +573,13 @@ public class LaraI {
         // try {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
-        final FileList folderApplication = options.getWorkingDir();
+
+        List<File> workspaceSources = new ArrayList<>();
+        workspaceSources.addAll(options.getWorkingDir().getFiles());
+        workspaceSources.addAll(options.getExtraSources());
+
+        final FileList folderApplication = FileList.newInstance(workspaceSources);
+        // final FileList folderApplication = options.getWorkingDir();
 
         // if (!folderApplication.exists()) {
         // throw new LaraIException(options.getLaraFile().getName(), "application folder does not exist",

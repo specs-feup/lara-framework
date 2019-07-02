@@ -57,6 +57,9 @@ public interface LaraiKeys {
             Collections.emptyList())
             .setLabel("Sources");
 
+    DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
+            .setLabel("Additional Sources (separated by ;)");
+
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
 
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
@@ -114,7 +117,8 @@ public interface LaraiKeys {
     // DataKey<Optional<File>> CONFIGURATION_FILE = KeyFactory.optional("configurationFile");
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
-            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
+            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
+                    INCLUDES_FOLDER,
                     EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
                     LOG_JS_OUTPUT,
                     DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)

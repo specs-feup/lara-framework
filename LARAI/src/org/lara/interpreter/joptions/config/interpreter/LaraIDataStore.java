@@ -32,6 +32,7 @@ import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
+import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.xml.sax.SAXException;
 
@@ -175,7 +176,35 @@ public class LaraIDataStore implements LaraiKeys {
 
     public FileList getWorkingDir() {
         return getTrySources(LaraiKeys.WORKSPACE_FOLDER);
+    }
 
+    public List<File> getExtraSources() {
+        if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
+            String workspaceExtra = dataStore.get(WORKSPACE_EXTRA);
+
+            // Split using ;
+            String[] paths = workspaceExtra.split(";");
+            List<File> extraSources = new ArrayList<>();
+
+            for (String path : paths) {
+                // Trim
+                String trimmedPath = path.strip();
+
+                // Ignore if empty
+                if (trimmedPath.isEmpty()) {
+                    continue;
+                }
+
+                File parsedFile = KeyFactory.customFileGetter(new File(trimmedPath), dataStore, false, false, false,
+                        true);
+
+                extraSources.add(parsedFile);
+            }
+
+            return extraSources;
+        }
+
+        return Collections.emptyList();
     }
 
     public boolean isDebug() {

@@ -329,6 +329,8 @@ public class EditorPanel extends GuiTab {
             // && IoUtils.getCanonicalPath(newCanonFile).equals(IoUtils.getCanonicalPath(canonicalAspectFile))) {
             // return; // It is still the same file so we do not want to update
             // }
+
+            // TODO: Add WORKSPACE_EXTRA
             explorer.setWorkspaces(inFile);
         }
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {
