@@ -49,6 +49,7 @@ import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.PathList;
 import pt.up.fe.specs.util.utilities.StringList;
 
 public class LaraIDataStore implements LaraiKeys {
@@ -182,8 +183,10 @@ public class LaraIDataStore implements LaraiKeys {
         if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
             String workspaceExtra = dataStore.get(WORKSPACE_EXTRA);
 
+            List<String> paths = PathList.parse(workspaceExtra);
+
             // Split using ;
-            String[] paths = workspaceExtra.split(";");
+            // String[] paths = workspaceExtra.split(";");
             List<File> extraSources = new ArrayList<>();
 
             for (String path : paths) {
@@ -195,7 +198,7 @@ public class LaraIDataStore implements LaraiKeys {
                     continue;
                 }
 
-                File parsedFile = KeyFactory.customFileGetter(new File(trimmedPath), dataStore, false, false, false,
+                File parsedFile = KeyFactory.customGetterFile(new File(trimmedPath), dataStore, false, false, false,
                         true);
 
                 extraSources.add(parsedFile);
