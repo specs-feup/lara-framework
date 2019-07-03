@@ -32,7 +32,6 @@ import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
-import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.xml.sax.SAXException;
 
@@ -49,7 +48,6 @@ import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
-import pt.up.fe.specs.util.utilities.PathList;
 import pt.up.fe.specs.util.utilities.StringList;
 
 public class LaraIDataStore implements LaraiKeys {
@@ -181,30 +179,34 @@ public class LaraIDataStore implements LaraiKeys {
 
     public List<File> getExtraSources() {
         if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
+            // test1.c$prefix$test1.c;test2.c
+            return new ArrayList<>(dataStore.get(WORKSPACE_EXTRA).keySet());
+            /*
             String workspaceExtra = dataStore.get(WORKSPACE_EXTRA);
-
+            
             List<String> paths = PathList.parse(workspaceExtra);
-
+            
             // Split using ;
             // String[] paths = workspaceExtra.split(";");
             List<File> extraSources = new ArrayList<>();
-
+            
             for (String path : paths) {
                 // Trim
                 String trimmedPath = path.strip();
-
+            
                 // Ignore if empty
                 if (trimmedPath.isEmpty()) {
                     continue;
                 }
-
+            
                 File parsedFile = KeyFactory.customGetterFile(new File(trimmedPath), dataStore, false, false, false,
                         true);
-
+            
                 extraSources.add(parsedFile);
             }
-
+            
             return extraSources;
+            */
         }
 
         return Collections.emptyList();

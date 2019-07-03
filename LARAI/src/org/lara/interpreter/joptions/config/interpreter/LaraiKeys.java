@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 
@@ -57,7 +58,10 @@ public interface LaraiKeys {
             Collections.emptyList())
             .setLabel("Sources");
 
-    DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
+    // DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
+    // .setLabel("Additional Sources (separated by ;)");
+
+    DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
             .setLabel("Additional Sources (separated by ;)");
 
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
