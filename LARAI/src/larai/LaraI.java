@@ -576,7 +576,7 @@ public class LaraI {
 
         List<File> workspaceSources = new ArrayList<>();
         workspaceSources.addAll(options.getWorkingDir().getFiles());
-        workspaceSources.addAll(options.getExtraSources());
+        // workspaceSources.addAll(options.getExtraSources());
 
         final FileList folderApplication = FileList.newInstance(workspaceSources);
         // final FileList folderApplication = options.getWorkingDir();
