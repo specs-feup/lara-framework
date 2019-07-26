@@ -57,6 +57,7 @@ public interface LaraiKeys {
     DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.fileList("workspace", JFileChooser.FILES_AND_DIRECTORIES,
             Collections.emptyList())
             .setLabel("Sources");
+    // .setDefault(() -> new FileList(Collections.emptyList()));
 
     // DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
     // .setLabel("Additional Sources (separated by ;)");

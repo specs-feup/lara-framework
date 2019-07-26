@@ -242,10 +242,14 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private FileList getTrySources(DataKey<FileList> folder) {
+
+        return dataStore.get(folder);
+        /*
         if (dataStore.hasValue(folder)) {
             return dataStore.get(folder);
         }
         return FileList.newInstance(new File("."));
+        */
     }
 
     public FileList getIncludeDirs() {

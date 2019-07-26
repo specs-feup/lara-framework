@@ -575,10 +575,12 @@ public class LaraI {
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
 
         List<File> workspaceSources = new ArrayList<>();
+
         workspaceSources.addAll(options.getWorkingDir().getFiles());
         // workspaceSources.addAll(options.getExtraSources());
 
         final FileList folderApplication = FileList.newInstance(workspaceSources);
+
         // final FileList folderApplication = options.getWorkingDir();
 
         // if (!folderApplication.exists()) {

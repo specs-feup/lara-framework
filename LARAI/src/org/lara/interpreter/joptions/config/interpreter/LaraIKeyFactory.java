@@ -86,6 +86,7 @@ public class LaraIKeyFactory {
 
     public static CustomGetter<FileList> customGetterFileList(boolean isFolder, boolean isFile, boolean create) {
         return (fileList, dataStore) -> {
+
             List<File> processedFiles = fileList.getFiles().stream()
                     // In the option 'exists', using 'false' since this is a new option and this way the behaviour is
                     // the same
@@ -106,14 +107,14 @@ public class LaraIKeyFactory {
     	if (!file.getAbsoluteFile().exists()) {
     	    LoggingUtils
     		    .msgInfo("Path '" + file.getAbsolutePath() + "' does not exist, treating it as a folder");
-
+    
     	    isFolder = true;
     	}
-
+    
     	File processedFile = KeyFactory.customGetterFile(isFolder, create).get(file, dataStore);
     	processedFiles.add(processedFile);
         }
-
+    
         return FileList.newInstance(processedFiles);
     };
     }
