@@ -244,10 +244,10 @@ public class Enums {
 
         ;
         /*
-         * "<<=" <op name=�ASSIGN_SHL�/> ">>=" <op name=�ASSIGN_SHR�/>
-         * ">>>=" <op name=�ASSIGN_USHR�/> "&=" "^=" <op
-         * name=�ASSIGN_BitAND�/> "^=" <op name=�ASSIGN_BitXOR�/> "|="
-         * <op name=�ASSIGN_BitOR�/>
+         * "<<=" <op name='ASSIGN_SHL'/> ">>=" <op name='ASSIGN_SHR'/>
+         * ">>>=" <op name='ASSIGN_USHR'/> "&=" "^=" <op
+         * name='ASSIGN_BitAND'/> "^=" <op name='ASSIGN_BitXOR'/> "|="
+         * <op name='ASSIGN_BitOR'/>
          * 
          * 
          */
