@@ -175,7 +175,8 @@ public class LaraI {
      */
     public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        return SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        return result == null ? false : result;
     }
 
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
