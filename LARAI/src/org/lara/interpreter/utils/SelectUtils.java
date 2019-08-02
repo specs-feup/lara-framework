@@ -22,89 +22,88 @@ public class SelectUtils {
 
     // after the join select, create function to get join point chain list
     public static LaraJoinPoint join(LaraJoinPoint a, LaraJoinPoint b) {
-	if (a == null || b == null) {
-	    return null;
-	}
 
-	final List<LaraJoinPoint> aChildren = a.getChildren();
-	final List<LaraJoinPoint> bChildren = b.getChildren();
+        if (a == null || b == null) {
+            return null;
+        }
 
-	if (aChildren.size() == 0 || bChildren.size() == 0) {
-	    return null;
-	}
-	String aAlias = aChildren.get(0).getClassAlias();
-	String bAlias = bChildren.get(0).getClassAlias();
+        final List<LaraJoinPoint> aChildren = a.getChildren();
+        final List<LaraJoinPoint> bChildren = b.getChildren();
 
-	if (aAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
-	    aAlias = aAlias.substring(0, aAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
-	}
-	if (bAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
-	    bAlias = bAlias.substring(0, bAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
-	}
+        if (aChildren.size() == 0 || bChildren.size() == 0) {
+            return null;
+        }
+        String aAlias = aChildren.get(0).getClassAlias();
+        String bAlias = bChildren.get(0).getClassAlias();
 
-	if (aAlias.equals(bAlias)) {
+        if (aAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
+            aAlias = aAlias.substring(0, aAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
+        }
+        if (bAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
+            bAlias = bAlias.substring(0, bAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
+        }
 
-	    LaraJoinPoint c = null;
-	    for (final LaraJoinPoint aChild : aChildren) {
+        if (aAlias.equals(bAlias)) {
 
-		for (final LaraJoinPoint bChild : bChildren) {
+            LaraJoinPoint c = null;
+            for (final LaraJoinPoint aChild : aChildren) {
 
-		    if (aChild.getReference().same(bChild.getReference())) {
+                for (final LaraJoinPoint bChild : bChildren) {
+                    if (aChild.getReference().same(bChild.getReference())) {
+                        final LaraJoinPoint cChild = join(aChild, bChild);
 
-			final LaraJoinPoint cChild = join(aChild, bChild);
+                        if (cChild != null) {
+                            if (c == null) {
 
-			if (cChild != null) {
-			    if (c == null) {
+                                c = a.cleanClone();
+                            }
+                            c.addChild(cChild);
 
-				c = a.cleanClone();
-			    }
-			    c.addChild(cChild);
+                        }
+                        break;
+                    }
+                }
+            }
+            return c;
+        }
 
-			}
-			break;
-		    }
-		}
-	    }
-	    return c;
-	}
+        final LaraJoinPoint c = a.clone();
+        final List<LaraJoinPoint> cLeaves = c.getLeaves();
+        for (final LaraJoinPoint cLeaf : cLeaves) {
 
-	final LaraJoinPoint c = a.clone();
-	final List<LaraJoinPoint> cLeaves = c.getLeaves();
-	for (final LaraJoinPoint cLeaf : cLeaves) {
-
-	    // cLeaf is no longer a leaf
-	    cLeaf.addChildren(bChildren);
-	}
-	return c;
+            // cLeaf is no longer a leaf
+            cLeaf.addChildren(bChildren);
+        }
+        return c;
 
     }
 
     public static List<String> getJoinChain(List<String> leftChain, List<String> rightChain) {
-	final List<String> joinChain = new ArrayList<>();
-	int i = 0;
-	do {
-	    String left = leftChain.get(i);
-	    String right = rightChain.get(i);
-	    if (left.contains(LARACConstantPool.HIDDEN_TAG)) {
-		left = left.substring(0, left.indexOf(LARACConstantPool.HIDDEN_TAG));
-	    }
-	    if (right.contains(LARACConstantPool.HIDDEN_TAG)) {
-		right = right.substring(0, right.indexOf(LARACConstantPool.HIDDEN_TAG));
-	    }
-	    if (left.equals(right)) {
-		joinChain.add(leftChain.get(i));
-	    } else {
-		break;
-	    }
-	    i++;
-	} while (i < leftChain.size() && i < rightChain.size());
+        final List<String> joinChain = new ArrayList<>();
+        int i = 0;
+        do {
+            String left = leftChain.get(i);
+            String right = rightChain.get(i);
+            if (left.contains(LARACConstantPool.HIDDEN_TAG)) {
+                left = left.substring(0, left.indexOf(LARACConstantPool.HIDDEN_TAG));
+            }
+            if (right.contains(LARACConstantPool.HIDDEN_TAG)) {
+                right = right.substring(0, right.indexOf(LARACConstantPool.HIDDEN_TAG));
+            }
+            if (left.equals(right)) {
+                joinChain.add(leftChain.get(i));
+            } else {
+                break;
+            }
+            i++;
+        } while (i < leftChain.size() && i < rightChain.size());
 
-	for (int j = i; j < leftChain.size(); j++) {
-	    joinChain.add(leftChain.get(j));
-	}
-	for (int j = i; j < rightChain.size(); j++) {
-	    joinChain.add(rightChain.get(j));
-	}
-	return joinChain;
+        for (int j = i; j < leftChain.size(); j++) {
+            joinChain.add(leftChain.get(j));
+        }
+        for (int j = i; j < rightChain.size(); j++) {
+            joinChain.add(rightChain.get(j));
+        }
+        return joinChain;
     }
 }

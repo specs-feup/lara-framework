@@ -610,6 +610,7 @@ public class LaraI {
         // if cleaning is needed
     }
 
+    @SuppressWarnings("removal")
     private NashornScriptEngine createJsEngine() {
         // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
         // If restric mode is enabled, use ClassFilter

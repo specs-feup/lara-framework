@@ -27,6 +27,7 @@ public enum ReportField {
     RUNS,
     JOIN_POINTS,
     FILTERED_JOIN_POINTS,
+    WEAVING_TIME,
     TOKENS;
 
 }

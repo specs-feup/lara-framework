@@ -29,6 +29,7 @@ import org.lara.interpreter.generator.stmt.StatementProcessor;
 import org.lara.interpreter.generator.stmt.WeaverStatementProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.keys.OptionalFile;
+import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.LaraIUtils;
@@ -141,7 +142,7 @@ public class Interpreter {
         laraInterp.getWeaver().setInitialTime(begin);
         final Object result = evaluate(code);// cx.evaluateString(scope, code, "<js>", 1, null);
         long end = LaraI.getCurrentTime() - begin;
-
+        laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
         exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
         return result;
