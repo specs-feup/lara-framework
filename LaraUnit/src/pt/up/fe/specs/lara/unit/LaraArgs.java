@@ -101,7 +101,7 @@ public class LaraArgs {
 
         // Preprocess arg
         arg = arg.replace(BASE_MACRO, baseFolder.getAbsolutePath());
-        arg = arg.replace(SEPARATOR_MACRO, File.pathSeparator);
+        arg = arg.replace(SEPARATOR_MACRO, SpecsIo.getUniversalPathSeparator());
 
         currentArgs.add(arg);
     }
@@ -163,7 +163,7 @@ public class LaraArgs {
             return path;
         }
 
-        return currentIncludes + File.pathSeparator + path;
+        return currentIncludes + SpecsIo.getUniversalPathSeparator() + path;
     }
 
     public boolean hasArg(String arg) {

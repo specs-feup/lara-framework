@@ -498,7 +498,7 @@ public class LaraI {
         if (!laraAPIs.isEmpty()) {
             preprocess.add("-r");
             String resources = laraAPIs.stream().map(LaraI::getOriginalResource)
-                    .collect(Collectors.joining(File.pathSeparator));
+                    .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
             preprocess.add(resources);
         }
 

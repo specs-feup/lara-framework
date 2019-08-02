@@ -79,7 +79,7 @@ public class FileList implements Iterable<File> {
     }
 
     private static List<File> decode(String fileListStrs) {
-        String[] file = fileListStrs.split(File.pathSeparator);
+        String[] file = SpecsIo.splitPaths(fileListStrs);
         List<File> files = new ArrayList<>();
         for (String string : file) {
             files.add(new File(string));
@@ -88,7 +88,7 @@ public class FileList implements Iterable<File> {
     }
 
     public String encode() {
-        return StringUtils.join(fileList, SpecsIo::getCanonicalPath, File.pathSeparator);
+        return StringUtils.join(fileList, SpecsIo::getCanonicalPath, SpecsIo.getUniversalPathSeparator());
     }
 
     public static FileList newInstance() {
@@ -104,7 +104,7 @@ public class FileList implements Iterable<File> {
     public String toString() {
         String string = fileList.stream()
                 .map(file -> file.toString())
-                .collect(Collectors.joining(File.pathSeparator));
+                .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
 
         return string;
     }

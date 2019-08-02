@@ -253,7 +253,7 @@ public class EditorPanel extends GuiTab {
 
         String openedFiles = settings.loadOpenedFiles();
         if (!openedFiles.isEmpty()) {
-            String[] split = openedFiles.split(SettingsManager.FILE_SEPARATOR);
+            String[] split = SpecsIo.splitPaths(openedFiles);
             for (String fileName : split) {
                 File file = new File(fileName);
                 if (file.exists()) {

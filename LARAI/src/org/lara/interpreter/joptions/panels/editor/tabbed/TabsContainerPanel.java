@@ -26,7 +26,8 @@ import org.lara.interpreter.joptions.panels.editor.components.Explorer;
 import org.lara.interpreter.joptions.panels.editor.listeners.FileTransferHandler;
 import org.lara.interpreter.joptions.panels.editor.listeners.TabbedListener;
 import org.lara.interpreter.joptions.panels.editor.utils.Factory;
-import org.lara.interpreter.joptions.panels.editor.utils.SettingsManager;
+
+import pt.up.fe.specs.util.SpecsIo;
 
 /**
  * This source files panel contains a tabbed pane that will contain the editor tabs. The main tab, which is the main
@@ -203,7 +204,7 @@ public class TabsContainerPanel extends JPanel {
             openedFiles += editorTab.getLaraFile();
             for (int i = 2; i < tabCount; i++) {
                 editorTab = getTab(i);
-                openedFiles += SettingsManager.FILE_SEPARATOR + editorTab.getLaraFile();
+                openedFiles += SpecsIo.getUniversalPathSeparator() + editorTab.getLaraFile();
             }
         }
         getEditor().getEditorPanel().updateOpenedFiles(openedFiles);
