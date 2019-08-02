@@ -30,7 +30,7 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 public class ExceptionGenerator extends GeneratorHelper {
 
     protected ExceptionGenerator(JavaAbstractsGenerator javaGenerator) {
-	super(javaGenerator);
+        super(javaGenerator);
     }
 
     /**
@@ -40,51 +40,51 @@ public class ExceptionGenerator extends GeneratorHelper {
      * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
-	return new ExceptionGenerator(javaGenerator).generate();
+        return new ExceptionGenerator(javaGenerator).generate();
     }
 
     @Override
     public JavaClass generate() {
-	JavaClass eC = new JavaClass(javaGenerator.getWeaverName() + "Exception",
-		javaGenerator.getOutPackage() + ".exceptions");
-	eC.setSuperClass(JavaTypeFactory.convert(BaseException.class));
-	eC.appendComment(
-		"This class can be used as the exception of this weaver in order to follow the message pretty print used by the interpreter");
-	generateSerialIDField(eC);
-	Field eventF = generateEventField(eC);
-	generateConstructors(eC, eventF);
-	generateSimpleMessageMethod(eC);
-	generateMessageMethod(eC);
-	return eC;
+        JavaClass eC = new JavaClass(javaGenerator.getWeaverName() + "Exception",
+                javaGenerator.getOutPackage() + ".exceptions");
+        eC.setSuperClass(JavaTypeFactory.convert(BaseException.class));
+        eC.appendComment(
+                "This class can be used as the exception of this weaver in order to follow the message pretty print used by the interpreter");
+        generateSerialIDField(eC);
+        Field eventF = generateEventField(eC);
+        generateConstructors(eC, eventF);
+        generateSimpleMessageMethod(eC);
+        generateMessageMethod(eC);
+        return eC;
     }
 
     private static void generateConstructors(JavaClass eC, Field eventF) {
 
-	Constructor eventConstr = new Constructor(eC);
-	eventConstr.addArgument(eventF);
-	eventConstr.appendCode("this(" + eventF.getName() + ",null);\n");
-	eventConstr.appendComment("Create a new exception with a message");
-	eventConstr.addJavaDocTag(JDocTag.PARAM, "event the exception message");
+        Constructor eventConstr = new Constructor(eC);
+        eventConstr.addArgument(eventF);
+        eventConstr.appendCode("this(" + eventF.getName() + ",null);\n");
+        eventConstr.appendComment("Create a new exception with a message");
+        eventConstr.addJavaDocTag(JDocTag.PARAM, "event the exception message");
 
-	Constructor completeConstr = new Constructor(eC);
-	completeConstr.addArgument(eventF);
-	completeConstr.addArgument(JavaTypeFactory.convert(Throwable.class), "cause");
-	completeConstr.appendCode("super(cause);\n");
-	completeConstr.appendCode("this." + eventF.getName() + " = " + eventF.getName() + ";\n");
-	completeConstr.appendComment("Create a new exception with the cause and the triggering event");
-	completeConstr.addJavaDocTag(JDocTag.PARAM, "event the event that caused the exception");
-	completeConstr.addJavaDocTag(JDocTag.PARAM, "cause the cause of this exception");
+        Constructor completeConstr = new Constructor(eC);
+        completeConstr.addArgument(eventF);
+        completeConstr.addArgument(JavaTypeFactory.convert(Throwable.class), "cause");
+        completeConstr.appendCode("super(cause);\n");
+        completeConstr.appendCode("this." + eventF.getName() + " = " + eventF.getName() + ";\n");
+        completeConstr.appendComment("Create a new exception with the cause and the triggering event");
+        completeConstr.addJavaDocTag(JDocTag.PARAM, "event the event that caused the exception");
+        completeConstr.addJavaDocTag(JDocTag.PARAM, "cause the cause of this exception");
 
     }
 
     private static Method generateMessageMethod(JavaClass eC) {
-	Method m = new Method(JavaTypeFactory.getStringType(), "generateMessage");
-	m.add(Annotation.OVERRIDE);
-	m.setPrivacy(Privacy.PROTECTED);
-	m.addJavaDocTag(JDocTag.SEE, BaseException.class.getName() + "#generateMessage()");
-	m.appendCode("return \"Exception in \"+this.generateSimpleMessage();");
-	eC.add(m);
-	return m;
+        Method m = new Method(JavaTypeFactory.getStringType(), "generateMessage");
+        m.add(Annotation.OVERRIDE);
+        m.setPrivacy(Privacy.PROTECTED);
+        m.addJavaDocTag(JDocTag.SEE, BaseException.class.getName() + "#generateMessage()");
+        m.appendCode("return \"Exception in \"+this.generateSimpleMessage();");
+        eC.add(m);
+        return m;
     }
 
     /**
@@ -102,14 +102,14 @@ public class ExceptionGenerator extends GeneratorHelper {
      * @param eC
      */
     private Method generateSimpleMessageMethod(JavaClass eC) {
-	Method m = new Method(JavaTypeFactory.getStringType(), "generateSimpleMessage");
-	m.add(Annotation.OVERRIDE);
-	m.setPrivacy(Privacy.PROTECTED);
-	m.addJavaDocTag(JDocTag.SEE, BaseException.class.getName() + "#generateSimpleMessage()");
-	String exceptionMessage = "\" [" + javaGenerator.getWeaverName() + "] \" +this.event";
-	m.appendCode("return " + exceptionMessage + ";");
-	eC.add(m);
-	return m;
+        Method m = new Method(JavaTypeFactory.getStringType(), "generateSimpleMessage");
+        m.add(Annotation.OVERRIDE);
+        m.setPrivacy(Privacy.PROTECTED);
+        m.addJavaDocTag(JDocTag.SEE, BaseException.class.getName() + "#generateSimpleMessage()");
+        String exceptionMessage = "\" [" + javaGenerator.getWeaverName() + "] \" +this.event";
+        m.appendCode("return " + exceptionMessage + ";");
+        eC.add(m);
+        return m;
     }
 
     /**
@@ -119,11 +119,11 @@ public class ExceptionGenerator extends GeneratorHelper {
      * @return
      */
     private static Field generateEventField(JavaClass eC) {
-	Field eventF = new Field(JavaTypeFactory.getStringType(), "event");
-	// serialID.addModifier();
-	eventF.addModifier(Modifier.FINAL);
-	eC.add(eventF);
-	return eventF;
+        Field eventF = new Field(JavaTypeFactory.getStringType(), "event");
+        // serialID.addModifier();
+        eventF.addModifier(Modifier.FINAL);
+        eC.add(eventF);
+        return eventF;
     }
 
     /**
@@ -136,11 +136,11 @@ public class ExceptionGenerator extends GeneratorHelper {
      * @param eC
      */
     private static void generateSerialIDField(JavaClass eC) {
-	Field serialID = new Field(JavaTypeFactory.getPrimitiveType(Primitive.LONG), "serialVersionUID");
-	// serialID.addModifier();
-	serialID.addModifier(Modifier.STATIC);
-	serialID.addModifier(Modifier.FINAL);
-	serialID.setInitializer(e -> new StringBuilder("1L"));
-	eC.add(serialID);
+        Field serialID = new Field(JavaTypeFactory.getPrimitiveType(Primitive.LONG), "serialVersionUID");
+        // serialID.addModifier();
+        serialID.addModifier(Modifier.STATIC);
+        serialID.addModifier(Modifier.FINAL);
+        serialID.setInitializer(e -> new StringBuilder("1L"));
+        eC.add(serialID);
     }
 }

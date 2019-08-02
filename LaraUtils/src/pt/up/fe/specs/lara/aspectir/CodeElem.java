@@ -4,14 +4,16 @@
 //    Any modifications to the file could be lost.
 
 package pt.up.fe.specs.lara.aspectir;
+import java.io.File;
+import java.io.PrintStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import java.io.File;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.PrintStream;
 
 /****************************** Class CodeElem ******************************/
 public class CodeElem extends Base implements IElement {

@@ -37,3 +37,10 @@ Metric.prototype.report = function(processExecutor) {
 Metric.prototype.getImport = function() {
 		notImplemented("Metric.getImport");
 }
+
+/**
+ * @returns {string} A string with the current unit of this metric.
+ */
+Metric.prototype.getUnit = function() {
+		notImplemented("Metric.getUnit");
+}

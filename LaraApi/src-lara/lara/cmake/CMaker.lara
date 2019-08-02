@@ -39,6 +39,8 @@ var CMaker = function(name, disableWeaving) {
 CMaker.prototype._MINIMUM_VERSION = "2.8";
 CMaker.prototype._EXE_VAR = "EXE_NAME";
 
+CMaker._DEFAULT_BIN_FOLDER = "bin";
+
 
 /**
  * Custom CMake code that will be appended to the end of the CMake file.
@@ -176,6 +178,7 @@ CMaker.prototype.addFlags = function() {
  *
  */
 CMaker.prototype.addLibs = function() {
+	
 	for(var lib of arguments) {
 		this.libs.push(lib);
 	}
@@ -235,9 +238,9 @@ CMaker.prototype.addCurrentAst = function() {
 	var srcFolder = Io.getPath(currentAstFolder, "src");
 	for(var $file of Clava.getProgram().descendants("file")) {
 		var destFolder = srcFolder;
-		if($file.relativeFolderpath !== undefined) {
-			destFolder = Io.mkdir(srcFolder, $file.relativeFolderpath);
-		}
+		//if($file.relativeFolderpath !== undefined) {
+		//	destFolder = Io.mkdir(srcFolder, $file.relativeFolderpath);
+		//}
 		
 		var filepath = $file.write(destFolder);
 		
@@ -303,11 +306,12 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	debug("Make output:" + this._lastMakeOutput);
 	//println("Make output: " + makeOutput);
 	
-	var executableFile = Io.getPath(builderFolderpath, this._getExecutableName());
+	var binPath = Io.getPath(builderFolderpath, CMaker._DEFAULT_BIN_FOLDER);
+	var executableFile = Io.getPath(binPath, this._getExecutableName());
 	//println("BuildFolderPath:" + builderFolderpath);
 	//println("Executable Name:" + this._getExecutableName());
 	if(!Io.isFile(executableFile)) {
-		println("Cmaker.build: Could not generate executable file '" + this._getExecutableName() + "'");
+		println("Cmaker.build: Could not generate executable file '" + this._getExecutableName() + "', expected to be in the path '"+executableFile.getAbsolutePath()+"'");
 		return;
 	}
 	
@@ -335,6 +339,9 @@ CMaker.prototype.getCode = function() {
 	code += this._getCxxFlagsCode();
 	code += this._getCFlagsCode();
 	
+	// Directories
+	code += this._getProjectDirectoriesCode();
+	
 	// Sources
 	code += this.sources.getCode() + "\n\n";
 
@@ -347,14 +354,38 @@ CMaker.prototype.getCode = function() {
 	code += ")\n\n";
 	
 	// Libs
+	var extraLibs = Compilation.getExtraLibs();
+	this.addLibs(extraLibs);
 	code += "target_link_libraries(${" + this._EXE_VAR + "} ";
 	code += '"' + this.libs.join('" "') + '")\n\n';
-		
+	
+	// binary directories
+	code += %{
+		set_target_properties(${EXE_NAME}
+			PROPERTIES
+			ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/[[CMaker._DEFAULT_BIN_FOLDER]]"
+			LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/[[CMaker._DEFAULT_BIN_FOLDER]]"
+			RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/[[CMaker._DEFAULT_BIN_FOLDER]]"
+		)
+	}%;
+	
 	// Custom code
 	if(this.customCMakeCode !== undefined) {
 		code += this.customCMakeCode;
 	}
 		
+	return code;
+}
+
+CMaker.prototype._getProjectDirectoriesCode = function() {
+	
+	var code = '';
+	var subDirs = Compilation.getExtraProjects();
+	
+	for(var subDir of subDirs) {
+		code += 'add_subdirectory("' + subDir + '" "' + subDir + '/bin")\n';
+	}
+	
 	return code;
 }
 

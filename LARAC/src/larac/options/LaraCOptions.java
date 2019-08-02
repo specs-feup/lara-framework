@@ -268,7 +268,7 @@ public class LaraCOptions {
     // }
 
     public Collection<LaraResourceProvider> getResourceProviders(String includeDir, LaraC larac) {
-        final String[] paths = includeDir.split(File.pathSeparator);
+        final String[] paths = SpecsIo.splitPaths(includeDir);
 
         final Collection<LaraResourceProvider> importPaths = SpecsFactory.newArrayList();
         for (final String path : paths) {
@@ -280,7 +280,7 @@ public class LaraCOptions {
     }
 
     public List<File> getIncludeFolders(String includeDir, LaraC larac) {
-        final String[] paths = includeDir.split(File.pathSeparator);
+        final String[] paths = SpecsIo.splitPaths(includeDir);
 
         final List<File> importPaths = SpecsFactory.newArrayList();
         for (final String path : paths) {

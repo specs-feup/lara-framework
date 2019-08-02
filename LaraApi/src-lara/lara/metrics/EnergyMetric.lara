@@ -1,4 +1,5 @@
 import lara.metrics.Metric;
+import lara.metrics.MetricResult;
 import lara.code.Energy;
 import lara.Strings;
 
@@ -26,9 +27,13 @@ EnergyMetric.prototype.instrument = function($start, $end) {
 // Override
 EnergyMetric.prototype.report = function(processExecutor) {
 	var value = Strings.extractValue(this._prefix, processExecutor.getConsoleOutput());	
-	return new MetricResult(value, this.energy.getPrintUnit());
+	return new MetricResult(parseFloat(value), this.energy.getPrintUnit());
 }
 
 EnergyMetric.prototype.getImport = function() {
 		return "lara.metrics.EnergyMetric";
+}
+
+EnergyMetric.prototype.getUnit = function() {
+		return this.energy.getPrintUnit();
 }

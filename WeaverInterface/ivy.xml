@@ -32,6 +32,10 @@
 		<dependency org="com.google.code.gson" name="gson" rev="2.4"/>
 		<!-- https://mvnrepository.com/artifact/org.apache.sling/org.apache.sling.commons.json -->
 		<!--dependency org="org.apache.sling" name="org.apache.sling.commons.json" rev="2.0.18"/-->
+
+		<dependency org="org.graalvm.sdk" name="graal-sdk" rev="19.0.0"/>
+		<dependency org="org.graalvm.js" name="js" rev="19.0.0"/>
+		<dependency org="org.graalvm.js" name="js-scriptengine" rev="19.0.0"/>
 		
 	</dependencies>
 </ivy-module>

@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -34,7 +34,7 @@ import pt.up.fe.specs.util.SpecsIo;
 
 /**
  * A processor that deals with Aspect related constructions
- * 
+ *
  * @author Tiago
  *
  */
@@ -89,7 +89,7 @@ public class AspectClassProcessor {
     // ================================================================================//
     /**
      * Convert all aspects into javascript code
-     * 
+     *
      * @param asps
      * @return
      */
@@ -164,8 +164,10 @@ public class AspectClassProcessor {
     private void generateDeclarations(Aspects asps, boolean evaluate) {
         // then the global variables declaration
         for (final Statement stmt : asps.declarations) {
+
             try {
                 final StringBuilder globalsConstructor = interpreter.getJavascriptString(stmt, 0);
+
                 globalsConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(globalsConstructor);
                 if (evaluate) {
@@ -216,7 +218,7 @@ public class AspectClassProcessor {
     // ================================================================================//
     /**
      * Generate the javascript code for an Aspect
-     * 
+     *
      * @param asp
      *            The Aspect to be interpreted
      * @param cx
@@ -367,6 +369,10 @@ public class AspectClassProcessor {
         String aspectCoords = coord.replace("\\", "\\\\");
         aspectConstructor.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
                 + ".throwAspectException(e, '" + asp.name + "','" + aspectCoords + "',this.__currentLine__);\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw " + ExceptionUtils.class.getSimpleName()
+        // + ".processAspectException(e, '" + asp.name + "','" + aspectCoords
+        // + "',this.__currentLine__).toString();\n");
+
         // + ".throwAspectException(e, e.rhinoException, '" + asp.name +
         // "'," + json + ");\n");
         // aspectConstructor.append(LaraIUtils.getSpace(3) + "var
@@ -441,7 +447,7 @@ public class AspectClassProcessor {
 
     /**
      * Add the arguments given with the larai parameter "-av" and call the main argument
-     * 
+     *
      * @param mainName
      *            the main aspect name
      * @param code
@@ -479,7 +485,7 @@ public class AspectClassProcessor {
 
     /**
      * Generates the output report, which contains the outputs of the main aspect
-     * 
+     *
      * @param code
      * @param mainName
      * @param aspect
@@ -511,7 +517,7 @@ public class AspectClassProcessor {
 
     /**
      * Defines a static variable as a property of the Aspect "class"
-     * 
+     *
      * @param aspect
      * @param var
      * @param depth

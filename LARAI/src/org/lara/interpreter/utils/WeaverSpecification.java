@@ -20,22 +20,23 @@ import java.util.stream.Collectors;
 import javax.script.Bindings;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.interpreter.weaver.utils.JsScriptEngine;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Select;
 
+import pt.up.fe.specs.jsengine.JsEngine;
+
 public class WeaverSpecification {
     private final LanguageSpecificationV2 ls;
-    private final JsScriptEngine engine;
+    private final JsEngine engine;
 
-    public static WeaverSpecification newInstance(LanguageSpecificationV2 ls, JsScriptEngine engine) {
+    public static WeaverSpecification newInstance(LanguageSpecificationV2 ls, JsEngine engine) {
         return new WeaverSpecification(ls, engine);
     }
 
-    private WeaverSpecification(LanguageSpecificationV2 ls, JsScriptEngine engine) {
+    private WeaverSpecification(LanguageSpecificationV2 ls, JsEngine engine) {
         this.ls = ls;
         this.engine = engine;
     }

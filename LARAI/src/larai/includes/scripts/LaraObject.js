@@ -74,10 +74,10 @@ function LaraObject(start){
  */
 LaraObject.prototype.getId = function (){
 
-    if(arguments.length == 0) {
-		
-		return;
+    if(arguments.length == 0) {		
+		return undefined;
 	}
+	
     var lastProperty = this;
 	
     for(var i = 0; i< arguments.length-1; i++){

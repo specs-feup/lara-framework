@@ -42,11 +42,11 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 
 import com.google.common.base.Preconditions;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larac.objects.Enums.Types;
 import larac.utils.output.Output;
 import larac.utils.xml.Pair;
 import larai.LaraI;
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -76,7 +76,7 @@ public class Interpreter {
     private final LaraI laraInterp;
     private final LaraIDataStore options;
     private Output out = new Output();
-    private final NashornScriptEngine engine;
+    private final JsEngine engine;
     private final WeaverStatementProcessor wStmtProcessor;
     private final AspectClassProcessor aspectProcessor;
     private final ImportProcessor importProcessor;
@@ -95,7 +95,7 @@ public class Interpreter {
      * @param scope
      *            the scope for this interpreter
      */
-    public Interpreter(LaraI laraInt, NashornScriptEngine engine) {
+    public Interpreter(LaraI laraInt, JsEngine engine) {
         laraInterp = laraInt;
         options = laraInterp.getOptions();
         out = laraInterp.out;
@@ -112,6 +112,10 @@ public class Interpreter {
             setprintStream(out.getOutStream());
         }
 
+    }
+
+    public JsEngine getEngine() {
+        return engine;
     }
 
     /**
@@ -172,9 +176,30 @@ public class Interpreter {
     public Object evaluate(String code) {
 
         try {
-            return engine.eval(code);
+            // System.out.println("CODE:\n" + code);
+            // System.out.println("\nCODE END");
+            return engine.getEngine().eval(code);
         } catch (ScriptException e) {
+
+            // Check is there is any BaseException as cause
+            // Throwable current = e;
+            // while (current != null && !(current instanceof BaseException)) {
+            // current = current.getCause();
+            // }
+            //
+            // if (current != null) {
+            // throw (BaseException) current;
+            // }
+
+            // System.out.println("SCRIPT EXCEPTION: " + e.getClass());
+            // System.out.println(e);
+            // System.out.println("CAUSE:" + e.getCause().getCause());
+            // SpecsLogs.info("Could not evaluate code:\n" + code);
+
+            // throw new EvaluationException("Could not evaluate code:\n" + code, e);
+
             throw new EvaluationException(e);
+            // throw new RuntimeException(e);
         }
 
     }
@@ -519,7 +544,7 @@ public class Interpreter {
 
     /**
      * Returns a pair in which the left is the target object (if any) and the right side is the actual method invoked
-     * 
+     *
      * @param exprCall
      * @param call
      * @return
@@ -1023,8 +1048,8 @@ public class Interpreter {
      */
     private void setprintStream(PrintStream printStream) {
         // private void setprintStream(OutputStream printStream) {
-        engine.put("outputStream", printStream);
-        engine.put("errorStream", printStream);
+        engine.getEngine().put("outputStream", printStream);
+        engine.getEngine().put("errorStream", printStream);
     }
 
     /**
@@ -1034,7 +1059,7 @@ public class Interpreter {
      * @param value
      */
     public void put(String key, Object value) {
-        engine.put(key, value);
+        engine.getEngine().put(key, value);
 
     }
 

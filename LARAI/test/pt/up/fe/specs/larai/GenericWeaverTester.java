@@ -40,7 +40,7 @@ public class GenericWeaverTester {
     private final String basePackage;
     /*
     private final String compilerFlags;
-    
+
     private boolean checkWovenCodeSyntax;
     */
     private String srcPackage;
@@ -53,7 +53,7 @@ public class GenericWeaverTester {
         srcPackage = null;
         resultPackage = null;
         // Set to true by default
-        useStack = false;
+        useStack = true;
     }
 
     public GenericWeaverTester setResultPackage(String resultPackage) {
@@ -189,7 +189,7 @@ public class GenericWeaverTester {
         if (!keepWovenFiles) {
             // File wovenFolder = new File(WOVEN_FOLDER);
             SpecsIo.deleteFolderContents(outputFolder);
-        
+
             // Recreate dummy
             SpecsIo.write(new File(outputFolder, "dummy"), "");
         }

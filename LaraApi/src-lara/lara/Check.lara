@@ -164,7 +164,6 @@ Check.isJoinPoint = function($jp, type) {
 	if(type !== undefined && !$jp.instanceOf(type)) {
 		throw "Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'";		
 	}
-
 }
 
 
@@ -182,5 +181,4 @@ Check.strings = function(currentString, expectedString) {
 	if(currentString !== expectedString) {
 		throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
 	}
-	
 }

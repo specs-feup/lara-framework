@@ -685,7 +685,7 @@ public class GeneratorUtils {
 
     /**
      * Generic implementation of the select method which uses the select() function in the global join point class.
-     * 
+     *
      * @param selectName
      * @param type
      * @return
@@ -978,6 +978,9 @@ public class GeneratorUtils {
     }
 
     public static Method generateSelectGeneric(JavaClass globalJpClass, boolean isAbstract) {
+
+        // Select returns a List
+        globalJpClass.addImport(List.class);
 
         JavaType returnType = new JavaType("<T extends " + globalJpClass.getName() + "> List<? extends T>");
 

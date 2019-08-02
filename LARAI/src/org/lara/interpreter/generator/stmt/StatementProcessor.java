@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -19,6 +19,7 @@ import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Statements;
 
 import larac.objects.Enums.LoopTypes;
+import pt.up.fe.specs.jsengine.ForOfType;
 import pt.up.fe.specs.lara.aspectir.Code;
 import pt.up.fe.specs.lara.aspectir.CodeElem;
 import pt.up.fe.specs.lara.aspectir.ExprOp;
@@ -193,9 +194,13 @@ public class StatementProcessor {
             final Code c = (Code) stat.components.get(0);
             if (c.desc.equals("init")) { // For [var|in] statement
                 ret.append(LaraIUtils.getSpace(depth) + "for ");
-                if (stat.desc != null && stat.desc.equals(LoopTypes.FOREACH.toString())) {
-                    ret.append("each ");
+
+                if (interpreter.getEngine().getForOfType() == ForOfType.FOR_EACH) {
+                    if (stat.desc != null && stat.desc.equals(LoopTypes.FOREACH.toString())) {
+                        ret.append("each ");
+                    }
                 }
+
                 ret.append("(");
                 if (stat.components.get(1).desc.equals("container")) { // For
                     // in
@@ -204,7 +209,13 @@ public class StatementProcessor {
 
                     final Expression leftExpr = (Expression) c.statements.get(0).components.get(0);
                     ret.append(interpreter.getJavascriptString(leftExpr, -1));
-                    ret.append(" in ");
+
+                    if (stat.desc.equals(LoopTypes.FOREACH.toString()) &&
+                            interpreter.getEngine().getForOfType() == ForOfType.NATIVE) {
+                        ret.append(" of ");
+                    } else {
+                        ret.append(" in ");
+                    }
 
                     ret.append(interpreter.getJavascriptString(stat.components.get(1), 0));
                 } else { // For [var] statement

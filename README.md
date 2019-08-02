@@ -1,6 +1,7 @@
 # lara-framework
 Tools and APIs to develop weavers for the LARA language (LARA Compiler, LARA Interpreter, Weaver Generator, etc...)
 
+The LARA framework is on [Maven Repository](https://mvnrepository.com/artifact/pt.up.fe.specs/lara-framework).
 
 # configuring eclipse
 

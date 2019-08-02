@@ -86,12 +86,17 @@ public class EventTrigger {
      * @param params
      * @param objects
      */
-    public void triggerAspect(Stage stage, String aspect_name, String called_by, String[] params, String[] objects,
+    // public void triggerAspect(Object stage, Object aspect_name, Object called_by, Object[] params, Object[] objects,
+    // Object exception) {
+    public void triggerAspect(Stage stage, String aspect_name, String called_by, String[] params, Object[] objects,
             Object exception) {
-
+        // System.out.println("TRIGGER ASPECT:" + aspect_name);
         final AspectEvent data = new AspectEvent(stage, aspect_name, called_by, params, objects, exception);
+        // final AspectEvent data = new AspectEvent((Stage) stage, (String) aspect_name, (String) called_by,
+        // (String[]) params, objects, exception);
         final Event event = new SimpleEvent(LaraIEvent.OnAspect, data);
         eventController.notifyEvent(event);
+        // System.out.println("TRIGGER ASPECT END:" + aspect_name);
     }
 
     public static final String TRIGGER_ACTION_EVENT = "triggerAction";
@@ -131,6 +136,10 @@ public class EventTrigger {
      */
     public void triggerApply(Stage stage, String aspect_name, String label, String select_label,
             LaraJoinPoint select) {
+        // System.out.println("TRIGGER APPLY:" + aspect_name);
+
+        // Object select1) {
+        // LaraJoinPoint select = (LaraJoinPoint) select1;
         Optional<LaraJoinPoint> root;
         if (select == null || !select.hasChildren()) {
             root = Optional.empty();
@@ -143,15 +152,17 @@ public class EventTrigger {
         final ApplyEvent data = new ApplyEvent(stage, aspect_name, label, select_label, root);
         final Event event = new SimpleEvent(LaraIEvent.OnApply, data);
         eventController.notifyEvent(event);
-
+        // System.out.println("TRIGGER APPLY END:" + aspect_name);
     }
 
     public void triggerApply(Stage stage, String aspect_name, String label, String select_label,
             JoinPoint[] pointcutChain) {
+        // System.out.println("TRIGGER APPLY[]:" + aspect_name);
         final ApplyIterationEvent data = new ApplyIterationEvent(stage, aspect_name, label, select_label,
                 Arrays.asList(pointcutChain));
         final Event event = new SimpleEvent(LaraIEvent.OnApply, data);
         eventController.notifyEvent(event);
+        // System.out.println("TRIGGER APPLY[] END:" + aspect_name);
     }
 
     /**

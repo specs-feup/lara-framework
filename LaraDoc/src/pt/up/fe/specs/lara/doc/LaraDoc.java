@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.script.ScriptEngineManager;
-
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
@@ -33,12 +31,13 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
 import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
 import larai.larabundle.LaraBundleProperty;
 import larai.lararesource.LaraResource;
+import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.jsengine.nashorn.NashornEngine;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
@@ -94,7 +93,7 @@ public class LaraDoc {
         // data.add(LaraiKeys.VERBOSE, VerboseLevel.errors);
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
-        NashornScriptEngine jsEngine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+        JsEngine jsEngine = new NashornEngine();
         FileList folderApplication = FileList.newInstance();
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);

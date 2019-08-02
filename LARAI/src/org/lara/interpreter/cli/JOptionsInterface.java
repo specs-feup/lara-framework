@@ -39,6 +39,7 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.argv, LaraiKeys.ASPECT_ARGS);
         // JOptionsInterface.CONVERSION_MAP.put(CLIOption.argw, LaraiKeys.WEAVER_ARGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace, LaraiKeys.WORKSPACE_FOLDER);
+        JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace_extra, LaraiKeys.WORKSPACE_EXTRA);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.output, LaraiKeys.OUTPUT_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.debug, LaraiKeys.DEBUG_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.stack, LaraiKeys.TRACE_MODE);

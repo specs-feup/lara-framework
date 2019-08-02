@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.joptions.panels.editor.utils;
 
-import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
@@ -32,7 +31,7 @@ public class SettingsManager {
 
     public Preferences prefs;
     private String keySufix;
-    public static final String FILE_SEPARATOR = File.pathSeparator;
+    // public static final String FILE_SEPARATOR = File.pathSeparator;
 
     public SettingsManager(EditorPanel panel, String keySufix) {
         this.keySufix = keySufix;

@@ -19,20 +19,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.script.ScriptEngine;
-
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.interpreter.weaver.utils.JsScriptEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
@@ -51,7 +50,7 @@ public abstract class WeaverEngine {
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
 
-    private JsScriptEngine scriptEngine;
+    private JsEngine scriptEngine;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
@@ -60,7 +59,7 @@ public abstract class WeaverEngine {
         scriptEngine = null;
     }
 
-    public JsScriptEngine getScriptEngine() {
+    public JsEngine getScriptEngine() {
         if (scriptEngine == null) {
             throw new RuntimeException("Java script engine has not been set for weaver: " + getName());
         }
@@ -68,11 +67,7 @@ public abstract class WeaverEngine {
         return scriptEngine;
     }
 
-    public void setScriptEngine(ScriptEngine scriptEngine) {
-        setScriptEngine(new JsScriptEngine(scriptEngine));
-    }
-
-    public void setScriptEngine(JsScriptEngine scriptEngine) {
+    public void setScriptEngine(JsEngine scriptEngine) {
         this.scriptEngine = scriptEngine;
     }
 
@@ -152,6 +147,15 @@ public abstract class WeaverEngine {
     public abstract String getRoot();
 
     /**
+     * Function that can be called from LARA code to retrieve the root join point
+     *
+     * @return
+     */
+    public JoinPoint getRootJp() {
+        return select();
+    }
+
+    /**
      * Returns a list of options the weaver accepts
      *
      * @return
@@ -165,7 +169,7 @@ public abstract class WeaverEngine {
 
     /**
      * The store definition for the options specific to this weaver
-     * 
+     *
      * @return
      */
     public StoreDefinition getStoreDefinition() {
@@ -252,7 +256,7 @@ public abstract class WeaverEngine {
 
     /**
      * Use this method if you intend to use your own weaver profiler by extending class {@link WeaverProfiler}
-     * 
+     *
      * @return
      */
     protected void setWeaverProfiler(WeaverProfiler weaverProfiler) {
@@ -265,7 +269,7 @@ public abstract class WeaverEngine {
 
     /**
      * An image representing the icon of the program, that will appear in the upper-left corner.
-     * 
+     *
      * @return by default, returns null
      */
     public ResourceProvider getIcon() {
@@ -274,7 +278,7 @@ public abstract class WeaverEngine {
 
     /**
      * The names of the weaver. These strings will be used to process folders for LARA bundles.
-     * 
+     *
      * @return the names of the weaver. By default, returns the class name in lower-case, and without the suffix
      *         "weaver", if one is present
      */
@@ -289,7 +293,7 @@ public abstract class WeaverEngine {
 
     /**
      * The languages supported by the weaver. These strings will be used to process folders for LARA bundles.
-     * 
+     *
      * @return the languages supported by the weaver. By default, returns empty.
      */
     public Set<String> getLanguages() {
@@ -298,7 +302,7 @@ public abstract class WeaverEngine {
 
     /**
      * Returns a temporary unique folder that is live while the weaver is running.
-     * 
+     *
      * @return
      */
     public File getTemporaryWeaverFolder() {
@@ -306,7 +310,7 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * 
+     *
      * @return true if the temporary weaver folder has been created
      */
     public boolean hasTemporaryWeaverFolder() {
@@ -338,6 +342,10 @@ public abstract class WeaverEngine {
     public boolean executeUnitTestMode(DataStore dataStore) {
         SpecsLogs.msgInfo("Unit testing mode not implemented yet for this weaver");
         return false;
+    }
+
+    public void writeCode(File outputFolder) {
+        throw new NotImplementedException(getClass().getSimpleName() + ".writeCode() not yet implemented!");
     }
 
 }

@@ -32,6 +32,7 @@ import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Datakey.CustomGetter;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
+import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.Utils.EnumCodec;
 import org.suikasoft.jOptions.gui.panels.option.FilePanel;
 
@@ -85,6 +86,7 @@ public class LaraIKeyFactory {
 
     public static CustomGetter<FileList> customGetterFileList(boolean isFolder, boolean isFile, boolean create) {
         return (fileList, dataStore) -> {
+
             List<File> processedFiles = fileList.getFiles().stream()
                     // In the option 'exists', using 'false' since this is a new option and this way the behaviour is
                     // the same
@@ -283,6 +285,25 @@ public class LaraIKeyFactory {
                 .setDefault(() -> anEnum.getEnumConstants()[0])
                 .setDecoder(new EnumCodec<>(anEnum))
                 .setKeyPanelProvider((key, data) -> new EnumRadioButtonPanel<>(key, data));
+    }
+
+    public static String customGetterLaraArgs(String args, DataStore dataStore) {
+        String finalArgs = args;
+        String trimmedArgs = args.strip();
+
+        if (trimmedArgs.isEmpty()) {
+            return args;
+        }
+
+        if (!trimmedArgs.startsWith("{")) {
+            finalArgs = "{" + finalArgs;
+        }
+
+        if (!trimmedArgs.endsWith("}")) {
+            finalArgs = finalArgs + "}";
+        }
+
+        return finalArgs;
     }
 
 }

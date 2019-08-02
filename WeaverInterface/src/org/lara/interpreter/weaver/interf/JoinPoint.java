@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -47,7 +47,7 @@ public abstract class JoinPoint {
 
     /**
      * Function used by the lara interpreter to verify if a join point is the same (equals) as another join point
-     * 
+     *
      * @param iJoinPoint
      * @return
      */
@@ -65,7 +65,7 @@ public abstract class JoinPoint {
     /**
      * Returns the tree node reference of this join point.<br>
      * <b>NOTE</b>This method is essentially used to compare two join points
-     * 
+     *
      * @return Tree node reference
      */
     public abstract Object getNode();
@@ -75,7 +75,7 @@ public abstract class JoinPoint {
      * This is the default implementation for comparing two join points. <br>
      * <b>Note for developers:</b> A weaver may override this implementation in the (editable) abstract join point, so
      * the changes are made for all join points, or override this method in the specific join points.
-     * 
+     *
      * @param iJoinPoint
      * @return
      */
@@ -93,7 +93,7 @@ public abstract class JoinPoint {
 
     /**
      * Select from a given joinPoint class name
-     * 
+     *
      * @return
      */
     public List<? extends JoinPoint> select(String joinPoint) {
@@ -102,7 +102,7 @@ public abstract class JoinPoint {
 
     /**
      * Returns the join point class
-     * 
+     *
      * @return
      */
     public String get_class() {
@@ -111,7 +111,7 @@ public abstract class JoinPoint {
 
     /**
      * Returns the join point type
-     * 
+     *
      * @return
      */
     public String getJoinPointType() {
@@ -120,7 +120,7 @@ public abstract class JoinPoint {
 
     /**
      * Returns the super type of this joinPoint or empty if no super exists
-     * 
+     *
      * @return
      */
     public Optional<? extends JoinPoint> getSuper() {
@@ -137,7 +137,7 @@ public abstract class JoinPoint {
 
     /**
      * Defines if this joinpoint is an instanceof joinpointclass
-     * 
+     *
      * @return
      */
     // public boolean instanceOf(String joinpointClass) {
@@ -146,7 +146,7 @@ public abstract class JoinPoint {
 
     /**
      * Fill the list with available actions
-     * 
+     *
      * @param actions
      */
     protected void fillWithActions(List<String> actions) {
@@ -158,7 +158,7 @@ public abstract class JoinPoint {
 
     /**
      * Fill the list with possible selects from this join point
-     * 
+     *
      * @param selects
      */
     protected void fillWithSelects(List<String> selects) {
@@ -167,7 +167,7 @@ public abstract class JoinPoint {
 
     /**
      * Fill the list with attributes
-     * 
+     *
      * @param attributes
      */
     protected void fillWithAttributes(List<String> attributes) {
@@ -180,7 +180,7 @@ public abstract class JoinPoint {
 
     /**
      * Return an array containing the actions this current join point can apply
-     * 
+     *
      * @return an array of actions
      */
     public final Bindings getActions() {
@@ -194,7 +194,7 @@ public abstract class JoinPoint {
 
     /**
      * Return an array containing the join points this current join point can select
-     * 
+     *
      * @return an array of possible selects
      */
     public final Bindings getSelects() {
@@ -208,7 +208,7 @@ public abstract class JoinPoint {
 
     /**
      * Return an array containing the attributes this current join point has
-     * 
+     *
      * @return an array of attributes
      */
     public final Bindings getAttributes() {
@@ -223,7 +223,7 @@ public abstract class JoinPoint {
     /**
      * @see JoinPoint#insert(String, JoinPoint)
      */
-    public <T extends JoinPoint> void insertImpl(String position, T JoinPoint) {
+    public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T JoinPoint) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");
     }
@@ -231,7 +231,7 @@ public abstract class JoinPoint {
     /**
      * @see JoinPoint#insert(String, String)
      */
-    public void insertImpl(String position, String code) {
+    public JoinPoint[] insertImpl(String position, String code) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,String) not implemented ");
     }
@@ -254,21 +254,23 @@ public abstract class JoinPoint {
 
     /**
      * Action insert that accepts a string containing the code snippet to inject
-     * 
+     *
      * @param position
      *            before|after|replace|around
      * @param code
      *            the code to inject
      */
-    public final void insert(String position, String code) {
+    public final JoinPoint[] insert(String position, String code) {
         try {
             if (hasListeners()) {
                 eventTrigger().triggerAction(Stage.BEGIN, "insert", this, Optional.empty(), position, code);
             }
-            this.insertImpl(position, code);
+            JoinPoint[] result = this.insertImpl(position, code);
             if (hasListeners()) {
-                eventTrigger().triggerAction(Stage.END, "insert", this, Optional.empty(), position, code);
+                eventTrigger().triggerAction(Stage.END, "insert", this, Optional.ofNullable(result), position, code);
             }
+
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "insert", e);
         }
@@ -276,7 +278,7 @@ public abstract class JoinPoint {
 
     /**
      * Action insert that accepts a join point to inject
-     * 
+     *
      * @param position
      *            before|after|replace|around
      * @param code
@@ -287,9 +289,10 @@ public abstract class JoinPoint {
             if (hasListeners()) {
                 eventTrigger().triggerAction(Stage.BEGIN, "insert", this, Optional.empty(), position, joinPoint);
             }
-            this.insertImpl(position, joinPoint);
+            JoinPoint[] result = this.insertImpl(position, joinPoint);
             if (hasListeners()) {
-                eventTrigger().triggerAction(Stage.END, "insert", this, Optional.empty(), position, joinPoint);
+                eventTrigger().triggerAction(Stage.END, "insert", this, Optional.ofNullable(result), position,
+                        joinPoint);
             }
         } catch (Exception e) {
             throw new ActionException(get_class(), "insert", e);
@@ -299,7 +302,7 @@ public abstract class JoinPoint {
     /**
      * Action insert that accepts a string containing the code snippet to inject as far as possible from the join point
      * based on other insertions over the targeted join point
-     * 
+     *
      * @param position
      *            before|after|replace|around
      * @param code
@@ -324,7 +327,7 @@ public abstract class JoinPoint {
      * Action insert that accepts a join point to inject and a boolean to indicate if the insertion must be as close as
      * possible to the join point (false) or as far as possible to the join point (true) based on other insertions over
      * the targeted join point
-     * 
+     *
      * @param position
      *            before|after|replace|around
      * @param code
@@ -349,7 +352,7 @@ public abstract class JoinPoint {
     }
 
     /**
-     * 
+     *
      */
     public void defImpl(String attribute, Object value) {
         throw new UnsupportedOperationException("Join point " + get_class() + ": Action def not implemented ");
@@ -370,7 +373,7 @@ public abstract class JoinPoint {
     }
 
     /**
-     * 
+     *
      */
     public final void def(String attribute, Object value) {
         try {
@@ -415,7 +418,7 @@ public abstract class JoinPoint {
 
     /**
      * Handles special cases in def.
-     * 
+     *
      * @param value
      * @return
      */
@@ -430,6 +433,7 @@ public abstract class JoinPoint {
         }
 
         seenObjects.add(value);
+        getWeaverEngine().getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
 
         // Convert value to a Java array, if necessary
         if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {

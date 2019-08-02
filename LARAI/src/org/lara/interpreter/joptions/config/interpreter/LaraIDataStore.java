@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -41,6 +41,7 @@ import larai.LaraI;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.git.GitRepos;
+import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
@@ -152,7 +153,7 @@ public class LaraIDataStore implements LaraiKeys {
 
     /**
      * Right now the arguments are going as a single String!
-     * 
+     *
      * @return
      */
     public DataStore getWeaverArgs() {
@@ -174,7 +175,41 @@ public class LaraIDataStore implements LaraiKeys {
 
     public FileList getWorkingDir() {
         return getTrySources(LaraiKeys.WORKSPACE_FOLDER);
+    }
 
+    public List<File> getExtraSources() {
+        if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
+            // test1.c$prefix$test1.c;test2.c
+            return new ArrayList<>(dataStore.get(WORKSPACE_EXTRA).keySet());
+            /*
+            String workspaceExtra = dataStore.get(WORKSPACE_EXTRA);
+            
+            List<String> paths = PathList.parse(workspaceExtra);
+            
+            // Split using ;
+            // String[] paths = workspaceExtra.split(";");
+            List<File> extraSources = new ArrayList<>();
+            
+            for (String path : paths) {
+                // Trim
+                String trimmedPath = path.strip();
+            
+                // Ignore if empty
+                if (trimmedPath.isEmpty()) {
+                    continue;
+                }
+            
+                File parsedFile = KeyFactory.customGetterFile(new File(trimmedPath), dataStore, false, false, false,
+                        true);
+            
+                extraSources.add(parsedFile);
+            }
+            
+            return extraSources;
+            */
+        }
+
+        return Collections.emptyList();
     }
 
     public boolean isDebug() {
@@ -207,10 +242,14 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private FileList getTrySources(DataKey<FileList> folder) {
+
+        return dataStore.get(folder);
+        /*
         if (dataStore.hasValue(folder)) {
             return dataStore.get(folder);
         }
         return FileList.newInstance(new File("."));
+        */
     }
 
     public FileList getIncludeDirs() {
@@ -290,6 +329,13 @@ public class LaraIDataStore implements LaraiKeys {
             return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
         }
         return Collections.emptyMap();
+    }
+
+    public JsEngineType getJsEngine() {
+        if (dataStore.hasValue(LaraiKeys.JS_ENGINE)) {
+            return dataStore.get(LaraiKeys.JS_ENGINE);
+        }
+        return JS_ENGINE.getDefault().get();
     }
 
     private Map<String, String> parseBundleTags(String bundleTagsString) {

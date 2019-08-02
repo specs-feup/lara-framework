@@ -15,6 +15,8 @@ package larai;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -50,11 +52,11 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import larac.LaraC;
 import larac.utils.output.Output;
-import larai.filters.RestrictModeFilter;
+import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.jsengine.JsEngineType;
+import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -82,6 +84,10 @@ public class LaraI {
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
 
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
+
+    // TODO: Put LARASystem.class eventually
+    private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
+            LaraSystemTools.class);
 
     public static boolean isRunningGui() {
         return RUNNING_GUI.get();
@@ -169,7 +175,8 @@ public class LaraI {
      */
     public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        return SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        return result == null ? false : result;
     }
 
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
@@ -214,9 +221,13 @@ public class LaraI {
             larai.out.close();
             return true;
 
-        } catch (final Throwable e) {
+            // } catch (final Throwable e) {
+        } catch (Exception e) {
+            // throw new RuntimeException(e);
 
             throw treatExceptionInInterpreter(larai, e);
+            // var finalException = treatExceptionInInterpreter(larai, e);
+            // System.out.println(finalException);
         } finally {
             if (weaverEngine.isWeaverSet()) {
                 weaverEngine.removeWeaver();
@@ -225,6 +236,8 @@ public class LaraI {
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
 
         }
+
+        // return false;
     }
 
     private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
@@ -351,18 +364,22 @@ public class LaraI {
      * @return
      */
     private static RuntimeException treatExceptionInInterpreter(LaraI laraInterp, Throwable e) {
+
         if (laraInterp != null) {
 
             laraInterp.out.close();
             laraInterp.quit = true;
 
             if (laraInterp.options.useStackTrace()) {
+
                 if (laraInterp.interpreter == null) {
+
                     return prettyRuntimeException(e);
                 }
 
                 CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
                 if (stackStrace.isEmpty()) {
+
                     return prettyRuntimeException(e);
                 }
 
@@ -377,6 +394,7 @@ public class LaraI {
     }
 
     private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
+
         BaseException laraException;
 
         if (!(e instanceof BaseException)) {
@@ -480,7 +498,7 @@ public class LaraI {
         if (!laraAPIs.isEmpty()) {
             preprocess.add("-r");
             String resources = laraAPIs.stream().map(LaraI::getOriginalResource)
-                    .collect(Collectors.joining(File.pathSeparator));
+                    .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
             preprocess.add(resources);
         }
 
@@ -543,8 +561,8 @@ public class LaraI {
     }
 
     private void interpret(WeaverEngine weaverEngine) {
-        // final Context cx = Context.enter();
-        NashornScriptEngine engine = createJsEngine();
+        // NashornScriptEngine engine = createJsEngine();
+        JsEngine engine = createJsEngine(options.getJsEngine());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -556,7 +574,15 @@ public class LaraI {
         // try {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
-        final FileList folderApplication = options.getWorkingDir();
+
+        List<File> workspaceSources = new ArrayList<>();
+
+        workspaceSources.addAll(options.getWorkingDir().getFiles());
+        // workspaceSources.addAll(options.getExtraSources());
+
+        final FileList folderApplication = FileList.newInstance(workspaceSources);
+
+        // final FileList folderApplication = options.getWorkingDir();
 
         // if (!folderApplication.exists()) {
         // throw new LaraIException(options.getLaraFile().getName(), "application folder does not exist",
@@ -606,23 +632,32 @@ public class LaraI {
 
     }
 
-    private void finish(NashornScriptEngine engine) {
+    private void finish(JsEngine engine) {
         // if cleaning is needed
     }
 
-    @SuppressWarnings("removal")
-    private NashornScriptEngine createJsEngine() {
-        // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
-        // If restric mode is enabled, use ClassFilter
+    // private NashornScriptEngine createJsEngine() {
+    // // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
+    // // If restric mode is enabled, use ClassFilter
+    // if (getOptions().isRestricMode()) {
+    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
+    // }
+    //
+    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
+    //
+    // // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
+    // // return engine;
+    //
+    // }
+
+    private JsEngine createJsEngine(JsEngineType engineType) {
+        // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES);
+            // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-
-        return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
-
-        // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
-        // return engine;
-
+        return engineType.newEngine(engineType, Collections.emptyList());
+        // return new NashornEngine();
     }
 
     public DataStore getWeaverArgs() {

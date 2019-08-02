@@ -5,6 +5,40 @@
 var Io = {};
 
 
+Io._newFile = function(path) {
+	
+	var fileClass = "java.io.File";
+	
+	// If path is a file, convert to String first
+	//if(File.class.isInstance(path)) {
+	if(isJavaClass(path, fileClass)) {	
+		path = path.toString();
+	}
+	
+	var File = Java.type(fileClass);
+	return new File(path);
+}
+
+Io._newFileWithBase = function(base, path) {
+	var fileClass = "java.io.File";
+	
+	
+	// If path is a file, convert to String first
+	//if(File.class.isInstance(path)) {
+	if(isJavaClass(path, fileClass)) {	
+		path = path.toString();
+	}
+
+	// If base is not a file, convert to File first
+	//if(!File.class.isInstance(base)) {
+	if(!isJavaClass(base, fileClass)) {	
+		base = Io._newFile(base);
+	}
+	
+	var File = Java.type(fileClass);
+	return new File(base, path);
+}
+
 /**
  * Creates a folder.
  */
@@ -49,23 +83,26 @@ Io.getTempFolder = function(folderName) {
 
 Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	if(optionalFile === undefined) {
-		return new java.io.File(fileOrBaseFolder); 
+		//return new java.io.File(fileOrBaseFolder); 
+		return Io._newFile(fileOrBaseFolder); 		
 	}
 	
 	// Test if optionalFile is absolute
-	var optionalFilePath = new java.io.File(optionalFile);
+	//var optionalFilePath = new java.io.File(optionalFile);
+	var optionalFilePath = Io._newFile(optionalFile);
 	if(optionalFilePath.isAbsolute()) {
 		return optionalFilePath;
 	}
 	
-	return new java.io.File(fileOrBaseFolder, optionalFile);
+	return Io._newFileWithBase(fileOrBaseFolder, optionalFile);
+	//return new java.io.File(fileOrBaseFolder, optionalFile);
 }	
 
 /**
  * @returns {String} the absolute path of the given file 
  */
 Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
-	return SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile));
+	return SpecsIo.normalizePath(SpecsIo.getCanonicalPath(Io.getPath(fileOrBaseFolder, optionalFile)));
 }
 
 /**
@@ -103,8 +140,13 @@ Io.getPaths = function(baseFolder) {
 
 /**
  * The files inside the given folder that respects the given pattern.
+ *
+ * @param {string|File} baseFolder
+ * @param {string|Object[]} pattern
+ * @param {boolean} isRecursive
  */
 Io.getFiles = function(baseFolder, pattern, isRecursive) {
+	// Initialize inputs
 	if(baseFolder === undefined) {
 		baseFolder = "./";
 	}
@@ -117,7 +159,22 @@ Io.getFiles = function(baseFolder, pattern, isRecursive) {
 		isRecursive = false;
 	}
 
-	return SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern, isRecursive, "FILES");
+	// If pattern is an array, call function recursively
+	if(isArray(pattern)) {
+		var files = [];
+
+		for(var singlePattern of pattern) {
+			var newFiles = Io.getFiles(baseFolder, singlePattern, isRecursive);
+			for(var newFile of newFiles) {
+				files.push(newFile);
+			}
+		}
+		
+		return files;
+	}
+
+
+	return SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern.toString(), isRecursive, "FILES");
 }
 
 /*
@@ -293,7 +350,8 @@ Io.getExtension = function(path) {
  * @return {J#java.io.File} the file to where the contents where written.
  */
 Io.writeFile = function(path, content) {
-	var file = new java.io.File(path);
+	//var file = new java.io.File(path);
+	var file = Io._newFile(path);
 	SpecsIo.write(file,content);
 	return file;
 }
@@ -304,13 +362,15 @@ Io.writeFile = function(path, content) {
  * @return {string} the contents of the file.
  */
 Io.readFile = function(path) {
-	var file = new java.io.File(path);
+	//var file = new java.io.File(path);
+	var file = Io._newFile(path);
 	var content = SpecsIo.read(file);
 	return content;
 }
 
 Io.appendFile = function(path, content) {
-	var file = new java.io.File(path);
+	//var file = new java.io.File(path);
+	var file = Io._newFile(path);
 	SpecsIo.append(file,content);
 }
 

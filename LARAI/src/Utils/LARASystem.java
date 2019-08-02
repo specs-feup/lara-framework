@@ -1,11 +1,11 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.script.Bindings;
 import javax.xml.bind.DatatypeConverter;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -33,7 +34,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import jdk.nashorn.api.scripting.JSObject;
 import larac.objects.Enums.Types;
 import larac.utils.output.ErrorMsg;
 import larac.utils.output.WarningMsg;
@@ -74,7 +74,7 @@ public class LARASystem {
     }
 
     /**
-     * 
+     *
      * @param app
      * @param arguments
      * @param jpname
@@ -405,7 +405,7 @@ public class LARASystem {
     }
 
     /**
-     * 
+     *
      * @param toolPath
      * @param arguments
      * @param verbose
@@ -442,7 +442,7 @@ public class LARASystem {
     }
 
     /**
-     * 
+     *
      * @param toolPath
      * @param args
      * @param verbose
@@ -529,15 +529,38 @@ public class LARASystem {
      * File(fileName); return IoUtils.read(file); }
      */
 
-    public static String createCodeTemplate(JSObject obj) {
-        String code = obj.getMember("code").toString();
-        // String code = IoUtils.read(new File(codeFileName));
-        obj.removeMember("code");
+    // public static String createCodeTemplate(JSObject obj) {
+    // String code = obj.getMember("code").toString();
+    // // String code = IoUtils.read(new File(codeFileName));
+    // obj.removeMember("code");
+    // for (final String key : obj.keySet()) {
+    // final Object property = obj.getMember(key);
+    // code = code.replace(key.toString(), property.toString());
+    // }
+    // return code;
+    // }
+
+    /**
+     * Creates a code template.
+     * 
+     * Function for LARA.
+     * 
+     * @param obj
+     * @return
+     */
+    public static String createCodeTemplate(Bindings obj) {
+        // For compatibility
+        obj = WeaverEngine.getThreadLocalWeaver().getScriptEngine().asBindings(obj);
+
+        String code = obj.get("code").toString();
+
+        obj.remove("code");
         for (final String key : obj.keySet()) {
-            final Object property = obj.getMember(key);
+            final Object property = obj.get(key);
             code = code.replace(key.toString(), property.toString());
         }
         return code;
+
     }
 
     public static Object[] toJavaArray(Object arr) {
@@ -584,7 +607,7 @@ public class LARASystem {
 
     /**
      * Helper method which receives a String.
-     * 
+     *
      * @param filename
      * @return
      */
@@ -594,7 +617,7 @@ public class LARASystem {
 
     /**
      * Prepares a file to be executed by a "cmd".
-     * 
+     *
      * @param file
      * @return
      */

@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 
@@ -27,6 +28,7 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
+import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.util.parsing.StringCodec;
 import pt.up.fe.specs.util.utilities.StringList;
 
@@ -44,7 +46,8 @@ public interface LaraiKeys {
 
     DataKey<String> MAIN_ASPECT = KeyFactory.string("main").setLabel("Main Aspect");
 
-    DataKey<String> ASPECT_ARGS = KeyFactory.string("argv").setLabel("Aspect Arguments");
+    DataKey<String> ASPECT_ARGS = KeyFactory.string("argv").setLabel("Aspect Arguments")
+            .setCustomGetter(LaraIKeyFactory::customGetterLaraArgs);
 
     // DataKey<DataStore> WEAVER_ARGS = KeyFactory.dataStore("argw", new StoreDefinitionBuilder("Weaver Options"))
     // .setLabel("Weaver Options");
@@ -54,6 +57,13 @@ public interface LaraiKeys {
     DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.fileList("workspace", JFileChooser.FILES_AND_DIRECTORIES,
             Collections.emptyList())
             .setLabel("Sources");
+    // .setDefault(() -> new FileList(Collections.emptyList()));
+
+    // DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
+    // .setLabel("Additional Sources (separated by ;)");
+
+    DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
+            .setLabel("Additional Sources (separated by ;)");
 
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
 
@@ -89,6 +99,13 @@ public interface LaraiKeys {
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restric mode (some Java classes are not allowed)");
 
+    DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
+            .setLabel("JavaScript Engine")
+            // TODO: Change to GraalVM when transition is done
+            .setDefault(() -> JsEngineType.NASHORN);
+    // .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
+    // .setDefault(() -> JsEngineType.GRAALVM);
+
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
     // .setLabel("Unit-testing arguments");
@@ -99,12 +116,22 @@ public interface LaraiKeys {
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 
+    /// Keys outside of the definition
+
+    // If DataStore comes from a configuration file, stores the path to the file
+    // DataKey<Optional<File>> CONFIGURATION_FILE = KeyFactory.optional("configurationFile");
+
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
-            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER, INCLUDES_FOLDER,
+            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
+                    INCLUDES_FOLDER,
                     EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
                     LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE)
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)
             .build();
+
+    // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")
+    // .addKeys(CONFIGURATION_FILE)
+    // .build();
 
     /**
      * Backup code

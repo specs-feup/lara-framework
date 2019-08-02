@@ -16,15 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
-import org.lara.interpreter.weaver.utils.JsScriptEngine;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
+import pt.up.fe.specs.jsengine.JsEngine;
 
 /**
  * Utility class for handling the LaraJoinpoint class
@@ -39,12 +37,12 @@ public class JoinpointUtils {
     private static final String ALIAS_PROPERTY = "classAlias";
     private static final String PARENT_PROPERTY = "_jp_parent_";
     private static final String HAS_CHILDREN_FUNCTION = "hasChildren";
-    private final JsScriptEngine scriptEngine;
+    private final JsEngine scriptEngine;
     // TODO: Java 9 replace
     // private final List<NativeFunction> actions = null;
 
-    public JoinpointUtils(NashornScriptEngine engine) {
-        scriptEngine = new JsScriptEngine(engine);
+    public JoinpointUtils(JsEngine engine) {
+        scriptEngine = engine;
     }
 
     /**
@@ -162,7 +160,12 @@ public class JoinpointUtils {
         // obj.put("reference", obj, jp);
         // localScope.put(" ", localScope, jp);
         // localScope.setMember("_EVAL_", jp);
+        // System.out.println("BINDINGS: " + scriptEngine.getBindings());
+        // scriptEngine.getJsEngine().put(localScope, JoinpointUtils.EVAL_NAME, jp);
+
+        // TODO: Use JS JP wrapper instead of "naked" JP
         localScope.put(JoinpointUtils.EVAL_NAME, jp);
+
         final StringBuilder sb = new StringBuilder();
         // final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
         // Object.bindProperties({},
@@ -178,6 +181,7 @@ public class JoinpointUtils {
             }
             String attributeVar = "_expected_" + i;
             localScope.put(attributeVar, filterExpression.getExpected());
+
             toClear.add(attributeVar);
             if (filterExpression.isMatch()) {
                 sb.append("String(");
@@ -192,13 +196,35 @@ public class JoinpointUtils {
             }
 
         }
+
         // nonScriptObject)
         // sb.append("}");
         // final boolean res = (Boolean) cx.evaluateString(localScope, sb.toString(), "filter", 0, null);
         boolean res;
         try {
-            res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
-        } catch (ScriptException e) {
+            // System.out.println("LOCAL SCOPE: " + localScope);
+            // System.out.println("CODE: " + sb);
+            // System.out.println("BEFORE");
+            // res = (Boolean) scriptEngine.eval(sb.toString(), localScope);
+            /*
+            Object result1 = scriptEngine.eval("_EVAL_.name", localScope);
+            System.out.println("_EVAL_.name: " + result1);
+            
+            Object result2 = scriptEngine.eval("_expected_0", localScope);
+            System.out.println("_expected_0: " + result2);
+            
+            Object result3 = scriptEngine.eval("_EVAL_.name == _expected_0", localScope);
+            System.out.println("_EVAL_.name == _expected_0: " + result3);
+            */
+            Object result = scriptEngine.eval(sb.toString(), localScope);
+            res = scriptEngine.asBoolean(result);
+            // res = false;
+
+            // System.out.println("CODE: " + sb);
+            // System.out.println("RESULT: " + res);
+            // System.out.println("RESULT: " + result);
+            // System.out.println("AFTER");
+        } catch (Exception e) {
             throw new FilterException(jp, filter.toString(), e);
         }
         toClear.forEach(localScope::remove);

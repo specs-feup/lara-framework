@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 SPeCS Research Group.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -19,6 +19,7 @@ import org.lara.interpreter.exception.UserException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+import pt.up.fe.specs.util.SpecsLogs;
 
 public class ExceptionUtils {
 
@@ -27,7 +28,12 @@ public class ExceptionUtils {
 
         Throwable e = getException(original);
 
-        throw new ApplyException(applyLabel, selectLabel, new JoinPoint[0], e);
+        var applyException = new ApplyException(applyLabel, selectLabel, new JoinPoint[0], e);
+
+        // Graal is removing the cause chain when this exception is thrown, printing it here
+        SpecsLogs.msgWarn("Apply exception:", applyException);
+
+        throw applyException;
     }
 
     private static Throwable getException(Object original) {
@@ -45,26 +51,35 @@ public class ExceptionUtils {
 
     public static void throwAspectException(Object original, String aspectName, String aspectCoords,
             int lineMapping) { // Map<String, Integer> lineMapping) {
-        throw processAspectException(original, aspectName, aspectCoords, lineMapping);
+        var exception = processAspectException(original, aspectName, aspectCoords, lineMapping);
+
+        // Graal is removing the cause chain when this exception is thrown, printing it here
+        // SpecsLogs.msgWarn("Original exception:", (Throwable) original);
+        SpecsLogs.msgWarn("Aspect exception:", exception);
+
+        throw exception;
     }
 
-    private static RuntimeException processAspectException(Object original, String aspectName,
+    public static RuntimeException processAspectException(Object original, String aspectName,
             String aspectCoords, int lineMapping) { // Map<String, Integer> lineMapping) {
 
         Throwable javaScriptException;
-        if (original instanceof BaseException) {
 
-            return processAspectException((BaseException) original, aspectName, aspectCoords, -1, lineMapping);
+        if (original instanceof BaseException) {
+            return processAspectException((BaseException) original, aspectName, aspectCoords, -1,
+                    lineMapping);
         }
 
         javaScriptException = getException(original);
         AspectDefException exception = new AspectDefException(aspectName, aspectCoords, -1, -1, javaScriptException);
+
         return exception;// new WrappedException(exception);
     }
 
     private static RuntimeException processAspectException(BaseException exception, String aspectName,
             String aspectCoords, int jsLine,
             int lineMapping) { // Map<String, Integer> lineMapping) {
+
         int line;
         if (exception instanceof UserException) {
             line = -1; // Will already be showned in its message
