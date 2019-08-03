@@ -33,11 +33,11 @@ public class NashornUtils {
         return ScriptObjectMirror.isUndefined(object);
     }
 
-    public static boolean isJSArray(Object object) {
-        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
-        return object instanceof ScriptObjectMirror
-                && ((ScriptObjectMirror) object).isArray();
-    }
+    // public static boolean isJSArray(Object object) {
+    // // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+    // return object instanceof ScriptObjectMirror
+    // && ((ScriptObjectMirror) object).isArray();
+    // }
 
     public static Collection<Object> getValues(Object object) {
         // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
