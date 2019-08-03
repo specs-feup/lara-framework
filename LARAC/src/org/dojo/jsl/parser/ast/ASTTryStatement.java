@@ -9,39 +9,39 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTTryStatement extends SimpleNode {
-	public ASTTryStatement(int id) {
-		super(id);
-	}
+    public ASTTryStatement(int id) {
+        super(id);
+    }
 
-	public ASTTryStatement(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTTryStatement(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public Object organize(Object obj) {
-		for (final Node child : getChildren()) {
-			((SimpleNode) child).organize(obj);
-		}
-		return null;
-	}
+    @Override
+    public Object organize(Object obj) {
+        for (final Node child : getChildren()) {
+            ((SimpleNode) child).organize(obj);
+        }
+        return null;
+    }
 
-	@Override
-	public void toXML(Document doc, Element parent) {
-		final Element statEl = doc.createElement("statement");
-		if (!label.isEmpty()) {
-			statEl.setAttribute("label", label);
-		}
-		statEl.setAttribute("name", "try");
-		statEl.setAttribute("coord", getCoords());
-		parent.appendChild(statEl);
-		final Element tryScope = doc.createElement("code");
-		tryScope.setAttribute("desc", "body");
-		statEl.appendChild(tryScope);
-		((SimpleNode) children[0]).toXML(doc, tryScope);
-		for (int i = 1; i < children.length; i++) {
-			((SimpleNode) children[i]).toXML(doc, statEl);
-		}
-	}
+    @Override
+    public void toXML(Document doc, Element parent) {
+        final Element statEl = doc.createElement("statement");
+        if (!label.isEmpty()) {
+            statEl.setAttribute("label", label);
+        }
+        statEl.setAttribute("name", "try");
+        statEl.setAttribute("coord", getCoords());
+        parent.appendChild(statEl);
+        final Element tryScope = doc.createElement("code");
+        tryScope.setAttribute("desc", "body");
+        statEl.appendChild(tryScope);
+        ((SimpleNode) children[0]).toXML(doc, tryScope);
+        for (int i = 1; i < children.length; i++) {
+            ((SimpleNode) children[i]).toXML(doc, statEl);
+        }
+    }
 }
 /*
  * JavaCC - OriginalChecksum=45edd72666c6ffd45d42c72f6bc3c2c8 (do not edit this

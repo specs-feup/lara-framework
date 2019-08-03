@@ -136,6 +136,9 @@ public abstract class WeaverProfiler extends AGear {
         if (data.getStage().equals(Stage.BEGIN)) {
             report.aspectCalled(data.getAspectCallee());
         }
+        if (data.getStage().equals(Stage.END)) {
+            // report.aspectCalled(data.getAspectCallee());
+        }
     }
 
     @Override
@@ -267,6 +270,10 @@ public abstract class WeaverProfiler extends AGear {
 
     }
 
+    public final void report(ReportField field, int value) {
+        report.set(field, value);
+    }
+
     /**
      * Returns a report in JSON format
      * 
@@ -275,6 +282,7 @@ public abstract class WeaverProfiler extends AGear {
     public String buildJsonReport() {
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
+                    .report("weavingTime", report.get(ReportField.WEAVING_TIME))
                     .report("tokens", report.get(ReportField.TOKENS))
                     .report("aspects", report.getNumAspectCalls())
                     .report("selects", report.get(ReportField.SELECTS))
@@ -288,8 +296,8 @@ public abstract class WeaverProfiler extends AGear {
                     .report("totalNativeLOCs", report.get(ReportField.TOTAL_LOCS))
                     .report("runs", report.get(ReportField.RUNS))
                     .report("aspectsCalled", report.getAspectsMap())
-                    .report("actionsPerformed", report.getActionsMap());
-
+                    .report("actionsPerformed", report.getActionsMap())
+            /**/;
             buildReport(jsonWriter);
             jsonWriter.endObject();
             return jsonWriter.toString();
