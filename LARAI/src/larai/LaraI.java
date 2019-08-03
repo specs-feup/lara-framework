@@ -146,6 +146,10 @@ public class LaraI {
         return weaverEngine;
     }
 
+    public JsEngine getScriptEngine() {
+        return weaverEngine.getScriptEngine();
+    }
+
     /**
      * Executes larai with a Weaving engine implementing {@link WeaverEngine}, and the language specification language
      * specification. The datastore must contain the options available in {@link LaraiKeys}
@@ -761,7 +765,15 @@ public class LaraI {
         return exec(args, new DefaultWeaver());
     }
 
+    /**
+     * @deprecated Check if this method can be replaced with getWeaverEngine()
+     * @return
+     */
+    @Deprecated
     public WeaverEngine getEngine() {
+        if (weaver.getEngine() != getWeaverEngine()) {
+            throw new RuntimeException("Weaver engines are not the same instance, should this happen?");
+        }
         return weaver.getEngine();
     }
 
