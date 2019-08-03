@@ -21,8 +21,11 @@ import javax.swing.KeyStroke;
 public interface StrokesAndActions {
 
     // Utilities
+
     final int CTRL = InputEvent.CTRL_MASK;
+    // final int CTRL = InputEvent.CTRL_DOWN_MASK;
     final int SHIFT = InputEvent.SHIFT_MASK;
+    // final int SHIFT = InputEvent.SHIFT_DOWN_MASK;
     final int CTRL_SHIFT = StrokesAndActions.CTRL | StrokesAndActions.SHIFT;
 
     // Actions key
@@ -63,13 +66,13 @@ public interface StrokesAndActions {
     public final KeyStroke CTRL_SHIFT_W = KeyStroke.getKeyStroke(KeyEvent.VK_W, StrokesAndActions.CTRL_SHIFT);
 
     public static String prettyString(KeyStroke stroke) {
-	// System.out.println("before " + stroke);
-	String string = stroke.toString().replace("pressed ", "");
-	string = string.replace("ctrl", "Ctrl");
-	string = string.replace("shift", "Shift");
-	string = string.replace(" ", "+");
-	// System.out.println("after " + string);
-	return string;
+        // System.out.println("before " + stroke);
+        String string = stroke.toString().replace("pressed ", "");
+        string = string.replace("ctrl", "Ctrl");
+        string = string.replace("shift", "Shift");
+        string = string.replace(" ", "+");
+        // System.out.println("after " + string);
+        return string;
     }
 
 }

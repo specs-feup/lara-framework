@@ -63,7 +63,7 @@ public class Report {
         private static final long serialVersionUID = 1L;
 
         {
-            put("function", new Integer(1));
+            put("function", Integer.valueOf(1));
         }
     };
 
