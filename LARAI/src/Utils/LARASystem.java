@@ -378,13 +378,12 @@ public class LARASystem {
             Method toolReportMethod = null;
             Object ret = "";
 
-            // if (arguments instanceof NativeArray) {
             if (NashornUtils.isJSArray(arguments)) {
-                // final NativeArray na = ((NativeArray) arguments);
+
                 final ArrayList<Class<?>> classTypes = new ArrayList<>();
                 final ArrayList<Object> objects = new ArrayList<>();
                 final Object[] args = NashornUtils.convert(arguments, Object[].class);
-                // for (final Object object : na.getArray().asObjectArray()) {
+
                 for (final Object arg : args) {
                     classTypes.add(arg.getClass());
                     objects.add(arg);
@@ -563,17 +562,20 @@ public class LARASystem {
 
     }
 
+    /**
+     * @deprecated
+     * @param arr
+     * @return
+     */
+    @Deprecated
     public static Object[] toJavaArray(Object arr) {
-        if (!NashornUtils.isJSArray(arr)) {
-            // Object[] objectArray = new Object[1];
-            // objectArray[0] = arr;
-            // return objectArray;
-            return new Object[] { arr };
-        }
+        throw new RuntimeException("Deprecated method, is this necessary?");
 
-        return NashornUtils.getValues(arr).toArray(new Object[0]);
-        // public static Object[] toJavaArray(NativeArray arr) {
-        // return arr.asObjectArray();
+        // if (!NashornUtils.isJSArray(arr)) {
+        // return new Object[] { arr };
+        // }
+        //
+        // return NashornUtils.getValues(arr).toArray(new Object[0]);
     }
 
     public static String decode(String encoded, String encoder) {
