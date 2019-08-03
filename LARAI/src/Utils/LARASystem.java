@@ -276,8 +276,7 @@ public class LARASystem {
             }
         }
 
-        if (!NashornUtils.isJSArray(arguments)) {
-            // if (!(arguments instanceof NativeArray)) {
+        if (!larai.getScriptEngine().isArray(arguments)) {
             ErrorMsg.say("The arguments must be inside an Array");
             return "";
         }
@@ -361,7 +360,7 @@ public class LARASystem {
      * new LaraException(e.getLocalizedMessage()); } return ""; }
      */
 
-    private static Object runJava(String app, Object arguments, Element toolEl) {
+    private Object runJava(String app, Object arguments, Element toolEl) {
         final NodeList javaRunnables = toolEl.getElementsByTagName("java");
         if (javaRunnables.getLength() == 0) {
             throw new LaraIException(
@@ -378,7 +377,7 @@ public class LARASystem {
             Method toolReportMethod = null;
             Object ret = "";
 
-            if (NashornUtils.isJSArray(arguments)) {
+            if (larai.getScriptEngine().isArray(arguments)) {
 
                 final ArrayList<Class<?>> classTypes = new ArrayList<>();
                 final ArrayList<Object> objects = new ArrayList<>();
