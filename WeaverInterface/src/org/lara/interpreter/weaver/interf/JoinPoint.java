@@ -28,8 +28,7 @@ import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.api.scripting.ScriptUtils;
+import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
 
 // import jdk.nashorn.internal.runtime.Undefined;
@@ -433,25 +432,30 @@ public abstract class JoinPoint {
         }
 
         seenObjects.add(value);
+        JsEngine jsEngine = getWeaverEngine().getScriptEngine();
         getWeaverEngine().getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
 
         // Convert value to a Java array, if necessary
-        if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
+        // if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
+        if (jsEngine.isArray(value)) {
 
-            if (((ScriptObjectMirror) value).isEmpty()) {
-                // return new Object[0];
+            var elements = jsEngine.getValues(value);
+            // if (((ScriptObjectMirror) value).isEmpty()) {
+            if (elements.isEmpty()) {
                 throw new RuntimeException("Cannot pass an empty array to a 'def'");
             }
 
-            ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
-            // Object firstValue = jsObject.values().stream().findFirst().get();
-            List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
+            // ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
+            // List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
+            List<Class<?>> classes = elements.stream().map(Object::getClass).collect(Collectors.toList());
+
             // Get common class of given instances
             List<Class<?>> superClasses = SpecsSystem.getCommonSuperClasses(classes);
             Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
 
-            // return ScriptUtils.convert(value, Array.newInstance(firstValue.getClass(), 0).getClass());
-            Object[] objectArray = (Object[]) ScriptUtils.convert(value, Array.newInstance(superClass, 0).getClass());
+            // Object[] objectArray = (Object[]) ScriptUtils.convert(value, Array.newInstance(superClass,
+            // 0).getClass());
+            Object[] objectArray = (Object[]) jsEngine.convert(value, Array.newInstance(superClass, 0).getClass());
 
             // Recursively convert the elements of the array
             Object[] convertedArray = (Object[]) Array.newInstance(superClass, objectArray.length);
