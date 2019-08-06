@@ -28,10 +28,10 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 @Deprecated
 public class NashornUtils {
 
-    public static boolean isUndefined(Object object) {
-        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
-        return ScriptObjectMirror.isUndefined(object);
-    }
+    // public static boolean isUndefined(Object object) {
+    // // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+    // return ScriptObjectMirror.isUndefined(object);
+    // }
 
     // public static boolean isJSArray(Object object) {
     // // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");

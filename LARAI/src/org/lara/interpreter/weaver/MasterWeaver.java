@@ -40,7 +40,6 @@ import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.exception.WeaverEngineException;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.utils.NashornUtils;
 import org.lara.interpreter.utils.SelectUtils;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.events.EventTrigger;
@@ -420,7 +419,7 @@ public class MasterWeaver {
 
                 String errorMsg = "Select from variable " + jpChain[0] + " is not supported: variable is ";
                 // if (joinPointReferences instanceof Undefined) {
-                if (NashornUtils.isUndefined(joinPointReferences)) {
+                if (weaverEngine.getScriptEngine().isUndefined(joinPointReferences)) {
                     errorMsg += "undefined.";
                 } else {
                     errorMsg += " variable is of type " + joinPointReferences.getClass().getSimpleName() + ".";
