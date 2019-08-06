@@ -13,11 +13,6 @@
 
 package org.lara.interpreter.utils;
 
-import java.util.Collection;
-
-import com.google.common.base.Preconditions;
-
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 
 /**
@@ -38,14 +33,14 @@ public class NashornUtils {
     // return object instanceof ScriptObjectMirror
     // && ((ScriptObjectMirror) object).isArray();
     // }
-
-    public static Collection<Object> getValues(Object object) {
-        // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
-        Preconditions.checkArgument(object instanceof ScriptObjectMirror, "Expected object of class '"
-                + ScriptObjectMirror.class.getSimpleName() + "', got " + object.getClass());
-
-        return ((ScriptObjectMirror) object).values();
-    }
+    //
+    // public static Collection<Object> getValues(Object object) {
+    // // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");
+    // Preconditions.checkArgument(object instanceof ScriptObjectMirror, "Expected object of class '"
+    // + ScriptObjectMirror.class.getSimpleName() + "', got " + object.getClass());
+    //
+    // return ((ScriptObjectMirror) object).values();
+    // }
 
     public static <T> T convert(Object object, Class<T> toConvert) {
         // SpecsLogs.msgWarn("SCRIPTOBJECTMIRROR");

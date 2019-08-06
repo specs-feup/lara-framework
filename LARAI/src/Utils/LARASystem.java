@@ -281,7 +281,7 @@ public class LARASystem {
             return "";
         }
 
-        for (final Object obj : NashornUtils.getValues(arguments)) {
+        for (final Object obj : larai.getScriptEngine().getValues(arguments)) {
             args.add(obj.toString());
         }
         /*
