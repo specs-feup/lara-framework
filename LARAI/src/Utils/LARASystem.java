@@ -27,7 +27,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.ToolExecutionException;
 import org.lara.interpreter.utils.LaraIUtils;
-import org.lara.interpreter.utils.NashornUtils;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -381,7 +380,7 @@ public class LARASystem {
 
                 final ArrayList<Class<?>> classTypes = new ArrayList<>();
                 final ArrayList<Object> objects = new ArrayList<>();
-                final Object[] args = NashornUtils.convert(arguments, Object[].class);
+                final Object[] args = larai.getScriptEngine().convert(arguments, Object[].class);
 
                 for (final Object arg : args) {
                     classTypes.add(arg.getClass());
