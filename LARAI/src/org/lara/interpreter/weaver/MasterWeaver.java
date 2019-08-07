@@ -50,7 +50,6 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.lara.loc.LaraLoc;
@@ -390,14 +389,19 @@ public class MasterWeaver {
         try {
 
             boolean isArray = weaverEngine.getScriptEngine().isArray(joinPointReferences);
-            weaverEngine.getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
+            // weaverEngine.getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
             if (isArray) {
-                final ScriptObjectMirror jpReferences = (ScriptObjectMirror) joinPointReferences;
 
-                for (int i = 0; i < jpReferences.size(); i++) {
-                    final Object reference = jpReferences.get("" + i);
+                // final ScriptObjectMirror jpReferences = (ScriptObjectMirror) joinPointReferences;
+                var jpReferences = weaverEngine.getScriptEngine().getValues(joinPointReferences);
+
+                int counter = 0;
+                // for (int i = 0; i < jpReferences.size(); i++) {
+                for (var reference : jpReferences) {
+                    // final Object reference = jpReferences.get("" + i);
                     if (!(reference instanceof JoinPoint)) {
-                        String errorMsg = "Array element " + i + " of " + jpChain[0] + " is not supported ("
+                        // String errorMsg = "Array element " + i + " of " + jpChain[0] + " is not supported ("
+                        String errorMsg = "Array element " + counter + " of " + jpChain[0] + " is not supported ("
                                 + reference.getClass().getSimpleName() + ").\n";
                         errorMsg += "\tThe select supports only join point references and JavaScript arrays";
                         throw new RuntimeException(errorMsg);
@@ -406,6 +410,8 @@ public class MasterWeaver {
                     // System.out.println(jpReference.getWeavingEngine());
                     generateSelectFromArbitraryIJoinPoint(jpReference, jpChain, aliasChain, filterChain, root,
                             localScope);
+
+                    counter++;
                 }
 
                 // throw new RuntimeException("T O D O SELECT FROM REFERENCE -

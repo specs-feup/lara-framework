@@ -433,7 +433,6 @@ public abstract class JoinPoint {
 
         seenObjects.add(value);
         JsEngine jsEngine = getWeaverEngine().getScriptEngine();
-        getWeaverEngine().getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
 
         // Convert value to a Java array, if necessary
         // if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
