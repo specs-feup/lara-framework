@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
@@ -223,7 +221,9 @@ public class MasterWeaver {
      */
     public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
-            String aspect_name, Bindings localScope, int lineNumber) throws IOException {
+            String aspect_name, Object localScope, int lineNumber) throws IOException {
+
+        // System.out.println("SELECT 2");
 
         // localScope comes from JS, convert first to compatible Bindings
         // localScope = getEngine().getScriptEngine().asBindings(localScope);
@@ -313,7 +313,7 @@ public class MasterWeaver {
     }
 
     private void selectWithDefaultWeaver(String[] jpChain, String[] aliasChain, FilterExpression[][] filterChain,
-            Bindings localScope,
+            Object localScope,
             LaraJoinPoint root)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         DefaultWeaver defWeaver = (DefaultWeaver) weaverEngine;
@@ -377,8 +377,11 @@ public class MasterWeaver {
      * @throws IOException
      */
     public LaraJoinPoint select(Object joinPointReferences, String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain, String aspect_name, Bindings localScope, int lineNumber)
+            FilterExpression[][] filterChain, String aspect_name, Object localScope, int lineNumber)
             throws IOException {
+
+        // System.out.println("SELECT 1");
+
         final LaraJoinPoint root = LaraJoinPoint.createRoot();
         root.setReference(null);
         // TRIGGER SELECT BEGIN EVENT
@@ -451,7 +454,7 @@ public class MasterWeaver {
     }
 
     private void generateSelectFromArbitraryIJoinPoint(JoinPoint joinPointReferences, String[] jpChain,
-            String[] aliasChain, FilterExpression[][] filterChain, LaraJoinPoint root, Bindings localScope)
+            String[] aliasChain, FilterExpression[][] filterChain, LaraJoinPoint root, Object localScope)
             throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
         final JoinPoint ijp = joinPointReferences;
