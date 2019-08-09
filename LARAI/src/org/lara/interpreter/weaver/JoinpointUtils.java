@@ -15,11 +15,8 @@ package org.lara.interpreter.weaver;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.exception.FilterException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import pt.up.fe.specs.jsengine.JsEngine;
@@ -53,22 +50,27 @@ public class JoinpointUtils {
      *            Usual structure for first joinpoint is to only contain children and no other information.
      * @return A javascript native object.
      */
-    @Deprecated
-    public Bindings toJavaScript(LaraJoinPoint root) {
-        // TODO - must be removed as it is making the program use 10x more memory than needed
-        final Bindings obj = scriptEngine.createBindings();
-        if (root.getChildren() != null) {
-
-            for (final LaraJoinPoint child : root.getChildren()) {
-                toJavaScriptAux(child, obj);
-            }
-            obj.put(IS_EMPTY_PROPERTY, root.getChildren().isEmpty());
-        } else {
-            obj.put(IS_EMPTY_PROPERTY, true);
-        }
-        obj.put(LARA_JOIN_POINT_PROPERTY, root);
-        return obj;
-    }
+    // @Deprecated
+    // public Bindings toJavaScript(LaraJoinPoint root) {
+    // // TODO - must be removed as it is making the program use 10x more memory than needed
+    //
+    // if (true) {
+    // throw new RuntimeException("STOP");
+    // }
+    //
+    // final Bindings obj = scriptEngine.createBindings();
+    // if (root.getChildren() != null) {
+    //
+    // for (final LaraJoinPoint child : root.getChildren()) {
+    // toJavaScriptAux(child, obj);
+    // }
+    // obj.put(IS_EMPTY_PROPERTY, root.getChildren().isEmpty());
+    // } else {
+    // obj.put(IS_EMPTY_PROPERTY, true);
+    // }
+    // obj.put(LARA_JOIN_POINT_PROPERTY, root);
+    // return obj;
+    // }
 
     /**
      * Auxiliary function for converting a LaraJoinpoint Object to a JavaScript NativeObject
@@ -80,23 +82,23 @@ public class JoinpointUtils {
      * @param parent
      *            the parent of the joinpoint
      */
-    @Deprecated
-    private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
-        if (!parent.containsKey(jp.getClassAlias())) {
-            final Object jps = scriptEngine.newNativeArray();
-            parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
-        }
-        final Bindings jps = (Bindings) parent.get(jp.getClassAlias());
-        final Bindings obj = scriptEngine.createBindings();// cx.newObject(scope);
-        jps.put("" + jps.size(), obj);
-        obj.put(getReferenceProperty(), jp.getReference());
-        obj.put(getParentProperty(), parent);
-        if (!jp.isLeaf()) {
-            for (final LaraJoinPoint child : jp.getChildren()) {
-                toJavaScriptAux(child, obj);
-            }
-        }
-    }
+    // @Deprecated
+    // private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
+    // if (!parent.containsKey(jp.getClassAlias())) {
+    // final Object jps = scriptEngine.newNativeArray();
+    // parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
+    // }
+    // final Bindings jps = (Bindings) parent.get(jp.getClassAlias());
+    // final Bindings obj = scriptEngine.createBindings();// cx.newObject(scope);
+    // jps.put("" + jps.size(), obj);
+    // obj.put(getReferenceProperty(), jp.getReference());
+    // obj.put(getParentProperty(), parent);
+    // if (!jp.isLeaf()) {
+    // for (final LaraJoinPoint child : jp.getChildren()) {
+    // toJavaScriptAux(child, obj);
+    // }
+    // }
+    // }
 
     /**
      * Adds the available actions to the joinpoint
@@ -153,7 +155,8 @@ public class JoinpointUtils {
     public static final String EVAL_NAME = "_EVAL_";
     public static final String EVAL_REFERENCE = getReferenceProperty();
 
-    public boolean evalFilter(JoinPoint jp, FilterExpression[] filter, Bindings localScope) {
+    // public boolean evalFilter(JoinPoint jp, FilterExpression[] filter, Bindings localScope) {
+    public boolean evalFilter(JoinPoint jp, FilterExpression[] filter, Object localScope) {
         if (filter.length == 0 || filter[0].isEmpty()) {
             return true;
         }
@@ -166,7 +169,8 @@ public class JoinpointUtils {
         // scriptEngine.getJsEngine().put(localScope, JoinpointUtils.EVAL_NAME, jp);
 
         // TODO: Use JS JP wrapper instead of "naked" JP
-        localScope.put(JoinpointUtils.EVAL_NAME, jp);
+        scriptEngine.put(localScope, JoinpointUtils.EVAL_NAME, jp);
+        // localScope.put(JoinpointUtils.EVAL_NAME, jp);
 
         final StringBuilder sb = new StringBuilder();
         // final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
@@ -182,7 +186,7 @@ public class JoinpointUtils {
                 continue;
             }
             String attributeVar = "_expected_" + i;
-            localScope.put(attributeVar, filterExpression.getExpected());
+            scriptEngine.put(localScope, attributeVar, filterExpression.getExpected());
 
             toClear.add(attributeVar);
             if (filterExpression.isMatch()) {
@@ -229,7 +233,8 @@ public class JoinpointUtils {
         } catch (Exception e) {
             throw new FilterException(jp, filter.toString(), e);
         }
-        toClear.forEach(localScope::remove);
+        // toClear.forEach(localScope::remove);
+        toClear.forEach(key -> scriptEngine.remove(localScope, key));
         return res;
     }
 

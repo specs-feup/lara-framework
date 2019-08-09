@@ -226,7 +226,7 @@ public class MasterWeaver {
             String aspect_name, Bindings localScope, int lineNumber) throws IOException {
 
         // localScope comes from JS, convert first to compatible Bindings
-        localScope = getEngine().getScriptEngine().asBindings(localScope);
+        // localScope = getEngine().getScriptEngine().asBindings(localScope);
 
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
@@ -287,7 +287,7 @@ public class MasterWeaver {
     // private void selectByWeaver(WeaverEngine currentWeaver, String[] jpChain, String[] aliasChain,
     private void selectWithWeaver(String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
-            Bindings localScope, LaraJoinPoint root, String aspect_name, String selectName)
+            Object localScope, LaraJoinPoint root, String aspect_name, String selectName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final JoinPoint rootSelect = weaverEngine.select();
         // TRIGGER SELECT BEGIN EVENT
@@ -484,7 +484,7 @@ public class MasterWeaver {
      */
     private void generateSelect(LaraJoinPoint current, String[] jpChain, String[] aliasChain,
             FilterExpression[][] filterChain,
-            int pos, Bindings localScope) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+            int pos, Object localScope) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException {
 
         if (pos == jpChain.length) {
