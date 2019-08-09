@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
@@ -446,7 +444,8 @@ public class GeneratorUtils {
         newGetter.setName(newGetter.getName() + GenConstants.getArrayMethodSufix());
         final JavaType returnType = newGetter.getReturnType();
         final String baseType = returnType.getName();
-        getter.setReturnType(new JavaType(Bindings.class));
+        // getter.setReturnType(new JavaType(Bindings.class));
+        getter.setReturnType(new JavaType(Object.class));
         // javaC.addImport(Converter.class); // No longer needed?
         getter.clearCode();
         getter.appendCode(returnType.getSimpleType());
@@ -469,7 +468,8 @@ public class GeneratorUtils {
         if (dimension == 1) {
             // return spaceStr + "Bindings " + nativeArrayVarName + position + " = Converter.toNativeArray(" + valueName
             // + position + ");\n";
-            return spaceStr + "Bindings " + nativeArrayVarName + position
+            // return spaceStr + "Bindings " + nativeArrayVarName + position
+            return spaceStr + "Object " + nativeArrayVarName + position
                     + " = getWeaverEngine().getScriptEngine().toNativeArray(" + valueName
                     + position + ");\n";
         }
@@ -478,7 +478,8 @@ public class GeneratorUtils {
         final int nextNa = position + 1;
         // int previousNa = dimension + 1;
         String currentBinding = nativeArrayVarName + currentNa;
-        converted += spaceStr + "Bindings " + currentBinding + " = Converter.newNativeArray();\n";
+        // converted += spaceStr + "Bindings " + currentBinding + " = Converter.newNativeArray();\n";
+        converted += spaceStr + "Object " + currentBinding + " = Converter.newNativeArray();\n";
         String iNa = "i" + currentNa;
         converted += spaceStr + "for (int " + iNa + " = 0; i < " + valueName + currentNa + ".length; i++) {\n";
         converted += spaceStr + "\t" + baseType + StringUtils.repeat("[]", dimension - 1);

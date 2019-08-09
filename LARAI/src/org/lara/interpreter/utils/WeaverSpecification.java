@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
@@ -58,7 +56,7 @@ public class WeaverSpecification {
         return isJoinPoint(obj) && ((JoinPoint) obj).instanceOf(type);
     }
 
-    public Bindings getJoinpoints() {
+    public Object getJoinpoints() {
 
         List<String> joinPoints = ls.getJoinPoints().values().stream()
                 .map(JoinPointClass::getName)
@@ -67,19 +65,19 @@ public class WeaverSpecification {
         return engine.toNativeArray(joinPoints);
     }
 
-    public Bindings attributesOf(String joinPoint) {
+    public Object attributesOf(String joinPoint) {
         return attributesOf(joinPoint, true);
     }
 
-    public Bindings selectsOf(String joinPointName) {
+    public Object selectsOf(String joinPointName) {
         return selectsOf(joinPointName, true);
     }
 
-    public Bindings actionsOf(String joinPointName) {
+    public Object actionsOf(String joinPointName) {
         return actionsOf(joinPointName, true);
     }
 
-    public Bindings attributesOf(String joinPointName, boolean allInformation) {
+    public Object attributesOf(String joinPointName, boolean allInformation) {
 
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {
@@ -105,7 +103,7 @@ public class WeaverSpecification {
                         + collectionType);
     }
 
-    public Bindings selectsOf(String joinPointName, boolean allInformation) {
+    public Object selectsOf(String joinPointName, boolean allInformation) {
 
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {
@@ -130,7 +128,7 @@ public class WeaverSpecification {
         return joinPoint;
     }
 
-    public Bindings actionsOf(String joinPointName, boolean allInformation) {
+    public Object actionsOf(String joinPointName, boolean allInformation) {
 
         JoinPointClass joinPoint = getJoinPoint(joinPointName);
         if (joinPoint == null) {

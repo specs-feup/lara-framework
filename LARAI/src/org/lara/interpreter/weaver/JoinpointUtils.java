@@ -73,6 +73,8 @@ public class JoinpointUtils {
     /**
      * Auxiliary function for converting a LaraJoinpoint Object to a JavaScript NativeObject
      *
+     * @TODO: newNativeArray now returns Object, but some code still expects Bindings
+     *
      * @param jp
      *            the joinpoint to convert
      * @param parent
@@ -81,7 +83,7 @@ public class JoinpointUtils {
     @Deprecated
     private void toJavaScriptAux(LaraJoinPoint jp, Bindings parent) {
         if (!parent.containsKey(jp.getClassAlias())) {
-            final Bindings jps = scriptEngine.newNativeArray();
+            final Object jps = scriptEngine.newNativeArray();
             parent.put(jp.getClassAlias(), jps); // TODO: change jp.getClassAlias() with "children"
         }
         final Bindings jps = (Bindings) parent.get(jp.getClassAlias());

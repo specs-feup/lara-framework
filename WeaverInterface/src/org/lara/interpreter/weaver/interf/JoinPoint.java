@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.script.Bindings;
-
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
@@ -182,7 +180,7 @@ public abstract class JoinPoint {
      *
      * @return an array of actions
      */
-    public final Bindings getActions() {
+    public final Object getActions() {
         final List<String> actions = new ArrayList<>();
         fillWithActions(actions);
         Object[] array = actions.toArray();
@@ -196,7 +194,7 @@ public abstract class JoinPoint {
      *
      * @return an array of possible selects
      */
-    public final Bindings getSelects() {
+    public final Object getSelects() {
         final List<String> selects = new ArrayList<>();
         fillWithSelects(selects);
         Object[] array = selects.toArray();
@@ -210,7 +208,7 @@ public abstract class JoinPoint {
      *
      * @return an array of attributes
      */
-    public final Bindings getAttributes() {
+    public final Object getAttributes() {
         final List<String> attributes = new ArrayList<>();
         fillWithAttributes(attributes);
         Object[] array = attributes.toArray();
