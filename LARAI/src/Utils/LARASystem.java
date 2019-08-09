@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.script.Bindings;
 import javax.xml.bind.DatatypeConverter;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -545,15 +544,22 @@ public class LARASystem {
      * @param obj
      * @return
      */
-    public static String createCodeTemplate(Bindings obj) {
+    // public static String createCodeTemplate(Bindings obj) {
+    public static String createCodeTemplate(Object obj) {
         // For compatibility
-        obj = WeaverEngine.getThreadLocalWeaver().getScriptEngine().asBindings(obj);
+        // obj = WeaverEngine.getThreadLocalWeaver().getScriptEngine().asBindings(obj);
 
-        String code = obj.get("code").toString();
+        var engine = WeaverEngine.getThreadLocalWeaver().getScriptEngine();
 
-        obj.remove("code");
-        for (final String key : obj.keySet()) {
-            final Object property = obj.get(key);
+        // String code = obj.get("code").toString();
+        String code = engine.get(obj, "code").toString();
+
+        // obj.remove("code");
+        engine.remove(obj, "code");
+
+        // for (final String key : obj.keySet()) {
+        for (final String key : engine.keySet(obj)) {
+            final Object property = engine.get(obj, key);
             code = code.replace(key.toString(), property.toString());
         }
         return code;

@@ -178,8 +178,10 @@ public class Interpreter {
         try {
             // System.out.println("CODE:\n" + code);
             // System.out.println("\nCODE END");
-            return engine.getEngine().eval(code);
-        } catch (ScriptException e) {
+            // return engine.getEngine().eval(code);
+            return engine.eval(code);
+            // } catch (ScriptException e) {
+        } catch (Exception e) {
 
             // Check is there is any BaseException as cause
             // Throwable current = e;
@@ -1048,8 +1050,14 @@ public class Interpreter {
      */
     private void setprintStream(PrintStream printStream) {
         // private void setprintStream(OutputStream printStream) {
-        engine.getEngine().put("outputStream", printStream);
-        engine.getEngine().put("errorStream", printStream);
+
+        put("outputStream", printStream);
+        // engine.getEngine().put("outputStream", printStream);
+        // engine.put(engine.getBindings(), "outputStream", printStream);
+        // engine.getEngine().put("errorStream", printStream);
+        put("errorStream", printStream);
+        // System.out.println("PRINTSTREAM: " + printStream);
+        // System.out.println("BINDINGS AFTER: " + engine.get(engine.getBindings(), "outputStream"));
     }
 
     /**
@@ -1059,7 +1067,9 @@ public class Interpreter {
      * @param value
      */
     public void put(String key, Object value) {
-        engine.getEngine().put(key, value);
+        engine.put(key, value);
+        // engine.getEngine().put(key, value);
+        // engine.put(engine.getBindings(), key, value);
 
     }
 
