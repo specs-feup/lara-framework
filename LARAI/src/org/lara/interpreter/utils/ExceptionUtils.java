@@ -37,11 +37,19 @@ public class ExceptionUtils {
     }
 
     private static Throwable getException(Object original) {
+
+        // var scriptEngine = (GraalvmJsEngine) WeaverEngine.getThreadLocalWeaver().getScriptEngine();
+
+        // System.out.println("ARRAY: " + scriptEngine.asValue(original).hasArrayElements());
+        // System.out.println("MEMBER: " + scriptEngine.asValue(original).getMemberKeys());
+        // System.out.println("CLASS: " + scriptEngine.asValue(original).getClass());
+
         Throwable e;
         if (!(original instanceof Throwable)) {
 
             // If no option is available than it is treated as a string (using
             // toString);
+            // System.out.println("ORIGINAL CLASS: " + original.getClass());
             e = new RuntimeException(original.toString());
         } else {
             e = (Throwable) original;
@@ -51,11 +59,16 @@ public class ExceptionUtils {
 
     public static void throwAspectException(Object original, String aspectName, String aspectCoords,
             int lineMapping) { // Map<String, Integer> lineMapping) {
+        // System.out.println("ORIGINAL: " + original);
+        // System.out.println("ASPECT NAME: " + aspectName);
+        // System.out.println("ASPECT COORDS: " + aspectCoords);
+        // System.out.println("LINE MAPPING: " + lineMapping);
+
         var exception = processAspectException(original, aspectName, aspectCoords, lineMapping);
 
         // Graal is removing the cause chain when this exception is thrown, printing it here
         // SpecsLogs.msgWarn("Original exception:", (Throwable) original);
-        SpecsLogs.msgWarn("Aspect exception:", exception);
+        // SpecsLogs.msgWarn("Aspect exception:", exception);
 
         throw exception;
     }
