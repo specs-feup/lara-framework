@@ -139,4 +139,8 @@ public abstract class BaseException extends RuntimeException {
         builder.setLastLARAException(this);
         builder.setLastTrace(causedBy.getStackTrace());
     }
+
+    public boolean useLastMessage() {
+        return false;
+    }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.tools.lara.trace.Trace;
+import pt.up.fe.specs.util.SpecsLogs;
 import tdrc.utils.StringUtils;
 
 public class LARAExceptionBuilder {
@@ -62,15 +63,16 @@ public class LARAExceptionBuilder {
     }
 
     public RuntimeException getRuntimeException() {
-
+        SpecsLogs.info("Last exception type: " + lastException.getClass());
         if (lastException != lastLARAException) {
             Throwable last = lastException;
             while (last != null) {
 
                 String message = last.getMessage();
-                String causeMessage = "caused by " + last.getClass().getSimpleName()
-                        + (message != null ? ": " + message : "");
-                // if (causeMessage != null) {
+                // String causeMessage = "caused by " + last.getClass().getSimpleName()
+                // + (message != null ? ": " + message : "");
+                String causeMessage = message != null ? message : "caused by " + last.getClass().getSimpleName();
+
                 add(causeMessage);
 
                 // }
@@ -166,6 +168,12 @@ public class LARAExceptionBuilder {
     }
 
     private String getLastMessage() {
+
+        // If user exception, return last message
+        if (lastException instanceof BaseException && ((BaseException) lastException).useLastMessage()) {
+            return messages.get(messages.size() - 1);
+        }
+
         for (String message : messages) {
             if (EVALUATION_EXCEPTION_MESSAGE.equals(message)) {
                 continue;

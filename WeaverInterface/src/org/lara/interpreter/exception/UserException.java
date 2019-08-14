@@ -23,71 +23,76 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
  */
 public class UserException extends BaseException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private Object exception;
-	private int lineNumber;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private Object exception;
+    private int lineNumber;
 
-	public UserException(Object exception, int lineNumber) {
-		// super(newRuntimeExceptionWithoutStackTrace(exception)); //Exception
-		// with only the
-		super(processException(exception));
-		setStackTrace(new StackTraceElement[0]);
-		setException(exception);
-		this.lineNumber = lineNumber;
-	}
+    public UserException(Object exception, int lineNumber) {
+        // super(newRuntimeExceptionWithoutStackTrace(exception)); //Exception
+        // with only the
+        super(processException(exception));
+        setStackTrace(new StackTraceElement[0]);
+        setException(exception);
+        this.lineNumber = lineNumber;
+    }
 
-	// private static RuntimeException
-	// newRuntimeExceptionWithoutStackTrace(Object exception) {
-	//
-	// RuntimeException runtimeException = new
-	// RuntimeException(exception.toString());
-	// runtimeException.setStackTrace(new StackTraceElement[0]);
-	// return runtimeException;
-	// }
+    // private static RuntimeException
+    // newRuntimeExceptionWithoutStackTrace(Object exception) {
+    //
+    // RuntimeException runtimeException = new
+    // RuntimeException(exception.toString());
+    // runtimeException.setStackTrace(new StackTraceElement[0]);
+    // return runtimeException;
+    // }
 
-	private static Throwable processException(Object exception) {
-		if (exception instanceof Throwable) {
-			Throwable exception2 = (Throwable) exception;
-			exception2.setStackTrace(new StackTraceElement[0]);
-			return exception2;
-		}
-		return null;
-	}
+    private static Throwable processException(Object exception) {
+        if (exception instanceof Throwable) {
+            Throwable exception2 = (Throwable) exception;
+            exception2.setStackTrace(new StackTraceElement[0]);
+            return exception2;
+        }
+        return null;
+    }
 
-	@Override
-	protected String generateMessage() {
-		return generateSimpleMessage();
-	}
+    @Override
+    protected String generateMessage() {
+        return generateSimpleMessage();
+    }
 
-	@Override
-	protected String generateSimpleMessage() {
-		return "User exception on line " + lineNumber + (getCause() == null ? ": " + getException() : "");
-	}
+    @Override
+    protected String generateSimpleMessage() {
+        return "User exception on line " + lineNumber + (getCause() == null ? ": " + getException() : "");
+    }
 
-	/**
-	 * @return the exception
-	 */
-	public Object getException() {
-		return exception;
-	}
+    /**
+     * @return the exception
+     */
+    public Object getException() {
+        return exception;
+    }
 
-	/**
-	 * @param exception
-	 *            the exception to set
-	 */
-	public void setException(Object exception) {
-		this.exception = exception;
-	}
+    /**
+     * @param exception
+     *            the exception to set
+     */
+    public void setException(Object exception) {
+        this.exception = exception;
+    }
 
-	public int getLineNumber() {
-		return lineNumber;
-	}
+    public int getLineNumber() {
+        return lineNumber;
+    }
 
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
-	}
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    @Override
+    public boolean useLastMessage() {
+        return true;
+    }
 
 }
