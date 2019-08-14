@@ -17,26 +17,26 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 
 public class SelectException extends BaseException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private final String origin;
-	private final String select;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private final String origin;
+    private final String select;
 
-	public SelectException(String origin, String select, Throwable e) {
-		super(e);
-		this.origin = origin;
-		this.select = select;
-	}
+    public SelectException(String origin, String select, Throwable e) {
+        super(e);
+        this.origin = origin;
+        this.select = select;
+    }
 
-	@Override
-	protected String generateMessage() {
-		return "Exception " + generateSimpleMessage();
-	}
+    @Override
+    protected String generateMessage() {
+        return "Exception " + generateSimpleMessage();
+    }
 
-	@Override
-	protected String generateSimpleMessage() {
-		return "during " + origin + "->" + select + " selection ";
-	}
+    @Override
+    protected String generateSimpleMessage() {
+        return "during " + origin + "->" + select + " selection ";
+    }
 }

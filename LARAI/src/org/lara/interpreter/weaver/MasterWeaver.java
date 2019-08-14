@@ -230,10 +230,10 @@ public class MasterWeaver {
 
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
-
             eventTrigger.triggerSelect(Stage.BEGIN, aspect_name, selectName, jpChain, aliasChain, filterChain,
                     Optional.empty());
         }
+
         try {
             final LaraJoinPoint root = LaraJoinPoint.createRoot();
 
@@ -243,6 +243,7 @@ public class MasterWeaver {
                 selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root, aspect_name,
                         selectName);
             }
+
             // if (handlesApplicationFolder) {
             // }
             // } else {

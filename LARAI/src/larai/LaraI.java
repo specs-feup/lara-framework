@@ -369,42 +369,41 @@ public class LaraI {
      */
     private static RuntimeException treatExceptionInInterpreter(LaraI laraInterp, Throwable e) {
 
-        if (laraInterp != null) {
-
-            laraInterp.out.close();
-            laraInterp.quit = true;
-
-            if (laraInterp.options.useStackTrace()) {
-
-                if (laraInterp.interpreter == null) {
-
-                    return prettyRuntimeException(e);
-                }
-
-                CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
-                if (stackStrace.isEmpty()) {
-
-                    return prettyRuntimeException(e);
-                }
-
-                return prettyRuntimeException(e, stackStrace);
-            }
-            return prettyRuntimeException(e);
+        if (laraInterp == null) {
+            LaraIException ex = new LaraIException("Exception before LARA Interpreter was initialized", e);
+            return prettyRuntimeException(ex);
         }
-        // laraInterp.out is an Output object which already checks if its out or
 
-        LaraIException ex = new LaraIException("Exception before LARA Interpreter was initialized", e);
-        return prettyRuntimeException(ex);
+        laraInterp.out.close();
+        laraInterp.quit = true;
+
+        if (laraInterp.options.useStackTrace()) {
+
+            if (laraInterp.interpreter == null) {
+
+                return prettyRuntimeException(e);
+            }
+
+            CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
+            if (stackStrace.isEmpty()) {
+
+                return prettyRuntimeException(e);
+            }
+
+            return prettyRuntimeException(e, stackStrace);
+        }
+        return prettyRuntimeException(e);
+
     }
 
     private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
-
         BaseException laraException;
 
         if (!(e instanceof BaseException)) {
             laraException = new LaraIException("During LARA Interpreter execution ", e);
         } else {
             laraException = (BaseException) e;
+
         }
         //
         // BaseException laraException = (BaseException) e;
@@ -627,8 +626,10 @@ public class LaraI {
                     options.getLaraFile().getPath());
             finish(engine);
         } catch (Exception e) {
+
             // Close weaver
             weaver.close();
+
             // Rethrow exception
             throw e;
             // throw new RuntimeException("Exception during weaving:", e);

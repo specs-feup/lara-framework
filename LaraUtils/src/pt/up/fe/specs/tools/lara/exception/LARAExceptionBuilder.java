@@ -22,6 +22,12 @@ import tdrc.utils.StringUtils;
 
 public class LARAExceptionBuilder {
 
+    private static final String EVALUATION_EXCEPTION_MESSAGE = "when evaluating javascript";
+
+    public static String getEvaluationExceptionMessage() {
+        return EVALUATION_EXCEPTION_MESSAGE;
+    }
+
     // private static final String EXCEPTION_HEADER = "An exception occured";
     private static final String INDENT = " ";
     private static final String SEPARATOR = "\n";
@@ -29,6 +35,7 @@ public class LARAExceptionBuilder {
     // java.lang.RuntimeException.class.getCanonicalName().length() + 2;
     private static final int PREDEFINED_SPACE = 0;
     private List<String> messages;
+    // private Set<String> addedMessages;
     private StackTraceElement[] lastTrace;
     private BaseException lastLARAException;
     private Throwable lastException;
@@ -59,17 +66,20 @@ public class LARAExceptionBuilder {
         if (lastException != lastLARAException) {
             Throwable last = lastException;
             while (last != null) {
+
                 String message = last.getMessage();
                 String causeMessage = "caused by " + last.getClass().getSimpleName()
                         + (message != null ? ": " + message : "");
                 // if (causeMessage != null) {
                 add(causeMessage);
+
                 // }
                 lastTrace = last.getStackTrace(); // We will only show the cause
                 // trace
                 last = last.getCause();
                 // System.out.println();
             }
+
             // String causeMessage = lastException.getMessage();
             // if (causeMessage != null) {
             // add(causeMessage);
@@ -107,8 +117,17 @@ public class LARAExceptionBuilder {
                 repeatValue = 16;
             }
             String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, repeatValue);
-            String lastMessage = messages.get(messages.size() - 1);
+
+            // for (String message : messages) {
+            // completeMessage.append(separator + indentation + message);
+            // }
+
+            // String lastMessage = messages.get(messages.size() - 1);
+            String lastMessage = getLastMessage();
+
             completeMessage.append(separator + indentation + lastMessage);
+            // String firstMessage = messages.get(0);
+            // completeMessage.append(separator + indentation + firstMessage);
         } else if (!messages.isEmpty()) {
 
             completeMessage.append(indentStr + messages.get(0));
@@ -137,10 +156,27 @@ public class LARAExceptionBuilder {
         // String separator = causeClass.isEmpty() || string.isEmpty() ? "" : ":
         // ";
         // String completeMessage = causeClass + separator + string;
-        RuntimeException re = new RuntimeException(completeMessage.toString());// ,
-                                                                               // lastException);
-        re.setStackTrace(cleanTrace());
+        // RuntimeException re = new RuntimeException(completeMessage.toString());// ,
+        // lastException);
+
+        RuntimeException re = new RuntimeException(completeMessage.toString(), lastException);
+
+        // re.setStackTrace(cleanTrace());
         return re;
+    }
+
+    private String getLastMessage() {
+        for (String message : messages) {
+            if (EVALUATION_EXCEPTION_MESSAGE.equals(message)) {
+                continue;
+            }
+
+            return message;
+        }
+
+        return "<no message>";
+        // return messages.get(messages.size() - 1);
+
     }
 
     /**
@@ -168,8 +204,12 @@ public class LARAExceptionBuilder {
     }
 
     public void add(String string) {
+        // if (addedMessages.contains(string)) {
+        // return;
+        // }
 
         messages.add(string);
+        // addedMessages.add(string);
     }
 
     /**
@@ -185,6 +225,7 @@ public class LARAExceptionBuilder {
      */
     public void setMessages(List<String> messages) {
         this.messages = messages;
+        // this.addedMessages = new HashSet<>(messages);
     }
 
     /**

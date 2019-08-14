@@ -424,6 +424,7 @@ public abstract class JoinPoint {
     }
 
     private Object parseDefValue(Object value, Set<Object> seenObjects) {
+
         // If object already appear stop, cyclic dependencies not supported
         if (seenObjects.contains(value)) {
             throw new RuntimeException("Detected a cyclic dependency in 'def' value: " + value);

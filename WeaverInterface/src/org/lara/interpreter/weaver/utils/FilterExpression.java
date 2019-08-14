@@ -37,105 +37,105 @@ public class FilterExpression {
      * @param expected
      */
     public static FilterExpression newEmpty() {
-	return new FilterExpression();
+        return new FilterExpression();
     }
 
     public static FilterExpression newComparator(String operator) {
-	return new FilterExpression(operator);
+        return new FilterExpression(operator);
     }
 
     public static FilterExpression newMatch(String attribute, Object expected, String expectedStr) {
-	return new FilterExpression(attribute, "~=", expected, expectedStr, true);
+        return new FilterExpression(attribute, "~=", expected, expectedStr, true);
     }
 
     public static FilterExpression newInstance(String attribute, String operator, Object expected, String expectedStr) {
-	return new FilterExpression(attribute, operator, expected, expectedStr, false);
+        return new FilterExpression(attribute, operator, expected, expectedStr, false);
     }
 
     private FilterExpression(String attribute, String operator, Object expected, String expectedStr, boolean isMatch) {
-	this.attribute = attribute;
-	setOperator(operator);
-	setExpected(expected);
-	setExpectedStr(expectedStr);
-	setMatch(isMatch);
-	setEmpty(false);
-	setFilterComparator(false);
+        this.attribute = attribute;
+        setOperator(operator);
+        setExpected(expected);
+        setExpectedStr(expectedStr);
+        setMatch(isMatch);
+        setEmpty(false);
+        setFilterComparator(false);
     }
 
     private FilterExpression(String operator) {
-	setOperator(operator);
-	setMatch(false);
-	setEmpty(false);
-	setFilterComparator(true);
+        setOperator(operator);
+        setMatch(false);
+        setEmpty(false);
+        setFilterComparator(true);
     }
 
     private FilterExpression() {
-	setEmpty(true);
-	setFilterComparator(false);
+        setEmpty(true);
+        setFilterComparator(false);
     }
 
     public String getAttribute() {
-	return attribute;
+        return attribute;
     }
 
     void setAttribute(String attribute) {
-	this.attribute = attribute;
+        this.attribute = attribute;
     }
 
     public Object getExpected() {
-	return expected;
+        return expected;
     }
 
     void setExpected(Object expected) {
-	this.expected = expected;
+        this.expected = expected;
     }
 
     public String getOperator() {
-	return operator;
+        return operator;
     }
 
     void setOperator(String operator) {
-	this.operator = operator;
+        this.operator = operator;
     }
 
     @Override
     public String toString() {
-	return attribute + " " + operator + " " + expectedStr;
+        return attribute + " " + operator + " " + expectedStr;
     }
 
     public String toStringValue() {
-	return attribute + " " + operator + " " + expected.toString();
+        return attribute + " " + operator + " " + expected.toString();
     }
 
     public boolean isEmpty() {
-	return empty;
+        return empty;
     }
 
     void setEmpty(boolean empty) {
-	this.empty = empty;
+        this.empty = empty;
     }
 
     public String getExpectedStr() {
-	return expectedStr;
+        return expectedStr;
     }
 
     void setExpectedStr(String expectedStr) {
-	this.expectedStr = expectedStr;
+        this.expectedStr = expectedStr;
     }
 
     public boolean isMatch() {
-	return isMatch;
+        return isMatch;
     }
 
     public void setMatch(boolean isMatch) {
-	this.isMatch = isMatch;
+        this.isMatch = isMatch;
     }
 
     public boolean isFilterComparator() {
-	return filterComparator;
+        return filterComparator;
     }
 
     public void setFilterComparator(boolean filterComparator) {
-	this.filterComparator = filterComparator;
+        this.filterComparator = filterComparator;
     }
 }

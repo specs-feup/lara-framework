@@ -14,6 +14,7 @@
 package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+import pt.up.fe.specs.tools.lara.exception.LARAExceptionBuilder;
 
 public class EvaluationException extends BaseException {
 
@@ -37,7 +38,7 @@ public class EvaluationException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        return "when evaluating javascript";
+        return LARAExceptionBuilder.getEvaluationExceptionMessage();
     }
 
 }
