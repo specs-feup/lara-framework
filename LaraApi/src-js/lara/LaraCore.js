@@ -364,65 +364,6 @@ function isJavaList(list) {
 	return list instanceof Java.type("java.util.List");
 }
 
-/*
-function laraPropertyGetter(object, property) {
-	return object[property];
-}
-*/
-
-/*
-Object.defineProperty(Object.prototype, 'laraGetter', {
-    value: function(prop) {
-    	println("LARA GETTER for " + prop);
-        return this[prop];
-    },
-    enumerable: false, // this is actually the default
-});
-*/
-
-/*
-function laraGetter(object, property) {
-	var type = typeof object[property];
-
-	//println("Lara getter for " + property);
-	if(type === 'function') {
-	
-	
-		//if(property === 'descendants' && !isUndefined(object.class)) {
-		//	println("HEH");
-		//	printlnObject(object);
-		//	println("Is java? " + isJavaClass(object));
-		//	return object[property]();
-		//}
-	
-	//println("Building getter for " + property);
-        return function() {
-
-			        	
-        	//println("Executing getter for " + property);
-			//println("Obj type: " + typeof object);	
-			
-			// Imported Java classes, invoke as Java object
-        	if(isJavaClass(object) && !isUndefined(object.class)) {
-        		//println("Java class: " + object.class);
-        		//println("PROP: " + property);
-        		
-        		//	return object.class.getMethod(property, arguments).invoke(object, arguments);
-        		//return object[property](arguments);
-				return SpecsSystem.invoke(object, property, arguments);        		
-        	}
-        	
-			// Invoke as JS object
-            return object[property].apply(object, arguments);
-        };
-    }
-
-//	println("Type to support: " + type);
-//	println("Lara getter for " + property);
-//	printlnObject(object);
-	return object[property];
-}
-*/
 
 
 /*
@@ -443,8 +384,8 @@ function laraGetter(object, property) {
 				return object.class;
 			}
 		
-			//return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
-			return SpecsSystem.invokeAsGetter(object, property);
+			return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
+			//return SpecsSystem.invokeAsGetter(object, property);
 		}
 	
 		// JS object

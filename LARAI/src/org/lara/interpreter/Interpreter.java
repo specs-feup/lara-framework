@@ -300,48 +300,23 @@ public class Interpreter {
                 return ret;
             }
 
-            // ret.append(getJavascriptString(exp.exprs.get(0), -1));
-            // ret.append("[");
-            // ret.append(getJavascriptString(exp.exprs.get(1), 0));
-            // ret.append("]");
-            //
-            // return ret;
-
-            // String isAttribute = seeIfIsAttributeAccess(exp.exprs.get(0),
-            // exp.parent);
-
-            // Experiment where we tried to replace a property access with a function
-
-            // If last child on the left side of an assignment expression, use native property operator
-            if (useNativeProperyOp(exp)) {
-                ret.append(getJavascriptString(exp.exprs.get(0), -1));
-                ret.append("[");
-                ret.append(getJavascriptString(exp.exprs.get(1), 0));
-                ret.append("]");
-
-                // ret.append(isAttribute);
-                // System.out.println("PROP 1: " + ret);
-                // System.out.println("Part1: " + getJavascriptString(exp.exprs.get(0), -1));
-                // System.out.println("Part2: " + getJavascriptString(exp.exprs.get(1), 0));
+            // Check if laraGetter should be used
+            if (useLaraGetter(exp)) {
+                ret.append(JoinPoint.getLaraGetterName())
+                        .append("(")
+                        .append(getJavascriptString(exp.exprs.get(0), -1))
+                        .append(",")
+                        .append(getJavascriptString(exp.exprs.get(1), 0))
+                        .append(")");
 
                 return ret;
             }
 
-            // ret.append(getJavascriptString(exp.exprs.get(0), -1))
-            // .append(".")
-            // .append(PROPERTY_GETTER)
-            // .append("(")
-            // .append(getJavascriptString(exp.exprs.get(1), 0))
-            // .append(")");
-
-            ret.append(JoinPoint.getLaraGetterName())
-                    .append("(")
-                    .append(getJavascriptString(exp.exprs.get(0), -1))
-                    .append(",")
-                    .append(getJavascriptString(exp.exprs.get(1), 0))
-                    .append(")");
-
-            // System.out.println("PROP 1 NEW: " + ret);
+            // Use native property operator
+            ret.append(getJavascriptString(exp.exprs.get(0), -1));
+            ret.append("[");
+            ret.append(getJavascriptString(exp.exprs.get(1), 0));
+            ret.append("]");
 
             return ret;
 
@@ -358,32 +333,27 @@ public class Interpreter {
         return ret;
     }
 
-    private boolean useNativeProperyOp(Expression propertyExp) {
+    private boolean useLaraGetter(Expression propertyExp) {
 
         // If engine supports transforming properties into accessors,
         // always use properties
         if (getEngine().supportsProperties()) {
-            return true;
+            return false;
         }
 
         // If parent is a method, do not use laraGetter
         var parent = propertyExp.getParent();
-        // parent.typeName()
         if (parent instanceof Expression && "method".equals(((Expression) parent).xmltag)) {
-            return true;
+            return false;
             // var exprParent = (Expression) parent;
             // System.out.println("PARENT TAG: " + exprParent.xmltag);
         }
 
-        // if (true) {
-        // return true;
-        // }
-
-        // Do not use laraGetter if the last child on the left hand of an assign
+        // Do not use laraGetter if it is the target of an operation
         ExprOp opAncestor = propertyExp.getAncestor(ExprOp.class);
 
         if (opAncestor == null) {
-            return false;
+            return true;
         }
 
         // Set<String> problematicOps = new HashSet<>(Arrays.asList("ASSIGN", "INCS", "DECS"));
@@ -394,28 +364,13 @@ public class Interpreter {
         SpecsCheck.checkArgument(!opAncestor.exprs.isEmpty(), () -> "Expected operator to have expressions");
         Expression currentLeftHand = opAncestor.exprs.get(0);
 
-        // System.out.println("ASSIGN FIRST CHILD EXPRS: " + ((ExprLiteral) currentLeftHand.exprs.get(1)).value);
-        // System.out.println("ASSIGN FIRST CHILD CODE: " + currentLeftHand.hashCode());
-        // System.out.println("PROPERTY EXPRS: " + ((ExprLiteral) currentLeftHand.exprs.get(1)).value);
-        // System.out.println("PROPERTY CODE: " + propertyExp.hashCode());
         // Look for the first property on the left hand
         if (currentLeftHand == propertyExp) {
-            return true;
+            return false;
         }
-        // Expression lastLeftProperty = getLastProperty(currentLeftHand);
-        // while (!currentLeftHand.exprs.isEmpty()) {
-        // currentLeftHand = getLeftHandChild(currentLeftHand);
-        // }
 
-        // Do not use getter
-        // if (lastLeftProperty == propertyExp) {
-        // return false;
-        // }
-
-        // System.out.println("ANCESTOR: " + opAncestor.name);
-
-        // TODO Auto-generated method stub
-        return false;
+        // Otherwise, always use laraGeter
+        return true;
 
     }
     /*
@@ -684,22 +639,8 @@ public class Interpreter {
         final Expression callExpr = exprCall.method.exprs.get(0);
         if (!(callExpr instanceof ExprId || callExpr instanceof ExprLiteral)) {
             if (callExpr.xmltag.equals("property")) {
-                // if ("property".equals(callExpr.xmltag)) {
-                // System.out.println("CALL: " + call);
 
-                // If LARA getter after first dot
-                // int dotIndex = call.lastIndexOf('.');
-                // if (dotIndex != -1 && call.substring(dotIndex + 1).startsWith(PROPERTY_GETTER + "(")) {
-                //
-                // String methodName = call.substring(dotIndex + PROPERTY_GETTER.length() + 2, call.lastIndexOf(")"));
-                // methodName = methodName.replace("'", "");
-                // final String objName = call.substring(0, dotIndex);
-                // System.out.println("PAIR: " + new Pair<>(objName, methodName));
-                // return new Pair<>(objName, methodName);
-                // }
-
-                // If starts with LARA getter (when all properties access where replaced)
-                // if (call.startsWith(PROPERTY_GETTER)) {
+                // Detect if LARA getter
                 if (!call.endsWith("]")) {
                     SpecsCheck.checkArgument(call.endsWith(")"), () -> "Expected to end with ')': " + call);
 
@@ -707,12 +648,6 @@ public class Interpreter {
                     methodName = methodName.replace("'", "");
                     final String objName = call.substring(JoinPoint.getLaraGetterName().length() + 1,
                             call.lastIndexOf(","));
-                    //
-
-                    // System.out.println("OBJECT: " + objName);
-                    // System.out.println("METHOD: " + methodName);
-                    // System.out.println("CALL: " + call);
-                    // System.out.println("PAIR: " + new Pair<>(objName, methodName));
 
                     return new Pair<>(objName, methodName);
                 }
