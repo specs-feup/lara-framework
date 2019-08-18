@@ -106,7 +106,8 @@ ProcessExecutor.prototype.execute = function(command) {
 	
 	this.lastCommand = command;
 	
-	var timeoutNanos = null;
+	// Important to use 0, if  it is null/undefined, calling the Java method will fail, will not be able to convert to Long
+	var timeoutNanos = 0;
 	if(this.timeout !== undefined) {
 		timeoutNanos = this.timeUnit.toNanos(this.timeout);
 	}

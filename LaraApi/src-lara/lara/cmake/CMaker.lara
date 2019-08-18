@@ -242,7 +242,7 @@ CMaker.prototype.addCurrentAst = function() {
 		//	destFolder = Io.mkdir(srcFolder, $file.relativeFolderpath);
 		//}
 		
-		var filepath = $file.write(destFolder);
+		var filepath = $file.write(destFolder.toString());
 		
 		if(!$file.isHeader) {
 			this.getSources().addSource(filepath);

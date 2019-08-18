@@ -36,6 +36,11 @@ public class LaraSystemTools {
     public static ProcessOutputAsString runCommand(List<String> commandList, String workingDir,
             boolean printToConsole, Long timeoutNanos) {
 
+        // Adjust long value
+        if (timeoutNanos != null && timeoutNanos <= 0) {
+            timeoutNanos = null;
+        }
+
         // System.out.println("CURRENT FOLDER:" + SpecsIo.getWorkingDir().getAbsolutePath());
         try {
             return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole, timeoutNanos);
