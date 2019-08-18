@@ -1,3 +1,30 @@
+
+
+
+// Setter test
+/*
+Object.defineProperty(Object.prototype, 'laraSet', { 
+	get: function() { println("LARASET ON "); return 10;} ,
+	set: function(val) { delete Object.getPrototypeOf(this)['laraSet']; println("SETTER: " + this.laraSet);
+	//this['laraSet'] = val;
+	}
+});
+*/
+
+/*
+Object.defineProperty(Object.prototype, 'descendants', { 
+	get: function() { println("descendants getter ON for prop " + (typeof this)); printlnObject(this); if(typeof this['descendantsValue'] !== undefined){return this['descendantsValue']; } } 
+	//,set: function(val) {delete this['descendants']; println("descendants setter: " + this);}
+	,set: function(val) {println("descendants setter: " + this);this['descendantsValue'] = val;}
+	//, set: function(val) { delete Object.getPrototypeOf(this)['laraSet']; println("SETTER: " + this.laraSet);
+	//this['laraSet'] = val;
+	//}
+});
+*/
+
+
+
+
 var toType = function(obj) {
   return ({}).toString.call(obj).match(/\s(([a-zA-Z]|\.)+)/)[1].toLowerCase();
 }
