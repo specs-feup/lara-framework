@@ -201,7 +201,7 @@ function getFnName(fn){
 
 //Insert save to file functions (and others) here!
 function writeFile(path, content) {
-	var file = new java.io.File(path);
+	var file = new java.io.File(path.toString());
 	SpecsIo.write(file,content);
 	return file;
 }
