@@ -64,6 +64,7 @@ import pt.up.fe.specs.lara.aspectir.ParameterList;
 import pt.up.fe.specs.lara.aspectir.ParameterSection;
 import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
@@ -71,6 +72,7 @@ public class Interpreter {
     public static final String ARGS_PREFIX = "";
     public static final String ATTRIBUTES = "attributes";
     public static final String TOOLS_CONTEXT = "tools";
+    // public static final String PROPERTY_GETTER = "laraGetter";
 
     public static final String JPUTILS_NAME = "__jpUtils";
     private final LaraI laraInterp;
@@ -292,17 +294,57 @@ public class Interpreter {
         // Else
         if (exp.xmltag.equals("property")) {
             final StringBuilder ret = new StringBuilder(LaraIUtils.getSpace(depth));
-            ret.append(getJavascriptString(exp.exprs.get(0), -1));
+
+            if (exp.exprs.size() == 1) {
+                ret.append(getJavascriptString(exp.exprs.get(0), -1));
+                return ret;
+            }
+
+            // ret.append(getJavascriptString(exp.exprs.get(0), -1));
+            // ret.append("[");
+            // ret.append(getJavascriptString(exp.exprs.get(1), 0));
+            // ret.append("]");
+            //
+            // return ret;
+
             // String isAttribute = seeIfIsAttributeAccess(exp.exprs.get(0),
             // exp.parent);
-            if (exp.exprs.size() > 1) {
+
+            // Experiment where we tried to replace a property access with a function
+
+            // If last child on the left side of an assignment expression, use native property operator
+            if (useNativeProperyOp(exp)) {
+                ret.append(getJavascriptString(exp.exprs.get(0), -1));
                 ret.append("[");
                 ret.append(getJavascriptString(exp.exprs.get(1), 0));
                 ret.append("]");
+
                 // ret.append(isAttribute);
+                // System.out.println("PROP 1: " + ret);
+                // System.out.println("Part1: " + getJavascriptString(exp.exprs.get(0), -1));
+                // System.out.println("Part2: " + getJavascriptString(exp.exprs.get(1), 0));
+
                 return ret;
             }
+
+            // ret.append(getJavascriptString(exp.exprs.get(0), -1))
+            // .append(".")
+            // .append(PROPERTY_GETTER)
+            // .append("(")
+            // .append(getJavascriptString(exp.exprs.get(1), 0))
+            // .append(")");
+
+            ret.append(JoinPoint.getLaraGetterName())
+                    .append("(")
+                    .append(getJavascriptString(exp.exprs.get(0), -1))
+                    .append(",")
+                    .append(getJavascriptString(exp.exprs.get(1), 0))
+                    .append(")");
+
+            // System.out.println("PROP 1 NEW: " + ret);
+
             return ret;
+
         }
         final StringBuilder ret = new StringBuilder();
         if (exp.exprs.isEmpty()) {
@@ -315,6 +357,92 @@ public class Interpreter {
         ret.delete(ret.length() - 2, ret.length());
         return ret;
     }
+
+    private boolean useNativeProperyOp(Expression propertyExp) {
+
+        // If engine supports transforming properties into accessors,
+        // always use properties
+        if (getEngine().supportsProperties()) {
+            return true;
+        }
+
+        // If parent is a method, do not use laraGetter
+        var parent = propertyExp.getParent();
+        // parent.typeName()
+        if (parent instanceof Expression && "method".equals(((Expression) parent).xmltag)) {
+            return true;
+            // var exprParent = (Expression) parent;
+            // System.out.println("PARENT TAG: " + exprParent.xmltag);
+        }
+
+        // if (true) {
+        // return true;
+        // }
+
+        // Do not use laraGetter if the last child on the left hand of an assign
+        ExprOp opAncestor = propertyExp.getAncestor(ExprOp.class);
+
+        if (opAncestor == null) {
+            return false;
+        }
+
+        // Set<String> problematicOps = new HashSet<>(Arrays.asList("ASSIGN", "INCS", "DECS"));
+        // if (!problematicOps.contains(opAncestor.name)) {
+        // return false;
+        // }
+
+        SpecsCheck.checkArgument(!opAncestor.exprs.isEmpty(), () -> "Expected operator to have expressions");
+        Expression currentLeftHand = opAncestor.exprs.get(0);
+
+        // System.out.println("ASSIGN FIRST CHILD EXPRS: " + ((ExprLiteral) currentLeftHand.exprs.get(1)).value);
+        // System.out.println("ASSIGN FIRST CHILD CODE: " + currentLeftHand.hashCode());
+        // System.out.println("PROPERTY EXPRS: " + ((ExprLiteral) currentLeftHand.exprs.get(1)).value);
+        // System.out.println("PROPERTY CODE: " + propertyExp.hashCode());
+        // Look for the first property on the left hand
+        if (currentLeftHand == propertyExp) {
+            return true;
+        }
+        // Expression lastLeftProperty = getLastProperty(currentLeftHand);
+        // while (!currentLeftHand.exprs.isEmpty()) {
+        // currentLeftHand = getLeftHandChild(currentLeftHand);
+        // }
+
+        // Do not use getter
+        // if (lastLeftProperty == propertyExp) {
+        // return false;
+        // }
+
+        // System.out.println("ANCESTOR: " + opAncestor.name);
+
+        // TODO Auto-generated method stub
+        return false;
+
+    }
+    /*
+    private Expression getLastProperty(Expression expr) {
+        Set<String> allowedTags = new HashSet<>(Arrays.asList("property", "call", "method"));
+        System.out.println("EXPR: " + expr.xmltag);
+        var currentExp = expr;
+        while (allowedTags.contains(currentExp.exprs.get(0).xmltag)) {
+            currentExp = currentExp.exprs.get(0);
+            System.out.println("ALLOWED EXPR: " + currentExp.xmltag);
+        }
+        return currentExp;
+    }
+    */
+    // private Expression getLeftHandChild(Expression expr) {
+    // switch (expr.xmltag) {
+    // case "property":
+    // return expr.exprs.get(1);
+    // default:
+    // if (expr.exprs.size() > 1) {
+    // throw new RuntimeException(
+    // "Tag " + expr.xmltag + " has " + expr.exprs.size() + " children, what should do?");
+    // }
+    //
+    // return expr.exprs.get(0);
+    // }
+    // }
 
     /*
      * private String seeIfIsAttributeAccess(Expression expr, IElement parent) {
@@ -556,6 +684,39 @@ public class Interpreter {
         final Expression callExpr = exprCall.method.exprs.get(0);
         if (!(callExpr instanceof ExprId || callExpr instanceof ExprLiteral)) {
             if (callExpr.xmltag.equals("property")) {
+                // if ("property".equals(callExpr.xmltag)) {
+                // System.out.println("CALL: " + call);
+
+                // If LARA getter after first dot
+                // int dotIndex = call.lastIndexOf('.');
+                // if (dotIndex != -1 && call.substring(dotIndex + 1).startsWith(PROPERTY_GETTER + "(")) {
+                //
+                // String methodName = call.substring(dotIndex + PROPERTY_GETTER.length() + 2, call.lastIndexOf(")"));
+                // methodName = methodName.replace("'", "");
+                // final String objName = call.substring(0, dotIndex);
+                // System.out.println("PAIR: " + new Pair<>(objName, methodName));
+                // return new Pair<>(objName, methodName);
+                // }
+
+                // If starts with LARA getter (when all properties access where replaced)
+                // if (call.startsWith(PROPERTY_GETTER)) {
+                if (!call.endsWith("]")) {
+                    SpecsCheck.checkArgument(call.endsWith(")"), () -> "Expected to end with ')': " + call);
+
+                    String methodName = call.substring(call.lastIndexOf(",") + 1, call.length() - ")".length()).trim();
+                    methodName = methodName.replace("'", "");
+                    final String objName = call.substring(JoinPoint.getLaraGetterName().length() + 1,
+                            call.lastIndexOf(","));
+                    //
+
+                    // System.out.println("OBJECT: " + objName);
+                    // System.out.println("METHOD: " + methodName);
+                    // System.out.println("CALL: " + call);
+                    // System.out.println("PAIR: " + new Pair<>(objName, methodName));
+
+                    return new Pair<>(objName, methodName);
+                }
+
                 String methodName = call.substring(call.lastIndexOf("[") + 1, call.lastIndexOf("]"));
                 methodName = methodName.replace("'", "");
                 final String objName = call.substring(0, call.lastIndexOf("["));

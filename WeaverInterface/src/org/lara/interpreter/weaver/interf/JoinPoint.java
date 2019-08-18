@@ -37,6 +37,11 @@ import pt.up.fe.specs.util.SpecsSystem;
 public abstract class JoinPoint {
 
     static final String BASE_JOINPOINT_CLASS = "joinpoint";
+    private static final String LARA_GETTER = "laraGetter";
+
+    public static String getLaraGetterName() {
+        return LARA_GETTER;
+    }
 
     public static boolean isJoinPoint(Object value) {
         return value instanceof JoinPoint;
