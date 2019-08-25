@@ -78,7 +78,7 @@ import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
  * @author Tiago
  */
 public class LaraI {
-    public static final double LARA_VERSION = 3.0; // Since we are using nashorn
+    public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
