@@ -15,12 +15,8 @@ package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.lara.interpreter.Interpreter;
@@ -38,7 +34,7 @@ import larac.LaraC;
 import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.jsengine.nashorn.NashornEngine;
+import pt.up.fe.specs.jsengine.graal.GraalvmJsEngine;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
@@ -54,23 +50,23 @@ import pt.up.fe.specs.util.lazy.Lazy;
  */
 public class LaraToJs {
 
-    private static final Set<String> FILES_TO_COPY = new HashSet<>(Arrays.asList("lara.resource", "lara.bundle"));
+    // private static final Set<String> FILES_TO_COPY = new HashSet<>(Arrays.asList("lara.resource", "lara.bundle"));
 
     private static final Pattern REGEX_WITH = Pattern.compile("with\\s*\\(.*\\)");
     private static final Pattern REGEX_FOR_EACH = Pattern.compile("for each \\(");
-    private static final Pattern REGEX_QUOTES = Pattern.compile("(.*)\\['([a-zA-Z0-9_]+)'\\]");
+    // private static final Pattern REGEX_QUOTES = Pattern.compile("(.*)\\['([a-zA-Z0-9_]+)'\\]");
 
     private File outputFolder;
     private final Lazy<AspectClassProcessor> aspectProcessor;
-    private final LanguageSpecification languageSpecification;
+    // private final LanguageSpecification languageSpecification;
 
-    private final boolean ignoreUnderscoredFolders = true;
+    // private final boolean ignoreUnderscoredFolders = true;
 
     // public LaraDoc(WeaverEngine weaverEngine, File inputPath, File outputFolder) {
     public LaraToJs(File outputFolder) {
         this.outputFolder = SpecsIo.mkdir(outputFolder);
         this.aspectProcessor = Lazy.newInstance(LaraToJs::newAspectProcessor);
-        this.languageSpecification = new DefaultWeaver().getLanguageSpecification();
+        // this.languageSpecification = new DefaultWeaver().getLanguageSpecification();
     }
 
     // private static AspectClassProcessor newAspectProcessor(WeaverEngine weaverEngine) {
@@ -80,7 +76,8 @@ public class LaraToJs {
         // data.add(LaraiKeys.VERBOSE, VerboseLevel.errors);
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
-        JsEngine jsEngine = new NashornEngine();
+        // JsEngine jsEngine = new NashornEngine();
+        JsEngine jsEngine = new GraalvmJsEngine();
         larai.getWeaverEngine().setScriptEngine(jsEngine);
 
         FileList folderApplication = FileList.newInstance();
@@ -104,7 +101,7 @@ public class LaraToJs {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();
-
+        
         args.add(laraFile.getAbsolutePath());
         args.add("--doc");
         args.add("--verbose");
@@ -116,24 +113,24 @@ public class LaraToJs {
         // preprocess.add("-i");
         // preprocess.add(encodedIncludes);
         // }
-
+        
         // lara files as resources
         // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
         // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
         // laraAPIs.addAll(options.getLaraAPIs());
-
+        
         LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
         Document aspectIr = null;
-
+        
         try {
             aspectIr = larac.compile();
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
             return;
         }
-
+        
         // String aspectXml = toXml(aspectIr);
-
+        
         // LaraI.main(args);
         Aspects asps = null;
         try {
@@ -141,7 +138,7 @@ public class LaraToJs {
             // System.out.println("--- IR BEFORE ---");
             // lara.printAspectIR();
             // System.out.println("--- IR AFTER ---");
-
+        
         } catch (Exception e) {
             SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
             return;
@@ -266,22 +263,23 @@ public class LaraToJs {
         return currentCode;
     }
 
+    /*
     private String replaceQuotes(String jsCode) {
         String currentCode = jsCode;
-
+    
         try {
-
+    
             while (true) {
-
+    
                 Matcher regexMatcher = REGEX_QUOTES.matcher(currentCode);
-
+    
                 boolean replace = regexMatcher.find();
-
+    
                 // If no replacement occurred, exit loop
                 if (!replace) {
                     break;
                 }
-
+    
                 String replacement = regexMatcher.group(1) + "." + regexMatcher.group(2);
                 currentCode = regexMatcher.replaceFirst(replacement);
             }
@@ -289,8 +287,9 @@ public class LaraToJs {
             SpecsLogs.msgInfo("Problems while replacing quotes: " + e.getMessage());
         }
         return currentCode;
-
+    
     }
+    */
 
     /**
      *

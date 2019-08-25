@@ -37,7 +37,7 @@ import larai.larabundle.LaraBundle;
 import larai.larabundle.LaraBundleProperty;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.jsengine.nashorn.NashornEngine;
+import pt.up.fe.specs.jsengine.graal.GraalvmJsEngine;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
@@ -93,7 +93,8 @@ public class LaraDoc {
         // data.add(LaraiKeys.VERBOSE, VerboseLevel.errors);
         WeaverEngine weaverEngine = new DefaultWeaver();
         LaraI larai = LaraI.newInstance(data, weaverEngine);
-        JsEngine jsEngine = new NashornEngine();
+        // JsEngine jsEngine = new NashornEngine();
+        JsEngine jsEngine = new GraalvmJsEngine();
         FileList folderApplication = FileList.newInstance();
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
