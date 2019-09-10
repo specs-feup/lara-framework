@@ -142,8 +142,13 @@ public class JsDocTagParser {
         Optional<String> type = contents.apply(JsDocTagStringParsers::checkType);
         type.ifPresent(typeValue -> tag.setValue(JsDocTagProperty.TYPE_NAME, typeValue));
 
+        // Treat optional parameters differently
+        boolean isOptional = contents.getCurrentString().startsWith("[");
+
         // Parameter name required
-        String paramName = contents.apply(StringParsers::parseWord);
+        String paramName = isOptional ? "[" + contents.apply(StringParsers::parseNested, '[', ']') + "]"
+                : contents.apply(StringParsers::parseWord);
+
         ParamData paramData = ParamData.parseParam(paramName);
         String parsedName = !paramData.getName().isEmpty() ? paramData.getName() : "[missing param name]";
 
