@@ -21,7 +21,8 @@ Strings.isEmpty = function(string) {
 Strings.replacer = function(string, oldSequence, newSequence) {
 	//_JavaTypes.getType(_JavaTypes.LaraApiTools);
 	//return LaraApiTools.replacer(string, oldSequence, newSequence);
-	return _JavaTypes.getLaraApiTools().replacer(string, oldSequence, newSequence);
+	//return _JavaTypes.getLaraApiTools().replacer(string, oldSequence, newSequence);
+	return stringReplacer(string, oldSequence, newSequence);
 }
 
 /**

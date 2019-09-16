@@ -395,3 +395,7 @@ function laraGetter(object, property) {
 	return object[property];
 }
 
+
+function stringReplacer(string, oldSequence, newSequence) {
+	return string.replace(oldSequence, newSequence);
+}
