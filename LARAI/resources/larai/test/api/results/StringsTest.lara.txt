@@ -1,1 +1,3 @@
 Escaped HTML: &lt;h1&gt;Hello&lt;/h1&gt;
+Replacer 1: WWW
+Replacer 2: WRW
