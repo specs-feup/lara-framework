@@ -269,6 +269,7 @@ public class GeneratorUtils {
 
                 String name = attribute.getName();
                 // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
+
                 JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
                 // type = JavaTypeFactory.primitiveUnwrap(type);
                 if (type.isArray()) {
@@ -278,7 +279,8 @@ public class GeneratorUtils {
                 if (generator.hasImplMode() && !type.isArray()) {
                     name += GenConstants.getImplementationSufix();
                 }
-                final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter());
+                final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter(),
+                        generator);
                 getter.add(Annotation.OVERRIDE);
                 javaC.add(getter);
             }
@@ -405,6 +407,7 @@ public class GeneratorUtils {
         } else {
             getAttribute.appendCode("return this." + attr + ";");
         }
+
         return getAttribute;
     }
 
@@ -415,7 +418,8 @@ public class GeneratorUtils {
      * @return
      */
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
-            List<org.lara.language.specification.artifactsmodel.schema.Parameter> list) {
+            List<org.lara.language.specification.artifactsmodel.schema.Parameter> list,
+            JavaAbstractsGenerator generator) {
 
         if (list != null && !list.isEmpty()) {
             final Method getAttribute = new Method(getAttrType, originalName);
@@ -424,10 +428,13 @@ public class GeneratorUtils {
             getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
             getAttribute.appendCode("return this." + superField + "." + originalName + "(");
             for (org.lara.language.specification.artifactsmodel.schema.Parameter parameter : list) {
-                getAttribute.addArgument(new JavaType(parameter.getType()), parameter.getName());
+
+                JavaType type = ConvertUtils.getConvertedType(parameter.getType(), generator);
+                getAttribute.addArgument(type, parameter.getName());
                 getAttribute.appendCode(parameter.getName());
             }
             getAttribute.appendCode(");");
+
             return getAttribute;
         }
         final String getName = "get" + Utils.firstCharToUpper(originalName);
@@ -436,6 +443,7 @@ public class GeneratorUtils {
         getAttribute.appendComment("Get value on attribute " + attr);
         getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
         getAttribute.appendCode("return this." + superField + "." + getName + "();");
+
         return getAttribute;
     }
 
@@ -910,6 +918,7 @@ public class GeneratorUtils {
                 getter.setJavaDocComment(new JavaDoc(comment));
             }
             javaC.add(getter);
+
             return getter;
             // javaC.add(get_set.getRight());
         }
@@ -937,6 +946,7 @@ public class GeneratorUtils {
         // NativeArray!
         // encapsulateArrayAttribute(javaC, methodForAttribute);
         // }
+
         javaC.add(methodForAttribute);
         return methodForAttribute;
 
