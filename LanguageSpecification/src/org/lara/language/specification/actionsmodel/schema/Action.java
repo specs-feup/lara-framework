@@ -188,4 +188,13 @@ public class Action {
         this.tooltip = comment;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+
+        string.append("Name: " + name + "; Class: " + clazz);
+
+        return string.toString();
+    }
+
 }
