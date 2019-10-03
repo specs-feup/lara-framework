@@ -79,6 +79,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         addGetRootMethod(java);
         addGetAllImportableClassesMethod(java);
         addImplementsEventsMethod(java);
+
         return java;
     }
 

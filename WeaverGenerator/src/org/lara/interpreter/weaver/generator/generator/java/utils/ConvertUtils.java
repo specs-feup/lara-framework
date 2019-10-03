@@ -34,6 +34,7 @@ import tdrc.utils.StringUtils;
 public class ConvertUtils {
 
     private static final String JoinPointClassTypeName = "Joinpoint";
+    private static final String JoinPointInterfaceClassTypeName = "JoinpointInterface";
     private static final Map<String, JavaType> InterpreterTypes;
 
     static {
@@ -149,6 +150,14 @@ public class ConvertUtils {
             clone.setArrayDimension(arrayDimension);
             return clone;
         }
+
+        // if it is the joinpoint interface type
+        if (keyType.equals(ConvertUtils.JoinPointInterfaceClassTypeName)) {
+            final JavaType clone = GenConstants.getJoinPointInterfaceType().clone();
+            clone.setArrayDimension(arrayDimension);
+            return clone;
+        }
+
         // if the object declaration exist in the artifacts
         final LanguageSpecification languageSpecification = generator.getLanguageSpecification();
         if (languageSpecification.getArtifacts().hasTypeDef(type)) {
