@@ -225,7 +225,8 @@ public abstract class JoinPoint {
     /**
      * @see JoinPoint#insert(String, JoinPoint)
      */
-    public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T JoinPoint) {
+    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T JoinPoint) {
+    public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");
     }
