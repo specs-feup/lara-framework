@@ -229,6 +229,22 @@ public class ActionModel implements IModel {
         insertAct.getParameter().add(codeParam);
         actions.add(insertAct);
 
+        // Add default insert action overload that receives a JoinPoint
+        final Action insertActJp = new Action();
+        insertActJp.setName("insert");
+        insertActJp.setClazz("*");
+        // action 'insert' returns an array of join points
+        insertActJp.setReturn("Joinpoint[]");
+        final Parameter positionParam2 = new Parameter();
+        positionParam2.setName("position");
+        positionParam2.setType("String");
+        insertActJp.getParameter().add(positionParam2);
+        final Parameter codeParam2 = new Parameter();
+        codeParam2.setName("code");
+        codeParam2.setType("JoinpointInterface");
+        insertActJp.getParameter().add(codeParam2);
+        actions.add(insertActJp);
+
         // Add default define (def) action
         final Action defAct = new Action();
         defAct.setName("def");
