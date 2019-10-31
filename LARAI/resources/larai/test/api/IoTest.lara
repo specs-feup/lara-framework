@@ -2,10 +2,26 @@ import lara.Io;
 
 aspectdef IoTest
 
-	var files = Io.getPaths("src/larai", "*.java");
-	println("Files: " + files.join());
+	var testFolder = Io.mkdir("__ioTest__");
+	var testFile1 = Io.writeFile(Io.getPath(testFolder, "test1.txt"), "test1");
+	var testFile2 = Io.writeFile(Io.getPath(testFolder, "test2.txt"), "test2");
+	var testFile3 = Io.writeFile(Io.getPath(testFolder, "test3.doc"), "test3");	
+
+	var files = Io.getPaths(testFolder, "*.txt");
+	println("Files: " + files.map(getName).join());
 	
-	var filesNoArg = Io.getPaths("src/larai");
+	var filesNoArg = Io.getPaths(testFolder);
 	//var filesNoArg = Io.getPaths("C:\\Users\\JOAOBI~1\\AppData\\Local\\Temp\\specs_git_repos\\specs-c-libs\\SpecsRapl\\src");
-	println("Files no arg: " + filesNoArg.join());
+	println("Files no arg: " + filesNoArg.map(getName).join());
+	
+	
+	Io.deleteFolder(testFolder);
+	
+	// Path separator
+	var separator = Io.getPathSeparator();
+	println("Path separator: " + (separator === ":" || separator === ";"));
 end
+
+function getName(file) {
+	return file.getName();
+}
