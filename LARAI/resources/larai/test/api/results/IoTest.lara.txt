@@ -1,3 +1,4 @@
 Files: test1.txt,test2.txt
 Files no arg: test1.txt,test2.txt,test3.doc
 Path separator: true
+Name separator: true

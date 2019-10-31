@@ -17,8 +17,13 @@ aspectdef IoTest
 	
 	
 	// Path separator
-	var separator = Io.getPathSeparator();
-	println("Path separator: " + (separator === ":" || separator === ";"));
+	var pathSeparator = Io.getPathSeparator();
+	println("Path separator: " + (pathSeparator === ":" || pathSeparator === ";"));
+	
+	// Name separator
+	var separator = Io.getSeparator();
+	println("Name separator: " + (separator === "\\" || separator === "/"));
+	
 end
 
 function getName(file) {
