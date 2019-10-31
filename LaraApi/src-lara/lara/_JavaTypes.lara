@@ -50,3 +50,7 @@ _JavaTypes.getSpecsStrings = function() {
 _JavaTypes.getJavaSystem = function() {
 	return _JavaTypes.getType("java.lang.System");
 }
+
+_JavaTypes.getJavaFile = function() {
+	return _JavaTypes.getType("java.io.File");
+}

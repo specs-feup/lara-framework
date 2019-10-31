@@ -1,3 +1,5 @@
+import lara._JavaTypes;
+
 /**
  * Utility methods related with input/output operations on files.
  * @class
@@ -393,7 +395,7 @@ Io.getRelativePath = function(targetFile, baseFile) {
  * 	The system-dependent path-separator.
  */
 Io.getPathSeparator = function() {
-	return java.io.File.pathSeparator;
+	return _JavaTypes.getJavaFile().pathSeparator;
 }
 
 Io.md5 = function(fileOrBaseFolder, optionalFile) {
