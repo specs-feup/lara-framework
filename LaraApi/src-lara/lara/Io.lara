@@ -392,10 +392,17 @@ Io.getRelativePath = function(targetFile, baseFile) {
 }
 
 /**
- * 	The system-dependent path-separator.
+ * 	The system-dependent path-separator (e.g., : or ;).
  */
 Io.getPathSeparator = function() {
 	return _JavaTypes.getJavaFile().pathSeparator;
+}
+
+/**
+ * 	The system-dependent name-separator (e.g., / or \).
+ */
+Io.getSeparator = function() {
+	return _JavaTypes.getJavaFile().separator;
 }
 
 Io.md5 = function(fileOrBaseFolder, optionalFile) {
