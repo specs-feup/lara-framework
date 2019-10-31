@@ -8,14 +8,13 @@ aspectdef IoTest
 	var testFile3 = Io.writeFile(Io.getPath(testFolder, "test3.doc"), "test3");	
 
 	var files = Io.getPaths(testFolder, "*.txt");
-	println("Files: " + files.map(getName).join());
+	println("Files: " + files.sort().map(getName).join());
 	
 	var filesNoArg = Io.getPaths(testFolder);
-	//var filesNoArg = Io.getPaths("C:\\Users\\JOAOBI~1\\AppData\\Local\\Temp\\specs_git_repos\\specs-c-libs\\SpecsRapl\\src");
-	println("Files no arg: " + filesNoArg.map(getName).join());
-	
+	println("Files no arg: " + filesNoArg.sort().map(getName).join());
 	
 	Io.deleteFolder(testFolder);
+	
 	
 	// Path separator
 	var separator = Io.getPathSeparator();
