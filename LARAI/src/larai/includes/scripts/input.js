@@ -15,7 +15,7 @@ read = function(message) {
 
 // Read a file
 function readFile(path) {
-	var file = new java.io.File(path);
+	var file = new java.io.File(path.toString());
 	var content = SpecsIo.read(file);
 	return content;
 }
