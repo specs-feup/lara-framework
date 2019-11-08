@@ -25,6 +25,15 @@ function Enumeration() {
         }
     }
 
+	this.isValidEnum = function(val) {
+		for(var p in this) {
+			if(this.hasOwnProperty(p) && this[p] === val) {
+				return true;
+			}
+		}
+		return false;
+	};
+
     Object.freeze(this);
 }
 
