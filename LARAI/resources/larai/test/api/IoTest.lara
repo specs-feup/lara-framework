@@ -8,10 +8,10 @@ aspectdef IoTest
 	var testFile3 = Io.writeFile(Io.getPath(testFolder, "test3.doc"), "test3");	
 
 	var files = Io.getPaths(testFolder, "*.txt");
-	println("Files: " + files.sort().map(getName).join());
+	println("Files: " + files.map(getName).sort().join());
 	
 	var filesNoArg = Io.getPaths(testFolder);
-	println("Files no arg: " + filesNoArg.sort().map(getName).join());
+	println("Files no arg: " + filesNoArg.map(getName).sort().join());
 	
 	Io.deleteFolder(testFolder);
 	
