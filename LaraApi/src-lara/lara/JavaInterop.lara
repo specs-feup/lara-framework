@@ -1,0 +1,18 @@
+var JavaInterop = {};
+
+/**
+ * 		Converts a JS array into a java.util.List.
+ **/
+JavaInterop.arrayToList = function (array) {
+	
+	var ArrayListClass = Java.type("java.util.ArrayList");
+	var list = new ArrayListClass();
+	
+	for(var index in array) {
+		
+		var element = array[index];
+		list.add(element);
+	}
+	
+	return list;
+};

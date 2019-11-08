@@ -74,6 +74,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     PLATFORMS("Platforms.lara"),
     STRINGS("Strings.lara"),
     SYSTEM("System.lara"),
+    JAVA_INTEROP("JavaInterop.lara"),
 
     // Util
     ACCUMULATOR("util/Accumulator.lara"),
