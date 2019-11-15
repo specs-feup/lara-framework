@@ -19,25 +19,23 @@ function printTo(message, stream){
 }
 
 function printToln(message, stream){
-	if(message === null || message === undefined){
-		stream.println(message);
-	}else{
-		stream.println(message.toString());
+	if(message === null) {
+		message = "null";
 	}
+	
+	if(message === undefined) {
+		message = "undefined";
+	}
+	
+	stream.println(message.toString());
 }
 
 function print(message){
 	if(arguments.length == 0){
 		return;
 	}
+	
 	printTo(message,outputStream);
-	// if(message === null || message === undefined){
-		// outputStream.print(message);
-	// }
-	// else{
-		// outputStream.print(message.toString());
-	// }
-
 }
 
 //Print a message and ends it with a new line
