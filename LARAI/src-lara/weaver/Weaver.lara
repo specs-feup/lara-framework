@@ -44,5 +44,5 @@ Weaver.isJoinPoint = function($joinpoint, type) {
 		throw "Weaver.isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point";
 	}
 	
-	return $joinpoint.instanceof(type);
+	return $joinpoint.instanceOf(type);
 }
