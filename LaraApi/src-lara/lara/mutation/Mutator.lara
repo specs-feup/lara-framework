@@ -1,0 +1,66 @@
+/**
+ * Base class that represents a code mutator.
+ * 
+ * This should not be instantiated directly, instead it should be extended.
+ * 
+ * @constructor
+ * */
+var Mutator = function() {
+	// True if the current code is mutated, false otherwise
+	this.isMutated = false;
+
+};
+
+
+/**
+ * Introduces a single mutation to the code. 
+ * If the code has been mutated already, restores the code before mutating again. 
+ * If there are no mutations left, does nothing.
+ *
+ *
+ */
+Mutator.prototype.mutate = function() {
+	// If no mutations left, do nothing
+	if(!this.hasMutations()) {
+		return;
+	}
+	
+	// If code is currently mutated, call restore first
+	if(this.isMutated) {
+		this.restore();
+	}
+	
+	// Now can do the mutation
+	this.isMutated = true;
+	this._mutatePrivate();
+}
+
+
+/**
+ * If the code has been mutated, restores the code to its original state. If not, does nothing.
+ */
+Mutator.prototype.restore = function() {
+	// If not mutated, return 
+	if(!this.isMutated) {
+		return;
+	}
+
+	this.isMutated = false;
+	this._restorePrivate();
+}
+
+
+/*** TO IMPLEMENT ***/
+
+Mutator.prototype.hasMutations = function() {
+	notImplemented("Mutator.hasMutations");
+}
+
+
+Mutator.prototype._mutatePrivate = function() {
+	notImplemented("Mutator._mutatePrivate");
+}
+
+Mutator.prototype._restorePrivate = function() {
+	notImplemented("Mutator._restorePrivate");
+}

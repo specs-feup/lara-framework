@@ -54,6 +54,9 @@ public enum LaraApiResource implements LaraResourceProvider {
     METRIC("metrics/Metric.lara"),
     METRIC_RESULT("metrics/MetricResult.lara"),
 
+    // Mutation
+    MUTATOR("mutation/Mutator.lara"),
+
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
     SI_UNIT("units/SiUnit.lara"),
