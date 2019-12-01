@@ -192,6 +192,13 @@ public class AspectClassProcessor {
         }
         mainName += main;
         Aspect mainAspectDecl = asps.aspects.get(main);
+
+        // Check if aspect exists
+        if (mainAspectDecl == null) {
+            throw new RuntimeException(
+                    "Tried to execute aspect '" + main + "', but aspect could not be found inside LARA script");
+        }
+
         final StringBuilder code = new StringBuilder();
         code.append("var " + mainName + " = new " + main + "();\n");
         Coordinates coord = new Coordinates(mainAspectDecl.coord);
