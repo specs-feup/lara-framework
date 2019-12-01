@@ -52,14 +52,26 @@ Mutator.prototype.restore = function() {
 
 /*** TO IMPLEMENT ***/
 
+/**
+ * @return {boolean} true, if the Mutator still has mutations left to do, false otherwise.
+ */
 Mutator.prototype.hasMutations = function() {
 	notImplemented("Mutator.hasMutations");
 }
 
 
+/**
+ * @return {$jp} the point in the code where the mutation will occur or has occurred, or undefined if this concept is not applicable to this mutator.
+ */
+Mutator.prototype.getMutationPoint = function() {
+	notImplemented("Mutator.getMutationPoint");
+} 
+
+
 Mutator.prototype._mutatePrivate = function() {
 	notImplemented("Mutator._mutatePrivate");
 }
+
 
 Mutator.prototype._restorePrivate = function() {
 	notImplemented("Mutator._restorePrivate");
