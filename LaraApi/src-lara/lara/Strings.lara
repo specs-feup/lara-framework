@@ -94,8 +94,8 @@ Strings.toJson = function(value) {
 Strings.uuid = function() {
 	var uuid = _JavaTypes.getUuid().randomUUID().toString();
 	
-	uuid = Strings.replacer(uuid, "-", "_");
-	
+	// Regular expression and 'g' is needed to replace all occurences
+	uuid = Strings.replacer(uuid, /-/g, "_");
 	return "id_" + uuid;
 }
 
