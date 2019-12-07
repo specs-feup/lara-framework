@@ -28,3 +28,10 @@ WeaverJps.search = function(name, filter) {
 WeaverJps.searchFrom = function($baseJp, name, filter) {
 	return (new Selector($baseJp)).search(name, filter);
 }
+
+/**
+ * Searches for a given join point name starting from and including $baseJp, using the weaver.Selector interface.
+ */
+WeaverJps.searchFromInclusive = function($baseJp, name, filter) {
+	return (new Selector($baseJp, true)).search(name, filter);
+}

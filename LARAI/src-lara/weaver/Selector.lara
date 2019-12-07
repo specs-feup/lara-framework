@@ -6,9 +6,10 @@ import lara.Check;
  * Selects join points according to their type and filter rules.
  *
  */
-var Selector = function($baseJp) {
+var Selector = function($baseJp, inclusive) {
 	this._$currentJps = $baseJp === undefined ? undefined : [$baseJp];
 	this._joinPoints = new JoinPoints();
+	this._addBaseJp = inclusive === undefined ? false : inclusive;
 };
 
 Selector.prototype.search = function(name, filter) {
@@ -30,6 +31,22 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 	var jpFilter = new JpFilter(filter);
 	
 	var $newJps = [];
+
+	// If add base jp, this._$currentJps must have at most 1 element
+	if(this._addBaseJp && (this._$currentJps !== undefined)) {
+
+		if(this._$currentJps.length === 0) {
+			throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?";
+		}
+		
+		if(this._$currentJps.length > 1) {
+			throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('" + this._$currentJps.length + "')";
+		}
+		
+		this._addBaseJp = false;
+		this._addJps($newJps, this._$currentJps, jpFilter);		
+	}
+
 	
 	var $currentJps = this._$currentJps === undefined ? [this._joinPoints.root()] : this._$currentJps;
 	for(var $jp of $currentJps) {
@@ -40,18 +57,30 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 		//for(var $jp of $allJps) {
 		//	println("jp " + $jp.joinPointType + ":" + $jp.location);
 		//}
+		
+		this._addJps($newJps, $allJps, jpFilter);
+/*		
 		var $filteredJps = jpFilter.filter($allJps);
 		//println("filteredJps: " + $filteredJps.length);
 		for(var $finalJp of $filteredJps) {
-			
 			$newJps.push($finalJp);
 		}
+*/		
+		
 	}
 
 	// Update
 	this._$currentJps = $newJps;
 	
 	return this;
+}
+
+Selector.prototype._addJps = function($newJps, $jps, jpFilter) {
+	var $filteredJps = jpFilter.filter($jps);
+	//println("filteredJps: " + $filteredJps.length);
+	for(var $finalJp of $filteredJps) {
+		$newJps.push($finalJp);
+	}
 }
 
 Selector.prototype.get = function() {
