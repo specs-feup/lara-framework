@@ -348,4 +348,16 @@ public abstract class WeaverEngine {
         throw new NotImplementedException(getClass().getSimpleName() + ".writeCode() not yet implemented!");
     }
 
+    public String getDefaultAttribute(String joinPointType) {
+        // var langSpec = getLanguageSpecification();
+        //
+        // var artifact = langSpec.getArtifacts().getArtifact(joinPointType);
+        // System.out.println(
+        // "ART TYPE: " + artifact.getClazz() + "; " + artifact.getTooltip() + "; " + artifact.getDefault());
+        // for (var art : artifact.getAttribute()) {
+        // System.out.println("ATTR NAME: " + art.getName());
+        // }
+        return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
+    }
+
 }
