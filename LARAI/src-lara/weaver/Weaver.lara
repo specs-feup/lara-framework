@@ -46,3 +46,12 @@ Weaver.isJoinPoint = function($joinpoint, type) {
 	
 	return $joinpoint.instanceOf(type);
 }
+
+/**
+ * @param {String} joinPointType the type of the join point
+ * @return {String} the name of the default attribute for the given join point type, or undefined if there is no default attribute
+ */
+Weaver.getDefaultAttribute = function(joinPointType) {
+	checkString(joinPointType);
+	return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
+}
