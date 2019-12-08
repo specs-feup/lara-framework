@@ -7,6 +7,29 @@ import weaver.JoinPoints;
  */
 var WeaverJps = {};
 
+
+/**
+ * Helper function, the same as WeaverJps.search()
+ */
+function search(name, filter) {
+	return WeaverJps.search(name, filter);
+}
+
+/**
+ * Helper function, the same as WeaverJps.searchFrom()
+ */
+function searchFrom($baseJp, name, filter) {
+	return WeaverJps.searchFrom($baseJp, name, filter);
+}
+
+/**
+ * Helper function, the same as WeaverJps.searchFromInclusive()
+ */
+function searchFromInclusive($baseJp, name, filter) {
+	return WeaverJps.searchFromInclusive($baseJp, name, filter);
+}
+
+
 /**
  * Returns the current root node of the AST.
  */
