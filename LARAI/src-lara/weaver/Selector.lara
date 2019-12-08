@@ -1,4 +1,5 @@
 import weaver.JoinPoints;
+import weaver.Weaver;
 import lara.util.JpFilter;
 import lara.Check;
 
@@ -12,6 +13,43 @@ var Selector = function($baseJp, inclusive) {
 	this._addBaseJp = inclusive === undefined ? false : inclusive;
 };
 
+
+/// STATIC FUNCTIONS
+
+Selector._parseFilter = function(filter, name) {
+	// If undefined, return empty object
+	if(filter === undefined) {
+		//println("Empty filter");
+		return {};
+	}
+	
+	// If filter is not an object, build object with default attribute of given jp name
+	if(!isObject(filter)) {
+		// Get default attribute
+		var defaultAttr = Weaver.getDefaultAttribute(name);
+		
+		// If no default attribute, return empty filter
+		if(defaultAttr === undefined) {
+			println("Selector: cannot use default filter for join point '"+name+"', it does not have a default attribute");
+			return {};
+		}
+		
+		var defaultFilter = {};
+		defaultFilter[defaultAttr] = filter;
+		//println("Default filter:");
+		//printlnObject(defaultFilter);
+		return defaultFilter;
+	}
+	
+	// Just return the filter
+	//println("Original filter:");
+	//printlnObject(filter);
+	return filter;
+}	
+
+
+/// INSTANCE FUNCTIONS
+
 Selector.prototype.search = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
 }
@@ -24,9 +62,12 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 
 	Check.isDefined(selectFunction, "selectFunction");
 
+	filter = Selector._parseFilter(filter, name);
+	/*
 	if(filter === undefined) {
 		filter = {};
 	}
+	*/
 	
 	var jpFilter = new JpFilter(filter);
 	
