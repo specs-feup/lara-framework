@@ -214,6 +214,10 @@ function isString(variable) {
 	return (typeof variable) === "string";
 };
 
+function isObject(variable) {
+	return (typeof variable) === "object";
+};
+
 /**
  * @param {*} variable
  * @param {string} [javaClassname = java.lang.Object] 
