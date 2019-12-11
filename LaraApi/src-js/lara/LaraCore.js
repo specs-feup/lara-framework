@@ -177,6 +177,11 @@ function checkArray(variable, source) {
 	checkType(variable, "array", source);
 };
 
+
+function isJoinPoint($jp) {
+	return Weaver.isJoinPoint($jp);
+}
+
 function checkJoinPoint($jp, source) {
     
     if(Weaver.isJoinPoint($jp)) {
@@ -216,6 +221,10 @@ function isString(variable) {
 
 function isObject(variable) {
 	return (typeof variable) === "object";
+};
+
+function isFunction(variable) {
+	return (typeof variable) === "function";
 };
 
 /**
