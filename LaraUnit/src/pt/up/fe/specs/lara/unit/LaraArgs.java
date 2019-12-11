@@ -56,7 +56,19 @@ public class LaraArgs {
         this.baseFolder = baseFolder;
         this.currentArgs = currentArgs;
 
-        includeIndex = -1;
+        includeIndex = getIncludeIndex(currentArgs);
+    }
+
+    private int getIncludeIndex(List<String> args) {
+        for (int i = 0; i < args.size(); i++) {
+            var arg = args.get(i);
+            if (arg.equals("-i") || arg.equals("--includes")) {
+                return i;
+            }
+        }
+
+        // No include index
+        return -1;
     }
 
     public LaraArgs copy() {
