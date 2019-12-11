@@ -34,6 +34,7 @@ import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
+import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.Replacer;
 
 public class LaraUnitHarnessBuilder implements AutoCloseable {
@@ -127,8 +128,10 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
         long nanoTime = toc - tic;
 
-        // After testing, delete file
-        SpecsIo.delete(testAspect);
+        // After testing, delete file (unless we are in debug mode)
+        if (!SpecsSystem.isDebug()) {
+            SpecsIo.delete(testAspect);
+        }
 
         return success ? TestResult.success(importPath, element.getName(), nanoTime)
                 : TestResult.fail(importPath, element.getName(), nanoTime, cause);
@@ -187,10 +190,10 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         testArgs.addInclude(SpecsIo.getParent(testFile));
 
         // If -of option is not set, add option with name of the test file as argument
-        if (!testArgs.hasArg("-of")) {
-            testArgs.addArg("-of");
-            testArgs.addArg(SpecsIo.removeExtension(testFile));
-        }
+        // if (!testArgs.hasArg("-of")) {
+        // testArgs.addArg("-of");
+        // testArgs.addArg(SpecsIo.removeExtension(testFile));
+        // }
 
         // If no verbose level is set, automatically set it to 2 (warnings)
         if (!testArgs.hasArg("-b")) {
@@ -210,20 +213,25 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         }
 
         // Disable Clava output
-        if (!printInfo && !testArgs.hasArg("-nci")) {
-            testArgs.addArg("-nci");
-        }
+        // if (!printInfo && !testArgs.hasArg("-nci")) {
+        // testArgs.addArg("-nci");
+        // }
 
         // Disable code generation
-        if (!testArgs.hasArg("-ncg")) {
-            testArgs.addArg("-ncg");
-        }
+        // if (!testArgs.hasArg("-ncg")) {
+        // testArgs.addArg("-ncg");
+        // }
 
         return testArgs.getCurrentArgs();
     }
 
     @Override
     public void close() {
+        // If on debug mode, do not delete folder
+        if (SpecsSystem.isDebug()) {
+            return;
+        }
+
         SpecsIo.deleteFolder(temporaryFolder);
     }
 
