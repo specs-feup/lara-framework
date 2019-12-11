@@ -85,9 +85,13 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 		}
 		
 		this._addBaseJp = false;
-		this._addJps($newJps, this._$currentJps, jpFilter);		
-	}
+		
+		// Filter does not test if the join point is of the right type
+		if(this._$currentJps[0].instanceOf(name)) {
+			this._addJps($newJps, this._$currentJps, jpFilter);		
+		}
 
+	}
 	
 	var $currentJps = this._$currentJps === undefined ? [this._joinPoints.root()] : this._$currentJps;
 	for(var $jp of $currentJps) {
@@ -117,8 +121,9 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 }
 
 Selector.prototype._addJps = function($newJps, $jps, jpFilter) {
+		
 	var $filteredJps = jpFilter.filter($jps);
-	//println("filteredJps: " + $filteredJps.length);
+
 	for(var $finalJp of $filteredJps) {
 		$newJps.push($finalJp);
 	}
