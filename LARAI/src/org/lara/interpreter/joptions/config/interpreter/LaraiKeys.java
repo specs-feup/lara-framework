@@ -107,6 +107,7 @@ public interface LaraiKeys {
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
     // .setDefault(() -> JsEngineType.GRAALVM);
 
+    // No GUI, only CLI
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
     // .setLabel("Unit-testing arguments");
@@ -114,6 +115,9 @@ public interface LaraiKeys {
 
     DataKey<String> CALL_ARGS = KeyFactory.string("call_args").setLabel(
             "If present, interpret aspect file as the full path to an aspect to be called, and this argument as the arguments to use to call the aspect");
+
+    // No GUI, only CLI
+    DataKey<Boolean> GENERATE_DOCUMENTATION = KeyFactory.bool("generateDoc").setLabel("Generate Documentation");
 
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 

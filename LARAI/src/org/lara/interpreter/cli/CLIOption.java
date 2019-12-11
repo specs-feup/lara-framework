@@ -24,7 +24,7 @@ public enum CLIOption implements WeaverOption {
     javascript("j", "show the javascript output in the same stream as the application's output",
             LaraiKeys.LOG_JS_OUTPUT),
     debug("d", "show all process information", LaraiKeys.DEBUG_MODE),
-    stack("s", "show call stack trace instead of LARAI trace (BETA)", LaraiKeys.TRACE_MODE),
+    stack("s", "show detailed call stack trace instead of LARAI trace", LaraiKeys.TRACE_MODE),
     argv("av", OptionArguments.ONE_ARG, "arguments",
             "arguments for the main aspect. Supports passing a .properties file with the arguments",
             LaraiKeys.ASPECT_ARGS),
@@ -53,8 +53,9 @@ public enum CLIOption implements WeaverOption {
             LaraiKeys.BUNDLE_TAGS),
     restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restric mode (some Java classes are not allowed)",
             LaraiKeys.RESTRICT_MODE),
-    call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS);
-
+    call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
+    unit(LaraiKeys.getUnitTestFlag(), "run in unit test mode", LaraiKeys.UNIT_TEST_MODE),
+    doc(LaraiKeys.getDocGeneratorFlag(), "generate documentation mode", LaraiKeys.GENERATE_DOCUMENTATION);
     // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec
     // XMLspec("x"),
 

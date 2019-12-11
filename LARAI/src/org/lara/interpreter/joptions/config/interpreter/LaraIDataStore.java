@@ -50,6 +50,12 @@ import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
 
+/**
+ * TODO: Should deprecate and just use DataStore directly?
+ * 
+ * @author JoaoBispo
+ *
+ */
 public class LaraIDataStore implements LaraiKeys {
     public static final String CONFIG_FILE_NAME = "larai.properties";
     private final DataStore dataStore;
