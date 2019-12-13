@@ -15,7 +15,3 @@
 # These files have custom changes
 #/TokenMgrError.java
 #/ParseException.java
-
-/ASTGeneratorFunctionDeclaration.java
-/ASTYieldStatement.java
-/ASTGeneratorFunctionExpression.java
