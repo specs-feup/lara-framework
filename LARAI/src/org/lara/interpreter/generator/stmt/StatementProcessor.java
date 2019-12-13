@@ -66,6 +66,8 @@ public class StatementProcessor {
         case EXIT:
             returnStmt(stat, depth, sufix, ret);
             break;
+        case YIELD:
+            yieldStmt(stat, depth, sufix, ret);
         case EXPR:
             exprStmt(stat, depth, sufix, ret);
             break;
@@ -276,6 +278,14 @@ public class StatementProcessor {
             value = interpreter.getJavascriptString(stat.components.get(0), 0);
         }
         ret.append(LaraIUtils.getSpace(depth) + "return " + value + sufix);
+    }
+
+    private void yieldStmt(Statement stat, int depth, String sufix, final StringBuilder ret) {
+        StringBuilder value = new StringBuilder();
+        if (!stat.components.isEmpty()) {
+            value = interpreter.getJavascriptString(stat.components.get(0), 0);
+        }
+        ret.append(LaraIUtils.getSpace(depth) + "yield " + value + sufix);
     }
 
     private void declareVariables(Statement stat, String prefix, int depth, String sufix, final StringBuilder ret) {

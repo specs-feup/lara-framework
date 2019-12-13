@@ -347,6 +347,8 @@ TOKEN :
 | 
 	< FUNCTION: "function" > : DEFAULT
 | 
+	< FUNCTION_GEN: "function*" > : DEFAULT	
+| 
 	< IF: "if" > : DEFAULT
 | 
 	< IN: "in" > : DEFAULT
@@ -358,6 +360,8 @@ TOKEN :
 	< NEW: "new" > : DEFAULT
 | 
 	< RETURN: "return" > : DEFAULT
+| 
+	< YIELD: "yield" > : DEFAULT	
 | 
 	< THIS: "this" > : IN_REGEX
 | 
@@ -1357,7 +1361,7 @@ TOKEN :
 	  (
 	    t= <IDENTIFIER_NAME> |
 	    t=<CALL > | t=<BEGIN > | t=< END > |
-	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
+	    t=<FUNCTION > | t=<FUNCTION_GEN > | t=<VAR> | t=<RETURN> | t=<YIELD> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> | t=< SWITCH > | t=< CASE > |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
@@ -1374,7 +1378,7 @@ TOKEN :
 	  (
 	    t= <IDENTIFIER_NAME> |
 	    t=<CALL > | t=<BEGIN > | t=< END > |
-	    t=<FUNCTION > | t=<VAR> | t=<RETURN> |
+	    t=<FUNCTION > | t=<FUNCTION_GEN > | t=<VAR> | t=<RETURN> | t=<YIELD> |
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> | t=< SWITCH > | t=< CASE > |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
@@ -1412,8 +1416,9 @@ TOKEN :
 
 	void Declaration() #void: { }
 	{
-		 
-	  	LOOKAHEAD(<FUNCTION >  Identifier()) FunctionDeclaration()
+
+		  LOOKAHEAD((<FUNCTION_GEN > )  Identifier()) GeneratorFunctionDeclaration()
+	 	| LOOKAHEAD((<FUNCTION > )  Identifier()) FunctionDeclaration() 	 
 	  	| VariableStatement()
 	  	| 
 		(
@@ -1506,7 +1511,7 @@ TOKEN :
 	void Static() #Static: {}
 	{
 	  <STATICDECL>
-	  	(VariableStatement() | FunctionDeclaration())*
+	  	(VariableStatement()| GeneratorFunctionDeclaration() | FunctionDeclaration())*
 	  <END>
 	}
 
@@ -2310,7 +2315,8 @@ void ActionOnAssign() #Action:
 	void MemberExpression() #void :
 	{}
 	{ 
-		( ( 
+		( (
+		  		LOOKAHEAD("function*") GeneratorFunctionExpression() |
 				LOOKAHEAD("function") FunctionExpression()|
 				PrimaryExpression()  
 		) (LOOKAHEAD(2) MemberExpressionPart())*	 ) #CompositeReference(>1)
@@ -2320,7 +2326,8 @@ void ActionOnAssign() #Action:
 	void MemberExpressionForIn() #void :
 	{}
 	{ 
-		( ( 
+		( (
+				LOOKAHEAD("function*") GeneratorFunctionExpression() |		  
 				LOOKAHEAD("function") FunctionExpression() |
 				PrimaryExpression()  
 		) (LOOKAHEAD(2) MemberExpressionPart())*	 ) #CompositeReference(>1)
@@ -2714,6 +2721,7 @@ void ActionOnAssign() #Action:
 			| LOOKAHEAD(Identifier() ":")
 				LabelledStatement()
 		| ContinueStatement()
+		| YieldStatement()
 		| BreakStatement()
 		| ImportStatement()
 		| ReturnStatement()
@@ -2923,6 +2931,7 @@ void ActionOnAssign() #Action:
 	}
 
 
+
 	/* Section 12.8: The break Statement */
 
 	void BreakStatement() #BreakStatement :
@@ -2939,6 +2948,14 @@ void ActionOnAssign() #Action:
 	{}
 	{
 		"return" ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement() 
+	}
+
+
+	/* Custom */
+	void YieldStatement() #YieldStatement :
+	{Token begin;}
+	{
+		begin="yield" ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement()
 	}
 
 
@@ -3039,10 +3056,24 @@ void ActionOnAssign() #Action:
 		/*{jjtThis.setCoord(begin,begin); }*/ 
 	}
 
+	void GeneratorFunctionDeclaration() #GeneratorFunctionDeclaration :
+	{Token begin;}
+	{
+		begin="function*" Identifier() ( "(" ( FormalParameterList() )? ")" ) #FormalParameterList FunctionBody()
+		/*{jjtThis.setCoord(begin,begin); }*/ 
+	}
+
 	void FunctionExpression() #FunctionExpression :
 	{Token begin;}
 	{
 		begin="function" ( Identifier() )? ( "(" ( FormalParameterList() )? ")" ) #FormalParameterList FunctionBody()
+		/*{jjtThis.setCoord(begin,begin); }*/
+	}
+
+	void GeneratorFunctionExpression() #GeneratorFunctionExpression :
+	{Token begin;}
+	{
+		begin="function*" ( Identifier() )? ( "(" ( FormalParameterList() )? ")" ) #FormalParameterList FunctionBody()
 		/*{jjtThis.setCoord(begin,begin); }*/
 	}
 
@@ -3086,7 +3117,7 @@ void ActionOnAssign() #Action:
 	void SourceElement() #void :
 	{}
 	{
-		LOOKAHEAD("function" Identifier()) FunctionDeclaration() | Statement()
+		LOOKAHEAD("function*" Identifier()) GeneratorFunctionDeclaration() | LOOKAHEAD("function" Identifier()) FunctionDeclaration() | Statement()
 	}
 
 

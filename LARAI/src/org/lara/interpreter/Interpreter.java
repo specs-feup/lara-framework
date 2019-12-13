@@ -948,10 +948,14 @@ public class Interpreter {
             return match;
         }
         if (op.name.equals("FN")) {
-
             final StringBuilder ret = generateFunctionExpression(op, depth);
             return ret;
         }
+        if (op.name.equals("GFN")) {
+            final StringBuilder ret = generateFunctionExpression(op, depth, true);
+            return ret;
+        }
+
         if (op.name.equals("COMMA")) { // this type of expression is always binary, even if multiple commas are used
             final StringBuilder commaExpr = new StringBuilder(LaraIUtils.getSpace(depth) + "(");
             commaExpr.append(left);
@@ -986,8 +990,17 @@ public class Interpreter {
      * @return
      */
     private StringBuilder generateFunctionExpression(ExprOp fnOp, int depth) {
+        return generateFunctionExpression(fnOp, depth, false);
+    }
+
+    private StringBuilder generateFunctionExpression(ExprOp fnOp, int depth, boolean isGenerator) {
         final List<Expression> exprs = fnOp.exprs;
-        final StringBuilder ret = new StringBuilder("function ");
+        final StringBuilder ret = new StringBuilder("function");
+        if (isGenerator) {
+            ret.append("*");
+        }
+        ret.append(" ");
+
         final StringBuilder funcName = getJavascriptString(exprs.get(0), -1); // can be empty name
         ret.append(funcName);
         ret.append("(");

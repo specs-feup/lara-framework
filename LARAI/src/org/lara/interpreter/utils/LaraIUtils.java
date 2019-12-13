@@ -51,6 +51,7 @@ public class LaraIUtils {
         CONTINUE,
         BREAK,
         RETURN,
+        YIELD,
         WITH,
         SWITCH,
         THROW,
