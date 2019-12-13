@@ -50,6 +50,13 @@ Selector._parseFilter = function(filter, name) {
 
 /// INSTANCE FUNCTIONS
 
+Selector.prototype[Symbol.iterator] = function* () {
+	var $jps = this.get();
+	for(var $jp of $jps) {
+		yield $jp;
+	}
+}
+
 Selector.prototype.search = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
 }
