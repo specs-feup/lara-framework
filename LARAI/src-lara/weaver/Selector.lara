@@ -59,16 +59,17 @@ Selector._parseFilter = function(filter, name) {
 /// INSTANCE FUNCTIONS
 
 Selector.prototype[Symbol.iterator] = function* () {
-	//var $jps = this.get();
-	//for(var $jp of $jps) {
-	//	yield $jp;
-	//}
+	var $jps = this.get();
+	for(var $jp of $jps) {
+		yield $jp;
+	}
 	
-	
+	/*
 	var $jps = this._$currentJps;
 	for(var $jp of $jps) {
 		yield $jp;
 	}
+	*/
 	
 }
 
