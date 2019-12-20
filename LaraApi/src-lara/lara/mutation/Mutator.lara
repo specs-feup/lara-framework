@@ -8,9 +8,26 @@
 var Mutator = function() {
 	// True if the current code is mutated, false otherwise
 	this.isMutated = false;
-
+	// If true, before each call to .mutate() will check if the code is already mutated, 
+	// and call restore before the mutation is applied
+	this.automaticRestore = true;
 };
 
+
+/**
+ * Enables/disables automatic restore. Is enabled by default.
+ *
+ * If enabled, before each call to .mutate() will check if the code is already mutated, and call restore before the mutation is applied.
+ *
+ * @param {boolean} [value=true] - true to enable, false to disable
+ */
+Mutator.prototype.setAutomaticRestore = function(value) {
+	if(value === undefined) {
+		value = true;
+	}
+	
+	this.automaticRestore = value;
+}
 
 /**
  * Introduces a single mutation to the code. 
@@ -26,7 +43,7 @@ Mutator.prototype.mutate = function() {
 	}
 	
 	// If code is currently mutated, call restore first
-	if(this.isMutated) {
+	if(this.isMutated && this.automaticRestore) {
 		this.restore();
 	}
 	
