@@ -412,3 +412,7 @@ function laraGetter(object, property) {
 function stringReplacer(string, oldSequence, newSequence) {
 	return string.replace(oldSequence, newSequence);
 }
+
+function exit() {
+	throw "function 'exit()' has been deprecated. Please use another way of stoping the script (e.g., by returning)";
+}
