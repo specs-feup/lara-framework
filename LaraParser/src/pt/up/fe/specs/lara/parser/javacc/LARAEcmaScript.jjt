@@ -1463,14 +1463,21 @@ TOKEN :
 	void CodeDef() #CodeDef:
 	{Token name, code, language, begin, end;}
 	{
-	  {jjtThis.setLanguage("native");} 
-	  begin=<CODEDEF >[ <LT> language=<IDENTIFIER_NAME> <GT> {jjtThis.setLanguage(language.image);}]
+	  {
+	    setNamed(jjtThis, "language", "native");
+	    //jjtThis.setLanguage("native");
+	    } 
+	  begin=<CODEDEF >[ <LT> language=<IDENTIFIER_NAME> <GT> {
+		setNamed(jjtThis, "language", language.image);
+	    //jjtThis.setLanguage(language.image);
+	    }]
 	  			name=<IDENTIFIER_NAME> {jjtThis.jjtSetValue(name.image);}
 	  		( [<LPAREN> [FormalParameterList()] <RPAREN>] )#FormalParameterList(>0)
 		code =<CODE_LITERAL>
 	  	 {
-	    	String simpleCode = code.image.substring(2,code.image.length()-2);
-	  		jjtThis.setCode(simpleCode);
+			set(jjtThis, code);
+	    	//String simpleCode = code.image.substring(2,code.image.length()-2);
+	  		//jjtThis.setCode(simpleCode);
 	 	 }
 	  end=<END >
 
@@ -1637,8 +1644,10 @@ TOKEN :
 	      
 	  )
 	  {
-	    jjtThis.jjtSetValue(joinPoint.image);
-	  	jjtThis.setReference(referenceStr);
+		set(jjtThis, joinPoint);
+	    //jjtThis.jjtSetValue(joinPoint.image);
+		setNamed(jjtThis, "reference", referenceStr);
+	  	//jjtThis.setReference(referenceStr);
 	  }
 	
 	  [PointcutFilters()]
@@ -1659,7 +1668,10 @@ TOKEN :
 	   	 (LOOKAHEAD(<IDENTIFIER_NAME > (EqualityOperator()|RelationalOperator()) | <LPAREN> )
 			(
 			  	OrFiltersExpr()
-				{jjtThis.setFullSpecified(true);}
+				{
+				  setNamed(jjtThis, "fullSpecified", true);
+				  //jjtThis.setFullSpecified(true);
+				  }
 	        )
 		   |
 	   	    (
@@ -1667,7 +1679,10 @@ TOKEN :
 	   		  	 ( ConditionalExpression()
 	   		  	 		(<COMMA> ConditionalExpression())*
 	   		  	  ) #OrFiltersExpr(>1)
-	   		  	  {jjtThis.setFullSpecified(false);}
+	   		  	  {
+					setNamed(jjtThis, "fullSpecified", false);
+	   		  	    //jjtThis.setFullSpecified(false);
+	   		  	    }
 	   		 )
 	   	  )
 	    #PointcutFilters
@@ -1698,7 +1713,9 @@ TOKEN :
 	{Token prop,op;}
 	{
 	   prop=<IDENTIFIER_NAME>  (EqualityOperator()|RelationalOperator()) ConditionalExpression()
-	   {jjtThis.setProp(prop.image);
+	   {
+	     set(jjtThis, prop);
+	     //jjtThis.setProp(prop.image);
 	   }
 	}
 
@@ -1716,7 +1733,8 @@ TOKEN :
 	  			JavaScript()
 	  			
 	  		{
-				jjtSetValue(Arrays.asList(label, when.image));
+				set(jjtThis, when);
+				setNamed(jjtThis, "label", label);
 	  		//  jjtThis.setName(label);
 	  		//jjtThis.setWhen(when.image);
 	  		} 
@@ -1750,20 +1768,38 @@ TOKEN :
 	void Apply() #Apply:
 	{Token name, apply, end;}
 	{
-	  [name=<IDENTIFIER_NAME>{jjtThis.jjtSetValue(name.image);} <COLON>]
+	  [name=<IDENTIFIER_NAME>{
+		set(jjtThis, name);
+	    //jjtThis.jjtSetValue(name.image);
+	    } <COLON>]
 	  apply=<APPLY>
         
          [
-         	< DYNAMIC > {jjtThis.setDynamic(true);}
+         	< DYNAMIC > {
+				setNamed(jjtThis, "dynamic", true);
+         	  //jjtThis.setDynamic(true);
+         	  }
 	  		[
-	  		    < PARALLEL >  {jjtThis.setConcurrent(true);}
+	  		    < PARALLEL >  {
+	  		      setNamed(jjtThis, "concurrent", true);
+	  		      //jjtThis.setConcurrent(true);
+	  		      }
 	  		  |
-	  		    < SEQUENCIAL > {jjtThis.setConcurrent(false);}
+	  		    < SEQUENCIAL > {
+	  		      	setNamed(jjtThis, "concurrent", false);
+	  		      	//jjtThis.setConcurrent(false);
+	  		      }
 	  		]
 	  		[ 
-	  		    < BEFORE >  {jjtThis.setTrigger("before");}
+	  		    < BEFORE >  {
+	  		      setNamed(jjtThis, "trigger", "before");
+	  		      //jjtThis.setTrigger("before");
+	  		      }
 	  		  |
-	  		    < AFTER > {jjtThis.setTrigger("after");}
+	  		    < AFTER > {
+	  		      setNamed(jjtThis, "trigger", "after");
+	  		      //jjtThis.setTrigger("after");
+	  		      }
 //	  		  |
 //				//This needs to be fixed as it conflicts with the action "replace"	  		   	 
 //	  		  	< REPLACE > {jjtThis.setTrigger("around");}
@@ -1898,7 +1934,8 @@ void ActionOnAssign() #Action:
 	    	[Arguments()] end=EndStatement()
 	 	
 	   {
-		 jjtThis.setAspName(aspName.image);
+	     set(jjtThis, aspName);
+		 //jjtThis.setAspName(aspName.image);
 	    // jjtThis.setCoord(aspName,end);
 	   }
 	}
@@ -1912,7 +1949,10 @@ void ActionOnAssign() #Action:
 	{Token run, toolName, end;}
 	{
 	   run=<RUN> [LOOKAHEAD(LeftHandSideExpression() <COLON>)LeftHandSideExpression() <COLON>]
-		  [toolName=getNoReservedIdentifier() {jjtThis.setToolName(toolName.image);}]
+		  [toolName=getNoReservedIdentifier() {
+			set(jjtThis, toolName);
+		    //jjtThis.setToolName(toolName.image);
+		    }]
 		  	Arguments()
 				[<GT> AssignmentExpression()]
 	   end=EndStatement() 
@@ -1927,7 +1967,10 @@ void ActionOnAssign() #Action:
 	{Token cmd, toolName, end;}
 	{
 	(
-	  cmd=<CMD> | cmd=<RUN> <CMD> {jjtThis.setNewVersion(true);}   )
+	  cmd=<CMD> | cmd=<RUN> <CMD> {
+		setNamed(jjtThis, "newVersion", true);
+	    //jjtThis.setNewVersion(true);
+	    }   )
 	   [LOOKAHEAD(LeftHandSideExpression() <COLON>)LeftHandSideExpression() <COLON>]
 	   	  	Arguments()
 				[<GT> AssignmentExpression()]
@@ -1957,14 +2000,18 @@ void ActionOnAssign() #Action:
 	{Token when,language, begin, end;}
 	{
 	  {
-	   jjtThis.setLanguage("native");
+	    setNamed(jjtThis, "language", "native");
+	   //jjtThis.setLanguage("native");
 	  }
 	   (
 	     (
 	       begin=<INSERT>
 			   (
 			     (
-			     [<LT> language=<IDENTIFIER_NAME> <GT>{jjtThis.setLanguage(language.image);}]
+			     [<LT> language=<IDENTIFIER_NAME> <GT>{
+					setNamed(jjtThis, "language", language.image);
+			       //jjtThis.setLanguage(language.image);
+			       }]
 			   		(when=<BEFORE> | when=<AFTER> | when=<AROUND> | when=<REPLACE>)
 			   			ConditionalExpression()
 //			   			(
@@ -1972,7 +2019,10 @@ void ActionOnAssign() #Action:
 //			   			|
 //			   				((Identifier() [LOOKAHEAD(Arguments())Arguments()]) #CompositeReference(>1))
 //			   			)
-			   		{jjtThis.setWhen(when.image);}
+			   		{
+					  setNamed(jjtThis, "when", when);
+			   		  //jjtThis.setWhen(when.image);
+			   		  }
 			   		//{jjtThis.setCoord(begin,when);}
 			     )
 			   |
@@ -1998,7 +2048,10 @@ void ActionOnAssign() #Action:
 //			   |
 //			   	 ((Identifier() [LOOKAHEAD(Arguments())Arguments()]) #CompositeReference(>1))
 //			   )
-	   		   {jjtThis.setWhen(begin.image);}
+	   		   {
+			     setNamed(jjtThis, "when", begin); 
+	   		     //jjtThis.setWhen(begin.image);
+	   		     }
 	   		   //{jjtThis.setCoord(begin,begin);}
 	     )
 	   )
@@ -2011,9 +2064,14 @@ void ActionOnAssign() #Action:
 	{Token action, begin, end, t;}
 	{
 		begin=<EXEC>
-		[LOOKAHEAD(< IDENTIFIER_NAME > < COLON > ) t=< IDENTIFIER_NAME > < COLON >{jjtThis.setVariable(t.image);} ]
+		[LOOKAHEAD(< IDENTIFIER_NAME > < COLON > ) t=< IDENTIFIER_NAME > < COLON >{
+		  set(jjtThis, t);
+		  //jjtThis.setVariable(t.image);
+		  } ]
 		action=getNoReservedIdentifier()
- 		{jjtThis.setAction(action.image);}
+ 		{set(jjtThis, action);
+ 		  //jjtThis.setAction(action.image);
+ 		  }
 		//{jjtThis.setCoord(begin,action);}
 	   	[
 	   			(TemplateLiteral()) #FunctionCallParameters
@@ -2031,7 +2089,10 @@ void ActionOnAssign() #Action:
 		<EXEC>
 		//[LOOKAHEAD(< IDENTIFIER_NAME > < COLON > ) t=< IDENTIFIER_NAME > < COLON >{jjtThis.setVariable(t.image);} ]
 		action=getNoReservedIdentifier()
- 		{jjtThis.setAction(action.image);}
+ 		{
+ 		  set(jjtThis, action);
+ 		  //jjtThis.setAction(action.image);
+ 		  }
 		//{jjtThis.setCoord(begin,action);}
 	   	(	   	  
 	   			(TemplateLiteral()) #FunctionCallParameters
@@ -2139,7 +2200,8 @@ void ActionOnAssign() #Action:
 	{
 		t = <DECIMAL_LITERAL> 
 		{
-			jjtThis.setDecimalValue(t.image);
+		    set(jjtThis, t);		  
+			//jjtThis.setDecimalValue(t.image);
 			//if(t.image.contains("."))
 			//	jjtThis.setType(Types.Float);
 			//else jjtThis.setType(Types.Int);
@@ -2147,37 +2209,43 @@ void ActionOnAssign() #Action:
 	|
 		t = <HEX_INTEGER_LITERAL>
 		{
-			jjtThis.setHexValue(t.image);
+		    set(jjtThis, t);
+			//jjtThis.setHexValue(t.image);
 			//jjtThis.setType(Types.Int);
 		}
 	|
 		t = <STRING_LITERAL>
 		{
-			jjtThis.setStringValue(t.image);
+		    set(jjtThis, t);		  
+			//jjtThis.setStringValue(t.image);
 			//jjtThis.setType(Types.String);
 		}
 	|
 		t = <BOOLEAN_LITERAL>
 		{
-			jjtThis.setBooleanValue(t.image);
+		    set(jjtThis, t);		  
+			//jjtThis.setBooleanValue(t.image);
 			//jjtThis.setType(Types.Boolean);
 		}
 	|
 		t = <NULL_LITERAL>
 		{
-			jjtThis.setNullValue();
+		    set(jjtThis, t);
+			//jjtThis.setNullValue();
 			//jjtThis.setType(Types.Null);
 		}
 	| 
 		t = <REGULAR_EXPRESSION_LITERAL>
 		{
-			jjtThis.setRegexValue(t.image);
+		    set(jjtThis, t);
+			//jjtThis.setRegexValue(t.image);
 			//jjtThis.setType(Types.RegEx);
 		}
 	| 
 		t = <CODE_LITERAL>
 		{
-			jjtThis.setCodeValue(t.image);
+		  	set(jjtThis, t);
+			//jjtThis.setCodeValue(t.image);
 			//jjtThis.setType(Types.Code);
 		}
 	}
@@ -2189,13 +2257,15 @@ void ActionOnAssign() #Action:
 	{
 	  t = <STRING_LITERAL>
 		{
-			jjtThis.setStringValue(t.image);
+		  	set(jjtThis, t);
+			//jjtThis.setStringValue(t.image);
 			//jjtThis.setType(Types.String);
 		}
 	  | 
 		t = <CODE_LITERAL>
 		{
-			jjtThis.setCodeValue(t.image);
+		  	set(jjtThis, t);
+			//jjtThis.setCodeValue(t.image);
 			//jjtThis.setType(Types.Code);
 		}
 	}
@@ -2259,15 +2329,15 @@ void ActionOnAssign() #Action:
 	{}
 	{
 	  	(",")
-		[("," {jjtThis.inc();})+ #EmptyPositions]
+		[("," {inc(jjtThis);/*jjtThis.inc();*/})+ #EmptyPositions]
 	}
 
 
 	void ElisionFirst() #EmptyPositions:
 	{}
 	{
-	  	(","){jjtThis.inc();}
-		[("," {jjtThis.inc();})+ ]
+	  	(","){inc(jjtThis);/*jjtThis.inc();*/}
+		[("," {inc(jjtThis);/*jjtThis.inc();*/})+ ]
 	}
 
 	/* Section 11.1.5: Object Initialiser */
@@ -2366,7 +2436,7 @@ void ActionOnAssign() #Action:
 	void Arguments() #FunctionCallParameters :
 	{}
 	{
-		"(" (LOOKAHEAD(getNoReservedIdentifier() <COLON>) (NamedArgumentList(){ jjtThis.areNamed = true;})
+		"(" (LOOKAHEAD(getNoReservedIdentifier() <COLON>) (NamedArgumentList(){ set(jjtThis, true);/*jjtThis.areNamed = true;*/})
 															| ArgumentList())? ")"
 	}
 
@@ -2729,7 +2799,7 @@ void ActionOnAssign() #Action:
 		}catch(TokenMgrError error){
 			exceptions.add(error);
 			if (exceptions.size() >= MAXIMUM_SYNTAX_EXCEPTIONS) {
-                Exception e = new larac.exceptions.LARACompilerException("Lexer problems", error);
+                //Exception e = new larac.exceptions.LARACompilerException("Lexer problems", error);
                 error_skipto(new ParseException(error.getMessage()), SEMICOLON);
             }
             
@@ -2803,7 +2873,10 @@ void ActionOnAssign() #Action:
 	{Token type;}
 	{
 //		Identifier() ( Initialiser() )?
-		Identifier()[":" type=getNoReservedIdentifier() {jjtThis.setType(type.image);}] ( Initialiser() )?
+		Identifier()[":" type=getNoReservedIdentifier() {
+		  set(jjtThis, type);
+		  //jjtThis.setType(type.image);
+		  }] ( Initialiser() )?
 	}
 
 	void VariableDeclarationNoIn() :
@@ -2895,10 +2968,16 @@ void ActionOnAssign() #Action:
 	  begin=< FOR >(
 		<EACH> <LPAREN>( //for each var
 			   ("var" VariableDeclarationNoIn() <IN> Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(true);} /*{jjtThis.setCoord(begin,begin);*/) #ForVarInStatement
+			         {
+						setNamed(jjtThis, "each", true);
+			           //jjtThis.setEach(true);
+			           } /*{jjtThis.setCoord(begin,begin);*/) #ForVarInStatement
 			   |//for each
 			   ( LeftHandSideExpressionForIn() <IN> Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(true);} /*{jjtThis.setCoord(begin,begin);*/) #ForInStatement
+			         {
+			           setNamed(jjtThis, "each", true);
+			           //jjtThis.setEach(true);
+			           } /*{jjtThis.setCoord(begin,begin);*/) #ForInStatement
 	    )
 	  |
 		<LPAREN> ( //for ...;...;...
@@ -2913,10 +2992,16 @@ void ActionOnAssign() #Action:
 																   Statement() /*{jjtThis.setCoord(begin,begin);}*/) #ForVarStatement
 			| //for var in/of
 			  (  "var" VariableDeclarationNoIn() (<IN>|(<OF> {isEach = true;})) Expression() <RPAREN> Statement()
-			         {jjtThis.setEach(isEach);} /*{jjtThis.setCoord(begin,begin); }*/) #ForVarInStatement
+			         {
+			           setNamed(jjtThis, "each", isEach);
+			           //jjtThis.setEach(isEach);
+			           } /*{jjtThis.setCoord(begin,begin); }*/) #ForVarInStatement
 			| //for in/of
 			  ( LeftHandSideExpressionForIn() (<IN>|(<OF> {isEach = true;})) Expression() <RPAREN> Statement()
-			          {jjtThis.setEach(isEach);}/*{jjtThis.setCoord(begin,begin); }*/) #ForInStatement
+			          {
+			            setNamed(jjtThis, "each", isEach);
+			            //jjtThis.setEach(isEach);
+			            }/*{jjtThis.setCoord(begin,begin); }*/) #ForInStatement
 	     )
 	  )  
 	}
@@ -3166,7 +3251,9 @@ void ActionOnAssign() #Action:
 			{return end;}
 	
 	    }catch(ParseException e)
-	    {  
+	    {
+	      error_skipto(e, SEMICOLON);
+	      /*
 			if(e.expectedTokenSet.size() > MAX_EXCEPTION_TOKEN_SIZE
 			  || (e.expectedTokenSet.size() == 1  && e.expectedTokenSet.get(0).equals(";"))){
 			    
@@ -3188,8 +3275,9 @@ void ActionOnAssign() #Action:
 			  error_skipto(e, SEMICOLON);
 			}
 			
-		    //
+		    */
 	    }
+	    
 
 	  {return new Token(SEMICOLON);}
 	  
