@@ -40,6 +40,7 @@ public class EsprimaJsParser {
         var javascriptEngine = JsEngineType.GRAALVM.newEngine();
 
         javascriptEngine.eval(LaraParserResource.ESPRIMA.read());
+        javascriptEngine.eval(LaraParserResource.ESPRIMA_LARA.read());
         javascriptEngine.eval(LaraParserResource.ESCODEGEN.read());
 
         return javascriptEngine;
@@ -62,6 +63,8 @@ public class EsprimaJsParser {
 
         // Add script source as property
         program.addProperty("path", scriptSource);
+
+        // System.out.println("RESULT: " + jsEngine.eval("FnExprTokens;"));
 
         return program;
     }

@@ -24,6 +24,7 @@ public enum LaraParserResource implements ResourceProvider {
      * Makes available the global object 'esprima'
      */
     ESPRIMA("esprima.js"),
+    ESPRIMA_LARA("esprima_lara.js"),
     ESCODEGEN("escodegen.browser.js"),
     PARSE_JS("parseJavascript.js");
 
