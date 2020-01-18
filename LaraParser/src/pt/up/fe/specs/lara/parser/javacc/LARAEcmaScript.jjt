@@ -1380,7 +1380,9 @@ TOKEN :
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
 	  	t=<FOR> | t=<WHILE> |t=<DO> | t=<INCLUDE> //|t=< REPLACE >
 	  )
-	  { jjtThis.jjtSetValue(t.image);
+	  {
+	    set(jjtThis, t);
+	    //jjtThis.jjtSetValue(t.image);
 	   //jjtThis.setCoord(t,t);
 	   }
 	}
@@ -1431,7 +1433,10 @@ TOKEN :
 	{Token t; Token begin; Token end;}
 	{
 	  begin=<IMPORT> t=FilePath() end=EndStatement()
-	  {jjtThis.jjtSetValue(t.image);}
+	  {
+	    set(jjtThis, t);
+	    //jjtThis.jjtSetValue(t.image);
+	    }
 	 // { jjtThis.setCoord(begin,end);}
 	}
 	/** FilePath
@@ -1471,11 +1476,14 @@ TOKEN :
 		setNamed(jjtThis, "language", language.image);
 	    //jjtThis.setLanguage(language.image);
 	    }]
-	  			name=<IDENTIFIER_NAME> {jjtThis.jjtSetValue(name.image);}
+	  			name=<IDENTIFIER_NAME> {
+					set(jjtThis, name);
+	  			  //jjtThis.jjtSetValue(name.image);
+	  			  }
 	  		( [<LPAREN> [FormalParameterList()] <RPAREN>] )#FormalParameterList(>0)
 		code =<CODE_LITERAL>
 	  	 {
-			set(jjtThis, code);
+			setNamed(jjtThis, "code", code);
 	    	//String simpleCode = code.image.substring(2,code.image.length()-2);
 	  		//jjtThis.setCode(simpleCode);
 	 	 }
@@ -1581,7 +1589,10 @@ TOKEN :
 		  )*
 		  [ Finalize() ]
 	  end=<END >
-	  {jjtThis.jjtSetValue(aspName.image);}
+	  {
+		set(jjtThis, aspName);
+	    //jjtThis.jjtSetValue(aspName.image);
+	    }
 	 // { jjtThis.setCoord(begin,end);}
 	}
 
@@ -1592,7 +1603,10 @@ TOKEN :
 	void Select() #Select:
 	{Token name, begin, end;}
 	{
-	  [name=<IDENTIFIER_NAME> {jjtThis.jjtSetValue(name.image); }<COLON>] begin=<SELECT> (
+	  [name=<IDENTIFIER_NAME> {
+		set(jjtThis, name);
+	    //jjtThis.jjtSetValue(name.image);
+	    }<COLON>] begin=<SELECT> (
 	      LOOKAHEAD((getNoReservedIdentifier()(<LBRACE>|<DOT>|<END>))
 	      		|   ([<LPAREN>]getNoReservedIdentifier() <ASSIGN >)) Pointcut() |
 	    
@@ -1604,14 +1618,20 @@ TOKEN :
 	{Token joinType;}
 	{
 		ThirdSetOp() [LOOKAHEAD(2)joinType=<PLUS>FourthSetOp()
-		{jjtThis.jjtSetValue(joinType.image);}]
+		{
+		  set(jjtThis, joinType);
+		  //jjtThis.jjtSetValue(joinType.image);
+		  }]
 	}
 
 	void ThirdSetOp() #Join(>1):
 	{Token joinType;}
 	{
 		FirstSetOp() [(joinType=<NATURAL_JOIN>|joinType=<BIT_AND>) ThirdSetOp()
-		{jjtThis.jjtSetValue(joinType.image);}]
+		{
+		  set(jjtThis, joinType);			
+		  //jjtThis.jjtSetValue(joinType.image);
+		  }]
 	}
 
 	void FirstSetOp():{}
@@ -1864,7 +1884,8 @@ TOKEN :
 		  	    (  
 					  t=<IDENTIFIER_NAME>
 					  {
-					    jjtThis.jjtSetValue(t.image);
+						  set(jjtThis, t);		    
+					    //jjtThis.jjtSetValue(t.image);
 					    //jjtThis.setCoord(t,t);
 					  }
 				)#Identifier
@@ -1896,7 +1917,8 @@ void ActionOnAssign() #Action:
 		  	    (  
 					  t=<IDENTIFIER_NAME>
 					  {
-					    jjtThis.jjtSetValue(t.image);
+						set(jjtThis, t);		    
+					    //jjtThis.jjtSetValue(t.image);
 					    //jjtThis.setCoord(t,t);
 					  }
 				)#Identifier
@@ -2148,7 +2170,10 @@ void ActionOnAssign() #Action:
 	void Condition() #Condition:
 	{Token t,begin, end;}
 	{
-	 [ t=<IDENTIFIER_NAME> <COLON> { jjtThis.jjtSetValue(t.image); } ]
+	 [ t=<IDENTIFIER_NAME> <COLON> {
+	   	set(jjtThis, t);
+	   	//jjtThis.jjtSetValue(t.image);
+	   } ]
 	 		begin=<CONDITION> [<FOR> (Identifier() (<COMMA> Identifier())*  ) #For]
 	  LogicalORExpression()
 	  end=<END>
@@ -2278,7 +2303,8 @@ void ActionOnAssign() #Action:
 	{
 	  t=<IDENTIFIER_NAME>
 	  {
-	    jjtThis.jjtSetValue(t.image);
+	    set(jjtThis, t);
+	    //jjtThis.jjtSetValue(t.image);
 	   /*{jjtThis.setCoord(t,t); }*/
 	  }
 	}
@@ -2292,7 +2318,8 @@ void ActionOnAssign() #Action:
 	  (
 	    t=<LABEL_IDENTIFIER> | t=< IDENTIFIER_NAME>)
 	  {
-	    jjtThis.jjtSetValue(t.image);
+	    set(jjtThis, t);
+	    //jjtThis.jjtSetValue(t.image);
 	   /*{jjtThis.setCoord(t,t); }*/
 	  }
 	}
@@ -2449,7 +2476,10 @@ void ActionOnAssign() #Action:
 	void NamedArgument() #NamedArgument:
 	{Token argument;}
 	{
-	  argument=getNoReservedIdentifier() {jjtThis.jjtSetValue(argument.image);}
+	  argument=getNoReservedIdentifier() {
+			set(jjtThis, argument);
+	    	//jjtThis.jjtSetValue(argument.image);
+	    }
 	   <COLON> AssignmentExpression()
 	}
 	void ArgumentList() #void :
@@ -2484,7 +2514,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		( op="++" | op="--")
-		{ jjtThis.jjtSetValue(op.image); }
+		{
+			set(jjtThis, op);
+		  	//jjtThis.jjtSetValue(op.image);
+		}
 	} 
 
 
@@ -2500,7 +2533,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		(op="delete" | op="void" | op="typeof" | op="++" | op="--" | op="+" | op="-" | op="~" | op="!")
-		{ jjtThis.jjtSetValue(op.image);}
+		{
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 
@@ -2517,7 +2553,10 @@ void ActionOnAssign() #Action:
 	void MultiplicativeOperator() #Operator :
 	{Token op;}
 	{
-		(op="*" | op=<SLASH> | op="%") { jjtThis.jjtSetValue(op.image);}
+		(op="*" | op=<SLASH> | op="%") {
+			set(jjtThis, op);
+			//jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	/* Section 11.6: Additive Operators */
@@ -2531,7 +2570,10 @@ void ActionOnAssign() #Action:
 	void AdditiveOperator() #Operator :
 	{Token op;}
 	{
-		(op="+" | op="-") { jjtThis.jjtSetValue(op.image);}
+		(op="+" | op="-") {
+		  	set(jjtThis, op);
+			//jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 
@@ -2547,7 +2589,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		(op="<<" | op=">>" | op=">>>")
-		{ jjtThis.jjtSetValue(op.image); }
+		{
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	/* Section 11.4: Relational Operators */
@@ -2562,7 +2607,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		(op="<" | op=">" | op="<=" | op=">=" | op="instanceof" | op="in")
-		{ jjtThis.jjtSetValue(op.image); }
+		{
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	void RelationalExpressionNoIn() #BinaryExpressionSequence(>1) :
@@ -2576,7 +2624,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		(op="<" | op=">" | op="<=" | op=">=" | op="instanceof")
-		{ jjtThis.jjtSetValue(op.image); }
+		{
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	/* Section 11.9: Equality Operators */
@@ -2596,7 +2647,10 @@ void ActionOnAssign() #Action:
 	void EqualityOperator() #Operator :
 	{Token op;}
 	{
-		(op="==" | op="!=" | op="===" | op="!==" | op=<MATCH>) { jjtThis.jjtSetValue(op.image);}
+		(op="==" | op="!=" | op="===" | op="!==" | op=<MATCH>) {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	/* Section 11.10: Binary Bitwise Operators */
@@ -2616,7 +2670,10 @@ void ActionOnAssign() #Action:
 	void BitwiseANDOperator() #Operator :
 	{Token op;}
 	{
-		op="&" { jjtThis.jjtSetValue(op.image); }
+		op="&" {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	void BitwiseXORExpression() #BinaryExpressionSequence(>1) :
@@ -2634,7 +2691,10 @@ void ActionOnAssign() #Action:
 	void BitwiseXOROperator() #Operator :
 	{Token op;}
 	{
-		op="^" { jjtThis.jjtSetValue(op.image); }
+		op="^" {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	void BitwiseORExpression() #BinaryExpressionSequence(>1) :
@@ -2652,7 +2712,10 @@ void ActionOnAssign() #Action:
 	void BitwiseOROperator() #Operator :
 	{Token op;}
 	{
-		op="|" { jjtThis.jjtSetValue(op.image); }
+		op="|" {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 	/* Section 11.11: Binary Logical Operators */
 
@@ -2671,7 +2734,10 @@ void ActionOnAssign() #Action:
 	void LogicalANDOperator() #Operator :
 	{Token op;}
 	{
-		op="&&" { jjtThis.jjtSetValue(op.image); }
+		op="&&" {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	void LogicalORExpression() #OrExpressionSequence(>1) :
@@ -2689,7 +2755,10 @@ void ActionOnAssign() #Action:
 	void LogicalOROperator() #Operator :
 	{Token op;}
 	{
-		op="||" { jjtThis.jjtSetValue(op.image); }
+		op="||" {
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 	/* Section 11.12: Conditional Operator */
@@ -2731,7 +2800,10 @@ void ActionOnAssign() #Action:
 	{Token op;}
 	{
 		(op="=" | op="*=" | op=<SLASHASSIGN> | op="%=" | op="+=" | op="-=" | op="<<=" | op=">>=" | op=">>>=" | op="&=" | op="^=" | op="|=")
-		{ jjtThis.jjtSetValue(op.image); }
+		{
+		  set(jjtThis, op);
+		  //jjtThis.jjtSetValue(op.image);
+		}
 	}
 
 

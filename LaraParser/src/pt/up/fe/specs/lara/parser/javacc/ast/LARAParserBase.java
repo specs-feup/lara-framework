@@ -64,7 +64,7 @@ public class LARAParserBase implements LARAEcmaScriptTreeConstants,
 
         if (valuesList == null) {
             valuesList = new ArrayList<>();
-            set(node, DEFAULT_NAMED_PARAM, valuesList);
+            setNamed(node, DEFAULT_NAMED_PARAM, valuesList);
         }
 
         // List<Object> valuesList = new ArrayList<>();
@@ -98,7 +98,7 @@ public class LARAParserBase implements LARAEcmaScriptTreeConstants,
         var valueMap = (HashMap<String, Object>) node.jjtGetValue();
 
         // Value is always an hashmap
-        if (valueMap != null) {
+        if (valueMap == null) {
             valueMap = new HashMap<>();
             node.jjtSetValue(valueMap);
         }
