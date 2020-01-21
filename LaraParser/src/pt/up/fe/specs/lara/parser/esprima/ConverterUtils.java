@@ -50,7 +50,8 @@ public class ConverterUtils {
 
     public static Class<? extends LaraNode> getLaraNodeClass(JsonObject node) {
         // Get class name
-        var className = node.get("type");
+        var className = EsprimaUtils.getType(node);
+        // var className = node.get("type");
 
         if (className == null) {
             throw new RuntimeException("Expected attribute 'type' in node: " + node);
@@ -63,7 +64,7 @@ public class ConverterUtils {
             location = locationObject.toString();
         }
 
-        return getLaraNodeClass(className.getAsString(), location);
+        return getLaraNodeClass(className, location);
     }
 
 }
