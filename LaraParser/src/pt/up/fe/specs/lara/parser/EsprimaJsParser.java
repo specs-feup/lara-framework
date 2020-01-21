@@ -21,7 +21,9 @@ import com.google.gson.JsonParser;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
+import pt.up.fe.specs.lara.ast.LaraContext;
 import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.parser.esprima.EsprimaConverter;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
 
@@ -77,6 +79,12 @@ public class EsprimaJsParser implements LaraParser {
     public LaraNode parse(InputStream code, String codeSource) {
         var esprimaAst = parseJS(SpecsIo.read(code), codeSource);
 
-        return null;
+        // Create LARA Context
+        // TODO: Could be reused?
+        // TODO: Should be setup?
+        var laraContext = new LaraContext();
+        var esprimaToLara = new EsprimaConverter(laraContext);
+
+        return esprimaToLara.parse(esprimaAst);
     }
 }
