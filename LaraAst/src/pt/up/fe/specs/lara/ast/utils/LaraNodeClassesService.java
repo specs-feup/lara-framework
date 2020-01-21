@@ -15,8 +15,8 @@ package pt.up.fe.specs.lara.ast.utils;
 
 import org.suikasoft.jOptions.treenode.ClassesService;
 
-import pt.up.fe.specs.lara.ast.GenericLiteralNode;
 import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.UnimplementedNode;
 
 public class LaraNodeClassesService extends ClassesService<LaraNode> {
 
@@ -26,7 +26,7 @@ public class LaraNodeClassesService extends ClassesService<LaraNode> {
 
     public LaraNodeClassesService() {
         super(LARA_AST_PACKAGE, LaraNode.class);
-        setDefaultClass(GenericLiteralNode.class);
+        setDefaultClass(UnimplementedNode.class);
     }
 
     public static Class<? extends LaraNode> getNodeClass(String classname) {
