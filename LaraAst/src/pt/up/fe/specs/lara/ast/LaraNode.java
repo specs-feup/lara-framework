@@ -20,6 +20,9 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.treenode.DataNode;
 
+import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
+
 /**
  * Represents a node of the LARA AST.
  * 
@@ -49,5 +52,10 @@ public abstract class LaraNode extends DataNode<LaraNode> {
     @Override
     public String toContentString() {
         return getData().toInlinedString();
+    }
+
+    public String getCode() {
+        SpecsLogs.info("getCode() not implemented for this node: " + this);
+        throw new NotImplementedException(getClass());
     }
 }
