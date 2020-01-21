@@ -15,12 +15,36 @@ package pt.up.fe.specs.lara.ast;
 
 import java.util.Collection;
 
+import org.suikasoft.jOptions.Datakey.DataKey;
+import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
+import pt.up.fe.specs.util.utilities.StringLines;
+
 public class UnimplementedNode extends LaraNode {
+
+    public static final DataKey<String> TYPE = KeyFactory.string("type");
 
     public UnimplementedNode(DataStore data, Collection<? extends LaraNode> children) {
         super(data, children);
     }
 
+    @Override
+    public String getCode() {
+        var code = new StringBuilder();
+
+        code.append("// Unimplemented node: ").append(get(TYPE)).append("\n");
+
+        // Add each children
+        String tab = "   ";
+        for (var child : getChildren()) {
+            var childCode = child.getCode();
+            for (var line : StringLines.getLines(childCode)) {
+                code.append(tab).append(line).append("\n");
+            }
+
+        }
+
+        return code.toString();
+    }
 }
