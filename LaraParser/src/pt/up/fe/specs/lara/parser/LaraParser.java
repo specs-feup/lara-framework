@@ -13,32 +13,22 @@
 
 package pt.up.fe.specs.lara.parser;
 
+import java.io.File;
 import java.io.InputStream;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
-import pt.up.fe.specs.lara.parser.javacc.ast.ASTStart;
-import pt.up.fe.specs.lara.parser.javacc.ast.LARAEcmaScript;
-import pt.up.fe.specs.lara.parser.javacc.ast.ParseException;
+import pt.up.fe.specs.util.SpecsIo;
 
-public class JavaCCLaraParser implements LaraParser {
+public interface LaraParser {
 
-    public LaraNode parse(InputStream code, String codeSource) {
+    LaraNode parse(InputStream code, String codeSource);
 
-        // Create parser
-        LARAEcmaScript parser = new LARAEcmaScript(code);
+    default LaraNode parse(File sourceFile) {
+        return parse(SpecsIo.toInputStream(sourceFile), SpecsIo.getCanonicalPath(sourceFile));
+    }
 
-        try {
-            // Parse code
-            ASTStart root = parser.parse();
-
-            // Convert JJTree to EcmaAst
-            System.out.println("AST:");
-            root.dump("");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
+    default LaraNode parse(String code, String codeSource) {
+        return parse(SpecsIo.toInputStream(code), codeSource);
     }
 
 }

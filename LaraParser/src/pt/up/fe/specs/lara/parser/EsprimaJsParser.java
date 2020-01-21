@@ -13,15 +13,19 @@
 
 package pt.up.fe.specs.lara.parser;
 
+import java.io.InputStream;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
+import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
 
-public class EsprimaJsParser {
+public class EsprimaJsParser implements LaraParser {
 
     private static final Lazy<JsEngine> ESPRIMA_PARSER = Lazy.newInstance(EsprimaJsParser::initEsprima);
 
@@ -40,13 +44,13 @@ public class EsprimaJsParser {
         var javascriptEngine = JsEngineType.GRAALVM.newEngine();
 
         javascriptEngine.eval(LaraParserResource.ESPRIMA.read());
-        javascriptEngine.eval(LaraParserResource.ESPRIMA_LARA.read());
-        javascriptEngine.eval(LaraParserResource.ESCODEGEN.read());
+        // javascriptEngine.eval(LaraParserResource.ESPRIMA_LARA.read());
+        // javascriptEngine.eval(LaraParserResource.ESCODEGEN.read());
 
         return javascriptEngine;
     }
 
-    public JsonObject parseScript(String code, String scriptSource) {
+    public JsonObject parseJS(String code, String scriptSource) {
 
         // Add arguments for parsing
         jsEngine.put(ARG_ESPRIMA_CODE, code);
@@ -69,4 +73,10 @@ public class EsprimaJsParser {
         return program;
     }
 
+    @Override
+    public LaraNode parse(InputStream code, String codeSource) {
+        var esprimaAst = parseJS(SpecsIo.read(code), codeSource);
+
+        return null;
+    }
 }
