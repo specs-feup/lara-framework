@@ -36,7 +36,7 @@ public class EsprimaConverter {
         // Get children
 
         // Invoke constructor to build node and return it
-        var nodeClass = EsprimaDataParsers.getLaraNodeClass(node);
+        var nodeClass = ConverterUtils.getLaraNodeClass(node);
         return SpecsSystem.newInstance(nodeClass, null, Collections.emptyList());
 
     }
