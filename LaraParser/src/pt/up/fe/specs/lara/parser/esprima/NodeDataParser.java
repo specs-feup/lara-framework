@@ -23,6 +23,12 @@ import java.util.Set;
 
 import pt.up.fe.specs.util.SpecsLogs;
 
+/**
+ * Applies methods that generate DataStores, based on arbitrary inputs defined by a signature Method.
+ * 
+ * @author JoaoBispo
+ *
+ */
 public class NodeDataParser {
 
     private final Method defaultMethod;
@@ -114,8 +120,6 @@ public class NodeDataParser {
 
             // Return default method
             method = defaultMethod;
-            // throw new RuntimeException("Could not find parser for key '" + key + "', that is mapped to the method '"
-            // + methodName + "'. Available methods: " + dataParsers.keySet());
         }
 
         try {

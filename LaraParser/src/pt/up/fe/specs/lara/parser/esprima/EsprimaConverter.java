@@ -27,6 +27,12 @@ import pt.up.fe.specs.lara.ast.UnimplementedNode;
 import pt.up.fe.specs.lara.parser.esprima.parsers.GeneralParsers;
 import pt.up.fe.specs.util.SpecsSystem;
 
+/***
+ * Converts the Esprima AST to the LARA AST.
+ * 
+ * @author JoaoBispo
+ *
+ */
 public class EsprimaConverter {
 
     private final EsprimaConverterData parserData;
