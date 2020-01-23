@@ -13,6 +13,9 @@
 
 package pt.up.fe.specs.lara.ast.utils;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.suikasoft.jOptions.treenode.ClassesService;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
@@ -20,12 +23,12 @@ import pt.up.fe.specs.lara.ast.UnimplementedNode;
 
 public class LaraNodeClassesService extends ClassesService<LaraNode> {
 
-    private static final String LARA_AST_PACKAGE = "pt.up.fe.specs.lara.ast";
+    private static final Collection<String> LARA_AST_PACKAGES = Arrays.asList("pt.up.fe.specs.lara.ast");
 
     private static final LaraNodeClassesService STATIC_INSTANCE = new LaraNodeClassesService();
 
     public LaraNodeClassesService() {
-        super(LARA_AST_PACKAGE, LaraNode.class);
+        super(LaraNode.class, LARA_AST_PACKAGES);
         setDefaultClass(UnimplementedNode.class);
     }
 
