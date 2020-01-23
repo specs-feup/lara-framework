@@ -14,6 +14,7 @@
 package pt.up.fe.specs.lara.parser.esprima;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -36,16 +37,30 @@ import pt.up.fe.specs.util.SpecsSystem;
  */
 public class EsprimaConverter {
 
-    private final EsprimaConverterData parserData;
+    private final LaraContext laraContext;
     private final NodeDataParser dataParser;
 
     public EsprimaConverter(LaraContext laraContext) {
-        this.parserData = new EsprimaConverterData();
-        parserData.set(EsprimaConverterData.LARA_CONTEXT, laraContext);
+        this.laraContext = laraContext;
 
+        // Initialize data parsers
         Method defaultMethod = SpecsSystem.findMethod(GeneralParsers.class, "parseNodeData", JsonObject.class,
                 EsprimaConverterData.class);
-        dataParser = new NodeDataParser(defaultMethod, Arrays.asList(GeneralParsers.class));
+
+        this.dataParser = new NodeDataParser(defaultMethod, Arrays.asList(GeneralParsers.class));
+    }
+
+    private EsprimaConverterData newParserData() {
+
+        var parserData = new EsprimaConverterData();
+
+        // Set context
+        parserData.set(EsprimaConverterData.LARA_CONTEXT, laraContext);
+
+        // Initialize children
+        parserData.set(EsprimaConverterData.FOUND_CHILDREN, new ArrayList<>());
+
+        return parserData;
     }
 
     public LaraNode parse(JsonObject node) {
@@ -55,24 +70,25 @@ public class EsprimaConverter {
 
         var nodeType = EsprimaUtils.getType(node);
 
-        // Return: DataStore
+        var parserData = newParserData();
+
+        // Return: DataStore of the LaraNode
         DataStore nodeData = (DataStore) dataParser.parse(nodeType, node, parserData);
 
         // Get children
-        var esprimaChildren = EsprimaUtils.getChildren(node);
+        var esprimaChildren = parserData.get(EsprimaConverterData.FOUND_CHILDREN);
 
+        // var esprimaChildren = EsprimaUtils.getChildren(node);
+        System.out.println("CHILDREN: " + esprimaChildren);
         // Convert each children
         var laraChildren = esprimaChildren.stream()
                 .map(this::parse)
                 .collect(Collectors.toList());
 
-        // System.out.println("METHODS:\n" + Arrays.toString(UnimplementedNode.class.getConstructors()));
         // Invoke constructor to build node and return it
         var nodeClass = ConverterUtils.getLaraNodeClass(node);
 
         var laraNode = SpecsSystem.newInstance(nodeClass, nodeData, laraChildren);
-        // return SpecsSystem.newInstance(nodeClass, nodeData);
-        // return SpecsSystem.newInstance(nodeClass, Collections.emptyList());
 
         // If node is UnimplementedNode, add field 'type'
         if (laraNode instanceof UnimplementedNode) {

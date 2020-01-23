@@ -13,13 +13,19 @@
 
 package pt.up.fe.specs.lara.parser.esprima;
 
+import java.util.List;
+
 import org.suikasoft.jOptions.DataStore.ADataClass;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
+
+import com.google.gson.JsonObject;
 
 import pt.up.fe.specs.lara.ast.LaraContext;
 
 public class EsprimaConverterData extends ADataClass<EsprimaConverterData> {
 
     public static final DataKey<LaraContext> LARA_CONTEXT = KeyFactory.object("laraContext", LaraContext.class);
+
+    public static final DataKey<List<JsonObject>> FOUND_CHILDREN = KeyFactory.list("foundChildren", JsonObject.class);
 }

@@ -25,8 +25,10 @@ public class GeneralParsers {
 
     public static DataStore parseNodeData(JsonObject node, EsprimaConverterData data) {
 
+        // Get LaraNode class
         var nodeClass = ConverterUtils.getLaraNodeClass(node);
 
+        // Initialize DataStore
         DataStore nodeData = ConverterUtils.newLaraDataStore(nodeClass);
 
         // Populate node data

@@ -14,8 +14,6 @@
 package pt.up.fe.specs.lara.parser.esprima;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -43,12 +41,16 @@ public class EsprimaUtils {
     /**
      * Returns the children of the given node.
      * 
+     * @deprecated Not working, instead acquiring children during node parsing
      * @param node
      * @return
      */
+    @Deprecated
     public static List<JsonObject> getChildren(JsonObject node) {
         // Iterates over all values of the node, looking for objects or arrays that contain objects with the field
         // 'type'
+
+        List<JsonObject> children = new ArrayList<>();
 
         for (var entry : node.entrySet()) {
             if (NOT_CHILDREN_FIELDS.contains(entry.getKey())) {
@@ -61,7 +63,11 @@ public class EsprimaUtils {
             if (value.isJsonObject()) {
                 var jsonObject = value.getAsJsonObject();
                 if (isEsprimaNode(jsonObject)) {
-                    return Arrays.asList(jsonObject);
+                    children.add(jsonObject);
+
+                    if (jsonObject.get("type").getAsString() == "Line") {
+                        System.out.println("SINGLE: ");
+                    }
                 }
 
                 continue;
@@ -82,34 +88,46 @@ public class EsprimaUtils {
             if (value.isJsonArray()) {
                 var jsonArray = value.getAsJsonArray();
 
+                for (var element : jsonArray) {
+                    var jsonValue = element.getAsJsonObject();
+                    if (!EsprimaUtils.isEsprimaNode(jsonValue)) {
+                        continue;
+                    }
+                    if (jsonValue.get("type").getAsString() == "Line") {
+                        System.out.println("ARRAY: ASDASDASD");
+                    }
+                    children.add(jsonValue);
+                }
+
+                /*
                 if (jsonArray.size() == 0) {
                     continue;
                 }
-
+                
                 var firstElement = jsonArray.get(0);
-
+                
                 if (!firstElement.isJsonObject()) {
                     continue;
                 }
-
+                
                 var jsonValue = firstElement.getAsJsonObject();
-
+                
                 if (!EsprimaUtils.isEsprimaNode(jsonValue)) {
                     continue;
                 }
-
+                
                 // Found array of children
-                var children = new ArrayList<JsonObject>(jsonArray.size());
                 for (var element : jsonArray) {
                     children.add(element.getAsJsonObject());
                 }
+                */
 
-                return children;
+                continue;
             }
         }
 
-        // No children found
-        return Collections.emptyList();
+        // Return found children
+        return children;
 
     }
 
