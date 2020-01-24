@@ -17,7 +17,7 @@ import java.util.Collection;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 
 /**
  * Represents a 'null' literal.
@@ -27,7 +27,7 @@ import pt.up.fe.specs.lara.ast.LaraNode;
  */
 public class NullLiteral extends Literal {
 
-    public NullLiteral(DataStore data, Collection<? extends LaraNode> children) {
+    public NullLiteral(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

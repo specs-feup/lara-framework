@@ -17,11 +17,11 @@ import java.util.Collection;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 
-public abstract class Statement extends LaraNode {
+public abstract class Statement extends EcmaNode {
 
-    public Statement(DataStore data, Collection<? extends LaraNode> children) {
+    public Statement(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

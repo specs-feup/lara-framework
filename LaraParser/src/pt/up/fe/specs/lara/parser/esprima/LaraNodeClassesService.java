@@ -18,10 +18,10 @@ import java.util.Collection;
 
 import org.suikasoft.jOptions.treenode.ClassesService;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
 
-public class LaraNodeClassesService extends ClassesService<LaraNode> {
+public class LaraNodeClassesService extends ClassesService<EcmaNode> {
 
     private static final Collection<String> LARA_AST_PACKAGES = Arrays.asList("pt.up.fe.specs.lara.ast.exprs",
             "pt.up.fe.specs.lara.ast.stmts", "pt.up.fe.specs.lara.ast.scripts");
@@ -35,11 +35,11 @@ public class LaraNodeClassesService extends ClassesService<LaraNode> {
     private static final LaraNodeClassesService STATIC_INSTANCE = new LaraNodeClassesService();
 
     public LaraNodeClassesService() {
-        super(LaraNode.class, LARA_AST_PACKAGES);
+        super(EcmaNode.class, LARA_AST_PACKAGES);
         setDefaultClass(UnimplementedNode.class);
     }
 
-    public static Class<? extends LaraNode> getNodeClass(String classname) {
+    public static Class<? extends EcmaNode> getNodeClass(String classname) {
         return STATIC_INSTANCE.getClass(classname);
     }
 

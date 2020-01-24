@@ -21,11 +21,11 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.util.utilities.StringLines;
 
-public class UnimplementedNode extends LaraNode {
+public class UnimplementedNode extends EcmaNode {
 
     public static final DataKey<String> TYPE = KeyFactory.string("type");
 
-    public UnimplementedNode(DataStore data, Collection<? extends LaraNode> children) {
+    public UnimplementedNode(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

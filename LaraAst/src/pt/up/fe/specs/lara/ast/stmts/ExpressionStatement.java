@@ -17,12 +17,12 @@ import java.util.Collection;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.exprs.Expression;
 
 public class ExpressionStatement extends Statement {
 
-    public ExpressionStatement(DataStore data, Collection<? extends LaraNode> children) {
+    public ExpressionStatement(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 
 public class Script extends Program {
 
-    public Script(DataStore data, Collection<? extends LaraNode> children) {
+    public Script(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

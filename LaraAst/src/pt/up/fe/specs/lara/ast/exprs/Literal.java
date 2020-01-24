@@ -19,13 +19,13 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 
 public abstract class Literal extends Expression {
 
     public final static DataKey<String> RAW = KeyFactory.string("raw");
 
-    public Literal(DataStore data, Collection<? extends LaraNode> children) {
+    public Literal(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

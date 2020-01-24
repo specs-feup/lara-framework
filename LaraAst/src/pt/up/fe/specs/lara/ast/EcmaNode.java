@@ -31,7 +31,7 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  * @author JoaoBispo
  *
  */
-public abstract class LaraNode extends DataNode<LaraNode> {
+public abstract class EcmaNode extends DataNode<EcmaNode> {
 
     // DATAKEYS BEGIN
 
@@ -54,12 +54,12 @@ public abstract class LaraNode extends DataNode<LaraNode> {
 
     // DATAKEYS END
 
-    public LaraNode(DataStore data, Collection<? extends LaraNode> children) {
+    public EcmaNode(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 
     @Override
-    protected LaraNode getThis() {
+    protected EcmaNode getThis() {
         return this;
     }
 

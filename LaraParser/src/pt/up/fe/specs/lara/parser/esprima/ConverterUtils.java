@@ -19,12 +19,12 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitions;
 
 import com.google.gson.JsonObject;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
 
 public class ConverterUtils {
 
-    public static Class<? extends LaraNode> getLaraNodeClass(String classname, String location) {
+    public static Class<? extends EcmaNode> getLaraNodeClass(String classname, String location) {
         try {
             return LaraNodeClassesService.getNodeClass(classname);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class ConverterUtils {
 
     }
 
-    public static DataStore newLaraDataStore(Class<? extends LaraNode> nodeClass) {
+    public static DataStore newLaraDataStore(Class<? extends EcmaNode> nodeClass) {
         StoreDefinition nodeKeys = StoreDefinitions.fromInterface(nodeClass);
 
         // If unimplemented node, can store any key
@@ -47,7 +47,7 @@ public class ConverterUtils {
         return DataStore.newInstance(nodeKeys, isClosedNode);
     }
 
-    public static Class<? extends LaraNode> getLaraNodeClass(JsonObject node) {
+    public static Class<? extends EcmaNode> getLaraNodeClass(JsonObject node) {
         // Get class name
         var className = EsprimaUtils.getType(node);
         // var className = node.get("type");

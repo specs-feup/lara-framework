@@ -16,18 +16,18 @@ package pt.up.fe.specs.lara.parser;
 import java.io.File;
 import java.io.InputStream;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.util.SpecsIo;
 
 public interface LaraParser {
 
-    LaraNode parse(InputStream code, String codeSource);
+    EcmaNode parse(InputStream code, String codeSource);
 
-    default LaraNode parse(File sourceFile) {
+    default EcmaNode parse(File sourceFile) {
         return parse(SpecsIo.toInputStream(sourceFile), SpecsIo.getCanonicalPath(sourceFile));
     }
 
-    default LaraNode parse(String code, String codeSource) {
+    default EcmaNode parse(String code, String codeSource) {
         return parse(SpecsIo.toInputStream(code), codeSource);
     }
 

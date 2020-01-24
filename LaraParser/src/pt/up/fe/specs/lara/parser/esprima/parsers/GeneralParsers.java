@@ -19,7 +19,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.parser.esprima.ConverterUtils;
 import pt.up.fe.specs.lara.parser.esprima.EsprimaConverterData;
 
@@ -34,14 +34,14 @@ public class GeneralParsers {
         DataStore nodeData = ConverterUtils.newLaraDataStore(nodeClass);
 
         // Populate node data
-        nodeData.add(LaraNode.CONTEXT, data.get(EsprimaConverterData.LARA_CONTEXT));
+        nodeData.add(EcmaNode.CONTEXT, data.get(EsprimaConverterData.LARA_CONTEXT));
 
         if (node.has("range")) {
-            nodeData.add(LaraNode.RANGE, SpecsGson.asList(node.get("range"), JsonElement::getAsInt));
+            nodeData.add(EcmaNode.RANGE, SpecsGson.asList(node.get("range"), JsonElement::getAsInt));
         }
 
         if (node.has("loc")) {
-            nodeData.add(LaraNode.LOC, ValuesParsers.sourceLocation(node.get("loc").getAsJsonObject()));
+            nodeData.add(EcmaNode.LOC, ValuesParsers.sourceLocation(node.get("loc").getAsJsonObject()));
         }
 
         return nodeData;

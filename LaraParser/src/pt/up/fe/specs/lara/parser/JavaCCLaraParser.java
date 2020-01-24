@@ -15,14 +15,14 @@ package pt.up.fe.specs.lara.parser;
 
 import java.io.InputStream;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.parser.javacc.ast.ASTStart;
 import pt.up.fe.specs.lara.parser.javacc.ast.LARAEcmaScript;
 import pt.up.fe.specs.lara.parser.javacc.ast.ParseException;
 
 public class JavaCCLaraParser implements LaraParser {
 
-    public LaraNode parse(InputStream code, String codeSource) {
+    public EcmaNode parse(InputStream code, String codeSource) {
 
         // Create parser
         LARAEcmaScript parser = new LARAEcmaScript(code);

@@ -17,9 +17,9 @@ import java.util.Collection;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-public class GenericLiteralNode extends LaraNode implements LiteralNode {
+public class GenericLiteralNode extends EcmaNode implements LiteralNode {
 
-    public GenericLiteralNode(DataStore data, Collection<? extends LaraNode> children) {
+    public GenericLiteralNode(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 
 /**
  * A program can be either a script or a module.
@@ -26,13 +26,13 @@ import pt.up.fe.specs.lara.ast.LaraNode;
  * @author JoaoBispo
  *
  */
-public abstract class Program extends LaraNode {
+public abstract class Program extends EcmaNode {
 
-    public Program(DataStore data, Collection<? extends LaraNode> children) {
+    public Program(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 
-    public List<LaraNode> getBody() {
+    public List<EcmaNode> getBody() {
         return getChildren();
     }
 }

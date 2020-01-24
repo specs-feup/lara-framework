@@ -24,7 +24,7 @@ import org.suikasoft.jOptions.treenode.converter.NodeDataParser;
 import com.google.gson.JsonObject;
 
 import pt.up.fe.specs.lara.ast.LaraContext;
-import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
 import pt.up.fe.specs.lara.parser.esprima.parsers.GeneralParsers;
 import pt.up.fe.specs.lara.parser.esprima.parsers.StatementParsers;
@@ -65,7 +65,7 @@ public class EsprimaConverter {
         return parserData;
     }
 
-    public LaraNode parse(JsonObject node) {
+    public EcmaNode parse(JsonObject node) {
         // Get DataStore
         // Arg1: JsonObject node
         // Arg2: EsprimaConverterData data

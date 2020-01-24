@@ -26,9 +26,9 @@ import pt.up.fe.specs.util.SpecsLogs;
  * @author JoaoBispo
  *
  */
-public class App extends LaraNode {
+public class App extends EcmaNode {
 
-    public App(DataStore data, Collection<? extends LaraNode> children) {
+    public App(DataStore data, Collection<? extends EcmaNode> children) {
         super(data, children);
     }
 
