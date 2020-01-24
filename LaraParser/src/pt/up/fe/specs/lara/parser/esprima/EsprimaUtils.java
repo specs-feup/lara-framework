@@ -19,6 +19,8 @@ import java.util.Set;
 
 import com.google.gson.JsonObject;
 
+import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
+
 public class EsprimaUtils {
 
     /**
@@ -35,7 +37,33 @@ public class EsprimaUtils {
             throw new RuntimeException("Expected attribute 'type' in node: " + node);
         }
 
-        return className.getAsString();
+        return processType(className.getAsString(), node);
+    }
+
+    /**
+     * Custom processing of the type of the node.
+     * 
+     * @param asString
+     * @return
+     */
+    private static String processType(String nodeType, JsonObject node) {
+        // If program, check if module or script
+        if (nodeType.equals("Program")) {
+            var sourceType = node.get("sourceType").getAsString();
+
+            if (sourceType.equals("script")) {
+                return "Script";
+            }
+
+            if (sourceType.equals("module")) {
+                return "Module";
+            }
+
+            throw new CaseNotDefinedException(sourceType);
+        }
+
+        // Not a custom case
+        return nodeType;
     }
 
     /**

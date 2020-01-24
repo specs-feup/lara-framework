@@ -21,7 +21,6 @@ import com.google.gson.JsonObject;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
-import pt.up.fe.specs.lara.ast.utils.LaraNodeClassesService;
 
 public class ConverterUtils {
 

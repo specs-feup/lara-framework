@@ -79,7 +79,7 @@ public class EsprimaConverter {
         var esprimaChildren = parserData.get(EsprimaConverterData.FOUND_CHILDREN);
 
         // var esprimaChildren = EsprimaUtils.getChildren(node);
-        System.out.println("CHILDREN: " + esprimaChildren);
+        // System.out.println("CHILDREN: " + esprimaChildren);
         // Convert each children
         var laraChildren = esprimaChildren.stream()
                 .map(this::parse)
@@ -87,7 +87,7 @@ public class EsprimaConverter {
 
         // Invoke constructor to build node and return it
         var nodeClass = ConverterUtils.getLaraNodeClass(node);
-
+        // System.out.println("NODE CLASS:" + nodeClass);
         var laraNode = SpecsSystem.newInstance(nodeClass, nodeData, laraChildren);
 
         // If node is UnimplementedNode, add field 'type'
@@ -95,7 +95,7 @@ public class EsprimaConverter {
             laraNode.set(UnimplementedNode.TYPE, nodeType);
         }
 
-        System.out.println("LARA NODE: " + laraNode);
+        // System.out.println("LARA NODE: " + laraNode);
 
         return laraNode;
     }
