@@ -21,6 +21,6 @@ import org.suikasoft.jOptions.DataStore.ADataClass;
  * @author JoaoBispo
  *
  */
-public class LaraContext extends ADataClass<LaraContext> {
+public class EcmaContext extends ADataClass<EcmaContext> {
 
 }

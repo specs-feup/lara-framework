@@ -21,11 +21,11 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 
 import com.google.gson.JsonObject;
 
-import pt.up.fe.specs.lara.ast.LaraContext;
+import pt.up.fe.specs.lara.ast.EcmaContext;
 
 public class EsprimaConverterData extends ADataClass<EsprimaConverterData> {
 
-    public static final DataKey<LaraContext> LARA_CONTEXT = KeyFactory.object("laraContext", LaraContext.class);
+    public static final DataKey<EcmaContext> LARA_CONTEXT = KeyFactory.object("laraContext", EcmaContext.class);
 
     public static final DataKey<List<JsonObject>> FOUND_CHILDREN = KeyFactory.list("foundChildren", JsonObject.class);
 }

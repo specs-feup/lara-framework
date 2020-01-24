@@ -38,7 +38,7 @@ public abstract class EcmaNode extends DataNode<EcmaNode> {
     /**
      * Global object with information available to all nodes.
      */
-    public final static DataKey<LaraContext> CONTEXT = KeyFactory.object("context", LaraContext.class);
+    public final static DataKey<EcmaContext> CONTEXT = KeyFactory.object("context", EcmaContext.class);
 
     /**
      * A list containing two integers representing the range of this node, or an empty list if this information is not

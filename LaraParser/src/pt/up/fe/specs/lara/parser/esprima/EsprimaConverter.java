@@ -23,7 +23,7 @@ import org.suikasoft.jOptions.treenode.converter.NodeDataParser;
 
 import com.google.gson.JsonObject;
 
-import pt.up.fe.specs.lara.ast.LaraContext;
+import pt.up.fe.specs.lara.ast.EcmaContext;
 import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
 import pt.up.fe.specs.lara.parser.esprima.parsers.GeneralParsers;
@@ -38,10 +38,10 @@ import pt.up.fe.specs.util.SpecsSystem;
  */
 public class EsprimaConverter {
 
-    private final LaraContext laraContext;
+    private final EcmaContext laraContext;
     private final NodeDataParser dataParser;
 
-    public EsprimaConverter(LaraContext laraContext) {
+    public EsprimaConverter(EcmaContext laraContext) {
         this.laraContext = laraContext;
 
         // Initialize data parsers
