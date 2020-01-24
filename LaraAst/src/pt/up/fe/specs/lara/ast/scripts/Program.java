@@ -14,6 +14,7 @@
 package pt.up.fe.specs.lara.ast.scripts;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
@@ -31,4 +32,7 @@ public abstract class Program extends LaraNode {
         super(data, children);
     }
 
+    public List<LaraNode> getBody() {
+        return getChildren();
+    }
 }

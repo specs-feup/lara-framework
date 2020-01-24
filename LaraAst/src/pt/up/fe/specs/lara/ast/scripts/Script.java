@@ -14,13 +14,11 @@
 package pt.up.fe.specs.lara.ast.scripts;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
-import pt.up.fe.specs.lara.ast.StatementListItem;
 
 public class Script extends Program {
 
@@ -28,14 +26,9 @@ public class Script extends Program {
         super(data, children);
     }
 
-    public List<StatementListItem> getBody() {
-        return getChildren(StatementListItem.class);
-    }
-
     @Override
     public String getCode() {
-        // return getBody().stream()
-        return getChildren().stream()
+        return getBody().stream()
                 .map(node -> node.getCode())
                 .collect(Collectors.joining("\n"));
     }

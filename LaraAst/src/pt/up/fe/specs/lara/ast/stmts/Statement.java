@@ -18,9 +18,8 @@ import java.util.Collection;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
-import pt.up.fe.specs.lara.ast.StatementListItem;
 
-public abstract class Statement extends StatementListItem {
+public abstract class Statement extends LaraNode {
 
     public Statement(DataStore data, Collection<? extends LaraNode> children) {
         super(data, children);
