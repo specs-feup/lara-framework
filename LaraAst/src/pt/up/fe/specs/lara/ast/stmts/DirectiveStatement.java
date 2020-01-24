@@ -15,28 +15,36 @@ package pt.up.fe.specs.lara.ast.stmts;
 
 import java.util.Collection;
 
+import org.suikasoft.jOptions.Datakey.DataKey;
+import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
 import pt.up.fe.specs.lara.ast.exprs.Expression;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
-public class ExpressionStatement extends Statement {
+public class DirectiveStatement extends ExpressionStatement {
 
-    public ExpressionStatement(DataStore data, Collection<? extends LaraNode> children) {
+    public static final DataKey<String> DIRECTIVE = KeyFactory.string("directive");
+
+    public DirectiveStatement(DataStore data, Collection<? extends LaraNode> children) {
         super(data, children);
     }
 
+    @Override
     public Expression getExpression() {
-        return getChild(Expression.class, 0);
-    }
-
-    public boolean isDirective() {
-        return false;
+        // TODO: Return a NullExpression
+        throw new NotImplementedException(this);
     }
 
     @Override
     public String getCode() {
-        return getChild(0).getCode() + ";";
+        return "\"" + get(DIRECTIVE) + "\";";
+    }
+
+    @Override
+    public boolean isDirective() {
+        return true;
     }
 
 }
