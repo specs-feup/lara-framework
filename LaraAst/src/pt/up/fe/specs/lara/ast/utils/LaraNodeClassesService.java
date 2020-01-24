@@ -23,7 +23,14 @@ import pt.up.fe.specs.lara.ast.UnimplementedNode;
 
 public class LaraNodeClassesService extends ClassesService<LaraNode> {
 
-    private static final Collection<String> LARA_AST_PACKAGES = Arrays.asList("pt.up.fe.specs.lara.ast");
+    private static final Collection<String> LARA_AST_PACKAGES = Arrays.asList("pt.up.fe.specs.lara.ast",
+            "pt.up.fe.specs.lara.ast.scripts");
+
+    // private static final Map<String, Function<DataStore, Class<? extends LaraNode>>> CUSTOM_MAPS;
+    // static {
+    // CUSTOM_MAPS = new HashMap<>();
+    // CUSTOM_MAPS.put("Program", value)
+    // }
 
     private static final LaraNodeClassesService STATIC_INSTANCE = new LaraNodeClassesService();
 
