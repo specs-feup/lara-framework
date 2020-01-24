@@ -95,6 +95,8 @@ public class EsprimaConverter {
             laraNode.set(UnimplementedNode.TYPE, nodeType);
         }
 
+        System.out.println("LARA NODE: " + laraNode);
+
         return laraNode;
     }
 

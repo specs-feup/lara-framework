@@ -13,6 +13,7 @@
 
 package pt.up.fe.specs.lara.parser.esprima.parsers;
 
+import org.suikasoft.GsonPlus.SpecsGson;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import com.google.gson.JsonObject;
@@ -33,6 +34,14 @@ public class GeneralParsers {
 
         // Populate node data
         nodeData.add(LaraNode.CONTEXT, data.get(EsprimaConverterData.LARA_CONTEXT));
+
+        if (node.has("range")) {
+            nodeData.add(LaraNode.RANGE, SpecsGson.asList(node.get("range"), Integer.class));
+        }
+
+        if (node.has("loc")) {
+            nodeData.add(LaraNode.LOC, ValuesParsers.sourceLocation(node.get("loc").getAsJsonObject()));
+        }
 
         return nodeData;
     }

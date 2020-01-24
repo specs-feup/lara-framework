@@ -10,9 +10,10 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LaraParser&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraAst"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GsonPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
