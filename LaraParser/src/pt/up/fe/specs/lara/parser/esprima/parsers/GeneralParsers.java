@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.parser.esprima.parsers;
 import org.suikasoft.GsonPlus.SpecsGson;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
@@ -36,7 +37,7 @@ public class GeneralParsers {
         nodeData.add(LaraNode.CONTEXT, data.get(EsprimaConverterData.LARA_CONTEXT));
 
         if (node.has("range")) {
-            nodeData.add(LaraNode.RANGE, SpecsGson.asList(node.get("range"), Integer.class));
+            nodeData.add(LaraNode.RANGE, SpecsGson.asList(node.get("range"), JsonElement::getAsInt));
         }
 
         if (node.has("loc")) {
@@ -49,9 +50,21 @@ public class GeneralParsers {
     public static DataStore parseProgramData(JsonObject node, EsprimaConverterData data) {
         DataStore nodeData = parseNodeData(node, data);
 
-        // Extract program specific information
+        data.get(EsprimaConverterData.FOUND_CHILDREN)
+                .addAll(SpecsGson.asList(node.get("body"), JsonElement::getAsJsonObject));
 
         return nodeData;
     }
 
+    public static DataStore parseScriptData(JsonObject node, EsprimaConverterData data) {
+        DataStore nodeData = parseProgramData(node, data);
+
+        return nodeData;
+    }
+
+    public static DataStore parseModuleData(JsonObject node, EsprimaConverterData data) {
+        DataStore nodeData = parseProgramData(node, data);
+
+        return nodeData;
+    }
 }
