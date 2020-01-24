@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.ast.utils;
+package pt.up.fe.specs.lara.parser.esprima;
 
 import java.util.Arrays;
 import java.util.Collection;
