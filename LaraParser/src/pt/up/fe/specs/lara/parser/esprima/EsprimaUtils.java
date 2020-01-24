@@ -47,6 +47,8 @@ public class EsprimaUtils {
      * @return
      */
     private static String processType(String nodeType, JsonObject node) {
+        // TODO: Convert to map
+
         // If program, check if module or script
         if (nodeType.equals("Program")) {
             var sourceType = node.get("sourceType").getAsString();
@@ -60,6 +62,47 @@ public class EsprimaUtils {
             }
 
             throw new CaseNotDefinedException(sourceType);
+        }
+
+        // If literal, specialize literal
+        if (nodeType.equals("Literal")) {
+            System.out.println("LITERAL: " + node);
+            var value = node.get("value");
+
+            // value.getAsJsonPrimitive().
+            if (value == null || value.isJsonNull()) {
+                return "NullLiteral";
+            }
+
+            if (value.isJsonPrimitive()) {
+                var primitive = value.getAsJsonPrimitive();
+
+                if (primitive.isBoolean()) {
+                    return "BooleanLiteral";
+                }
+
+                if (primitive.isNumber()) {
+                    return "NumberLiteral";
+                }
+
+                if (primitive.isString()) {
+                    return "StringLiteral";
+                }
+
+                throw new CaseNotDefinedException(primitive);
+            }
+
+            // value: boolean | number | string | RegExp | null;
+            throw new CaseNotDefinedException(value);
+        }
+
+        // If ExpressionStatement, check if Directive
+        if (nodeType.equals("ExpressionStatement")) {
+            if (node.has("directive")) {
+                return "DirectiveStatement";
+            }
+
+            return "ExpressionStatement";
         }
 
         // Not a custom case

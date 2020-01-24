@@ -13,12 +13,11 @@
 
 package pt.up.fe.specs.lara.parser.esprima.parsers;
 
-import org.suikasoft.GsonPlus.SpecsGson;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import com.google.gson.JsonObject;
 
-import pt.up.fe.specs.lara.ast.stmts.ExpressionStatement;
+import pt.up.fe.specs.lara.ast.stmts.DirectiveStatement;
 import pt.up.fe.specs.lara.parser.esprima.EsprimaConverterData;
 
 public class StatementParsers {
@@ -26,11 +25,16 @@ public class StatementParsers {
     public static DataStore parseExpressionStatementData(JsonObject node, EsprimaConverterData data) {
         DataStore nodeData = GeneralParsers.parseNodeData(node, data);
 
-        nodeData.add(ExpressionStatement.DIRECTIVE,
-                SpecsGson.asOptional(node.get("directive"), elem -> elem.getAsString()));
-
         data.get(EsprimaConverterData.FOUND_CHILDREN).add(node.get("expression").getAsJsonObject());
-        System.out.println("EXPR STMT: " + nodeData);
+
+        return nodeData;
+    }
+
+    public static DataStore parseDirectiveStatementData(JsonObject node, EsprimaConverterData data) {
+        DataStore nodeData = parseExpressionStatementData(node, data);
+
+        nodeData.add(DirectiveStatement.DIRECTIVE, node.get("directive").getAsString());
+
         return nodeData;
     }
 
