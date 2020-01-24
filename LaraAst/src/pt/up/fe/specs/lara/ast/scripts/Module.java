@@ -14,10 +14,12 @@
 package pt.up.fe.specs.lara.ast.scripts;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.ModuleItem;
 
 public class Module extends Program {
 
@@ -25,4 +27,7 @@ public class Module extends Program {
         super(data, children);
     }
 
+    public List<ModuleItem> getBody() {
+        return getChildren(ModuleItem.class);
+    }
 }

@@ -11,23 +11,18 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.ast.scripts;
+package pt.up.fe.specs.lara.ast.stmts;
 
 import java.util.Collection;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
+import pt.up.fe.specs.lara.ast.StatementListItem;
 
-/**
- * A program can be either a script or a module.
- * 
- * @author JoaoBispo
- *
- */
-public abstract class Program extends LaraNode {
+public abstract class Statement extends StatementListItem {
 
-    public Program(DataStore data, Collection<? extends LaraNode> children) {
+    public Statement(DataStore data, Collection<? extends LaraNode> children) {
         super(data, children);
     }
 

@@ -11,32 +11,42 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.ast.scripts;
+package pt.up.fe.specs.lara.ast.stmts;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+import org.suikasoft.jOptions.Datakey.DataKey;
+import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.lara.ast.LaraNode;
-import pt.up.fe.specs.lara.ast.StatementListItem;
+import pt.up.fe.specs.lara.ast.exprs.Expression;
 
-public class Script extends Program {
+public class ExpressionStatement extends Statement {
 
-    public Script(DataStore data, Collection<? extends LaraNode> children) {
+    public static final DataKey<Optional<String>> DIRECTIVE = KeyFactory.optional("directive");
+
+    public ExpressionStatement(DataStore data, Collection<? extends LaraNode> children) {
         super(data, children);
     }
 
-    public List<StatementListItem> getBody() {
-        return getChildren(StatementListItem.class);
+    public Expression getExpression() {
+        return getChild(Expression.class, 0);
+    }
+
+    public boolean isDirective() {
+        return get(DIRECTIVE).isPresent();
     }
 
     @Override
     public String getCode() {
-        // return getBody().stream()
-        return getChildren().stream()
-                .map(node -> node.getCode())
-                .collect(Collectors.joining("\n"));
+        if (isDirective()) {
+            return "\"" + get(DIRECTIVE).get() + "\";";
+        }
+
+        return getChild(0).getCode() + ";";
+        // return getExpression().getCode() + ";";
     }
+
 }
