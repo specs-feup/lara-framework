@@ -27,6 +27,7 @@ import pt.up.fe.specs.lara.ast.LaraContext;
 import pt.up.fe.specs.lara.ast.LaraNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
 import pt.up.fe.specs.lara.parser.esprima.parsers.GeneralParsers;
+import pt.up.fe.specs.lara.parser.esprima.parsers.StatementParsers;
 import pt.up.fe.specs.util.SpecsSystem;
 
 /***
@@ -47,7 +48,8 @@ public class EsprimaConverter {
         Method defaultMethod = SpecsSystem.findMethod(GeneralParsers.class, "parseNodeData", JsonObject.class,
                 EsprimaConverterData.class);
 
-        this.dataParser = new NodeDataParser(defaultMethod, Arrays.asList(GeneralParsers.class));
+        this.dataParser = new NodeDataParser(defaultMethod,
+                Arrays.asList(GeneralParsers.class, StatementParsers.class));
     }
 
     private EsprimaConverterData newParserData() {
