@@ -14,12 +14,14 @@
 package pt.up.fe.specs.lara.ast;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.treenode.DataNode;
 
+import pt.up.fe.specs.lara.ast.utils.SourceLocation;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
@@ -37,6 +39,18 @@ public abstract class LaraNode extends DataNode<LaraNode> {
      * Global object with information available to all nodes.
      */
     public final static DataKey<LaraContext> CONTEXT = KeyFactory.object("context", LaraContext.class);
+
+    /**
+     * A list containing two integers representing the range of this node, or an empty list if this information is not
+     * available.
+     */
+    public final static DataKey<List<Integer>> RANGE = KeyFactory.list("range", Integer.class);
+
+    /**
+     * The source location of this node, if available.
+     */
+    public final static DataKey<SourceLocation> LOC = KeyFactory.object("loc", SourceLocation.class)
+            .setDefault(() -> SourceLocation.getUnknownSourceLocation());
 
     // DATAKEYS END
 
