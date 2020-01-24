@@ -26,11 +26,11 @@ public class SourceLocation extends ADataClass<SourceLocation> {
     public static final DataKey<String> SOURCE = KeyFactory.string("source").setDefaultString("<Unknown Source>");
 
     private static final SourceLocation UNKNOWN_SOURCE_LOCATION = newInstance(Position.newInstance(-1, -1),
-            Position.newInstance(-1, -1), "<Unknown Source>")
+            Position.newInstance(-1, -1))
                     .lock();
 
-    public static SourceLocation newInstance(Position start, Position end, String source) {
-        return new SourceLocation().set(START, start).set(END, end).set(SOURCE, source);
+    public static SourceLocation newInstance(Position start, Position end) {
+        return new SourceLocation().set(START, start).set(END, end);
     }
 
     public static SourceLocation getUnknownSourceLocation() {

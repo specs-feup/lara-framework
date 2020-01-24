@@ -68,6 +68,11 @@ public abstract class LaraNode extends DataNode<LaraNode> {
         return getData().toInlinedString();
     }
 
+    @Override
+    public String toString() {
+        return toContentString();
+    }
+
     public String getCode() {
         SpecsLogs.info("getCode() not implemented for this node: " + this);
         throw new NotImplementedException(getClass());
