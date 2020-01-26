@@ -14,14 +14,25 @@
 package pt.up.fe.specs.lara.parser.esprima;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 
 public class EsprimaUtils {
+
+    private static final Map<String, Function<JsonObject, String>> ESPRIMA_TO_ECMA_TYPE;
+    static {
+        ESPRIMA_TO_ECMA_TYPE = new HashMap<>();
+        ESPRIMA_TO_ECMA_TYPE.put("Program", EsprimaUtils::getProgramType);
+        ESPRIMA_TO_ECMA_TYPE.put("Literal", EsprimaUtils::getLiteralType);
+        ESPRIMA_TO_ECMA_TYPE.put("ExpressionStatement", EsprimaUtils::getExpressionStatementType);
+    }
 
     /**
      * Set of common fields that are known not to represent children that can be safely ignored
@@ -37,7 +48,64 @@ public class EsprimaUtils {
             throw new RuntimeException("Expected attribute 'type' in node: " + node);
         }
 
-        return processType(className.getAsString(), node);
+        var classNameString = className.getAsString();
+        return ESPRIMA_TO_ECMA_TYPE
+                .getOrDefault(classNameString, jsonObj -> classNameString)
+                .apply(node);
+
+        // return processType(className.getAsString(), node);
+    }
+
+    private static String getProgramType(JsonObject node) {
+        var sourceType = node.get("sourceType").getAsString();
+
+        if (sourceType.equals("script")) {
+            return "Script";
+        }
+
+        if (sourceType.equals("module")) {
+            return "Module";
+        }
+
+        throw new CaseNotDefinedException(sourceType);
+    }
+
+    private static String getLiteralType(JsonObject node) {
+        var value = node.get("value");
+
+        // value.getAsJsonPrimitive().
+        if (value == null || value.isJsonNull()) {
+            return "NullLiteral";
+        }
+
+        if (value.isJsonPrimitive()) {
+            var primitive = value.getAsJsonPrimitive();
+
+            if (primitive.isBoolean()) {
+                return "BooleanLiteral";
+            }
+
+            if (primitive.isNumber()) {
+                return "NumberLiteral";
+            }
+
+            if (primitive.isString()) {
+                return "StringLiteral";
+            }
+
+            throw new CaseNotDefinedException(primitive);
+        }
+
+        // value: boolean | number | string | RegExp | null;
+        throw new CaseNotDefinedException(value);
+    }
+
+    private static String getExpressionStatementType(JsonObject node) {
+        if (node.has("directive")) {
+            return "DirectiveStatement";
+        }
+
+        return "ExpressionStatement";
     }
 
     /**
@@ -46,68 +114,70 @@ public class EsprimaUtils {
      * @param asString
      * @return
      */
-    private static String processType(String nodeType, JsonObject node) {
+    /*
+    private static String processType(String ecmaNodeType, JsonObject node) {
         // TODO: Convert to map
-
+    
         // If program, check if module or script
-        if (nodeType.equals("Program")) {
+        if (ecmaNodeType.equals("Program")) {
             var sourceType = node.get("sourceType").getAsString();
-
+    
             if (sourceType.equals("script")) {
                 return "Script";
             }
-
+    
             if (sourceType.equals("module")) {
                 return "Module";
             }
-
+    
             throw new CaseNotDefinedException(sourceType);
         }
-
+    
         // If literal, specialize literal
-        if (nodeType.equals("Literal")) {
+        if (ecmaNodeType.equals("Literal")) {
             System.out.println("LITERAL: " + node);
             var value = node.get("value");
-
+    
             // value.getAsJsonPrimitive().
             if (value == null || value.isJsonNull()) {
                 return "NullLiteral";
             }
-
+    
             if (value.isJsonPrimitive()) {
                 var primitive = value.getAsJsonPrimitive();
-
+    
                 if (primitive.isBoolean()) {
                     return "BooleanLiteral";
                 }
-
+    
                 if (primitive.isNumber()) {
                     return "NumberLiteral";
                 }
-
+    
                 if (primitive.isString()) {
                     return "StringLiteral";
                 }
-
+    
                 throw new CaseNotDefinedException(primitive);
             }
-
+    
             // value: boolean | number | string | RegExp | null;
             throw new CaseNotDefinedException(value);
         }
-
+    
         // If ExpressionStatement, check if Directive
-        if (nodeType.equals("ExpressionStatement")) {
+        if (ecmaNodeType.equals("ExpressionStatement")) {
             if (node.has("directive")) {
                 return "DirectiveStatement";
             }
-
+    
             return "ExpressionStatement";
         }
-
+    
         // Not a custom case
-        return nodeType;
+        return ecmaNodeType;
     }
+    */
 
     /**
      * Returns the children of the given node.
