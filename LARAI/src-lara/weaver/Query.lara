@@ -1,0 +1,7 @@
+import weaver.WeaverJps;
+
+/**
+ * Alias for WeaverJps.
+ *
+ */
+var Query = WeaverJps;
