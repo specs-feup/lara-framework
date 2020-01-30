@@ -233,8 +233,11 @@ Selector.prototype.chain = function() {
 	return returnJps;
 }
 
+//  * @arg {bool} warnIfMultiple - if true, displays a warning if the search returns more than one result
+
 /**
  * Same as .first()
+ * 
  */
 Selector.prototype.getFirst = function() {
 	var $jps = this.get();
