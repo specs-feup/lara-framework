@@ -23,6 +23,12 @@ import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.parser.esprima.ConverterUtils;
 import pt.up.fe.specs.lara.parser.esprima.EsprimaConverterData;
 
+/**
+ * Parsers for nodes that do not fit the other categories (e.g., statement, expression...)
+ * 
+ * @author JoaoBispo
+ *
+ */
 public class GeneralParsers {
 
     public static DataStore parseNodeData(JsonObject node, EsprimaConverterData data) {

@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import pt.up.fe.specs.lara.ast.EcmaContext;
 import pt.up.fe.specs.lara.ast.EcmaNode;
 import pt.up.fe.specs.lara.ast.UnimplementedNode;
+import pt.up.fe.specs.lara.parser.esprima.parsers.ExpressionParsers;
 import pt.up.fe.specs.lara.parser.esprima.parsers.GeneralParsers;
 import pt.up.fe.specs.lara.parser.esprima.parsers.StatementParsers;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -49,7 +50,7 @@ public class EsprimaConverter {
                 EsprimaConverterData.class);
 
         this.dataParser = new NodeDataParser(defaultMethod,
-                Arrays.asList(GeneralParsers.class, StatementParsers.class));
+                Arrays.asList(GeneralParsers.class, StatementParsers.class, ExpressionParsers.class));
     }
 
     private EsprimaConverterData newParserData() {
