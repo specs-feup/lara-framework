@@ -225,7 +225,7 @@ CMaker.prototype.addCurrentAst = function() {
 
 	for(var userInclude of Clava.getData().getUserIncludes()) {
         println("[CMAKER] Adding include: " + userInclude);
-        this.cmaker.addIncludeFolder(userInclude);
+        this.addIncludeFolder(userInclude);
 	}
 	
 	// Write current version of the files to a temporary folder and add them
