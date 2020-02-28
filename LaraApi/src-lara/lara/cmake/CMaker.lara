@@ -175,11 +175,15 @@ CMaker.prototype.addFlags = function() {
 }
 
 /**
+ * Adds link-time libraries (e.g., m for math.h).
  *
+ * @param {String...|String[]} arguments - a sequence of String with the name of the link-time libraries, as CMake would accept (e.g., "m").
  */
 CMaker.prototype.addLibs = function() {
+	var libs = arrayFromArgs(arguments);
 	
-	for(var lib of arguments) {
+	//for(var lib of arguments) {
+	for(var lib of libs) {
 		this.libs.push(lib);
 	}
 	
