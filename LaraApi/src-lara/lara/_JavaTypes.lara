@@ -54,3 +54,11 @@ _JavaTypes.getJavaSystem = function() {
 _JavaTypes.getJavaFile = function() {
 	return _JavaTypes.getType("java.io.File");
 }
+
+_JavaTypes.getList = function() {
+	return _JavaTypes.getType("java.util.List");
+}
+
+_JavaTypes.getCollections = function() {
+	return _JavaTypes.getType("java.util.Collections");
+}
