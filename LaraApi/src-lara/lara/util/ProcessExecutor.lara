@@ -31,7 +31,16 @@ ProcessExecutor.prototype.getWorkingDir = function() {
 	return this.workingDir;
 }
 
+/**
+ * Sets if the output of the process should be output to the console. 
+ *
+ * @param {Boolean} [printToConsole = true]
+ */
 ProcessExecutor.prototype.setPrintToConsole = function(printToConsole) {
+	if(printToConsole === undefined) {
+		printToConsole = true;
+	}
+	
 	checkType(printToConsole, "boolean", "ProcessExecutor.prototype.setPrintToConsole");
 	this.printToConsole = printToConsole;
 	return this;
@@ -42,7 +51,16 @@ ProcessExecutor.prototype.setOutputFile = function(outputFile) {
 	return this;
 }
 
+/**
+ * Sets if the output should be appended to the output of the previous execution. 
+ *
+ * @param {Boolean} [printToConsole = true]
+ */
 ProcessExecutor.prototype.setAppend = function(append) {
+	if(append === undefined) {
+		append = true;
+	}
+	
 	checkType(append, "boolean", "ProcessExecutor.prototype.append");
 	this.append = append;
 	return this;
@@ -52,6 +70,10 @@ ProcessExecutor.prototype.setAppend = function(append) {
  * If true, throws an exception if there is a problem when running the process. By default is set to 'false'.
  */
 ProcessExecutor.prototype.setStopOnError = function(stopOnError) {
+	if(stopOnError === undefined) {
+		stopOnError = true;
+	}
+	
 	checkType(stopOnError, "boolean", "ProcessExecutor.prototype.setStopOnError");
 	this.stopOnError = stopOnError;
 	return this;
@@ -59,6 +81,10 @@ ProcessExecutor.prototype.setStopOnError = function(stopOnError) {
 
 
 ProcessExecutor.prototype.setLogErrorsOnly = function(logErrorsOnly) {
+	if(logErrorsOnly === undefined) {
+		logErrorsOnly = true;
+	}
+
 	checkType(logErrorsOnly, "boolean", "ProcessExecutor.prototype.setLogErrorsOnly");
 	this.logErrorsOnly = logErrorsOnly;
 	return this;
