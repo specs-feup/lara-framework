@@ -271,6 +271,13 @@ function debug(message, origin) {
 	}
 }
 
+function debugObject(object, origin) {
+	if(LARA_DEBUG) {
+		var lines = object2string(object).split("\n");
+		info("[DEBUG] " + lines.join("\n[DEBUG] ", origin));
+	}
+}
+
 
 /**
  * Converts an arguments object to a JavaScript array (Array).
