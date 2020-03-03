@@ -306,7 +306,7 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
 	debug("CMake output:");
-	debug(cmakeOutput)
+	debug(cmakeOutput);
 	
 	//println("CMake output: " + cmakeOutput);
 		
