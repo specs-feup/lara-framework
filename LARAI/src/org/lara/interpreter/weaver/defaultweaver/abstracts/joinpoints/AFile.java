@@ -1,14 +1,14 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import java.util.Arrays;
-import java.util.List;
+import org.lara.interpreter.weaver.interf.events.Stage;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.lara.interpreter.exception.AttributeException;
+import java.util.List;
+import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.interpreter.weaver.interf.events.Stage;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 
 /**
  * Auto-Generated class for join point AFile
@@ -70,10 +70,12 @@ public abstract class AFile extends ADefaultWeaverJoinPoint {
     }
 
     /**
-     * Method used by the lara interpreter to select functions
+     * Default implementation of the method used by the lara interpreter to select functions
      * @return 
      */
-    public abstract List<? extends AFunction> selectFunction();
+    public List<? extends AFunction> selectFunction() {
+        return select(org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction.class, SelectOp.DESCENDANTS);
+    }
 
     /**
      * 

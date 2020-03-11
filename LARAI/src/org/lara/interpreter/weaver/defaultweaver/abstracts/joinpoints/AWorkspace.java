@@ -1,7 +1,7 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
 import java.util.List;
-
+import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
@@ -15,10 +15,12 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 public abstract class AWorkspace extends ADefaultWeaverJoinPoint {
 
     /**
-     * Method used by the lara interpreter to select folders
+     * Default implementation of the method used by the lara interpreter to select folders
      * @return 
      */
-    public abstract List<? extends AFolder> selectFolder();
+    public List<? extends AFolder> selectFolder() {
+        return select(org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder.class, SelectOp.DESCENDANTS);
+    }
 
     /**
      * 
