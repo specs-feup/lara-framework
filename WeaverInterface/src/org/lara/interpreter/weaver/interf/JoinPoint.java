@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
@@ -28,6 +29,7 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 // import jdk.nashorn.internal.runtime.Undefined;
 
@@ -66,7 +68,6 @@ public abstract class JoinPoint {
 
     /**
      * Returns the tree node reference of this join point.<br>
-     * <b>NOTE</b>This method is essentially used to compare two join points
      *
      * @return Tree node reference
      */
@@ -259,9 +260,9 @@ public abstract class JoinPoint {
      * Action insert that accepts a string containing the code snippet to inject
      *
      * @param position
-     *            before|after|replace|around
+     *                     before|after|replace|around
      * @param code
-     *            the code to inject
+     *                     the code to inject
      */
     public final JoinPoint[] insert(String position, String code) {
         try {
@@ -283,9 +284,9 @@ public abstract class JoinPoint {
      * Action insert that accepts a join point to inject
      *
      * @param position
-     *            before|after|replace|around
+     *                     before|after|replace|around
      * @param code
-     *            the code to inject
+     *                     the code to inject
      */
     public final <T extends JoinPoint> void insert(String position, T joinPoint) {
         try {
@@ -307,9 +308,9 @@ public abstract class JoinPoint {
      * based on other insertions over the targeted join point
      *
      * @param position
-     *            before|after|replace|around
+     *                     before|after|replace|around
      * @param code
-     *            the code to inject
+     *                     the code to inject
      */
     public final void insertFar(String position, String code) {
         try {
@@ -332,12 +333,12 @@ public abstract class JoinPoint {
      * the targeted join point
      *
      * @param position
-     *            before|after|replace|around
+     *                              before|after|replace|around
      * @param code
-     *            the code to inject
+     *                              the code to inject
      * @param farthestInsertion
-     *            if true will insert the code as far as possible from the join point, based on the other insertions
-     *            over this targeted join point
+     *                              if true will insert the code as far as possible from the join point, based on the
+     *                              other insertions over this targeted join point
      */
     public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
         try {
@@ -494,5 +495,36 @@ public abstract class JoinPoint {
         // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
         return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
         // return Undefined.getUndefined();
+    }
+
+    /**
+     * Implement this method and getJpParent() in order to obtain tree-like functionality (descendants, etc).
+     * 
+     * @return
+     */
+
+    public Stream<JoinPoint> getJpChildrenStream() {
+        throw new NotImplementedException(this);
+    }
+
+    /**
+     * Implement this method and getJpChildrenStream() in order to obtain tree-like functionality (descendants, etc).
+     * 
+     * @return
+     */
+    public JoinPoint getJpParent() {
+        throw new NotImplementedException(this);
+    }
+
+    public List<JoinPoint> getJpChildren() {
+        return getJpChildrenStream().collect(Collectors.toList());
+    }
+
+    public Stream<JoinPoint> getJpDescendantsStream() {
+        return getJpChildrenStream().flatMap(c -> c.getJpDescendantsAndSelfStream());
+    }
+
+    public Stream<JoinPoint> getJpDescendantsAndSelfStream() {
+        return Stream.concat(Stream.of((JoinPoint) this), getJpDescendantsStream());
     }
 }
