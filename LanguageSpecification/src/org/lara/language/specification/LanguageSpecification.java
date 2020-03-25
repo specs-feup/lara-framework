@@ -41,6 +41,9 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 /**
  * Class containing the language specification in terms of join point model, artifacts and the available actions
  * 
+ * <p>
+ * This class is being phased-out and replaced with LanguageSpecificationV2.
+ * 
  * @author Tiago
  * 
  */
@@ -340,7 +343,7 @@ public class LanguageSpecification {
             joinPoint.getSelect().forEach(select -> {
 
                 String alias = null;
-                final JoinPointType superJoinPoint = (JoinPointType) select.getClazz();
+                final JoinPointType superJoinPoint = select.getClazz();
                 final String aliasText = select.getAlias();
                 if (!aliasText.equals(superJoinPoint.getClazz())) {
                     alias = aliasText;
@@ -405,7 +408,7 @@ public class LanguageSpecification {
             System.out.println("\n\tselects {");
             // if (selects != null) {
             for (Select select : selects) {
-                JoinPointType clazz2 = (JoinPointType) select.getClazz();
+                JoinPointType clazz2 = select.getClazz();
                 String jpSelect = clazz2.getClazz();
                 System.out.print("\t\t" + jpSelect);
                 if (!jpSelect.equals(select.getAlias())) {

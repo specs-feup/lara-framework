@@ -27,6 +27,12 @@ import org.lara.language.specification.dsl.types.TypeDef;
 
 import tdrc.utils.StringUtils;
 
+/**
+ * New version of the LanguageSpecification, which uses the TreeNode interface underneath.
+ * 
+ * @author jbispo
+ *
+ */
 public class LanguageSpecificationV2 {
 
     private JoinPointClass root;

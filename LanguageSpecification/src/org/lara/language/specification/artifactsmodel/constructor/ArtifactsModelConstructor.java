@@ -512,10 +512,10 @@ public class ArtifactsModelConstructor implements IModel {
             artifactsList.setGlobal(new Global());
         }
         final List<Attribute> globalAttributesList = artifactsList.getGlobal().getAttribute();
+
         final int initCapacity = globalAttributesList.size();
         globalAttributes = new HashMap<>(initCapacity);
         for (final Attribute attr : globalAttributesList) {
-
             globalAttributes.put(attr.getName(), attr);
         }
 

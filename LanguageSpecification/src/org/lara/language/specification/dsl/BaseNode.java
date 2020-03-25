@@ -18,6 +18,7 @@ import java.util.Optional;
 public abstract class BaseNode {
 
     private String tooltip = null;
+    private boolean isDefault = false;
 
     public Optional<String> getToolTip() {
         return Optional.ofNullable(tooltip);
@@ -27,4 +28,16 @@ public abstract class BaseNode {
         tooltip = comment;
     }
 
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    /**
+     * If true, this is a default node that is already implemented and should not be generated.
+     * 
+     * @return
+     */
+    public boolean isDefault() {
+        return isDefault;
+    }
 }
