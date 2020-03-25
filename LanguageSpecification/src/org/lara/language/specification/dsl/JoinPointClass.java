@@ -15,9 +15,14 @@ package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import pt.up.fe.specs.util.lazy.Lazy;
 
 public class JoinPointClass extends BaseNode implements Comparable<JoinPointClass> {
 
@@ -28,6 +33,9 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     private List<Select> selects;
     private List<Action> actions;
     private LanguageSpecificationV2 langSpec;
+
+    private final Lazy<Map<String, Attribute>> attributeMap;
+    private final Lazy<Map<String, Action>> actionsMap;
 
     public JoinPointClass(String name, LanguageSpecificationV2 langSpec) {
         this(name, null, langSpec);
@@ -40,6 +48,37 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         attributes = new ArrayList<>();
         selects = new ArrayList<>();
         actions = new ArrayList<>();
+
+        attributeMap = Lazy.newInstance(() -> buildMap(attributes, attr -> attr.getName()));
+        actionsMap = Lazy.newInstance(() -> buildMap(actions, action -> action.getName()));
+    }
+
+    private <T extends BaseNode> Map<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
+        Map<String, T> map = new HashMap<>();
+
+        for (var node : nodes) {
+            map.put(keyMapper.apply(node), node);
+        }
+
+        return map;
+    }
+
+    /**
+     * 
+     * @param name
+     * @return the attribute corresponding to the given name, or null if none exists.
+     */
+    public Attribute getAttribute(String name) {
+        return attributeMap.get().get(name);
+    }
+
+    /**
+     * 
+     * @param name
+     * @return the action corresponding to the given name, or null if none exists.
+     */
+    public Action getAction(String name) {
+        return actionsMap.get().get(name);
     }
 
     public String getName() {
