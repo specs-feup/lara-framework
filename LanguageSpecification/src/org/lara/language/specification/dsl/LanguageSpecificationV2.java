@@ -35,6 +35,12 @@ import tdrc.utils.StringUtils;
  */
 public class LanguageSpecificationV2 {
 
+    private static final String BASE_JOINPOINT_CLASS = "joinpoint";
+
+    public static String getBaseJoinpointClass() {
+        return BASE_JOINPOINT_CLASS;
+    }
+
     private JoinPointClass root;
     private String rootAlias;
     private Map<String, JoinPointClass> joinPoints;
@@ -68,7 +74,8 @@ public class LanguageSpecificationV2 {
     }
 
     public JoinPointClass getJoinPoint(String name) {
-        if (name.equals("joinpoint")) {
+        // if (name.equals("joinpoint")) {
+        if (getBaseJoinpointClass().equals(name)) {
             return global;
         }
         return joinPoints.get(name);

@@ -26,6 +26,7 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -38,12 +39,12 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  */
 public abstract class JoinPoint {
 
-    private static final String BASE_JOINPOINT_CLASS = "joinpoint";
+    // private static final String BASE_JOINPOINT_CLASS = "joinpoint";
     private static final String LARA_GETTER = "laraGetter";
 
-    public static String getBaseJoinpointClass() {
-        return BASE_JOINPOINT_CLASS;
-    }
+    // public static String getBaseJoinpointClass() {
+    // return BASE_JOINPOINT_CLASS;
+    // }
 
     public static String getLaraGetterName() {
         return LARA_GETTER;
@@ -113,7 +114,8 @@ public abstract class JoinPoint {
      * @return
      */
     public String get_class() {
-        return BASE_JOINPOINT_CLASS;
+        // return BASE_JOINPOINT_CLASS;
+        return LanguageSpecificationV2.getBaseJoinpointClass();
     }
 
     /**
