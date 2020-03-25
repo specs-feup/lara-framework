@@ -565,4 +565,9 @@ public class ArtifactsModelConstructor implements IModel {
         }
         return getAttribute(subname, artifact) != null;
     }
+
+    public Map<String, Attribute> getGlobalAttributes() {
+        return globalAttributes;
+    }
+
 }
