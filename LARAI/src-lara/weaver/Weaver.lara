@@ -78,22 +78,6 @@ Weaver.hasAttribute = function(jp, attributeName) {
 	}
 
 	return joinPoint.getAttribute(attributeName) !== null;
-		
-		/*
-	var attributes = Weaver.getWeaverEngine().getLanguageSpecificationV2().getArtifacts();
-	
-	if(jpType === Weaver.getJoinPointBaseType()) {
-		return attributes.getGlobalAttributes().containsKey(attributeName);
-	}
-	
-	return attributes.getAttribute(jpType, attributeName) !== null;
-	*/
 }
 
-/**
- * @return {String} the base join point type (e.g., joinpoint)
- */
-Weaver.getJoinPointBaseType = function() {
-	return _JavaTypes.getJoinPoint().getBaseJoinpointClass();
-}
 
