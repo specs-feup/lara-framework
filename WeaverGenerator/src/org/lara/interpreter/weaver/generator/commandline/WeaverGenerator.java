@@ -329,7 +329,7 @@ public class WeaverGenerator {
             }
             ret += ")\n";
         }
-        System.out.println(ret);
+        // System.out.println(ret);
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
 
