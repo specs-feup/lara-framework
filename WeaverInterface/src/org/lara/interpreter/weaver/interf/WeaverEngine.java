@@ -24,6 +24,8 @@ import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.JoinPointFactory;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
@@ -49,6 +51,7 @@ public abstract class WeaverEngine {
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
+    private final Lazy<LanguageSpecificationV2> langSpec;
 
     private JsEngine scriptEngine;
 
@@ -57,6 +60,8 @@ public abstract class WeaverEngine {
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
 
         scriptEngine = null;
+
+        langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
     }
 
     public JsEngine getScriptEngine() {
@@ -182,6 +187,10 @@ public abstract class WeaverEngine {
      *
      */
     public abstract LanguageSpecification getLanguageSpecification();
+
+    public LanguageSpecificationV2 getLanguageSpecificationV2() {
+        return langSpec.get();
+    }
 
     /**
      * Returns a list of Gears associated to this weaver engine
