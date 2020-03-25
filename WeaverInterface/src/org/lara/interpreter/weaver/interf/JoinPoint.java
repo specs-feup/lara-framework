@@ -38,8 +38,12 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  */
 public abstract class JoinPoint {
 
-    static final String BASE_JOINPOINT_CLASS = "joinpoint";
+    private static final String BASE_JOINPOINT_CLASS = "joinpoint";
     private static final String LARA_GETTER = "laraGetter";
+
+    public static String getBaseJoinpointClass() {
+        return BASE_JOINPOINT_CLASS;
+    }
 
     public static String getLaraGetterName() {
         return LARA_GETTER;
@@ -260,9 +264,9 @@ public abstract class JoinPoint {
      * Action insert that accepts a string containing the code snippet to inject
      *
      * @param position
-     *                     before|after|replace|around
+     *            before|after|replace|around
      * @param code
-     *                     the code to inject
+     *            the code to inject
      */
     public final JoinPoint[] insert(String position, String code) {
         try {
@@ -284,9 +288,9 @@ public abstract class JoinPoint {
      * Action insert that accepts a join point to inject
      *
      * @param position
-     *                     before|after|replace|around
+     *            before|after|replace|around
      * @param code
-     *                     the code to inject
+     *            the code to inject
      */
     public final <T extends JoinPoint> void insert(String position, T joinPoint) {
         try {
@@ -308,9 +312,9 @@ public abstract class JoinPoint {
      * based on other insertions over the targeted join point
      *
      * @param position
-     *                     before|after|replace|around
+     *            before|after|replace|around
      * @param code
-     *                     the code to inject
+     *            the code to inject
      */
     public final void insertFar(String position, String code) {
         try {
@@ -333,12 +337,12 @@ public abstract class JoinPoint {
      * the targeted join point
      *
      * @param position
-     *                              before|after|replace|around
+     *            before|after|replace|around
      * @param code
-     *                              the code to inject
+     *            the code to inject
      * @param farthestInsertion
-     *                              if true will insert the code as far as possible from the join point, based on the
-     *                              other insertions over this targeted join point
+     *            if true will insert the code as far as possible from the join point, based on the other insertions
+     *            over this targeted join point
      */
     public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
         try {
@@ -525,6 +529,6 @@ public abstract class JoinPoint {
     }
 
     public Stream<JoinPoint> getJpDescendantsAndSelfStream() {
-        return Stream.concat(Stream.of((JoinPoint) this), getJpDescendantsStream());
+        return Stream.concat(Stream.of(this), getJpDescendantsStream());
     }
 }
