@@ -2,7 +2,7 @@
 <artifacts>
 	<!-- Attributes for all join points -->
 	<global>
-		<!-- attribute name="weaver_name" type="string" /> -->
+		<!-- <attribute name="jpType" type="string" />  -->
 	</global>
 	
 	<artifact class="folder" default="path">
