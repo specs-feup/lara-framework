@@ -49,8 +49,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         selects = new ArrayList<>();
         actions = new ArrayList<>();
 
-        attributeMap = Lazy.newInstance(() -> buildMap(attributes, attr -> attr.getName()));
-        actionsMap = Lazy.newInstance(() -> buildMap(actions, action -> action.getName()));
+        attributeMap = Lazy.newInstance(() -> buildMap(getAllAttributes(), attr -> attr.getName()));
+        actionsMap = Lazy.newInstance(() -> buildMap(getAllActions(), action -> action.getName()));
     }
 
     private <T extends BaseNode> Map<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
