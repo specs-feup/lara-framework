@@ -59,3 +59,22 @@ JoinPoints.getAttributeStrict = function($jp, attributeNames) {
 
 	return value;
 }
+
+
+/**
+ * Converts the join point to a string of code. Expects attribute 'code' to exist.
+ * 
+ * @param {joinpoint} $jp - join point to convert to code.
+ *
+ * @return {String} a String with the code representation of this join point.
+ */
+JoinPoints.getCode = function($jp) {
+	checkJoinPoint($jp);
+	
+	// Check if attribute code is defined
+	if(!Weaver.hasAttribute($jp, "code")) {
+		throw "JoinPoints.getCode(): expected attribute 'code' to exist";
+	}
+	
+	return $jp["code"];
+}

@@ -68,7 +68,6 @@ Weaver.hasAttribute = function(jp, attributeName) {
 	var jpType = Weaver.isJoinPoint(jp) ? jp.joinPointType : jp.toString();
 	checkString(attributeName);
 	
-
 	var joinPoint = Weaver.getWeaverEngine()
 		.getLanguageSpecificationV2()
 		.getJoinPoint(jpType);
