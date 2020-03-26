@@ -533,4 +533,9 @@ public abstract class JoinPoint {
     public Stream<JoinPoint> getJpDescendantsAndSelfStream() {
         return Stream.concat(Stream.of(this), getJpDescendantsStream());
     }
+
+    @Override
+    public String toString() {
+        return "Joinpoint '" + getJoinPointType() + "'";
+    }
 }
