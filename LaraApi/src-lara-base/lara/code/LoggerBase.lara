@@ -1,3 +1,5 @@
+import weaver.JoinPoints;
+
 /**
  * Logger object, for printing/saving information.
  */
@@ -132,30 +134,41 @@ Logger.prototype._insertCode = function($jp, insertBefore, code) {
 	}
 }
 
-Logger.prototype.append = function(expr) {
-    return this._append_private(expr, this.Type.NORMAL);
+/**
+ * Appends the given string to the current buffer.
+ *
+ * @param {String} text - the text to append
+ * @return {lara.code.Logger} the current logger instance
+ */
+Logger.prototype.append = function(text) {
+    return this._append_private(text, this.Type.NORMAL);
 }
 
 /**
  * The same as 'append'.
  */
-Logger.prototype.text = function(expr) {
-	return this.append(expr);
+Logger.prototype.text = function(text) {
+	return this.append(text);
 }
 
-Logger.prototype.appendln = function(expr) {
-	return this.append(expr).ln();
-}
-
-//Logger.prototype.ln = function(expr) {
 /**
- * Adds a new line.
+ * The same as 'append', but adds a new line at the end of the buffer.
+ */
+Logger.prototype.appendln = function(text) {
+	return this.append(text).ln();
+}
+
+
+/**
+ * Appends a new line to the buffer.
  */
 Logger.prototype.ln = function() {
     return this._append_private("\\n", this.Type.NORMAL);
 }
 
-//Logger.prototype.tab = function(expr) {
+/**
+ * Appends a tab to the buffer.
+ */
 Logger.prototype.tab = function() {
     return this.append("\\t");
 }
@@ -269,6 +282,12 @@ Logger.prototype.octal = function(expr) {
 
 // Private append function
 Logger.prototype._append_private = function(message, type) {
+    // If message is a join point, convert to code first
+    if(Weaver.isJoinPoint(message)) {
+		message = JoinPoints.getCode(message);
+    }
+
+    
     // Do not push message if empty
     if (message === "") {
         return this;
