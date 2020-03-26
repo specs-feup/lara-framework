@@ -19,17 +19,100 @@ JoinPoints.prototype.root = function() {
  * 
  * @return {$jp[]} the children of the given node
  */
+ /*
 JoinPoints.prototype.children = function($jp, jpType) {
 	throw "_WeaverHelper.children: not implemented";
 }
+*/
 
 /**
  * 
  * @return {$jp[]} the descendants of the given node
  */
+ /*
 JoinPoints.prototype.descendants = function($jp, jpType) {
 	throw "_WeaverHelper.descendants: not implemented";
 }
+*/
+
+
+
+/**
+ * 
+ * @return {$jp[]} all the children of the given node
+ */
+JoinPoints.prototype._all_children = function($jp) {
+	throw "JoinPoints._all_children: not implemented";
+}
+
+
+/**
+ * 
+ * @return {$jp[]} all the descendants of the given node
+ */
+JoinPoints.prototype._all_descendants = function($jp) {
+	throw "JoinPoints._all_descendants: not implemented";
+}
+
+
+
+/**
+ * 
+ * @return {$jp[]} the children of the given node
+ */
+JoinPoints.prototype.children = function($jp, jpType) {
+	// TODO: This function can be optimized by using streaming
+
+	if($jp === undefined) {
+		return [];
+	}
+	
+	Check.isJoinPoint($jp);
+
+	var children = this._all_children($jp);
+	if(jpType === undefined) {
+		return children;
+	}
+	
+	return this._filterNodes(children, jpType);
+}
+
+JoinPoints.prototype._filterNodes = function($jps, jpType) {
+
+	var filteredJps = [];
+
+	for(var $jp of $jps) {
+
+		if(!$jp.instanceOf(jpType)) {
+			continue;
+		}
+		
+		filteredJps.push($jp);
+	}
+	
+	return filteredJps;
+
+}
+
+
+JoinPoints.prototype.descendants = function($jp, jpType) {
+
+	if($jp === undefined) {
+		return [];
+	}
+	
+
+	var descendants = this._all_descendants($jp);
+	
+	if(jpType === undefined) {
+		return descendants;
+	}	
+	
+	Check.isJoinPoint($jp);
+
+	return this._filterNodes(descendants, jpType);
+}
+
 
 /**
  * Iterates of attributeNames, returns the first value that is not null or undefined.
