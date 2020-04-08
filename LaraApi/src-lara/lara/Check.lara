@@ -154,8 +154,13 @@ Check.isArray = function(variable, source) {
  *
  * @param $jp
  * @param type
+ * @param {boolean} [isOptional=false] - If true, passes check if value is undefined
  */
-Check.isJoinPoint = function($jp, type) {
+Check.isJoinPoint = function($jp, type, isOptional) {
+		
+	if(isOptional && $jp === undefined) {
+		return;
+	}	
 		
 	if(!_JavaTypes.getJoinPoint().isJoinPoint($jp)) {
 		throw "Expected variable to be of type join point, but it is of type '" + (typeof $jp) + "'";
