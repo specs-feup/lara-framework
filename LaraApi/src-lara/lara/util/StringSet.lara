@@ -4,10 +4,18 @@
  * Changed the name of functions 'contains' to the name used in ECMAScript 6 ('has').
  * 'remove' has not been changed to 'delete' because in LARA 'delete' is a keyword and cannot be used as a function name
  * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.
+ *
+ * @param {Object...} [args=[]] - Objects that will be transformed to Strings and used as the initial values of the set.
  */
 var StringSet = function() {
 	this.setObj = {};
 	this.val = {};
+		
+	var argsArray = arrayFromArgs(arguments);
+	for(var arg of argsArray) {
+		this.add(arg.toString());
+	}
+	
 };
 
 StringSet.prototype.copy = function() {
