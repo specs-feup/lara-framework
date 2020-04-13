@@ -1,4 +1,5 @@
 import lara._JavaTypes;
+import lara.Check;
 
 /**
  *  Utility methods related to Strings.
@@ -19,9 +20,10 @@ Strings.isEmpty = function(string) {
 }
 
 /**
+ * Equivalent to JS 'replace'.
  *
  * @param {String} string - the string to process
- * @param {String|Regex} oldSequence - the sequence we want to replace. IMPORTANT: if you pass a String as a value, it will only replace the first occurrence. To replace all occurrences, use a Regex with the 'g' modifier (e.g., /<regex>/g)
+ * @param {Regex} oldSequence - the sequence we want to replace. To replace all occurrences, use a Regex with the 'g' modifier (e.g., /<regex>/g)
  * @param {String} newSequence - the new value that will be used instead of the old value
  *
  * @return the string after the replacement is done
@@ -30,6 +32,8 @@ Strings.replacer = function(string, oldSequence, newSequence) {
 	//_JavaTypes.getType(_JavaTypes.LaraApiTools);
 	//return LaraApiTools.replacer(string, oldSequence, newSequence);
 	//return _JavaTypes.getLaraApiTools().replacer(string, oldSequence, newSequence);
+	
+	Check.isRegex(oldSequence, "Strings.replacer()");
 	
 	// Using JS function defined in LaraCode.js, in order to be able to use the function 'replace' (which is a reserved keyword in LARA)
 	return stringReplacer(string, oldSequence, newSequence);

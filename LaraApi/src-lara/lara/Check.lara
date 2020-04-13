@@ -122,6 +122,11 @@ Check.type = function(value, type, source) {
 	if(type === "array" && isArray(value)) {
 		return;
 	}
+	
+	// Special case: regex
+	if(type === "regex" && (value instanceof RegExp)) {
+		return;
+	}
     
     var message = "Expected value to be of type '" + type + "', but is of type '" + (typeof value) + "'";
 
@@ -146,6 +151,10 @@ Check.isNumber = function(variable, source) {
 
 Check.isArray = function(variable, source) {
 	Check.type(variable, "array", source);
+};
+
+Check.isRegex = function(variable, source) {
+	Check.type(variable, "regex", source);
 };
 
 
