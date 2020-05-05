@@ -21,6 +21,10 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum LaraApiResource implements LaraResourceProvider {
 
+    // Benchmark
+    BENCHMARK_SET("benchmark/BenchmarkSet.lara"),
+    BENCHMARK_INSTANCE("benchmark/BenchmarkInstance.lara"),
+
     // CMake
     CMAKER("cmake/CMaker.lara"),
     CMAKER_SOURCES("cmake/CMakerSources.lara"),

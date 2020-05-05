@@ -1,0 +1,45 @@
+import lara.benchmark.BenchmarkInstance;
+
+/**
+ * Represents a set of BenchmarkInstances.
+ *
+ * @param{String} setName - The name of this benchmark set.
+ */
+var BenchmarkSet = function(name) {
+	this._name = name;
+};
+
+BenchmarkSet.prototype.getName = function() {
+	return this._name;
+}
+
+
+/**
+ * Generator function that automatically handles loading/closing BenchmarkInstances.
+ */
+BenchmarkSet.prototype[Symbol.iterator] = function* () {
+	var benchmarks = this.getInstances();
+	for(var benchmark of benchmarks) {
+		// Load
+		benchmark.load();
+		
+		// Return
+		yield benchmark;
+		
+		// Close
+		benchmark.close();
+	}
+}
+
+
+/*** TO IMPLEMENT ***/
+
+
+/**
+ * Instances of benchmarks, according to the current configuration.
+ * 
+ * @return {BenchmarkInstance[]} an array of BenchmarkInstance.
+ */
+BenchmarkSet.prototype.getInstances = function() {
+	throw "BenchmarkSet.getInstances not implemented for " + this.getName();
+}
