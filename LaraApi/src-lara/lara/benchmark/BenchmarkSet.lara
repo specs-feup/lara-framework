@@ -58,6 +58,35 @@ BenchmarkSet.prototype.getInstances = function() {
 	return instances;
 }
 
+
+/**
+ * Test the current benchmark set.
+ *
+ * @param {function()} [worker = undefined] - Function with no parameters that will be called after loading the bencharmk code as AST.
+ * @param {boolean} [executeCode = false] - If true, executes the code after worker is applied.
+ * @param {function(lara.util.ProcessExecutor)} [outputProcessor = undefined] - If execution is enabled, will be called after execution with the corresponding ProcessExecutor.
+ *
+ * @return {String[]} an array with the names of benchmarks that finished with problemas, or an empty array if everything was fine.
+ */
+BenchmarkSet.prototype.test = function(worker, executeCode, outputProcessor) {		
+
+	var benchWithProblems = [];
+	
+	for(var bench of this) {
+	
+		var success = bench.test(worker, executeCode, outputProcessor);
+		
+		if(!success) {
+			benchWithProblems.push(bench.getName());
+		}
+	}
+
+
+	return benchWithProblems;
+}
+
+
+
 /*** TO IMPLEMENT ***/
 
 BenchmarkSet.prototype._getInstancesPrivate = function() {

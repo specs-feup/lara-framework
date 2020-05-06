@@ -155,6 +155,43 @@ BenchmarkInstance.prototype._executePrivate = function() {
 	return this._currentExecutor;
 }
 
+/**
+ * Test the current instance.
+ *
+ * @param {function()} [worker = undefined] - Function with no parameters that will be called after loading the bencharmk code as AST.
+ * @param {boolean} [executeCode = false] - If true, executes the code after worker is applied.
+ * @param {function(lara.util.ProcessExecutor)} [outputProcessor = undefined] - If execution is enabled, will be called after execution with the corresponding ProcessExecutor.
+ *
+ * @return {boolean} true, if finished without problems
+ */
+BenchmarkInstance.prototype.test = function(worker, executeCode, outputProcessor) {		
+
+	// Load benchmark to AST
+	this.load();
+
+	// ... transformations and analysis
+	if(worker !== undefined) {
+		worker();
+	}
+
+	// Execute benchmark
+	if(executeCode) {
+		var processExecutor = this.execute();
+	
+		if(processExecutor.getReturnValue() !== 0) {
+			println("Problems while executing " + this.getName());
+			benchWithProblems.push(this.getName());
+			return false;
+		}
+
+		if(outputProcessor !== undefined) {
+			outputProcessor(processExecutor);
+		}		
+	}
+	
+	return true;
+}
+
 /*** FUNCTIONS TO IMPLEMENT ***/
 
 /**
