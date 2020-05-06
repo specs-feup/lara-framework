@@ -171,7 +171,11 @@ BenchmarkInstance.prototype.test = function(worker, executeCode, outputProcessor
 
 	// ... transformations and analysis
 	if(worker !== undefined) {
-		worker();
+		var success = worker(this);
+		
+		if(success === false) {
+			return false;
+		}
 	}
 
 	// Execute benchmark
@@ -213,6 +217,13 @@ BenchmarkInstance.prototype._closePrivate = function() {
  */
 BenchmarkInstance.prototype._compilePrivate = function() {
 	throw "BenchmarkInstance._compilePrivate not implemented for " + this.getName();
+}
+
+/**
+ * @return {$jp} point in the code representing the execution of the benchmark kernel, around which metrics should be measured.
+ */
+BenchmarkInstance.prototype.getKernel = function() {
+	throw "BenchmarkInstance.getKernel not implemented for " + this.getName();
 }
 
 
