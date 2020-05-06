@@ -306,7 +306,7 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
 	debug("CMake output:");
-	debug(cmakeOutput);
+	debug(cmakeOutput.getConsoleOutput());
 	
 	//println("CMake output: " + cmakeOutput);
 		
@@ -317,7 +317,7 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 		.setWorkingDir(builderFolderpath)
 		.execute(this.makeCommand);
 	debug("Make output:");
-	debugObject(this._lastMakeOutput);
+	debugObject(this._lastMakeOutput.getConsoleOutput());
 	//println("Make output: " + makeOutput);
 	
 	var binPath = Io.getPath(builderFolderpath, CMaker._DEFAULT_BIN_FOLDER);
