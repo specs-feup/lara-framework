@@ -67,10 +67,11 @@ BenchmarkInstance.prototype.getExecutor = function() {
 BenchmarkInstance.prototype.load = function() {
 	// Check if already loaded
 	if(this._hasLoaded) {
-		println("BenchmarkInstance.load(): Benchmark " + this.getName() + " is already loaded");
+		//println("BenchmarkInstance.load(): Benchmark " + this.getName() + " is already loaded");
 		return;
 	}
 
+	println("Parsing " + this.getName() + "...");
 	var result = this._loadPrivate();
 	
 	// Mark as loaded
@@ -111,6 +112,7 @@ BenchmarkInstance.prototype.compile = function() {
 		return;
 	}
 
+	println("Compiling " + this.getName() + "...");
 	var result = this._compilePrivate();
 	
 	// Mark as loaded
@@ -126,10 +128,11 @@ BenchmarkInstance.prototype.execute = function() {
 
 	// Check if already compiled
 	if(!this._hasCompiled) {
-		println("BenchmarkInstance.execute(): Benchmark " + this.getName() + " has not been compiled yet, compiling...");
+		//println("BenchmarkInstance.execute(): Benchmark " + this.getName() + " has not been compiled yet, compiling...");
 		this.compile();
 	}
-
+	
+	println("Executing " + this.getName() + "...");
 	var result = this._executePrivate();
 	
 	return result;
