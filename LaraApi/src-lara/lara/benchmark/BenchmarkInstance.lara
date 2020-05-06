@@ -1,3 +1,6 @@
+import lara.cmake.CMaker;
+import lara.util.ProcessExecutor;
+
 /**
  * Represents a set of BenchmarkInstances.
  *
@@ -5,9 +8,28 @@
  */
 var BenchmarkInstance = function(name) {
 	this._name = name;
+	this._cmakerProvider = BenchmarkInstance._defaultCMakerProvider;
+
 	this._hasLoaded = false;
 	this._hasCompiled = false;
+	
+	this._currentExe = undefined;
+	this._cmaker =  this._cmakerProvider(this.getName()); // TODO: Originally was in ClavaBenchmarkInstance, but calls to 'super' are currently not working on the LARA parser
+	this._currentExecutor = new ProcessExecutor();
 };
+
+
+BenchmarkInstance._defaultCMakerProvider = function(name) {
+	return new CMaker(name);
+}
+
+BenchmarkInstance.prototype.setCMakerProvider = function(cmakerProviderFunction) {
+	// Set provider
+	this._cmakerProvider = cmakerProviderFunction;
+	
+	// Update current CMaker
+	this._cmaker = this._cmakerProvider(this.getName());
+}
 
 
 /**
@@ -15,6 +37,27 @@ var BenchmarkInstance = function(name) {
  */ 
 BenchmarkInstance.prototype.getName = function() {
 	return this._name;
+}
+
+/**
+ * @return {J#File} The base folder for all benchmark instances. Currently is a folder 'laraBenchmarks' inside the working directory.
+ */
+BenchmarkInstance.prototype.getBaseFolder = function() {
+	return Io.mkdir("laraBenchmarks");
+}
+
+/**
+ * @return {lara.cmake.CMaker} An available CMaker that can be used to run compiled the program (implementations may vary). If used, can be used to configure the compilation.
+ */
+BenchmarkInstance.prototype.getCMaker = function() {
+	return this._cmaker;
+}
+
+/**
+ * @return {lara.util.ProcessExecutor} The executor that will be used to run the compiled program, can be used to configure the execution.
+ */
+BenchmarkInstance.prototype.getExecutor = function() {
+	return this._currentExecutor;
 }
 
 
@@ -50,6 +93,10 @@ BenchmarkInstance.prototype.close = function() {
 	
 	this._hasLoaded = false;
 	this._hasCompiled = false;
+	
+	this._currentExe = undefined;
+	this._cmaker =  new CMaker(this.getName());	
+	this._currentExecutor = new ProcessExecutor();
 	
 	return result;
 }
@@ -89,6 +136,21 @@ BenchmarkInstance.prototype.execute = function() {
 }
 
 
+BenchmarkInstance.prototype._setExecutable = function(executable) {
+	this._currentExe = executable;
+}
+
+/**
+ * 
+ */
+BenchmarkInstance.prototype._executePrivate = function() {		
+	if(this._currentExe === undefined) {
+		throw "BenchmarkInstance._executePrivate(): no executable currently defined";
+	}
+
+	this._currentExecutor.execute(this._currentExe.getAbsolutePath());
+	return this._currentExecutor;
+}
 
 /*** FUNCTIONS TO IMPLEMENT ***/
 
@@ -113,12 +175,7 @@ BenchmarkInstance.prototype._compilePrivate = function() {
 	throw "BenchmarkInstance._compilePrivate not implemented for " + this.getName();
 }
 
-/**
- * 
- */
-BenchmarkInstance.prototype._executePrivate = function() {
-	throw "BenchmarkInstance._executePrivate not implemented for " + this.getName();
-}
+
 
 
 

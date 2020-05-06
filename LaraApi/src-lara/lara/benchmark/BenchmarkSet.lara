@@ -7,10 +7,18 @@ import lara.benchmark.BenchmarkInstance;
  */
 var BenchmarkSet = function(name) {
 	this._name = name;
+	
+	this._cmakerProvider = undefined;
 };
 
 BenchmarkSet.prototype.getName = function() {
 	return this._name;
+}
+
+
+BenchmarkSet.prototype.setCMakerProvider = function(cmakerProviderFunction) {
+	// Set provider
+	this._cmakerProvider = cmakerProviderFunction;
 }
 
 
@@ -31,15 +39,27 @@ BenchmarkSet.prototype[Symbol.iterator] = function* () {
 	}
 }
 
-
-/*** TO IMPLEMENT ***/
-
-
 /**
  * Instances of benchmarks, according to the current configuration.
  * 
  * @return {BenchmarkInstance[]} an array of BenchmarkInstance.
  */
 BenchmarkSet.prototype.getInstances = function() {
-	throw "BenchmarkSet.getInstances not implemented for " + this.getName();
+	var instances = this._getInstancesPrivate();
+	
+	// If custom CMaker provider, set all instances
+	if(this._cmakerProvider !== undefined) {
+		for(var instance of instances) {
+			instance.setCMakerProvider(this._cmakerProvider);
+		}
+	}
+
+	
+	return instances;
+}
+
+/*** TO IMPLEMENT ***/
+
+BenchmarkSet.prototype._getInstancesPrivate = function() {
+	throw "BenchmarkSet._getInstancesPrivate not implemented for " + this.getName();
 }
