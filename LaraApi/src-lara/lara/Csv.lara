@@ -1,4 +1,5 @@
 import lara.Io;
+import lara.util.StringSet;
 
 /**
  * Methods related with the CSV format.
@@ -107,13 +108,21 @@ Csv.generate = function(data, separator) {
 	var csv = "";
 	var ln = "\n";
 
-	// Read one of the objects, to build header
+	// Colect columns, to build header
 	csv = "Name";
-	for(var benchData of data) {
+	var columns = [];
+	var seenColumns = new StringSet();
+	for(var benchDataKey in data) {
+		benchData = data[benchDataKey];
 		for(var benchKey  in benchData) {
+			if(seenColumns.has(benchKey)) {
+				continue;
+			}
+			
+			seenColumns.add(benchKey);
 			csv += separator + benchKey;
+			columns.push(benchKey);
 		}
-		break;
 	}
 	csv += ln;
 	
@@ -121,7 +130,9 @@ Csv.generate = function(data, separator) {
 		csv += benchName;
 		benchData = data[benchName];
 		
-		for(var benchValue of benchData) {
+		for(var benchKey of columns) {
+			var benchValue = benchData[benchKey];
+			benchValue = benchValue !== undefined ? benchValue : "";
 			csv += separator + benchValue;
 		}
 		csv += ln;
