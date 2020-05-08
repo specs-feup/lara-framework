@@ -93,7 +93,11 @@ Strings.extractValue = function(prefix, contents, errorOnUndefined) {
 }
 
 Strings.asLines = function(string) {
-	return StringLines.getLines(string);
+	if(string === undefined) {
+		return undefined;
+	}
+	
+	return StringLines.getLines(string.toString());
 }
 
 
