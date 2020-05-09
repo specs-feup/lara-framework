@@ -59,7 +59,8 @@ import utils.SelectionPath;
 public class JoinPointModelConstructor implements IModel {
 
     private final static QName _JoinPoints_QNAME = new QName("", "joinpoints");
-    public static final String JoinPointModelPackageName = ObjectFactory.class.getPackage().getName();
+    // public static final String JoinPointModelPackageName = ObjectFactory.class.getPackage().getName();
+    public static final Class<?> JoinPointModelObjectFactory = ObjectFactory.class;
     public static final JoinPointType DEFAULT_JOIN_POINT_TYPE = new JoinPointType();
     static {
         JoinPointModelConstructor.DEFAULT_JOIN_POINT_TYPE.setClazz("joinpoint");
@@ -139,7 +140,8 @@ public class JoinPointModelConstructor implements IModel {
             };
 
             joinPointList = MarshalUtils.unmarshal(joinPointModelSource, sourceName, iS, JoinPointsList.class,
-                    JoinPointModelConstructor.JoinPointModelPackageName, validate, handler, new JoinPointResolver());
+                    JoinPointModelConstructor.JoinPointModelObjectFactory, validate, handler, new JoinPointResolver());
+            // JoinPointModelConstructor.JoinPointModelPackageName, validate, handler, new JoinPointResolver());
             sanitizeAndMap();
         }
     }
@@ -153,7 +155,9 @@ public class JoinPointModelConstructor implements IModel {
     @Override
     public void toXML(OutputStream oStream) throws JAXBException {
 
-        MarshalUtils.marshal(joinPointList, JoinPointsList.class, JoinPointModelConstructor.JoinPointModelPackageName,
+        // MarshalUtils.marshal(joinPointList, JoinPointsList.class,
+        // JoinPointModelConstructor.JoinPointModelPackageName,
+        MarshalUtils.marshal(joinPointList, JoinPointsList.class, JoinPointModelConstructor.JoinPointModelObjectFactory,
                 JoinPointModelConstructor._JoinPoints_QNAME, oStream);
     }
 

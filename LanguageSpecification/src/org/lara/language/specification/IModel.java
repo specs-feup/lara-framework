@@ -15,32 +15,37 @@ package org.lara.language.specification;
 
 import java.io.OutputStream;
 
+/**
+ * @deprecated
+ * @author jbispo
+ *
+ */
+@Deprecated
 public interface IModel {
 
-	/**
-	 * Verify if the model contains the specified name
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public boolean contains(String name);
+    /**
+     * Verify if the model contains the specified name
+     * 
+     * @param name
+     * @return
+     */
+    public boolean contains(String name);
 
-	/**
-	 * Verify if the model contains the specified &lt;subname&gt; inside an
-	 * element with atribute name=&lt;name&gt;
-	 * 
-	 * @param name
-	 * @param subname
-	 * @return
-	 */
-	public boolean contains(String name, String subname);
+    /**
+     * Verify if the model contains the specified &lt;subname&gt; inside an element with atribute name=&lt;name&gt;
+     * 
+     * @param name
+     * @param subname
+     * @return
+     */
+    public boolean contains(String name, String subname);
 
-	/**
-	 * Generate the model into an XML representation
-	 * 
-	 * @param oStream
-	 *            the output stream to use
-	 * @throws Exception
-	 */
-	public void toXML(OutputStream oStream) throws Exception;
+    /**
+     * Generate the model into an XML representation
+     * 
+     * @param oStream
+     *            the output stream to use
+     * @throws Exception
+     */
+    public void toXML(OutputStream oStream) throws Exception;
 }

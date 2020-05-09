@@ -52,7 +52,7 @@ public class TestLanguageSpecification {
         try (final InputStream iS = SpecsIo
                 .resourceToStream(LanguageSpecificationResources.JoinPointModelSchema.getResource());) {
             JoinPointsList jpl = MarshalUtils.unmarshal(new StreamSource(jpmXML), "test", iS, JoinPointsList.class,
-                    JoinPointModelConstructor.JoinPointModelPackageName, true);
+                    JoinPointModelConstructor.JoinPointModelObjectFactory, true);
             System.out.println(jpl.toString());
         }
     }

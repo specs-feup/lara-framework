@@ -45,7 +45,8 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import tdrc.utils.MarshalUtils;
 
 public class ActionModel implements IModel {
-    private static final String ActionsModelPackageName = ObjectFactory.class.getPackage().getName();
+    // private static final String ActionsModelPackageName = ObjectFactory.class.getPackage().getName();
+    private static final Class<?> ActionsModelObjectFactory = ObjectFactory.class;
     private final static QName _Actions_QNAME = new QName("", "actions");
     private ActionsList actionsList;
     private ObjectFactory objFactory;
@@ -113,7 +114,7 @@ public class ActionModel implements IModel {
         // Create new ActionModel without validation
         try {
             return new ActionModel(MarshalUtils.unmarshal(actionModelSource, sourceName, null, ActionsList.class,
-                    ActionModel.ActionsModelPackageName, false));
+                    ActionModel.ActionsModelObjectFactory, false));
         } catch (final Exception e) {
             throw new RuntimeException("Could not create Action Model", e);
         }
@@ -124,7 +125,7 @@ public class ActionModel implements IModel {
                 .resourceToStream(LanguageSpecificationResources.ActionModelSchema.getResource())) {
 
             return new ActionModel(MarshalUtils.unmarshal(joinPointModelSource, sourceName, iS, ActionsList.class,
-                    ActionModel.ActionsModelPackageName, true));
+                    ActionModel.ActionsModelObjectFactory, true));
 
         } catch (final Exception e) {
             throw new RuntimeException("Could not create Action Model with validation", e);
@@ -412,7 +413,8 @@ public class ActionModel implements IModel {
     @Override
     public void toXML(OutputStream oStream) throws JAXBException {
 
-        MarshalUtils.marshal(actionsList, ActionsList.class, ActionModel.ActionsModelPackageName,
+        // MarshalUtils.marshal(actionsList, ActionsList.class, ActionModel.ActionsModelPackageName,
+        MarshalUtils.marshal(actionsList, ActionsList.class, ActionModel.ActionsModelObjectFactory,
                 ActionModel._Actions_QNAME, oStream);
     }
 

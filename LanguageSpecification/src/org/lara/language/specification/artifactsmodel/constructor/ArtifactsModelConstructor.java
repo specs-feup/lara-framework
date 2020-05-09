@@ -44,7 +44,8 @@ import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.MarshalUtils;
 
 public class ArtifactsModelConstructor implements IModel {
-    private static final String ArtifactsModelPackageName = ObjectFactory.class.getPackage().getName();
+    // private static final String ArtifactsModelPackageName = ObjectFactory.class.getPackage().getName();
+    private static final Class<?> ArtifactsModelObjectFactory = ObjectFactory.class;
     private final static QName _Artifacts_QNAME = new QName("", "artifacts");
     protected ArtifactsList artifactsList;
     protected Map<String, Attribute> globalAttributes;
@@ -88,7 +89,7 @@ public class ArtifactsModelConstructor implements IModel {
                 .resourceToStream(LanguageSpecificationResources.ArtifactsModelSchema.getResource());) {
 
             setArtifactsList(MarshalUtils.unmarshal(artifactsSource, sourceName, iS, ArtifactsList.class,
-                    ArtifactsModelConstructor.ArtifactsModelPackageName, validate));
+                    ArtifactsModelConstructor.ArtifactsModelObjectFactory, validate));
         }
     }
 
@@ -299,7 +300,8 @@ public class ArtifactsModelConstructor implements IModel {
     @Override
     public void toXML(OutputStream oStream) throws JAXBException {
 
-        MarshalUtils.marshal(artifactsList, ArtifactsList.class, ArtifactsModelConstructor.ArtifactsModelPackageName,
+        // MarshalUtils.marshal(artifactsList, ArtifactsList.class, ArtifactsModelConstructor.ArtifactsModelPackageName,
+        MarshalUtils.marshal(artifactsList, ArtifactsList.class, ArtifactsModelConstructor.ArtifactsModelObjectFactory,
                 ArtifactsModelConstructor._Artifacts_QNAME, oStream);
     }
 

@@ -92,7 +92,7 @@ public class LangSpecTester {
         try (final InputStream iS = SpecsIo
                 .resourceToStream(LanguageSpecificationResources.JoinPointModelSchema.getResource());) {
             MarshalUtils.unmarshal(new StreamSource(jpmXML), "test", iS, JoinPointsList.class,
-                    JoinPointModelConstructor.JoinPointModelPackageName, true);
+                    JoinPointModelConstructor.JoinPointModelObjectFactory, true);
         }
     }
 
