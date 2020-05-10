@@ -13,14 +13,10 @@
 
 package pt.up.fe.specs.lara.langspec;
 
-import java.io.File;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.xml.XmlDocument;
 
 public class LanguageSpecificationTest {
@@ -32,13 +28,12 @@ public class LanguageSpecificationTest {
 
     @Test
     public void testSchema() {
-        var xmlDoc = SpecsIo.toInputStream(new File("language/joinPointModel.xml"));
-        ResourceProvider schema = () -> "schemas/joinPointModel.xsd";
-
-        var root = XmlDocument.newInstance(xmlDoc, SpecsIo.resourceToStream(schema));
-
-        System.out.println("DOC: " + root);
-        // fail("Not yet implemented");
+        XmlDocument.newInstance(LanguageSpecificationTestResource.ACTION_MODEL.toStream(),
+                SchemaResource.ACTION_SCHEMA.toStream());
+        XmlDocument.newInstance(LanguageSpecificationTestResource.ATTRIBUTE_MODEL.toStream(),
+                SchemaResource.ATTRIBUTE_SCHEMA.toStream());
+        XmlDocument.newInstance(LanguageSpecificationTestResource.JOIN_POINT_MODEL.toStream(),
+                SchemaResource.JOIN_POINT_SCHEMA.toStream());
     }
 
 }

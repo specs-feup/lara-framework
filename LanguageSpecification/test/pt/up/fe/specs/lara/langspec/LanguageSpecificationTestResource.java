@@ -26,7 +26,7 @@ public enum LanguageSpecificationTestResource implements ResourceProvider {
 
     private final String resource;
 
-    private static final String BASE_PACKAGE = "pt/up/fe/specs/lara/langspec/test/";
+    private static final String BASE_PACKAGE = "pt/up/fe/specs/lara/langspec/";
 
     /**
      * @param resource
