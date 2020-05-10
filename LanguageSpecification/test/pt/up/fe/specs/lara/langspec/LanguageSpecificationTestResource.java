@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.languagespecification;
+package pt.up.fe.specs.lara.langspec;
 
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
@@ -26,7 +26,7 @@ public enum LanguageSpecificationTestResource implements ResourceProvider {
 
     private final String resource;
 
-    private static final String BASE_PACKAGE = "pt/up/fe/specs/lara/languagespecification/test/";
+    private static final String BASE_PACKAGE = "pt/up/fe/specs/lara/langspec/test/";
 
     /**
      * @param resource

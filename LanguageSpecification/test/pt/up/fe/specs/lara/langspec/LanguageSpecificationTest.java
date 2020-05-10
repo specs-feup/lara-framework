@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara.languagespecification;
+package pt.up.fe.specs.lara.langspec;
 
 import java.io.File;
 
