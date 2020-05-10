@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="src" path="/SpecsUtils"/>
 	<classpathentry exported="true" kind="src" path="/tdrcLibrary"/>

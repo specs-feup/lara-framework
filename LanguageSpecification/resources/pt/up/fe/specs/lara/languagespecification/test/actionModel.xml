@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<actions>
+    <!-- Actions available within the REFLECT flow -->
+	<action name="optimize" class="loop,var,if">
+			<parameter name="kind" type="string"/>
+			<parameter name="args" type="Json" default="{}"/>
+	</action>
+	<action name="map" class="function">
+		<parameter name="to" type="string"/>
+		<parameter name="id" type="string" default="0"/>
+		<parameter name="mode" type="string" default="default"/>
+	</action>
+	<action name="insert" class="*">
+			<parameter name="position" type="string" default = "before"/>
+			<parameter name="code" type="template"/>
+	</action>
+	<action name="out">
+			<parameter name="code" type="template"/>
+	</action>
+	<action name="def">
+		<parameter name="attribute" type="string"/>
+		<parameter name="value" type="Object"/>
+	</action>
+	
+	<action name="testbody" class="section">
+		<parameter name="attribute" type="string"/>
+		<parameter name="value" type="Object"/>
+	</action>
+</actions>
