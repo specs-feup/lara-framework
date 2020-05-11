@@ -22,6 +22,8 @@ import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
+import pt.up.fe.specs.util.SpecsLogs;
+
 /**
  * A basic class that contains a type and a name
  * 
@@ -44,6 +46,7 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     private final Declaration declaration;
     private List<Parameter> parameters;
+    private JoinPointClass joinPoint;
 
     public Action(IType returnType, String name) {
         this(returnType, name, new ArrayList<>());
@@ -52,6 +55,49 @@ public class Action extends BaseNode implements Comparable<Action> {
     public Action(IType returnType, String name, List<Parameter> parameters) {
         declaration = new Declaration(returnType, name);
         this.parameters = parameters;
+        joinPoint = null;
+    }
+
+    public JoinPointClass getJoinPoint() {
+        return joinPoint;
+    }
+    // public Set<JoinPointClass> getJoinPoints() {
+    // return joinPoints;
+    // }
+
+    // public void addJoinPoint(JoinPointClass parent) {
+    // System.out.println("ACTION " + getName() + " adding: " + parent.getName());
+    // boolean isNew = joinPoints.add(parent);
+    // System.out.println("JPS: " + joinPoints);
+    // if (!isNew) {
+    // SpecsLogs.warn("Action '" + getName() + "' already had join point '" + parent.getName() + "'");
+    // }
+    // }
+    //
+    // public void removeJoinPoint(JoinPointClass parent) {
+    // System.out.println("ACTION " + getName() + " removing: " + parent.getName());
+    // boolean hadElement = joinPoints.remove(parent);
+    //
+    // if (!hadElement) {
+    // SpecsLogs.warn("Action '" + getName() + "' was not present in join point '" + parent.getName() + "'");
+    // }
+    // }
+
+    public void setJoinPoint(JoinPointClass joinPoint) {
+        // If unset, check if it was set
+        if (joinPoint == null) {
+            if (this.joinPoint == null) {
+                SpecsLogs.warn("Action parent was already null");
+            }
+            this.parameters = null;
+            return;
+        }
+
+        if (this.joinPoint != null) {
+            SpecsLogs.warn("Action parent was already set");
+        }
+
+        this.joinPoint = joinPoint;
     }
 
     public void addParameter(IType type, String name) {

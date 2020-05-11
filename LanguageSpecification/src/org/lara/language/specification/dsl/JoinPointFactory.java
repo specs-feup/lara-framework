@@ -174,7 +174,9 @@ public class JoinPointFactory {
             // global.setAttributes();
         }
 
-        global.getActions().addAll(convertActions(langSpecV2, actionModel.getActionsForAll()));
+        // global.getActions().addAll(convertActions(langSpecV2, actionModel.getActionsForAll()));
+        convertActions(langSpecV2, actionModel.getActionsForAll()).stream()
+                .forEach(global::add);
     }
 
     private static List<Select> convertSelects(LanguageSpecificationV2 langSpecV2,

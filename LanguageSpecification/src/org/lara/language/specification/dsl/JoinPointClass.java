@@ -15,6 +15,7 @@ package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,20 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     public void add(Action action) {
+        // action.addJoinPoint(this);
         actions.add(action);
+        action.setJoinPoint(this);
+    }
+
+    public void setActions(List<Action> actions) {
+        // Unset previous actions
+        // this.actions.stream().forEach(action -> action.removeJoinPoint(this));
+        this.actions.stream().forEach(action -> action.setJoinPoint(null));
+
+        // Set new actions
+        this.actions = actions;
+        // this.actions.stream().forEach(action -> action.addJoinPoint(this));
+        this.actions.stream().forEach(action -> action.setJoinPoint(this));
     }
 
     public List<Attribute> getAttributes() {
@@ -138,11 +152,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     public List<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<Action> actions) {
-        this.actions = actions;
+        return Collections.unmodifiableList(actions);
     }
 
     /**

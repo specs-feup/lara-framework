@@ -87,15 +87,16 @@ public class LangSpecsXmlParser {
         MultiMap<String, XmlElement> joinPointActions = new MultiMap<>();
         List<XmlElement> globalActions = new ArrayList<>();
         for (var actionNode : actionModelNode.getElementsByName("action")) {
-            var classeNames = actionNode.getAttribute("class");
+            var classNames = actionNode.getAttribute("class");
 
             // Global actions do not have a class value, or its value is '*'
-            if (classeNames.isEmpty() || classeNames.equals("*")) {
+            if (classNames.isEmpty() || classNames.equals("*")) {
                 globalActions.add(actionNode);
                 continue;
             }
-
-            for (String className : classeNames.split(",")) {
+            // System.out.println("CLASS NAMES: " + classNames);
+            for (String className : classNames.split(",")) {
+                // System.out.println("NAME: " + className);
                 joinPointActions.add(className.strip(), actionNode);
             }
         }
@@ -191,7 +192,9 @@ public class LangSpecsXmlParser {
         // .filter(node -> node.getAttribute("class").isBlank() || node.getAttribute("class").equals("*"))
         // .collect(Collectors.toList());
 
-        global.getActions().addAll(convertActions(langSpecV2, globalActionNodes));
+        // global.getActions().addAll(convertActions(langSpecV2, globalActionNodes));
+        convertActions(langSpecV2, globalActionNodes).stream()
+                .forEach(global::add);
     }
 
     private static List<Attribute> convertAttributes(List<XmlElement> attributeNodes,
