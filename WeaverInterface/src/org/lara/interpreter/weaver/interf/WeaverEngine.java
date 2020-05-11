@@ -184,8 +184,11 @@ public abstract class WeaverEngine {
     /**
      * The Language Specification associated to this weaver. This specification is required for the LARA compiler
      * (larac)
-     *
+     * 
+     * @deprecated please use getLanguageSpecificationV2() instead
+     * 
      */
+    @Deprecated
     public abstract LanguageSpecification getLanguageSpecification();
 
     public LanguageSpecificationV2 getLanguageSpecificationV2() {

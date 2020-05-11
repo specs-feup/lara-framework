@@ -27,6 +27,7 @@ import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.ArtifactsModel;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.artifactsmodel.schema.Parameter;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.exception.LanguageSpecificationException;
 import org.lara.language.specification.graph.JPMGraph;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
@@ -44,9 +45,11 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
  * <p>
  * This class is being phased-out and replaced with LanguageSpecificationV2.
  * 
+ * @deprecated please use {@link LanguageSpecificationV2} instead
  * @author Tiago
  * 
  */
+@Deprecated
 public class LanguageSpecification {
 
     public static final String ACTION_MODEL_NAME = "actionModel";
