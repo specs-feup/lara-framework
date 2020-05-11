@@ -71,7 +71,8 @@ public class JoinPointFactory {
         }
 
         langSpecV2.setRoot(jpModel.getRoot().getClazz());
-        langSpecV2.setRoot(jpModel.getJoinPointList().getRootAlias());
+        langSpecV2.setRootAlias(jpModel.getJoinPointList().getRootAlias());
+        // langSpecV2.setRoot(jpModel.getJoinPointList().getRootAlias());
 
         populateGlobal(jpModel, artifacts, actionModel, langSpecV2, global);
 
