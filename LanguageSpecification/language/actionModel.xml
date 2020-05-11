@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <actions>
+	<!-- Global action example -->
+	<action name="replaceWith" return="joinpoint" tooltip="Replaces this join point with the given join">
+		<parameter name="node" type="joinpoint" />
+	</action>
+
     <!-- Actions available within the REFLECT flow -->
 	<action name="optimize" class="loop,var,if">
 			<parameter name="kind" type="string"/>

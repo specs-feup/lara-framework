@@ -103,7 +103,8 @@ public class TestLanguageSpecification {
             System.out.println();
 
             actions = am.getJoinPointActions("loop");
-            assertEquals(6, actions.size());
+            System.out.println("actions: " + actions);
+            assertEquals(8, actions.size());
             System.out.println("All actions for loop: ");
             for (final Action action : actions) {
                 System.out.print(action.getName() + ", ");
@@ -111,7 +112,7 @@ public class TestLanguageSpecification {
             System.out.println();
 
             actions = am.getActionsForAll();
-            assertEquals(3, actions.size());
+            assertEquals(4, actions.size());
             System.out.println("All actions: ");
             for (final Action action : actions) {
                 System.out.print(action.getName() + ", ");
@@ -120,7 +121,7 @@ public class TestLanguageSpecification {
 
             final JoinPointType jp = jpm.getJoinPoint("body");
             actions = am.getAllJoinPointActions(jp, jpm);
-            assertEquals(4, actions.size());
+            assertEquals(5, actions.size());
             System.out.println("All actions for body, including of super type scope: ");
             for (final Action action : actions) {
                 System.out.print(action.getName() + ", ");

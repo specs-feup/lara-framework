@@ -152,8 +152,20 @@
 	</artifact>
 
 
-	<object name="SYM">
+	<object name="SYM" tooltip="Type example">
 		<attribute name="name" type="String" />
 		<attribute name="type" type="String" />
 	</object>
+	
+	<enum name="Relation" tooltip="Enum example">	
+		<value name="LE"/>
+		<value name="LT"/>
+		<value name="GE"/>
+		<value name="GT"/>
+		<value name="EQ"/>		
+		<value name="NE"/>
+	</enum>
+
+
+	
 </artifacts>
