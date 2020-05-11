@@ -1,0 +1,18 @@
+loop own actions:
+optimize
+loop all actions:
+Name: optimize, Class: loop
+Name: insert, Class: joinpoint
+Name: def, Class: joinpoint
+Name: def, Class: joinpoint
+Name: insert, Class: joinpoint
+Name: out, Class: joinpoint
+Name: replaceWith, Class: joinpoint
+body all actions:
+Name: testbody, Class: section
+Name: insert, Class: joinpoint
+Name: def, Class: joinpoint
+Name: def, Class: joinpoint
+Name: insert, Class: joinpoint
+Name: out, Class: joinpoint
+Name: replaceWith, Class: joinpoint

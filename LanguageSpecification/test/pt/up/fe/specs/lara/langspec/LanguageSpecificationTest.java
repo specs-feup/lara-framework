@@ -20,6 +20,7 @@ import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.JOI
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lara.language.specification.dsl.Action;
 
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -45,12 +46,48 @@ public class LanguageSpecificationTest {
 
         var langSpec = LangSpecsXmlParser.parse(JOIN_POINT_MODEL.toStream(), ATTRIBUTE_MODEL.toStream(),
                 ACTION_MODEL.toStream());
-
+        // System.out.println("SPEC:\n" + langSpec);
         ResourceProvider parserTestExpected = () -> "pt/up/fe/specs/lara/langspec/test/ParserTestResult.txt";
         // System.out.println("EXPECTED:\n" + parserTestExpected.read());
         // System.out.println("GOT:\n" + langSpec);
         assertEquals(SpecsStrings.normalizeFileContents(parserTestExpected.read(), true),
                 SpecsStrings.normalizeFileContents(langSpec.toString(), true));
     }
+
+    @Test
+    public void testActionModel() {
+        var langSpec = LangSpecsXmlParser.parse(JOIN_POINT_MODEL.toStream(), ATTRIBUTE_MODEL.toStream(),
+                ACTION_MODEL.toStream());
+
+        StringBuilder actual = new StringBuilder();
+
+        actual.append("loop own actions:");
+        langSpec.getJoinPoint("loop").getActions().stream()
+                .map(Action::getName)
+                .forEach(actionName -> actual.append("\n" + actionName));
+        actual.append("\n");
+
+        actual.append("loop all actions:");
+        langSpec.getJoinPoint("loop").getAllActions().stream()
+                .map(action -> "Name: " + action.getName() + ", Class: " + action.getJoinPoint())
+                .forEach(actionName -> actual.append("\n" + actionName));
+        actual.append("\n");
+
+        actual.append("body all actions:");
+        langSpec.getJoinPoint("body").getAllActions().stream()
+                .map(action -> "Name: " + action.getName() + ", Class: " + action.getJoinPoint())
+                .forEach(actionName -> actual.append("\n" + actionName));
+        // actions = am.getAllJoinPointActions(jp, jpm);
+
+        ResourceProvider parserTestExpected = () -> "pt/up/fe/specs/lara/langspec/test/ActionModelTest.txt";
+        assertEquals(SpecsStrings.normalizeFileContents(parserTestExpected.read(), true),
+                SpecsStrings.normalizeFileContents(actual.toString(), true));
+
+    }
+
+    //
+    // private static void testActionModel() throws JAXBException, SAXException, XMLParseException, IOException {
+
+    // }
 
 }
