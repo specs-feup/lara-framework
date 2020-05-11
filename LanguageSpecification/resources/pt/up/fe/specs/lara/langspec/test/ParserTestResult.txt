@@ -1,0 +1,159 @@
+root file as root
+joinpoint joinpoint {
+	String[] attributes
+	String[] selects
+	String[] actions
+	joinpoint ancestor(String type)
+	int cost
+	int end_col
+	int end_line
+	String file_name
+	int initial_col
+	int initial_line
+	int live_in_size
+	int live_out_size
+	int num_array_refs
+	int num_calls
+	int num_levels
+	int num_oper
+	int num_pointer_refs
+	int size
+	String joinPointType
+	Boolean instanceOf(String name)
+	selects {
+		
+	}
+	actions {
+		void insert([before| after| replace], String code)
+		void def(String attribute, Object value)
+		void def(String attribute, Object value)
+		void insert(String position = before, String code)
+		void out(String code)
+		joinpoint replaceWith(joinpoint node)
+	}
+}
+joinpoint body extends section {
+	void 
+	selects {
+		if
+		if as otherIf
+		statement as first
+		statement as last
+		statement
+		var
+	}
+	actions {
+		
+	}
+}
+joinpoint elseif {
+	
+	selects {
+		
+	}
+	actions {
+		
+	}
+}
+joinpoint expr {
+	void 
+	selects {
+		
+	}
+	actions {
+		
+	}
+}
+joinpoint file {
+	void 
+	selects {
+		function
+	}
+	actions {
+		
+	}
+}
+joinpoint function {
+	void 
+	selects {
+		body
+		var as input
+		var as output
+	}
+	actions {
+		void map(String to, String id = 0, String mode = default)
+	}
+}
+joinpoint if {
+	void 
+	selects {
+		body as then
+		elseif
+		expr as condition
+	}
+	actions {
+		void optimize(String kind, Json args = {})
+	}
+}
+joinpoint loop {
+	void (loop loop2)
+	selects {
+		
+	}
+	actions {
+		void optimize(String kind, Json args = {})
+	}
+}
+joinpoint section {
+	void 
+	selects {
+		test
+	}
+	actions {
+		void testbody(String attribute, Object value)
+	}
+}
+joinpoint statement {
+	
+	selects {
+		
+	}
+	actions {
+		
+	}
+}
+joinpoint test {
+	
+	selects {
+		
+	}
+	actions {
+		
+	}
+}
+joinpoint var {
+	void 
+	selects {
+		
+	}
+	actions {
+		void optimize(String kind, Json args = {})
+	}
+}
+joinpoint weaver {
+	
+	selects {
+		
+	}
+	actions {
+		
+	}
+}
+
+typedef SYM{
+	String name
+	String type
+}
+typedef Json{
+	
+}

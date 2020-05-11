@@ -17,6 +17,9 @@
 		<attribute name="live_out_size" type="int" />
 		<attribute name="size" type="int" />
 		<attribute name="cost" type="int" />
+		<attribute name="ancestor" type="joinpoint" tooltip="Looks for an ancestor joinpoint name, walking back on the AST">
+			<parameter name="type" type="String" />
+		</attribute>		
 	</global>
 
 	<artifact class="file" default="name">
@@ -65,7 +68,7 @@
 		<attribute name="num_children" type="int" />
 		<attribute name="is_perfect" type="Boolean" />
 		<attribute name="interchange_legal" type="Boolean">
-			<parameter name="loop2" type="Loop" />
+			<parameter name="loop2" type="loop" />
 		</attribute>
 	</artifact>
 	<artifact class="body">
@@ -156,4 +159,18 @@
 		<attribute name="name" type="String" />
 		<attribute name="type" type="String" />
 	</object>
+		
+	<object name="Json">
+	</object>
+	
+	
+	<enum name="Relation" tooltip="Enum example">	
+		<value name="LE"/>
+		<value name="LT"/>
+		<value name="GE"/>
+		<value name="GT"/>
+		<value name="EQ" string="=="/>		
+		<value name="NE" string="!="/>
+	</enum>
+	
 </artifacts>

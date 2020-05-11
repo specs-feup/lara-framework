@@ -1,9 +1,9 @@
 <joinpoints root_alias="root" root_class="file">
 	<joinpoint class="weaver"/>
-<!-- 	<global> -->
-<!-- < 		<select alias="all" class="*"/> -->
-<!-- 	</global> -->
-	
+ 	<!-- <global>
+ 		<select alias="all" class="*"/> 
+ 	</global>
+	 -->
 	<joinpoint class="file">
 		<select alias="function" class="function"/> 
 	</joinpoint>

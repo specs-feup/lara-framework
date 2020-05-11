@@ -13,10 +13,17 @@
 
 package pt.up.fe.specs.lara.langspec;
 
+import static org.junit.Assert.assertEquals;
+import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ACTION_MODEL;
+import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ATTRIBUTE_MODEL;
+import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.JOIN_POINT_MODEL;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.xml.XmlDocument;
 
 public class LanguageSpecificationTest {
@@ -28,12 +35,22 @@ public class LanguageSpecificationTest {
 
     @Test
     public void testSchema() {
-        XmlDocument.newInstance(LanguageSpecificationTestResource.ACTION_MODEL.toStream(),
-                SchemaResource.ACTION_SCHEMA.toStream());
-        XmlDocument.newInstance(LanguageSpecificationTestResource.ATTRIBUTE_MODEL.toStream(),
-                SchemaResource.ATTRIBUTE_SCHEMA.toStream());
-        XmlDocument.newInstance(LanguageSpecificationTestResource.JOIN_POINT_MODEL.toStream(),
-                SchemaResource.JOIN_POINT_SCHEMA.toStream());
+        XmlDocument.newInstance(JOIN_POINT_MODEL.toStream(), SchemaResource.JOIN_POINT_SCHEMA.toStream());
+        XmlDocument.newInstance(ATTRIBUTE_MODEL.toStream(), SchemaResource.ATTRIBUTE_SCHEMA.toStream());
+        XmlDocument.newInstance(ACTION_MODEL.toStream(), SchemaResource.ACTION_SCHEMA.toStream());
+    }
+
+    @Test
+    public void testParser() {
+
+        var langSpec = LangSpecsXmlParser.parse(JOIN_POINT_MODEL.toStream(), ATTRIBUTE_MODEL.toStream(),
+                ACTION_MODEL.toStream());
+
+        ResourceProvider parserTestExpected = () -> "pt/up/fe/specs/lara/langspec/test/ParserTestResult.txt";
+        // System.out.println("EXPECTED:\n" + parserTestExpected.read());
+        // System.out.println("GOT:\n" + langSpec);
+        assertEquals(SpecsStrings.normalizeFileContents(parserTestExpected.read(), true),
+                SpecsStrings.normalizeFileContents(langSpec.toString(), true));
     }
 
 }
