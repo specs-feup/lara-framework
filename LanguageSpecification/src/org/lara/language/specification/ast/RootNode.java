@@ -15,43 +15,49 @@ package org.lara.language.specification.ast;
 
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
+/**
+ * Internal representation of the LanguageSpecification, which uses the TreeNode interface underneath.
+ * 
+ * @author jbispo
+ *
+ */
 public class RootNode extends LangSpecNode {
 
     private final String rootName;
     private final String rootAlias;
 
     public RootNode(String rootName, String rootAlias) {
-	this.rootName = rootName;
-	if (rootAlias == null) {
-	    rootAlias = "";
-	}
-	this.rootAlias = rootAlias;
+        this.rootName = rootName;
+        if (rootAlias == null) {
+            rootAlias = "";
+        }
+        this.rootAlias = rootAlias;
     }
 
     public String getRootName() {
-	return rootName;
+        return rootName;
     }
 
     public String getRootAlias() {
-	return rootAlias;
+        return rootAlias;
     }
 
     @Override
     public String toContentString() {
-	return "root: " + rootName + (rootAlias.isEmpty() ? "" : (", alias: " + rootAlias));
+        return "root: " + rootName + (rootAlias.isEmpty() ? "" : (", alias: " + rootAlias));
     }
 
     @Override
     public String toJson(BuilderWithIndentation builder) {
-	builder.addLines("{");
-	builder.increaseIndentation();
+        builder.addLines("{");
+        builder.increaseIndentation();
 
-	builder.addLines("\"root\": \"" + getRootName() + "\",");
-	builder.addLines("\"rootAlias\": \"" + getRootAlias() + "\",");
+        builder.addLines("\"root\": \"" + getRootName() + "\",");
+        builder.addLines("\"rootAlias\": \"" + getRootAlias() + "\",");
 
-	builder.addLines(childrenToJson(builder.getCurrentIdentation() + 1));
-	builder.decreaseIndentation();
-	builder.add("}");
-	return builder.toString();
+        builder.addLines(childrenToJson(builder.getCurrentIdentation() + 1));
+        builder.decreaseIndentation();
+        builder.add("}");
+        return builder.toString();
     }
 }

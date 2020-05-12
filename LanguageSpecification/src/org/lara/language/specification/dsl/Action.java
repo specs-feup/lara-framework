@@ -22,8 +22,6 @@ import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
-import pt.up.fe.specs.util.SpecsLogs;
-
 /**
  * A basic class that contains a type and a name
  * 
@@ -46,7 +44,7 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     private final Declaration declaration;
     private List<Parameter> parameters;
-    private JoinPointClass joinPoint;
+    // private JoinPointClass joinPoint;
 
     public Action(IType returnType, String name) {
         this(returnType, name, new ArrayList<>());
@@ -55,12 +53,12 @@ public class Action extends BaseNode implements Comparable<Action> {
     public Action(IType returnType, String name, List<Parameter> parameters) {
         declaration = new Declaration(returnType, name);
         this.parameters = parameters;
-        joinPoint = null;
+        // joinPoint = null;
     }
 
-    public JoinPointClass getJoinPoint() {
-        return joinPoint;
-    }
+    // public JoinPointClass getJoinPoint() {
+    // return joinPoint;
+    // }
     // public Set<JoinPointClass> getJoinPoints() {
     // return joinPoints;
     // }
@@ -83,22 +81,22 @@ public class Action extends BaseNode implements Comparable<Action> {
     // }
     // }
 
-    public void setJoinPoint(JoinPointClass joinPoint) {
-        // If unset, check if it was set
-        if (joinPoint == null) {
-            if (this.joinPoint == null) {
-                SpecsLogs.warn("Action parent was already null");
-            }
-            this.parameters = null;
-            return;
-        }
-
-        if (this.joinPoint != null) {
-            SpecsLogs.warn("Action parent was already set");
-        }
-
-        this.joinPoint = joinPoint;
-    }
+    // public void setJoinPoint(JoinPointClass joinPoint) {
+    // // If unset, check if it was set
+    // if (joinPoint == null) {
+    // if (this.joinPoint == null) {
+    // SpecsLogs.warn("Action parent was already null");
+    // }
+    // this.parameters = null;
+    // return;
+    // }
+    //
+    // if (this.joinPoint != null && this.joinPoint != joinPoint) {
+    // SpecsLogs.warn("Action parent was already set");
+    // }
+    //
+    // this.joinPoint = joinPoint;
+    // }
 
     public void addParameter(IType type, String name) {
         addParameter(type, name, "");
@@ -122,6 +120,10 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     public void setType(IType type) {
         declaration.setType(type);
+    }
+
+    public String getReturnType() {
+        return getType().getType();
     }
 
     public List<Parameter> getParameters() {

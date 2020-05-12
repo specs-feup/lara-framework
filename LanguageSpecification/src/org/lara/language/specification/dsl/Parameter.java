@@ -21,37 +21,45 @@ public class Parameter {
     private String defaultValue;
 
     public Parameter(IType returnType, String name) {
-	this(returnType, name, "");
+        this(returnType, name, "");
     }
 
     public Parameter(IType returnType, String name, String defaultValue) {
-	this(new Declaration(returnType, name), defaultValue);
+        this(new Declaration(returnType, name), defaultValue);
     }
 
     public Parameter(Declaration declaration, String defaultValue) {
-	this.declaration = declaration;
-	this.defaultValue = defaultValue;
+        this.declaration = declaration;
+        this.defaultValue = defaultValue;
     }
 
     @Override
     public String toString() {
-	String initStr = defaultValue.isEmpty() ? "" : (" = " + defaultValue);
-	return declaration.toString() + initStr;
+        String initStr = defaultValue.isEmpty() ? "" : (" = " + defaultValue);
+        return declaration.toString() + initStr;
     }
 
     public String getDefaultValue() {
-	return defaultValue;
+        return defaultValue;
     }
 
     public void setDefaultValue(String defaultValue) {
-	this.defaultValue = defaultValue;
+        this.defaultValue = defaultValue;
     }
 
     public Declaration getDeclaration() {
-	return declaration;
+        return declaration;
     }
 
     public void setDeclaration(Declaration declaration) {
-	this.declaration = declaration;
+        this.declaration = declaration;
+    }
+
+    public String getName() {
+        return getDeclaration().getName();
+    }
+
+    public String getType() {
+        return getDeclaration().getType().getType();
     }
 }

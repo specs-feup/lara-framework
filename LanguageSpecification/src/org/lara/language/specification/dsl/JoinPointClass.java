@@ -16,13 +16,14 @@ package org.lara.language.specification.dsl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
 
 public class JoinPointClass extends BaseNode implements Comparable<JoinPointClass> {
@@ -35,8 +36,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     private List<Action> actions;
     private LanguageSpecificationV2 langSpec;
 
-    private final Lazy<Map<String, Attribute>> attributeMap;
-    private final Lazy<Map<String, Action>> actionsMap;
+    // TODO: There is attribute and action overloading, fix this
+    private final Lazy<MultiMap<String, Attribute>> attributeMap;
+    private final Lazy<MultiMap<String, Action>> actionsMap;
+    private final Lazy<Set<String>> availableSelects;
 
     public JoinPointClass(String name, LanguageSpecificationV2 langSpec) {
         this(name, null, langSpec);
@@ -52,10 +55,31 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
         attributeMap = Lazy.newInstance(() -> buildMap(getAllAttributes(), attr -> attr.getName()));
         actionsMap = Lazy.newInstance(() -> buildMap(getAllActions(), action -> action.getName()));
+        availableSelects = Lazy.newInstance(this::buildAvailableSelects);
     }
 
-    private <T extends BaseNode> Map<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
-        Map<String, T> map = new HashMap<>();
+    /**
+     * 
+     * @return set with what can be selected in this join point
+     */
+    private Set<String> buildAvailableSelects() {
+        Set<String> availableSelects = new LinkedHashSet<>();
+
+        for (var select : selects) {
+            // Alias has priority over class
+            var alias = select.getAlias();
+            if (!alias.isEmpty()) {
+                availableSelects.add(alias);
+            } else {
+                availableSelects.add(select.getClazz().getName());
+            }
+        }
+
+        return availableSelects;
+    }
+
+    private <T extends BaseNode> MultiMap<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
+        MultiMap<String, T> map = new MultiMap<>();
 
         for (var node : nodes) {
             map.put(keyMapper.apply(node), node);
@@ -67,18 +91,22 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     /**
      * 
      * @param name
-     * @return the attribute corresponding to the given name, or null if none exists.
+     * @return the attributes corresponding to the given name, or empty list if none exists.
      */
-    public Attribute getAttribute(String name) {
+    public List<Attribute> getAttribute(String name) {
         return attributeMap.get().get(name);
+    }
+
+    public boolean hasAttribute(String name) {
+        return attributeMap.get().containsKey(name);
     }
 
     /**
      * 
      * @param name
-     * @return the action corresponding to the given name, or null if none exists.
+     * @return the actions corresponding to the given name, or empty list if none exists.
      */
-    public Action getAction(String name) {
+    public List<Action> getAction(String name) {
         return actionsMap.get().get(name);
     }
 
@@ -113,18 +141,18 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     public void add(Action action) {
         // action.addJoinPoint(this);
         actions.add(action);
-        action.setJoinPoint(this);
+        // action.setJoinPoint(this);
     }
 
     public void setActions(List<Action> actions) {
         // Unset previous actions
         // this.actions.stream().forEach(action -> action.removeJoinPoint(this));
-        this.actions.stream().forEach(action -> action.setJoinPoint(null));
+        // this.actions.stream().forEach(action -> action.setJoinPoint(null));
 
         // Set new actions
         this.actions = actions;
         // this.actions.stream().forEach(action -> action.addJoinPoint(this));
-        this.actions.stream().forEach(action -> action.setJoinPoint(this));
+        // this.actions.stream().forEach(action -> action.setJoinPoint(this));
     }
 
     public List<Attribute> getAttributes() {
@@ -137,6 +165,14 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     public List<Select> getSelects() {
         return selects;
+    }
+
+    public boolean hasSelect(String name) {
+        return availableSelects.get().contains(name);
+    }
+
+    public Collection<String> getSelectNames() {
+        return availableSelects.get();
     }
 
     /**
@@ -213,9 +249,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     public List<Action> getAllActions() {
         List<Action> actions = new ArrayList<>();
         actions.addAll(this.actions);
-        if (extend.isPresent()) {
-            actions.addAll(extend.get().getAllActions());
-        }
+        extend.ifPresent(superJp -> actions.addAll(superJp.getAllActions()));
+        // if (extend.isPresent()) {
+        // actions.addAll(extend.get().getAllActions());
+        // }
         return actions;
     }
 

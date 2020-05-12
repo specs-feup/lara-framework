@@ -13,8 +13,13 @@
 
 package org.lara.language.specification.dsl;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.EnumDef;
@@ -25,10 +30,12 @@ import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 
+import pt.up.fe.specs.util.SpecsCollections;
+import pt.up.fe.specs.util.lazy.Lazy;
 import tdrc.utils.StringUtils;
 
 /**
- * New version of the LanguageSpecification, which uses the TreeNode interface underneath.
+ * New version of the LanguageSpecification.
  * 
  * @author jbispo
  *
@@ -48,6 +55,9 @@ public class LanguageSpecificationV2 {
     private Map<String, TypeDef> typeDefs;
     private Map<String, EnumDef> enumDefs;
 
+    private final Lazy<Set<String>> availableAttributes;
+    private final Lazy<Set<String>> availableActions;
+
     public LanguageSpecificationV2(JoinPointClass root, String rootAlias) {
         super();
         this.root = root;
@@ -55,10 +65,47 @@ public class LanguageSpecificationV2 {
         joinPoints = new LinkedHashMap<>();
         typeDefs = new LinkedHashMap<>();
         setEnumDefs(new LinkedHashMap<>());
+
+        availableAttributes = Lazy.newInstance(this::buildAvailableAttributes);
+        availableActions = Lazy.newInstance(this::buildAvailableActions);
     }
 
     public LanguageSpecificationV2() {
         this(null, null);
+    }
+
+    private Set<String> buildAvailableAttributes() {
+        Set<String> availableAttributes = new HashSet<>();
+
+        for (var jp : getJoinPoints().values()) {
+            jp.getAttributes().stream()
+                    .map(Attribute::getName)
+                    .forEach(availableAttributes::add);
+        }
+
+        // Add global attributes
+        global.getAttributes().stream()
+                .map(Attribute::getName)
+                .forEach(availableAttributes::add);
+
+        return availableAttributes;
+    }
+
+    private Set<String> buildAvailableActions() {
+        Set<String> availableActions = new HashSet<>();
+
+        for (var jp : getJoinPoints().values()) {
+            jp.getActions().stream()
+                    .map(Action::getName)
+                    .forEach(availableActions::add);
+        }
+
+        // Add global attributes
+        global.getActions().stream()
+                .map(Action::getName)
+                .forEach(availableActions::add);
+
+        return availableActions;
     }
 
     public void add(JoinPointClass node) {
@@ -79,6 +126,45 @@ public class LanguageSpecificationV2 {
             return global;
         }
         return joinPoints.get(name);
+    }
+
+    /**
+     * 
+     * @param name
+     * @return true if the given name corresponds to an existing join point (not considering alias)
+     */
+    public boolean hasJoinPoint(String name) {
+        // Join Points
+        if (joinPoints.containsKey(name)) {
+            return true;
+        }
+
+        // Global
+        if (getBaseJoinpointClass().equals(name)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 
+     * @param name
+     * @return true if the given name is a valid join point (considering alias)
+     */
+    public boolean hasJoinPointName(String name) {
+        if (hasJoinPoint(name)) {
+            return true;
+        }
+
+        // Alias
+        for (var jp : joinPoints.values()) {
+            if (jp.hasSelect(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public IType getType(String type) {
@@ -158,6 +244,14 @@ public class LanguageSpecificationV2 {
         return joinPoints;
     }
 
+    /**
+     * 
+     * @return a list of all join points, including the global join point
+     */
+    public List<JoinPointClass> getAllJoinPoints() {
+        return SpecsCollections.concat(global, joinPoints.values());
+    }
+
     public void setJoinPoints(Map<String, JoinPointClass> joinpoints) {
         joinPoints = joinpoints;
     }
@@ -171,7 +265,11 @@ public class LanguageSpecificationV2 {
     }
 
     public Map<String, TypeDef> getTypeDefs() {
-        return typeDefs;
+        return Collections.unmodifiableMap(typeDefs);
+    }
+
+    public boolean hasTypeDef(String name) {
+        return typeDefs.containsKey(name);
     }
 
     public void setTypeDefs(Map<String, TypeDef> typeDefs) {
@@ -196,10 +294,43 @@ public class LanguageSpecificationV2 {
     }
 
     public Map<String, EnumDef> getEnumDefs() {
-        return enumDefs;
+        return Collections.unmodifiableMap(enumDefs);
     }
 
     public void setEnumDefs(Map<String, EnumDef> enumDefs) {
         this.enumDefs = enumDefs;
+    }
+
+    public boolean hasAttribute(String name) {
+        return availableAttributes.get().contains(name);
+    }
+
+    public boolean hasAction(String name) {
+        return availableActions.get().contains(name);
+    }
+
+    /**
+     * 
+     * @param name
+     * @return the actions with the given name. Since overloading is supported, several actions can have the same name
+     */
+    public List<Action> getAction(String name) {
+        return getAllJoinPoints().stream()
+                .map(jp -> jp.getAction(name))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 
+     * @param name
+     * @return the attributes with the given name. Since overloading is supported, several attributes can have the same
+     *         name
+     */
+    public List<Attribute> getAttributes(String name) {
+        return getAllJoinPoints().stream()
+                .map(jp -> jp.getAttribute(name))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 }

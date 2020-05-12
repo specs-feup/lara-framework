@@ -69,13 +69,13 @@ public class LanguageSpecificationTest {
 
         actual.append("loop all actions:");
         langSpec.getJoinPoint("loop").getAllActions().stream()
-                .map(action -> "Name: " + action.getName() + ", Class: " + action.getJoinPoint())
+                .map(action -> "Name: " + action.getName())
                 .forEach(actionName -> actual.append("\n" + actionName));
         actual.append("\n");
 
         actual.append("body all actions:");
         langSpec.getJoinPoint("body").getAllActions().stream()
-                .map(action -> "Name: " + action.getName() + ", Class: " + action.getJoinPoint())
+                .map(action -> "Name: " + action.getName())
                 .forEach(actionName -> actual.append("\n" + actionName));
         // actions = am.getAllJoinPointActions(jp, jpm);
 
