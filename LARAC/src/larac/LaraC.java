@@ -35,6 +35,8 @@ import org.dojo.jsl.parser.ast.ParseException;
 import org.dojo.jsl.parser.ast.Token;
 import org.dojo.jsl.parser.ast.TokenMgrError;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.JoinPointFactory;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -45,6 +47,7 @@ import larac.options.LaraCOptions;
 import larac.options.resources.InputStreamProvider;
 import larac.structure.AspectIR;
 import larac.utils.FileUtils;
+import larac.utils.Organizer;
 import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -79,6 +82,7 @@ public class LaraC {
     private String prefix = "";
 
     private LanguageSpecification languageSpec;
+    // private LanguageSpecificationV2 languageSpecV2;
     private AspectIR aspectIR;
 
     private boolean parsed;
@@ -182,6 +186,7 @@ public class LaraC {
         this.options = options;
         print = output;
         languageSpec = langSpec;
+        // languageSpecV2 = JoinPointFactory.fromOld(langSpec);
     }
 
     private void parseForImport(Map<String, LaraC> importedFiles) {
@@ -636,6 +641,15 @@ public class LaraC {
 
     public LanguageSpecification getLanguageSpec() {
         return languageSpec;
+    }
+
+    public LanguageSpecificationV2 getLanguageSpecV2() {
+        // return languageSpecV2;
+        return JoinPointFactory.fromOld(getLanguageSpec());
+    }
+
+    public Organizer getOrganizer() {
+        return new Organizer(getLanguageSpecV2());
     }
 
     public AspectIR getAspectIR() {

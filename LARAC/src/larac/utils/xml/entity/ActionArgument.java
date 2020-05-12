@@ -16,109 +16,124 @@ import org.dojo.jsl.parser.ast.ASTLiteral;
 import org.dojo.jsl.parser.ast.LARAEcmaScriptTreeConstants;
 import org.dojo.jsl.parser.ast.SimpleNode;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.JoinPointFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import larac.objects.Enums.Types;
-import larac.utils.OrganizeUtils;
+import larac.utils.Organizer;
 
 public class ActionArgument {
-	private String name;
-	private String type;
-	private SimpleNode value;
-	private LanguageSpecification langSpec;
+    private String name;
+    private String type;
+    private SimpleNode value;
+    // private LanguageSpecification langSpec;
+    private Organizer organizer;
 
-	public ActionArgument(String name, String type, LanguageSpecification spec) {
-		langSpec = spec;
-		setName(name);
-		setType(type);
-	}
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public ActionArgument(String name, String type, LanguageSpecification spec) {
+        this(name, type, new Organizer(JoinPointFactory.fromOld(spec)));
+        // langSpec = spec;
+        // setName(name);
+        // setType(type);
+    }
 
-	public ActionArgument(String name, String type, String value) {
-		setName(name);
-		setType(type);
-		setValue(value);
-	}
+    public ActionArgument(String name, String type, Organizer organizer) {
+        this.organizer = organizer;
+        setName(name);
+        setType(type);
+    }
 
-	public boolean hasValue() {
-		return value != null;
-	}
+    /*
+    public ActionArgument(String name, String type, String value) {
+        setName(name);
+        setType(type);
+        setValue(value);
+    }
+    */
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    public boolean hasValue() {
+        return value != null;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @return the value
-	 */
-	public SimpleNode getValue() {
-		return value;
-	}
+    /**
+     * @param type
+     *            the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(SimpleNode value) {
-		this.value = value;
-	}
+    /**
+     * @return the value
+     */
+    public SimpleNode getValue() {
+        return value;
+    }
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(String value) {
+    /**
+     * @param value
+     *            the value to set
+     */
+    public void setValue(SimpleNode value) {
+        this.value = value;
+    }
 
-		final ASTLiteral lit = new ASTLiteral(LARAEcmaScriptTreeConstants.JJTLITERAL);
-		lit.jjtSetValue(value);
-		// try {
-		if (type.contains("[]")) {
+    /**
+     * @param value
+     *            the value to set
+     */
+    public void setValue(String value) {
 
-			lit.setType(Types.Array);
-		} else {
-			lit.setType(OrganizeUtils.getConvertedType(type, langSpec));
-		}
-		// } catch (Exception e) {
-		// if (value.equals("null"))
-		// lit.setType(Types.Null);
-		// else
-		// value.equals(Types.Object);
-		// }
-		this.value = lit;
-	}
+        final ASTLiteral lit = new ASTLiteral(LARAEcmaScriptTreeConstants.JJTLITERAL);
+        lit.jjtSetValue(value);
+        // try {
+        if (type.contains("[]")) {
 
-	public void toXML(Document doc, Element actEl) {
-		if (value != null) {
-			final Element argEL = doc.createElement("argument");
-			actEl.appendChild(argEL);
-			argEL.setAttribute("name", name);
-			value.toXML(doc, argEL);
-		}
-	}
+            lit.setType(Types.Array);
+        } else {
+            lit.setType(organizer.getConvertedType(type));
+        }
+        // } catch (Exception e) {
+        // if (value.equals("null"))
+        // lit.setType(Types.Null);
+        // else
+        // value.equals(Types.Object);
+        // }
+        this.value = lit;
+    }
+
+    public void toXML(Document doc, Element actEl) {
+        if (value != null) {
+            final Element argEL = doc.createElement("argument");
+            actEl.appendChild(argEL);
+            argEL.setAttribute("name", name);
+            value.toXML(doc, argEL);
+        }
+    }
 }

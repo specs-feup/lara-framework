@@ -37,8 +37,6 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.FilterExpression;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import Utils.LARASystem;
@@ -180,8 +178,7 @@ public class ImportProcessor {
         interpreter.put(MasterWeaver.WEAVER_NAME, laraI.getWeaver());
         interpreter.put(LARASystem.LARA_SYSTEM_NAME, new LARASystem(laraI));
         WeaverEngine engine = laraI.getWeaver().getEngine();
-        LanguageSpecification languageSpecification = engine.getLanguageSpecification();
-        LanguageSpecificationV2 ls = JoinPointFactory.fromOld(languageSpecification);
+        LanguageSpecificationV2 ls = engine.getLanguageSpecificationV2();
         interpreter.put(MasterWeaver.LANGUAGE_SPECIFICATION_NAME,
                 WeaverSpecification.newInstance(ls, engine.getScriptEngine()));
     }

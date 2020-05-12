@@ -37,12 +37,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.Declaration;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.Select;
@@ -84,9 +82,9 @@ public class LanguageSpecificationSideBar extends JPanel {
      * @param editor
      * @param langSpec
      */
-    public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecification langSpec) {
-        this(editor, JoinPointFactory.fromOld(langSpec));
-    }
+    // public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecification langSpec) {
+    // this(editor, JoinPointFactory.fromOld(langSpec));
+    // }
 
     public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecificationV2 langSpec) {
         super(new BorderLayout());

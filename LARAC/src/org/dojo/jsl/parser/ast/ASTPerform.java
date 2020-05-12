@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.actionsmodel.ActionModel;
-import org.lara.language.specification.actionsmodel.schema.Action;
+import org.lara.language.specification.dsl.Action;
+
+// import org.lara.language.specification.actionsmodel.schema.Action;
 
 import larac.LaraC;
 import larac.exceptions.LARACompilerException;
 import larac.objects.Variable;
-import larac.utils.OrganizeUtils;
 import larac.utils.xml.entity.ActionArgument;
 import pt.up.fe.specs.util.SpecsFactory;
 import tdrc.utils.StringUtils;
@@ -39,12 +38,15 @@ public class ASTPerform extends SimpleNode {
     @Override
     public Object organize(Object obj) {
         final LaraC lara = getLara();
-        final LanguageSpecification languageSpec = lara.languageSpec();
-        final ActionModel actionModel = languageSpec.getActionModel();
+
+        var organizer = lara.getOrganizer();
+        var languageSpec = lara.getLanguageSpecV2();
+        // final ActionModel actionModel = languageSpec.getActionModel();
         final ASTAction act = (ASTAction) parent;
         act.setMethod(action);
 
-        if (!actionModel.contains(action)) {
+        // if (!actionModel.contains(action)) {
+        if (!languageSpec.hasAction(action)) {
 
             lara.warnln("Action '" + action
                     + "' does not exist in the action model. The arguments cannot be verified. Will use action as is.");
@@ -52,14 +54,14 @@ public class ASTPerform extends SimpleNode {
             act.setArguments(emptyMap);
             return null;
         }
+
         // Since we accept method overloading then we should verify all possible actions
-        List<Action> actions = actionModel.getActions(action);
+        List<Action> actions = languageSpec.getAction(action);
         if (children == null) {
             // Base case: no arguments were given to the action and there is an action without parameters
             for (Action action : actions) {
-                if (action.getParameter().isEmpty()) {
-                    final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
-                            languageSpec);
+                if (action.getParameters().isEmpty()) {
+                    final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
                     act.setArguments(actionParam);
                     validateReturn(lara, action);
                     return null;
@@ -78,8 +80,7 @@ public class ASTPerform extends SimpleNode {
         List<Action> possibleActions = SpecsFactory.newLinkedList();
         if (params.areNamed) {
             actions: for (Action action : actions) {
-                final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
-                        languageSpec);
+                final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
                 for (final Node param : params.getChildren()) {
                     final ASTNamedArgument na = (ASTNamedArgument) param;
                     if (!actionParam.containsKey(na.value)) {
@@ -112,9 +113,8 @@ public class ASTPerform extends SimpleNode {
         } else {
             if (params.children == null) {
                 for (Action action : actions) {
-                    if (action.getParameter().isEmpty()) {
-                        final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
-                                languageSpec);
+                    if (action.getParameters().isEmpty()) {
+                        final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
                         act.setArguments(actionParam);
                         validateReturn(lara, action);
                         return null;
@@ -123,9 +123,8 @@ public class ASTPerform extends SimpleNode {
             } else {
                 for (Action action : actions) {
                     int length = params.children.length;
-                    if (length == action.getParameter().size()) { // Just accept same size of parameters
-                        final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
-                                languageSpec);
+                    if (length == action.getParameters().size()) { // Just accept same size of parameters
+                        final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
                         int i = 0;
                         for (final ActionArgument arg : actionParam.values()) {
                             arg.setValue((SimpleNode) params.jjtGetChild(i++));
@@ -138,99 +137,206 @@ public class ASTPerform extends SimpleNode {
             }
             throwIllegalParameters(actions, params.children);
         }
-        /*
-        
-        act.setArguments(actionParam);
-        
-        if (children == null) { //DONE
-            if (!actionParam.isEmpty()) { //DONE
-                throw newException("Illegal number of arguments in action '" + action + "'. None was given, Expected "
-                        + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
-            }
-        
-            return null; //DONE
-        }
-        final ASTFunctionCallParameters params = (ASTFunctionCallParameters) children[0];
-        int callparametersId = LARAEcmaScriptTreeConstants.JJTFUNCTIONCALLPARAMETERS;
-        final ASTFunctionCallParameters newParams = new ASTFunctionCallParameters(callparametersId);
-        if (params.areNamed) {
-            for (final Node param : params.getChildren()) {
-                final ASTNamedArgument na = (ASTNamedArgument) param;
-                if (!actionParam.containsKey(na.value)) {
-                    throw newException("The argument '" + na.value + "' does not exist for action '" + action
-                            + "'. Expected arguments: " + actionParam.keySet());
-                }
-                final ActionArgument actArg = actionParam.get(na.value);
-                actArg.setValue(na.getChild(0));
-            }
-        } else {
-            if (params.children == null) {
-                if (actionParam.size() > 0) {
-                    // final int given = 0;
-                    // final String verb = given == 1 ? "was" : "were";
-                    throw newException(
-                            "Illegal number of arguments in action '" + action + ". No arguments given, Expected "
-                                    + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
-                }
-            } else if ((params.children.length != actionParam.size())) {
-                final int given = params.children.length;
-                final String verb = given == 1 ? "was" : "were";
-                throw newException("Illegal number of arguments in action '" + action + ". '" + given + "' " + verb
-                        + " given, Expected " + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
-            }
-            int i = 0;
-            for (final ActionArgument arg : actionParam.values()) {
-                arg.setValue((SimpleNode) params.jjtGetChild(i++));
-            }
-        }
-        int i = 0;
-        final List<String> missingArguments = new ArrayList<>();
-        for (final ActionArgument arg : actionParam.values()) {
-            if (arg.getValue() == null) {
-                missingArguments.add(arg.getName());
-            } else {
-                if (arg.getType().equals("template")) {
-                    arg.getValue().isTemplate = true;
-                }
-                arg.getValue().organize(this);
-                newParams.associateChild(arg.getValue(), i++);
-            }
-        }
-        if (!missingArguments.isEmpty()) {
-            throw newException("Arguments " + missingArguments + " for action '" + action + "' must be defined.");
-        }
-        associateChild(newParams, children.length - 1);
-        
-        if (returnName.isPresent()) {
-            Action action2 = actionModel.getAction((action));
-            if (action2.getReturn().equals("void")) {
-                lara.warnln("Using a variable assignment from an action that returns void.");
-            }
-            String varName = returnName.get();
-            final HashMap<String, Variable> vars = getHMVars();
-            if (!vars.containsKey(varName)) {
-        
-                // Verify outputs
-        
-                Optional<ASTAspectDef> ancestorOfType = getAncestorOfType(ASTAspectDef.class);
-                if (!ancestorOfType.isPresent() ||
-                        !ancestorOfType.get().getOutputs().containsKey(varName)) {
-        
-                    getHMVars().put(varName, new Variable(varName));
-                }
-            }
-            ASTAction parent = (ASTAction) jjtGetParent();
-            parent.setVarName(varName);
-        
-        }
-        // if (children.length - 2 == 0)
-        // return true;
-        //
-         
-         */
-        // validateReturn(lara, actionModel);
+
         return null;
     }
+
+    // @Override
+    // public Object organize(Object obj) {
+    // final LaraC lara = getLara();
+    // final LanguageSpecification languageSpec = lara.languageSpec();
+    // final ActionModel actionModel = languageSpec.getActionModel();
+    // final ASTAction act = (ASTAction) parent;
+    // act.setMethod(action);
+    //
+    // if (!actionModel.contains(action)) {
+    //
+    // lara.warnln("Action '" + action
+    // + "' does not exist in the action model. The arguments cannot be verified. Will use action as is.");
+    // final Map<String, ActionArgument> emptyMap = Collections.emptyMap();
+    // act.setArguments(emptyMap);
+    // return null;
+    // }
+    // // Since we accept method overloading then we should verify all possible actions
+    // List<Action> actions = actionModel.getActions(action);
+    // if (children == null) {
+    // // Base case: no arguments were given to the action and there is an action without parameters
+    // for (Action action : actions) {
+    // if (action.getParameter().isEmpty()) {
+    // final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
+    // languageSpec);
+    // act.setArguments(actionParam);
+    // validateReturn(lara, action);
+    // return null;
+    // }
+    // }
+    // throwIllegalParameters(actions, children);
+    // // + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
+    // }
+    //
+    // // Get the action arguments
+    // final ASTFunctionCallParameters params = (ASTFunctionCallParameters) children[0];
+    // int callparametersId = LARAEcmaScriptTreeConstants.JJTFUNCTIONCALLPARAMETERS;
+    // // Instantiate the new arguments that will comprise the necessary changes
+    // final ASTFunctionCallParameters newParams = new ASTFunctionCallParameters(callparametersId);
+    // List<Map<String, ActionArgument>> actionsParams = SpecsFactory.newLinkedList();
+    // List<Action> possibleActions = SpecsFactory.newLinkedList();
+    // if (params.areNamed) {
+    // actions: for (Action action : actions) {
+    // final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
+    // languageSpec);
+    // for (final Node param : params.getChildren()) {
+    // final ASTNamedArgument na = (ASTNamedArgument) param;
+    // if (!actionParam.containsKey(na.value)) {
+    // continue actions;
+    // }
+    //
+    // final ActionArgument actArg = actionParam.get(na.value);
+    // actArg.setValue(na.getChild(0));
+    // }
+    // if (argsAreValid(actionParam)) {
+    // actionsParams.add(actionParam);
+    // possibleActions.add(action);
+    // }
+    // }
+    // if (possibleActions.isEmpty()) {
+    // throwIllegalParameters(actions, params.children);
+    // }
+    // if (possibleActions.size() > 1) {
+    // String message = "Conflicting action choice when using named arguments. Given: (show named arguments given by
+    // user)";
+    // message += "Conflicting Options:\n";
+    // int i = 0;
+    // for (Action action : possibleActions) {
+    // message += "\t" + i + ") " + action2String(action) + "\n";
+    // }
+    // throw new RuntimeException(message);
+    // }
+    // Map<String, ActionArgument> map = actionsParams.get(0);
+    // Action action = possibleActions.get(0);
+    // organizeWithGivenParams(lara, act, params, newParams, action, map);
+    // } else {
+    // if (params.children == null) {
+    // for (Action action : actions) {
+    // if (action.getParameter().isEmpty()) {
+    // final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
+    // languageSpec);
+    // act.setArguments(actionParam);
+    // validateReturn(lara, action);
+    // return null;
+    // }
+    // }
+    // } else {
+    // for (Action action : actions) {
+    // int length = params.children.length;
+    // if (length == action.getParameter().size()) { // Just accept same size of parameters
+    // final Map<String, ActionArgument> actionParam = OrganizeUtils.createActionParameters(action,
+    // languageSpec);
+    // int i = 0;
+    // for (final ActionArgument arg : actionParam.values()) {
+    // arg.setValue((SimpleNode) params.jjtGetChild(i++));
+    // }
+    //
+    // organizeWithGivenParams(lara, act, params, newParams, action, actionParam);
+    // return null;
+    // }
+    // }
+    // }
+    // throwIllegalParameters(actions, params.children);
+    // }
+    // /*
+    //
+    // act.setArguments(actionParam);
+    //
+    // if (children == null) { //DONE
+    // if (!actionParam.isEmpty()) { //DONE
+    // throw newException("Illegal number of arguments in action '" + action + "'. None was given, Expected "
+    // + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
+    // }
+    //
+    // return null; //DONE
+    // }
+    // final ASTFunctionCallParameters params = (ASTFunctionCallParameters) children[0];
+    // int callparametersId = LARAEcmaScriptTreeConstants.JJTFUNCTIONCALLPARAMETERS;
+    // final ASTFunctionCallParameters newParams = new ASTFunctionCallParameters(callparametersId);
+    // if (params.areNamed) {
+    // for (final Node param : params.getChildren()) {
+    // final ASTNamedArgument na = (ASTNamedArgument) param;
+    // if (!actionParam.containsKey(na.value)) {
+    // throw newException("The argument '" + na.value + "' does not exist for action '" + action
+    // + "'. Expected arguments: " + actionParam.keySet());
+    // }
+    // final ActionArgument actArg = actionParam.get(na.value);
+    // actArg.setValue(na.getChild(0));
+    // }
+    // } else {
+    // if (params.children == null) {
+    // if (actionParam.size() > 0) {
+    // // final int given = 0;
+    // // final String verb = given == 1 ? "was" : "were";
+    // throw newException(
+    // "Illegal number of arguments in action '" + action + ". No arguments given, Expected "
+    // + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
+    // }
+    // } else if ((params.children.length != actionParam.size())) {
+    // final int given = params.children.length;
+    // final String verb = given == 1 ? "was" : "were";
+    // throw newException("Illegal number of arguments in action '" + action + ". '" + given + "' " + verb
+    // + " given, Expected " + actionParam.size() + " arguments: '" + actionParam.keySet() + "'");
+    // }
+    // int i = 0;
+    // for (final ActionArgument arg : actionParam.values()) {
+    // arg.setValue((SimpleNode) params.jjtGetChild(i++));
+    // }
+    // }
+    // int i = 0;
+    // final List<String> missingArguments = new ArrayList<>();
+    // for (final ActionArgument arg : actionParam.values()) {
+    // if (arg.getValue() == null) {
+    // missingArguments.add(arg.getName());
+    // } else {
+    // if (arg.getType().equals("template")) {
+    // arg.getValue().isTemplate = true;
+    // }
+    // arg.getValue().organize(this);
+    // newParams.associateChild(arg.getValue(), i++);
+    // }
+    // }
+    // if (!missingArguments.isEmpty()) {
+    // throw newException("Arguments " + missingArguments + " for action '" + action + "' must be defined.");
+    // }
+    // associateChild(newParams, children.length - 1);
+    //
+    // if (returnName.isPresent()) {
+    // Action action2 = actionModel.getAction((action));
+    // if (action2.getReturn().equals("void")) {
+    // lara.warnln("Using a variable assignment from an action that returns void.");
+    // }
+    // String varName = returnName.get();
+    // final HashMap<String, Variable> vars = getHMVars();
+    // if (!vars.containsKey(varName)) {
+    //
+    // // Verify outputs
+    //
+    // Optional<ASTAspectDef> ancestorOfType = getAncestorOfType(ASTAspectDef.class);
+    // if (!ancestorOfType.isPresent() ||
+    // !ancestorOfType.get().getOutputs().containsKey(varName)) {
+    //
+    // getHMVars().put(varName, new Variable(varName));
+    // }
+    // }
+    // ASTAction parent = (ASTAction) jjtGetParent();
+    // parent.setVarName(varName);
+    //
+    // }
+    // // if (children.length - 2 == 0)
+    // // return true;
+    // //
+    //
+    // */
+    // // validateReturn(lara, actionModel);
+    // return null;
+    // }
 
     private void organizeWithGivenParams(final LaraC lara, final ASTAction act, final ASTFunctionCallParameters params,
             final ASTFunctionCallParameters newParams, Action action, final Map<String, ActionArgument> actionParam) {
@@ -287,7 +393,7 @@ public class ASTPerform extends SimpleNode {
     private void validateReturn(final LaraC lara, final Action action) {
         if (returnName.isPresent()) {
 
-            if (action.getReturn().equals("void")) {
+            if (action.getReturnType().equals("void")) {
                 lara.warnln("Using a variable assignment from an action that returns void.");
             }
             String varName = returnName.get();
@@ -364,7 +470,7 @@ public class ASTPerform extends SimpleNode {
             }
         }
 
-        String numArgs = StringUtils.join(actions, a -> "(" + a.getParameter().size() + ")", ", ");
+        String numArgs = StringUtils.join(actions, a -> "(" + a.getParameters().size() + ")", ", ");
         message += ", expected one of: " + numArgs + ". ";
         String options = getOptionsString(actions);
         message += options;
@@ -384,7 +490,7 @@ public class ASTPerform extends SimpleNode {
 
     private static String action2String(Action action) {
         String args = action.getName() + "("
-                + StringUtils.join(action.getParameter(), p -> p.getType() + " " + p.getName(), ", ") + ")";
+                + StringUtils.join(action.getParameters(), p -> p.getType() + " " + p.getName(), ", ") + ")";
         return args;
     }
 

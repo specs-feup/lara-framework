@@ -135,7 +135,7 @@ public class EditorPanel extends GuiTab {
         DefaultCaret caret = (DefaultCaret) outputArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-        langSpecSideBar = new LanguageSpecificationSideBar(this, weaverEngine.getLanguageSpecification());
+        langSpecSideBar = new LanguageSpecificationSideBar(this, weaverEngine.getLanguageSpecificationV2());
         add(menu, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
