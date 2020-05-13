@@ -143,12 +143,16 @@ public class LangSpecsXmlParser {
                 jp.setExtend(global);
             }
 
-            // Add class attributes
-
-            List<XmlElement> attributeNodes = attributeModelNode.getElementsByName("artifact").stream()
+            // Obtain attribute nodes from artifacts
+            List<XmlElement> artifactNodes = attributeModelNode.getElementsByName("artifact").stream()
                     .filter(attribute -> attribute.getAttribute("class").equals(jpClass))
                     .collect(Collectors.toList());
 
+            var attributeNodes = artifactNodes.stream()
+                    .flatMap(art -> art.getElementsByName("attribute").stream())
+                    .collect(Collectors.toList());
+
+            // Add attributes
             jp.setAttributes(convertAttributes(attributeNodes, langSpecV2));
 
             // Add selects
