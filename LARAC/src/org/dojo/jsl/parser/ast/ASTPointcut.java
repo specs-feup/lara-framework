@@ -238,7 +238,7 @@ public class ASTPointcut extends SimpleNode {
         // System.out.println("##########################################");
 
         if (!selPath.hasPath() || selPath.getPath().isEmpty()) {
-            throw new LARACompilerException("No path exists for was found for join pont '" + value + "'");
+            throw new LARACompilerException("No path exists for was found for join point '" + value + "'");
         }
 
         if (selPath.hasSecondaryPath()) {
