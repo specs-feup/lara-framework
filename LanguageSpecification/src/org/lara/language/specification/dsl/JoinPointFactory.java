@@ -197,6 +197,13 @@ public class JoinPointFactory {
 
                 JoinPointType selectJPT = select.getClazz();
                 JoinPointClass selectJP = langSpecV2.getJoinPoint(selectJPT.getClazz());
+
+                // Validation: selectJP must not be null
+                if (selectJP == null) {
+                    throw new RuntimeException(
+                            "Select has invalid join point name as class: " + select.getClazz().getClazz());
+                }
+
                 String alias = select.getAlias();
                 alias = alias.equals(selectJPT.getClazz()) ? "" : alias;
                 Select newSelect = new Select(selectJP, alias);
