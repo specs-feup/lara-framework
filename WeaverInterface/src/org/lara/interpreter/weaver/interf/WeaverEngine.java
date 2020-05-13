@@ -61,7 +61,17 @@ public abstract class WeaverEngine {
 
         scriptEngine = null;
 
-        langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
+        // langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
+        langSpec = Lazy.newInstance(this::buildLangSpecsV2);
+    }
+
+    /**
+     * TODO: remove after {@link LanguageSpecification} has been dealt with
+     * 
+     * @return
+     */
+    protected LanguageSpecificationV2 buildLangSpecsV2() {
+        return JoinPointFactory.fromOld(this.getLanguageSpecification());
     }
 
     public JsEngine getScriptEngine() {
