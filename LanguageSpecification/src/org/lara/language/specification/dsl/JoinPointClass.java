@@ -16,7 +16,7 @@ package org.lara.language.specification.dsl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -94,7 +94,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     private <T extends BaseNode> Map<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
-        Map<String, T> map = new HashMap<>();
+        Map<String, T> map = new LinkedHashMap<>();
 
         for (var node : nodes) {
             map.put(keyMapper.apply(node), node);

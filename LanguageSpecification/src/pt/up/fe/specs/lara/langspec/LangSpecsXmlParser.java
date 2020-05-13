@@ -325,7 +325,7 @@ public class LangSpecsXmlParser {
             selects.add(newSelect);
         }
 
-        Collections.sort(selects);
+        // Collections.sort(selects);
 
         return selects;
     }
