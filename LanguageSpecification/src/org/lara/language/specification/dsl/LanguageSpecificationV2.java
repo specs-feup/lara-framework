@@ -70,6 +70,7 @@ public class LanguageSpecificationV2 {
         super();
         this.root = root;
         this.rootAlias = rootAlias == null ? "" : rootAlias;
+        // this.rootAlias = rootAlias;
         joinPoints = new LinkedHashMap<>();
         typeDefs = new LinkedHashMap<>();
         setEnumDefs(new LinkedHashMap<>());
@@ -271,6 +272,10 @@ public class LanguageSpecificationV2 {
     }
 
     public String getRootAlias() {
+        if (rootAlias.isEmpty()) {
+            return root.getName();
+        }
+
         return rootAlias;
     }
 

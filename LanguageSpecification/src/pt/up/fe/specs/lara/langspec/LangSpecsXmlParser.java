@@ -58,8 +58,9 @@ public class LangSpecsXmlParser {
 
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
             InputStream actionModel, boolean validate) {
-        System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.read());
 
+        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.read());
+        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.getResource());
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
         var actionSchema = validate ? SchemaResource.ACTION_SCHEMA.toStream() : null;
@@ -307,6 +308,12 @@ public class LangSpecsXmlParser {
         for (var selectNode : selectNodes) {
             String selectClassName = selectNode.getAttribute("class");
             JoinPointClass selectJP = langSpecV2.getJoinPoint(selectClassName);
+
+            // Validation: selectJP must not be null
+            if (selectJP == null) {
+                throw new RuntimeException("Select has invalid join point name as class: " + selectClassName);
+            }
+
             String alias = selectNode.getAttribute("alias");
             alias = alias.equals(selectClassName) ? "" : alias; // Is this necessary?
             Select newSelect = new Select(selectJP, alias);
