@@ -34,7 +34,10 @@ import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.xml.XmlDocument;
 import pt.up.fe.specs.util.xml.XmlElement;
 
@@ -43,9 +46,27 @@ public class LangSpecsXmlParser {
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
             InputStream actionModel) {
 
-        var joinPointModelNode = XmlDocument.newInstance(joinPointModel, SchemaResource.JOIN_POINT_SCHEMA.toStream());
-        var attributeModelNode = XmlDocument.newInstance(attributeModel, SchemaResource.ATTRIBUTE_SCHEMA.toStream());
-        var actionModelNode = XmlDocument.newInstance(actionModel, SchemaResource.ACTION_SCHEMA.toStream());
+        return parse(joinPointModel, attributeModel, actionModel, true);
+    }
+
+    public static LanguageSpecificationV2 parse(ResourceProvider joinPointModel, ResourceProvider attributeModel,
+            ResourceProvider actionModel, boolean validate) {
+
+        return parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
+                SpecsIo.resourceToStream(actionModel), validate);
+    }
+
+    public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
+            InputStream actionModel, boolean validate) {
+        System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.read());
+
+        var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
+        var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
+        var actionSchema = validate ? SchemaResource.ACTION_SCHEMA.toStream() : null;
+
+        var joinPointModelNode = XmlDocument.newInstance(joinPointModel, jpSchema);
+        var attributeModelNode = XmlDocument.newInstance(attributeModel, attrSchema);
+        var actionModelNode = XmlDocument.newInstance(actionModel, actionSchema);
 
         // Setup global JoinPointClass
         LanguageSpecificationV2 langSpecV2 = new LanguageSpecificationV2();
@@ -134,6 +155,29 @@ public class LangSpecsXmlParser {
 
             // Add actions
             jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass)));
+
+            // Set default attributes
+            for (var artifact : attributeModelNode.getElementsByName("artifact")) {
+                var defaultValue = artifact.getAttribute("default");
+                if (defaultValue.isEmpty()) {
+                    continue;
+                }
+
+                // Get corresponding join point and set default
+                // System.out.println("ARTIFACT CLASS: " + artifact.getAttribute("class"));
+                // System.out.println("JP: " + langSpecV2.getJoinPoint(artifact.getAttribute("class")));
+
+                var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
+
+                if (artifactJp == null) {
+                    SpecsLogs.info("Artifact without join point: " + artifact.getAttribute("class"));
+                    continue;
+                }
+
+                artifactJp.setDefaultAttribute(defaultValue);
+                // System.out.println("SETTING DEFAULT '" + defaultValue + "' for JP " +
+                // artifact.getAttribute("class"));
+            }
         }
 
         // Add default global attributes (e.g., joinPointType, instanceOf)

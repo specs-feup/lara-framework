@@ -369,7 +369,8 @@ public abstract class WeaverEngine {
         // for (var art : artifact.getAttribute()) {
         // System.out.println("ATTR NAME: " + art.getName());
         // }
-        return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
+        // return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
+        return getLanguageSpecificationV2().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
     }
 
 }

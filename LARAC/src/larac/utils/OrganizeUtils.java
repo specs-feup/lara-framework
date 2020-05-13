@@ -15,10 +15,7 @@ package larac.utils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,11 +23,6 @@ import org.dojo.jsl.parser.ast.ASTExpressionStatement;
 import org.dojo.jsl.parser.ast.LARAEcmaScript;
 import org.dojo.jsl.parser.ast.ParseException;
 import org.dojo.jsl.parser.ast.SimpleNode;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.actionsmodel.schema.Parameter;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,8 +31,6 @@ import org.w3c.dom.NodeList;
 import larac.exceptions.LARACompilerException;
 import larac.objects.Enums;
 import larac.objects.Enums.Types;
-import larac.utils.xml.entity.ActionArgument;
-import tdrc.utils.StringUtils;
 
 public class OrganizeUtils {
     private static final String VALUE_ARGUMENT_NAME = "value";
@@ -80,53 +70,13 @@ public class OrganizeUtils {
         return finalNodes;
     }
 
-    @Deprecated
-    public static Map<String, ActionArgument> createPerformActionParameters(LanguageSpecification langSpec,
-            String method) {
-        final Action act = langSpec.getActionModel().getAction(method);
-        return createActionParameters(act, langSpec);
-    }
-
-    public static Map<String, ActionArgument> createActionParameters(final Action act,
-            LanguageSpecification langSpec) {
-        final Map<String, ActionArgument> args = new LinkedHashMap<>();
-        for (final Parameter param : act.getParameter()) {
-
-            final ActionArgument actionArgument = new ActionArgument(param.getName(), param.getType(), langSpec);
-            if (param.getDefault() != null) {
-                actionArgument.setValue(param.getDefault());
-            }
-            args.put(param.getName(), actionArgument);
-        }
-        return args;
-    }
-
-    public static Map<String, ActionArgument> createInsertParameters(LanguageSpecification spec) {
-        final Map<String, ActionArgument> args = new LinkedHashMap<>();
-
-        final ActionArgument when = new ActionArgument(OrganizeUtils.POSITION_ARGUMENT_NAME, "string", spec);
-        args.put(OrganizeUtils.POSITION_ARGUMENT_NAME, when);
-        final ActionArgument code = new ActionArgument(OrganizeUtils.CODE_ARGUMENT_NAME, "template", spec);
-        args.put(OrganizeUtils.CODE_ARGUMENT_NAME, code);
-        return args;
-    }
-
-    public static Map<String, ActionArgument> createOutputActionParameters(LanguageSpecification spec) {
-        final Map<String, ActionArgument> args = new LinkedHashMap<>();
-        final ActionArgument code = new ActionArgument(OrganizeUtils.CODE_ARGUMENT_NAME, "template", spec);
-        args.put(OrganizeUtils.CODE_ARGUMENT_NAME, code);
-        return args;
-    }
-
-    public static Map<String, ActionArgument> createDefParameters(LanguageSpecification spec) {
-        final Map<String, ActionArgument> args = new LinkedHashMap<>();
-
-        final ActionArgument attribute = new ActionArgument(OrganizeUtils.ATTRIBUTE_ARGUMENT_NAME, "string", spec);
-        args.put(OrganizeUtils.ATTRIBUTE_ARGUMENT_NAME, attribute);
-        final ActionArgument value = new ActionArgument(OrganizeUtils.VALUE_ARGUMENT_NAME, "Object", spec);
-        args.put(OrganizeUtils.VALUE_ARGUMENT_NAME, value);
-        return args;
-    }
+    // @Deprecated
+    // public static Map<String, ActionArgument> createOutputActionParameters(LanguageSpecification spec) {
+    // final Map<String, ActionArgument> args = new LinkedHashMap<>();
+    // final ActionArgument code = new ActionArgument(OrganizeUtils.CODE_ARGUMENT_NAME, "template", spec);
+    // args.put(OrganizeUtils.CODE_ARGUMENT_NAME, code);
+    // return args;
+    // }
 
     /**
      * <parameter name="attribute" type="string"/> <parameter name="value" type= "Object"/>
@@ -168,61 +118,6 @@ public class OrganizeUtils {
         litEl.setAttribute("type", Types.Undefined.toString());
         litEl.setAttribute("value", Types.Undefined.toString());
         parent.appendChild(litEl);
-    }
-
-    public static Types getConvertedType(String typeStr, LanguageSpecification spec) {
-        // String original = type;
-        // First remove array dimension
-
-        final Types type = Types.value(typeStr);
-        if (type != null) {
-            return type;
-        }
-        if (typeStr.contains("[]")) {
-            return Types.Array;
-        }
-
-        // if the object declaration exist in the artifacts
-        if (spec.getArtifacts().hasTypeDef(typeStr)) {
-            return Types.Object;
-        }
-        // if it is a join point class
-        if (spec.getJpModel().contains(typeStr)) {
-            return Types.Joinpoint;
-        }
-
-        // If it does not exist, throw an exception with the error message and
-        // the possible
-        // types that can be used
-        final StringBuilder message = new StringBuilder("Could not convert type '" + type + "'. Available types: ");
-
-        final StringBuilder availableTypes = reportAvailableTypes(spec);
-        message.append(availableTypes);
-
-        throw new RuntimeException(message.toString());
-    }
-
-    private static StringBuilder reportAvailableTypes(LanguageSpecification languageSpecification) {
-        final StringBuilder message = new StringBuilder("\n\t Primitives: ");
-        message.append(StringUtils.join(Arrays.asList(Types.values()), ", "));
-        // message.append(", Object, Array, Map, Template, Joinpoint");
-
-        final List<TypeDef> objects = languageSpecification.getArtifacts().getTypeDefs();
-        if (!objects.isEmpty()) {
-
-            message.append("\n\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
-            message.append(objectsString);
-        }
-
-        final List<JoinPointType> joinpoints = languageSpecification.getJpModel().getJoinPointList().getJoinpoint();
-        if (!joinpoints.isEmpty()) {
-
-            message.append("\n\t Join point types: ");
-            final String jpsString = StringUtils.join(joinpoints, JoinPointType::getClazz, ", ");
-            message.append(jpsString);
-        }
-        return message;
     }
 
     /**

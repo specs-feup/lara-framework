@@ -215,9 +215,9 @@ public class LanguageSpecificationSideBar extends JPanel {
         actions.removeAllElements();
         selectedBy.removeAllElements();
         // Populate lists
-        selectedItem.getAllAttributes().forEach(attributes::addElement);
-        selectedItem.getAllSelects().forEach(selects::addElement);
-        selectedItem.getAllActions().forEach(actions::addElement);
+        selectedItem.getAttributes().forEach(attributes::addElement);
+        selectedItem.getSelects().forEach(selects::addElement);
+        selectedItem.getActions().forEach(actions::addElement);
         selectedItem.getSelectedBy().forEach(selectedBy::addElement);
 
         if (selectedItem.hasExtend()) {

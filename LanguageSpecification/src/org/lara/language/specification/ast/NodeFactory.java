@@ -86,15 +86,15 @@ public class NodeFactory {
         JoinPointNode jpNode = new JoinPointNode(joinPoint.getName(), extend.isPresent() ? extend.get().getName() : "");
         joinPoint.getToolTip().ifPresent(jpNode::setToolTip);
 
-        for (Attribute attribute : joinPoint.getAllAttributes()) {
+        for (Attribute attribute : joinPoint.getAttributes()) {
             AttributeNode attrNode = toNode(attribute);
             jpNode.addChild(attrNode);
         }
-        for (Select select : joinPoint.getAllSelects()) {
+        for (Select select : joinPoint.getSelects()) {
             SelectNode attrNode = toNode(select);
             jpNode.addChild(attrNode);
         }
-        for (Action action : joinPoint.getAllActions()) {
+        for (Action action : joinPoint.getActions()) {
             ActionNode attrNode = toNode(action);
             jpNode.addChild(attrNode);
         }

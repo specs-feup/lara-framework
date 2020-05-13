@@ -13,7 +13,7 @@
 
 package larac;
 
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import larac.utils.output.Output;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
@@ -72,7 +72,7 @@ public class LARACLauncher {
      * @param output
      *            user-defined output, containing a user-defined verbose level
      */
-    public static int exec(String args[], LanguageSpecification langSpec, Output output) {
+    public static int exec(String args[], LanguageSpecificationV2 langSpec, Output output) {
         // Create a new instance of lara with the standard output and generate
         // the AST
         try {

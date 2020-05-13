@@ -5,8 +5,6 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import org.lara.language.specification.artifactsmodel.ArtifactsModel;
-import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -17,11 +15,11 @@ public class ASTPointcutFilters extends SimpleNode {
     private boolean fullSpecified;
 
     public ASTPointcutFilters(int id) {
-	super(id);
+        super(id);
     }
 
     public ASTPointcutFilters(LARAEcmaScript p, int id) {
-	super(p, id);
+        super(p, id);
     }
 
     /**
@@ -32,65 +30,70 @@ public class ASTPointcutFilters extends SimpleNode {
      * @return
      */
     public Object organize(Object obj, String type, LaraC lara) {
-	// if not full specified then we need to search for the default attribute and convert the children
-	// to full specified, i.e., <default_attribute> == <children[0]> || <default_attribute> == <children[1]>
-	if (!this.fullSpecified) {
-	    final SimpleNode propChild = (SimpleNode) getChildren()[0];
-	    if (propChild instanceof ASTOrFiltersExpr) {
+        // if not full specified then we need to search for the default attribute and convert the children
+        // to full specified, i.e., <default_attribute> == <children[0]> || <default_attribute> == <children[1]>
+        if (!this.fullSpecified) {
+            final SimpleNode propChild = (SimpleNode) getChildren()[0];
+            if (propChild instanceof ASTOrFiltersExpr) {
 
-		for (int i = 0; i < propChild.getChildren().length; i++) {
-		    setDefaultProperty(lara, propChild, (SimpleNode) propChild.getChildren()[i], i, type);
-		}
-	    } else {
-		setDefaultProperty(lara, this, propChild, 0, type);
-	    }
-	}
+                for (int i = 0; i < propChild.getChildren().length; i++) {
+                    setDefaultProperty(lara, propChild, (SimpleNode) propChild.getChildren()[i], i, type);
+                }
+            } else {
+                setDefaultProperty(lara, this, propChild, 0, type);
+            }
+        }
 
-	for (final Node node : getChildren()) {
-	    ((SimpleNode) node).organize(type, lara.languageSpec().getArtifacts());
-	}
-	return null;
+        for (final Node node : getChildren()) {
+            ((SimpleNode) node).organize(type, lara.languageSpec());
+        }
+        return null;
     }
 
     private static void setDefaultProperty(LaraC lara, SimpleNode child, SimpleNode value, int pos, String type) {
-	final ArtifactsModel artifacts = lara.languageSpec().getArtifacts();
-	final Artifact art = artifacts.getArtifactRecursively(type);
-	if (art == null) {
+        // final ArtifactsModel artifacts = lara.languageSpec().getArtifacts();
+        // final Artifact art = artifacts.getArtifactRecursively(type);
+        // if (art == null) {
+        //
+        // throw new LARACompilerException("The joinpoint '" + type
+        // + "' does not contain any attribute defined, please reformulate the filter of the select.");
+        // }
+        //
+        // final String propStr = art.getDefault();
 
-	    throw new LARACompilerException("The joinpoint '" + type
-		    + "' does not contain any attribute defined, please reformulate the filter of the select.");
-	}
+        var defaultAttr = lara.languageSpec().getJoinPoint(type).getDefaultAttribute();
 
-	final String propStr = art.getDefault();
-	if (propStr != null) {
-	    final ASTFilter prop = new ASTFilter(LARAEcmaScriptTreeConstants.JJTFILTER);
-	    final ASTOperator op = new ASTOperator(LARAEcmaScriptTreeConstants.JJTOPERATOR);
-	    op.jjtSetValue("==");
-	    prop.setProp(propStr);
-	    // prop.setOp("==");
-	    prop.associateChild(op, 0);
-	    prop.associateChild(value, 1);
-	    child.associateChild(prop, pos);
-	} else {
-	    throw new LARACompilerException("The joinpoint '" + type
-		    + "' does not contain a default attribute, please reformulate the filter of the select.");
-	}
+        // if (propStr != null) {
+        if (defaultAttr.isPresent()) {
+            final ASTFilter prop = new ASTFilter(LARAEcmaScriptTreeConstants.JJTFILTER);
+            final ASTOperator op = new ASTOperator(LARAEcmaScriptTreeConstants.JJTOPERATOR);
+            op.jjtSetValue("==");
+            // prop.setProp(propStr);
+            prop.setProp(defaultAttr.get());
+            // prop.setOp("==");
+            prop.associateChild(op, 0);
+            prop.associateChild(value, 1);
+            child.associateChild(prop, pos);
+        } else {
+            throw new LARACompilerException("The joinpoint '" + type
+                    + "' does not contain a default attribute, please reformulate the filter of the select.");
+        }
     }
 
     @Override
     public Element getFilterElement(Document doc) {
-	return ((SimpleNode) getChildren()[0]).getFilterElement(doc);
+        return ((SimpleNode) getChildren()[0]).getFilterElement(doc);
     }
 
     @Override
     public void toXML(Document doc, Element parent) {
-	final Element propsCondEl = getFilterElement(doc);
+        final Element propsCondEl = getFilterElement(doc);
 
-	parent.appendChild(propsCondEl);
+        parent.appendChild(propsCondEl);
     }
 
     public void setFullSpecified(boolean b) {
-	this.fullSpecified = b;
+        this.fullSpecified = b;
     }
 }
 /*

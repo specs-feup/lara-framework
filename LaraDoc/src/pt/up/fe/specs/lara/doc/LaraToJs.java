@@ -26,7 +26,7 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.w3c.dom.Document;
 
@@ -151,10 +151,10 @@ public class LaraToJs {
     }
 
     public static Optional<Aspects> parseLara(File laraFile) {
-        return parseLara(laraFile, new DefaultWeaver().getLanguageSpecification());
+        return parseLara(laraFile, new DefaultWeaver().getLanguageSpecificationV2());
     }
 
-    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecificationV2 languageSpecification) {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();

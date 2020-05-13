@@ -16,10 +16,10 @@ package org.lara.language.specification.dsl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     private static final String GLOBAL_NAME = "joinpoint";
     private String name;
     private Optional<JoinPointClass> extend;
+    private Optional<String> defaultAttribute;
     private List<Attribute> attributes;
     private List<Select> selects;
     private List<Action> actions;
@@ -39,47 +40,61 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     // TODO: There is attribute and action overloading, fix this
     private final Lazy<MultiMap<String, Attribute>> attributeMap;
     private final Lazy<MultiMap<String, Action>> actionsMap;
-    private final Lazy<Set<String>> availableSelects;
+    private final Lazy<Map<String, Select>> selectsMap;
 
     public JoinPointClass(String name, LanguageSpecificationV2 langSpec) {
-        this(name, null, langSpec);
+        this(name, null, null, langSpec);
     }
 
-    public JoinPointClass(String name, JoinPointClass extend, LanguageSpecificationV2 langSpec) {
+    public JoinPointClass(String name, JoinPointClass extend, String defaultAttribute,
+            LanguageSpecificationV2 langSpec) {
+
         setName(name);
         setExtend(extend);
+        setDefaultAttribute(defaultAttribute);
         setLangSpec(langSpec);
         attributes = new ArrayList<>();
         selects = new ArrayList<>();
         actions = new ArrayList<>();
 
-        attributeMap = Lazy.newInstance(() -> buildMap(getAllAttributes(), attr -> attr.getName()));
-        actionsMap = Lazy.newInstance(() -> buildMap(getAllActions(), action -> action.getName()));
-        availableSelects = Lazy.newInstance(this::buildAvailableSelects);
+        attributeMap = Lazy.newInstance(() -> buildMultiMap(getAttributes(), attr -> attr.getName()));
+        actionsMap = Lazy.newInstance(() -> buildMultiMap(getActions(), action -> action.getName()));
+        // availableSelects = Lazy.newInstance(this::buildAvailableSelects);
+        selectsMap = Lazy.newInstance(() -> buildMap(getSelects(), select -> select.getSelectName()));
     }
 
     /**
      * 
      * @return set with what can be selected in this join point
      */
-    private Set<String> buildAvailableSelects() {
-        Set<String> availableSelects = new LinkedHashSet<>();
+    // private Set<String> buildAvailableSelects() {
+    // Set<String> availableSelects = new LinkedHashSet<>();
+    //
+    // for (var select : selects) {
+    // // Alias has priority over class
+    // var alias = select.getAlias();
+    // if (!alias.isEmpty()) {
+    // availableSelects.add(alias);
+    // } else {
+    // availableSelects.add(select.getClazz().getName());
+    // }
+    // }
+    //
+    // return availableSelects;
+    // }
 
-        for (var select : selects) {
-            // Alias has priority over class
-            var alias = select.getAlias();
-            if (!alias.isEmpty()) {
-                availableSelects.add(alias);
-            } else {
-                availableSelects.add(select.getClazz().getName());
-            }
+    private <T extends BaseNode> MultiMap<String, T> buildMultiMap(List<T> nodes, Function<T, String> keyMapper) {
+        MultiMap<String, T> map = new MultiMap<>();
+
+        for (var node : nodes) {
+            map.put(keyMapper.apply(node), node);
         }
 
-        return availableSelects;
+        return map;
     }
 
-    private <T extends BaseNode> MultiMap<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
-        MultiMap<String, T> map = new MultiMap<>();
+    private <T extends BaseNode> Map<String, T> buildMap(List<T> nodes, Function<T, String> keyMapper) {
+        Map<String, T> map = new HashMap<>();
 
         for (var node : nodes) {
             map.put(keyMapper.apply(node), node);
@@ -91,13 +106,46 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     /**
      * 
      * @param name
-     * @return the attributes corresponding to the given name, or empty list if none exists.
+     * @return the attributes corresponding to the given name, or empty list if none exists. Considers all available
+     *         attributes of this join point, including hierarchy
      */
     public List<Attribute> getAttribute(String name) {
+        List<Attribute> attribute = new ArrayList<>();
+
+        // getAttribute(name, attribute);
+        getElement(name, key -> attributeMap.get().get(key), attribute);
+
+        return attribute;
+    }
+
+    // private void getAttribute(String name, List<Attribute> attribute) {
+    // // If no extends, directly add corresponding attribute and return
+    // if (!hasExtend()) {
+    // attribute.addAll(attributeMap.get().get(name));
+    // return;
+    // }
+    //
+    // // Extends other join point, first add attributes from super, and then self
+    // extend.get().getAttribute(name, attribute);
+    //
+    // attribute.addAll(attributeMap.get().get(name));
+    // }
+
+    public boolean hasAttribute(String name) {
+        // If attribute present, return immediately
+        if (attributeMap.get().containsKey(name)) {
+            return true;
+        }
+
+        // If extends join point, find in super
+        return extend.get().hasAttribute(name);
+    }
+
+    public List<Attribute> getAttributeSelf(String name) {
         return attributeMap.get().get(name);
     }
 
-    public boolean hasAttribute(String name) {
+    public boolean hasAttributeSelf(String name) {
         return attributeMap.get().containsKey(name);
     }
 
@@ -106,7 +154,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      * @param name
      * @return the actions corresponding to the given name, or empty list if none exists.
      */
-    public List<Action> getAction(String name) {
+    public List<Action> getActionSelf(String name) {
         return actionsMap.get().get(name);
     }
 
@@ -128,6 +176,24 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         } else {
             this.extend = Optional.of(extend);
         }
+    }
+
+    public void setDefaultAttribute(String defaultAttribute) {
+        if (defaultAttribute == null) {
+            this.defaultAttribute = Optional.empty();
+        } else {
+            this.defaultAttribute = Optional.of(defaultAttribute);
+        }
+    }
+
+    public Optional<String> getDefaultAttribute() {
+        // If present return
+        if (defaultAttribute.isPresent()) {
+            return defaultAttribute;
+        }
+
+        // Check if super has default attribure
+        return getExtend().map(superJp -> superJp.getDefaultAttribute()).orElse(Optional.empty());
     }
 
     public void add(Attribute attribute) {
@@ -155,7 +221,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         // this.actions.stream().forEach(action -> action.setJoinPoint(this));
     }
 
-    public List<Attribute> getAttributes() {
+    public List<Attribute> getAttributesSelf() {
         return attributes;
     }
 
@@ -163,16 +229,16 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         this.attributes = attributes;
     }
 
-    public List<Select> getSelects() {
+    public List<Select> getSelectsSelf() {
         return selects;
     }
 
     public boolean hasSelect(String name) {
-        return availableSelects.get().contains(name);
+        return selectsMap.get().containsKey(name);
     }
 
     public Collection<String> getSelectNames() {
-        return availableSelects.get();
+        return selectsMap.get().keySet();
     }
 
     /**
@@ -187,7 +253,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         }
     }
 
-    public List<Action> getActions() {
+    public List<Action> getActionsSelf() {
         return Collections.unmodifiableList(actions);
     }
 
@@ -196,14 +262,32 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      * 
      * @return
      */
-    public List<Select> getAllSelects() {
+    public List<Select> getSelects() {
         List<Select> selects = new ArrayList<>();
         selects.addAll(this.selects);
         if (extend.isPresent()) {
-            selects.addAll(extend.get().getAllSelects());
+            selects.addAll(extend.get().getSelects());
         }
 
         return selects;
+    }
+
+    /**
+     * 
+     * @param joinPointName
+     * @return the select with the given name
+     */
+    public Optional<Select> getSelect(String joinPointName) {
+        var select = selectsMap.get().get(joinPointName);
+        if (select != null) {
+            return Optional.of(select);
+        }
+
+        if (extend.isPresent()) {
+            return extend.get().getSelect(joinPointName);
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -216,44 +300,86 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
         // Get
         JoinPointClass global = langSpec.getGlobal();
-        global.getSelects().stream().filter(sel -> sel.getClazz().equals(this)).forEach(selectedBy::add);
+        global.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(this)).forEach(selectedBy::add);
 
         Collection<JoinPointClass> allJPs = langSpec.getJoinPoints().values();
         for (JoinPointClass joinPointClass : allJPs) {
-            joinPointClass.getSelects().stream().filter(sel -> sel.getClazz().equals(this)).forEach(selectedBy::add);
+            joinPointClass.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(this))
+                    .forEach(selectedBy::add);
         }
         return selectedBy;
     }
 
     /**
-     * Get all selects for this join point
+     * Get all attributes for this join point
      * 
      * @return
      */
-    public List<Attribute> getAllAttributes() {
+    public List<Attribute> getAttributes() {
         List<Attribute> attributes = new ArrayList<>();
         attributes.addAll(this.attributes);
 
         if (extend.isPresent()) {
-            attributes.addAll(extend.get().getAllAttributes());
+            attributes.addAll(extend.get().getAttributes());
         }
 
         return attributes;
     }
 
     /**
-     * Get all selects for this join point
+     * Get all actions for this join point, included inherited.
      * 
      * @return
      */
-    public List<Action> getAllActions() {
+    public List<Action> getActions() {
         List<Action> actions = new ArrayList<>();
         actions.addAll(this.actions);
-        extend.ifPresent(superJp -> actions.addAll(superJp.getAllActions()));
+        extend.ifPresent(superJp -> actions.addAll(superJp.getActions()));
         // if (extend.isPresent()) {
         // actions.addAll(extend.get().getAllActions());
         // }
         return actions;
+    }
+
+    /**
+     * 
+     * @param name
+     * @return the actions corresponding to the given name, or empty list if none exists. Considers all available
+     *         actions of this join point, including hierarchy
+     */
+    public List<Action> getAction(String name) {
+        List<Action> action = new ArrayList<>();
+
+        // getAction(name, action);
+        getElement(name, key -> actionsMap.get().get(key), action);
+
+        return action;
+    }
+
+    // private void getAction(String name, List<Action> action) {
+    // // If no extends, directly add corresponding attribute and return
+    // if (!hasExtend()) {
+    // action.addAll(actionsMap.get().get(name));
+    // return;
+    // }
+    //
+    // // Extends other join point, first add attributes from super, and then self
+    // extend.get().getAction(name, action);
+    //
+    // action.addAll(actionsMap.get().get(name));
+    // }
+
+    private <T> void getElement(String name, Function<String, List<T>> getter, List<T> action) {
+        // If no extends, directly add corresponding attribute and return
+        if (!hasExtend()) {
+            action.addAll(getter.apply(name));
+            return;
+        }
+
+        // Extends other join point, first add attributes from super, and then self
+        extend.get().getElement(name, getter, action);
+
+        action.addAll(getter.apply(name));
     }
 
     public boolean hasExtend() {

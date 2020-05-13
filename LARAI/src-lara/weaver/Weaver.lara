@@ -76,7 +76,8 @@ Weaver.hasAttribute = function(jp, attributeName) {
 		return false;
 	}
 
-	return joinPoint.getAttribute(attributeName) !== null;
+	//return joinPoint.getAttribute(attributeName) !== null;
+	return !joinPoint.getAttribute(attributeName).isEmpty();	
 }
 
 

@@ -17,7 +17,6 @@ import org.w3c.dom.Element;
 
 import larac.objects.Enums;
 import larac.objects.Enums.Types;
-import larac.utils.OrganizeUtils;
 import larac.utils.xml.entity.ActionArgument;
 
 public class ASTInsert extends SimpleNode {
@@ -86,7 +85,8 @@ public class ASTInsert extends SimpleNode {
 
         final ASTAction act = (ASTAction) parent;
         act.setMethod("insert");
-        act.setArguments(OrganizeUtils.createInsertParameters(getLara().languageSpec()));
+        // act.setArguments(OrganizeUtils.createInsertParameters(getLara().languageSpec()));
+        act.setArguments(getLara().getOrganizer().createInsertParameters());
         final Map<String, ActionArgument> arguments = act.getArguments();
         if (jjtGetChild(0) instanceof ASTFunctionCallParameters) {
             final ASTFunctionCallParameters params = (ASTFunctionCallParameters) jjtGetChild(0);

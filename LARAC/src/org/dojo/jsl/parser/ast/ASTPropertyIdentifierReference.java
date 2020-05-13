@@ -44,8 +44,10 @@ public class ASTPropertyIdentifierReference extends SimpleNode {
     @Override
     public void organizePointcutReference(ASTPointcut pc) {
         final LaraC lara = getLara();
-        if (lara.languageSpec().getArtifacts().getAttribute(pc.getType(),
-                ((SimpleNode) children[0]).value.toString()) == null) {
+        if (lara.languageSpec().getJoinPoint(pc.getType()).getAttribute(((SimpleNode) children[0]).value.toString())
+                .isEmpty()) {
+            // if (lara.languageSpec().getArtifacts().getAttribute(pc.getType(),
+            // ((SimpleNode) children[0]).value.toString()) == null) {
             throw newException("The joinpoint \"" + pc.getReference() + "\" does not contain the attribute \""
                     + ((SimpleNode) children[0]).value.toString() + "\"");
         }
@@ -54,7 +56,8 @@ public class ASTPropertyIdentifierReference extends SimpleNode {
     @Override
     public void organizeActionReference(ASTPointcut pc) {
         final LaraC lara = getLara();
-        if (!lara.languageSpec().getActionModel().contains(((SimpleNode) children[0]).value.toString())) {
+        // if (!lara.languageSpec().getActionModel().contains(((SimpleNode) children[0]).value.toString())) {
+        if (!lara.languageSpec().hasAction(((SimpleNode) children[0]).value.toString())) {
             throw newException("The action \"" + ((SimpleNode) children[0]).value.toString() + "\" does not exist");
         }
     }

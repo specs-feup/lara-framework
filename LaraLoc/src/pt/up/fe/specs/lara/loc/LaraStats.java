@@ -15,7 +15,7 @@ package pt.up.fe.specs.lara.loc;
 
 import java.io.File;
 
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.DataStore.ADataClass;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
@@ -38,9 +38,9 @@ public class LaraStats extends ADataClass<LaraStats> {
 
     /// DATAKEYS END
 
-    private final LanguageSpecification languageSpecification;
+    private final LanguageSpecificationV2 languageSpecification;
 
-    public LaraStats(LanguageSpecification languageSpecification) {
+    public LaraStats(LanguageSpecificationV2 languageSpecification) {
         super();
         this.languageSpecification = languageSpecification;
     }

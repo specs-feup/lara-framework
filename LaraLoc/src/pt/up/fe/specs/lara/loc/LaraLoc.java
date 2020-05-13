@@ -89,7 +89,7 @@ public class LaraLoc {
         CsvWriter writer = new CsvWriter("File", "LoC", "Aspects", "Comments", "Functions");
 
         ProgressCounter progress = new ProgressCounter(laraFiles.size());
-        LaraStats totals = new LaraStats(weaverEngine.getLanguageSpecification());
+        LaraStats totals = new LaraStats(weaverEngine.getLanguageSpecificationV2());
         // long totalLoc = 0;
         // long totalAspects = 0;
         // long totalComments = 0;
@@ -101,7 +101,7 @@ public class LaraLoc {
         for (File laraFile : laraFiles) {
             SpecsLogs.msgInfo("Processing '" + laraFile + "' " + progress.next());
 
-            LaraStats fileStats = new LaraStats(weaverEngine.getLanguageSpecification());
+            LaraStats fileStats = new LaraStats(weaverEngine.getLanguageSpecificationV2());
             fileStats.addFileStats(laraFile);
 
             // LaraLoc laraLoc = new LaraLoc(saveText);
@@ -146,7 +146,7 @@ public class LaraLoc {
         Map<String, LaraStats> stats = new HashMap<>();
 
         ProgressCounter progress = new ProgressCounter(laraFiles.size());
-        LaraStats totals = new LaraStats(weaverEngine.getLanguageSpecification());
+        LaraStats totals = new LaraStats(weaverEngine.getLanguageSpecificationV2());
         stats.put(TOTALS_KEY, totals);
 
         File srcFolder = SpecsIo.getWorkingDir();
@@ -154,7 +154,7 @@ public class LaraLoc {
         for (File laraFile : laraFiles) {
             SpecsLogs.msgInfo("LaraLoc: processing '" + laraFile + "' " + progress.next());
 
-            LaraStats fileStats = new LaraStats(weaverEngine.getLanguageSpecification());
+            LaraStats fileStats = new LaraStats(weaverEngine.getLanguageSpecificationV2());
             fileStats.addFileStats(laraFile);
 
             // Save line

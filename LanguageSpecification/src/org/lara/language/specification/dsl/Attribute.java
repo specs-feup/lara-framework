@@ -66,6 +66,10 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
         declaration.setType(type);
     }
 
+    public String getReturnType() {
+        return getType().getType();
+    }
+
     public String getName() {
         return declaration.getName();
     }

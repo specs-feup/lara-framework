@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
@@ -65,14 +65,14 @@ public class LaraDocParser {
     private final MultiMap<String, File> packagesPaths;
     // Filters folders/files based on name
     private final Predicate<File> nameFilter;
-    private final LanguageSpecification languageSpecification;
+    private final LanguageSpecificationV2 languageSpecification;
 
     public LaraDocParser() {
         // this(LaraDocParser::defaultNameFilter);
-        this(null, new DefaultWeaver().getLanguageSpecification());
+        this(null, new DefaultWeaver().getLanguageSpecificationV2());
     }
 
-    public LaraDocParser(Predicate<File> nameFilter, LanguageSpecification languageSpecification) {
+    public LaraDocParser(Predicate<File> nameFilter, LanguageSpecificationV2 languageSpecification) {
         this.packagesPaths = new MultiMap<>();
         this.nameFilter = nameFilter;
         this.languageSpecification = languageSpecification;

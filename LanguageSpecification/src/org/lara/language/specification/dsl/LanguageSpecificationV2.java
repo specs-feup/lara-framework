@@ -13,6 +13,7 @@
 
 package org.lara.language.specification.dsl;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -29,8 +30,11 @@ import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 
+import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.util.SpecsCollections;
+import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
 import tdrc.utils.StringUtils;
 
@@ -41,6 +45,10 @@ import tdrc.utils.StringUtils;
  *
  */
 public class LanguageSpecificationV2 {
+
+    private static final String ACTIONS_FILENAME = "actionModel.xml";
+    private static final String JOIN_POINTS_FILENAME = "joinPointModel.xml";
+    private static final String ATTRIBUTES_FILENAME = "artifacts.xml";
 
     private static final String BASE_JOINPOINT_CLASS = "joinpoint";
 
@@ -74,17 +82,47 @@ public class LanguageSpecificationV2 {
         this(null, null);
     }
 
+    /**
+     * Creates a language specification instance with the files contained in the folder 'specDir'
+     * 
+     * @param specDir
+     *            the source folder of the language specification, should include 3 files:
+     *            {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME} and {@value #ACTIONS_FILENAME}
+     * 
+     * @param validate
+     * @return
+     */
+    public static LanguageSpecificationV2 newInstance(File specDir, boolean validate) {
+
+        if (!specDir.exists() || !specDir.isDirectory()) {
+            throw new RuntimeException("Language Specification directory is invalid: " + specDir.getAbsolutePath());
+        }
+
+        try {
+            // Language specification files
+            final File jpModelFile = SpecsIo.existingFile(specDir, JOIN_POINTS_FILENAME);
+            final File artifactsFile = SpecsIo.existingFile(specDir, ATTRIBUTES_FILENAME);
+            final File actionModelFile = SpecsIo.existingFile(specDir, ACTIONS_FILENAME);
+
+            return LangSpecsXmlParser.parse(SpecsIo.toInputStream(jpModelFile), SpecsIo.toInputStream(artifactsFile),
+                    SpecsIo.toInputStream(actionModelFile), validate);
+        } catch (final Exception e) {
+            throw new LanguageSpecificationException(
+                    "Could not create a Language Specification from folder '" + specDir + "'", e);
+        }
+    }
+
     private Set<String> buildAvailableAttributes() {
         Set<String> availableAttributes = new HashSet<>();
 
         for (var jp : getJoinPoints().values()) {
-            jp.getAttributes().stream()
+            jp.getAttributesSelf().stream()
                     .map(Attribute::getName)
                     .forEach(availableAttributes::add);
         }
 
         // Add global attributes
-        global.getAttributes().stream()
+        global.getAttributesSelf().stream()
                 .map(Attribute::getName)
                 .forEach(availableAttributes::add);
 
@@ -95,13 +133,13 @@ public class LanguageSpecificationV2 {
         Set<String> availableActions = new HashSet<>();
 
         for (var jp : getJoinPoints().values()) {
-            jp.getActions().stream()
+            jp.getActionsSelf().stream()
                     .map(Action::getName)
                     .forEach(availableActions::add);
         }
 
         // Add global attributes
-        global.getActions().stream()
+        global.getActionsSelf().stream()
                 .map(Action::getName)
                 .forEach(availableActions::add);
 
@@ -316,7 +354,7 @@ public class LanguageSpecificationV2 {
      */
     public List<Action> getAction(String name) {
         return getAllJoinPoints().stream()
-                .map(jp -> jp.getAction(name))
+                .map(jp -> jp.getActionSelf(name))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
@@ -327,10 +365,12 @@ public class LanguageSpecificationV2 {
      * @return the attributes with the given name. Since overloading is supported, several attributes can have the same
      *         name
      */
-    public List<Attribute> getAttributes(String name) {
+    public List<Attribute> getAttribute(String name) {
         return getAllJoinPoints().stream()
-                .map(jp -> jp.getAttribute(name))
+                // .map(jp -> jp.getAttribute(name))
+                .map(jp -> jp.getAttributeSelf(name))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
+
 }

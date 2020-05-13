@@ -35,6 +35,11 @@ import tdrc.utils.StringUtils;
  */
 public class Organizer {
 
+    private static final String CODE_ARGUMENT_NAME = "code";
+    private static final String POSITION_ARGUMENT_NAME = "position";
+    private static final String VALUE_ARGUMENT_NAME = "value";
+    private static final String ATTRIBUTE_ARGUMENT_NAME = "attribute";
+
     private final LanguageSpecificationV2 langSpec;
 
     public Organizer(LanguageSpecificationV2 langSpec) {
@@ -110,4 +115,23 @@ public class Organizer {
         return message;
     }
 
+    public Map<String, ActionArgument> createInsertParameters() {
+        final Map<String, ActionArgument> args = new LinkedHashMap<>();
+
+        final ActionArgument when = new ActionArgument(POSITION_ARGUMENT_NAME, "string", this);
+        args.put(POSITION_ARGUMENT_NAME, when);
+        final ActionArgument code = new ActionArgument(CODE_ARGUMENT_NAME, "template", this);
+        args.put(CODE_ARGUMENT_NAME, code);
+        return args;
+    }
+
+    public Map<String, ActionArgument> createDefParameters() {
+        final Map<String, ActionArgument> args = new LinkedHashMap<>();
+
+        final ActionArgument attribute = new ActionArgument(ATTRIBUTE_ARGUMENT_NAME, "string", this);
+        args.put(ATTRIBUTE_ARGUMENT_NAME, attribute);
+        final ActionArgument value = new ActionArgument(VALUE_ARGUMENT_NAME, "Object", this);
+        args.put(VALUE_ARGUMENT_NAME, value);
+        return args;
+    }
 }

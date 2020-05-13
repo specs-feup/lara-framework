@@ -103,6 +103,16 @@ public class JoinPointFactory {
             // Add actions
             jpNode.setActions(convertActions(langSpecV2, actionModel.getJoinPointOwnActions(jpType.getClazz())));
 
+            var artifactList = artifacts.getArtifactsList();
+            if (artifactList != null) {
+                for (var artifact : artifactList.getArtifact()) {
+                    if (artifact.getDefault() != null) {
+                        // Get corresponding join point and set default
+                        langSpecV2.getJoinPoint(artifact.getClazz()).setDefaultAttribute(artifact.getDefault());
+                    }
+                }
+            }
+
         }
 
         // Add default global attributes (e.g., joinPointType, instanceOf)
@@ -195,7 +205,7 @@ public class JoinPointFactory {
             }
         }
 
-        Collections.sort(selects);
+        // Collections.sort(selects);
 
         return selects;
     }

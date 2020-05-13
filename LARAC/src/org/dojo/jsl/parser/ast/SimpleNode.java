@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.lara.language.specification.artifactsmodel.ArtifactsModel;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -380,7 +380,7 @@ public class SimpleNode implements Node {
         return false;
     }
 
-    public String organize(String type, ArtifactsModel artifacts) {
+    public String organize(String type, LanguageSpecificationV2 langSpec) {
         // getLara().warnln("Organize: Node \"" + LARAEcmaScriptTreeConstants.jjtNodeName[id] + "\" not supported");
         // return null;
         throw new RuntimeException(

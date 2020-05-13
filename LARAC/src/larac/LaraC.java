@@ -34,8 +34,6 @@ import org.dojo.jsl.parser.ast.LARAEcmaScript;
 import org.dojo.jsl.parser.ast.ParseException;
 import org.dojo.jsl.parser.ast.Token;
 import org.dojo.jsl.parser.ast.TokenMgrError;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -81,8 +79,8 @@ public class LaraC {
     private InputStreamProvider laraStreamProvider;
     private String prefix = "";
 
-    private LanguageSpecification languageSpec;
-    // private LanguageSpecificationV2 languageSpecV2;
+    private LanguageSpecificationV2 languageSpec;
+
     private AspectIR aspectIR;
 
     private boolean parsed;
@@ -132,8 +130,7 @@ public class LaraC {
      * @param out
      *            user-defined output, containing a user-defined verbose level
      */
-    public LaraC(String args[], LanguageSpecification langSpec, Output out) {
-
+    public LaraC(String args[], LanguageSpecificationV2 langSpec, Output out) {
         setReadyToParse(laraConstructor(args, langSpec, out));
     }
 
@@ -151,7 +148,7 @@ public class LaraC {
      * @param output
      *            the output stream used on the parent LaraC instance
      */
-    public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecification langSpec,
+    public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecificationV2 langSpec,
             Output output, Map<String, LaraC> importedFiles) {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraFile(laraC, laraFile);
@@ -173,7 +170,8 @@ public class LaraC {
      * @param output
      *            the output stream used on the parent LaraC instance
      */
-    public static LaraC newImporter(ResourceProvider laraResource, LaraCOptions options, LanguageSpecification langSpec,
+    public static LaraC newImporter(ResourceProvider laraResource, LaraCOptions options,
+            LanguageSpecificationV2 langSpec,
             Output output, Map<String, LaraC> importedFiles) {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraResource(laraC, laraResource);
@@ -181,7 +179,7 @@ public class LaraC {
         return laraC;
     }
 
-    private LaraC(LaraCOptions options, LanguageSpecification langSpec, Output output) {
+    private LaraC(LaraCOptions options, LanguageSpecificationV2 langSpec, Output output) {
         setParsed(false);
         this.options = options;
         print = output;
@@ -215,21 +213,21 @@ public class LaraC {
         // Parse the language specification
         if (ready) {
             final File xmlSourceDir = options.getXmlSpecDir();
-            setLanguageSpec(LanguageSpecification.newInstance(xmlSourceDir, true));
+            setLanguageSpec(LanguageSpecificationV2.newInstance(xmlSourceDir, true));
         }
         return ready;
         // parse();
     }
 
     /**
-     * Constructs the LaraC instance with the given arguments, the output stream and a {@link LanguageSpecification}
+     * Constructs the LaraC instance with the given arguments, the output stream and a {@link LanguageSpecificationV2}
      * instance
      * 
      * @param args
      * @param langSpec
      * @param out
      */
-    private boolean laraConstructor(String[] args, LanguageSpecification langSpec, Output out) {
+    private boolean laraConstructor(String[] args, LanguageSpecificationV2 langSpec, Output out) {
 
         // initialize lara
         boolean ready = initialize(args, out);
@@ -597,7 +595,7 @@ public class LaraC {
     /**
      * @return the languageSpec
      */
-    public LanguageSpecification languageSpec() {
+    public LanguageSpecificationV2 languageSpec() {
         return languageSpec;
     }
 
@@ -605,7 +603,7 @@ public class LaraC {
      * @param languageSpec
      *            the languageSpec to set
      */
-    public void setLanguageSpec(LanguageSpecification languageSpec) {
+    public void setLanguageSpec(LanguageSpecificationV2 languageSpec) {
         this.languageSpec = languageSpec;
     }
 
@@ -639,17 +637,17 @@ public class LaraC {
         parsed = initialized;
     }
 
-    public LanguageSpecification getLanguageSpec() {
+    public LanguageSpecificationV2 getLanguageSpec() {
         return languageSpec;
     }
 
-    public LanguageSpecificationV2 getLanguageSpecV2() {
-        // return languageSpecV2;
-        return JoinPointFactory.fromOld(getLanguageSpec());
-    }
+    // public LanguageSpecificationV2 getLanguageSpecV2() {
+    // // return languageSpecV2;
+    // return JoinPointFactory.fromOld(getLanguageSpec());
+    // }
 
     public Organizer getOrganizer() {
-        return new Organizer(getLanguageSpecV2());
+        return new Organizer(getLanguageSpec());
     }
 
     public AspectIR getAspectIR() {
@@ -797,7 +795,7 @@ public class LaraC {
         this.previouslyImportedLARA.add(previouslyImportedLARA);
     }
 
-    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecificationV2 languageSpecification) {
         // Pass through LaraC
         List<String> args = new ArrayList<>();
 

@@ -86,9 +86,9 @@ public class WeaverSpecification {
         }
         Collection<Attribute> attributes;
         if (allInformation) {
-            attributes = joinPoint.getAllAttributes();
-        } else {
             attributes = joinPoint.getAttributes();
+        } else {
+            attributes = joinPoint.getAttributesSelf();
         }
         List<String> attributeStrings = attributes.stream()
                 .map(Attribute::toString)
@@ -112,9 +112,9 @@ public class WeaverSpecification {
         }
         Collection<Select> attributes;
         if (allInformation) {
-            attributes = joinPoint.getAllSelects();
-        } else {
             attributes = joinPoint.getSelects();
+        } else {
+            attributes = joinPoint.getSelectsSelf();
         }
         List<String> attributeStrings = attributes.stream()
                 .map(Select::toString)
@@ -137,9 +137,9 @@ public class WeaverSpecification {
         }
         Collection<Action> attributes;
         if (allInformation) {
-            attributes = joinPoint.getAllActions();
-        } else {
             attributes = joinPoint.getActions();
+        } else {
+            attributes = joinPoint.getActionsSelf();
         }
         List<String> attributeStrings = attributes.stream()
                 .map(Action::toString)

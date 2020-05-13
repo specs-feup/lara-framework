@@ -40,7 +40,7 @@ public class ASTPerform extends SimpleNode {
         final LaraC lara = getLara();
 
         var organizer = lara.getOrganizer();
-        var languageSpec = lara.getLanguageSpecV2();
+        var languageSpec = lara.getLanguageSpec();
         // final ActionModel actionModel = languageSpec.getActionModel();
         final ASTAction act = (ASTAction) parent;
         act.setMethod(action);

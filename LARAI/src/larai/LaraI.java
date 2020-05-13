@@ -46,6 +46,7 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
@@ -211,7 +212,7 @@ public class LaraI {
                 larai.out.println(dataStore);
             }
             if (!larai.quit) {
-                larai.compile(weaverEngine.getLanguageSpecification());
+                larai.compile(weaverEngine.getLanguageSpecificationV2());
             }
             if (!larai.quit) {
                 larai.startAspectIR();
@@ -461,7 +462,7 @@ public class LaraI {
      * @return
      * @throws Exception
      */
-    public Document compileWithLARAC(File fileName, LanguageSpecification langSpec, LaraIDataStore options,
+    public Document compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec, LaraIDataStore options,
             Output out) throws Exception {
 
         // Process Lara Bundles in include folders
@@ -528,7 +529,7 @@ public class LaraI {
         return resource.getResource();
     }
 
-    private void compile(LanguageSpecification languageSpecification) {
+    private void compile(LanguageSpecificationV2 languageSpecification) {
 
         // final String aspectIR_name = this.options.getAspectIR_name();
         final String extention = SpecsIo.getExtension(options.getLaraFile());

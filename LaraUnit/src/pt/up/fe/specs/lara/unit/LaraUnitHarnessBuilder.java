@@ -164,7 +164,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
 
     public LaraDocModule getModule(File testFile) {
         // Use LaraDoc to get aspects/functions to test from the file
-        LaraDocParser laraDocParser = new LaraDocParser(null, weaverEngine.getLanguageSpecification());
+        LaraDocParser laraDocParser = new LaraDocParser(null, weaverEngine.getLanguageSpecificationV2());
 
         laraDocParser.addPath("Testing", testFile);
         LaraDocTop laraDocTree = laraDocParser.buildLaraDoc();

@@ -8,8 +8,7 @@ package org.dojo.jsl.parser.ast;
 import java.util.List;
 
 import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
-import org.lara.language.specification.joinpointmodel.JoinPointModel;
-import org.lara.language.specification.joinpointmodel.schema.Select;
+import org.lara.language.specification.dsl.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -18,7 +17,8 @@ import larac.exceptions.LARACompilerException;
 import larac.exceptions.LaraException;
 import larac.objects.Enums.Types;
 import larac.objects.Variable;
-import utils.SelectionPath;
+import utils.SelectionPathV2;
+import utils.Selector;
 
 public class ASTPointcut extends SimpleNode {
     public String reference;
@@ -70,7 +70,7 @@ public class ASTPointcut extends SimpleNode {
         final ASTAspectDef aspdef = this.getAspectDefForDeclStmt("Select");
         // final ASTAspectDef aspdef = (ASTAspectDef) (select.parent);
         final LaraC lara = aspdef.getLara();
-        final JoinPointModel joinPointModel = lara.languageSpec().getJpModel();
+        // final JoinPointModel joinPointModel = lara.languageSpec().getJpModel();
         // This type was set previously, I hope!
         // setType(joinPointModel.getLastPointcutType());
         var = new Variable(reference, Types.Joinpoint);
@@ -97,8 +97,9 @@ public class ASTPointcut extends SimpleNode {
         final String jpType = getType();
         final String selectName = pointcutNode.value.toString();
         // final PairList<String, String> path2 = joinPointModel.getPath(jpType, selectName, validateChain);
-
-        final SelectionPath selPath = joinPointModel.selectionPath(jpType, selectName, validateChain);
+        final SelectionPathV2 selPath = new Selector(lara.languageSpec()).selectionPath(jpType, selectName,
+                validateChain);
+        // final SelectionPathV2 selPath = joinPointModel.selectionPath(jpType, selectName, validateChain);
 
         // System.out.println("##########################################");
         // System.out.println("[DEBUG]" + path2);
@@ -123,8 +124,10 @@ public class ASTPointcut extends SimpleNode {
                 SimpleNode nextParent = this;
                 for (int j = 0; j < path.size() - 1; j++) {
                     final ASTPointcut pc = new ASTPointcut(id);
-                    final String pcName = path.get(j).getAlias();
-                    final String pcType = path.get(j).getClazz().getClazz();
+                    final String pcName = path.get(j).getSelectName();
+                    // final String pcName = path.get(j).getAlias();
+                    // final String pcType = path.get(j).getClazz().getClazz();
+                    final String pcType = path.get(j).getClazz().getName();
                     pc.jjtSetValue(pcName);
                     pc.setReference("$" + pcName + LARACConstantPool.HIDDEN_TAG + select.getHiddenCount());
                     pc.setType(pcType);
@@ -135,7 +138,8 @@ public class ASTPointcut extends SimpleNode {
                 nextParent.associateChild(pointcutNode, i);
             }
             if (!path.isEmpty()) {
-                pointcutNode2.setType(path.get(path.size() - 1).getClazz().getClazz());
+                // pointcutNode2.setType(path.get(path.size() - 1).getClazz().getClazz());
+                pointcutNode2.setType(path.get(path.size() - 1).getClazz().getName());
             } else {
                 pointcutNode2.setType(selectName);
             }
@@ -180,9 +184,10 @@ public class ASTPointcut extends SimpleNode {
         final ASTAspectDef aspdef = this.getAspectDefForDeclStmt("Select");
 
         final LaraC lara = aspdef.getLara();
-        final JoinPointModel joinPointModel = lara.languageSpec().getJpModel();
+        // final JoinPointModel joinPointModel = lara.languageSpec().getJpModel();
 
-        if (!joinPointModel.contains(value.toString())) {
+        // if (!joinPointModel.contains(value.toString())) {
+        if (!lara.languageSpec().hasJoinPointName(value.toString())) {
 
             final Variable var = lookup(value.toString());
 
@@ -224,7 +229,8 @@ public class ASTPointcut extends SimpleNode {
             // exist in the join point model");
         }
         // final PairList<String, String> path2 = joinPointModel.getPath(value.toString());
-        final SelectionPath selPath = joinPointModel.selectionPath(value.toString());
+        final SelectionPathV2 selPath = new Selector(lara.languageSpec()).selectionPath(value.toString());
+        // final SelectionPath selPath = joinPointModel.selectionPath(value.toString());
         //
         // System.out.println("##########################################");
         // System.out.println("[DEBUG]" + path2);
@@ -242,8 +248,10 @@ public class ASTPointcut extends SimpleNode {
 
         for (int j = 0; j < path.size() - 1; j++) {
             final ASTPointcut pc = new ASTPointcut(id);
-            final String pcName = path.get(j).getAlias();
-            final String pcType = path.get(j).getClazz().getClazz();
+            final String pcName = path.get(j).getSelectName();
+            // final String pcName = path.get(j).getAlias();
+            // final String pcType = path.get(j).getClazz().getClazz();
+            final String pcType = path.get(j).getClazz().getName();
             pc.jjtSetValue(pcName);
             pc.setReference("$" + pcName + LARACConstantPool.HIDDEN_TAG + select.getHiddenCount());
             pc.setType(pcType);
@@ -251,7 +259,8 @@ public class ASTPointcut extends SimpleNode {
             pc.associateChild(this, 0);
             i = 0;
         }
-        setType(path.get(path.size() - 1).getClazz().getClazz());
+        // setType(path.get(path.size() - 1).getClazz().getClazz());
+        setType(path.get(path.size() - 1).getClazz().getName());
 
         // if (path == null || path.isEmpty()) {
         // throw new LARACompilerException("No path exists for was found for join pont '" + value + "'");

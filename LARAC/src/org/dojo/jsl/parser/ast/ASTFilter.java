@@ -5,8 +5,7 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import org.lara.language.specification.artifactsmodel.ArtifactsModel;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,7 +44,7 @@ public class ASTFilter extends SimpleNode {
     }
 
     @Override
-    public String organize(String type, ArtifactsModel artifacts) {
+    public String organize(String type, LanguageSpecificationV2 langSpec) {
         if (type == null) {
             SimpleNode pcParent = (SimpleNode) parent;
             while (!(pcParent instanceof ASTPointcut)) {
@@ -54,9 +53,10 @@ public class ASTFilter extends SimpleNode {
             getLara().warnln("Cannot validate attribute '" + prop + "' as the joinpoint type '" + pcParent.jjtGetValue()
                     + "' could not be verified. Will use as is");
         } else {
-            final Attribute attribute = artifacts.getAttribute(type, prop);
+            // final Attribute attribute = artifacts.getAttribute(type, prop);
+            var attribute = langSpec.getJoinPoint(type).getAttribute(prop);
 
-            if (attribute == null) {
+            if (attribute.isEmpty()) {
                 SimpleNode pcParent = (SimpleNode) parent;
                 while (!(pcParent instanceof ASTPointcut)) {
                     pcParent = (SimpleNode) pcParent.parent;
@@ -64,7 +64,8 @@ public class ASTFilter extends SimpleNode {
                 throw newException(
                         "The attribute '" + prop + "' does not exist on joinpoint '" + pcParent.jjtGetValue() + "'");
             }
-            setAttrType(attribute.getType());
+            // Use the first occurrence
+            setAttrType(attribute.get(0).getReturnType());
         }
         final ASTOperator opNode = (ASTOperator) children[0];
         opNode.organize(new ASTBinaryExpressionSequence(-1));

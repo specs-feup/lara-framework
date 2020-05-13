@@ -86,7 +86,7 @@ public class LaraDocLauncher {
 
         WeaverEngine weaverEngine = SpecsSystem.newInstance(data.get(WEAVER_CLASS), WeaverEngine.class);
 
-        LaraDocParser laraDocParser = new LaraDocParser(nameFilter, weaverEngine.getLanguageSpecification());
+        LaraDocParser laraDocParser = new LaraDocParser(nameFilter, weaverEngine.getLanguageSpecificationV2());
 
         if (!data.hasValue(PACKAGES_MAP)) {
             SpecsLogs.msgInfo("Missing packages information");
@@ -119,7 +119,8 @@ public class LaraDocLauncher {
         LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
 
         LanguageSpecification langSpec = data.get(INCLUDE_LANGUAGE_SPECIFICATION)
-                ? weaverEngine.getLanguageSpecification() : null;
+                ? weaverEngine.getLanguageSpecification()
+                : null;
         generator.generateDoc(laraDocTop, langSpec);
 
         SpecsLogs.msgInfo("Wrote documentation to folder '" + outputFolder.getAbsolutePath() + "'");

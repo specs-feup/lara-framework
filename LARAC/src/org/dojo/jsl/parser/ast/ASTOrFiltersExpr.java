@@ -5,54 +5,54 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import org.lara.language.specification.artifactsmodel.ArtifactsModel;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTOrFiltersExpr extends SimpleNode {
-	public ASTOrFiltersExpr(int id) {
-		super(id);
-	}
+    public ASTOrFiltersExpr(int id) {
+        super(id);
+    }
 
-	public ASTOrFiltersExpr(LARAEcmaScript p, int id) {
-		super(p, id);
-	}
+    public ASTOrFiltersExpr(LARAEcmaScript p, int id) {
+        super(p, id);
+    }
 
-	@Override
-	public String organize(String type, ArtifactsModel artifacts) {
-		for (final Node child : getChildren()) {
-			((SimpleNode) child).organize(type, artifacts);
-		}
-		return null;
-	}
+    @Override
+    public String organize(String type, LanguageSpecificationV2 langSpec) {
+        for (final Node child : getChildren()) {
+            ((SimpleNode) child).organize(type, langSpec);
+        }
+        return null;
+    }
 
-	@Override
-	public Element getFilterElement(Document doc) {
-		Element aux = null;
-		boolean first = true;
-		Element jpOREl = null;
+    @Override
+    public Element getFilterElement(Document doc) {
+        Element aux = null;
+        boolean first = true;
+        Element jpOREl = null;
 
-		for (final Node child : getChildren()) {
-			final Element childEl = ((SimpleNode) child).getFilterElement(doc);
-			if (childEl != null) {
-				if (first) {
-					aux = childEl;
-					first = false;
-				} else {
-					if (jpOREl == null) {
-						jpOREl = doc.createElement("op");
-						jpOREl.setAttribute("name", "OR");
-						jpOREl.appendChild(aux);
-					}
-					jpOREl.appendChild(childEl);
-				}
-			}
-		}
-		if (jpOREl != null) {
-			return jpOREl;
-		}
-		return aux;
-	}
+        for (final Node child : getChildren()) {
+            final Element childEl = ((SimpleNode) child).getFilterElement(doc);
+            if (childEl != null) {
+                if (first) {
+                    aux = childEl;
+                    first = false;
+                } else {
+                    if (jpOREl == null) {
+                        jpOREl = doc.createElement("op");
+                        jpOREl.setAttribute("name", "OR");
+                        jpOREl.appendChild(aux);
+                    }
+                    jpOREl.appendChild(childEl);
+                }
+            }
+        }
+        if (jpOREl != null) {
+            return jpOREl;
+        }
+        return aux;
+    }
 }
 /*
  * JavaCC - OriginalChecksum=3506f10ce2f5a7c50c491a5b58d86e9b (do not edit this

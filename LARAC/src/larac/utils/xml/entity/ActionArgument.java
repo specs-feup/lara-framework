@@ -15,8 +15,6 @@ package larac.utils.xml.entity;
 import org.dojo.jsl.parser.ast.ASTLiteral;
 import org.dojo.jsl.parser.ast.LARAEcmaScriptTreeConstants;
 import org.dojo.jsl.parser.ast.SimpleNode;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,17 +27,6 @@ public class ActionArgument {
     private SimpleNode value;
     // private LanguageSpecification langSpec;
     private Organizer organizer;
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public ActionArgument(String name, String type, LanguageSpecification spec) {
-        this(name, type, new Organizer(JoinPointFactory.fromOld(spec)));
-        // langSpec = spec;
-        // setName(name);
-        // setType(type);
-    }
 
     public ActionArgument(String name, String type, Organizer organizer) {
         this.organizer = organizer;

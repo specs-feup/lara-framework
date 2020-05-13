@@ -61,4 +61,16 @@ public class Select extends BaseNode implements Comparable<Select> {
     public int compareTo(Select o) {
         return getClazz().compareTo(o.getClazz());
     }
+
+    /**
+     * 
+     * @return the alias of this select, or the class name if no alias is defined
+     */
+    public String getSelectName() {
+        if (!alias.isEmpty()) {
+            return alias;
+        }
+
+        return clazz.getName();
+    }
 }
