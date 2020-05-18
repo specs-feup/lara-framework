@@ -108,7 +108,11 @@ public class JoinPointFactory {
                 for (var artifact : artifactList.getArtifact()) {
                     if (artifact.getDefault() != null) {
                         // Get corresponding join point and set default
-                        langSpecV2.getJoinPoint(artifact.getClazz()).setDefaultAttribute(artifact.getDefault());
+                        var jp = langSpecV2.getJoinPoint(artifact.getClazz());
+                        if (jp != null) {
+                            jp.setDefaultAttribute(artifact.getDefault());
+                        }
+
                     }
                 }
             }
