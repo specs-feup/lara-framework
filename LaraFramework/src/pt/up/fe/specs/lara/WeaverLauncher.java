@@ -24,6 +24,7 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import larai.LaraI;
 import pt.up.fe.specs.lara.doc.LaraDocLauncher;
 import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
+import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
 /**
@@ -38,6 +39,24 @@ public class WeaverLauncher {
 
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
+    }
+
+    public boolean launchExternal(String[] args) {
+        Thread t = Thread.currentThread();
+        ClassLoader previousClassLoader = t.getContextClassLoader();
+        var newClassloader = SpecsIo.class.getClassLoader();
+        System.out.println("Unloading classloader " + previousClassLoader);
+        System.out.println("Using classloader " + newClassloader);
+        t.setContextClassLoader(newClassloader);
+        boolean success = false;
+        try {
+            success = launch(args);
+        } finally {
+            t.setContextClassLoader(previousClassLoader);
+        }
+
+        return success;
+
     }
 
     /**
