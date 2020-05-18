@@ -33,14 +33,18 @@ joinpoint joinpoint {
 	}
 }
 joinpoint body extends section {
-	void 
+	int num_dowhile
+	int num_for
+	int num_loops
+	int num_statements
+	int num_while
 	selects {
-		if
-		if as otherIf
 		statement as first
 		statement as last
 		statement
 		var
+		if
+		if as otherIf
 	}
 	actions {
 		
@@ -56,7 +60,11 @@ joinpoint elseif {
 	}
 }
 joinpoint expr {
-	void 
+	int num_array_refs
+	int num_calls
+	int num_levels
+	int num_oper
+	int num_pointer_refs
 	selects {
 		
 	}
@@ -65,7 +73,7 @@ joinpoint expr {
 	}
 }
 joinpoint file {
-	void 
+	String name
 	selects {
 		function
 	}
@@ -74,29 +82,47 @@ joinpoint file {
 	}
 }
 joinpoint function {
-	void 
+	String complexity
+	int exec_contribution
+	int exec_time
+	Boolean hardware_kernel
+	int latency
+	String name
+	int num_lines
+	int resources
+	String return_type
 	selects {
-		body
 		var as input
 		var as output
+		body
 	}
 	actions {
 		void map(String to, String id = 0, String mode = default)
 	}
 }
 joinpoint if {
-	void 
+	int num_branches
 	selects {
+		expr as condition
 		body as then
 		elseif
-		expr as condition
 	}
 	actions {
 		void optimize(String kind, Json args = {})
 	}
 }
 joinpoint loop {
-	void (loop loop2)
+	int increment_value
+	Boolean interchange_legal(loop loop2)
+	Boolean is_bound
+	Boolean is_innermost
+	Boolean is_normalized
+	Boolean is_perfect
+	int nested_level
+	int num_children
+	int num_iterations
+	int num_levels
+	[for| while| do-while] type
 	selects {
 		
 	}
@@ -105,7 +131,12 @@ joinpoint loop {
 	}
 }
 joinpoint section {
-	void 
+	int exec_contribution
+	int exec_time
+	Boolean hardware_kernel
+	String label
+	int latency
+	int resources
 	selects {
 		test
 	}
@@ -132,7 +163,27 @@ joinpoint test {
 	}
 }
 joinpoint var {
-	void 
+	String base_type
+	String initializer
+	Boolean is_arg
+	Boolean is_array
+	Boolean is_const
+	Boolean is_in
+	Boolean is_inout
+	Boolean is_out
+	Boolean is_pointer
+	Boolean is_scalar
+	String name
+	int num_accesses
+	int num_read
+	int num_writes
+	Float rate
+	[read| write| all| declaration] reference
+	[local| global] scope
+	String shape
+	int size
+	String type
+	Object value
 	selects {
 		
 	}
