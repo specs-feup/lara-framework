@@ -57,6 +57,7 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,
                 LaraiKeys.VERBOSE.setDecoder(s -> VerboseLevel.values()[Integer.parseInt(s)]));
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.call, LaraiKeys.CALL_ARGS);
+        JOptionsInterface.CONVERSION_MAP.put(CLIOption.jsengine, LaraiKeys.JS_ENGINE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.unit, LaraiKeys.UNIT_TEST_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.doc, LaraiKeys.GENERATE_DOCUMENTATION);
 

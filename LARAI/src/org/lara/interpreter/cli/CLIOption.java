@@ -54,6 +54,8 @@ public enum CLIOption implements WeaverOption {
     restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restric mode (some Java classes are not allowed)",
             LaraiKeys.RESTRICT_MODE),
     call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
+    jsengine("js", OptionArguments.ONE_ARG, "engine name",
+            "JS Engine to use. Available: NASHORN, GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE),
     unit(LaraiKeys.getUnitTestFlag(), "run in unit test mode", LaraiKeys.UNIT_TEST_MODE),
     doc(LaraiKeys.getDocGeneratorFlag(), "generate documentation mode", LaraiKeys.GENERATE_DOCUMENTATION);
     // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec

@@ -80,6 +80,7 @@ public class OptionsParser {
         final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
         final Option call = OptionsBuilderUtils.newOption(CLIOption.call);
+        final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
 
         Options options = new Options()
                 .addOption(help)
@@ -102,7 +103,8 @@ public class OptionsParser {
                 .addOption(metrics)
                 .addOption(bundleTags)
                 .addOption(restrict)
-                .addOption(call);
+                .addOption(call)
+                .addOption(jsengine);
 
         // final Option weaver = newOption(CLIOption.weaver, "className", ArgOption.ONE_ARG,
         // "change the target weaver (default: " + LaraI.DEFAULT_WEAVER + ")");
