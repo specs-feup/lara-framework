@@ -53,4 +53,9 @@ public class JsEngineTest {
         // }
     }
 
+    @Test
+    public void testArrow() {
+        newTester().test("ArrowTest.lara");
+    }
+
 }

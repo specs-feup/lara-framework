@@ -32,6 +32,7 @@ public class Enums {
         UNION_JOIN("+"),
         NATURAL_JOIN("::"),
         BITAND_JOIN("&"),;
+
         private String op;
 
         JoinOperator(String op) {
@@ -305,12 +306,14 @@ public class Enums {
         Object,
         FN,
         GFN,
+        ArrowFN,
         FNDecl,
         GenFNDecl,
         Exception,
         Undefined,
         AspectSTATIC,
         Base64;
+
         public static Types getDefault() {
             return Undefined;
         }

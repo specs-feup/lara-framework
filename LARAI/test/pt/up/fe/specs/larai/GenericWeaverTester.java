@@ -13,7 +13,8 @@
 
 package pt.up.fe.specs.larai;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public class GenericWeaverTester {
     private final String basePackage;
     /*
     private final String compilerFlags;
-
+    
     private boolean checkWovenCodeSyntax;
     */
     private String srcPackage;
@@ -160,8 +161,12 @@ public class GenericWeaverTester {
         data.add(LaraiKeys.LARA_FILE, laraFile);
         // data.add(LaraiKeys.OUTPUT_FOLDER, outputFolder);
         data.add(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(workFolder));
+
         // data.add(LaraiKeys.DEBUG_MODE, true);
+
         data.add(LaraiKeys.VERBOSE, VerboseLevel.warnings);
+        // data.add(LaraiKeys.VERBOSE, VerboseLevel.all);
+
         data.add(LaraiKeys.LOG_JS_OUTPUT, Boolean.TRUE);
         data.add(LaraiKeys.LOG_FILE, OptionalFile.newInstance(getWeaverLog().getAbsolutePath()));
 
@@ -189,7 +194,7 @@ public class GenericWeaverTester {
         if (!keepWovenFiles) {
             // File wovenFolder = new File(WOVEN_FOLDER);
             SpecsIo.deleteFolderContents(outputFolder);
-
+        
             // Recreate dummy
             SpecsIo.write(new File(outputFolder, "dummy"), "");
         }

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 
@@ -352,6 +353,8 @@ public class Interpreter {
         // Do not use laraGetter if it is the target of an operation
         ExprOp opAncestor = propertyExp.getAncestor(ExprOp.class);
 
+        // Do not use laraGetter if this is an arrow function
+
         if (opAncestor == null) {
             return true;
         }
@@ -368,7 +371,7 @@ public class Interpreter {
         if (currentLeftHand == propertyExp) {
             return false;
         }
-
+        // System.out.println("LARA GETTER 2: " + propertyExp);
         // Otherwise, always use laraGeter
         return true;
 
@@ -886,6 +889,11 @@ public class Interpreter {
     // ================================================================================//
     public StringBuilder getJavascriptString(ExprOp op, int depth) {
 
+        if (op.name.equals("ArrowFN")) {
+            final StringBuilder ret = generateArrowFunctionExpression(op, depth);
+            return ret;
+        }
+
         StringBuilder exprString = getJavascriptString(op.exprs.get(0), 0);
         if (op.name.equals("COND")) {
             // Condition
@@ -910,6 +918,7 @@ public class Interpreter {
             // newOp.deleteCharAt(newOp.length()-1);
             return newOp;
         }
+
         if (op.exprs.size() == 1) {
             final StringBuilder inc = new StringBuilder(LaraIUtils.getSpace(depth));
             if (op.name.equals("INCS")) {
@@ -951,6 +960,7 @@ public class Interpreter {
             final StringBuilder ret = generateFunctionExpression(op, depth);
             return ret;
         }
+
         if (op.name.equals("GFN")) {
             final StringBuilder ret = generateFunctionExpression(op, depth, true);
             return ret;
@@ -991,6 +1001,46 @@ public class Interpreter {
      */
     private StringBuilder generateFunctionExpression(ExprOp fnOp, int depth) {
         return generateFunctionExpression(fnOp, depth, false);
+    }
+
+    private StringBuilder generateArrowFunctionExpression(ExprOp fnOp, int depth) {
+        final List<Expression> exprs = fnOp.exprs;
+
+        // System.out.println("ARROW EXPRS: " + fnOp.exprs.size());
+
+        // Last element is the body of the function, remaining elements are the arguments
+        List<Expression> args = exprs.subList(0, exprs.size() - 1);
+        Expression body = exprs.get(exprs.size() - 1);
+
+        final StringBuilder ret = new StringBuilder();
+
+        if (args.size() != 1) {
+            ret.append("(");
+        }
+
+        String argsString = args.stream().map(arg -> getJavascriptString(arg, -1))
+                .collect(Collectors.joining(", "));
+        ret.append(argsString);
+
+        if (args.size() != 1) {
+            ret.append(")");
+        }
+
+        ret.append(" => ");
+
+        // What does this do?
+        if (oldDepth != 0) {
+            depth = oldDepth;
+        }
+
+        final StringBuilder funcBody = getJavascriptString(body, -depth);
+
+        // ret.append(funcBody.subSequence(0, funcBody.length() - 1));
+        ret.append(funcBody.toString().strip());
+
+        // System.out.println("RET: " + ret);
+
+        return ret;
     }
 
     private StringBuilder generateFunctionExpression(ExprOp fnOp, int depth, boolean isGenerator) {

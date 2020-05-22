@@ -231,6 +231,7 @@ public class WeaverStatementProcessor {
                     pointcutChainNames);
         }
         ret.append(interpreter.getJavascriptString(codeExpr, depth));
+
         lastInChain = null;
         ret.append(finalCode);
         ret.append(LaraIUtils.getSpace(oldDepth) + "}\n");

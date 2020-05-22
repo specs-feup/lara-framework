@@ -404,6 +404,8 @@ TOKEN :
 	< THROW: "throw" > : DEFAULT
 | 
 	< TRY: "try" > : DEFAULT
+| 
+	< ARROW: "=>" > : DEFAULT	
 //|
 //	< UTF8_BOM: "\u00EF\u00BB\u00BF" > : DEFAULT
 }
@@ -2317,7 +2319,8 @@ void ActionOnAssign() #Action:
 	{ 
 		( (
 		  		LOOKAHEAD("function*") GeneratorFunctionExpression() |
-				LOOKAHEAD("function") FunctionExpression()|
+				LOOKAHEAD("function") FunctionExpression() |
+				LOOKAHEAD(ArrowFunctionExpression()) ArrowFunctionExpression() |
 				PrimaryExpression()  
 		) (LOOKAHEAD(2) MemberExpressionPart())*	 ) #CompositeReference(>1)
 		|	 AllocationExpression()
@@ -2329,6 +2332,7 @@ void ActionOnAssign() #Action:
 		( (
 				LOOKAHEAD("function*") GeneratorFunctionExpression() |		  
 				LOOKAHEAD("function") FunctionExpression() |
+				LOOKAHEAD(ArrowFunctionExpression()) ArrowFunctionExpression() |
 				PrimaryExpression()  
 		) (LOOKAHEAD(2) MemberExpressionPart())*	 ) #CompositeReference(>1)
 	}
@@ -3063,6 +3067,41 @@ void ActionOnAssign() #Action:
 		/*{jjtThis.setCoord(begin,begin); }*/ 
 	}
 
+
+	void ArrowFunctionBody() #Block :
+	{}
+	{
+		< LBRACE > (Statement())* < RBRACE > 
+	}
+
+	void ArrowFunctionExpression() #ArrowFunctionExpression :
+	{}
+	{
+        ( "(" (FormalParameterList())? ")" | Identifier()  ) #FormalParameterList <ARROW>
+        ( LOOKAHEAD(ArrowFunctionBody()) ArrowFunctionBody() |  LOOKAHEAD(ExpressionNoIn()) ExpressionNoIn() )
+
+
+//ActionOnAssign()
+// | Expression()
+
+//LOOKAHEAD(ArrowFunctionBody()
+//LOOKAHEAD(ExpressionNoIn())
+        //| LOOKAHEAD(PrimaryExpression()) PrimaryExpression()
+        // LOOKAHEAD(ActionOnAssign()) ActionOnAssign()
+		//| ConditionalExpression() 
+
+        //( LOOKAHEAD(ArrowFunctionBody()) ArrowFunctionBody() | LOOKAHEAD(Expression())Expression())
+        //ConditionalExpression() 
+		//( (LOOKAHEAD(FunctionBody()) FunctionBody()) |  (LOOKAHEAD(Expression()) Expression())  )
+        //(ArrowFunctionBody() |  PrimaryExpression())
+        //(ArrowFunctionBody() |  ( LOOKAHEAD(MemberExpression() "(") CallExpression() | MemberExpression() ))
+        //(ArrowFunctionBody() |  ( LOOKAHEAD(MemberExpression() "(") CallExpression() | MemberExpression() ))
+        //( "(" FormalParameterList() ")" | Identifier()  ) #FormalParameterList <ARROW> (FunctionBody() | ActionOnAssign() | LogicalORExpression())
+		//"(" ( FormalParameterList() )? ")" #ArrowParameterList "=>" (FunctionBody())
+		//( ("(" ( FormalParameterList() )? ")") | Identifier()) #ArrowParameterList "=>" FunctionBody()
+		/*{jjtThis.setCoord(begin,begin); }*/
+	}
+
 	void FunctionExpression() #FunctionExpression :
 	{Token begin;}
 	{
@@ -3119,6 +3158,9 @@ void ActionOnAssign() #Action:
 	{
 		LOOKAHEAD("function*" Identifier()) GeneratorFunctionDeclaration() | LOOKAHEAD("function" Identifier()) FunctionDeclaration() | Statement()
 	}
+
+
+
 
 
 	/*
