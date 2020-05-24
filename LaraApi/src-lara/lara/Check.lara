@@ -189,10 +189,25 @@ Check.strings = function(currentString, expectedString) {
 	//Check.isString(expectedString);
 	
 	// Normalize both strings
-	currentString = _JavaTypes.getSpecsStrings().normalizeFileContents(currentString, true);
-	expectedString = _JavaTypes.getSpecsStrings().normalizeFileContents(expectedString, true);
+	currentString = _JavaTypes.getSpecsStrings().normalizeFileContents(currentString.toString(), true);
+	expectedString = _JavaTypes.getSpecsStrings().normalizeFileContents(expectedString.toString(), true);
 		
 	if(currentString !== expectedString) {
-		throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
+		//throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
+		throw "Current result does not match expected result. Diff:\n" + Check.diff(expectedString, currentString);		
 	}
 }
+
+
+/**
+ * @param {Object} original - The original text
+ * @param {Object} revised - The revised text
+ */
+Check.diff = function(original, revised) {
+	return _JavaTypes.getJavaDiff().getDiff(original.toString(), revised.toString());
+}
+
+
+
+
+

@@ -62,3 +62,9 @@ _JavaTypes.getList = function() {
 _JavaTypes.getCollections = function() {
 	return _JavaTypes.getType("java.util.Collections");
 }
+
+_JavaTypes.getJavaDiff = function() {
+	return _JavaTypes.getType("pt.up.fe.specs.lara.util.JavaDiffHelper");
+}
+
+

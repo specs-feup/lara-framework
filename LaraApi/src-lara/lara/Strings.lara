@@ -1,5 +1,6 @@
 import lara._JavaTypes;
 import lara.Check;
+//import lara.Io;
 
 /**
  *  Utility methods related to Strings.
@@ -130,6 +131,21 @@ Strings.normalize = function(string) {
 	return _JavaTypes.getSpecsStrings().normalizeFileContents(string, true);
 }
 
+
+/**
+ * @param {Object|J#java.io.File} original - The original text
+ * @param {Object|J#java.io.File} revised - The revised text
+ */
+ /*
+Strings.diff = function(original, revised) {
+	
+	// Covert to String
+	var originalString = Check.isJavaFile(original) ? Io.readFile(original) : original.toString();
+	var revisedString = Check.isJavaFile(revised) ? Io.readFile(revised) : revised.toString();
+
+	return _JavaTypes.getJavaDiff().getDiff(originalString, revisedString);
+}
+*/
 
 
 // * Comparison is done line-by-line, and 
