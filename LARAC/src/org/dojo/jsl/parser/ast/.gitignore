@@ -15,7 +15,6 @@
 # These files have custom changes
 #/TokenMgrError.java
 #/ParseException.java
-/ASTArrowFunctionExpression.java
 /ASTNormalFunctionExpression.java
 /ASTArrowParameterList.java
 /ParseException.java
