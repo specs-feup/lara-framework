@@ -14,6 +14,9 @@ Io.isJavaFile = function(object) {
 	return isJavaClass(object, fileClass);
 }
 
+/**
+ * @param {String|J#java.io.File} path
+ */
 Io._newFile = function(path) {
 	
 	//var fileClass = "java.io.File";
@@ -27,9 +30,14 @@ Io._newFile = function(path) {
 	
 	//var File = Java.type(fileClass);
 	var File = _JavaTypes.getJavaFile();
-	return new File(path);
+	return new File(path.toString());
 }
 
+/**
+ * @param {String|J#java.io.File} base
+ * @param {String|J#java.io.File} path 
+ *
+ */
 Io._newFileWithBase = function(base, path) {
 	//var fileClass = "java.io.File";
 	
@@ -117,13 +125,15 @@ Io.getAbsolutePath = function(fileOrBaseFolder, optionalFile) {
 
 /**
  * Gets the paths (files and folders) in the given folder, corresponding to the given base folder and argument patterns.
+ * 
+ * @param {String|J#java.io.File} baseFolder
+ * @param {String...} patterns
  */
 Io.getPaths = function(baseFolder) {
-	var argsArray = arrayFromArgs(arguments);
 
-	checkDefined(argsArray[0], "baseFolder", "Io.getPaths");
+	checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 	
-	var baseFolderFile = Io.getPath(argsArray[0]);
+	var baseFolderFile = Io.getPath(baseFolder);
 	
 	// For each argument after the baseFolder, treat it as a different file/glob
 	var files = [];
@@ -131,12 +141,13 @@ Io.getPaths = function(baseFolder) {
 
 
 	// If empty, add all files
-	if(argsArray.length === 1) {
+	var argsArray = arrayFromArgs(arguments, 1);	
+	if(argsArray.length === 0) {
 		argsArray.push("*");
 	}
 	
 	//for(argument of arguments) {
-	for(argument of argsArray.slice(1)) {
+	for(argument of argsArray) {
 		//var foundFiles = SpecsIo.getFilesWithPattern(baseFolderFile, argument);
 		var foundFiles = SpecsIo.getPathsWithPattern(baseFolderFile, argument, false, "FILES_AND_FOLDERS");
 		
@@ -147,6 +158,29 @@ Io.getPaths = function(baseFolder) {
 	
 	return files;
 }
+
+
+/**
+ * Gets the folders in the given folder, corresponding to the given base folder and argument patterns.
+ * 
+ * @param {String|J#java.io.File} baseFolder
+ * @param {String...} patterns
+ */
+Io.getFolders = function(baseFolder) {
+
+	var paths = Io.getPaths(baseFolder, arrayFromArgs(arguments, 1));
+
+	var folders = [];
+	
+	for(var path of paths) {
+		if(Io.isFolder(path)) {
+			folders.push(path);
+		}
+	}
+	
+	return folders;
+}
+
 
 /**
  * The files inside the given folder that respects the given pattern.
