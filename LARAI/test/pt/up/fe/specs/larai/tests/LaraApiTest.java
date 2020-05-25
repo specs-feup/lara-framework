@@ -128,4 +128,5 @@ public class LaraApiTest {
     public void testTupleId() {
         newTester().test("util/TupleIdTest.lara");
     }
+
 }
