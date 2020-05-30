@@ -14,7 +14,6 @@
 package org.lara.interpreter.joptions.panels.editor;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.util.Collection;
@@ -128,10 +127,10 @@ public class EditorPanel extends GuiTab {
         outputArea.setLineWrap(true);
         outline = new OutlinePanel(this);
         this.scrollableOutline = new JScrollPane(outline);
-        // scrollableOutline.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        // scrollableOutline.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         // scrollableOutline.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // Set small preferred size, to avoid unnecessary scroll bars
-        outline.setPreferredSize(new Dimension(10, 10));
+        // outline.setPreferredSize(new Dimension(10, 10));
         // outputArea.setColumns(20);
         // outputArea.setRows(5);
         consolePanel = new javax.swing.JScrollPane(outputArea);

@@ -16,7 +16,6 @@ package org.lara.interpreter.joptions.panels.editor.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.Comparator;
@@ -65,14 +64,14 @@ public class OutlinePanel extends JPanel {
     private JPanel inner;
 
     private static final Color SELECTION_COLOR = Color.LIGHT_GRAY;
-    private static final int preferedWidth = 350;
+    // private static final int preferedWidth = 350;
 
     public OutlinePanel(EditorPanel editor) {
         super(new BorderLayout());
 
-        Dimension preferredSize = getPreferredSize();
-        preferredSize.setSize(preferedWidth, preferredSize.getHeight());
-        setPreferredSize(preferredSize);
+        // Dimension preferredSize = getPreferredSize();
+        // preferredSize.setSize(preferedWidth, preferredSize.getHeight());
+        // setPreferredSize(preferredSize);
 
         this.editor = editor;
 
