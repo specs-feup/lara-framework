@@ -1,9 +1,9 @@
 import lara.mutation.Mutation;
 
 /**
- * Abstract mutation class that implements .mutate(), but makes Mutation.iterator($jp) abstract.
+ * Abstract mutation class that implements .mutate(), but adds abstract generator function Mutation.iterator($jp).
  * 
- * This should not be instantiated directly, instead it should be extended.
+ * This should not be instantiated directly, instead should be extended.
  * 
  * @constructor
  *
@@ -19,6 +19,50 @@ var GeneratorMutation = function(name) {
 GeneratorMutation.prototype = Object.create(Mutation.prototype);
 
 
+/**
+ * BinaryExpressionMutation iterator, which generates mutations iteratively.
+ */
+ /*
+var _BinaryExpressionMutationIterator = function(binaryOpMutation, $jp) {
+	this.binaryOpMutation = binaryOpMutation;
+	this.$jp = $jp;
+};
+*/
+
+
+/**
+ * @return {$jp} each mutated point, iteratively.
+ */
+/*
+_BinaryExpressionMutationIterator.prototype[Symbol.iterator] = function* () {
+	
+	for(var newOp of this.binaryOpMutation.newOperators) {
+		var mutation = this.$jp.copy();
+		mutation.operator = newOp;
+		yield mutation;
+	}
+}
+
+*/
+
+/*
+var _Iterator = function(generatorMutation, $jp) {
+	this.generatorMutation = generatorMutation;
+	this.$jp = $jp;
+};
+*/
+
+/*
+_Iterator.prototype[Symbol.iterator] = function* () {
+	
+	var iterator = this.generatorMutation._generator(this.$jp);
+	
+	for(var mutation of iterator) {
+		yield mutation;
+	}
+}
+*/
+
 /*** IMPLEMENTATION ***/
 
 GeneratorMutation.prototype.mutate = function($jp) {
@@ -31,9 +75,40 @@ GeneratorMutation.prototype.mutate = function($jp) {
 	return mutations;
 }
 
+
+/**
+ * @param {$jp} $jp - The point in the code to mutate.
+ *
+ * @return an iterator
+ */
+ /*
+GeneratorMutation.prototype.iterator = function($jp) {
+	return new _Iterator(this, $jp);
+}
+*/
+
 /*** TO IMPLEMENT ***/
 
 
+/*
+GeneratorMutation.prototype._generator = function* ($jp) {
+	notImplemented("GeneratorMutation._generator");
+}
+*/
+
+/**
+ * Generator function for the mutations.
+ *
+ * @param {$jp} $jp - The point in the code to mutate.
+ */
+GeneratorMutation.prototype.iterator = function* ($jp) {
+	notImplemented("GeneratorMutation.iterator*");
+}
+
+/*
 GeneratorMutation.prototype.iterator = function($jp) {
 	notImplemented("GeneratorMutation.iterator");
 }
+*/
+
+
