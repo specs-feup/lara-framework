@@ -23,36 +23,19 @@ Mutation.prototype.getName = function() {
 }
 
 
-Mutation.prototype.iterator = function($jp) {
-	return new _MutationBaseIterator(this, $jp);
-}
-
-
 /**
- * Base iterator, which simply calls mutation.mutate()
- */
-var _MutationBaseIterator = function(mutation, $jp) {
-	this.mutation = mutation;
-	this.$jp = $jp;
-};
-
-
-/**
+ * Generator function for the mutations.
+ *
+ * @param {$jp} $jp - The point in the code to mutate.
+ *
  * @return {$jp} each mutated point, iteratively.
  */
-_MutationBaseIterator.prototype[Symbol.iterator] = function* () {
-	var $jps = this.mutation.mutate(this.$jp);
-	for(var $jp of $jps) {
-		yield $jp;
+Mutation.prototype.mutate = function* ($jp) {
+	var mutants = this.mutation.getMutants($jp);
+	for(var $mutant of mutants) {
+		yield $mutant;
 	}
 }
-
-/*
-Mutation.prototype.mutateIterator($jp) {
-	return new MutationIterator(this, $jp);
-}
-*/
-
 
 
 /*** TO IMPLEMENT ***/
@@ -71,7 +54,10 @@ Mutation.prototype.isMutationPoint = function($jp) {
  * 
  * @return {$jp[]} an array with the mutated points, which must be out-of-tree copies of the given join point
  */
-Mutation.prototype.mutate = function($jp) {
-	notImplemented("Mutation.mutate");
+Mutation.prototype.getMutants = function($jp) {
+	notImplemented("Mutation.getMutants");
 }
+
+
+
 
