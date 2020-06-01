@@ -10,18 +10,18 @@ import lara.mutation.Mutation;
  * @param {String} [name="<unnamed mutation>"] - the name of the mutation
  *
  */
-var GeneratorMutation = function(name) {
+var IterativeMutation = function(name) {
 	// Parent constructor
     Mutation.call(this, name);
 };
 
 // Inheritance
-GeneratorMutation.prototype = Object.create(Mutation.prototype);
+IterativeMutation.prototype = Object.create(Mutation.prototype);
 
 
 /*** IMPLEMENTATION ***/
 
-GeneratorMutation.prototype.getMutants = function($jp) {
+IterativeMutation.prototype.getMutants = function($jp) {
 	var mutations = [];
 
 	for(var mutation of this.mutate($jp)) {
@@ -38,8 +38,8 @@ GeneratorMutation.prototype.getMutants = function($jp) {
 /**
  * Efficient implementation of the function.
  */
-GeneratorMutation.prototype.mutate = function* ($jp) {
-	notImplemented("GeneratorMutation.mutate*");
+IterativeMutation.prototype.mutate = function* ($jp) {
+	notImplemented("IterativeMutation.mutate*");
 }
 
 

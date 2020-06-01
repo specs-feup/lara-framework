@@ -59,7 +59,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     METRIC_RESULT("metrics/MetricResult.lara"),
 
     // Mutation
-    GENERATOR_MUTATION("mutation/GeneratorMutation.lara"),
+    ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),
     // ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
     MUTATION("mutation/Mutation.lara"),
     MUTATOR("mutation/Mutator.lara"),
