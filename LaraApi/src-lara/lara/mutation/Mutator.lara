@@ -5,13 +5,23 @@
  * 
  * @constructor
  * */
-var Mutator = function() {
+var Mutator = function(name) {
+	this.name = name === undefined ? "<unnamed mutator>" : name.toString();
 	// True if the current code is mutated, false otherwise
 	this.isMutated = false;
 	// If true, before each call to .mutate() will check if the code is already mutated, 
 	// and call restore before the mutation is applied
 	this.automaticRestore = true;
 };
+
+
+
+/**
+ * @return {String} the name of this mutator
+ */
+Mutator.prototype.getName = function() {
+	return this.name;
+}
 
 
 /**
@@ -78,10 +88,17 @@ Mutator.prototype.hasMutations = function() {
 
 
 /**
- * @return {$jp} the point in the code where the mutation will occur or has occurred, or undefined if this concept is not applicable to this mutator.
+ * @return {$jp} the point in the code where the mutation will occur or his occurring, or undefined if there are not more mutations left, or if this concept is not applicable to this mutator.
  */
 Mutator.prototype.getMutationPoint = function() {
 	notImplemented("Mutator.getMutationPoint");
+} 
+
+/**
+ * @return {$jp} the point with currently mutated code, or undefined if this concept is not applicable to this mutator.
+ */
+Mutator.prototype.getCurrentMutation = function() {
+	notImplemented("Mutator.getCurrentMutation");
 } 
 
 
