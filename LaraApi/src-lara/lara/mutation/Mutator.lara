@@ -4,7 +4,10 @@
  * This should not be instantiated directly, instead it should be extended.
  * 
  * @constructor
- * */
+ *
+ * @param {String} [name="<unnamed mutator>"] - the name of the mutator
+ *
+ */
 var Mutator = function(name) {
 	this.name = name === undefined ? "<unnamed mutator>" : name.toString();
 	// True if the current code is mutated, false otherwise
