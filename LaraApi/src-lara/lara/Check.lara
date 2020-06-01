@@ -110,6 +110,7 @@ Check.instance = function(value, type, source, userTypeName) {
 
 
 Check.type = function(value, type, source) {
+
     if(typeof type !== "string")  {
         throw "Check.type: parameter type must be a string";       
     }

@@ -1,0 +1,77 @@
+/**
+ * Base class that represents a code mutation.
+ * 
+ * This should not be instantiated directly, instead it should be extended.
+ * 
+ * @constructor
+ *
+ * @param {String} [name="<unnamed mutation>"] - the name of the mutation
+ *
+ */
+var Mutation = function(name) {
+	Check.isString(name);
+	
+	this.name = name;
+};
+
+
+/**
+ * @return {String} the name of this mutation
+ */
+Mutation.prototype.getName = function() {
+	return this.name;
+}
+
+
+Mutation.prototype.iterator = function($jp) {
+	return new _MutationBaseIterator(this, $jp);
+}
+
+
+/**
+ * Base iterator, which simply calls mutation.mutate()
+ */
+var _MutationBaseIterator = function(mutation, $jp) {
+	this.mutation = mutation;
+	this.$jp = $jp;
+};
+
+
+/**
+ * @return {$jp} each mutated point, iteratively.
+ */
+_MutationBaseIterator.prototype[Symbol.iterator] = function* () {
+	var $jps = this.mutation.mutate(this.$jp);
+	for(var $jp of $jps) {
+		yield $jp;
+	}
+}
+
+/*
+Mutation.prototype.mutateIterator($jp) {
+	return new MutationIterator(this, $jp);
+}
+*/
+
+
+
+/*** TO IMPLEMENT ***/
+
+/**
+ * @param {$jp} $jp - A point in the code to test
+ * 
+ * @return {boolean} true if the given join point is a valid mutation point, false otherwise
+ */
+Mutation.prototype.isMutationPoint = function($jp) {
+	notImplemented("Mutation.isMutationPoint");
+}
+
+/**
+ * @param {$jp} $jp - The point in the code to mutate
+ * 
+ * @return {$jp[]} an array with the mutated points, which must be out-of-tree copies of the given join point
+ */
+Mutation.prototype.mutate = function($jp) {
+	notImplemented("Mutation.mutate");
+}
+

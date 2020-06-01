@@ -1,0 +1,39 @@
+import lara.mutation.Mutation;
+
+/**
+ * Abstract mutation class that implements .mutate(), but makes Mutation.iterator($jp) abstract.
+ * 
+ * This should not be instantiated directly, instead it should be extended.
+ * 
+ * @constructor
+ *
+ * @param {String} [name="<unnamed mutation>"] - the name of the mutation
+ *
+ */
+var GeneratorMutation = function(name) {
+	// Parent constructor
+    Mutation.call(this, name);
+};
+
+// Inheritance
+GeneratorMutation.prototype = Object.create(Mutation.prototype);
+
+
+/*** IMPLEMENTATION ***/
+
+GeneratorMutation.prototype.mutate = function($jp) {
+	var mutations = [];
+
+	for(var mutation of this.iterator($jp)) {
+		mutations.push(mutation);	
+	}
+	
+	return mutations;
+}
+
+/*** TO IMPLEMENT ***/
+
+
+GeneratorMutation.prototype.iterator = function($jp) {
+	notImplemented("GeneratorMutation.iterator");
+}
