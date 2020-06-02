@@ -34,35 +34,6 @@ var IterativeMutator = function() {
 };
 
 
-/**
- * @return {boolean} true, if the Mutator still has mutations left to do, false otherwise.
- */
- /*
-IterativeMutator.prototype.hasMutations = function() {
-	// If iterator is undefined, iterate over all jps and mutations and check if there is at least one mutation
-	if(this.mutantIterator === undefined) {
-
-		// Iterate over all joinpoints
-		for(var $jp of this.joinPoints) {
-			// Iterate over all mutations
-			for(var mutation of this.mutations) {
-				// Return if any mutation is found
-				if(mutation.isMutationPoint($jp)) {
-					return true;
-				}
-			}
-		}
-		
-		// No mutation found
-		return false;
-	}
-	
-	// Iterator is defined, check if already finished
-	return !this.hasFinished;
-}
-*/
-
-
 
 /**
  * Introduces a single mutation to the code. 
@@ -152,15 +123,14 @@ IterativeMutator.prototype._generator = function*() {
 		// Iterate over all mutations
 		for(var mutation of this.mutations) {
 
-
 			// If current mutation does not mutate the point, skip
 			if(!mutation.isMutationPoint($jp)) {
 				continue;
 			}
-			
+
 			// Found a mutation point, iterate over all mutations
 			for(var $mutatedJp of mutation.mutate($jp)) {
-				//println("!!!: " + $mutatedJp);
+
 				// Mutate code and return
 				this.isMutated = true;
 				this.currentMutatedPoint = $mutatedJp;
@@ -199,20 +169,4 @@ IterativeMutator.prototype.getName = function() {
 	return "IterativeMutator";
 }
 
-/**
- * Enables/disables automatic restore. Is enabled by default.
- *
- * If enabled, before each call to .mutate() will check if the code is already mutated, and call restore before the mutation is applied.
- *
- * @param {boolean} [value=true] - true to enable, false to disable
- */
- /*
-IterativeMutator.prototype.setAutomaticRestore = function(value) {
-	if(value === undefined) {
-		value = true;
-	}
-	
-	this.automaticRestore = value;
-}
-*/
 

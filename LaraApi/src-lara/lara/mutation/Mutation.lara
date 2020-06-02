@@ -1,3 +1,5 @@
+import lara.Check;
+
 /**
  * Base class that represents a code mutation.
  * 

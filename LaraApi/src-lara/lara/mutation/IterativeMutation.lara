@@ -36,7 +36,7 @@ IterativeMutation.prototype.getMutants = function($jp) {
 
 
 /**
- * Efficient implementation of the function.
+ * Iterative implementation of the function.
  */
 IterativeMutation.prototype.mutate = function* ($jp) {
 	notImplemented("IterativeMutation.mutate*");
