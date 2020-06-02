@@ -60,7 +60,7 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Mutation
     ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),
-    // ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
+    ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
     MUTATION("mutation/Mutation.lara"),
     MUTATOR("mutation/Mutator.lara"),
 
