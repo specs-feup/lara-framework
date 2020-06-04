@@ -380,6 +380,12 @@ public abstract class WeaverEngine {
         // System.out.println("ATTR NAME: " + art.getName());
         // }
         // return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
+
+        var jp = getLanguageSpecificationV2().getJoinPoint(joinPointType);
+        if (jp == null) {
+            throw new RuntimeException("Used unsupported join point '" + joinPointType + "'");
+        }
+
         return getLanguageSpecificationV2().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
     }
 
