@@ -101,6 +101,16 @@ Io.getTempFolder = function(folderName) {
 	return SpecsIo.getTempFolder(folderName);
 }
 
+/**
+ * Creates a randomly named folder in the OS temporary folder that is deleted when the virtual machine exits.
+ *
+ * @return {J#java.io.File} 
+ */
+Io.newRandomFolder = function() {
+	return SpecsIo.newRandomFolder();
+}
+
+
 
 Io.getPath = function(fileOrBaseFolder, optionalFile) {
 	if(optionalFile === undefined) {
