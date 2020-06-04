@@ -266,21 +266,28 @@ CMaker.prototype.addCurrentAst = function() {
 /**
  * Builds the program currently defined in the CMaker object.
  *
- * @param {String|J#java.io.File} cmakelistsFolder - The folder where the CMakeList files will be written
+ * @param {String|J#java.io.File} [cmakelistsFolder=<temporary folder>] - The folder where the CMakeList files will be written
  * @param {String|J#java.io.File} [builderFolder=<cmakelistsFolder>/build] - The folder where the program will be built
  * @param {String} cmakeFlags - Additional flags that will be passed to CMake execution
  *
  * @returns {J#java.io.File} file to the executable compiled by the build. 
  */
 CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
-	// Generate CMakeLists.txt
-	var cmakeFile = Io.getPath(cmakelistsFolder, "CMakeLists.txt");
-	Io.writeFile(cmakeFile, this.getCode());
+	
+	if(cmakelistsFolder === undefined) {
+		cmakelistsFolder = Io.newRandomFolder();
+	}
 	
 	// Create build folder
 	if(builderFolder === undefined) {
 		builderFolder = Io.getPath(cmakelistsFolder, "build");
 	}
+	
+	
+	// Generate CMakeLists.txt
+	var cmakeFile = Io.getPath(cmakelistsFolder, "CMakeLists.txt");
+	Io.writeFile(cmakeFile, this.getCode());
+
 	
 	var builderFolderpath = Io.mkdir(builderFolder).getAbsolutePath();
 	
