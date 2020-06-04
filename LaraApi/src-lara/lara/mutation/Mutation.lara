@@ -1,4 +1,5 @@
 import lara.Check;
+import lara.mutation.MutationResult;
 
 /**
  * Base class that represents a code mutation.
@@ -30,7 +31,7 @@ Mutation.prototype.getName = function() {
  *
  * @param {$jp} $jp - The point in the code to mutate.
  *
- * @return {$jp} each mutated point, iteratively.
+ * @return {lara.mutation.MutationResult} an iterator that results the results of each mutation on each iteration.
  */
 Mutation.prototype.mutate = function* ($jp) {
 	var mutants = this.mutation.getMutants($jp);
@@ -54,7 +55,7 @@ Mutation.prototype.isMutationPoint = function($jp) {
 /**
  * @param {$jp} $jp - The point in the code to mutate
  * 
- * @return {$jp[]} an array with the mutated points, which must be out-of-tree copies of the given join point
+ * @return {lara.mutation.MutationResult[]} an array with the results of each mutation, which must be out-of-tree copies of the given join point
  */
 Mutation.prototype.getMutants = function($jp) {
 	notImplemented("Mutation.getMutants");

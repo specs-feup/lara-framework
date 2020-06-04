@@ -129,13 +129,16 @@ IterativeMutator.prototype._generator = function*() {
 			}
 
 			// Found a mutation point, iterate over all mutations
-			for(var $mutatedJp of mutation.mutate($jp)) {
+			for(var mutationResult of mutation.mutate($jp)) {
 
+				var $mutatedJp = mutationResult.getMutation();
+				
 				// Mutate code and return
 				this.isMutated = true;
 				this.currentMutatedPoint = $mutatedJp;
 				$jp.insertReplace($mutatedJp);
-				yield this.currentMutatedPoint;
+				//yield this.currentMutatedPoint;
+				yield mutationResult;
 			
 				// After resuming, restore
 				this.restoreSource();
