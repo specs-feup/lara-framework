@@ -27,6 +27,7 @@ import javax.swing.WindowConstants;
 import org.apache.commons.cli.CommandLine;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.exception.LaraIException;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
 import org.lara.interpreter.joptions.panels.editor.listeners.WindowsFocusGainedListener;
 import org.lara.interpreter.joptions.panels.editor.utils.SearchUtils;
@@ -39,6 +40,7 @@ import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.gui.SimpleGui;
 import org.suikasoft.jOptions.gui.panels.app.ProgramPanel;
 import org.suikasoft.jOptions.gui.panels.app.TabProvider;
+import org.suikasoft.jOptions.gui.panels.option.StringListPanel;
 import org.suikasoft.jOptions.persistence.XmlPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
@@ -143,7 +145,21 @@ public class LaraLauncher {
             programPanel.getFilenameTextField().setSelectedItem(configFile.get());
         }
 
-        SpecsLogs.msgLib("LOAD TIME: " + (System.currentTimeMillis() - time));
+        // Initialize External Dependencies predefined values
+
+        var externalDependenciesPanel = (StringListPanel) gui.getAppFrame().getTabbedPane().getOptionsPanel()
+                .getPanel(LaraiKeys.EXTERNAL_DEPENDENCIES);
+        externalDependenciesPanel.setPredefinedValues(engine.getPredefinedExternalDependencies());
+
+        // externalDependencies.getDefaultSeparator()
+
+        // System.out.println("NAME: " + LaraiKeys.EXTERNAL_DEPENDENCIES.getName());
+        // var externalDependenciesPanel = (StringListPanel) LaraiKeys.EXTERNAL_DEPENDENCIES.getPanel(null);
+        // externalDependenciesPanel.setPredefinedValues(engine.getPredefinedExternalDependencies());
+        // guiFrame.revalidate();
+        // guiFrame.repaint();
+
+        SpecsLogs.debug("Lara GUI load time: " + (System.currentTimeMillis() - time));
 
         // This code is making the console area to use all window
         // JTabbedPane tabbedPane = SearchUtils.findFirstComponentOfType(guiFrame, JTabbedPane.class);
