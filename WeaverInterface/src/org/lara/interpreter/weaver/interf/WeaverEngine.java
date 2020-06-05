@@ -389,4 +389,15 @@ public abstract class WeaverEngine {
         return getLanguageSpecificationV2().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
     }
 
+    /**
+     * Pairs of labels-values that will populate the predefined list of the option "External Dependencies".
+     * <p>
+     * Default implementation returns an empty list.
+     * 
+     * @param labelValuePairs
+     * @return
+     */
+    public List<String> getPredefinedExternalDependencies() {
+        return Collections.emptyList();
+    }
 }
