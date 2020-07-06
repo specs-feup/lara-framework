@@ -1,7 +1,68 @@
-import weaver.WeaverJps;
+import weaver.Selector;
+import weaver.JoinPoints;
 
 /**
- * Alias for WeaverJps.
+ * Class for selection of join points. Provides an API similar to the keyword 'select'. 
  *
+ * Search functions of this class return weaver.Selector objects, please refer to that class for more details regarding available functions and search options.
+ *
+ * @class
  */
-var Query = WeaverJps;
+var Query = {};
+
+
+/**
+ * Helper function, the same as Query.search()
+ */
+function search(type, filter) {
+	return Query.search(type, filter);
+}
+
+/**
+ * Helper function, the same as Query.searchFrom()
+ */
+function searchFrom($baseJp, type, filter) {
+	return Query.searchFrom($baseJp, type, filter);
+}
+
+/**
+ * Helper function, the same as Query.searchFromInclusive()
+ */
+function searchFromInclusive($baseJp, type, filter) {
+	return Query.searchFromInclusive($baseJp, type, filter);
+}
+
+
+/**
+ * Returns the current root node of the AST.
+ */
+Query.root = function() {
+	return (new JoinPoints()).root();
+}
+
+/**
+ * Searches the AST for a given join point type, using the weaver.Selector interface.
+ */
+Query.search = function(type, filter) {
+	return Query.searchFrom(undefined, type, filter);
+	//return (new Selector()).search(type, filter);
+}
+
+/**
+ * In-depth search of join points of the given type, starting from a base join point (exclusive).
+ *
+ * @param {$jp} $baseJp - starting join point for the search.
+ * @param {String} type - type of the join point to search
+ * 
+ * @return {weaver.Selector} the results of the search.
+ */
+Query.searchFrom = function($baseJp, type, filter) {
+	return (new Selector($baseJp)).search(type, filter);
+}
+
+/**
+ * Searches for a given join point type starting from and including $baseJp, using the weaver.Selector interface.
+ */
+Query.searchFromInclusive = function($baseJp, type, filter) {
+	return (new Selector($baseJp, true)).search(type, filter);
+}
