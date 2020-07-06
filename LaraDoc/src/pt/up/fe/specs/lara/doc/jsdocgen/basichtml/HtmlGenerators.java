@@ -277,7 +277,12 @@ public class HtmlGenerators {
             // }
             // }
 
-            code.append("(").append(typeInfo).append(")");
+            // code.append("(").append(typeInfo).append(")");
+            // If there is a name, add separator
+            if (name != null) {
+                code.append(": ");
+            }
+            code.append(typeInfo);
 
             code.append("</span>");
 
