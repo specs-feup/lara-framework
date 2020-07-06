@@ -270,16 +270,12 @@ public class HtmlGenerators {
 
             String typeInfo = type.isEmpty() ? "any" : type;
 
-            if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
-                if (param.hasProperty(JsDocTagProperty.DEFAULT_VALUE)) {
-                    typeInfo += " = " + param.getValue(JsDocTagProperty.DEFAULT_VALUE);
-                }
-                /*
-                else {
-                    typeInfo += "?";
-                }
-                */
-            }
+            // Not adding default value here, default value was already added in function signature
+            // if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
+            // if (param.hasProperty(JsDocTagProperty.DEFAULT_VALUE)) {
+            // typeInfo += " = " + param.getValue(JsDocTagProperty.DEFAULT_VALUE);
+            // }
+            // }
 
             code.append("(").append(typeInfo).append(")");
 
@@ -303,7 +299,6 @@ public class HtmlGenerators {
             if (param.hasProperty(JsDocTagProperty.OPTIONAL)) {
                 code.append(" <em>(optional)</em>");
             }
-
             code.append("<br>");
         }
 
