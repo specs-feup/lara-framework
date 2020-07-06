@@ -161,7 +161,8 @@ public class HtmlGenerators {
         functionCode.append("<div class='function_content'>");
 
         if (isDeprecated) {
-            String deprecatedMessage = "This function is deprecated.";
+            String elementType = laraComment.hasTag(JsDocTagName.CLASS) ? "class" : "function";
+            String deprecatedMessage = "This " + elementType + " is deprecated.";
             String content = laraComment.getTag(JsDocTagName.DEPRECATED).getValue(JsDocTagProperty.CONTENT, "");
             if (!content.isEmpty()) {
                 deprecatedMessage += " " + content;
