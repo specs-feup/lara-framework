@@ -137,6 +137,12 @@ public abstract class JoinPoint {
     }
 
     public boolean instanceOf(String type) {
+
+        // Base type is 'joinpoint', is always true
+        if (type.equals("joinpoint")) {
+            return true;
+        }
+
         if (getJoinPointType().equals(type)) {
             return true;
         }
