@@ -72,6 +72,23 @@ Accumulator.prototype.get = function() {
 	return currentAcc.value;
 }
 
+
+Accumulator.prototype.copy = function() {
+
+	var copy = new Accumulator();
+
+	for(var key of this.keys()) {
+		var value = this.get(key);
+
+		// TODO: Not efficient, should have a method to internally set a value
+		for(var i = 0; i<value; i++) {
+			copy.add(key);
+		}
+	}
+
+	return copy;
+}
+
 /**
  * Returns an array of arrays with keys that have a value set.
  */
