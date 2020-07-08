@@ -12,13 +12,11 @@ import lara.Check;
  *
  */
 var Selector = function($baseJp, inclusive) {
-	//this._$currentJps = $baseJp === undefined ? undefined : [{_starting_point: $baseJp}];
 	this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
 	this._lastName = $baseJp === undefined ? undefined : "_starting_point";
-	//this._$currentJps = $baseJp === undefined ? undefined : [$baseJp];
+
 	this._joinPoints = new JoinPoints();
 	this._addBaseJp = inclusive === undefined ? false : inclusive;
-	//this._jpCounter = new Accumulator();
 };
 
 
@@ -32,32 +30,6 @@ Selector._copyChain = function($jpChain) {
 
 	copy["_counter"] = copy["_counter"].copy();
 
-/*
-	println("KEYS JPCHAIN: " + getKeys($jpChain));
-	println("KEYS COPY: " + getKeys(copy));
-	println("COUNTER: " + getKeys(copy["_counter"]));
-	var counter = copy["_counter"];
-	if(counter === undefined) {
-		throw "Counter is undefined";
-	}
-	var counterCopy = counter.copy();
-	if(counterCopy === undefined) {
-		throw "CounterCopy is undefined";
-	}
-*/
-	
-/*
-
-	println("COUNTER COPY: " + counterCopy);
-	if(counterCopy === undefined) {
-		println("UNDEFFFF");
-	}
-*/	
-	//copy["_counter"] = counterCopy;
-
-	// Create copy of Accumulator
-//	copy["_counter"] = $jpChain["_counter"].copy();
-	
 	return copy;
 }
 
@@ -74,7 +46,6 @@ Selector._newJpChain = function($startingPoint) {
 Selector._parseFilter = function(filter, name) {
 	// If undefined, return empty object
 	if(filter === undefined) {
-		//println("Empty filter");
 		return {};
 	}
 	
@@ -91,14 +62,11 @@ Selector._parseFilter = function(filter, name) {
 		
 		var defaultFilter = {};
 		defaultFilter[defaultAttr] = filter;
-		//println("Default filter:");
-		//printlnObject(defaultFilter);
+
 		return defaultFilter;
 	}
 	
 	// Just return the filter
-	//println("Original filter:");
-	//printlnObject(filter);
 	return filter;
 }	
 
@@ -109,15 +77,7 @@ Selector.prototype[Symbol.iterator] = function* () {
 	var $jps = this.get();
 	for(var $jp of $jps) {
 		yield $jp;
-	}
-	
-	/*
-	var $jps = this._$currentJps;
-	for(var $jp of $jps) {
-		yield $jp;
-	}
-	*/
-	
+	}	
 }
 
 Selector.prototype.search = function(name, filter) {
@@ -161,75 +121,36 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 		this._addBaseJp = false;
 		
 		// Filter does not test if the join point is of the right type
-		//if(this._$currentJps[0].instanceOf(name)) {
 		var $root = this._$currentJps[0][this._lastName];
 		if($root.instanceOf(name)) {
-			//this._$currentJps[0][name] = $root;
-			//this._addJps($newJps, this._$currentJps, jpFilter, this._$currentJps[0], this._lastName, name);
 			this._addJps($newJps, [$root], jpFilter, this._$currentJps[0], name);		
 		}
 
 	}
 	
-	//var $currentJps = this._$currentJps === undefined ? [this._joinPoints.root()] : this._$currentJps;
 	var isCurrentJpsUndefined = this._$currentJps === undefined;
-	//this._$currentJps = isCurrentJpsUndefined ? [{_starting_point: this._joinPoints.root()}] : this._$currentJps;
 	this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
 	this._lastName = isCurrentJpsUndefined ? "_starting_point" : this._lastName;
 
-/*	
-	var $currentJps = this._$currentJps;
-	if(this._$currentJps === undefined) {
-		$currentJps = {_starting_point: this._joinPoints.root()};
-		this._lastName = _starting_point;
-	}
-	*/
-
-
-//println("CURRENT:");
-//printlnObject(this._$currentJps);
-//println("LAST NAME: " + this._lastName);
-	 
 	// Each $jp is an object with the current chain
-	//for(var $jp of $currentJps) {
 	for(var $jpChain of this._$currentJps) {
 
 		var $jp = $jpChain[this._lastName];
 
 		var $allJps = selectFunction($jp, this._joinPoints, name);
-
-
-		//var $allJps = this._joinPoints.descendants($jp);
-		//println("All jps: " + $allJps.length);
-		//for(var $jp of $allJps) {
-		//	println("jp " + $jp.joinPointType + ":" + $jp.location);
-		//}
 		
 		this._addJps($newJps, $allJps, jpFilter, $jpChain, name);
-
-
-/*		
-		var $filteredJps = jpFilter.filter($allJps);
-		//println("filteredJps: " + $filteredJps.length);
-		for(var $finalJp of $filteredJps) {
-			$newJps.push($finalJp);
-		}
-*/		
-		
 	}
 
 	// Update
 	this._$currentJps = $newJps;
 	this._lastName = name;
-//	println("AFTER:");
-//printlnObject(this._$currentJps);
-//println("NAME: " + this._lastName);
+
 	return this;
 }
 Selector.prototype._addJps = function($newJps, $jps, jpFilter, $jpChain, name) {
 		
 	for(var $jp of $jps) {
-		//var $filteredJp = jpFilter.filter([$jp[name]]);
 		var $filteredJp = jpFilter.filter([$jp]);
 		
 		if($filteredJp.length === 0) {
@@ -242,27 +163,17 @@ Selector.prototype._addJps = function($newJps, $jps, jpFilter, $jpChain, name) {
 
 		// Copy chain
 		var $updatedChain = Selector._copyChain($jpChain);
-		//var $updatedChain = Object.assign({}, $jpChain);		
 		
 		// Update join point
 		$updatedChain[name] = $jp;
 		
 		// Add jp with unique id
 		var id = name + "_" + $updatedChain["_counter"].add(name);		
-		//println("ID: " + id);
 		$updatedChain[id] = $jp;
 		
 		$newJps.push($updatedChain);
-		//$newJps.push($jp);
 	}
 
-/*		
-	var $filteredJps = jpFilter.filter($jps);
-
-	for(var $finalJp of $filteredJps) {
-		$newJps.push($finalJp);
-	}
-*/	
 }
 
 
@@ -277,7 +188,6 @@ Selector.prototype.get = function() {
 		return [];
 	}
 	
-	//var returnJps = this._$currentJps;
 	var returnJps = [];
 	for(var $jpChain of this._$currentJps) {
 		returnJps.push($jpChain[this._lastName]);
