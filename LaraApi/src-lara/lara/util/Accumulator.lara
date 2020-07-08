@@ -12,8 +12,10 @@ var Accumulator = function() {
 
 /**
  * Adds the tuple to the accumulator. Each time a tuple is added, the corresponding value increments by 1.
- * <p>
+ *
  * Alternatively, can also receive an array with the chain of values
+ *
+ * @return {Integer} the previous count of the added element
  */
 Accumulator.prototype.add = function() {
 	var chainArray = this._parseArguments(arguments);
@@ -35,8 +37,13 @@ Accumulator.prototype.add = function() {
 		currentAcc = nextAcc;	
 	}
 
+	// Store previous value
+	var previousValue = currentAcc.value;
+
 	// Increment acc value
 	currentAcc.value++;
+	
+	return previousValue;
 }
 
 /**
