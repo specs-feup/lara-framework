@@ -4,7 +4,6 @@ import lara.util.JpFilter;
 import lara.util.Accumulator;
 import lara.Check;
 
-/// STATIC VARIABLES
 
 
 /**
@@ -13,22 +12,24 @@ import lara.Check;
  */
 var Selector = function($baseJp, inclusive) {
 	this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
-	this._lastName = $baseJp === undefined ? undefined : "_starting_point";
+	this._lastName = $baseJp === undefined ? undefined : Selector._STARTING_POINT;
 
 	this._joinPoints = new JoinPoints();
 	this._addBaseJp = inclusive === undefined ? false : inclusive;
 };
 
 
-//Selector._STARTING_POINT = "_starting_point";
+/// STATIC VARIABLES
 
+Selector._STARTING_POINT = "_starting_point";
+Selector._COUNTER = "_counter";
 
 /// STATIC FUNCTIONS
 
 Selector._copyChain = function($jpChain) {
 	var copy = Object.assign({}, $jpChain);		
 
-	copy["_counter"] = copy["_counter"].copy();
+	copy[Selector._COUNTER] = copy[Selector._COUNTER].copy();
 
 	return copy;
 }
@@ -38,7 +39,7 @@ Selector._newJpChain = function($startingPoint) {
 	var chain = {_starting_point: $startingPoint};
 	
 	// Add counter
-	chain["_counter"] = new Accumulator();
+	chain[Selector._COUNTER] = new Accumulator();
 	
 	return chain;
 }
@@ -130,7 +131,7 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 	
 	var isCurrentJpsUndefined = this._$currentJps === undefined;
 	this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
-	this._lastName = isCurrentJpsUndefined ? "_starting_point" : this._lastName;
+	this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
 
 	// Each $jp is an object with the current chain
 	for(var $jpChain of this._$currentJps) {
@@ -168,7 +169,7 @@ Selector.prototype._addJps = function($newJps, $jps, jpFilter, $jpChain, name) {
 		$updatedChain[name] = $jp;
 		
 		// Add jp with unique id
-		var id = name + "_" + $updatedChain["_counter"].add(name);		
+		var id = name + "_" + $updatedChain[Selector._COUNTER].add(name);		
 		$updatedChain[id] = $jp;
 		
 		$newJps.push($updatedChain);
