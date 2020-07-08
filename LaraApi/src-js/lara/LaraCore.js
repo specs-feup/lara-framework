@@ -425,3 +425,12 @@ function exit() {
 	throw "function 'exit()' has been deprecated. Please use another way of stoping the script (e.g., by returning)";
 }
 
+function getKeys(object) {
+	var keys = [];
+	
+	for(var key in object) {
+		keys.push(key);
+	}
+	
+	return keys;
+}
