@@ -55,14 +55,31 @@ JoinPoints.prototype._all_descendants = function($jp) {
 }
 
 
+/**
+ * 
+ * @return {$jp[]} all the nodes that are inside the scope of a given node
+ */
+JoinPoints.prototype._all_scope_nodes = function($jp) {
+	throw "JoinPoints._all_scope: not implemented";
+}
+
 
 /**
  * 
- * @return {$jp[]} the children of the given node
+ * @return {$jp[]} the nodes inside the scope of the given node.
+ */
+JoinPoints.prototype.scope = function($jp, jpType) {
+	return this._getNodes(this._all_scope_nodes, $jp, jpType);
+}
+
+/**
+ * 
+ * @return {$jp[]} the children of the given node, according to the AST
  */
 JoinPoints.prototype.children = function($jp, jpType) {
-	// TODO: This function can be optimized by using streaming
+	return this._getNodes(this._all_children, $jp, jpType);
 
+/*
 	if($jp === undefined) {
 		return [];
 	}
@@ -75,7 +92,58 @@ JoinPoints.prototype.children = function($jp, jpType) {
 	}
 	
 	return this._filterNodes(children, jpType);
+*/	
 }
+
+/**
+ * 
+ * @return {$jp[]} the descendants of the given node, according to the AST
+ */
+JoinPoints.prototype.descendants = function($jp, jpType) {
+	return this._getNodes(this._all_descendants, $jp, jpType);
+	/*
+	if($jp === undefined) {
+		return [];
+	}
+
+	Check.isJoinPoint($jp);	
+
+	var descendants = this._all_descendants($jp);
+	
+	if(jpType === undefined) {
+		return descendants;
+	}	
+
+	return this._filterNodes(descendants, jpType);
+	*/
+}
+
+
+/**
+ * 
+ * @return {$jp[]} the nodes related with the given node, according to the search function
+ */
+JoinPoints.prototype._getNodes = function(searchFunction, $jp, jpType) {
+	// TODO: This function can be optimized by using streaming
+	
+	Check.isDefined(searchFunction);
+
+	if($jp === undefined) {
+		return [];
+	}
+
+	Check.isJoinPoint($jp);	
+
+	var descendants = searchFunction($jp);
+	
+	if(jpType === undefined) {
+		return descendants;
+	}	
+
+	return this._filterNodes(descendants, jpType);
+}
+
+
 
 JoinPoints.prototype._filterNodes = function($jps, jpType) {
 
@@ -95,23 +163,7 @@ JoinPoints.prototype._filterNodes = function($jps, jpType) {
 }
 
 
-JoinPoints.prototype.descendants = function($jp, jpType) {
 
-	if($jp === undefined) {
-		return [];
-	}
-	
-
-	var descendants = this._all_descendants($jp);
-	
-	if(jpType === undefined) {
-		return descendants;
-	}	
-	
-	Check.isJoinPoint($jp);
-
-	return this._filterNodes(descendants, jpType);
-}
 
 
 /**

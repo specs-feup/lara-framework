@@ -81,6 +81,10 @@ Selector.prototype.children = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.children($jp, name);});
 }
 
+Selector.prototype.scope = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.scope($jp, name);});
+}
+
 Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 
 	Check.isDefined(selectFunction, "selectFunction");
