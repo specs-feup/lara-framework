@@ -88,6 +88,10 @@ Selector.prototype.scope = function(name, filter) {
 Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 
 	Check.isDefined(selectFunction, "selectFunction");
+	
+	if(name === undefined) {
+		name = "joinpoint";
+	}
 
 	filter = Selector._parseFilter(filter, name);
 	
