@@ -10,7 +10,7 @@ var SourceAction = function(name) {
 	Check.isDefined(name);
 
 	this.name = name.toString();
-}
+};
 
 
 SourceAction.prototype.getName() = function() {
