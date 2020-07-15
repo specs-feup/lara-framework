@@ -13,6 +13,7 @@
 package org.lara.interpreter.weaver.interf;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -392,12 +393,13 @@ public abstract class WeaverEngine {
     /**
      * Pairs of labels-values that will populate the predefined list of the option "External Dependencies".
      * <p>
-     * Default implementation returns an empty list.
+     * Default implementation returns a list with experimental LARA packages.
      * 
      * @param labelValuePairs
      * @return
      */
     public List<String> getPredefinedExternalDependencies() {
-        return Collections.emptyList();
+        return Arrays.asList("Experimental - SourceAction",
+                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction");
     }
 }
