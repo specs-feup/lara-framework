@@ -13,7 +13,7 @@ var SourceAction = function(name) {
 };
 
 
-SourceAction.prototype.getName() = function() {
+SourceAction.prototype.getName = function() {
 	return this.name;
 }
 
@@ -27,7 +27,7 @@ SourceAction.prototype.getName() = function() {
  *
  * @return {Boolean} true if this SourceAction can be applied to the given source point, false otherwise.
  */
-SourceAction.prototype.isValid() = function($jp) {
+SourceAction.prototype.isValid = function($jp) {
 	notImplemented("SourceAction.isValid");
 }
 
@@ -37,6 +37,6 @@ SourceAction.prototype.isValid() = function($jp) {
  *
  * @return {Transform[]} the sequence of transformations corresponding to this action for the given source point.
  */
-SourceAction.prototype.getTransforms() = function($jp) {
+SourceAction.prototype.getTransforms = function($jp) {
 	notImplemented("SourceAction.getTransforms");
 }

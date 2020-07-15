@@ -17,11 +17,11 @@ var Transform = function(id, $jp) {
 };
 
 
-Transform.prototype.getId() = function() {
+Transform.prototype.getId = function() {
 	return this.id;
 }
 
-Transform.prototype.getTransformPoint() = function() {
+Transform.prototype.getTransformPoint = function() {
 	return this.$transformPoint;
 }
 
@@ -29,11 +29,11 @@ Transform.prototype.getTransformPoint() = function() {
  * Applies the transformation, if it has not been applied yet.
  *
  */
-Transform.prototype.apply = function() {
+Transform.prototype.transform = function() {
 
 	// If transfomation has been applied, warn user and do nothing
 	if(this.hasTransformed) {
-		println("Transform.apply: transform " + this.id + " has already been applied");
+		println("Transform.transform: transform " + this.id + " has already been applied");
 		return;
 	}
 	
