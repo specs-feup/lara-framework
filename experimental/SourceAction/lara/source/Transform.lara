@@ -1,0 +1,79 @@
+import lara.Check;
+
+/**
+ * Represents a primitive source-code transformation.
+ *
+ * @param {String|Object} id - The id of this transformation. If an object is passed, invokes .toString() over the object.
+ * @param {$jp} $jp - The $jp over which the transformation will be performed.
+ */
+var Transform = function(id, $jp) {
+	Check.isDefined(id);
+	Check.isJoinPoint($jp);
+
+	this.id = id.toString();
+	this.$transformPoint = $jp;
+	
+	this.hasTransformed = false;
+};
+
+
+Transform.prototype.getId() = function() {
+	return this.id;
+}
+
+Transform.prototype.getTransformPoint() = function() {
+	return this.$transformPoint;
+}
+
+/**
+ * Applies the transformation, if it has not been applied yet.
+ *
+ */
+Transform.prototype.apply = function() {
+
+	// If transfomation has been applied, warn user and do nothing
+	if(this.hasTransformed) {
+		println("Transform.apply: transform " + this.id + " has already been applied");
+		return;
+	}
+	
+	this._applyPrivate();
+	this.hasTransformed = true;
+}
+
+/**
+ * Reverses the transformation, if it has been applied.
+ *
+ */
+Transform.prototype.reverse = function() {
+
+	// If transfomation has not been applied, warn user and do nothing
+	if(!this.hasTransformed) {
+		println("Transform.reverse: transform " + this.id + " has not been applied yet");
+		return;
+	}
+
+	this._reversePrivate();
+	this.hasTransformed = false;
+}
+
+
+
+
+/*** TO IMPLEMENT ***/
+
+/**
+ * 
+ */
+Transform.prototype._applyPrivate = function() {
+	notImplemented("Transform._applyPrivate");
+}
+
+
+/**
+ * 
+ */
+Transform.prototype._reversePrivate = function() {
+	notImplemented("Transform._reversePrivate");
+}
+

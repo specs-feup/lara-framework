@@ -1,0 +1,53 @@
+import lara.Check;
+import lara.source.Transform;
+
+/**
+ * Represents a source code transformation of arbitrary complexity.
+ *
+ * @param {String|Object} name - The name of this source action. If an object is passed, invokes .toString() over the object.
+ */
+var SourceAction = function(name) {
+	Check.isDefined(name);
+
+	this.name = name.toString();
+    //this.transforms = arrayFromArgs(arguments, 1);
+
+	// Check if there is at least one transform
+	//Check.isTrue(this.transforms.length > 0, "Needs at least one transformation");
+	
+	// Check if all elements are elements of Transform
+	//for(var i=0; i<this.transforms.length; i++) {
+	//	Check.isTrue(this.transforms[i] instanceof Transform, "SourceAction: argument at position " + (i+1) + " is not a Transform instance");
+	//}
+}
+
+
+SourceAction.prototype.getName() = function() {
+	return this.name;
+}
+
+
+
+/*** TO IMPLEMENT ***/
+
+
+/**
+ * Tests if this SourceAction can be applied to the given source point.
+ *
+ * @return {Boolean} true if this SourceAction can be applied to the given source point, false otherwise.
+ */
+SourceAction.prototype.isValid() = function($jp) {
+	notImplemented("SourceAction.isValid");
+}
+
+
+// * @param {Transform[]|Transform...} transforms - An array of Transform instances, or a sequence of Transform instances. 
+
+/**
+ * Generates the sequence of transformations corresponding to this action for the given source point.
+ *
+ * @return {Transform[]} the sequence of transformations corresponding to this action for the given source point.
+ */
+SourceAction.prototype.getTransforms() = function($jp) {
+	notImplemented("SourceAction.getTransforms");
+}
