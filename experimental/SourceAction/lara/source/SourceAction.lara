@@ -1,5 +1,5 @@
 import lara.Check;
-import lara.source.Transform;
+import lara.transform.Transform;
 
 /**
  * Represents a source code transformation of arbitrary complexity.

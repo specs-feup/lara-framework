@@ -1,0 +1,26 @@
+import lara.Check;
+import lara.transform.TransformHistory;
+import lara.transform.DefTransform;
+
+/**
+ * Actions common to all weavers.
+ *
+ * @class
+ */
+var LaraActions = {};
+
+
+/**
+ * @param {String|Object} attribute - 
+ * @param {Object} value - 
+ */
+LaraActions.define = function($jp, attribute, value) {
+	Check.isDefined(attribute);
+	Check.isDefined(value);
+
+	// Create action
+	var defAction = new DefTransform($jp, attribute.toString(), value);
+	
+	// Add action to TransformHistory
+	TransformHistory.add(defAction);
+}

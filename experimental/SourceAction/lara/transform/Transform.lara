@@ -21,7 +21,7 @@ Transform.prototype.getId = function() {
 	return this.id;
 }
 
-Transform.prototype.getTransformPoint = function() {
+Transform.prototype.getPoint = function() {
 	return this.$transformPoint;
 }
 

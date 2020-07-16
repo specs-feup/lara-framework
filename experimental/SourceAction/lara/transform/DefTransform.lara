@@ -1,0 +1,50 @@
+import lara.Check;
+import lara.transform.Transform;
+
+/**
+ * Sets an attribute.
+ */
+function DefTransform($jp, attribute, value) {
+    // Parent constructor
+    Transform.call(this, "Def-" + attribute, $jp);
+    
+	Check.isDefined(attribute);
+
+	this.attribute = attribute.toString();
+	this.value = value;
+	this.previousValue = undefined;
+}
+// Inheritance
+DefTransform.prototype = Object.create(Transform.prototype);
+
+
+
+/**
+ * 
+ * @Override
+ */
+DefTransform.prototype._applyPrivate = function() {
+	var $jp = this.getPoint();
+	
+	// Check if join point supports attribute
+	if(!$jp.hasAttribute(this.attribute)) {
+		throw "Join point " + $jp.joinPointType + " does not have the attribute '" + this.attribute + "'";
+	}
+	
+	// Save previous value
+	this.previousValue = $jp[this.attribute];
+	println("Previous value: " + this.previousValue);
+	
+	// Set new value
+	$jp.def(this.attribute, this.value);
+}
+
+
+/**
+ * @Override
+ */
+DefTransform.prototype._reversePrivate = function() {
+	// Restore previous value
+	var $jp = this.getPoint();
+	$jp.def(this.attribute, this.previousValue);	
+}
