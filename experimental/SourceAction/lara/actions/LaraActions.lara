@@ -1,6 +1,6 @@
 import lara.Check;
-import lara.transform.TransformHistory;
-import lara.transform.DefTransform;
+import lara.actions.Actions;
+import lara.actions.DefineAction;
 
 /**
  * Actions common to all weavers.
@@ -11,16 +11,16 @@ var LaraActions = {};
 
 
 /**
- * @param {String|Object} attribute - 
- * @param {Object} value - 
+ * @param {String|Object} attribute - The name of the attribute to set. If an object is passed, invokes .toString() over the object.
+ * @param {Object} value - The value to set.
  */
 LaraActions.define = function($jp, attribute, value) {
 	Check.isDefined(attribute);
 	Check.isDefined(value);
 
 	// Create action
-	var defAction = new DefTransform($jp, attribute.toString(), value);
+	var defAction = new DefineAction($jp, attribute, value);
 	
-	// Add action to TransformHistory
-	TransformHistory.add(defAction);
+	// Add action to Actions
+	Actions.add(defAction);
 }

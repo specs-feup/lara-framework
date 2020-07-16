@@ -1,0 +1,54 @@
+import lara.Check;
+import lara.actions.SourceAction;
+
+/**
+ * Sets an attribute.
+ *
+ * @param {$jp} $jp - The $jp whose attribute will be set.
+ * @param {String|Object} attribute - The name of the attribute to set. If an object is passed, invokes .toString() over the object.
+ * @param {Object} value - The value to set.
+ */
+function DefineAction($jp, attribute, value) {
+    // Parent constructor
+    SourceAction.call(this, "Define-" + attribute, $jp);
+    
+	Check.isDefined(attribute);
+
+	this.attribute = attribute.toString();
+	this.value = value;
+	this.previousValue = undefined;
+}
+// Inheritance
+DefineAction.prototype = Object.create(SourceAction.prototype);
+
+
+
+/**
+ * 
+ * @Override
+ */
+DefineAction.prototype._applyPrivate = function() {
+	var $jp = this.getPoint();
+	
+	// Check if join point supports attribute
+	if(!$jp.hasAttribute(this.attribute)) {
+		throw "Join point " + $jp.joinPointType + " does not have the attribute '" + this.attribute + "'";
+	}
+	
+	// Save previous value
+	this.previousValue = $jp[this.attribute];
+	println("Previous value: " + this.previousValue);
+	
+	// Set new value
+	$jp.def(this.attribute, this.value);
+}
+
+
+/**
+ * @Override
+ */
+DefineAction.prototype._reversePrivate = function() {
+	// Restore previous value
+	var $jp = this.getPoint();
+	$jp.def(this.attribute, this.previousValue);	
+}

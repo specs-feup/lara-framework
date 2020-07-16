@@ -1,0 +1,79 @@
+import lara.Check;
+
+/**
+ * Represents a transformation in the source code .
+ *
+ * @param {String|Object} name - The name of this action. If an object is passed, invokes .toString() over the object.
+ * @param {$jp} $jp - The $jp over which the transformation will be performed.
+ */
+var SourceAction = function(name, $jp) {
+	Check.isDefined(name);
+	Check.isJoinPoint($jp);
+
+	this.name = name.toString();
+	this.$point = $jp;
+	
+	this.hasTransformed = false;
+};
+
+
+SourceAction.prototype.getName = function() {
+	return this.name;
+}
+
+SourceAction.prototype.getPoint = function() {
+	return this.$point;
+}
+
+/**
+ * Applies the action, if it has not been applied yet.
+ *
+ */
+SourceAction.prototype.transform = function() {
+
+	// If action has been applied, warn user and do nothing
+	if(this.hasTransformed) {
+		println("SourceAction.transform: action " + this.name + " has already been applied");
+		return;
+	}
+	
+	this._applyPrivate();
+	this.hasTransformed = true;
+}
+
+/**
+ * Reverses the transformation, if it has been applied.
+ *
+ */
+SourceAction.prototype.reverse = function() {
+
+	// If transfomation has not been applied, warn user and do nothing
+	if(!this.hasTransformed) {
+		println("SourceAction.reverse: action " + this.name + " has not been applied yet");
+		return;
+	}
+
+	this._reversePrivate();
+	this.hasTransformed = false;
+}
+
+
+
+
+/*** TO IMPLEMENT ***/
+
+/**
+ * 
+ */
+SourceAction.prototype._applyPrivate = function() {
+	notImplemented("SourceAction._applyPrivate");
+}
+
+
+/**
+ * 
+ */
+SourceAction.prototype._reversePrivate = function() {
+	notImplemented("SourceAction._reversePrivate");
+}
+
