@@ -15,8 +15,10 @@ package org.lara.interpreter.weaver.interf;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +40,11 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  * Abstract class used by the LARA interpreter to define a join point instance
  */
 public abstract class JoinPoint {
+
+    private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
+    static {
+        JOIN_POINTS_ATTRIBUTES = new HashMap<Class<? extends JoinPoint>, Set<String>>();
+    }
 
     // private static final String BASE_JOINPOINT_CLASS = "joinpoint";
     private static final String LARA_GETTER = "laraGetter";
@@ -544,4 +551,24 @@ public abstract class JoinPoint {
     public String toString() {
         return "Joinpoint '" + getJoinPointType() + "'";
     }
+
+    /**
+     * Tests if a join point supports a given attribute.
+     *
+     * @return true if the join point supports the given attribute, false otherwise
+     */
+    public final boolean hasAttribute(String attributeName) {
+        var attributes = JOIN_POINTS_ATTRIBUTES.get(getClass());
+
+        if (attributes == null) {
+            attributes = new HashSet<>();
+            final List<String> attributesList = new ArrayList<>();
+            fillWithAttributes(attributesList);
+            attributes.addAll(attributesList);
+            JOIN_POINTS_ATTRIBUTES.put(getClass(), attributes);
+        }
+
+        return attributes.contains(attributeName);
+    }
+
 }
