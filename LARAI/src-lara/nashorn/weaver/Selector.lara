@@ -1,0 +1,241 @@
+import weaver.JoinPoints;
+import weaver.Weaver;
+import lara.util.JpFilter;
+import lara.util.Accumulator;
+import lara.Check;
+
+
+
+/**
+ * Selects join points according to their type and filter rules.
+ *
+ */
+var Selector = function($baseJp, inclusive) {
+	this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
+	this._lastName = $baseJp === undefined ? undefined : Selector._STARTING_POINT;
+
+	this._joinPoints = new JoinPoints();
+	this._addBaseJp = inclusive === undefined ? false : inclusive;
+};
+
+
+/// STATIC VARIABLES
+
+Selector._STARTING_POINT = "_starting_point";
+Selector._COUNTER = "_counter";
+
+/// STATIC FUNCTIONS
+
+Selector._copyChain = function($jpChain) {
+	var copy = Object.assign({}, $jpChain);		
+
+	copy[Selector._COUNTER] = copy[Selector._COUNTER].copy();
+
+	return copy;
+}
+
+Selector._newJpChain = function($startingPoint) {
+	// Add starting point
+	var chain = {_starting_point: $startingPoint};
+	
+	// Add counter
+	chain[Selector._COUNTER] = new Accumulator();
+	
+	return chain;
+}
+
+Selector._parseFilter = function(filter, name) {
+	// If undefined, return empty object
+	if(filter === undefined) {
+		return {};
+	}
+	
+	// If filter is not an object, build object with default attribute of given jp name
+	if(!isObject(filter)) {
+		// Get default attribute
+		var defaultAttr = Weaver.getDefaultAttribute(name);
+		
+		// If no default attribute, return empty filter
+		if(defaultAttr === undefined) {
+			println("Selector: cannot use default filter for join point '"+name+"', it does not have a default attribute");
+			return {};
+		}
+		
+		var defaultFilter = {};
+		defaultFilter[defaultAttr] = filter;
+
+		return defaultFilter;
+	}
+	
+	// Just return the filter
+	return filter;
+}	
+
+
+/// INSTANCE FUNCTIONS
+// Removed for Nashorn compatibility
+/*
+Selector.prototype[Symbol.iterator] = function* () {
+	var $jps = this.get();
+	for(var $jp of $jps) {
+		yield $jp;
+	}	
+}
+*/
+
+
+
+Selector.prototype.search = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
+}
+
+Selector.prototype.children = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.children($jp, name);});
+}
+
+Selector.prototype.scope = function(name, filter) {
+	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.scope($jp, name);});
+}
+
+Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
+
+	Check.isDefined(selectFunction, "selectFunction");
+	
+	if(name === undefined) {
+		name = "joinpoint";
+	}
+
+	filter = Selector._parseFilter(filter, name);
+	
+	var jpFilter = new JpFilter(filter);
+	
+	var $newJps = [];
+	var jpCounter = new Accumulator();
+
+	// If add base jp, this._$currentJps must have at most 1 element
+	if(this._addBaseJp && (this._$currentJps !== undefined)) {
+
+		if(this._$currentJps.length === 0) {
+			throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?";
+		}
+		
+		if(this._$currentJps.length > 1) {
+			throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('" + this._$currentJps.length + "')";
+		}
+		
+		this._addBaseJp = false;
+		
+		// Filter does not test if the join point is of the right type
+		var $root = this._$currentJps[0][this._lastName];
+		if($root.instanceOf(name)) {
+			this._addJps($newJps, [$root], jpFilter, this._$currentJps[0], name);		
+		}
+
+	}
+	
+	var isCurrentJpsUndefined = this._$currentJps === undefined;
+	this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
+	this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
+
+	// Each $jp is an object with the current chain
+	for(var $jpChain of this._$currentJps) {
+
+		var $jp = $jpChain[this._lastName];
+
+		var $allJps = selectFunction($jp, this._joinPoints, name);
+		
+		this._addJps($newJps, $allJps, jpFilter, $jpChain, name);
+	}
+
+	// Update
+	this._$currentJps = $newJps;
+	this._lastName = name;
+
+	return this;
+}
+Selector.prototype._addJps = function($newJps, $jps, jpFilter, $jpChain, name) {
+		
+	for(var $jp of $jps) {
+		var $filteredJp = jpFilter.filter([$jp]);
+		
+		if($filteredJp.length === 0) {
+			continue;
+		}
+		
+		if($filteredJp.length > 1) {
+			throw "Selector._addJps: Expected $filteredJp to have length 1, has " + $filteredJp.length;
+		}
+
+		// Copy chain
+		var $updatedChain = Selector._copyChain($jpChain);
+		
+		// Update join point
+		$updatedChain[name] = $jp;
+		
+		// Add jp with unique id
+		var id = name + "_" + $updatedChain[Selector._COUNTER].add(name);		
+		$updatedChain[id] = $jp;
+		
+		$newJps.push($updatedChain);
+	}
+
+}
+
+
+
+
+/**
+ * @return an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
+ */
+Selector.prototype.get = function() {
+	if(this._$currentJps === undefined) {
+		println("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
+		return [];
+	}
+	
+	var returnJps = [];
+	for(var $jpChain of this._$currentJps) {
+		returnJps.push($jpChain[this._lastName]);
+	}
+	
+	this._$currentJps = undefined;
+	return returnJps;
+}
+
+/**
+ * @return an array of objects where each object maps the name of the join point to the corresponding join point that was searched. If the search chain has the same name multiple times, the join point will be the most recently updated (last in the chain).
+ */
+Selector.prototype.chain = function() {
+	if(this._$currentJps === undefined) {
+		println("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
+		return [];
+	}
+	
+	var returnJps = this._$currentJps;
+	
+	this._$currentJps = undefined;
+	return returnJps;
+}
+
+//  * @arg {bool} warnIfMultiple - if true, displays a warning if the search returns more than one result
+
+/**
+ * Same as .first()
+ * 
+ */
+Selector.prototype.getFirst = function() {
+	var $jps = this.get();
+	if($jps.length === 0) {
+		println("Selector.getFirst(): no join point found");
+		return undefined;
+	}
+
+	return $jps[0];
+}
+
+/**
+ * @return {$jp} the first selected join point
+ */
+Selector.prototype.first = function() {
+	return this.getFirst();
+}
