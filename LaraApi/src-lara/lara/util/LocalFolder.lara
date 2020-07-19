@@ -50,6 +50,12 @@ LocalFolder.prototype.getFolder = function(path) {
 	return folder;
 }
 
+
+LocalFolder.prototype.hasFolder = function(path) {
+	var folder = Io.getPath(this.baseFolder, path);
+	return Io.isFolder(folder);
+}
+
 /**
  * @return {string} string with the contents of the given path
  */
