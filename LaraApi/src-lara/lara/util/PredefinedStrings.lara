@@ -48,7 +48,7 @@ PredefinedStrings.prototype.isValid = function(value) {
 }
 
 
-PredefinedStrings.prototype._checkValue = function(value) {
+PredefinedStrings.prototype.test = function(value) {
 	if(!this.isValid(value)) {
 		var message = "Invalid " + this._name + " '" + value + "'. Available values: " + this.values();
 		if(this._strict) {
@@ -70,7 +70,7 @@ PredefinedStrings.prototype.parse = function() {
 	// Clear benchmarks
 	parsedValues = [];
 	for(var arg of argsArray) {
-		if(!this._checkValue(arg)) {
+		if(!this.test(arg)) {
 			continue;
 		}
 		
