@@ -30,6 +30,12 @@ import org.lara.language.specification.dsl.types.TypeDef;
 
 public class NodeFactory {
 
+    /**
+     * @deprecated use LanguageSpecificationV2
+     * @param languageSpecification
+     * @return
+     */
+    @Deprecated
     public static RootNode toNode(LanguageSpecification languageSpecification) {
         return toNode(JoinPointFactory.fromOld(languageSpecification));
     }

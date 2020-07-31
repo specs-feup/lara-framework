@@ -366,6 +366,17 @@ public class LanguageSpecificationV2 {
 
     /**
      * 
+     * @return all the actions in the join point model
+     */
+    public List<Action> getAllActions() {
+        return getAllJoinPoints().stream()
+                .map(jp -> jp.getActions())
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 
      * @param name
      * @return the attributes with the given name. Since overloading is supported, several attributes can have the same
      *         name
@@ -376,6 +387,25 @@ public class LanguageSpecificationV2 {
                 .map(jp -> jp.getAttributeSelf(name))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Verify if the given Join point is a super type of any other Join Point
+     * 
+     * TODO: Could be more efficient (e.g., using a tree to represent the hierarchy)
+     * 
+     * @param joinPoint
+     * @return
+     */
+    public boolean isSuper(JoinPointClass joinPoint) {
+        for (var jp : getJoinPoints().values()) {
+
+            if (jp.getExtend().map(extend -> extend.equals(joinPoint)).orElse(false)) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
 }

@@ -37,5 +37,6 @@
 		</xsd:attribute>
 		<xsd:attribute name="alias" type="xsd:string" use="optional" />
 		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
+		<!-- <xsd:attribute name="op" type="xsd:string" use="optional" /> -->	
 	</xsd:complexType>
 </xsd:schema>
