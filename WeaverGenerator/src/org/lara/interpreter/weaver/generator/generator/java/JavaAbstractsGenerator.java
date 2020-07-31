@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGeneratorV2;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.ExceptionGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.SuperAbstractJoinPointGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.UserAbstractJPClassGenerator;
@@ -267,15 +268,28 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      * @param abstractGetters
      * @return
      */
+    protected List<JavaClass> generateClassesV2() {
+
+        var langSpec = getLanguageSpecificationV2();
+        // final JoinPointModel jpModel = langSpec.getJpModel();
+
+        final List<JavaClass> joinPointClasses = new ArrayList<>();
+
+        for (var joinPoint : langSpec.getAllJoinPoints()) {
+
+            final JavaClass jClass = AbstractJoinPointClassGeneratorV2.generate(this, joinPoint);
+            joinPointClasses.add(jClass);
+        }
+
+        return joinPointClasses;
+    }
+
     protected List<JavaClass> generateClasses() {
 
         final LanguageSpecification langSpec = getLanguageSpecification();
         final JoinPointModel jpModel = langSpec.getJpModel();
 
         final List<JavaClass> joinPointClasses = new ArrayList<>();
-        // JavaClass rootClass = generateRootClass(jpModel, outPackage,
-        // superClass);
-        // joinPointClasses.add(rootClass);
 
         for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
 
