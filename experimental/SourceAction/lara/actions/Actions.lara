@@ -47,7 +47,7 @@ Actions.restore = function(id) {
 	
 	// Already at the required point
 	if(id == Actions._actions.length) {
-		println("Actions.restore: already at history point '"+id+"'");
+		debug("Actions.restore: already at history point '"+id+"'");
 		return;
 	}
 
