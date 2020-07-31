@@ -1,6 +1,7 @@
 import lara.Check;
 import lara.actions.Actions;
 import lara.actions.DefineAction;
+import lara.actions.ReplaceAction;
 
 /**
  * Actions common to all weavers.
@@ -11,8 +12,11 @@ var LaraActions = {};
 
 
 /**
+ * @param {$jp} $jp - The node whose attribute will be set.
  * @param {String|Object} attribute - The name of the attribute to set. If an object is passed, invokes .toString() over the object.
  * @param {Object} value - The value to set.
+ *
+ * @return {lara.actions.DefineAction} the DefineAction that was applied
  */
 LaraActions.define = function($jp, attribute, value) {
 	Check.isDefined(attribute);
@@ -23,4 +27,29 @@ LaraActions.define = function($jp, attribute, value) {
 	
 	// Add action to Actions
 	Actions.add(defAction);
+	
+	return defAction;
+}
+
+
+/**
+ * Replaces a node for another.
+ *
+ * @param {$jp} $jp - The node that will be replaced.
+ * @param {$jp} $newJp - The node that will take the place of the previous one. 
+ *
+ * @return {lara.actions.ReplaceAction} the ReplaceAction that was applied
+ */
+LaraActions.replaceJp = function($jp, $newJp) {
+	Check.isJoinPoint($jp);
+	Check.isJoinPoint($newJp);
+
+
+	// Create action
+	var replaceAction = new ReplaceAction($jp, $newJp);
+	
+	// Add action to Actions
+	Actions.add(replaceAction);
+	
+	return replaceAction;
 }

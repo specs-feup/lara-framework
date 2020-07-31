@@ -1,0 +1,47 @@
+import lara.Check;
+import lara.actions.SourceAction;
+
+/**
+ * Replaces a node for another.
+ *
+ * @param {$jp} $jp - The node that will be replaced.
+ * @param {$jp} $newJp - The node that will take the place of the previous one. 
+ */
+function ReplaceAction($jp, $newJp) {
+    // Parent constructor
+    SourceAction.call(this, "Replace", $jp);
+    
+	Check.isJoinPoint($newJp);
+	
+	this.$origPoint = $jp;
+	this.$newJp = $newJp;
+	//this.$originalJp = undefined;
+}
+// Inheritance
+ReplaceAction.prototype = Object.create(SourceAction.prototype);
+
+
+
+/**
+ * 
+ * @Override
+ */
+ReplaceAction.prototype._applyPrivate = function() {	
+	// Replace node
+	this.$origPoint.replaceWith(this.$newJp);
+	
+	// Update target point
+	this.setPoint(this.$newJp);
+}
+
+
+/**
+ * @Override
+ */
+ReplaceAction.prototype._reversePrivate = function() {
+	// Restore original node
+	this.$newJp.replaceWith(this.$origPoint);
+	
+	// Update target point
+	this.setPoint(this.$origPoint);	
+}

@@ -25,6 +25,12 @@ SourceAction.prototype.getPoint = function() {
 	return this.$point;
 }
 
+
+SourceAction.prototype.setPoint = function($jp) {
+	this.$point = $jp;
+}
+
+
 /**
  * Applies the action, if it has not been applied yet.
  *
