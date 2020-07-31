@@ -21,8 +21,6 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.java2cpp.JavaImplGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
 
@@ -38,15 +36,17 @@ public class WeaverGenerator {
      * @deprecated change to
      *             {@link WeaverGenerator#generateJava(String, LanguageSpecification, File, String, boolean, Class)}
      */
+    /*
     @Deprecated
     public static void generate(String weaverName, LanguageSpecification langSpec, File outputDir, String outputPackage,
             boolean abstractGetters) {
-
+    
         final BaseGenerator generator = new JavaAbstractsGenerator(langSpec).weaverName(weaverName).outputDir(outputDir)
                 .setPackage(outputPackage).abstractGetters(abstractGetters);
         printReport(generator);
         generator.generate();
     }
+    */
 
     /**
      * Generate a new weaver, according to the input language specification.
@@ -63,16 +63,13 @@ public class WeaverGenerator {
      *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
      * @return true if generated successfully, false otherwise.
      */
+    /*
     @Deprecated
     public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
             String outputPackage, boolean abstractGetters) {
         generateJava(weaverName, langSpec, outputDir, outputPackage, abstractGetters, Object.class);
-        /*	final BaseGenerator generator = new JavaGenerator(langSpec).weaverName(weaverName).outputDir(outputDir)
-        			.setPackage(outputPackage).abstractGetters(abstractGetters);
-        	printReport(generator);
-        	generator.generate();
-        	*/
     }
+    */
 
     /**
      * Generate a new weaver, according to the input language specification.
@@ -318,24 +315,52 @@ public class WeaverGenerator {
     }
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
-        LanguageSpecification languageSpecification = generator.getLanguageSpecification();
+        var languageSpecification = generator.getLanguageSpecificationV2();
+
+        /*
         String ret = "";
-        for (final Action action : languageSpecification.getActionModel().getActionsList().getAction()) {
-
-            ret += action.getClazz() + "\t" + action.getName() + "(";
-            for (final Parameter parameter : action.getParameter()) {
-
-                ret += "" + parameter.getName() + "[" + parameter.getType() + "], ";
+        // for (final Action action : languageSpecification.getActionModel().getActionsList().getAction()) {
+        for (var jp : languageSpecification.getAllJoinPoints()) {
+            for (var action : jp.getActions()) {
+        
+                ret += jp.getName() + "\t" + action.getName() + "(";
+                for (var parameter : action.getParameters()) {
+                    ret += "" + parameter.getName() + "[" + parameter.getType() + "], ";
+                }
+                ret += ")\n";
             }
-            ret += ")\n";
         }
         // System.out.println(ret);
+        */
+
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
 
         // String json = jw.toJson(languageSpecification);
         SpecsIo.write(jsonOutFile, json);
     }
+
+    /*
+    public static void printJsonOld(final BaseGenerator generator, File jsonOutFile) {
+        var languageSpecification = generator.getLanguageSpecification();
+        String ret = "";
+        for (var action : languageSpecification.getActionModel().getActionsList().getAction()) {
+            ret += action.getClazz() + "\t" + action.getName() + "(";
+            for (final Parameter parameter : action.getParameter()) {
+    
+                ret += "" + parameter.getName() + "[" + parameter.getType() + "], ";
+            }
+            ret += ")\n";
+        }
+    
+        // System.out.println(ret);
+        LangSpecNode node = NodeFactory.toNode(languageSpecification);
+        String json = node.toJson();
+    
+        // String json = jw.toJson(languageSpecification);
+        SpecsIo.write(jsonOutFile, json);
+    }
+    */
 
     private static void printReport(BaseGenerator generator) {
         printReport(generator.getWeaverName(), generator.getOutPackage(), null, generator.getOutDir(),
