@@ -17,11 +17,14 @@ import java.io.File;
 
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.JoinPointFactory;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 public abstract class BaseGenerator {
 
     private String outPackage;
-    private LanguageSpecification languageSpecification;
+    private LanguageSpecification languageSpecificationOld;
+    private LanguageSpecificationV2 languageSpecification;
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
@@ -80,6 +83,7 @@ public abstract class BaseGenerator {
     private void init() {
 
         languageSpecification = null;
+        languageSpecificationOld = null;
         setOutPackage(GenConstants.getDefaultPackage());
         setOutDir(GenConstants.getDefaultOutputDir());
         setWeaverName(GenConstants.getDefaultWeaverName());
@@ -99,7 +103,7 @@ public abstract class BaseGenerator {
      * @param baseGenerator
      */
     private void init(BaseGenerator baseGenerator) {
-        setLanguageSpecification(baseGenerator.languageSpecification);
+        setLanguageSpecificationOld(baseGenerator.languageSpecificationOld);
         setOutPackage(baseGenerator.getOutPackage());
         setOutDir(baseGenerator.getOutDir());
         setWeaverName(baseGenerator.getWeaverName());
@@ -165,7 +169,8 @@ public abstract class BaseGenerator {
     }
 
     public BaseGenerator languageSpec(LanguageSpecification langSpec) {
-        setLanguageSpecification(langSpec);
+        languageSpecificationOld = langSpec;
+        setLanguageSpecification(JoinPointFactory.fromOld(langSpec));
         return this;
     }
 
@@ -309,8 +314,12 @@ public abstract class BaseGenerator {
      * 
      * @return
      */
-    public LanguageSpecification getLanguageSpecification() {
+    public LanguageSpecificationV2 getLanguageSpecificationV2() {
         return languageSpecification;
+    }
+
+    public LanguageSpecification getLanguageSpecification() {
+        return languageSpecificationOld;
     }
 
     /**
@@ -318,8 +327,13 @@ public abstract class BaseGenerator {
      * 
      * @param languageSpecification
      */
-    public void setLanguageSpecification(LanguageSpecification languageSpecification) {
+    private void setLanguageSpecification(LanguageSpecificationV2 languageSpecification) {
         this.languageSpecification = languageSpecification;
+    }
+
+    public void setLanguageSpecificationOld(LanguageSpecification languageSpecification) {
+        this.languageSpecificationOld = languageSpecification;
+        setLanguageSpecification(JoinPointFactory.fromOld(languageSpecification));
     }
 
     /**
@@ -329,7 +343,9 @@ public abstract class BaseGenerator {
      *            the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
-        languageSpecification = LanguageSpecification.newInstance(langSpecDir, true);
+        languageSpecificationOld = LanguageSpecification.newInstance(langSpecDir, true);
+        languageSpecification = JoinPointFactory.fromOld(languageSpecificationOld);
+        // languageSpecification = LanguageSpecificationV2.newInstance(langSpecDir, true);
     }
 
     /**
