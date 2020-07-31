@@ -294,7 +294,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      */
     private void generateGlobalSelects(JavaClass abstJPClass) {
 
-        final GlobalJoinPoints globalSelects = javaGenerator.getLanguageSpecification().getJpModel().getJoinPointList()
+        final GlobalJoinPoints globalSelects = javaGenerator.getLanguageSpecification().getJpModel()
+                .getJoinPointList()
                 .getGlobal();
         if (globalSelects == null) {
             return;

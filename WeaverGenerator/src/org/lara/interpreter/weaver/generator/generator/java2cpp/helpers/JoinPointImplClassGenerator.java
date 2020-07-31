@@ -40,10 +40,10 @@ public class JoinPointImplClassGenerator {
     private final JavaClass abstractClass;
 
     protected JoinPointImplClassGenerator(JavaImplGenerator javaGenerator, JoinPointType joinPoint,
-	    JavaClass abstractClass) {
-	this.joinPoint = joinPoint;
-	this.javaGenerator = javaGenerator;
-	this.abstractClass = abstractClass;
+            JavaClass abstractClass) {
+        this.joinPoint = joinPoint;
+        this.javaGenerator = javaGenerator;
+        this.abstractClass = abstractClass;
     }
 
     /**
@@ -55,10 +55,10 @@ public class JoinPointImplClassGenerator {
      * @return
      */
     public static JavaClass generate(JavaImplGenerator javaGenerator, JoinPointType joinPoint,
-	    JavaClass abstractClass) {
-	final JoinPointImplClassGenerator gen = new JoinPointImplClassGenerator(javaGenerator, joinPoint,
-		abstractClass);
-	return gen.generate();
+            JavaClass abstractClass) {
+        final JoinPointImplClassGenerator gen = new JoinPointImplClassGenerator(javaGenerator, joinPoint,
+                abstractClass);
+        return gen.generate();
     }
 
     /**
@@ -69,18 +69,18 @@ public class JoinPointImplClassGenerator {
      * @return
      */
     public JavaClass generate() {
-	final String className = Utils.firstCharToUpper(joinPoint.getClazz());
-	final JavaClass javaC = new JavaClass(javaGenerator.getJoinPointPrefix() + className,
-		javaGenerator.getImplPackage());
-	javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
-	javaC.appendComment("\nThis class is overwritten by the Weaver Generator.");
-	javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
+        final String className = Utils.firstCharToUpper(joinPoint.getClazz());
+        final JavaClass javaC = new JavaClass(javaGenerator.getJoinPointPrefix() + className,
+                javaGenerator.getImplPackage());
+        javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
+        javaC.appendComment("\nThis class is overwritten by the Weaver Generator.");
+        javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
-	addFieldsAndConstructors(javaC);
-	// addSelects(javaC);
-	// addActions(javaC);
+        addFieldsAndConstructors(javaC);
+        // addSelects(javaC);
+        // addActions(javaC);
 
-	return javaC;
+        return javaC;
     }
 
     /**
@@ -93,27 +93,27 @@ public class JoinPointImplClassGenerator {
      * @param abstractGetters
      */
     private void addFieldsAndConstructors(JavaClass javaC) {
-	final Artifact artifact = javaGenerator.getLanguageSpecification().getArtifacts()
-		.getArtifact(joinPoint.getClazz());
-	if (artifact != null) {
-	    for (final Attribute attribute : artifact.getAttribute()) {
-		String methodName = attribute.getName();
-		if (attribute.getParameter().isEmpty()) {
-		    methodName = "get" + StringUtils.firstCharToUpper(methodName);
-		}
-		final String getterName = methodName;
+        final Artifact artifact = javaGenerator.getLanguageSpecification().getArtifacts()
+                .getArtifact(joinPoint.getClazz());
+        if (artifact != null) {
+            for (final Attribute attribute : artifact.getAttribute()) {
+                String methodName = attribute.getName();
+                if (attribute.getParameter().isEmpty()) {
+                    methodName = "get" + StringUtils.firstCharToUpper(methodName);
+                }
+                final String getterName = methodName;
 
-		Optional<Method> abstrGetter = abstractClass.getMethods().stream()
-			.filter(m -> m.getName().equals(getterName)).findFirst();
-		Method getterImpl = abstrGetter.get().clone();
-		getterImpl.remove(Modifier.ABSTRACT);
-		getterImpl.add(Annotation.OVERRIDE);
-		getterImpl.appendCode("//THIS WILL CONTAIN THE CODE using reference and attribute: "
-			+ attribute.getType() + " " + attribute.getName());
-		javaC.add(getterImpl);
-		// GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator);
-	    }
-	}
+                Optional<Method> abstrGetter = abstractClass.getMethods().stream()
+                        .filter(m -> m.getName().equals(getterName)).findFirst();
+                Method getterImpl = abstrGetter.get().clone();
+                getterImpl.remove(Modifier.ABSTRACT);
+                getterImpl.add(Annotation.OVERRIDE);
+                getterImpl.appendCode("//THIS WILL CONTAIN THE CODE using reference and attribute: "
+                        + attribute.getType() + " " + attribute.getName());
+                javaC.add(getterImpl);
+                // GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator);
+            }
+        }
     }
 
     /**
@@ -124,14 +124,14 @@ public class JoinPointImplClassGenerator {
      */
     void addSelects(JavaClass javaC) {
 
-	// if (!joinPoint.getSelect().isEmpty())
-	// javaC.addImport("java.util.List");
+        // if (!joinPoint.getSelect().isEmpty())
+        // javaC.addImport("java.util.List");
 
-	for (final Select sel : joinPoint.getSelect()) {
-	    final String selectName = sel.getAlias();
-	    final String type = JoinPointModelConstructor.getJoinPointClass(sel);
-	    addSelect(selectName, type, javaC);
-	}
+        for (final Select sel : joinPoint.getSelect()) {
+            final String selectName = sel.getAlias();
+            final String type = JoinPointModelConstructor.getJoinPointClass(sel);
+            addSelect(selectName, type, javaC);
+        }
 
     }
 
@@ -143,16 +143,16 @@ public class JoinPointImplClassGenerator {
      */
     void addActions(JavaClass javaC) {
 
-	// final List<Action> actions = javaGenerator.getLanguageSpecification().getActionModel()
-	// .getJoinPointOwnActions(joinPoint.getClazz());
-	// for (final Action action : actions) {
+        // final List<Action> actions = javaGenerator.getLanguageSpecification().getActionModel()
+        // .getJoinPointOwnActions(joinPoint.getClazz());
+        // for (final Action action : actions) {
 
-	// final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
-	// javaC.add(m);
-	//
-	// Method cloned = GeneratorUtils.generateActionImplMethod(m, action.getName(), javaC);
-	// javaC.add(cloned);
-	// }
+        // final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
+        // javaC.add(m);
+        //
+        // Method cloned = GeneratorUtils.generateActionImplMethod(m, action.getName(), javaC);
+        // javaC.add(cloned);
+        // }
 
     }
 
@@ -165,11 +165,11 @@ public class JoinPointImplClassGenerator {
      */
     private void addSelect(String selectName, String type, JavaClass javaC) {
 
-	// final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
-	// final Method selectMethod = GeneratorUtils.generateSelectMethod(selectName, type, joinPointPackage, true);
-	// javaC.add(selectMethod);
+        // final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
+        // final Method selectMethod = GeneratorUtils.generateSelectMethod(selectName, type, joinPointPackage, true);
+        // javaC.add(selectMethod);
 
-	// addSelectWithTryCatch(selectName, javaC, selectMethod);
+        // addSelectWithTryCatch(selectName, javaC, selectMethod);
     }
 
     /**
@@ -180,25 +180,25 @@ public class JoinPointImplClassGenerator {
      * @param selectMethod
      */
     void addSelectWithTryCatch(String selectName, JavaClass javaC, final Method selectMethod) {
-	// Add the method used to encapsulate the output with an Optional, or
-	// encapsulate a thrown exception
-	final Method selectWithTry = new Method(selectMethod.getReturnType(),
-		selectMethod.getName() + GenConstants.getWithTryPrefix());
-	selectWithTry.appendCodeln("try{");
+        // Add the method used to encapsulate the output with an Optional, or
+        // encapsulate a thrown exception
+        final Method selectWithTry = new Method(selectMethod.getReturnType(),
+                selectMethod.getName() + GenConstants.getWithTryPrefix());
+        selectWithTry.appendCodeln("try{");
 
-	String tab = "   ";
-	selectWithTry.appendCode(tab + selectMethod.getReturnType().getSimpleType());
-	String listName = selectName + "List";
-	selectWithTry.appendCodeln(" " + listName + " = " + selectMethod.getName() + "();");
-	selectWithTry.appendCodeln(tab + "return " + listName + "!=null?" + listName + ":Collections.emptyList();");
-	selectWithTry.appendCodeln("} catch(Exception e) {");
-	selectWithTry.appendCodeln(tab + "throw new " + SelectException.class.getSimpleName() + "(\""
-		+ joinPoint.getClazz() + "\",\"" + selectName + "\",e);");
-	selectWithTry.appendCodeln("}");
+        String tab = "   ";
+        selectWithTry.appendCode(tab + selectMethod.getReturnType().getSimpleType());
+        String listName = selectName + "List";
+        selectWithTry.appendCodeln(" " + listName + " = " + selectMethod.getName() + "();");
+        selectWithTry.appendCodeln(tab + "return " + listName + "!=null?" + listName + ":Collections.emptyList();");
+        selectWithTry.appendCodeln("} catch(Exception e) {");
+        selectWithTry.appendCodeln(tab + "throw new " + SelectException.class.getSimpleName() + "(\""
+                + joinPoint.getClazz() + "\",\"" + selectName + "\",e);");
+        selectWithTry.appendCodeln("}");
 
-	javaC.add(selectWithTry);
-	javaC.addImport(Collections.class);
-	javaC.addImport(SelectException.class);
+        javaC.add(selectWithTry);
+        javaC.addImport(Collections.class);
+        javaC.addImport(SelectException.class);
     }
 
 }
