@@ -33,6 +33,7 @@ import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.artifactsmodel.schema.DefArgType;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
@@ -148,6 +149,56 @@ public class GeneratorUtils {
 
         List<Select> allSelects = jpm.getAllSelects(joinPoint);
         for (final Select sel : allSelects) {
+
+            String alias = sel.getAlias();
+            selectByName.appendCodeln("\tcase \"" + alias + "\": ");
+            selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
+            selectByName.appendCodeln("\t\tbreak;");
+        }
+
+        selectByName.appendCode("\tdefault:\n\t\tjoinPointList = ");
+
+        String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
+
+        selectByName.appendCodeln(superCall + "." + selectMethodName + "(selectName);\n\t\tbreak;\n}");
+        // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
+        // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
+        // selectByName.appendCodeln("}");
+        selectByName.appendCodeln("return joinPointList;");
+        javaC.add(selectByName);
+
+    }
+
+    public static void createSelectByNameV2(JavaClass javaC, JoinPointClass joinPoint, String superName,
+            boolean isFinal) {
+        // javaC.addImport(List.class.getCanonicalName());
+        final String selectMethodName = GenConstants.getSelectByNameMethodName();
+
+        JavaType joinPointType = JavaTypeFactory.convert(JoinPoint.class);
+        JavaType joinPointListType = JavaTypeFactory.convert(List.class);
+        JavaGenericType joinPointWildCardType = JavaTypeFactory.getWildExtendsType(joinPointType);
+        joinPointListType.addGeneric(joinPointWildCardType);
+
+        final Method selectByName = new Method(joinPointListType, selectMethodName, Privacy.PUBLIC);
+        selectByName.add(Annotation.OVERRIDE);
+        if (isFinal) {
+            selectByName.add(Modifier.FINAL);
+        }
+        selectByName.addArgument(JavaTypeFactory.getStringType(), "selectName");
+
+        selectByName.appendCodeln(joinPointListType.getSimpleType() + " joinPointList;");
+        selectByName.appendCodeln("switch(selectName) {");
+
+        // for (final Select sel : joinPoint.getSelect()) {
+        //
+        // String alias = sel.getAlias();
+        // selectByName.appendCodeln("\tcase \"" + alias + "\": ");
+        // selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
+        // selectByName.appendCodeln("\t\tbreak;");
+        // }
+
+        var allSelects = joinPoint.getSelects();
+        for (var sel : allSelects) {
 
             String alias = sel.getAlias();
             selectByName.appendCodeln("\tcase \"" + alias + "\": ");
@@ -1166,6 +1217,65 @@ public class GeneratorUtils {
                 defMethod.appendCodeln("\t}");
                 processedTypes.add(type);
             }
+
+            defMethod.appendCodeln("\tthis.unsupportedTypeForDef(attribute, value);");
+            // \tString valueType = value.getClass().getSimpleName();");
+            // defMethod.appendCodeln("\tif(value instanceof JoinPoint){");
+            // defMethod.appendCodeln("\t\tvalueType = ((JoinPoint)value).getJoinPointType();");
+            // defMethod.appendCodeln("\t}");
+            // defMethod.appendCodeln("\t" +
+            // GeneratorUtils.UnsupDefTypeExceptionCode(attribute.getName(), "valueType"));
+            defMethod.appendCodeln("}");
+        }
+
+        defMethod.appendCode("default: ");
+        defMethod.appendCodeln(
+                GeneratorUtils.UnsupDefExceptionCode("attribute"));
+        defMethod.appendCodeln("}");
+        javaC.add(defMethod);
+        javaC.addImport(JoinPoint.class);
+    }
+
+    public static void createDefImplV2(JavaClass javaC, boolean isFinal,
+            List<org.lara.language.specification.dsl.Attribute> attributes, JavaAbstractsGenerator javaGenerator) {
+        Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
+        defMethod.add(Annotation.OVERRIDE);
+        if (isFinal) {
+            defMethod.add(Modifier.FINAL);
+        }
+        defMethod.addArgument(String.class, "attribute");
+        defMethod.addArgument(Object.class, "value");
+        defMethod.appendCodeln("switch(attribute){");
+
+        for (var attribute : attributes) {
+            // TODO: Support DEFs in LangSpecV2, add here
+            // List<DefArgType> def = attribute.getDef();
+            // JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getType(), javaGenerator);
+            // defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
+            // List<String> processedTypes = SpecsCollections.newArrayList();
+            // for (DefArgType defType : def) {
+            // String type = defType.getType();
+            // // System.out.println("\tFOR DEF: " + type);
+            // if (processedTypes.contains(type)) {
+            // continue;
+            // }
+            // JavaType defJavaType;
+            // if (type == null) {
+            // defJavaType = returnType.clone();
+            // } else {
+            // defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+            // }
+            // javaC.addImport(defJavaType);
+            // defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
+            // defMethod.appendCode("\t\tthis.");
+            // defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
+            // defMethod.appendCode("((");
+            // defMethod.appendCode(defJavaType.getSimpleType());
+            // defMethod.appendCodeln(")value);");
+            // defMethod.appendCodeln("\t\treturn;");
+            // defMethod.appendCodeln("\t}");
+            // processedTypes.add(type);
+            // }
 
             defMethod.appendCodeln("\tthis.unsupportedTypeForDef(attribute, value);");
             // \tString valueType = value.getClass().getSimpleName();");
