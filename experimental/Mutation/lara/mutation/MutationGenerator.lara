@@ -1,0 +1,69 @@
+import lara.Check;
+
+/**
+ * Base class that represents a mutation generator.
+ * 
+ * This should not be instantiated directly, instead it should be extended.
+ * 
+ * @constructor
+ *
+ * @param {String} name - the name of the mutation
+ *
+ */
+var MutationGenerator = function(name) {
+	Check.isString(name);
+	
+	this.name = name;
+};
+
+
+/**
+ * @return {String} the name of this mutation
+ */
+MutationGenerator.prototype.getName = function() {
+	return this.name;
+}
+
+
+/**
+ * Applies the mutation to the given join point. 
+ *
+ * @param {$jp} $jp - The point in the code to mutate
+ *
+ * @return {$jp} the mutated node if a mutation occured, undefined otherwise 
+ */
+MutationGenerator.prototype.mutate = function($jp) {
+	if(!this.isMutationPoint($jp)) {
+		return undefined;
+	}
+	
+	return this._mutatePrivate($jp);
+}
+
+
+/*** TO IMPLEMENT ***/
+
+/**
+ * @param {$jp} $jp - A point in the code to test
+ * 
+ * @return {boolean} true if the given join point is a valid mutation point, false otherwise
+ */
+MutationGenerator.prototype.isMutationPoint = function($jp) {
+	notImplemented("MutationGenerator.isMutationPoint");
+}
+
+
+/**
+ * Applies the mutation to the given join point. 
+ *
+ * @param {$jp} $jp - The point in the code to mutate
+ *
+ * @return {boolean} true if a mutation occured, false otherwise 
+ */
+MutationGenerator.prototype._mutatePrivate = function($jp) {
+	notImplemented("MutationGenerator._mutatePrivate");
+}
+
+
+
+
