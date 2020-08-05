@@ -13,9 +13,7 @@
 
 package org.lara.interpreter.weaver.generator;
 
-import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ACTION_MODEL;
-import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ATTRIBUTE_MODEL;
-import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.JOIN_POINT_MODEL;
+import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
