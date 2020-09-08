@@ -50,8 +50,8 @@ Selector._parseFilter = function(filter, name) {
 		return {};
 	}
 	
-	// If filter is not an object, build object with default attribute of given jp name
-	if(!isObject(filter)) {
+	// If filter is not an object, or if it is a regex, build object with default attribute of given jp name
+	if(!isObject(filter) || filter instanceof RegExp) {
 		// Get default attribute
 		var defaultAttr = Weaver.getDefaultAttribute(name);
 		
