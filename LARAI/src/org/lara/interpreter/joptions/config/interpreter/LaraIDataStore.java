@@ -50,6 +50,7 @@ import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;

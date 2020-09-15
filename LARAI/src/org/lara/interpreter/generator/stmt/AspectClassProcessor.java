@@ -31,6 +31,7 @@ import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * A processor that deals with Aspect related constructions

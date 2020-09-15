@@ -94,7 +94,7 @@ public class OptionsConverter {
      */
     public static DataStore commandLine2DataStore(String laraFileName, CommandLine cmd,
             List<WeaverOption> weaverOptions) {
-        DataStore dataStore = getDataStoreFromArgs(cmd); // This way the data store contains at least the values defined
+        DataStore dataStore = getDataStoreFromArgs(); // This way the data store contains at least the values defined
                                                          // in the properties files
         dataStore.add(LaraiKeys.LARA_FILE, new File(laraFileName));
 
@@ -222,7 +222,8 @@ public class OptionsConverter {
      *
      * @param args
      */
-    private static DataStore getDataStoreFromArgs(CommandLine cmd) {
+    private static DataStore getDataStoreFromArgs() {
+    //    private static DataStore getDataStoreFromArgs(CommandLine cmd) {        
 
         // Create a DataStore with the default values (i.e., values that are defined in the properties files
         StoreDefinition definition = new LaraiStoreDefinition().getStoreDefinition();

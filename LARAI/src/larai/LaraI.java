@@ -187,7 +187,7 @@ public class LaraI {
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
-
+        
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
 
@@ -328,7 +328,10 @@ public class LaraI {
                 isRunningGui = true;
                 break;
             case OPTIONS: // convert options to data store and run
+                // SpecsLogs.debug("Received args: " + Arrays.toString(args));
+
                 dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
+
                 // return execPrivate(dataStore, weaverEngine);
                 success = execPrivate(dataStore, weaverEngine);
                 isRunningGui = false;
