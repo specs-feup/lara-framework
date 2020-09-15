@@ -20,7 +20,7 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
  *
  */
 public enum JsLaraCompatibilityResource implements ResourceProvider {
-    COLLECTIONS("Collections.js"),
+    // COLLECTIONS("Collections.js"), // Implements Set, which current JS Engine already implements
     DOT("dot.js"),
     DWARV_UTILS("dwarvUtils.js"),
     INPUT("input.js"),

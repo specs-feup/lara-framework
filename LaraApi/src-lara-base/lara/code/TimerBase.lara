@@ -69,7 +69,7 @@ Timer.prototype._timeValidate = function($start, $end, functionJpName) {
     var $function = $start.ancestor(functionJpName);
 
     if ($function === undefined) {
-        println("Timer: tried to measure time at joinpoit " + $start + ", but it is not inside a function");
+        println("Timer: tried to measure time at join point " + $start.joinPointType + ", but it is not inside a function");
         return false;
     }
 
