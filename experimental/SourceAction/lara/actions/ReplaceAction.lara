@@ -27,11 +27,11 @@ ReplaceAction.prototype = Object.create(SourceAction.prototype);
  * @Override
  */
 ReplaceAction.prototype._applyPrivate = function() {	
-	// Replace node
-	var $updatedNewJp = this.$origPoint.replaceWith(this.$newJp);
-	
+	// Replace node, newJp might be updated
+	this.$newJp = this.$origPoint.replaceWith(this.$newJp);
+
 	// Update target point
-	this.setPoint($updatedNewJp);
+	this.setPoint(this.$newJp);	
 }
 
 
@@ -39,9 +39,9 @@ ReplaceAction.prototype._applyPrivate = function() {
  * @Override
  */
 ReplaceAction.prototype._reversePrivate = function() {
-	// Restore original node
-	var $updatedOriginalPoint = this.$newJp.replaceWith(this.$origPoint);
+	// Restore original node, original point might be updated
+	this.$origPoint = this.$newJp.replaceWith(this.$origPoint);
 	
 	// Update target point
-	this.setPoint($updatedOriginalPoint);	
+	this.setPoint(this.$origPoint);	
 }
