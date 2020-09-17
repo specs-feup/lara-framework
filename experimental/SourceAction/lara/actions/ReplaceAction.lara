@@ -28,10 +28,10 @@ ReplaceAction.prototype = Object.create(SourceAction.prototype);
  */
 ReplaceAction.prototype._applyPrivate = function() {	
 	// Replace node
-	this.$origPoint.replaceWith(this.$newJp);
+	var $updatedNewJp = this.$origPoint.replaceWith(this.$newJp);
 	
 	// Update target point
-	this.setPoint(this.$newJp);
+	this.setPoint($updatedNewJp);
 }
 
 
@@ -40,8 +40,8 @@ ReplaceAction.prototype._applyPrivate = function() {
  */
 ReplaceAction.prototype._reversePrivate = function() {
 	// Restore original node
-	this.$newJp.replaceWith(this.$origPoint);
+	var $updatedOriginalPoint = this.$newJp.replaceWith(this.$origPoint);
 	
 	// Update target point
-	this.setPoint(this.$origPoint);	
+	this.setPoint($updatedOriginalPoint);	
 }
