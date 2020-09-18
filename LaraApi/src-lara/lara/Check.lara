@@ -208,7 +208,24 @@ Check.diff = function(original, revised) {
 	return _JavaTypes.getJavaDiff().getDiff(original.toString(), revised.toString());
 }
 
-
-
+/**
+ * Checks if the array contains the element. Throws an expression if it doens't.
+ * The test is equivalent to array.indexOf(element) != -1.
+ */
+Check.arrayContains = function(array, element, message, source) {
+	
+	if(array.indexOf(element) == -1) {
+	
+		if(message === undefined) {
+			message = "Check.arrayContains failed";
+		}
+		
+		if(source !== undefined) {
+			message = source + ": " + message;
+		}
+	
+		throw message;
+	}
+}
 
 
