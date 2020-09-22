@@ -150,3 +150,25 @@ Strings.diff = function(original, revised) {
 
 // * Comparison is done line-by-line, and 
 // Compare strings line-by-line
+
+/**
+ * Converts a given object to a XML string.
+ *
+ * @param {Object} object - The object to serialize to XML.
+ * 
+ * @return {String} The XML representation of the object.
+ */
+Strings.toXml = function(object) {
+	return _JavaTypes.getXStreamUtils().toString(object);
+}
+
+/**
+ * Converts a given XML string to an object.
+ *
+ * @param {String} xmlString - The XML representation of the object.
+ * 
+ * @return {Object} The deserialized object. 
+ */
+Strings.fromXml = function(xmlString) {
+	return _JavaTypes.getXStreamUtils().from(xmlString, _JavaTypes.getType("java.lang.Object").class);
+}

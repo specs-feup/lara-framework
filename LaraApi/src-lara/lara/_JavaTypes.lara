@@ -67,4 +67,7 @@ _JavaTypes.getJavaDiff = function() {
 	return _JavaTypes.getType("pt.up.fe.specs.lara.util.JavaDiffHelper");
 }
 
+_JavaTypes.getXStreamUtils = function() {
+	return _JavaTypes.getType("org.suikasoft.XStreamPlus.XStreamUtils");
+}
 
