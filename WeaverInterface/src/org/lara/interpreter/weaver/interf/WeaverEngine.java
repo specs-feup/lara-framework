@@ -404,4 +404,14 @@ public abstract class WeaverEngine {
                 "Experimental - Mutation",
                 "https://github.com/specs-feup/lara-framework.git?folder=experimental/Mutation");
     }
+
+    /**
+     * Transforms the given tree node into a join point.
+     * 
+     * @param node
+     * @return the join point of this node
+     */
+    public JoinPoint fromNode(Object node) {
+        throw new NotImplementedException(this);
+    }
 }
