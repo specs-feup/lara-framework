@@ -312,8 +312,15 @@ CMaker.prototype.build = function(cmakelistsFolder, builderFolder, cmakeFlags) {
 	cmakeOutput.setPrintToConsole(this.printToConsole)
 		.setWorkingDir(builderFolderpath)
 		.execute(cmakeCmd);
-	debug("CMake output:");
-	debug(cmakeOutput.getConsoleOutput());
+	
+	if(cmakeOutput.getReturnValue() === 0) {
+		debug("CMake output:");
+		debug(cmakeOutput.getConsoleOutput());
+	} else {
+		println("Cmaker.build: Could not generate makefile\n" + cmakeOutput.getConsoleOutput());
+		return;
+	}
+
 	
 	//println("CMake output: " + cmakeOutput);
 		
