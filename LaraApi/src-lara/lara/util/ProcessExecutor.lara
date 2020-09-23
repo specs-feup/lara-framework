@@ -124,15 +124,21 @@ ProcessExecutor.prototype.setOutputPrefix = function(outputPrefix) {
 	return this;
 }
 
-//ProcessExecutor.prototype.execute = function() {
 ProcessExecutor.prototype.execute = function(command) {
 
 	//if(!isString(command) && !isArray(command)) {
 	//	throw "ProcessExecutor.execute: 'command' must be either a String or an array";
 	//}
 
-//	var command = arrayFromArgs(arguments);	
 
+	var args = arrayFromArgs(arguments, 1);	
+
+	// If there is at least one argument, assume command is just a String with the executable
+	if(args.length > 0) {
+		// Add command to the start of the args
+		args.unshift(command);
+		command = args;
+	}
 	
 	this.lastCommand = command;
 	
