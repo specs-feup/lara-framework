@@ -29,7 +29,6 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.jsengine.JsEngineType;
-import pt.up.fe.specs.util.parsing.StringCodec;
 import pt.up.fe.specs.util.utilities.StringList;
 
 public interface LaraiKeys {
@@ -82,9 +81,9 @@ public interface LaraiKeys {
     DataKey<Boolean> LARA_LOC = KeyFactory.bool("loc").setLabel("LARA CSV with stats (LoC, #aspects, etc)");
 
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
-            .setDefault(() -> VerboseLevel.warnings)
-            .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
-                    string -> VerboseLevel.values()[Integer.parseInt(string)]));
+            .setDefault(() -> VerboseLevel.warnings);
+    // .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
+    // string->VerboseLevel.values()[Integer.parseInt(string)]));
 
     DataKey<OptionalFile> LOG_FILE = LaraIKeyFactory.optionalFile("log", false).setLabel("Use Log File");
 
