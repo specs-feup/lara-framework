@@ -200,7 +200,7 @@ Selector.prototype.get = function() {
 }
 
 /**
- * @return an array of objects where each object maps the name of the join point to the corresponding join point that was searched. If the search chain has the same name multiple times, the join point will be the most recently updated (last in the chain).
+ * @return an array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format <joinpoint_name>_<repetition>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
  */
 Selector.prototype.chain = function() {
 	if(this._$currentJps === undefined) {
