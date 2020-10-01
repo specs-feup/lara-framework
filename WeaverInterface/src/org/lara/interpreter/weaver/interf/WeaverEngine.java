@@ -171,6 +171,10 @@ public abstract class WeaverEngine {
         return select();
     }
 
+    public Object getRootNode() {
+        return getRootJp().getNode();
+    }
+
     /**
      * Returns a list of options the weaver accepts
      *
