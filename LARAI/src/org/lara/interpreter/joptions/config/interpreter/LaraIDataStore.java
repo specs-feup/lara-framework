@@ -48,9 +48,9 @@ import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
+import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
@@ -85,7 +85,9 @@ public class LaraIDataStore implements LaraiKeys {
         laraAPIs = new ArrayList<>();
         laraAPIs.addAll(LaraApis.getApis());
         laraAPIs.addAll(WeaverApis.getApis());
+        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
         laraAPIs.addAll(weaverEngine.getAspectsAPI());
+
         // laraAPIs = weaverEngine.getAspectsAPI();
         for (WeaverOption option : weaverEngine.getOptions()) {
             DataKey<?> key = option.dataKey();
