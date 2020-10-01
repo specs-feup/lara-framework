@@ -1,0 +1,7 @@
+/**
+ * Contains utility methods related to the AST provided by the LARA compiler. 
+ *
+ * @class
+ */
+var Ast = {};
+
