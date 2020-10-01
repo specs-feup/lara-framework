@@ -1,0 +1,14 @@
+import weaver.jp.<SUPER_JP>;
+
+/**
+ * 
+ *
+ * @class
+ */
+function <THIS_JP>() {
+    // Parent constructor
+    <SUPER_JP>.call(this);
+    
+}
+// Inheritance
+<THIS_JP>.prototype = Object.create(<SUPER_JP>.prototype);

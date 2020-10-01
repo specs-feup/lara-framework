@@ -1,0 +1,103 @@
+joinpoint function extends decl {
+	String name;
+	String returnType;
+}
+
+--------------
+
+LARA:
+
+
+
+
+Implementação dinâmica
+
+JoinPointsSpecs.setAttribute("function", "name", functionNode => functionNode.getName());
+
+
+- Selects são feitos com o Query
+- JoinPoints serem objectos JavaScript
+- Compilador LARA ficaria reduzido a fornecer a AST
+
+---------------
+
+(Done)- lang specs muito simples (program, file, function, call)
+ -> global: line, code
+ -> specific: call.name, function.name
+(Done)- aspeto lara simples (CallGraph)
+(Done)- Gerar ficheiros .lara a partir do lang spec
+(Done) -> Preciso enviar lista de ficheiros resource
+
+- import lara.CommonLanguage
+ (Done)-> Criar Jp.lara 
+ -> Api lowlevel (AST.root())
+ -> JoinPointBuilder.build("function", javaNode) {
+ -> patch Query.search()
+
+ 
+ 
+
+- Projeto para o modelo comum
+ -> lang_spec comum (XML atual ou o novo formato)
+ -> Funcitonalidade Jp.lara (.getJoinPointType, .instaceOf($jp), etc)
+ -> Gerar os ficheiros join points LARA
+ 
+
+ -> GenericJoinPoint em Lara, que faz wrap ao objecto Java que representa o nó
+    -> Qual é o tipo dele (function, call, etc)
+	-> A hierarquia jp -> decl -> function -> classFunction
+	-> Que attributos/acções suporta
+	
+	new FunctionJp(javaFunctionNode)
+
+ Ast.root() -> nó java do root
+ Ast.children(javaNode)
+ Ast.descendants -> Ast.children
+
+
+
+ weaver.JoinPoints.children($jp)
+ Weaver.root()
+ Query.search("")
+ 
+-----
+
+Join Point implementation
+
+1) GenericJoinPoint.lara
+ -> jpSuper
+ -> type
+ -> attributes[string -> function]
+
+ JoinPointBuilder.build("function", javaNode) {
+	var jp = new GenericJoinPoint(javaNode);
+	jp.setJpSuper(new G
+ }
+
+
+
+2) FunctionJp.lara, Jp.lara, Decl.lara.....
+ new FunctionJp(javaNode);
+
+
+----
+
+
+  Query.search("function")
+  
+  
+  Ast.descendants(Ast.root(), filterS) -> JavaNodes[]
+
+  Ast.toJoinPoint(javaNode) -> 
+
+----
+ 
+import weaver.Query;
+ 
+Query.search = function() 
+ 
+Queries
+attributes 
+ 
+ 
+ 

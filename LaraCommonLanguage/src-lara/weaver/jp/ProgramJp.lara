@@ -1,0 +1,14 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ProgramJp() {
+    // Parent constructor
+    JoinPoint.call(this);
+    
+}
+// Inheritance
+ProgramJp.prototype = Object.create(JoinPoint.prototype);

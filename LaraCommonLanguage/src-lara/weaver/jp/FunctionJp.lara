@@ -1,0 +1,13 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FunctionJp() {
+    // Parent constructor
+    DeclJp.call(this);
+}
+// Inheritance
+FunctionJp.prototype = Object.create(DeclJp.prototype);

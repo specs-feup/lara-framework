@@ -1,0 +1,14 @@
+import weaver.jp.ExprJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function CallJp() {
+    // Parent constructor
+    ExprJp.call(this);
+    
+}
+// Inheritance
+CallJp.prototype = Object.create(ExprJp.prototype);

@@ -1,0 +1,14 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ExprJp() {
+    // Parent constructor
+    JoinPoint.call(this);
+    
+}
+// Inheritance
+ExprJp.prototype = Object.create(JoinPoint.prototype);

@@ -1,0 +1,14 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function DeclJp() {
+    // Parent constructor
+    JoinPoint.call(this);
+    
+}
+// Inheritance
+DeclJp.prototype = Object.create(JoinPoint.prototype);

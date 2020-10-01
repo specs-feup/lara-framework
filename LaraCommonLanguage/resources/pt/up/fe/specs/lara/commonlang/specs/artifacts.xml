@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<artifacts>
+
+	<!-- Attributes for all join points -->
+	<global>
+		<attribute name="line" type="string" />
+		<attribute name="code" type="string" />		
+	</global>
+	
+	<artifact class="call" default="name">
+		<attribute name="name" type="string" />
+	</artifact>
+
+	<artifact class="function" default="name">
+		<attribute name="name" type="string" />
+	</artifact>
+
+</artifacts>

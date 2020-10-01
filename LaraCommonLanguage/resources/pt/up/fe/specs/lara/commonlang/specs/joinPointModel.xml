@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<joinpoints  root_class="program">
+
+	<joinpoint class="program"/>	
+	<joinpoint class="file"/>
+	<joinpoint class="decl"/>
+	<joinpoint class="function" extends="decl"/>
+	<joinpoint class="expr"/>
+	<joinpoint class="call" extends="expr"/>	
+
+</joinpoints>
