@@ -411,16 +411,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Transforms the given tree node into a join point.
-     * 
-     * @param node
-     * @return the join point of this node
-     */
-    // public JoinPoint fromNode(Object node) {
-    // throw new NotImplementedException(this);
-    // }
-
-    /**
      * 
      * @return an instance with basic functionality required of AST nodes
      */

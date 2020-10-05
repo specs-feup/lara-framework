@@ -85,18 +85,6 @@ Weaver.hasAttribute = function(jp, attributeName) {
 
 
 /**
- * @param node - A raw node from the tree.
- *
- * @return {$jp} the equivalent join point of the node.
- */
- /*
-Weaver.fromNode = function(node) {
-	return Weaver.getWeaverEngine().fromNode(node);
-}
-*/
-
-
-/**
  * Converts a given join point to a string.
  *
  * @param {Object} object - The join point to serialize.
@@ -118,7 +106,6 @@ Weaver.serialize = function($jp) {
  */
 Weaver.deserialize = function(string) {
 	return Weaver.astMethods().toJoinPoint(Strings.fromXml(string));
-	//return Weaver.fromNode(Strings.fromXml(string));
 }
 
 
