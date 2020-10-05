@@ -11,7 +11,9 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package org.lara.interpreter.weaver.interf;
+package org.lara.interpreter.weaver.ast;
+
+import org.lara.interpreter.weaver.interf.JoinPoint;
 
 /**
  * Represents the basic interface that the AST nodes must support.
@@ -39,7 +41,7 @@ public interface AstMethods<T> {
      * 
      * @return the number of children
      */
-    default int numChildren(T node) {
+    default int getNumChildren(T node) {
         return getChildren(node).length;
     }
 

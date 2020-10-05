@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
+import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
