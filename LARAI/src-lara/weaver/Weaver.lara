@@ -8,8 +8,9 @@ import lara.Strings;
  */
 var Weaver = {};
 
-/**
- * @return the current WeaverEngine
+/** 
+ *
+ * @return {J#org.lara.interpreter.weaver.interf.WeaverEngine} the Java instance of the current WeaverEngine
  */
 Weaver.getWeaverEngine = function() {
 	return Java.type("org.lara.interpreter.weaver.interf.WeaverEngine").getThreadLocalWeaver();
@@ -118,3 +119,9 @@ Weaver.deserialize = function(string) {
 }
 
 
+/**
+ * @return 
+ */
+Weaver.children = function(node) {
+	return Weaver.getWeaverEngine().fromNode(node);
+}
