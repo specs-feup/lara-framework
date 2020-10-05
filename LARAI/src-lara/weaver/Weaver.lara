@@ -105,14 +105,12 @@ Weaver.serialize = function($jp) {
  * @return {$jp} The deserialized join point. 
  */
 Weaver.deserialize = function(string) {
-	return Weaver.astMethods().toJoinPoint(Strings.fromXml(string));
+	return Weaver.AST_METHODS.toJavaJoinPoint(Strings.fromXml(string));	
 }
 
 
 /**
- *
- * @return {J#org.lara.interpreter.weaver.ast.AstMethods} an instance of the basic interface that the AST nodes must support.
+ * An instance of the basic interface that the AST nodes must support.
  */
-Weaver.astMethods = function() {
-	return Weaver.getWeaverEngine().getAstMethods();
-}
+Weaver.AST_METHODS = Weaver.getWeaverEngine().getAstMethods();
+
