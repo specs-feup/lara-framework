@@ -1,7 +1,26 @@
+import weaver.Weaver;
+
 /**
  * Contains utility methods related to the AST provided by the LARA compiler. 
  *
  * @class
  */
 var Ast = {};
+
+
+/** 
+ *
+ * @return {Object[]} an array with the children AST nodes of the given AST node.
+ */
+Ast.getChildren = function(astNode) {
+	return Weaver.AST_METHODS.getChildren(astNode);
+}
+
+
+/**
+ * @return {integer} the number of children of the AST node.
+ */
+Ast.getNumChildren = function(astNode) {
+	return Weaver.AST_METHODS.getNumChildren(astNode);
+}
 
