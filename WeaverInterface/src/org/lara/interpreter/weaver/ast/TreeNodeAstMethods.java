@@ -16,30 +16,39 @@ package org.lara.interpreter.weaver.ast;
 import java.util.function.Function;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 
-import pt.up.fe.specs.util.treenode.TreeNode;
+import pt.up.fe.specs.util.treenode.ATreeNode;
 
-public class TreeNodeAstMethods<T extends TreeNode<T>> implements AstMethods<T> {
+public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
 
+    private final Class<T> nodeClass;
     private final Function<T, JoinPoint> toJoinPointFunction;
 
-    public TreeNodeAstMethods(Function<T, JoinPoint> toJoinPointFunction) {
+    public TreeNodeAstMethods(WeaverEngine engine, Class<T> nodeClass, Function<T, JoinPoint> toJoinPointFunction) {
+        super(engine);
+        this.nodeClass = nodeClass;
         this.toJoinPointFunction = toJoinPointFunction;
     }
 
     @Override
-    public JoinPoint toJoinPoint(T node) {
+    public Class<T> getNodeClass() {
+        return nodeClass;
+    }
+
+    @Override
+    protected JoinPoint toJavaJoinPointImpl(T node) {
         return toJoinPointFunction.apply(node);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public T[] getChildren(T node) {
-        return (T[]) node.getChildren().toArray();
+    protected Object[] getChildrenImpl(T node) {
+        var children = node.getChildren().toArray();
+        return children;
     }
 
     @Override
-    public int getNumChildren(T node) {
+    protected Integer getNumChildrenImpl(T node) {
         return node.getNumChildren();
     }
 

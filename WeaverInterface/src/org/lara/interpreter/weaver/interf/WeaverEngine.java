@@ -414,7 +414,7 @@ public abstract class WeaverEngine {
      * 
      * @return an instance with basic functionality required of AST nodes
      */
-    public AstMethods<?> getAstMethods() {
+    public AstMethods getAstMethods() {
         throw new NotImplementedException(this);
     }
 }

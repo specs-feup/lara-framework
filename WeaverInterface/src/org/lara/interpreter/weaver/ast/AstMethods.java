@@ -13,15 +13,13 @@
 
 package org.lara.interpreter.weaver.ast;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
-
 /**
  * Represents the basic interface that the AST nodes must support.
  * 
  * @author Joao Bispo
  *
  */
-public interface AstMethods<T> {
+public interface AstMethods {
 
     /**
      * Transforms the given AST node into a join point.
@@ -29,20 +27,18 @@ public interface AstMethods<T> {
      * @param node
      * @return the join point corresponding to this node
      */
-    JoinPoint toJoinPoint(T node);
+    Object toJavaJoinPoint(Object node);
 
     /**
      * 
-     * @return an array with the children of this AST node
+     * @return a JavaScript array with the children of this AST node
      */
-    T[] getChildren(T node);
+    Object getChildren(Object node);
 
     /**
      * 
      * @return the number of children
      */
-    default int getNumChildren(T node) {
-        return getChildren(node).length;
-    }
+    Object getNumChildren(Object node);
 
 }
