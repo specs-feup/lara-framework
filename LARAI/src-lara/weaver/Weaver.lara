@@ -89,9 +89,11 @@ Weaver.hasAttribute = function(jp, attributeName) {
  *
  * @return {$jp} the equivalent join point of the node.
  */
+ /*
 Weaver.fromNode = function(node) {
 	return Weaver.getWeaverEngine().fromNode(node);
 }
+*/
 
 
 /**
@@ -115,13 +117,15 @@ Weaver.serialize = function($jp) {
  * @return {$jp} The deserialized join point. 
  */
 Weaver.deserialize = function(string) {
-	return Weaver.fromNode(Strings.fromXml(string));
+	return Weaver.astMethods().toJoinPoint(Strings.fromXml(string));
+	//return Weaver.fromNode(Strings.fromXml(string));
 }
 
 
 /**
- * @return 
+ *
+ * @return {J#org.lara.interpreter.weaver.ast.AstMethods} an instance of the basic interface that the AST nodes must support.
  */
-Weaver.children = function(node) {
-	return Weaver.getWeaverEngine().fromNode(node);
+Weaver.astMethods = function() {
+	return Weaver.getWeaverEngine().getAstMethods();
 }
