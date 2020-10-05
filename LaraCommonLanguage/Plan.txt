@@ -30,7 +30,7 @@ JoinPointsSpecs.setAttribute("function", "name", functionNode => functionNode.ge
 
 - import lara.CommonLanguage
  (Done)-> Criar Jp.lara 
- -> Api lowlevel (AST.root())
+ -> Api lowlevel (AST.root(), children(node), descendants())
  -> JoinPointBuilder.build("function", javaNode) {
  -> patch Query.search()
 
