@@ -418,4 +418,12 @@ public abstract class WeaverEngine {
     public JoinPoint fromNode(Object node) {
         throw new NotImplementedException(this);
     }
+
+    /**
+     * 
+     * @return an instance with basic functionality required of AST nodes
+     */
+    public AstMethods<?> getAstMethods() {
+        throw new NotImplementedException(this);
+    }
 }
