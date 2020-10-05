@@ -416,9 +416,9 @@ public abstract class WeaverEngine {
      * @param node
      * @return the join point of this node
      */
-    public JoinPoint fromNode(Object node) {
-        throw new NotImplementedException(this);
-    }
+    // public JoinPoint fromNode(Object node) {
+    // throw new NotImplementedException(this);
+    // }
 
     /**
      * 
