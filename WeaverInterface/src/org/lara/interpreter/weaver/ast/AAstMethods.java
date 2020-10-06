@@ -60,6 +60,9 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     protected abstract Object[] getChildrenImpl(T node);
 
-    protected abstract Integer getNumChildrenImpl(T node);
+    // protected abstract Integer getNumChildrenImpl(T node);
 
+    protected Integer getNumChildrenImpl(T node) {
+        return getChildrenImpl(node).length;
+    }
 }

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.ast.AstMethods;
+import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
@@ -415,6 +416,6 @@ public abstract class WeaverEngine {
      * @return an instance with basic functionality required of AST nodes
      */
     public AstMethods getAstMethods() {
-        throw new NotImplementedException(this);
+        return new DummyAstMethods(this);
     }
 }
