@@ -39,6 +39,11 @@ public abstract class AAstMethods<T> implements AstMethods {
     }
 
     @Override
+    public Object getJoinPointName(Object node) {
+        return toJs(getJoinPointNameImpl(getNodeClass().cast(node)));
+    }
+
+    @Override
     public Object getChildren(Object node) {
         var children = getChildrenImpl(getNodeClass().cast(node));
         return toJs(children);
@@ -57,6 +62,8 @@ public abstract class AAstMethods<T> implements AstMethods {
     public abstract Class<T> getNodeClass();
 
     protected abstract JoinPoint toJavaJoinPointImpl(T node);
+
+    protected abstract String getJoinPointNameImpl(T node);
 
     protected abstract Object[] getChildrenImpl(T node);
 

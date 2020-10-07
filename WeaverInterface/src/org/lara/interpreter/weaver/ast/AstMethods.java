@@ -30,6 +30,14 @@ public interface AstMethods {
     Object toJavaJoinPoint(Object node);
 
     /**
+     * Maps an AST node to the corresponding Common Language Specification join point name.
+     * 
+     * @param node
+     * @return
+     */
+    Object getJoinPointName(Object node);
+
+    /**
      * 
      * @return a JavaScript array with the children of this AST node
      */
