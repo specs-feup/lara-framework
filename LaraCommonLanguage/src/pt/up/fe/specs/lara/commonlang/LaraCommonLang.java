@@ -35,6 +35,8 @@ public class LaraCommonLang {
         List<ResourceProvider> api = new ArrayList<>();
 
         api.add(() -> "weaver/jp/JoinPoint.lara");
+        api.add(() -> "weaver/jp/JoinPoints.lara");
+        api.add(() -> "weaver/jp/JoinPointIndex.lara");
         api.addAll(CommonLangGenerator.getGeneratedResources());
 
         return api;

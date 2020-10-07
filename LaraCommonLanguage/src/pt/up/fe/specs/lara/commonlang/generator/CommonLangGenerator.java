@@ -68,7 +68,29 @@ public class CommonLangGenerator {
 			
 			generate(jp, atts);
 		}
+		
+		generateIndex();
 
+	}
+
+	private void generateIndex() {
+		var jpIndexStr = "";
+		
+		final String importTemplate = "import weaver.jp.<SUPER_JP>;\n";
+		
+		jpIndexStr += importTemplate.replace("<SUPER_JP>", "JoinPoint");
+		
+		var langSpec = LaraCommonLang.getLanguageSpecification();
+		
+		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
+			jpIndexStr += importTemplate.replace("<SUPER_JP>", getJoinPointClassName(jp.getClazz()));
+		}
+		
+		var laraResource = "weaver/jp/JoinPointIndex.lara";
+		var laraFile = new File(outputFolder, laraResource);
+		SpecsIo.write(laraFile, jpIndexStr);
+		
+		
 	}
 
 	private void generateJpBase(Map<String, Attribute> globAtts) {
