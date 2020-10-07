@@ -7,3 +7,11 @@ var JoinPoint = function() {
 	
 };
 
+JoinPoint.prototype.line = function() {
+	throw "JoinPoint.line not implemented";
+}
+
+JoinPoint.prototype.code = function() {
+	throw "JoinPoint.code not implemented";
+}
+

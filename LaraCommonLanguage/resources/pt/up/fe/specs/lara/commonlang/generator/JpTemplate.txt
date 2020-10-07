@@ -12,3 +12,4 @@ function <THIS_JP>() {
 }
 // Inheritance
 <THIS_JP>.prototype = Object.create(<SUPER_JP>.prototype);
+

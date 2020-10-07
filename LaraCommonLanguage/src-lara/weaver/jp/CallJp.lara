@@ -12,3 +12,8 @@ function CallJp() {
 }
 // Inheritance
 CallJp.prototype = Object.create(ExprJp.prototype);
+
+CallJp.prototype.name = function() {
+	throw "CallJp.name not implemented";
+}
+

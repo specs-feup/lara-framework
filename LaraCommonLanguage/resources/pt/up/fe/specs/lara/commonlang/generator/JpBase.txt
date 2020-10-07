@@ -1,0 +1,9 @@
+/**
+ * Base class for all LARA join points.
+ *
+ * @class
+ */
+var JoinPoint = function() {
+	
+};
+

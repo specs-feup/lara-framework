@@ -12,3 +12,4 @@ function ProgramJp() {
 }
 // Inheritance
 ProgramJp.prototype = Object.create(JoinPoint.prototype);
+

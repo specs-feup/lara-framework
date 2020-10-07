@@ -12,3 +12,4 @@ function FileJp() {
 }
 // Inheritance
 FileJp.prototype = Object.create(JoinPoint.prototype);
+

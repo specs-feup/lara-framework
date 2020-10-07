@@ -12,3 +12,4 @@ function DeclJp() {
 }
 // Inheritance
 DeclJp.prototype = Object.create(JoinPoint.prototype);
+

@@ -8,6 +8,12 @@ import weaver.jp.DeclJp;
 function FunctionJp() {
     // Parent constructor
     DeclJp.call(this);
+    
 }
 // Inheritance
 FunctionJp.prototype = Object.create(DeclJp.prototype);
+
+FunctionJp.prototype.name = function() {
+	throw "FunctionJp.name not implemented";
+}
+

@@ -16,7 +16,10 @@ package pt.up.fe.specs.lara.commonlang.generator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
@@ -32,60 +35,95 @@ import pt.up.fe.specs.util.utilities.Replacer;
  */
 public class CommonLangGenerator {
 
-    private final File outputFolder;
+	private final File outputFolder;
 
-    public static List<ResourceProvider> getGeneratedResources() {
-        List<ResourceProvider> resources = new ArrayList<>();
+	public static List<ResourceProvider> getGeneratedResources() {
+		List<ResourceProvider> resources = new ArrayList<>();
 
-        var langSpec = LaraCommonLang.getLanguageSpecification();
+		var langSpec = LaraCommonLang.getLanguageSpecification();
 
-        for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
-            resources.add(() -> getJpResource(jp.getClazz()));
-        }
+		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
+			resources.add(() -> getJpResource(jp.getClazz()));
+		}
 
-        return resources;
-    }
+		return resources;
+	}
 
-    public CommonLangGenerator(File outputFolder) {
-        this.outputFolder = outputFolder;
-    }
+	public CommonLangGenerator(File outputFolder) {
+		this.outputFolder = outputFolder;
+	}
 
-    public void generate() {
-        // Read lang spec
-        var langSpec = LaraCommonLang.getLanguageSpecification();
+	public void generate() {
+		// Read lang spec
+		var langSpec = LaraCommonLang.getLanguageSpecification();
 
-        for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
+		generateJpBase(langSpec.getArtifacts().getGlobalAttributes());
 
-            System.out.println("JP: " + "weaver/jp/" + jp.getClazz() + ".lara");
-            generate(jp);
-        }
-    }
+		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
 
-    public static String getJoinPointClassName(String jpName) {
-        // Upper case first letter
-        return jpName.substring(0, 1).toUpperCase() + jpName.substring(1) + "Jp";
-    }
+			System.out.println("JP: " + "weaver/jp/" + jp.getClazz() + ".lara");
+			
+			var atts = langSpec.getArtifacts().getAttributes(jp.getClazz());
+			atts = (atts == null) ? new ArrayList<>() : atts;
+			
+			generate(jp, atts);
+		}
 
-    private void generate(JoinPointType jpType) {
+	}
 
-        var jpTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/JpTemplate.txt");
+	private void generateJpBase(Map<String, Attribute> globAtts) {
 
-        var jpName = jpType.getClazz();
-        var jpClassName = getJoinPointClassName(jpName);
-        var superName = ((JoinPointType) jpType.getExtends()).getClazz();
-        var superClassName = superName.equals(jpName) ? "JoinPoint" : getJoinPointClassName(superName);
+		var jpBase = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/JpBase.txt");
+		var jpName = "JoinPoint";
+		var jpBaseStr = jpBase.toString();
 
-        jpTemplate.replace("<THIS_JP>", jpClassName);
-        jpTemplate.replace("<SUPER_JP>", superClassName);
-        System.out.println("TEMPLATE:\n" + jpTemplate);
+		for (var att : globAtts.keySet()) {
+			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
+			attTemplate.replace("<THIS_JP>", jpName);
+			attTemplate.replace("<ATT>", att);
+			jpBaseStr += attTemplate.toString();
+		}
+		
+		var laraResource = "weaver/jp/" + jpName + ".lara";
+		var laraFile = new File(outputFolder, laraResource);
+		SpecsIo.write(laraFile, jpBaseStr);
 
-        var laraResource = getJpResource(jpName);
-        var laraFile = new File(outputFolder, laraResource);
-        SpecsIo.write(laraFile, jpTemplate.toString());
-    }
+	}
 
-    public static String getJpResource(String jpName) {
-        var jpClassName = getJoinPointClassName(jpName);
-        return "weaver/jp/" + jpClassName + ".lara";
-    }
+	public static String getJoinPointClassName(String jpName) {
+		// Upper case first letter
+		return StringUtils.capitalize(jpName) + "Jp";
+	}
+
+	private void generate(JoinPointType jpType, List<Attribute> atts) {
+
+		var jpTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/JpTemplate.txt");
+
+		var jpName = jpType.getClazz();
+		var jpClassName = getJoinPointClassName(jpName);
+		var superName = ((JoinPointType) jpType.getExtends()).getClazz();
+		var superClassName = superName.equals(jpName) ? "JoinPoint" : getJoinPointClassName(superName);
+
+		jpTemplate.replace("<THIS_JP>", jpClassName);
+		jpTemplate.replace("<SUPER_JP>", superClassName);
+		System.out.println("TEMPLATE:\n" + jpTemplate);
+
+		var jpTemplateStr = jpTemplate.toString();
+
+		for (var att : atts) {
+			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
+			attTemplate.replace("<THIS_JP>", jpClassName);
+			attTemplate.replace("<ATT>", att.getName());
+			jpTemplateStr += attTemplate.toString();
+		}
+
+		var laraResource = getJpResource(jpName);
+		var laraFile = new File(outputFolder, laraResource);
+		SpecsIo.write(laraFile, jpTemplateStr);
+	}
+
+	public static String getJpResource(String jpName) {
+		var jpClassName = getJoinPointClassName(jpName);
+		return "weaver/jp/" + jpClassName + ".lara";
+	}
 }

@@ -1,0 +1,4 @@
+<THIS_JP>.prototype.<ATT> = function() {
+	throw "<THIS_JP>.<ATT> not implemented";
+}
+
