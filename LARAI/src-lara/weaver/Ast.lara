@@ -24,3 +24,33 @@ Ast.getNumChildren = function(astNode) {
 	return Weaver.AST_METHODS.getNumChildren(astNode);
 }
 
+
+/**
+ * 
+ * @return {Object} the current root node of the AST.
+ */
+Ast.root = function() {
+	return Weaver.getWeaverEngine().getRootNode();
+}
+
+/** 
+ *
+ * @return {Object[]} an array with the descendants AST nodes of the given AST node.
+ */
+Ast.getDescendants = function(astNode, accum) {
+    accum = accum || [];
+    for(child of Ast.getChildren(astNode)){
+    	accum.push(child);
+    	Ast.getDescendants(child,accum);
+    }
+	return accum;
+}
+
+
+/** 
+ *
+ * @return {Object} the child of the node at the given index.
+ */
+Ast.getChild = function(astNode, index) {
+	return Ast.getChildren[index];
+}
