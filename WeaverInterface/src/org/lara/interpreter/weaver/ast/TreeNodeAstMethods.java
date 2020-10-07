@@ -24,11 +24,15 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
 
     private final Class<T> nodeClass;
     private final Function<T, JoinPoint> toJoinPointFunction;
+    private final Function<T, String> toJoinPointNameFunction;
 
-    public TreeNodeAstMethods(WeaverEngine engine, Class<T> nodeClass, Function<T, JoinPoint> toJoinPointFunction) {
+    public TreeNodeAstMethods(WeaverEngine engine, Class<T> nodeClass, Function<T, JoinPoint> toJoinPointFunction,
+            Function<T, String> toJoinPointNameFunction) {
+
         super(engine);
         this.nodeClass = nodeClass;
         this.toJoinPointFunction = toJoinPointFunction;
+        this.toJoinPointNameFunction = toJoinPointNameFunction;
     }
 
     @Override
@@ -50,6 +54,11 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
     @Override
     protected Integer getNumChildrenImpl(T node) {
         return node.getNumChildren();
+    }
+
+    @Override
+    protected String getJoinPointNameImpl(T node) {
+        return toJoinPointNameFunction.apply(node);
     }
 
 }

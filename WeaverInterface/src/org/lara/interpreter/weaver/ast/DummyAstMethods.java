@@ -39,4 +39,9 @@ public class DummyAstMethods extends AAstMethods<Object> {
         throw new NotImplementedException(this);
     }
 
+    @Override
+    protected String getJoinPointNameImpl(Object node) {
+        throw new NotImplementedException(this);
+    }
+
 }
