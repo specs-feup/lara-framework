@@ -44,4 +44,8 @@ public class DummyAstMethods extends AAstMethods<Object> {
         throw new NotImplementedException(this);
     }
 
+    @Override
+    protected Object[] getScopeChildrenImpl(Object node) {
+        throw new NotImplementedException(this);
+    }
 }

@@ -13,6 +13,7 @@
 
 package org.lara.interpreter.weaver.ast;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
@@ -25,14 +26,16 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
     private final Class<T> nodeClass;
     private final Function<T, JoinPoint> toJoinPointFunction;
     private final Function<T, String> toJoinPointNameFunction;
+    private final Function<T, List<T>> scopeChildrenGetter;
 
     public TreeNodeAstMethods(WeaverEngine engine, Class<T> nodeClass, Function<T, JoinPoint> toJoinPointFunction,
-            Function<T, String> toJoinPointNameFunction) {
+            Function<T, String> toJoinPointNameFunction, Function<T, List<T>> scopeChildrenGetter) {
 
         super(engine);
         this.nodeClass = nodeClass;
         this.toJoinPointFunction = toJoinPointFunction;
         this.toJoinPointNameFunction = toJoinPointNameFunction;
+        this.scopeChildrenGetter = scopeChildrenGetter;
     }
 
     @Override
@@ -59,6 +62,11 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
     @Override
     protected String getJoinPointNameImpl(T node) {
         return toJoinPointNameFunction.apply(node);
+    }
+
+    @Override
+    protected Object[] getScopeChildrenImpl(T node) {
+        return scopeChildrenGetter.apply(node).toArray();
     }
 
 }

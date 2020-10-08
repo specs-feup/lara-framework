@@ -49,4 +49,11 @@ public interface AstMethods {
      */
     Object getNumChildren(Object node);
 
+    /**
+     * 
+     * @return a JavaScript array with the children inside the scope declared by this AST node (e.g., body of a loop),
+     *         or empty array if node does not have a scope
+     */
+    Object getScopeChildren(Object node);
+
 }
