@@ -5,9 +5,11 @@ import weaver.jp.<SUPER_JP>;
  *
  * @class
  */
-function <THIS_JP>() {
+function <THIS_JP>(astNode) {
     // Parent constructor
-    <SUPER_JP>.call(this);
+    <SUPER_JP>.call(this,astNode);
+
+    this.type = '<JP_TYPE>';
     
 }
 // Inheritance

@@ -5,9 +5,11 @@ import weaver.jp.JoinPoint;
  *
  * @class
  */
-function ExprJp() {
+function ExprJp(astNode) {
     // Parent constructor
-    JoinPoint.call(this);
+    JoinPoint.call(this,astNode);
+
+    this.type = 'expr';
     
 }
 // Inheritance

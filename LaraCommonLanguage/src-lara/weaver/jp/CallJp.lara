@@ -5,9 +5,11 @@ import weaver.jp.ExprJp;
  *
  * @class
  */
-function CallJp() {
+function CallJp(astNode) {
     // Parent constructor
-    ExprJp.call(this);
+    ExprJp.call(this,astNode);
+
+    this.type = 'call';
     
 }
 // Inheritance

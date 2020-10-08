@@ -3,7 +3,9 @@
  *
  * @class
  */
-var JoinPoint = function() {
-	
+var JoinPoint = function(astNode) {
+	this.astNode = astNode;
+	this.type = 'joinpoint';
+
 };
 

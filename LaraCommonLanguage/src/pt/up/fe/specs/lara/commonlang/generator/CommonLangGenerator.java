@@ -128,6 +128,7 @@ public class CommonLangGenerator {
 
 		jpTemplate.replace("<THIS_JP>", jpClassName);
 		jpTemplate.replace("<SUPER_JP>", superClassName);
+		jpTemplate.replace("<JP_TYPE>", jpName);
 		System.out.println("TEMPLATE:\n" + jpTemplate);
 
 		var jpTemplateStr = jpTemplate.toString();
