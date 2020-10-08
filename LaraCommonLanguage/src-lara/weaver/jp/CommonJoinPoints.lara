@@ -1,0 +1,25 @@
+import weaver.Weaver;
+import weaver.jp.JoinPointIndex;
+
+
+var CommonJoinPoints = {};
+
+
+CommonJoinPoints.toJoinPoint = function(astNode) {
+ 	var jpName = Weaver.AST_METHODS.getJoinPointName(astNode);
+ 	return new classesMapping[jpName](astNode);
+}
+
+CommonJoinPoints.toJoinPoints = function(astNodes) {
+   return astNodes.map(astNode => this.toJoinPoint(astNode));
+}
+
+var classesMapping = {
+	'JoinPoint':JoinPoint,
+	'ProgramJp':ProgramJp,
+	'FileJp':FileJp,
+	'DeclJp':DeclJp,
+	'FunctionJp':FunctionJp,
+	'ExprJp':ExprJp,
+	'CallJp':CallJp
+};

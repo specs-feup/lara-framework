@@ -1,0 +1,67 @@
+import weaver.JoinPoints;
+import weaver.Ast;
+import weaver.jp.CommonJoinPoints;
+
+
+/**
+ *
+ * @return {$jp[]} the children of the given node
+ */
+ 
+JoinPoints.prototype._all_children = function($jp) {
+	return CommonJoinPoints.toJoinPoints(Ast.getChildren($jp));
+}
+
+/**
+ *
+ * @return {$jp[]} the descendants of the given node
+ */
+ 
+JoinPoints.prototype._all_descendants = function($jp) {
+	return CommonJoinPoints.toJoinPoints(Ast.getDescendants($jp));
+}
+
+/**
+ *
+ * @return {$jp[]} all the nodes that are inside the scope of a given node
+ */
+ 
+JoinPoints.prototype._all_scope_nodes = function($jp) {
+	return [];
+}
+
+
+/**
+ * 
+ * @return {Object} the current root node of the AST.
+ */
+JoinPoints.prototype.root = function() {
+	return Ast.root();
+}
+
+/**
+ * 
+ * @return {$jp[]} the nodes inside the scope of the given node.
+ */
+JoinPoints.prototype.scope = function($jp, jpType) {
+	return [];
+}
+
+/**
+ * 
+ * @return {$jp[]} the children of the given node, according to the AST
+ */
+JoinPoints.prototype.children = function($jp, jpType) {
+	return this._all_descendants($jp).filter(desc => desc.type === jpType);
+}
+
+
+/**
+ * 
+ * @return {$jp[]} the descendants of the given node, according to the AST
+ */
+ 
+ 
+JoinPoints.prototype.descendants = function($jp, jpType) {
+	return this._all_descendants($jp).filter(desc => desc.type === jpType);
+}
