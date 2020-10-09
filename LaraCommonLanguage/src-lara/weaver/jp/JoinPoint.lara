@@ -9,6 +9,8 @@ var JoinPoint = function(astNode) {
 
 };
 
+JoinPoint.prototype._is_common_jp = true;
+
 JoinPoint.prototype.line = function() {
 	throw "JoinPoint.line not implemented";
 }
