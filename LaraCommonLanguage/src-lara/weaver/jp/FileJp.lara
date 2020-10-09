@@ -15,3 +15,12 @@ function FileJp(astNode) {
 // Inheritance
 FileJp.prototype = Object.create(JoinPoint.prototype);
 
+
+FileJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === "file") {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+}
+

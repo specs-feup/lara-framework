@@ -17,3 +17,6 @@ JoinPoint.prototype.code = function() {
 	throw "JoinPoint.code not implemented";
 }
 
+JoinPoint.prototype.instanceOf = function(joinPointType) {
+	return joinPointType === "joinpoint";
+}
