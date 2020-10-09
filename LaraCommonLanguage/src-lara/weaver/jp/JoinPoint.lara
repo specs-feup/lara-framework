@@ -5,20 +5,23 @@
  */
 var JoinPoint = function(astNode) {
 	this.astNode = astNode;
-	this.type = 'joinpoint';
-
 };
 
 JoinPoint.prototype._is_common_jp = true;
 
-JoinPoint.prototype.line = function() {
-	throw "JoinPoint.line not implemented";
+JoinPoint.prototype.instanceOf = function(joinPointType) {
+	return joinPointType === this.joinPointType();
+}
+
+JoinPoint.prototype.joinPointType = function() {
+	return "joinpoint";
 }
 
 JoinPoint.prototype.code = function() {
 	throw "JoinPoint.code not implemented";
 }
 
-JoinPoint.prototype.instanceOf = function(joinPointType) {
-	return joinPointType === "joinpoint";
+JoinPoint.prototype.line = function() {
+	throw "JoinPoint.line not implemented";
 }
+

@@ -8,10 +8,21 @@ import weaver.jp.JoinPoint;
 function ExprJp(astNode) {
     // Parent constructor
     JoinPoint.call(this,astNode);
-
-    this.type = 'expr';
     
 }
 // Inheritance
 ExprJp.prototype = Object.create(JoinPoint.prototype);
+
+ExprJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+}
+
+ExprJp.prototype.joinPointType = function() {
+	return 'expr';
+}
+
 

@@ -100,6 +100,11 @@ public class CommonLangGenerator {
 		var jpBaseStr = jpBase.toString();
 
 		for (var att : globAtts.keySet()) {
+			// if att is already defined do not create template
+			var attFunc = String.format("JoinPoint.prototype.%s = function(", att);
+			if(jpBaseStr.contains(attFunc))
+				continue;				
+				
 			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
 			attTemplate.replace("<THIS_JP>", jpName);
 			attTemplate.replace("<ATT>", att);

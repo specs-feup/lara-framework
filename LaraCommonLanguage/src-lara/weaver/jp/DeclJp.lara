@@ -8,10 +8,21 @@ import weaver.jp.JoinPoint;
 function DeclJp(astNode) {
     // Parent constructor
     JoinPoint.call(this,astNode);
-
-    this.type = 'decl';
     
 }
 // Inheritance
 DeclJp.prototype = Object.create(JoinPoint.prototype);
+
+DeclJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+}
+
+DeclJp.prototype.joinPointType = function() {
+	return 'decl';
+}
+
 

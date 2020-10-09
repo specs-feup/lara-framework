@@ -8,12 +8,23 @@ import weaver.jp.ExprJp;
 function CallJp(astNode) {
     // Parent constructor
     ExprJp.call(this,astNode);
-
-    this.type = 'call';
     
 }
 // Inheritance
 CallJp.prototype = Object.create(ExprJp.prototype);
+
+CallJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+}
+
+CallJp.prototype.joinPointType = function() {
+	return 'call';
+}
+
 
 CallJp.prototype.name = function() {
 	throw "CallJp.name not implemented";

@@ -5,6 +5,11 @@
 	<global>
 		<attribute name="line" type="string" />
 		<attribute name="code" type="string" />		
+		<attribute name="joinPointType" type="string" />	
+		<attribute name="instanceOf" type="boolean">
+			<parameter name="joinPointType" type="string" />
+		</attribute>
+		
 	</global>
 	
 	<artifact class="call" default="name">
