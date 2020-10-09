@@ -409,6 +409,13 @@ function laraGetter(object, property) {
 			//return SpecsSystem.invokeAsGetter(object, property);
 		}
 	
+		// Lara Common Language JoinPoint
+		if(object._is_common_jp) {
+			return object[property]();
+		}
+
+			
+	
 		// JS object
 		return object[property];
     }
