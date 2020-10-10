@@ -114,3 +114,16 @@ Weaver.deserialize = function(string) {
  */
 Weaver.AST_METHODS = Weaver.getWeaverEngine().getAstMethods();
 
+
+/**
+ * Adapts a Java object to JavaScript. Currently converts:
+ *
+ * - Null to undefined;
+ * - Java array to JS array;
+ * - List to array;
+ *
+ */
+Weaver.toJs = function(javaObject) {
+	return Weaver.getWeaverEngine().getScriptEngine().toJs(javaObject);
+}
+
