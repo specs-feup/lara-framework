@@ -15,6 +15,11 @@
 	<artifact class="call" default="name">
 		<attribute name="name" type="string" />
 	</artifact>
+	
+	<artifact class="class" default="name">
+		<attribute name="name" type="string" />
+		<attribute name="superClasses" type="class[]" />
+	</artifact>
 
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" />

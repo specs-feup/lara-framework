@@ -4,6 +4,7 @@
 	<joinpoint class="program"/>	
 	<joinpoint class="file"/>
 	<joinpoint class="decl"/>
+	<joinpoint class="class" extends="decl"/>
 	<joinpoint class="function" extends="decl"/>
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>	

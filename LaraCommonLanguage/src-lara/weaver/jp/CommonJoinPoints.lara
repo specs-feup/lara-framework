@@ -19,6 +19,7 @@ var classesMapping = {
 	'ProgramJp':ProgramJp,
 	'FileJp':FileJp,
 	'DeclJp':DeclJp,
+	'ClassJp':ClassJp,
 	'FunctionJp':FunctionJp,
 	'ExprJp':ExprJp,
 	'CallJp':CallJp
