@@ -9,7 +9,6 @@ aspectdef WeaverTest
 	println("Has attribute $wrongJp.joinPointType: " + Weaver.hasAttribute("wrongJp", "joinPointType")); 		
 
 	// toJs
-	//Weaver.toJs(Java.type("java.lang.reflect.Array").newInstance(Java.type, int length));
 	var ArrayList = Java.type('java.util.ArrayList');
 	var javaList = new ArrayList();
 	javaList.add(42);
