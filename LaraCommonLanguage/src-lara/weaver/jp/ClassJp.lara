@@ -1,0 +1,36 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ClassJp(astNode) {
+    // Parent constructor
+    DeclJp.call(this,astNode);
+    
+}
+// Inheritance
+ClassJp.prototype = Object.create(DeclJp.prototype);
+
+ClassJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+}
+
+ClassJp.prototype.joinPointType = function() {
+	return 'class';
+}
+
+
+ClassJp.prototype.name = function() {
+	throw "ClassJp.name not implemented";
+}
+
+ClassJp.prototype.superClasses = function() {
+	throw "ClassJp.superClasses not implemented";
+}
+

@@ -8,12 +8,23 @@ import weaver.jp.DeclJp;
 function FunctionJp(astNode) {
     // Parent constructor
     DeclJp.call(this,astNode);
-
-    this.type = 'function';
     
 }
 // Inheritance
 FunctionJp.prototype = Object.create(DeclJp.prototype);
+
+FunctionJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+}
+
+FunctionJp.prototype.joinPointType = function() {
+	return 'function';
+}
+
 
 FunctionJp.prototype.name = function() {
 	throw "FunctionJp.name not implemented";

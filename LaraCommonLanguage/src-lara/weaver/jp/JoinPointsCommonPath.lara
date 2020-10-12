@@ -42,39 +42,6 @@ JoinPoints.prototype.root = function() {
 	return CommonJoinPoints.toJoinPoint(Ast.root());
 }
 
-
-/**
- * 
- * @return {$jp[]} the nodes inside the scope of the given node.
- */
- /*
-JoinPoints.prototype.scope = function($jp, jpType) {
-	return [];
-}
-*/
-
-/**
- * 
- * @return {$jp[]} the children of the given node, according to the AST
- */
- /*
-JoinPoints.prototype.children = function($jp, jpType) {
-	return this._all_descendants($jp).filter(desc => desc.type === jpType);
-}
-*/
-
-/**
- * 
- * @return {$jp[]} the descendants of the given node, according to the AST
- */
- 
- /*
-JoinPoints.prototype.descendants = function($jp, jpType) {
-	return this._all_descendants($jp).filter(desc => desc.type === jpType);
-}
-*/
-
-
 /**
  * Checks if the given value is a join point. If a type is given, checks if the join point is an instance of the given type. Otherwise, throws an exception.
  *

@@ -8,10 +8,21 @@ import weaver.jp.<SUPER_JP>;
 function <THIS_JP>(astNode) {
     // Parent constructor
     <SUPER_JP>.call(this,astNode);
-
-    this.type = '<JP_TYPE>';
     
 }
 // Inheritance
 <THIS_JP>.prototype = Object.create(<SUPER_JP>.prototype);
+
+<THIS_JP>.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType()) {
+		return true;
+	}
+	
+	return (new <SUPER_JP>(this.astNode)).instanceOf(joinPointType);
+}
+
+<THIS_JP>.prototype.joinPointType = function() {
+	return '<JP_TYPE>';
+}
+
 
