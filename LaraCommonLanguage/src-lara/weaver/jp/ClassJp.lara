@@ -14,23 +14,25 @@ function ClassJp(astNode) {
 ClassJp.prototype = Object.create(DeclJp.prototype);
 
 ClassJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
 }
 
-ClassJp.prototype.joinPointType = function() {
-	return 'class';
-}
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'class'; }
+});
 
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw 'ClassJp.name not implemented'; }
+});
 
-ClassJp.prototype.name = function() {
-	throw "ClassJp.name not implemented";
-}
-
-ClassJp.prototype.superClasses = function() {
-	throw "ClassJp.superClasses not implemented";
-}
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'superClasses', {
+	configurable: true,
+	get: function () { throw 'ClassJp.superClasses not implemented'; }
+});
 

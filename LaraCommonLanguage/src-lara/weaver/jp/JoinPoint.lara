@@ -3,25 +3,26 @@
  *
  * @class
  */
-var JoinPoint = function(astNode) {
+function JoinPoint(astNode) {
 	this.astNode = astNode;
-};
-
-JoinPoint.prototype._is_common_jp = true;
+}
 
 JoinPoint.prototype.instanceOf = function(joinPointType) {
-	return joinPointType === this.joinPointType();
+	return joinPointType === this.joinPointType;
 }
 
-JoinPoint.prototype.joinPointType = function() {
-	return "joinpoint";
-}
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'joinpoint'; }
+});
 
-JoinPoint.prototype.code = function() {
-	throw "JoinPoint.code not implemented";
-}
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'code', {
+	configurable: true,
+	get: function () { throw 'JoinPoint.code not implemented'; }
+});
 
-JoinPoint.prototype.line = function() {
-	throw "JoinPoint.line not implemented";
-}
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'line', {
+	configurable: true,
+	get: function () { throw 'JoinPoint.line not implemented'; }
+});
 

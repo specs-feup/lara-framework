@@ -1,0 +1,3 @@
+<THIS_JP>.prototype.<ATT> = function(<PARAMS>) {
+	throw '<THIS_JP>.<ATT> not implemented';
+}

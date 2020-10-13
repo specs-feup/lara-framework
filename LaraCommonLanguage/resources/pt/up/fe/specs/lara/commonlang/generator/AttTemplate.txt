@@ -1,4 +1,5 @@
-<THIS_JP>.prototype.<ATT> = function() {
-	throw "<THIS_JP>.<ATT> not implemented";
-}
+_lara_dummy_ = Object.defineProperty(<THIS_JP>.prototype, '<ATT>', {
+	configurable: true,
+	get: function () { throw '<THIS_JP>.<ATT> not implemented'; }
+});
 

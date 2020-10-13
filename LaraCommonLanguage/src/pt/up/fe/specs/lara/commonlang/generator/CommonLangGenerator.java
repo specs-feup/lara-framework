@@ -102,10 +102,18 @@ public class CommonLangGenerator {
 		for (var att : globAtts.keySet()) {
 			// if att is already defined do not create template
 			var attFunc = String.format("JoinPoint.prototype.%s = function(", att);
-			if(jpBaseStr.contains(attFunc))
+			var attParamsFunc = String.format("Object.defineProperty(JoinPoint.prototype, \'%s\', {", att);
+			
+			if(jpBaseStr.contains(attFunc)||jpBaseStr.contains(attParamsFunc))
 				continue;				
 				
 			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
+			if (!globAtts.get(att).getParameter().isEmpty()) {
+				attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
+				var params = globAtts.get(att).getParameter().stream().map(param -> param.getName())
+						.reduce((param1, param2) -> param1 + "," + param2).get();
+				attTemplate.replace("<PARAMS>", params);					
+			}
 			attTemplate.replace("<THIS_JP>", jpName);
 			attTemplate.replace("<ATT>", att);
 			jpBaseStr += attTemplate.toString();
@@ -140,6 +148,12 @@ public class CommonLangGenerator {
 
 		for (var att : atts) {
 			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
+			if (!att.getParameter().isEmpty()) {
+				attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
+				var params = att.getParameter().stream().map(param -> param.getName())
+						.reduce((param1, param2) -> param1 + "," + param2).get();
+				attTemplate.replace("<PARAMS>", params);					
+			}
 			attTemplate.replace("<THIS_JP>", jpClassName);
 			attTemplate.replace("<ATT>", att.getName());
 			jpTemplateStr += attTemplate.toString();

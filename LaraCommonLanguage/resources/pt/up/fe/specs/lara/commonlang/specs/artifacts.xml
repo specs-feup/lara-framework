@@ -3,26 +3,26 @@
 
 	<!-- Attributes for all join points -->
 	<global>
-		<attribute name="line" type="string" />
-		<attribute name="code" type="string" />		
-		<attribute name="joinPointType" type="string" />	
-		<attribute name="instanceOf" type="boolean">
+		<attribute name="line" type="string" tooltip="The starting line of the current node in the original code."/>
+		<attribute name="code" type="string" tooltip="The source code corresponding to this join point."/>		
+		<attribute name="joinPointType" type="string" tooltip="A string with the type of the join point."/>	
+		<attribute name="instanceOf" type="boolean" tooltip="True if the current join point is an instance of the given type.">
 			<parameter name="joinPointType" type="string" />
 		</attribute>
 		
 	</global>
 	
 	<artifact class="call" default="name">
-		<attribute name="name" type="string" />
+		<attribute name="name" type="string" tooltip="The name of the function called."/>
 	</artifact>
 	
 	<artifact class="class" default="name">
-		<attribute name="name" type="string" />
-		<attribute name="superClasses" type="class[]" />
+		<attribute name="name" type="string" tooltip="The name of the class."/>
+		<attribute name="superClasses" type="class[]" tooltip="The names of the superclasses this class extends."/>
 	</artifact>
 
 	<artifact class="function" default="name">
-		<attribute name="name" type="string" />
+		<attribute name="name" type="string" tooltip="The name of the function."/>
 	</artifact>
 
 </artifacts>

@@ -14,15 +14,15 @@ function FileJp(astNode) {
 FileJp.prototype = Object.create(JoinPoint.prototype);
 
 FileJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
 }
 
-FileJp.prototype.joinPointType = function() {
-	return 'file';
-}
-
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'file'; }
+});
 

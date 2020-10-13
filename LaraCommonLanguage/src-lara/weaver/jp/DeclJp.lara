@@ -14,15 +14,15 @@ function DeclJp(astNode) {
 DeclJp.prototype = Object.create(JoinPoint.prototype);
 
 DeclJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
 }
 
-DeclJp.prototype.joinPointType = function() {
-	return 'decl';
-}
-
+_lara_dummy_ = Object.defineProperty(DeclJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'decl'; }
+});
 

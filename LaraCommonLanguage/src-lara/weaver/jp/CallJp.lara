@@ -14,19 +14,20 @@ function CallJp(astNode) {
 CallJp.prototype = Object.create(ExprJp.prototype);
 
 CallJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
 }
 
-CallJp.prototype.joinPointType = function() {
-	return 'call';
-}
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'call'; }
+});
 
-
-CallJp.prototype.name = function() {
-	throw "CallJp.name not implemented";
-}
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw 'CallJp.name not implemented'; }
+});
 

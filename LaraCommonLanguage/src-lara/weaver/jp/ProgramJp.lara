@@ -14,15 +14,15 @@ function ProgramJp(astNode) {
 ProgramJp.prototype = Object.create(JoinPoint.prototype);
 
 ProgramJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
 }
 
-ProgramJp.prototype.joinPointType = function() {
-	return 'program';
-}
-
+_lara_dummy_ = Object.defineProperty(ProgramJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'program'; }
+});
 

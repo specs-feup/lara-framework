@@ -408,14 +408,7 @@ function laraGetter(object, property) {
 			return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
 			//return SpecsSystem.invokeAsGetter(object, property);
 		}
-	
-		// Lara Common Language JoinPoint
-		if(object._is_common_jp) {
-			return object[property]();
-		}
-
-			
-	
+		
 		// JS object
 		return object[property];
     }

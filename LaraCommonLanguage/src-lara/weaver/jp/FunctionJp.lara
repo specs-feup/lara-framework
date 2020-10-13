@@ -14,19 +14,20 @@ function FunctionJp(astNode) {
 FunctionJp.prototype = Object.create(DeclJp.prototype);
 
 FunctionJp.prototype.instanceOf = function(joinPointType) {
-	if(joinPointType === this.joinPointType()) {
+	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
 }
 
-FunctionJp.prototype.joinPointType = function() {
-	return 'function';
-}
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'function'; }
+});
 
-
-FunctionJp.prototype.name = function() {
-	throw "FunctionJp.name not implemented";
-}
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw 'FunctionJp.name not implemented'; }
+});
 
