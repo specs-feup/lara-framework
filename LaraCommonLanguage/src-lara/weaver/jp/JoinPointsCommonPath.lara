@@ -1,5 +1,5 @@
 import weaver.jp.JoinPoint;
-import weaver.jp.CommonJoinPoints;
+import weaver.jp.CommonJoinPointsBase;
 import weaver.JoinPoints;
 import weaver.Ast;
 import lara.Check;
@@ -65,4 +65,10 @@ Check.isJoinPoint = function($jp, type, isOptional) {
 	if(type !== undefined && !$jp.instanceOf(type)) {
 		throw "Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'";		
 	}
+}
+
+Weaver.getDefaultAttribute = function(joinPointType) {
+	checkString(joinPointType);
+	var laraCommonLang = Java.type("pt.up.fe.specs.lara.commonlang.LaraCommonLang");
+	return laraCommonLang.getDefaultAttribute(joinPointType);
 }
