@@ -8,3 +8,18 @@ import weaver.jp.MethodJp;
 import weaver.jp.ExprJp;
 import weaver.jp.CallJp;
 import weaver.jp.MemberCallJp;
+
+
+var classesMapping = {
+	'JoinPoint':JoinPoint,
+	'ProgramJp': ProgramJp,
+	'FileJp': FileJp,
+	'DeclJp': DeclJp,
+	'ClassJp': ClassJp,
+	'FunctionJp': FunctionJp,
+	'MethodJp': MethodJp,
+	'ExprJp': ExprJp,
+	'CallJp': CallJp,
+	'MemberCallJp': MemberCallJp
+};
+

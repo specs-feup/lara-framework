@@ -14,15 +14,3 @@ CommonJoinPoints.toJoinPoints = function(astNodes) {
    return astNodes.map(astNode => this.toJoinPoint(astNode));
 }
 
-// TODO : auto-generate this
-var classesMapping = {
-	'JoinPoint':JoinPoint,
-	'ProgramJp':ProgramJp,
-	'FileJp':FileJp,
-	'DeclJp':DeclJp,
-	'ClassJp':ClassJp,
-	'FunctionJp':FunctionJp,
-	'ExprJp':ExprJp,
-	'CallJp':CallJp,
-	'MethodJp':MethodJp
-};

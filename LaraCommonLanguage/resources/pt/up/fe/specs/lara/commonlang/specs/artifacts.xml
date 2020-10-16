@@ -14,6 +14,7 @@
 	
 	<artifact class="call" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function called."/>
+		<attribute name="function" type="function" tooltip="The function called."/>
 	</artifact>
 	
 	<artifact class="class" default="name">
@@ -29,6 +30,11 @@
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function."/>
 		<attribute name="signature" type="string" tooltip="The signature of the function."/>
+	</artifact>
+	
+	<artifact class="memberCall" default="name">
+		<attribute name="class" type="class" tooltip="The class of the method called."/>
+		<attribute name="method" type="method" tooltip="The method called."/>
 	</artifact>
 
 </artifacts>

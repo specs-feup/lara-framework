@@ -32,3 +32,8 @@ _lara_dummy_ = Object.defineProperty(CallJp.prototype, 'name', {
 	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'function', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.function not implemented'; }
+});
+

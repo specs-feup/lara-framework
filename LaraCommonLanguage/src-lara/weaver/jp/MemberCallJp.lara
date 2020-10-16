@@ -27,3 +27,13 @@ _lara_dummy_ = Object.defineProperty(MemberCallJp.prototype, 'joinPointType', {
 	get: function () { return 'memberCall'; }
 });
 
+_lara_dummy_ = Object.defineProperty(MemberCallJp.prototype, 'class', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.class not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(MemberCallJp.prototype, 'method', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.method not implemented'; }
+});
+
