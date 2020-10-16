@@ -81,10 +81,22 @@ public class CommonLangGenerator {
 		jpIndexStr += importTemplate.replace("<SUPER_JP>", "JoinPoint");
 
 		var langSpec = LaraCommonLang.getLanguageSpecification();
+		var jps = langSpec.getJpModel().getJoinPointList().getJoinpoint();
 
-		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
+		for (var jp : jps) {
 			jpIndexStr += importTemplate.replace("<SUPER_JP>", getJoinPointClassName(jp.getClazz()));
 		}
+		
+		// classMapper
+		var classMapperTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/ClassMapperTemplate.txt");
+		
+		var jpsMapping = jps.stream()
+				.map(jp -> getJoinPointClassName(jp.getClazz()))
+				.map(jp -> "	'" + jp + "': " + jp)
+				.reduce((jp1,jp2) -> jp1 + ",\n" + jp2).get();
+		classMapperTemplate.replace("<MAPPING>", jpsMapping);
+		jpIndexStr+=classMapperTemplate.toString();		
+		
 
 		var laraResource = "weaver/jp/JoinPointIndex.lara";
 		var laraFile = new File(outputFolder, laraResource);
@@ -189,4 +201,6 @@ public class CommonLangGenerator {
 		return isAttDefinedInSuper((JoinPointType) jpType.getExtends(), att);
 
 	}
+	
+
 }

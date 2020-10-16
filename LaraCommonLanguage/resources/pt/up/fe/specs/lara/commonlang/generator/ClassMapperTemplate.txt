@@ -1,0 +1,7 @@
+
+
+var classesMapping = {
+	'JoinPoint':JoinPoint,
+<MAPPING>
+};
+
