@@ -12,6 +12,7 @@ function <THIS_JP>(astNode) {
 }
 // Inheritance
 <THIS_JP>.prototype = Object.create(<SUPER_JP>.prototype);
+<THIS_JP>.prototype.constructor = <THIS_JP>;
 
 <THIS_JP>.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {

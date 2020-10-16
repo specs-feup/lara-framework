@@ -12,6 +12,7 @@ function DeclJp(astNode) {
 }
 // Inheritance
 DeclJp.prototype = Object.create(JoinPoint.prototype);
+DeclJp.prototype.constructor = DeclJp;
 
 DeclJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {

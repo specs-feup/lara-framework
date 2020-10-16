@@ -4,5 +4,7 @@ import weaver.jp.FileJp;
 import weaver.jp.DeclJp;
 import weaver.jp.ClassJp;
 import weaver.jp.FunctionJp;
+import weaver.jp.MethodJp;
 import weaver.jp.ExprJp;
 import weaver.jp.CallJp;
+import weaver.jp.MemberCallJp;

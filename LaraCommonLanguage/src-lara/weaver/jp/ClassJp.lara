@@ -12,6 +12,7 @@ function ClassJp(astNode) {
 }
 // Inheritance
 ClassJp.prototype = Object.create(DeclJp.prototype);
+ClassJp.prototype.constructor = ClassJp;
 
 ClassJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {
@@ -28,11 +29,16 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'joinPointType', {
 
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'name', {
 	configurable: true,
-	get: function () { throw 'ClassJp.name not implemented'; }
+	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'superClasses', {
 	configurable: true,
-	get: function () { throw 'ClassJp.superClasses not implemented'; }
+	get: function () { throw this.constructor.name + '.superClasses not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'methods', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.methods not implemented'; }
 });
 

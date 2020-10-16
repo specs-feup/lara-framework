@@ -6,7 +6,9 @@
 	<joinpoint class="decl"/>
 	<joinpoint class="class" extends="decl"/>
 	<joinpoint class="function" extends="decl"/>
+	<joinpoint class="method" extends="function"/>
 	<joinpoint class="expr"/>
-	<joinpoint class="call" extends="expr"/>	
+	<joinpoint class="call" extends="expr"/>
+	<joinpoint class="memberCall" extends="call"/>	
 
 </joinpoints>

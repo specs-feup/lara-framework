@@ -14,6 +14,7 @@ CommonJoinPoints.toJoinPoints = function(astNodes) {
    return astNodes.map(astNode => this.toJoinPoint(astNode));
 }
 
+// TODO : auto-generate this
 var classesMapping = {
 	'JoinPoint':JoinPoint,
 	'ProgramJp':ProgramJp,
@@ -22,5 +23,6 @@ var classesMapping = {
 	'ClassJp':ClassJp,
 	'FunctionJp':FunctionJp,
 	'ExprJp':ExprJp,
-	'CallJp':CallJp
+	'CallJp':CallJp,
+	'MethodJp':MethodJp
 };

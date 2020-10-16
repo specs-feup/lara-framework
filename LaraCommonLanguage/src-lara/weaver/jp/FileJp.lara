@@ -12,6 +12,7 @@ function FileJp(astNode) {
 }
 // Inheritance
 FileJp.prototype = Object.create(JoinPoint.prototype);
+FileJp.prototype.constructor = FileJp;
 
 FileJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {

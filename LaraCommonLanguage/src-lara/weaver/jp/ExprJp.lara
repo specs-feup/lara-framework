@@ -12,6 +12,7 @@ function ExprJp(astNode) {
 }
 // Inheritance
 ExprJp.prototype = Object.create(JoinPoint.prototype);
+ExprJp.prototype.constructor = ExprJp;
 
 ExprJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {

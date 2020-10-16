@@ -12,6 +12,7 @@ function FunctionJp(astNode) {
 }
 // Inheritance
 FunctionJp.prototype = Object.create(DeclJp.prototype);
+FunctionJp.prototype.constructor = FunctionJp;
 
 FunctionJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {
@@ -28,6 +29,11 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'joinPointType', {
 
 _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'name', {
 	configurable: true,
-	get: function () { throw 'FunctionJp.name not implemented'; }
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'signature', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.signature not implemented'; }
 });
 

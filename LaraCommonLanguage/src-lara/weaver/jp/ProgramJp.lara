@@ -12,6 +12,7 @@ function ProgramJp(astNode) {
 }
 // Inheritance
 ProgramJp.prototype = Object.create(JoinPoint.prototype);
+ProgramJp.prototype.constructor = ProgramJp;
 
 ProgramJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {

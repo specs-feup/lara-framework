@@ -19,10 +19,16 @@
 	<artifact class="class" default="name">
 		<attribute name="name" type="string" tooltip="The name of the class."/>
 		<attribute name="superClasses" type="class[]" tooltip="The names of the superclasses this class extends."/>
+		<attribute name="methods" type="method[]" tooltip="The methods of this class."/>
+	</artifact>
+	
+	<artifact class="method" default="name">
+		<attribute name="class" type="class" tooltip="The class of the method."/>
 	</artifact>
 
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function."/>
+		<attribute name="signature" type="string" tooltip="The signature of the function."/>
 	</artifact>
 
 </artifacts>

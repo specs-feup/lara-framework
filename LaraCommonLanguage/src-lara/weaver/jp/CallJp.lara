@@ -12,6 +12,7 @@ function CallJp(astNode) {
 }
 // Inheritance
 CallJp.prototype = Object.create(ExprJp.prototype);
+CallJp.prototype.constructor = CallJp;
 
 CallJp.prototype.instanceOf = function(joinPointType) {
 	if(joinPointType === this.joinPointType) {
@@ -28,6 +29,6 @@ _lara_dummy_ = Object.defineProperty(CallJp.prototype, 'joinPointType', {
 
 _lara_dummy_ = Object.defineProperty(CallJp.prototype, 'name', {
 	configurable: true,
-	get: function () { throw 'CallJp.name not implemented'; }
+	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 

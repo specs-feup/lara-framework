@@ -62,35 +62,34 @@ public class CommonLangGenerator {
 		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
 
 			System.out.println("JP: " + "weaver/jp/" + jp.getClazz() + ".lara");
-			
+
 			var atts = langSpec.getArtifacts().getAttributes(jp.getClazz());
 			atts = (atts == null) ? new ArrayList<>() : atts;
-			
+
 			generate(jp, atts);
 		}
-		
+
 		generateIndex();
 
 	}
 
 	private void generateIndex() {
 		var jpIndexStr = "";
-		
+
 		final String importTemplate = "import weaver.jp.<SUPER_JP>;\n";
-		
+
 		jpIndexStr += importTemplate.replace("<SUPER_JP>", "JoinPoint");
-		
+
 		var langSpec = LaraCommonLang.getLanguageSpecification();
-		
+
 		for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
 			jpIndexStr += importTemplate.replace("<SUPER_JP>", getJoinPointClassName(jp.getClazz()));
 		}
-		
+
 		var laraResource = "weaver/jp/JoinPointIndex.lara";
 		var laraFile = new File(outputFolder, laraResource);
 		SpecsIo.write(laraFile, jpIndexStr);
-		
-		
+
 	}
 
 	private void generateJpBase(Map<String, Attribute> globAtts) {
@@ -103,22 +102,22 @@ public class CommonLangGenerator {
 			// if att is already defined do not create template
 			var attFunc = String.format("JoinPoint.prototype.%s = function(", att);
 			var attParamsFunc = String.format("Object.defineProperty(JoinPoint.prototype, \'%s\', {", att);
-			
-			if(jpBaseStr.contains(attFunc)||jpBaseStr.contains(attParamsFunc))
-				continue;				
-				
+
+			if (jpBaseStr.contains(attFunc) || jpBaseStr.contains(attParamsFunc))
+				continue;
+
 			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
 			if (!globAtts.get(att).getParameter().isEmpty()) {
 				attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
 				var params = globAtts.get(att).getParameter().stream().map(param -> param.getName())
 						.reduce((param1, param2) -> param1 + "," + param2).get();
-				attTemplate.replace("<PARAMS>", params);					
+				attTemplate.replace("<PARAMS>", params);
 			}
 			attTemplate.replace("<THIS_JP>", jpName);
 			attTemplate.replace("<ATT>", att);
 			jpBaseStr += attTemplate.toString();
 		}
-		
+
 		var laraResource = "weaver/jp/" + jpName + ".lara";
 		var laraFile = new File(outputFolder, laraResource);
 		SpecsIo.write(laraFile, jpBaseStr);
@@ -142,17 +141,20 @@ public class CommonLangGenerator {
 		jpTemplate.replace("<THIS_JP>", jpClassName);
 		jpTemplate.replace("<SUPER_JP>", superClassName);
 		jpTemplate.replace("<JP_TYPE>", jpName);
-		System.out.println("TEMPLATE:\n" + jpTemplate);
+		// System.out.println("TEMPLATE:\n" + jpTemplate);
 
 		var jpTemplateStr = jpTemplate.toString();
 
 		for (var att : atts) {
+			if (isAttDefinedInSuper(jpType, att))
+				continue;
+
 			var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
 			if (!att.getParameter().isEmpty()) {
 				attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
 				var params = att.getParameter().stream().map(param -> param.getName())
 						.reduce((param1, param2) -> param1 + "," + param2).get();
-				attTemplate.replace("<PARAMS>", params);					
+				attTemplate.replace("<PARAMS>", params);
 			}
 			attTemplate.replace("<THIS_JP>", jpClassName);
 			attTemplate.replace("<ATT>", att.getName());
@@ -167,5 +169,24 @@ public class CommonLangGenerator {
 	public static String getJpResource(String jpName) {
 		var jpClassName = getJoinPointClassName(jpName);
 		return "weaver/jp/" + jpClassName + ".lara";
+	}
+
+	public static Boolean isAttDefinedInSuper(JoinPointType jpType, Attribute att) {
+		var jpName = jpType.getClazz();
+		var superName = ((JoinPointType) jpType.getExtends()).getClazz();
+		if (superName.equals(jpName))
+			return false;
+
+		var langSpec = LaraCommonLang.getLanguageSpecification();
+
+		var atts = langSpec.getArtifacts().getAttributes(superName);
+		atts = (atts == null) ? new ArrayList<>() : atts;
+
+		if (atts.stream().anyMatch(attElem -> attElem.getName().equals(att.getName()))) {
+			return true;
+		}
+
+		return isAttDefinedInSuper((JoinPointType) jpType.getExtends(), att);
+
 	}
 }
