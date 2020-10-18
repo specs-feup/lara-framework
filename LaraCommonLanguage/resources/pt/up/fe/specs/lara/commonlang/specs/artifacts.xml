@@ -26,6 +26,11 @@
 	<artifact class="method" default="name">
 		<attribute name="class" type="class" tooltip="The class of the method."/>
 	</artifact>
+	
+	<artifact class="field" default="name">
+		<attribute name="name" type="string" tooltip="The name of the field."/>
+		<attribute name="class" type="class" tooltip="The class of the field."/>
+	</artifact>
 
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function."/>
@@ -35,6 +40,12 @@
 	<artifact class="memberCall" default="name">
 		<attribute name="class" type="class" tooltip="The class of the method called."/>
 		<attribute name="method" type="method" tooltip="The method called."/>
+	</artifact>
+	
+	<artifact class="fieldRef" default="name">
+		<attribute name="name" type="string" tooltip="The name of the field referenced."/>
+		<attribute name="field" type="method" tooltip="The field referenced."/>
+		<attribute name="class" type="class" tooltip="The class of the field referenced."/>
 	</artifact>
 
 </artifacts>

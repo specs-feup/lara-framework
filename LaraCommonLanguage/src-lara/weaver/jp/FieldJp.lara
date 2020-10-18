@@ -1,0 +1,39 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FieldJp(astNode) {
+    // Parent constructor
+    DeclJp.call(this,astNode);
+    
+}
+// Inheritance
+FieldJp.prototype = Object.create(DeclJp.prototype);
+FieldJp.prototype.constructor = FieldJp;
+
+FieldJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'field'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'class', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.class not implemented'; }
+});
+

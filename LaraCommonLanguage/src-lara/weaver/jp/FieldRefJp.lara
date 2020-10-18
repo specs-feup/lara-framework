@@ -1,0 +1,39 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FieldRefJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+FieldRefJp.prototype = Object.create(JoinPoint.prototype);
+FieldRefJp.prototype.constructor = FieldRefJp;
+
+FieldRefJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'fieldRef'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'field', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.field not implemented'; }
+});
+
