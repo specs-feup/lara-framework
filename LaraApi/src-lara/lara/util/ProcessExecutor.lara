@@ -147,11 +147,16 @@ ProcessExecutor.prototype.execute = function(command) {
 	if(this.timeout !== undefined) {
 		timeoutNanos = this.timeUnit.toNanos(this.timeout);
 	}
-	
+
 	// TODO: Can change LaraApiTools.runCommand to accept a file and append flag, to be able to write to a file in stream mode
 	//this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
 	//this.lastOutput = Java.type(_JavaTypes.LaraSystemTools).runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
 	this.lastOutput = _JavaTypes.getLaraSystemTools().runCommand(command, this.workingDir.toString(), this.printToConsole, timeoutNanos);
+
+	if(this.getReturnValue() !== 0) {
+		println("ProcessExecutor.execute: process returned with value '"+this.getReturnValue()+"', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal.");
+		println("Executed command: " + this.lastCommand);
+	}
 
 	if(this.stopOnError && this.getReturnValue() !== 0) {
 		throw "Problem while running command '"+command+"'\nError: " + this.getConsoleOutput();
