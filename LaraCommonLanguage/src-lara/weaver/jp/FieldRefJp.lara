@@ -37,3 +37,8 @@ _lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'field', {
 	get: function () { throw this.constructor.name + '.field not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'class', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.class not implemented'; }
+});
+

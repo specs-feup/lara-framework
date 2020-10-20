@@ -9,6 +9,12 @@
 		<attribute name="instanceOf" type="boolean" tooltip="True if the current join point is an instance of the given type.">
 			<parameter name="joinPointType" type="string" />
 		</attribute>
+		<attribute name="sameTypeAs" type="boolean" tooltip="True if the join point are of the same type.">
+			<parameter name="joinPoint" type="joinPoint" />
+		</attribute>
+		<attribute name="equals" type="boolean" tooltip="True if the join point are equal.">
+			<parameter name="joinPoint" type="joinPoint" />
+		</attribute>
 		
 	</global>
 	

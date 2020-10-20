@@ -11,6 +11,16 @@ JoinPoint.prototype.instanceOf = function(joinPointType) {
 	return joinPointType === this.joinPointType;
 }
 
+JoinPoint.prototype.sameTypeAs = function(joinPoint) {
+    if(typeof joinPoint !== typeof this)
+        return false;
+        
+	if(joinPoint.joinPointType !== this.joinPointType)
+        return false;
+	
+	return true;    
+}
+
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'joinpoint'; }
