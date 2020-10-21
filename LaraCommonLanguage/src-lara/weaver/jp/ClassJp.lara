@@ -37,7 +37,17 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'superClasses', {
 	get: function () { throw this.constructor.name + '.superClasses not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'allSuperClasses', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.allSuperClasses not implemented'; }
+});
+
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'methods', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.methods not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'kind', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.methods not implemented'; }
 });

@@ -25,8 +25,10 @@
 	
 	<artifact class="class" default="name">
 		<attribute name="name" type="string" tooltip="The name of the class."/>
-		<attribute name="superClasses" type="class[]" tooltip="The names of the superclasses this class extends."/>
+		<attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
+		<attribute name="allSuperClasses" type="class[]" tooltip="The superClasses this class and its superClasses extends."/>
 		<attribute name="methods" type="method[]" tooltip="The methods of this class."/>
+		<attribute name="kind" type="string" tooltip="The kind of record."/>
 	</artifact>
 	
 	<artifact class="method" default="name">
