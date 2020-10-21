@@ -37,3 +37,8 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'signature', {
 	get: function () { throw this.constructor.name + '.signature not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'returnType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.returnType not implemented'; }
+});
+

@@ -11,6 +11,7 @@
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>
 	<joinpoint class="memberCall" extends="call"/>
-	<joinpoint class="fieldRef"/>	
+	<joinpoint class="fieldRef"/>
+	<joinpoint class="type"/>	
 
 </joinpoints>

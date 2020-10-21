@@ -1,0 +1,49 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function TypeJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+TypeJp.prototype = Object.create(JoinPoint.prototype);
+TypeJp.prototype.constructor = TypeJp;
+
+TypeJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'type'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'kind', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.kind not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isArray', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isArray not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isPointer', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isPointer not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isPrimitive', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isPrimitive not implemented'; }
+});
+

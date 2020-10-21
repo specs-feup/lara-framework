@@ -10,6 +10,7 @@ import weaver.jp.ExprJp;
 import weaver.jp.CallJp;
 import weaver.jp.MemberCallJp;
 import weaver.jp.FieldRefJp;
+import weaver.jp.TypeJp;
 
 
 var classesMapping = {
@@ -24,6 +25,7 @@ var classesMapping = {
 	'ExprJp': ExprJp,
 	'CallJp': CallJp,
 	'MemberCallJp': MemberCallJp,
-	'FieldRefJp': FieldRefJp
+	'FieldRefJp': FieldRefJp,
+	'TypeJp': TypeJp
 };
 

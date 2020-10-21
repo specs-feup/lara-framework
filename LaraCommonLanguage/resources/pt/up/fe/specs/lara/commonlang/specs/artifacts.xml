@@ -38,11 +38,13 @@
 	<artifact class="field" default="name">
 		<attribute name="name" type="string" tooltip="The name of the field."/>
 		<attribute name="class" type="class" tooltip="The class of the field."/>
+		<attribute name="type" type="type"/>
 	</artifact>
 
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function."/>
 		<attribute name="signature" type="string" tooltip="The signature of the function."/>
+		<attribute name="returnType" type="type"/>
 	</artifact>
 	
 	<artifact class="memberCall" default="name">
@@ -54,6 +56,17 @@
 		<attribute name="name" type="string" tooltip="The name of the field referenced."/>
 		<attribute name="field" type="method" tooltip="The field referenced."/>
 		<attribute name="class" type="class" tooltip="The class of the field referenced."/>
+	</artifact>
+	
+	<artifact class="type">
+		<attribute name="kind" type="String" />
+		<attribute name="isArray" type="Boolean" />
+		<attribute name="isPointer" type="Boolean" />
+		<attribute name="isPrimitive" type="Boolean" />
+		<attribute name="isClass" type="Boolean" />
+		<attribute name="hasSugar" type="Boolean" />
+		<attribute name="desugar" type="type" />
+		<attribute name="desugarAll" type="type" />
 	</artifact>
 
 </artifacts>
