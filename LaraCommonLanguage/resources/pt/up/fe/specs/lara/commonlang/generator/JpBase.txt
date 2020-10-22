@@ -3,6 +3,7 @@
  *
  * @class
  */
+ 
 function JoinPoint(astNode) {
 	this.astNode = astNode;
 }
@@ -24,5 +25,26 @@ JoinPoint.prototype.sameTypeAs = function(joinPoint) {
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'joinpoint'; }
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'parent', {
+	configurable: true,
+	get: function () { 
+		return (new JoinPoints()).getParent(this);
+	}
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
+	configurable: true,
+	get: function () {
+		return (new JoinPoints()).getChildren(this); 
+	}
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
+	configurable: true,
+	get: function () { 
+		return (new JoinPoints()).getDescendants(this); 
+	}
 });
 

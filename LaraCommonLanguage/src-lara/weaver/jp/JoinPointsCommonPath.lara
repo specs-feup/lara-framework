@@ -16,6 +16,15 @@ JoinPoints.prototype._all_children = function($jp) {
 
 /**
  *
+ * @return {$jp} the parent of the given node
+ */
+ 
+JoinPoints.prototype._parent = function($jp) {
+	return CommonJoinPoints.toJoinPoint(Ast.getParent($jp.astNode));
+}
+
+/**
+ *
  * @return {$jp[]} the descendants of the given node
  */
  
@@ -40,6 +49,32 @@ JoinPoints.prototype._all_scope_nodes = function($jp) {
  
 JoinPoints.prototype.root = function() {
 	return CommonJoinPoints.toJoinPoint(Ast.root());
+}
+
+/**
+ * Getter of the parent of a joinpoint
+ * 
+ */
+ 
+JoinPoints.prototype.getParent = function($jp) {
+	return this._parent($jp);
+}
+
+/**
+ *  Getter of the children of a joinpoint
+ * 
+ */
+ 
+JoinPoints.prototype.getChildren = function($jp) {
+	return this._all_children($jp);
+}
+
+/**
+ *  Getter of the descendants of a joinpoint
+ * 
+ */
+JoinPoints.prototype.getDescendants  = function($jp) {
+	return this._all_descendants($jp);
 }
 
 /**

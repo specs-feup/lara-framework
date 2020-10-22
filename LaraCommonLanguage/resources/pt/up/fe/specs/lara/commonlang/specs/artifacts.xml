@@ -15,6 +15,9 @@
 		<attribute name="equals" type="boolean" tooltip="True if the join point are equal.">
 			<parameter name="joinPoint" type="joinPoint" />
 		</attribute>
+		<attribute name="parent" type="joinpoint" tooltip="Returns the parent joinpoint in the AST."/>	
+		<attribute name="children" type="joinpoint[]" tooltip="Returns an array with the children of the joinpoint."/>
+		<attribute name="descendants" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
 		
 	</global>
 	
