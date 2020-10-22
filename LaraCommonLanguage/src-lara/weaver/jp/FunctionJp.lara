@@ -27,6 +27,11 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'joinPointType', {
 	get: function () { return 'function'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'id', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.id not implemented'; }
+});
+
 _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'name', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.name not implemented'; }

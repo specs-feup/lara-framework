@@ -47,3 +47,8 @@ _lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isPrimitive', {
 	get: function () { throw this.constructor.name + '.isPrimitive not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isClass', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isClass not implemented'; }
+});
+

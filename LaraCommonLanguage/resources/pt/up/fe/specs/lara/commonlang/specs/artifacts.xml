@@ -27,6 +27,7 @@
 	</artifact>
 	
 	<artifact class="class" default="name">
+		<attribute name="id" type="string" tooltip="The id of the class."/>
 		<attribute name="name" type="string" tooltip="The name of the class."/>
 		<attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
 		<attribute name="allSuperClasses" type="class[]" tooltip="The superClasses this class and its superClasses extends."/>
@@ -35,16 +36,19 @@
 	</artifact>
 	
 	<artifact class="method" default="name">
+		<attribute name="id" type="string" tooltip="The id of the method."/>
 		<attribute name="class" type="class" tooltip="The class of the method."/>
 	</artifact>
 	
 	<artifact class="field" default="name">
+		<attribute name="id" type="string" tooltip="The id of the field."/>
 		<attribute name="name" type="string" tooltip="The name of the field."/>
 		<attribute name="class" type="class" tooltip="The class of the field."/>
 		<attribute name="type" type="type"/>
 	</artifact>
 
 	<artifact class="function" default="name">
+		<attribute name="id" type="string" tooltip="The id of the function."/>
 		<attribute name="name" type="string" tooltip="The name of the function."/>
 		<attribute name="signature" type="string" tooltip="The signature of the function."/>
 		<attribute name="returnType" type="type"/>
@@ -67,9 +71,6 @@
 		<attribute name="isPointer" type="Boolean" />
 		<attribute name="isPrimitive" type="Boolean" />
 		<attribute name="isClass" type="Boolean" />
-		<attribute name="hasSugar" type="Boolean" />
-		<attribute name="desugar" type="type" />
-		<attribute name="desugarAll" type="type" />
 	</artifact>
 
 </artifacts>
