@@ -358,7 +358,10 @@ CMaker.prototype.getCode = function() {
 	var code = "";
 	
 	// Minimum version
-	code += "cmake_minimum_required(VERSION " + this.minimumVersion + ")\n\n";
+	code += "cmake_minimum_required(VERSION " + this.minimumVersion + ")\n";
+
+	// Project
+	code += "project(" + this.name + ")\n\n";
 	
 	// Executable
 	code += "set (" + this._EXE_VAR +  " \"" + this.name + "\")\n\n";
