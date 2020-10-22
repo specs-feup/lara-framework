@@ -56,4 +56,10 @@ public interface AstMethods {
      */
     Object getScopeChildren(Object node);
 
+    /**
+     * 
+     * @return the parent of this AST node
+     */
+    Object getParent(Object node);
+
 }

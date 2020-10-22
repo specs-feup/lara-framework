@@ -60,8 +60,14 @@ public abstract class AAstMethods<T> implements AstMethods {
         var scopeChildren = getScopeChildrenImpl(getNodeClass().cast(node));
         return toJs(scopeChildren);
     }
+    
+    @Override
+    public Object getParent(Object node) {
+        var scopeChildren = getParentImpl(getNodeClass().cast(node));
+        return toJs(scopeChildren);
+    }
 
-    private Object toJs(Object object) {
+	private Object toJs(Object object) {
         return weaverEngine.getScriptEngine().toJs(object);
     }
 
@@ -74,6 +80,8 @@ public abstract class AAstMethods<T> implements AstMethods {
     protected abstract Object[] getChildrenImpl(T node);
 
     protected abstract Object[] getScopeChildrenImpl(T node);
+    
+    protected abstract Object getParentImpl(T node);
 
     // protected abstract Integer getNumChildrenImpl(T node);
 

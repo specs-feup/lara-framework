@@ -69,4 +69,9 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
         return scopeChildrenGetter.apply(node).toArray();
     }
 
+	@Override
+	protected Object getParentImpl(T node) {
+		return node.getParent();
+	}
+
 }
