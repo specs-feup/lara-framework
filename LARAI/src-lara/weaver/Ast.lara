@@ -16,6 +16,14 @@ Ast.getChildren = function(astNode) {
 	return Weaver.AST_METHODS.getChildren(astNode);
 }
 
+/** 
+ *
+ * @return {Object} the parent AST node of the given AST node.
+ */
+Ast.getParent = function(astNode) {
+	return Weaver.AST_METHODS.getParent(astNode);
+}
+
 
 /**
  * @return {integer} the number of children of the AST node.
