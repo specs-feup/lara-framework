@@ -1,0 +1,34 @@
+import weaver.jp.VarDeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ParamJp(astNode) {
+    // Parent constructor
+    VarDeclJp.call(this,astNode);
+    
+}
+// Inheritance
+ParamJp.prototype = Object.create(VarDeclJp.prototype);
+ParamJp.prototype.constructor = ParamJp;
+
+ParamJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new VarDeclJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(ParamJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'param'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ParamJp.prototype, 'function', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.function not implemented'; }
+});
+

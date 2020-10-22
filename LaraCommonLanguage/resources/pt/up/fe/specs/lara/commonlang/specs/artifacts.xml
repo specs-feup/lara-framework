@@ -72,5 +72,19 @@
 		<attribute name="isPrimitive" type="Boolean" />
 		<attribute name="isClass" type="Boolean" />
 	</artifact>
+	
+	<artifact class="varRef" default="name">
+		<attribute name="name" type="string" tooltip="The name of the variable referenced."/>		
+		<attribute name="decl" type="varDecl" tooltip="The declaration of the variable."/>
+	</artifact>
+	
+	<artifact class="varDecl" default="name">
+		<attribute name="name" type="string" tooltip="The name of the variable declared."/>
+	</artifact>
+	
+	<artifact class="param" default="name">
+		<attribute name="function" type="function" tooltip="The function where the param is declared."/>
+	</artifact>
+
 
 </artifacts>
