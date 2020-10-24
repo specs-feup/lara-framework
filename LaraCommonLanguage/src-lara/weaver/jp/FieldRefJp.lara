@@ -1,4 +1,4 @@
-import weaver.jp.JoinPoint;
+import weaver.jp.ExprJp;
 
 /**
  * 
@@ -7,11 +7,11 @@ import weaver.jp.JoinPoint;
  */
 function FieldRefJp(astNode) {
     // Parent constructor
-    JoinPoint.call(this,astNode);
+    ExprJp.call(this,astNode);
     
 }
 // Inheritance
-FieldRefJp.prototype = Object.create(JoinPoint.prototype);
+FieldRefJp.prototype = Object.create(ExprJp.prototype);
 FieldRefJp.prototype.constructor = FieldRefJp;
 
 FieldRefJp.prototype.instanceOf = function(joinPointType) {
@@ -19,7 +19,7 @@ FieldRefJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
 }
 
 _lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'joinPointType', {

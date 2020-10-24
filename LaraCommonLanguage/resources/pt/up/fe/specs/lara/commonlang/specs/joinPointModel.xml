@@ -10,10 +10,10 @@
 	<joinpoint class="field" extends="decl"/>
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>
-	<joinpoint class="memberCall" extends="call"/>
-	<joinpoint class="fieldRef"/>
-	<joinpoint class="type"/>
+	<joinpoint class="memberCall" extends="call"/>	
+	<joinpoint class="fieldRef" extends="expr"/>
 	<joinpoint class="varRef" extends="expr"/>	
-	<joinpoint class="varDecl" extends="decl"/>	
-	<joinpoint class="param" extends="varDecl"/>		
+	<joinpoint class="varDecl" extends="decl"/>
+	<joinpoint class="param" extends="varDecl"/>
+	<joinpoint class="type"/>	
 </joinpoints>
