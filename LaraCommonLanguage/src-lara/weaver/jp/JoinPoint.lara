@@ -22,6 +22,10 @@ JoinPoint.prototype.sameTypeAs = function(joinPoint) {
 	return true;    
 }
 
+JoinPoint.prototype.toString = function() {
+	return "CommonJp<" + this.joinPointType + ">";
+}
+
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'joinpoint'; }

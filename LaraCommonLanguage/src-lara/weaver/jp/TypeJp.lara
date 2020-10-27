@@ -27,11 +27,6 @@ _lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'joinPointType', {
 	get: function () { return 'type'; }
 });
 
-_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'kind', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.kind not implemented'; }
-});
-
 _lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isArray', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.isArray not implemented'; }

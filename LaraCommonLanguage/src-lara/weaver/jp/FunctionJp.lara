@@ -47,3 +47,8 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'returnType', {
 	get: function () { throw this.constructor.name + '.returnType not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'params', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.params not implemented'; }
+});
+
