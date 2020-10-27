@@ -1,0 +1,29 @@
+import weaver.jp.MethodJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ConstructorJp(astNode) {
+    // Parent constructor
+    MethodJp.call(this,astNode);
+    
+}
+// Inheritance
+ConstructorJp.prototype = Object.create(MethodJp.prototype);
+ConstructorJp.prototype.constructor = ConstructorJp;
+
+ConstructorJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new MethodJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'constructor'; }
+});
+

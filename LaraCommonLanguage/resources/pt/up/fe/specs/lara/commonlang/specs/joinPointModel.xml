@@ -7,10 +7,12 @@
 	<joinpoint class="class" extends="decl"/>
 	<joinpoint class="function" extends="decl"/>
 	<joinpoint class="method" extends="function"/>
+	<joinpoint class="constructor" extends="method"/>
 	<joinpoint class="field" extends="decl"/>
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>
-	<joinpoint class="memberCall" extends="call"/>	
+	<joinpoint class="memberCall" extends="call"/>
+	<joinpoint class="constructorCall" extends="memberCall"/>	
 	<joinpoint class="fieldRef" extends="expr"/>
 	<joinpoint class="varRef" extends="expr"/>	
 	<joinpoint class="varDecl" extends="decl"/>

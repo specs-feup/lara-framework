@@ -1,0 +1,34 @@
+import weaver.jp.MemberCallJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ConstructorCallJp(astNode) {
+    // Parent constructor
+    MemberCallJp.call(this,astNode);
+    
+}
+// Inheritance
+ConstructorCallJp.prototype = Object.create(MemberCallJp.prototype);
+ConstructorCallJp.prototype.constructor = ConstructorCallJp;
+
+ConstructorCallJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new MemberCallJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(ConstructorCallJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'constructorCall'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ConstructorCallJp.prototype, 'constructor', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.constructor not implemented'; }
+});
+

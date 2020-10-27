@@ -5,10 +5,12 @@ import weaver.jp.DeclJp;
 import weaver.jp.ClassJp;
 import weaver.jp.FunctionJp;
 import weaver.jp.MethodJp;
+import weaver.jp.ConstructorJp;
 import weaver.jp.FieldJp;
 import weaver.jp.ExprJp;
 import weaver.jp.CallJp;
 import weaver.jp.MemberCallJp;
+import weaver.jp.ConstructorCallJp;
 import weaver.jp.FieldRefJp;
 import weaver.jp.VarRefJp;
 import weaver.jp.VarDeclJp;
@@ -24,10 +26,12 @@ var classesMapping = {
 	'ClassJp': ClassJp,
 	'FunctionJp': FunctionJp,
 	'MethodJp': MethodJp,
+	'ConstructorJp': ConstructorJp,
 	'FieldJp': FieldJp,
 	'ExprJp': ExprJp,
 	'CallJp': CallJp,
 	'MemberCallJp': MemberCallJp,
+	'ConstructorCallJp': ConstructorCallJp,
 	'FieldRefJp': FieldRefJp,
 	'VarRefJp': VarRefJp,
 	'VarDeclJp': VarDeclJp,

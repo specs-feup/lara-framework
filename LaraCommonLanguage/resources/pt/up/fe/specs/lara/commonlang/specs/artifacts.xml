@@ -31,7 +31,9 @@
 		<attribute name="name" type="string" tooltip="The name of the class."/>
 		<attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
 		<attribute name="allSuperClasses" type="class[]" tooltip="The superClasses this class and its superClasses extends."/>
+		<attribute name="allMethods" type="method[]" tooltip="The methods and constructors of this class."/>
 		<attribute name="methods" type="method[]" tooltip="The methods of this class."/>
+		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
 	</artifact>
 	
@@ -60,6 +62,11 @@
 		<attribute name="method" type="method" tooltip="The method called."/>
 	</artifact>
 	
+	<artifact class="constructorCall" default="name">
+		<attribute name="constructor" type="constructor" tooltip="The constructor called."/>
+	</artifact>
+
+		
 	<artifact class="fieldRef" default="name">
 		<attribute name="name" type="string" tooltip="The name of the field referenced."/>
 		<attribute name="field" type="method" tooltip="The field referenced."/>
