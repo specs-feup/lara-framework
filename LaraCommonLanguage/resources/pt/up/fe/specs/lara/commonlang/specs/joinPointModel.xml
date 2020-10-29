@@ -17,5 +17,12 @@
 	<joinpoint class="varRef" extends="expr"/>	
 	<joinpoint class="varDecl" extends="decl"/>
 	<joinpoint class="param" extends="varDecl"/>
-	<joinpoint class="type"/>	
+	<joinpoint class="type"/>
+	<joinpoint class="stmt"/>
+	<joinpoint class="if" extends="stmt"/>
+	<joinpoint class="switch" extends="stmt"/>
+	<joinpoint class="case" extends="stmt"/>
+	<joinpoint class="loop" extends="stmt"/>
+	<joinpoint class="ternary" extends="stmt"/>
+	<joinpoint class="binary" extends="stmt"/>
 </joinpoints>

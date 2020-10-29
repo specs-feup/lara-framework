@@ -52,6 +52,11 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 	}
 });
 
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'endLine', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.endLine not implemented'; }
+});
+
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'code', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.code not implemented'; }

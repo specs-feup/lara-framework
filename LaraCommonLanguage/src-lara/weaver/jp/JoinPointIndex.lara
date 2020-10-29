@@ -16,6 +16,13 @@ import weaver.jp.VarRefJp;
 import weaver.jp.VarDeclJp;
 import weaver.jp.ParamJp;
 import weaver.jp.TypeJp;
+import weaver.jp.StmtJp;
+import weaver.jp.IfJp;
+import weaver.jp.SwitchJp;
+import weaver.jp.CaseJp;
+import weaver.jp.LoopJp;
+import weaver.jp.TernaryJp;
+import weaver.jp.BinaryJp;
 
 
 var classesMapping = {
@@ -36,6 +43,13 @@ var classesMapping = {
 	'VarRefJp': VarRefJp,
 	'VarDeclJp': VarDeclJp,
 	'ParamJp': ParamJp,
-	'TypeJp': TypeJp
+	'TypeJp': TypeJp,
+	'StmtJp': StmtJp,
+	'IfJp': IfJp,
+	'SwitchJp': SwitchJp,
+	'CaseJp': CaseJp,
+	'LoopJp': LoopJp,
+	'TernaryJp': TernaryJp,
+	'BinaryJp': BinaryJp
 };
 

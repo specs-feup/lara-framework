@@ -62,6 +62,11 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'constructors', {
 	get: function () { throw this.constructor.name + '.constructors not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'fields', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.fields not implemented'; }
+});
+
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'kind', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.kind not implemented'; }

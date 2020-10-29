@@ -1,0 +1,34 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function IfJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+IfJp.prototype = Object.create(StmtJp.prototype);
+IfJp.prototype.constructor = IfJp;
+
+IfJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'if'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'condition', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.condition not implemented'; }
+});
+

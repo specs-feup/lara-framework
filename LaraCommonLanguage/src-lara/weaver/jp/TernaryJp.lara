@@ -1,0 +1,29 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function TernaryJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+TernaryJp.prototype = Object.create(StmtJp.prototype);
+TernaryJp.prototype.constructor = TernaryJp;
+
+TernaryJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(TernaryJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'ternary'; }
+});
+

@@ -4,6 +4,7 @@
 	<!-- Attributes for all join points -->
 	<global>
 		<attribute name="line" type="string" tooltip="The starting line of the current node in the original code."/>
+		<attribute name="endLine" type="string" tooltip="The ending line of the current node in the original code."/>
 		<attribute name="code" type="string" tooltip="The source code corresponding to this join point."/>		
 		<attribute name="joinPointType" type="string" tooltip="A string with the type of the join point."/>	
 		<attribute name="instanceOf" type="boolean" tooltip="True if the current join point is an instance of the given type.">
@@ -34,6 +35,7 @@
 		<attribute name="allMethods" type="method[]" tooltip="The methods and constructors of this class."/>
 		<attribute name="methods" type="method[]" tooltip="The methods of this class."/>
 		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
+		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
 	</artifact>
 	
@@ -55,6 +57,7 @@
 		<attribute name="signature" type="string" tooltip="The signature of the function."/>
 		<attribute name="returnType" type="type"/>
 		<attribute name="params" type="param[]"/>
+		<attribute name="stmts" type="stmt[]"/>	
 	</artifact>
 	
 	<artifact class="memberCall" default="name">
@@ -91,6 +94,19 @@
 	
 	<artifact class="param" default="name">
 		<attribute name="function" type="function" tooltip="The function where the param is declared."/>
+	</artifact>
+	
+	<artifact class="binaryOp" default="kind">
+		<attribute name="kind" type="string" tooltip="Gets the kind of this binary operator."/>
+	</artifact>
+	
+	<artifact class="loop">
+		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the loop's condition."/>
+		<attribute name="hasCondition" type="Boolean" tooltip="Check if the loop has a condition."/>
+	</artifact>
+	
+	<artifact class="if">
+		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the if's condition."/>
 	</artifact>
 
 

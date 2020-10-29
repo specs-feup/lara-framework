@@ -1,0 +1,29 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function CaseJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+CaseJp.prototype = Object.create(StmtJp.prototype);
+CaseJp.prototype.constructor = CaseJp;
+
+CaseJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(CaseJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'case'; }
+});
+
