@@ -393,7 +393,8 @@ function isJavaList(list) {
  * The name of this functions must be the same as the value of the field org.lara.interpreter.weaver.interf.JoinPoint.LARA_GETTER .
  */
 function laraGetter(object, property) {
-	var type = typeof object[property];
+	var value = object[property];
+	var type = typeof value;
 
 	// If type is function, assume it should be called without arguments
 	if(type === 'function') {
@@ -410,10 +411,10 @@ function laraGetter(object, property) {
 		}
 		
 		// JS object
-		return object[property];
+		return value;
     }
 
-	return object[property];
+	return value;
 }
 
 
