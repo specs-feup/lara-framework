@@ -57,7 +57,8 @@
 		<attribute name="signature" type="string" tooltip="The signature of the function."/>
 		<attribute name="returnType" type="type"/>
 		<attribute name="params" type="param[]"/>
-		<attribute name="stmts" type="stmt[]"/>	
+		<attribute name="stmts" type="stmt[]"/>
+		<attribute name="hasBody" type="Boolean"/>		
 	</artifact>
 	
 	<artifact class="memberCall" default="name">
@@ -90,6 +91,7 @@
 	
 	<artifact class="varDecl" default="name">
 		<attribute name="name" type="string" tooltip="The name of the variable declared."/>
+		<attribute name="isParam" type="string" tooltip="Check if the var is a param."/>
 	</artifact>
 	
 	<artifact class="param" default="name">
