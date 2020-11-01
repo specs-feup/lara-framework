@@ -24,5 +24,12 @@
 	<joinpoint class="case" extends="stmt"/>
 	<joinpoint class="loop" extends="stmt"/>
 	<joinpoint class="ternary" extends="stmt"/>
-	<joinpoint class="binary" extends="stmt"/>
+	<joinpoint class="binary" extends="stmt"/>	
+	<joinpoint class="try" extends="stmt"/>
+	<joinpoint class="catch" extends="stmt"/>
+	<joinpoint class="throw" extends="stmt"/>
+	<joinpoint class="default" extends="case"/>
+	<joinpoint class="break" extends="stmt"/>
+	<joinpoint class="continue" extends="stmt"/>
+	<joinpoint class="goto" extends="stmt"/>
 </joinpoints>

@@ -57,3 +57,8 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'stmts', {
 	get: function () { throw this.constructor.name + '.stmts not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'hasBody', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.hasBody not implemented'; }
+});
+

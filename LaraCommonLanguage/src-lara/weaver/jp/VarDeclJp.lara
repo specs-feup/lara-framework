@@ -32,3 +32,8 @@ _lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'name', {
 	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'isParam', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isParam not implemented'; }
+});
+

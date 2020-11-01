@@ -23,6 +23,13 @@ import weaver.jp.CaseJp;
 import weaver.jp.LoopJp;
 import weaver.jp.TernaryJp;
 import weaver.jp.BinaryJp;
+import weaver.jp.TryJp;
+import weaver.jp.CatchJp;
+import weaver.jp.ThrowJp;
+import weaver.jp.DefaultJp;
+import weaver.jp.BreakJp;
+import weaver.jp.ContinueJp;
+import weaver.jp.GotoJp;
 
 
 var classesMapping = {
@@ -50,6 +57,13 @@ var classesMapping = {
 	'CaseJp': CaseJp,
 	'LoopJp': LoopJp,
 	'TernaryJp': TernaryJp,
-	'BinaryJp': BinaryJp
+	'BinaryJp': BinaryJp,
+	'TryJp': TryJp,
+	'CatchJp': CatchJp,
+	'ThrowJp': ThrowJp,
+	'DefaultJp': DefaultJp,
+	'BreakJp': BreakJp,
+	'ContinueJp': ContinueJp,
+	'GotoJp': GotoJp
 };
 

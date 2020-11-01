@@ -1,0 +1,29 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function TryJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+TryJp.prototype = Object.create(StmtJp.prototype);
+TryJp.prototype.constructor = TryJp;
+
+TryJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(TryJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'try'; }
+});
+
