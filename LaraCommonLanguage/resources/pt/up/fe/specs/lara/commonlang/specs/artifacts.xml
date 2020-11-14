@@ -19,8 +19,16 @@
 		<attribute name="parent" type="joinpoint" tooltip="Returns the parent joinpoint in the AST."/>	
 		<attribute name="children" type="joinpoint[]" tooltip="Returns an array with the children of the joinpoint."/>
 		<attribute name="descendants" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
+		<attribute name="hasChildren" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
+		<attribute name="astId" type="string" tooltip="The ID of the node in the AST."/>
+
 		
 	</global>
+	
+	<artifact class="file" default="name">
+		<attribute name="name" type="string" tooltip="The name of the file."/>
+		<attribute name="id" type="string" tooltip="The id of the file."/>
+	</artifact>
 	
 	<artifact class="call" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function called."/>
@@ -37,11 +45,13 @@
 		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
 		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
+		<attribute name="isCustom" type="bool" tooltip="Check if the class is defined by the user."/>
 	</artifact>
 	
 	<artifact class="method" default="name">
 		<attribute name="id" type="string" tooltip="The id of the method."/>
 		<attribute name="class" type="class" tooltip="The class of the method."/>
+		<attribute name="isCustom" type="bool" tooltip="Check if the class is defined by the user."/>
 	</artifact>
 	
 	<artifact class="field" default="name">

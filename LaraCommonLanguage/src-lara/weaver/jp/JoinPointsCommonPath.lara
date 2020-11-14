@@ -20,7 +20,12 @@ JoinPoints.prototype._all_children = function($jp) {
  */
  
 JoinPoints.prototype._parent = function($jp) {
-	return CommonJoinPoints.toJoinPoint(Ast.getParent($jp.astNode));
+	var parent = Ast.getParent($jp.astNode);
+	
+	if(parent !== undefined)
+		return CommonJoinPoints.toJoinPoint(parent);
+		
+	return undefined;
 }
 
 /**

@@ -32,3 +32,8 @@ _lara_dummy_ = Object.defineProperty(MethodJp.prototype, 'class', {
 	get: function () { throw this.constructor.name + '.class not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(MethodJp.prototype, 'isCustom', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isCustom not implemented'; }
+});
+

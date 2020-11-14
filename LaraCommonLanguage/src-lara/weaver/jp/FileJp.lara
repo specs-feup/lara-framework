@@ -27,3 +27,13 @@ _lara_dummy_ = Object.defineProperty(FileJp.prototype, 'joinPointType', {
 	get: function () { return 'file'; }
 });
 
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'id', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.id not implemented'; }
+});
+

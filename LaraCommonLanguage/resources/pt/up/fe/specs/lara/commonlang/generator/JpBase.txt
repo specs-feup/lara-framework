@@ -52,3 +52,32 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 	}
 });
 
+JoinPoint.prototype.ancestor = function(type) {
+
+	var ancestor = this.parent;
+	
+	while(ancestor!== null && !ancestor.instanceOf(type)){
+		println(ancestor);
+		println(ancestor.astNode.getClass().getSimpleName());
+		ancestor=ancestor.parent;
+		println("error");	
+	}
+
+	return ancestor;    
+}
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'hasChildren', {
+	configurable: true,
+	get: function () {
+		return this.children && this.children.length > 0; 
+	}
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'astId', {
+	configurable: true,
+	get: function () { 
+		return this.astNode.getValue("id"); 
+	}
+});
+
+
