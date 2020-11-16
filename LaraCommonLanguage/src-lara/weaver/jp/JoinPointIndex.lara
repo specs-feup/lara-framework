@@ -30,6 +30,8 @@ import weaver.jp.DefaultJp;
 import weaver.jp.BreakJp;
 import weaver.jp.ContinueJp;
 import weaver.jp.GotoJp;
+import weaver.jp.ThenJp;
+import weaver.jp.ElseJp;
 
 
 var classesMapping = {
@@ -64,6 +66,8 @@ var classesMapping = {
 	'DefaultJp': DefaultJp,
 	'BreakJp': BreakJp,
 	'ContinueJp': ContinueJp,
-	'GotoJp': GotoJp
+	'GotoJp': GotoJp,
+	'ThenJp': ThenJp,
+	'ElseJp': ElseJp
 };
 

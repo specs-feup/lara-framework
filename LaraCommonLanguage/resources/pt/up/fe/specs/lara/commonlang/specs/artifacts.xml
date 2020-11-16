@@ -119,6 +119,14 @@
 	
 	<artifact class="if">
 		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the if's condition."/>
+		<attribute name="then" type="stmt" tooltip=""/>
+		<attribute name="else" type="stmt" tooltip=""/>
+		<attribute name="hasElse" type="bool" tooltip=""/>
+		<attribute name="isElseIf" type="bool" tooltip=""/>
+	</artifact>
+	
+	<artifact class="else">
+		<attribute name="isElseIf" type="bool" tooltip=""/>
 	</artifact>
 
 

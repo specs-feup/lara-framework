@@ -1,0 +1,34 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ElseJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+ElseJp.prototype = Object.create(StmtJp.prototype);
+ElseJp.prototype.constructor = ElseJp;
+
+ElseJp.prototype.instanceOf = function(joinPointType) {
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+}
+
+_lara_dummy_ = Object.defineProperty(ElseJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'else'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ElseJp.prototype, 'isElseIf', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isElseIf not implemented'; }
+});
+

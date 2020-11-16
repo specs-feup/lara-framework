@@ -73,11 +73,6 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'hasChildren', {
 	}
 });
 
-_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'astId', {
-	configurable: true,
-	get: function () { 
-		return this.astNode.getValue("id"); 
-	}
-});
+
 
 

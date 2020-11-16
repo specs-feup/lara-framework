@@ -32,3 +32,23 @@ _lara_dummy_ = Object.defineProperty(IfJp.prototype, 'condition', {
 	get: function () { throw this.constructor.name + '.condition not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'then', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.then not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'else', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.else not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'hasElse', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.hasElse not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'isElseIf', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isElseIf not implemented'; }
+});
+
