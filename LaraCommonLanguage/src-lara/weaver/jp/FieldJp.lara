@@ -1,4 +1,4 @@
-import weaver.jp.DeclJp;
+import weaver.jp.VarDeclJp;
 
 /**
  * 
@@ -7,11 +7,11 @@ import weaver.jp.DeclJp;
  */
 function FieldJp(astNode) {
     // Parent constructor
-    DeclJp.call(this,astNode);
+    VarDeclJp.call(this,astNode);
     
 }
 // Inheritance
-FieldJp.prototype = Object.create(DeclJp.prototype);
+FieldJp.prototype = Object.create(VarDeclJp.prototype);
 FieldJp.prototype.constructor = FieldJp;
 
 FieldJp.prototype.instanceOf = function(joinPointType) {
@@ -19,7 +19,7 @@ FieldJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	return (new VarDeclJp(this.astNode)).instanceOf(joinPointType);
 }
 
 _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {
@@ -30,11 +30,6 @@ _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {
 _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'id', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.id not implemented'; }
-});
-
-_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'name', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 
 _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'class', {

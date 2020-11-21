@@ -8,7 +8,7 @@
 	<joinpoint class="function" extends="decl"/>
 	<joinpoint class="method" extends="function"/>
 	<joinpoint class="constructor" extends="method"/>
-	<joinpoint class="field" extends="decl"/>
+	<joinpoint class="field" extends="varDecl"/>
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>
 	<joinpoint class="memberCall" extends="call"/>
@@ -24,7 +24,7 @@
 	<joinpoint class="case" extends="stmt"/>
 	<joinpoint class="loop" extends="stmt"/>
 	<joinpoint class="ternary" extends="stmt"/>
-	<joinpoint class="binary" extends="stmt"/>	
+	<joinpoint class="binary" extends="expr"/>	
 	<joinpoint class="try" extends="stmt"/>
 	<joinpoint class="catch" extends="stmt"/>
 	<joinpoint class="throw" extends="stmt"/>

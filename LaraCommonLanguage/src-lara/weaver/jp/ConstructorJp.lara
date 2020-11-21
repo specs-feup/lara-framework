@@ -27,3 +27,8 @@ _lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'joinPointType', {
 	get: function () { return 'constructor'; }
 });
 
+_lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'superCalls', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.superCalls not implemented'; }
+});
+

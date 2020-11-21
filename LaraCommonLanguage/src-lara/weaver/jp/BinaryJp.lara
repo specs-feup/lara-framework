@@ -1,4 +1,4 @@
-import weaver.jp.StmtJp;
+import weaver.jp.ExprJp;
 
 /**
  * 
@@ -7,11 +7,11 @@ import weaver.jp.StmtJp;
  */
 function BinaryJp(astNode) {
     // Parent constructor
-    StmtJp.call(this,astNode);
+    ExprJp.call(this,astNode);
     
 }
 // Inheritance
-BinaryJp.prototype = Object.create(StmtJp.prototype);
+BinaryJp.prototype = Object.create(ExprJp.prototype);
 BinaryJp.prototype.constructor = BinaryJp;
 
 BinaryJp.prototype.instanceOf = function(joinPointType) {
@@ -19,7 +19,7 @@ BinaryJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
 }
 
 _lara_dummy_ = Object.defineProperty(BinaryJp.prototype, 'joinPointType', {

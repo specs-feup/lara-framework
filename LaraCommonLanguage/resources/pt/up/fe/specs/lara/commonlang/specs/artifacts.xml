@@ -76,6 +76,10 @@
 		<attribute name="method" type="method" tooltip="The method called."/>
 	</artifact>
 	
+	<artifact class="constructor" default="name">
+		<attribute name="superCalls" type="constructorCall[]" tooltip=""/>
+	</artifact>
+	
 	<artifact class="constructorCall" default="name">
 		<attribute name="constructor" type="constructor" tooltip="The constructor called."/>
 	</artifact>
@@ -110,6 +114,8 @@
 	
 	<artifact class="binaryOp" default="kind">
 		<attribute name="kind" type="string" tooltip="Gets the kind of this binary operator."/>
+		<attribute name="isInnerExpr" type="Boolean" tooltip="Check if this expr is inside another expr."/>
+		<attribute name="outerExpr" type="expr" tooltip="Gets the  outer expr."/>
 	</artifact>
 	
 	<artifact class="loop">
