@@ -61,11 +61,8 @@ JoinPoint.prototype.ancestor = function(type) {
 
 	var ancestor = this.parent;
 	
-	while(ancestor!== null && !ancestor.instanceOf(type)){
-		println(ancestor);
-		println(ancestor.astNode.getClass().getSimpleName());
+	while(ancestor!== undefined && !ancestor.instanceOf(type)){
 		ancestor=ancestor.parent;
-		println("error");	
 	}
 
 	return ancestor;    
