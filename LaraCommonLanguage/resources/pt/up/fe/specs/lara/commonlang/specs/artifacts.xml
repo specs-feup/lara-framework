@@ -45,13 +45,13 @@
 		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
 		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
-		<attribute name="isCustom" type="bool" tooltip="Check if the class is defined by the user."/>
+		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
 	</artifact>
 	
 	<artifact class="method" default="name">
 		<attribute name="id" type="string" tooltip="The id of the method."/>
 		<attribute name="class" type="class" tooltip="The class of the method."/>
-		<attribute name="isCustom" type="bool" tooltip="Check if the class is defined by the user."/>
+		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
 	</artifact>
 	
 	<artifact class="field" default="name">
@@ -127,12 +127,12 @@
 		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the if's condition."/>
 		<attribute name="then" type="stmt" tooltip=""/>
 		<attribute name="else" type="stmt" tooltip=""/>
-		<attribute name="hasElse" type="bool" tooltip=""/>
-		<attribute name="isElseIf" type="bool" tooltip=""/>
+		<attribute name="hasElse" type="boolean" tooltip=""/>
+		<attribute name="isElseIf" type="boolean" tooltip=""/>
 	</artifact>
 	
 	<artifact class="else">
-		<attribute name="isElseIf" type="bool" tooltip=""/>
+		<attribute name="isElseIf" type="boolean" tooltip=""/>
 	</artifact>
 
 
