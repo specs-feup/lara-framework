@@ -9,7 +9,15 @@ function JoinPoint(astNode) {
 }
 
 JoinPoint.prototype.instanceOf = function(joinPointType) {
-	return joinPointType === this.joinPointType;
+	return joinPointType === 'joinpoint';
+	// return joinPointType === this.joinPointType;
+}
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+JoinPoint.prototype.types = function(joinPointType) {
+	return ['joinpoint'].values();
 }
 
 JoinPoint.prototype.sameTypeAs = function(joinPoint) {

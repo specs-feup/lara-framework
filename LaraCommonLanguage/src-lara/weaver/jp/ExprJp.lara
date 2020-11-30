@@ -32,6 +32,14 @@ ExprJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ExprJp.prototype.types = function(joinPointType) {
+	return ExprJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(ExprJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'expr'; }

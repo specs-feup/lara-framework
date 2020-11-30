@@ -33,6 +33,14 @@ VarDeclJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+VarDeclJp.prototype.types = function(joinPointType) {
+	return VarDeclJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'varDecl'; }

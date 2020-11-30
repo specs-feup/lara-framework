@@ -33,6 +33,14 @@ ContinueJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ContinueJp.prototype.types = function(joinPointType) {
+	return ContinueJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(ContinueJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'continue'; }

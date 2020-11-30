@@ -30,6 +30,14 @@ function <THIS_JP>(astNode) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+<THIS_JP>.prototype.types = function(joinPointType) {
+	return <THIS_JP>._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(<THIS_JP>.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return '<JP_TYPE>'; }

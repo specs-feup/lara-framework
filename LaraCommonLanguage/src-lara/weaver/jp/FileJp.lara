@@ -32,6 +32,14 @@ FileJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FileJp.prototype.types = function(joinPointType) {
+	return FileJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(FileJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'file'; }

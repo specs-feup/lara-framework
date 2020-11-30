@@ -33,6 +33,14 @@ CallJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CallJp.prototype.types = function(joinPointType) {
+	return CallJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(CallJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'call'; }

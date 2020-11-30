@@ -33,6 +33,14 @@ BreakJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+BreakJp.prototype.types = function(joinPointType) {
+	return BreakJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(BreakJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'break'; }

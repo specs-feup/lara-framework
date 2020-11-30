@@ -33,6 +33,14 @@ CatchJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CatchJp.prototype.types = function(joinPointType) {
+	return CatchJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(CatchJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'catch'; }

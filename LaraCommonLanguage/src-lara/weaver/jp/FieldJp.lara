@@ -34,6 +34,14 @@ FieldJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FieldJp.prototype.types = function(joinPointType) {
+	return FieldJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'field'; }

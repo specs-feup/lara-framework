@@ -33,6 +33,14 @@ CaseJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CaseJp.prototype.types = function(joinPointType) {
+	return CaseJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(CaseJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'case'; }

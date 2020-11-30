@@ -33,6 +33,14 @@ ThenJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ThenJp.prototype.types = function(joinPointType) {
+	return ThenJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(ThenJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'then'; }

@@ -33,6 +33,14 @@ TernaryJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+TernaryJp.prototype.types = function(joinPointType) {
+	return TernaryJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(TernaryJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'ternary'; }

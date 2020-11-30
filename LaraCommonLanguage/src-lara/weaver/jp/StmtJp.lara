@@ -32,6 +32,14 @@ StmtJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+StmtJp.prototype.types = function(joinPointType) {
+	return StmtJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(StmtJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'stmt'; }

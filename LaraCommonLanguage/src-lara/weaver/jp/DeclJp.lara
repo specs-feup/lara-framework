@@ -32,6 +32,14 @@ DeclJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+DeclJp.prototype.types = function(joinPointType) {
+	return DeclJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(DeclJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'decl'; }

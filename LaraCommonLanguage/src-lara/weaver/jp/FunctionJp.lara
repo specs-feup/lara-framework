@@ -33,6 +33,14 @@ FunctionJp.prototype.instanceOf = function(joinPointType) {
 	*/
 }
 
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FunctionJp.prototype.types = function(joinPointType) {
+	return FunctionJp._JP_TYPES.values();
+}
+
 _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'function'; }
