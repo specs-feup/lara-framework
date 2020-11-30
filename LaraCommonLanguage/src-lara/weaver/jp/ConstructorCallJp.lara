@@ -14,12 +14,25 @@ function ConstructorCallJp(astNode) {
 ConstructorCallJp.prototype = Object.create(MemberCallJp.prototype);
 ConstructorCallJp.prototype.constructor = ConstructorCallJp;
 
+// JoinPoint Types
+ConstructorCallJp._JP_TYPES = new Set();
+_lara_dummy_ = ConstructorCallJp._JP_TYPES.add('constructorCall');
+_lara_dummy_ = ConstructorCallJp._JP_TYPES.add('memberCall');
+_lara_dummy_ = ConstructorCallJp._JP_TYPES.add('call');
+_lara_dummy_ = ConstructorCallJp._JP_TYPES.add('expr');
+_lara_dummy_ = ConstructorCallJp._JP_TYPES.add('joinpoint');
+
+
 ConstructorCallJp.prototype.instanceOf = function(joinPointType) {
+	return ConstructorCallJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new MemberCallJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ConstructorCallJp.prototype, 'joinPointType', {

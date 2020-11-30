@@ -14,12 +14,23 @@ function ClassJp(astNode) {
 ClassJp.prototype = Object.create(DeclJp.prototype);
 ClassJp.prototype.constructor = ClassJp;
 
+// JoinPoint Types
+ClassJp._JP_TYPES = new Set();
+_lara_dummy_ = ClassJp._JP_TYPES.add('class');
+_lara_dummy_ = ClassJp._JP_TYPES.add('decl');
+_lara_dummy_ = ClassJp._JP_TYPES.add('joinpoint');
+
+
 ClassJp.prototype.instanceOf = function(joinPointType) {
+	return ClassJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'joinPointType', {

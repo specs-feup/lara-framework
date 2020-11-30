@@ -14,12 +14,23 @@ function BinaryJp(astNode) {
 BinaryJp.prototype = Object.create(ExprJp.prototype);
 BinaryJp.prototype.constructor = BinaryJp;
 
+// JoinPoint Types
+BinaryJp._JP_TYPES = new Set();
+_lara_dummy_ = BinaryJp._JP_TYPES.add('binary');
+_lara_dummy_ = BinaryJp._JP_TYPES.add('expr');
+_lara_dummy_ = BinaryJp._JP_TYPES.add('joinpoint');
+
+
 BinaryJp.prototype.instanceOf = function(joinPointType) {
+	return BinaryJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(BinaryJp.prototype, 'joinPointType', {

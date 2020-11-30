@@ -14,12 +14,23 @@ function ElseJp(astNode) {
 ElseJp.prototype = Object.create(StmtJp.prototype);
 ElseJp.prototype.constructor = ElseJp;
 
+// JoinPoint Types
+ElseJp._JP_TYPES = new Set();
+_lara_dummy_ = ElseJp._JP_TYPES.add('else');
+_lara_dummy_ = ElseJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ElseJp._JP_TYPES.add('joinpoint');
+
+
 ElseJp.prototype.instanceOf = function(joinPointType) {
+	return ElseJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ElseJp.prototype, 'joinPointType', {

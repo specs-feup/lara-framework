@@ -14,12 +14,24 @@ function FieldJp(astNode) {
 FieldJp.prototype = Object.create(VarDeclJp.prototype);
 FieldJp.prototype.constructor = FieldJp;
 
+// JoinPoint Types
+FieldJp._JP_TYPES = new Set();
+_lara_dummy_ = FieldJp._JP_TYPES.add('field');
+_lara_dummy_ = FieldJp._JP_TYPES.add('varDecl');
+_lara_dummy_ = FieldJp._JP_TYPES.add('decl');
+_lara_dummy_ = FieldJp._JP_TYPES.add('joinpoint');
+
+
 FieldJp.prototype.instanceOf = function(joinPointType) {
+	return FieldJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new VarDeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {

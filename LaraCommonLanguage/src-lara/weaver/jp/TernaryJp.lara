@@ -14,12 +14,23 @@ function TernaryJp(astNode) {
 TernaryJp.prototype = Object.create(StmtJp.prototype);
 TernaryJp.prototype.constructor = TernaryJp;
 
+// JoinPoint Types
+TernaryJp._JP_TYPES = new Set();
+_lara_dummy_ = TernaryJp._JP_TYPES.add('ternary');
+_lara_dummy_ = TernaryJp._JP_TYPES.add('stmt');
+_lara_dummy_ = TernaryJp._JP_TYPES.add('joinpoint');
+
+
 TernaryJp.prototype.instanceOf = function(joinPointType) {
+	return TernaryJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(TernaryJp.prototype, 'joinPointType', {

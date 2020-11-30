@@ -14,12 +14,24 @@ function MemberCallJp(astNode) {
 MemberCallJp.prototype = Object.create(CallJp.prototype);
 MemberCallJp.prototype.constructor = MemberCallJp;
 
+// JoinPoint Types
+MemberCallJp._JP_TYPES = new Set();
+_lara_dummy_ = MemberCallJp._JP_TYPES.add('memberCall');
+_lara_dummy_ = MemberCallJp._JP_TYPES.add('call');
+_lara_dummy_ = MemberCallJp._JP_TYPES.add('expr');
+_lara_dummy_ = MemberCallJp._JP_TYPES.add('joinpoint');
+
+
 MemberCallJp.prototype.instanceOf = function(joinPointType) {
+	return MemberCallJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new CallJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(MemberCallJp.prototype, 'joinPointType', {

@@ -14,12 +14,23 @@ function GotoJp(astNode) {
 GotoJp.prototype = Object.create(StmtJp.prototype);
 GotoJp.prototype.constructor = GotoJp;
 
+// JoinPoint Types
+GotoJp._JP_TYPES = new Set();
+_lara_dummy_ = GotoJp._JP_TYPES.add('goto');
+_lara_dummy_ = GotoJp._JP_TYPES.add('stmt');
+_lara_dummy_ = GotoJp._JP_TYPES.add('joinpoint');
+
+
 GotoJp.prototype.instanceOf = function(joinPointType) {
+	return GotoJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(GotoJp.prototype, 'joinPointType', {

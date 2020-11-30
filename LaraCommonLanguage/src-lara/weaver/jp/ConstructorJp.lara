@@ -14,12 +14,25 @@ function ConstructorJp(astNode) {
 ConstructorJp.prototype = Object.create(MethodJp.prototype);
 ConstructorJp.prototype.constructor = ConstructorJp;
 
+// JoinPoint Types
+ConstructorJp._JP_TYPES = new Set();
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('constructor');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('method');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('function');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('decl');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('joinpoint');
+
+
 ConstructorJp.prototype.instanceOf = function(joinPointType) {
+	return ConstructorJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new MethodJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'joinPointType', {

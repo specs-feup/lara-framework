@@ -159,9 +159,17 @@ public class CommonLangGenerator {
         var superName = ((JoinPointType) jpType.getExtends()).getClazz();
         var superClassName = superName.equals(jpName) ? "JoinPoint" : getJoinPointClassName(superName);
 
+        var types = getJpTypes(jpType);
+        var typesSet = new StringBuilder();
+        for (var type : types) {
+            typesSet.append("_lara_dummy_ = ").append(jpClassName).append("._JP_TYPES.add('" + type + "');\n");
+        }
+
         jpTemplate.replace("<THIS_JP>", jpClassName);
         jpTemplate.replace("<SUPER_JP>", superClassName);
         jpTemplate.replace("<JP_TYPE>", jpName);
+        jpTemplate.replace("<TYPES_SET>", typesSet);
+
         // System.out.println("TEMPLATE:\n" + jpTemplate);
 
         var jpTemplateStr = jpTemplate.toString();
@@ -185,6 +193,27 @@ public class CommonLangGenerator {
         var laraResource = getJpResource(jpName);
         var laraFile = new File(outputFolder, laraResource);
         SpecsIo.write(laraFile, jpTemplateStr);
+    }
+
+    public static List<String> getJpTypes(JoinPointType jpType) {
+        var types = new ArrayList<String>();
+        var current = jpType;
+        boolean stop = false;
+
+        while (!stop) {
+            types.add(current.getClazz());
+            var superJp = (JoinPointType) current.getExtends();
+            if (superJp.getClazz().equals(current.getClazz())) {
+                stop = true;
+            } else {
+                current = superJp;
+            }
+        }
+
+        // Finally add base
+        types.add("joinpoint");
+
+        return types;
     }
 
     public static String getJpResource(String jpName) {

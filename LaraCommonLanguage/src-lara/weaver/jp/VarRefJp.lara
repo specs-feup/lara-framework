@@ -14,12 +14,23 @@ function VarRefJp(astNode) {
 VarRefJp.prototype = Object.create(ExprJp.prototype);
 VarRefJp.prototype.constructor = VarRefJp;
 
+// JoinPoint Types
+VarRefJp._JP_TYPES = new Set();
+_lara_dummy_ = VarRefJp._JP_TYPES.add('varRef');
+_lara_dummy_ = VarRefJp._JP_TYPES.add('expr');
+_lara_dummy_ = VarRefJp._JP_TYPES.add('joinpoint');
+
+
 VarRefJp.prototype.instanceOf = function(joinPointType) {
+	return VarRefJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(VarRefJp.prototype, 'joinPointType', {

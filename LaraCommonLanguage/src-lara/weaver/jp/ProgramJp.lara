@@ -14,12 +14,22 @@ function ProgramJp(astNode) {
 ProgramJp.prototype = Object.create(JoinPoint.prototype);
 ProgramJp.prototype.constructor = ProgramJp;
 
+// JoinPoint Types
+ProgramJp._JP_TYPES = new Set();
+_lara_dummy_ = ProgramJp._JP_TYPES.add('program');
+_lara_dummy_ = ProgramJp._JP_TYPES.add('joinpoint');
+
+
 ProgramJp.prototype.instanceOf = function(joinPointType) {
+	return ProgramJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ProgramJp.prototype, 'joinPointType', {

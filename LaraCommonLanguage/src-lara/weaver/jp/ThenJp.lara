@@ -14,12 +14,23 @@ function ThenJp(astNode) {
 ThenJp.prototype = Object.create(StmtJp.prototype);
 ThenJp.prototype.constructor = ThenJp;
 
+// JoinPoint Types
+ThenJp._JP_TYPES = new Set();
+_lara_dummy_ = ThenJp._JP_TYPES.add('then');
+_lara_dummy_ = ThenJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ThenJp._JP_TYPES.add('joinpoint');
+
+
 ThenJp.prototype.instanceOf = function(joinPointType) {
+	return ThenJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ThenJp.prototype, 'joinPointType', {

@@ -14,12 +14,22 @@ function FileJp(astNode) {
 FileJp.prototype = Object.create(JoinPoint.prototype);
 FileJp.prototype.constructor = FileJp;
 
+// JoinPoint Types
+FileJp._JP_TYPES = new Set();
+_lara_dummy_ = FileJp._JP_TYPES.add('file');
+_lara_dummy_ = FileJp._JP_TYPES.add('joinpoint');
+
+
 FileJp.prototype.instanceOf = function(joinPointType) {
+	return FileJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(FileJp.prototype, 'joinPointType', {

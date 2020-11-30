@@ -14,12 +14,24 @@ function ParamJp(astNode) {
 ParamJp.prototype = Object.create(VarDeclJp.prototype);
 ParamJp.prototype.constructor = ParamJp;
 
+// JoinPoint Types
+ParamJp._JP_TYPES = new Set();
+_lara_dummy_ = ParamJp._JP_TYPES.add('param');
+_lara_dummy_ = ParamJp._JP_TYPES.add('varDecl');
+_lara_dummy_ = ParamJp._JP_TYPES.add('decl');
+_lara_dummy_ = ParamJp._JP_TYPES.add('joinpoint');
+
+
 ParamJp.prototype.instanceOf = function(joinPointType) {
+	return ParamJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new VarDeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(ParamJp.prototype, 'joinPointType', {

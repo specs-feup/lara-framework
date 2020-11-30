@@ -14,12 +14,23 @@ function LoopJp(astNode) {
 LoopJp.prototype = Object.create(StmtJp.prototype);
 LoopJp.prototype.constructor = LoopJp;
 
+// JoinPoint Types
+LoopJp._JP_TYPES = new Set();
+_lara_dummy_ = LoopJp._JP_TYPES.add('loop');
+_lara_dummy_ = LoopJp._JP_TYPES.add('stmt');
+_lara_dummy_ = LoopJp._JP_TYPES.add('joinpoint');
+
+
 LoopJp.prototype.instanceOf = function(joinPointType) {
+	return LoopJp._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(LoopJp.prototype, 'joinPointType', {

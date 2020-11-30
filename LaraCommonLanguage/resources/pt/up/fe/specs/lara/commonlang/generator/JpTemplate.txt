@@ -14,12 +14,20 @@ function <THIS_JP>(astNode) {
 <THIS_JP>.prototype = Object.create(<SUPER_JP>.prototype);
 <THIS_JP>.prototype.constructor = <THIS_JP>;
 
+// JoinPoint Types
+<THIS_JP>._JP_TYPES = new Set();
+<TYPES_SET>
+
 <THIS_JP>.prototype.instanceOf = function(joinPointType) {
+	return <THIS_JP>._JP_TYPES.has(joinPointType);
+	
+	/*
 	if(joinPointType === this.joinPointType) {
 		return true;
 	}
 	
 	return (new <SUPER_JP>(this.astNode)).instanceOf(joinPointType);
+	*/
 }
 
 _lara_dummy_ = Object.defineProperty(<THIS_JP>.prototype, 'joinPointType', {
