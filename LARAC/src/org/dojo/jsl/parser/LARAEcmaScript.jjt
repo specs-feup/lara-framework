@@ -1423,11 +1423,15 @@ TOKEN :
 		  LOOKAHEAD((<FUNCTION_GEN > )  Identifier()) GeneratorFunctionDeclaration()
 	 	| LOOKAHEAD((<FUNCTION > )  Identifier()) FunctionDeclaration() 	 
 	  	| VariableStatement()
-	  	| 
+	  	// TODO: Enable this, disable the one below, implement declareGlobal
+		//| Expression() (<SEMICOLON > )?
+
+		| 
 		(
 		  
 		LeftHandSideExpression() AssignmentOperator() AssignmentExpression() [<SEMICOLON >]
 		)#AssignmentExpression
+
 	}
 	
 	/**
@@ -2960,7 +2964,7 @@ void ActionOnAssign() #Action:
 	void YieldStatement() #YieldStatement :
 	{Token begin;}
 	{
-		begin="yield" ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement()
+		begin="yield" ( "*" )? ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement()
 	}
 
 
