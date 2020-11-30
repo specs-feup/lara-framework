@@ -11,6 +11,14 @@ CommonJoinPoints.toJoinPoint = function(astNode) {
 }
 
 CommonJoinPoints.toJoinPoints = function(astNodes) {
-   return astNodes.map(astNode => this.toJoinPoint(astNode));
+   //return astNodes.map(astNode => this.toJoinPoint(astNode));
+
+   var jps = [];
+   
+   for(var astNode of astNodes) {
+		jps.push(this.toJoinPoint(astNode));
+   }
+   
+   return jps;
 }
 
