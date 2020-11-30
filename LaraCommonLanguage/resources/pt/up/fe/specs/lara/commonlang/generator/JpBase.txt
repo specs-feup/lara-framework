@@ -57,6 +57,10 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 	configurable: true,
 	get: function () {
 		accum = [];
+
+		this._descendantsPrivate(accum);
+		
+/*
 	    for(child of this.children){
 	    	accum.push(child);
 			for(var desc of child.descendants) {
@@ -64,10 +68,18 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 			}	    	
 	    	//accum = accum.concat(child.descendants);
 	    }
+*/
+	    
 		return accum;
 	}
 });
 
+JoinPoint.prototype._descendantsPrivate = function(accum) {
+	    for(child of this.children){
+	    	accum.push(child);
+			child._descendantsPrivate(accum);
+	    }
+}
 
 JoinPoint.prototype.descendantsIt = function*() {
 	for(child of this.children){
