@@ -9,6 +9,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ASTYieldStatement extends SimpleNode {
+
+    private boolean hasStar = false;
+
     public ASTYieldStatement(int id) {
         super(id);
     }
@@ -19,7 +22,14 @@ public class ASTYieldStatement extends SimpleNode {
 
     @Override
     public Object organize(Object obj) {
-        ((SimpleNode) children[0]).organize(obj);
+        var expression = ((SimpleNode) children[0]);
+        if (expression instanceof ASTYieldStar) {
+            this.hasStar = true;
+            expression = ((SimpleNode) children[1]);
+        }
+
+        // ((SimpleNode) children[0]).organize(obj);
+        expression.organize(obj);
         return obj;
     }
 
@@ -29,7 +39,8 @@ public class ASTYieldStatement extends SimpleNode {
         // final SimpleNode funDecl = getParentById(LARAEcmaScriptTreeConstants.JJTFUNCTIONDECLARATION);
         // final SimpleNode funExpr = getParentById(LARAEcmaScriptTreeConstants.JJTFUNCTIONEXPRESSION);
         final Element returnEl = doc.createElement("statement");
-        returnEl.setAttribute("name", "yield");
+        var name = hasStar ? "yield_star" : "yield";
+        returnEl.setAttribute("name", name);
         /*
         if (funDecl == null && funExpr == null) { // IF both are null, mean that
                                                   // the yield is somewhere
@@ -44,7 +55,11 @@ public class ASTYieldStatement extends SimpleNode {
         parent.appendChild(returnEl);
         final Element exprEl = doc.createElement("expression");
         returnEl.appendChild(exprEl);
-        ((SimpleNode) children[0]).toXML(doc, exprEl);
+
+        int childIndex = ((SimpleNode) children[0]) instanceof ASTYieldStar ? 1 : 0;
+
+        ((SimpleNode) children[childIndex]).toXML(doc, exprEl);
+        // ((SimpleNode) children[0]).toXML(doc, exprEl);
     }
 }
 /* JavaCC - OriginalChecksum=b744cd05342470d303d814d1b3486714 (do not edit this line) */

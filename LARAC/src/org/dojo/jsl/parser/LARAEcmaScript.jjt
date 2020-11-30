@@ -2964,9 +2964,15 @@ void ActionOnAssign() #Action:
 	void YieldStatement() #YieldStatement :
 	{Token begin;}
 	{
-		begin="yield" ( "*" )? ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement()
+		begin="yield" ( YieldStar() )? ( LOOKAHEAD(Expression()) Expression() )? #EmptyExpression(jjtree.nodeArity()==0) EndStatement()
 	}
 
+
+	void YieldStar() #YieldStar :
+	{}
+	{
+		"*"
+	}
 
 	/* Section 12.10: The with Statement */
 

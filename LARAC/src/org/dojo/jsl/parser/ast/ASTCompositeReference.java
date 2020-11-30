@@ -275,7 +275,7 @@ public class ASTCompositeReference extends SimpleNode {
         if (astFunctionCallParameters.areNamed) {
             for (final Node node : astFunctionCallParameters.getChildren()) {
                 final ASTNamedArgument named = (ASTNamedArgument) node;
-
+    
                 ((SimpleNode) named.getChildren()[0]).organize(this);
                 codeMapping.put(named.value.toString(), (SimpleNode) named.getChildren()[0]);
             }
@@ -286,7 +286,7 @@ public class ASTCompositeReference extends SimpleNode {
                 codeMapping.put(arg, (SimpleNode) node);
             }
         }
-
+    
         for (final SimpleNode sn : codeMapping.values()) {
             if (sn == null) {
                 String unsigned = "";
@@ -301,7 +301,7 @@ public class ASTCompositeReference extends SimpleNode {
             }
         }
     }
-
+    
     private String getParamWithNoValue() {
         for (final String param : codeMapping.keySet()) {
             if (codeMapping.get(param) == null) {
@@ -310,11 +310,11 @@ public class ASTCompositeReference extends SimpleNode {
         }
         return null;
     }
-
+    
     @Override
     public void toXMLTemplate(Document doc, Element parent) {
         throw new RuntimeException("This method is deprecated and should not be invoked!");
-
+    
         final Element literalEl = doc.createElement("literal");
         literalEl.setAttribute("type", Types.Object.toString());
         parent.appendChild(literalEl);
@@ -325,7 +325,7 @@ public class ASTCompositeReference extends SimpleNode {
         stringEl.setAttribute("type", Types.String.toString());
         propEl.appendChild(stringEl);
         stringEl.setAttribute("value", codeDef.getName() + ".code");
-
+    
         for (final String prop : codeMapping.keySet()) {
             final SimpleNode replace = codeMapping.get(prop);
             final Element propertyKeyEl = doc.createElement("key");
@@ -334,7 +334,7 @@ public class ASTCompositeReference extends SimpleNode {
             replace.toXML(doc, propertyKeyEl);
         }
         codeTemplateArgumentsToXML(doc, literalEl, codeParams);
-
+    
     } */
 
 }

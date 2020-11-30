@@ -19,3 +19,4 @@
 /ASTArrowParameterList.java
 /ParseException.java
 /TokenMgrError.java
+/ASTYieldStar.java
