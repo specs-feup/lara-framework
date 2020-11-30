@@ -62,12 +62,19 @@ public class StatementProcessor {
         case FNDECL:
             functionDeclaration(stat, depth, sufix, ret);
             break;
+        case GFNDECL:
+            functionDeclaration(stat, depth, sufix, ret, true);
+            break;
         case RETURN:
         case EXIT:
             returnStmt(stat, depth, sufix, ret);
             break;
         case YIELD:
             yieldStmt(stat, depth, sufix, ret);
+            break;
+        case YIELD_STAR:
+            yieldStmt(stat, depth, sufix, ret, true);
+            break;
         case EXPR:
             exprStmt(stat, depth, sufix, ret);
             break;
@@ -281,11 +288,19 @@ public class StatementProcessor {
     }
 
     private void yieldStmt(Statement stat, int depth, String sufix, final StringBuilder ret) {
+        yieldStmt(stat, depth, sufix, ret, false);
+    }
+
+    private void yieldStmt(Statement stat, int depth, String sufix, final StringBuilder ret, boolean hasStar) {
         StringBuilder value = new StringBuilder();
         if (!stat.components.isEmpty()) {
             value = interpreter.getJavascriptString(stat.components.get(0), 0);
         }
-        ret.append(LaraIUtils.getSpace(depth) + "yield " + value + sufix);
+        ret.append(LaraIUtils.getSpace(depth) + "yield ");
+        if (hasStar) {
+            ret.append("* ");
+        }
+        ret.append(value + sufix);
     }
 
     private void declareVariables(Statement stat, String prefix, int depth, String sufix, final StringBuilder ret) {
@@ -308,12 +323,23 @@ public class StatementProcessor {
     }
 
     private void functionDeclaration(Statement stat, int depth, String sufix, final StringBuilder ret) {
+        functionDeclaration(stat, depth, sufix, ret, false);
+    }
+
+    private void functionDeclaration(Statement stat, int depth, String sufix, final StringBuilder ret,
+            boolean isGenerator) {
+
         final Expression exp = (Expression) stat.components.get(0);
         final ExprOp op = (ExprOp) exp.exprs.get(0);
         // get functionName
         String funcName = interpreter.getJavascriptString(op.exprs.get(0), 0).toString();
         funcName = funcName.replaceAll("'", "");
-        ret.append(LaraIUtils.getSpace(depth) + "function " + funcName + "(");
+        // ret.append(LaraIUtils.getSpace(depth) + "function " + funcName + "(");
+        ret.append(LaraIUtils.getSpace(depth) + "function");
+        if (isGenerator) {
+            ret.append("*");
+        }
+        ret.append(" " + funcName + "(");
         final StringBuilder args = new StringBuilder();
         for (int i = 1; i < op.exprs.size() - 1; i++) {
             args.append(
@@ -325,4 +351,5 @@ public class StatementProcessor {
         ret.append(interpreter.getJavascriptString(body, -depth)); // body
         ret.append(sufix);
     }
+
 }

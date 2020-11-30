@@ -12,7 +12,9 @@
  */
 package org.lara.interpreter.utils;
 
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.*;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class LaraIUtils {
     public static enum Statements {
         VARDECL,
         FNDECL,
+        GFNDECL,
         EXPR,
         BLOCK,
         IF,
@@ -52,6 +55,7 @@ public class LaraIUtils {
         BREAK,
         RETURN,
         YIELD,
+        YIELD_STAR,
         WITH,
         SWITCH,
         THROW,
@@ -125,6 +129,7 @@ public class LaraIUtils {
                 "typeof "),
         DELETE("delete "),
         VOID("void ");
+
         private String op;
 
         Operators(String op) {
