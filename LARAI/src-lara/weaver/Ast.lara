@@ -46,12 +46,16 @@ Ast.root = function() {
  * @return {Object[]} an array with the descendants AST nodes of the given AST node.
  */
 Ast.getDescendants = function(astNode, accum) {
+
+	return Weaver.AST_METHODS.getDescendants(astNode);
+/*
     accum = accum || [];
     for(child of Ast.getChildren(astNode)){
     	accum.push(child);
     	Ast.getDescendants(child,accum);
     }
 	return accum;
+*/	
 }
 
 
