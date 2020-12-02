@@ -49,17 +49,20 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'parent', {
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
 	configurable: true,
 	get: function () {
-		return (new JoinPoints()).getChildren(this); 
+		//return (new JoinPoints()).getChildren(this); 
+		return JoinPoints.getInstance().getChildren(this);
 	}
 });
 
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 	configurable: true,
 	get: function () {
+		return JoinPoints.getInstance().getDescendants(this);
+/*
 		accum = [];
 
 		this._descendantsPrivate(accum);
-		
+*/	
 /*
 	    for(child of this.children){
 	    	accum.push(child);
@@ -69,8 +72,9 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 	    	//accum = accum.concat(child.descendants);
 	    }
 */
-	    
+/*	    
 		return accum;
+*/		
 	}
 });
 
