@@ -13,6 +13,9 @@
 
 package org.lara.interpreter.weaver.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
@@ -60,15 +63,31 @@ public abstract class AAstMethods<T> implements AstMethods {
         var scopeChildren = getScopeChildrenImpl(getNodeClass().cast(node));
         return toJs(scopeChildren);
     }
-    
+
     @Override
     public Object getParent(Object node) {
         var scopeChildren = getParentImpl(getNodeClass().cast(node));
         return toJs(scopeChildren);
     }
 
-	private Object toJs(Object object) {
+    private Object toJs(Object object) {
         return weaverEngine.getScriptEngine().toJs(object);
+    }
+
+    @Override
+    public Object getDescendants(Object node) {
+        var descendants = new ArrayList<Object>();
+        getDescendantsPrivate(getNodeClass().cast(node), descendants);
+
+        return toJs(descendants);
+    }
+
+    private void getDescendantsPrivate(T node, List<Object> descendants) {
+        var children = getChildrenImpl(node);
+        for (var child : children) {
+            descendants.add(child);
+            getDescendantsPrivate(getNodeClass().cast(child), descendants);
+        }
     }
 
     public abstract Class<T> getNodeClass();
@@ -80,7 +99,7 @@ public abstract class AAstMethods<T> implements AstMethods {
     protected abstract Object[] getChildrenImpl(T node);
 
     protected abstract Object[] getScopeChildrenImpl(T node);
-    
+
     protected abstract Object getParentImpl(T node);
 
     // protected abstract Integer getNumChildrenImpl(T node);
