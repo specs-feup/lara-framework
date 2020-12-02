@@ -7,6 +7,14 @@ import weaver.Weaver;
 function JoinPoints() {
 }
 
+
+JoinPoints._INSTANCE = new JoinPoints();
+
+JoinPoints.getInstance = function() {
+	return JoinPoints._INSTANCE;
+}
+
+
 /**
  * 
  * @return {$jp} the current root node of the AST
