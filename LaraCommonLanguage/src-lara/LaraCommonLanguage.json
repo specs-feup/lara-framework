@@ -91,6 +91,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -299,6 +308,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -503,6 +521,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -733,6 +760,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -941,6 +977,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -1145,6 +1190,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -1443,6 +1497,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -1750,6 +1813,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -2003,6 +2075,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -2207,6 +2288,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -2419,6 +2509,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -2623,6 +2722,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -2844,6 +2952,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -3048,6 +3165,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -3313,6 +3439,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -3548,6 +3683,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -3770,6 +3914,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -4041,6 +4194,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -4245,6 +4407,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -4502,6 +4673,232 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Returns an array with the descendants of the joinpoint.",
+                  "children": [
+                           {
+                              "type": "joinpoint[]",
+                              "name": "hasChildren"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "True if the current join point is an instance of the given type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "instanceOf"
+                           },
+                           {
+                              "type": "String",
+                              "name": "joinPointType"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "A string with the type of the join point.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "joinPointType"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The starting line of the current node in the original code.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "line"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Returns the parent joinpoint in the AST.",
+                  "children": [
+                           {
+                              "type": "joinpoint",
+                              "name": "parent"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "True if the join point are of the same type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "sameTypeAs"
+                           },
+                           {
+                              "type": "joinpoint",
+                              "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "a String with the type of the join point",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "joinPointType"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "true if the current join point is an instance of the given type",
+                  "children": [
+                           {
+                              "type": "Boolean",
+                              "name": "instanceOf"
+                           },
+                           {
+                              "type": "String",
+                              "name": "name"
+                           }]
+               },
+               {
+                  "type": "action",
+                  "children": [
+                           {
+                              "type": "void",
+                              "name": "insert"
+                           },
+                           {
+                              "type": "[before| after| replace]",
+                              "name": "position",
+                              "defaultValue": ""
+                           },
+                           {
+                              "type": "String",
+                              "name": "code",
+                              "defaultValue": ""
+                           }]
+               },
+               {
+                  "type": "action",
+                  "children": [
+                           {
+                              "type": "void",
+                              "name": "def"
+                           },
+                           {
+                              "type": "String",
+                              "name": "attribute",
+                              "defaultValue": ""
+                           },
+                           {
+                              "type": "Object",
+                              "name": "value",
+                              "defaultValue": ""
+                           }]
+               }]
+      },
+      {
+         "type": "joinpoint",
+         "name": "lambda",
+         "extends": "expr"      ,
+         "children": [
+               {
+                  "type": "attribute",
+                  "children": [
+                           {
+                              "type": "String[]",
+                              "name": "attributes"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "children": [
+                           {
+                              "type": "String[]",
+                              "name": "selects"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "children": [
+                           {
+                              "type": "String[]",
+                              "name": "actions"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The ID of the node in the AST.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "astId"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Returns an array with the children of the joinpoint.",
+                  "children": [
+                           {
+                              "type": "joinpoint[]",
+                              "name": "children"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The source code corresponding to this join point.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "code"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Returns an array with the descendants of the joinpoint.",
+                  "children": [
+                           {
+                              "type": "joinpoint[]",
+                              "name": "descendants"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The ending line of the current node in the original code.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "endLine"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "True if the join point are equal.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "equals"
+                           },
+                           {
+                              "type": "joinpoint",
+                              "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -4724,6 +5121,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -4968,6 +5374,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -5266,6 +5681,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -5501,6 +5925,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -5705,6 +6138,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -5917,6 +6359,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -6121,6 +6572,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -6333,6 +6793,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -6537,6 +7006,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -6749,6 +7227,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -6953,6 +7440,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {
@@ -7197,6 +7693,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -7423,6 +7928,15 @@
                },
                {
                   "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
+                           }]
+               },
+               {
+                  "type": "attribute",
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
@@ -7645,6 +8159,15 @@
                            {
                               "type": "joinpoint",
                               "name": "joinPoint"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "Check if joinpoint has ancestor of type.",
+                  "children": [
+                           {
+                              "type": "boolean",
+                              "name": "hasAncestor"
                            }]
                },
                {

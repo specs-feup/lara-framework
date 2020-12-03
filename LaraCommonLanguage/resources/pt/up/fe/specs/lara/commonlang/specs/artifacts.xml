@@ -21,6 +21,9 @@
 		<attribute name="descendants" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
 		<attribute name="hasChildren" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
 		<attribute name="astId" type="string" tooltip="The ID of the node in the AST."/>
+		<attribute name="hasAncestor" type="boolean" tooltip="Check if joinpoint has ancestor of type."/>
+		
+		
 
 		
 	</global>

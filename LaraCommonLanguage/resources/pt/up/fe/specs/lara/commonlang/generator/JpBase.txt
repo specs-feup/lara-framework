@@ -112,6 +112,14 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'hasChildren', {
 	}
 });
 
+JoinPoint.prototype.hasAncestor = function(type) {
 
-
+	var ancestor = this.parent;
+	
+	while(ancestor!== undefined && !ancestor.instanceOf(type)){
+		ancestor=ancestor.parent;
+	}
+	
+	return ancestor===undefined?false:true;    
+}
 

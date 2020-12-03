@@ -112,17 +112,20 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'hasChildren', {
 	}
 });
 
+JoinPoint.prototype.hasAncestor = function(type) {
 
-
+	var ancestor = this.parent;
+	
+	while(ancestor!== undefined && !ancestor.instanceOf(type)){
+		ancestor=ancestor.parent;
+	}
+	
+	return ancestor===undefined?false:true;    
+}
 
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'endLine', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.endLine not implemented'; }
-});
-
-_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'astId', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.astId not implemented'; }
 });
 
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'code', {
@@ -133,6 +136,11 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'code', {
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'line', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.line not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'astId', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.astId not implemented'; }
 });
 
 JoinPoint.prototype.equals = function(joinPoint) {
