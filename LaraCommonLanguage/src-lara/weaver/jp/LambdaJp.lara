@@ -1,0 +1,48 @@
+import weaver.jp.ExprJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function LambdaJp(astNode) {
+    // Parent constructor
+    ExprJp.call(this,astNode);
+    
+}
+// Inheritance
+LambdaJp.prototype = Object.create(ExprJp.prototype);
+LambdaJp.prototype.constructor = LambdaJp;
+
+// JoinPoint Types
+LambdaJp._JP_TYPES = new Set();
+_lara_dummy_ = LambdaJp._JP_TYPES.add('lambda');
+_lara_dummy_ = LambdaJp._JP_TYPES.add('expr');
+_lara_dummy_ = LambdaJp._JP_TYPES.add('joinpoint');
+
+
+LambdaJp.prototype.instanceOf = function(joinPointType) {
+	return LambdaJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+LambdaJp.prototype.types = function(joinPointType) {
+	return LambdaJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(LambdaJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'lambda'; }
+});
+

@@ -34,4 +34,5 @@
 	<joinpoint class="goto" extends="stmt"/>
 	<joinpoint class="then" extends="stmt"/>
 	<joinpoint class="else" extends="stmt"/>
+	<joinpoint class="lambda" extends="expr"/>
 </joinpoints>

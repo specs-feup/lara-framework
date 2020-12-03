@@ -32,6 +32,7 @@ import weaver.jp.ContinueJp;
 import weaver.jp.GotoJp;
 import weaver.jp.ThenJp;
 import weaver.jp.ElseJp;
+import weaver.jp.LambdaJp;
 
 
 var classesMapping = {
@@ -68,6 +69,7 @@ var classesMapping = {
 	'ContinueJp': ContinueJp,
 	'GotoJp': GotoJp,
 	'ThenJp': ThenJp,
-	'ElseJp': ElseJp
+	'ElseJp': ElseJp,
+	'LambdaJp': LambdaJp
 };
 
