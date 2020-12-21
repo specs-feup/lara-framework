@@ -17,6 +17,7 @@ import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.joptions.keys.OptionalFile;
+import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
@@ -31,7 +32,6 @@ import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * A processor that deals with Aspect related constructions
@@ -126,6 +126,7 @@ public class AspectClassProcessor {
         }
 
         long end = System.currentTimeMillis() - begin;
+        interpreter.getLaraI().getWeavingProfile().report(ReportField.LARA_TO_JS_TIME, (int) end);
         interpreter.out().println(MessageConstants.getElapsedTimeMessage(end));
 
         return code;

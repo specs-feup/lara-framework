@@ -36,6 +36,7 @@ import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.gui.LaraLauncher;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.profile.BasicWeaverProfiler;
+import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
@@ -187,7 +188,7 @@ public class LaraI {
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
-        
+
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
 
@@ -222,7 +223,9 @@ public class LaraI {
 
             long end = getCurrentTime() - start;
 
+            larai.getWeavingProfile().report(ReportField.TOTAL_TIME, (int) end);
             larai.out.println(MessageConstants.getElapsedTimeMessage(end, "LARA total time"));
+            larai.interpreter.exportMetrics();
             larai.out.close();
             return true;
 
@@ -609,6 +612,7 @@ public class LaraI {
         boolean isWorking = weaver.begin();
 
         long end = getCurrentTime() - begin;
+        getWeavingProfile().report(ReportField.INIT_TIME, (int) end);
         out.println(MessageConstants.getElapsedTimeMessage(end));
 
         if (!isWorking) {

@@ -150,7 +150,7 @@ public class Interpreter {
         final Object result = evaluate(code);// cx.evaluateString(scope, code, "<js>", 1, null);
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
-        exportMetrics();
+        // exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
         return result;
     }
@@ -158,7 +158,7 @@ public class Interpreter {
     /**
      * Export the weaver metrics to the given file
      */
-    private void exportMetrics() {
+    public void exportMetrics() {
         OptionalFile reportFile = getOptions().getMetricsFile();
         if (!reportFile.isUsed()) {
             return;

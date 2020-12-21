@@ -27,7 +27,10 @@ public enum ReportField {
     RUNS,
     JOIN_POINTS,
     FILTERED_JOIN_POINTS,
+    INIT_TIME,
+    LARA_TO_JS_TIME,
     WEAVING_TIME,
+    TOTAL_TIME,
     TOKENS;
 
 }

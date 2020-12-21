@@ -282,7 +282,10 @@ public abstract class WeaverProfiler extends AGear {
     public String buildJsonReport() {
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
+                    .report("initTime", report.get(ReportField.INIT_TIME))
+                    .report("laraToJsTime", report.get(ReportField.LARA_TO_JS_TIME))
                     .report("weavingTime", report.get(ReportField.WEAVING_TIME))
+                    .report("totalTime", report.get(ReportField.TOTAL_TIME))
                     .report("tokens", report.get(ReportField.TOKENS))
                     .report("aspects", report.getNumAspectCalls())
                     .report("selects", report.get(ReportField.SELECTS))
