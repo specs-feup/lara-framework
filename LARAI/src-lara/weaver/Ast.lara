@@ -38,7 +38,7 @@ Ast.getNumChildren = function(astNode) {
  * @return {Object} the current root node of the AST.
  */
 Ast.root = function() {
-	return Weaver.getWeaverEngine().getRootNode();
+	return Weaver.AST_METHODS.getRoot();
 }
 
 /** 
