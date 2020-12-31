@@ -68,4 +68,10 @@ public interface AstMethods {
      * @return a JavaScript array with the descendants of this AST node
      */
     Object getDescendants(Object node);
+    
+    /**
+    *
+    * @return the root AST node
+    */
+   Object getRoot();
 }

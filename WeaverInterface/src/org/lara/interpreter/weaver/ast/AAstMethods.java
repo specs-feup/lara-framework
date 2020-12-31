@@ -89,6 +89,11 @@ public abstract class AAstMethods<T> implements AstMethods {
             getDescendantsPrivate(getNodeClass().cast(child), descendants);
         }
     }
+    
+	@Override
+    public Object getRoot() {
+    	return toJs(getRootImpl());
+	}
 
     public abstract Class<T> getNodeClass();
 
@@ -101,10 +106,14 @@ public abstract class AAstMethods<T> implements AstMethods {
     protected abstract Object[] getScopeChildrenImpl(T node);
 
     protected abstract Object getParentImpl(T node);
-
+    
     // protected abstract Integer getNumChildrenImpl(T node);
 
     protected Integer getNumChildrenImpl(T node) {
         return getChildrenImpl(node).length;
     }
+    
+    public Object getRootImpl() {
+    	return weaverEngine.getRootNode();
+ 	}
 }

@@ -53,4 +53,5 @@ public class DummyAstMethods extends AAstMethods<Object> {
 	protected Object getParentImpl(Object node) {
 		 throw new NotImplementedException(this);
 	}
+
 }
