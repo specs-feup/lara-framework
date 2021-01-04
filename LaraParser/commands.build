@@ -5,5 +5,5 @@
 [dir=src/pt/up/fe/specs/lara/parser/javacc/] java -cp ../../../../../../../../../Support/javacc/javacc-5.jar jjtree LARAEcmaScript.jjt
 
 # Create grammar from .jj
-[dir=src/pt/up/fe/specs/lara/parser/javacc/] java -cp ../../../../../../../../../Support/javacc/javacc-5.jar javacc LARAEcmaScript.jj
+[dir=src/pt/up/fe/specs/lara/parser/javacc/ast] java -cp ../../../../../../../../../../Support/javacc/javacc-5.jar javacc LARAEcmaScript.jj
 
