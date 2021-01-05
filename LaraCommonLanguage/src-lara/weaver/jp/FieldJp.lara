@@ -19,6 +19,7 @@ FieldJp._JP_TYPES = new Set();
 _lara_dummy_ = FieldJp._JP_TYPES.add('field');
 _lara_dummy_ = FieldJp._JP_TYPES.add('varDecl');
 _lara_dummy_ = FieldJp._JP_TYPES.add('decl');
+_lara_dummy_ = FieldJp._JP_TYPES.add('stmt');
 _lara_dummy_ = FieldJp._JP_TYPES.add('joinpoint');
 
 

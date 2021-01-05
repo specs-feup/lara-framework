@@ -18,6 +18,7 @@ FunctionJp.prototype.constructor = FunctionJp;
 FunctionJp._JP_TYPES = new Set();
 _lara_dummy_ = FunctionJp._JP_TYPES.add('function');
 _lara_dummy_ = FunctionJp._JP_TYPES.add('decl');
+_lara_dummy_ = FunctionJp._JP_TYPES.add('stmt');
 _lara_dummy_ = FunctionJp._JP_TYPES.add('joinpoint');
 
 

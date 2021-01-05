@@ -1,4 +1,4 @@
-import weaver.jp.StmtJp;
+import weaver.jp.ExprJp;
 
 /**
  * 
@@ -7,17 +7,17 @@ import weaver.jp.StmtJp;
  */
 function TernaryJp(astNode) {
     // Parent constructor
-    StmtJp.call(this,astNode);
+    ExprJp.call(this,astNode);
     
 }
 // Inheritance
-TernaryJp.prototype = Object.create(StmtJp.prototype);
+TernaryJp.prototype = Object.create(ExprJp.prototype);
 TernaryJp.prototype.constructor = TernaryJp;
 
 // JoinPoint Types
 TernaryJp._JP_TYPES = new Set();
 _lara_dummy_ = TernaryJp._JP_TYPES.add('ternary');
-_lara_dummy_ = TernaryJp._JP_TYPES.add('stmt');
+_lara_dummy_ = TernaryJp._JP_TYPES.add('expr');
 _lara_dummy_ = TernaryJp._JP_TYPES.add('joinpoint');
 
 
@@ -29,7 +29,7 @@ TernaryJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
 	*/
 }
 

@@ -72,7 +72,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -96,6 +96,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -103,7 +107,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -134,7 +138,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -289,7 +293,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -313,6 +317,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -320,7 +328,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -351,7 +359,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -506,7 +514,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -530,6 +538,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -537,7 +549,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -568,7 +580,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -741,7 +753,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -765,6 +777,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -772,7 +788,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -803,7 +819,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -958,7 +974,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -982,6 +998,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -989,7 +1009,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -1020,7 +1040,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -1175,7 +1195,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -1199,6 +1219,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -1206,7 +1230,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -1237,7 +1261,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -1482,7 +1506,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -1506,6 +1530,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -1513,7 +1541,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -1544,7 +1572,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -1794,7 +1822,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -1818,6 +1846,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -1825,7 +1857,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -1856,7 +1888,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -2056,7 +2088,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -2080,6 +2112,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -2087,7 +2123,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -2118,7 +2154,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -2273,7 +2309,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -2297,6 +2333,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -2304,7 +2344,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -2335,7 +2375,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -2423,7 +2463,7 @@
       {
          "type": "joinpoint",
          "name": "decl",
-         "extends": "joinpoint"      ,
+         "extends": "stmt"      ,
          "children": [
                {
                   "type": "attribute",
@@ -2490,7 +2530,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -2514,6 +2554,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -2521,7 +2565,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -2552,7 +2596,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -2707,7 +2751,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -2731,6 +2775,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -2738,7 +2786,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -2769,7 +2817,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -2933,7 +2981,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -2957,6 +3005,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -2964,7 +3016,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -2995,7 +3047,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -3150,7 +3202,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -3174,6 +3226,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -3181,7 +3237,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -3212,7 +3268,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -3420,7 +3476,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -3444,6 +3500,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -3451,7 +3511,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -3482,7 +3542,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -3570,7 +3630,7 @@
       {
          "type": "joinpoint",
          "name": "fieldRef",
-         "extends": "expr"      ,
+         "extends": "varRef"      ,
          "children": [
                {
                   "type": "attribute",
@@ -3593,6 +3653,24 @@
                {
                   "type": "attribute",
                   "tooltip": "The name of the field referenced.",
+                  "children": [
+                           {
+                              "type": "String",
+                              "name": "name"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The declaration of the variable.",
+                  "children": [
+                           {
+                              "type": "varDecl",
+                              "name": "decl"
+                           }]
+               },
+               {
+                  "type": "attribute",
+                  "tooltip": "The name of the variable referenced.",
                   "children": [
                            {
                               "type": "String",
@@ -3664,7 +3742,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -3688,6 +3766,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -3695,7 +3777,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -3726,7 +3808,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -3899,7 +3981,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -3923,6 +4005,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -3930,7 +4016,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -3961,7 +4047,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -4175,7 +4261,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -4199,6 +4285,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -4206,7 +4296,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -4237,7 +4327,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -4392,7 +4482,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -4416,6 +4506,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -4423,7 +4517,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -4454,7 +4548,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -4654,7 +4748,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -4678,6 +4772,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -4685,7 +4783,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -4716,7 +4814,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -4871,7 +4969,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -4895,6 +4993,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -4902,7 +5004,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -4933,7 +5035,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -5106,7 +5208,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -5130,6 +5232,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -5137,7 +5243,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -5168,7 +5274,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -5359,7 +5465,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -5383,6 +5489,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -5390,7 +5500,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -5421,7 +5531,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -5662,7 +5772,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -5686,6 +5796,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -5693,7 +5807,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -5724,7 +5838,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -5906,7 +6020,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -5930,6 +6044,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -5937,7 +6055,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -5968,7 +6086,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -6123,7 +6241,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -6147,6 +6265,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -6154,7 +6276,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -6185,7 +6307,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -6340,7 +6462,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -6364,6 +6486,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -6371,7 +6497,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -6402,7 +6528,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -6557,7 +6683,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -6581,6 +6707,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -6588,7 +6718,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -6619,7 +6749,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -6707,7 +6837,7 @@
       {
          "type": "joinpoint",
          "name": "ternary",
-         "extends": "stmt"      ,
+         "extends": "expr"      ,
          "children": [
                {
                   "type": "attribute",
@@ -6774,7 +6904,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -6798,6 +6928,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -6805,7 +6939,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -6836,7 +6970,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -6991,7 +7125,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -7015,6 +7149,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -7022,7 +7160,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -7053,7 +7191,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -7208,7 +7346,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -7232,6 +7370,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -7239,7 +7381,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -7270,7 +7412,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -7425,7 +7567,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -7449,6 +7591,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -7456,7 +7602,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -7487,7 +7633,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -7674,7 +7820,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -7698,6 +7844,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -7705,7 +7855,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -7736,7 +7886,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -7909,7 +8059,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -7933,6 +8083,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -7940,7 +8094,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -7971,7 +8125,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },
@@ -8144,7 +8298,7 @@
                   "tooltip": "The ending line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "endLine"
                            }]
                },
@@ -8168,6 +8322,10 @@
                            {
                               "type": "boolean",
                               "name": "hasAncestor"
+                           },
+                           {
+                              "type": "boolean",
+                              "name": "joinPointType"
                            }]
                },
                {
@@ -8175,7 +8333,7 @@
                   "tooltip": "Returns an array with the descendants of the joinpoint.",
                   "children": [
                            {
-                              "type": "joinpoint[]",
+                              "type": "boolean",
                               "name": "hasChildren"
                            }]
                },
@@ -8206,7 +8364,7 @@
                   "tooltip": "The starting line of the current node in the original code.",
                   "children": [
                            {
-                              "type": "String",
+                              "type": "Integer",
                               "name": "line"
                            }]
                },

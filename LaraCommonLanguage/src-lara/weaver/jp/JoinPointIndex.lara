@@ -1,6 +1,7 @@
 import weaver.jp.JoinPoint;
 import weaver.jp.ProgramJp;
 import weaver.jp.FileJp;
+import weaver.jp.StmtJp;
 import weaver.jp.DeclJp;
 import weaver.jp.ClassJp;
 import weaver.jp.FunctionJp;
@@ -11,12 +12,11 @@ import weaver.jp.ExprJp;
 import weaver.jp.CallJp;
 import weaver.jp.MemberCallJp;
 import weaver.jp.ConstructorCallJp;
-import weaver.jp.FieldRefJp;
 import weaver.jp.VarRefJp;
+import weaver.jp.FieldRefJp;
 import weaver.jp.VarDeclJp;
 import weaver.jp.ParamJp;
 import weaver.jp.TypeJp;
-import weaver.jp.StmtJp;
 import weaver.jp.IfJp;
 import weaver.jp.SwitchJp;
 import weaver.jp.CaseJp;
@@ -39,6 +39,7 @@ var classesMapping = {
 	'JoinPoint':JoinPoint,
 	'ProgramJp': ProgramJp,
 	'FileJp': FileJp,
+	'StmtJp': StmtJp,
 	'DeclJp': DeclJp,
 	'ClassJp': ClassJp,
 	'FunctionJp': FunctionJp,
@@ -49,12 +50,11 @@ var classesMapping = {
 	'CallJp': CallJp,
 	'MemberCallJp': MemberCallJp,
 	'ConstructorCallJp': ConstructorCallJp,
-	'FieldRefJp': FieldRefJp,
 	'VarRefJp': VarRefJp,
+	'FieldRefJp': FieldRefJp,
 	'VarDeclJp': VarDeclJp,
 	'ParamJp': ParamJp,
 	'TypeJp': TypeJp,
-	'StmtJp': StmtJp,
 	'IfJp': IfJp,
 	'SwitchJp': SwitchJp,
 	'CaseJp': CaseJp,

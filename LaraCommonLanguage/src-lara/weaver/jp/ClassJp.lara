@@ -18,6 +18,7 @@ ClassJp.prototype.constructor = ClassJp;
 ClassJp._JP_TYPES = new Set();
 _lara_dummy_ = ClassJp._JP_TYPES.add('class');
 _lara_dummy_ = ClassJp._JP_TYPES.add('decl');
+_lara_dummy_ = ClassJp._JP_TYPES.add('stmt');
 _lara_dummy_ = ClassJp._JP_TYPES.add('joinpoint');
 
 

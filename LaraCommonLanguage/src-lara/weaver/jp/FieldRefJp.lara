@@ -1,4 +1,4 @@
-import weaver.jp.ExprJp;
+import weaver.jp.VarRefJp;
 
 /**
  * 
@@ -7,16 +7,17 @@ import weaver.jp.ExprJp;
  */
 function FieldRefJp(astNode) {
     // Parent constructor
-    ExprJp.call(this,astNode);
+    VarRefJp.call(this,astNode);
     
 }
 // Inheritance
-FieldRefJp.prototype = Object.create(ExprJp.prototype);
+FieldRefJp.prototype = Object.create(VarRefJp.prototype);
 FieldRefJp.prototype.constructor = FieldRefJp;
 
 // JoinPoint Types
 FieldRefJp._JP_TYPES = new Set();
 _lara_dummy_ = FieldRefJp._JP_TYPES.add('fieldRef');
+_lara_dummy_ = FieldRefJp._JP_TYPES.add('varRef');
 _lara_dummy_ = FieldRefJp._JP_TYPES.add('expr');
 _lara_dummy_ = FieldRefJp._JP_TYPES.add('joinpoint');
 
@@ -29,7 +30,7 @@ FieldRefJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	return (new VarRefJp(this.astNode)).instanceOf(joinPointType);
 	*/
 }
 
@@ -44,11 +45,6 @@ FieldRefJp.prototype.types = function(joinPointType) {
 _lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'joinPointType', {
 	configurable: true,
 	get: function () { return 'fieldRef'; }
-});
-
-_lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'name', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.name not implemented'; }
 });
 
 _lara_dummy_ = Object.defineProperty(FieldRefJp.prototype, 'field', {

@@ -20,6 +20,7 @@ _lara_dummy_ = ConstructorJp._JP_TYPES.add('constructor');
 _lara_dummy_ = ConstructorJp._JP_TYPES.add('method');
 _lara_dummy_ = ConstructorJp._JP_TYPES.add('function');
 _lara_dummy_ = ConstructorJp._JP_TYPES.add('decl');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('stmt');
 _lara_dummy_ = ConstructorJp._JP_TYPES.add('joinpoint');
 
 

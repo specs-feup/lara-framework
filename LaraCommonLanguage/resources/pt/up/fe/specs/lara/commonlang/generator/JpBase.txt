@@ -46,7 +46,7 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'parent', {
 	}
 });
 
-_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, '_children', {
 	configurable: true,
 	get: function () {
 		//return (new JoinPoints()).getChildren(this); 
@@ -54,7 +54,14 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
 	}
 });
 
-_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
+	configurable: true,
+	get: function () {
+		return this._children;
+	}
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, '_descendants', {
 	configurable: true,
 	get: function () {
 		return JoinPoints.getInstance().getDescendants(this);
@@ -75,6 +82,13 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
 /*	    
 		return accum;
 */		
+	}
+});
+
+_lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'descendants', {
+	configurable: true,
+	get: function () {
+		return this._descendants;
 	}
 });
 

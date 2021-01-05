@@ -19,6 +19,7 @@ ParamJp._JP_TYPES = new Set();
 _lara_dummy_ = ParamJp._JP_TYPES.add('param');
 _lara_dummy_ = ParamJp._JP_TYPES.add('varDecl');
 _lara_dummy_ = ParamJp._JP_TYPES.add('decl');
+_lara_dummy_ = ParamJp._JP_TYPES.add('stmt');
 _lara_dummy_ = ParamJp._JP_TYPES.add('joinpoint');
 
 

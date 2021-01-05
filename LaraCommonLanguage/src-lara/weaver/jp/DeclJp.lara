@@ -1,4 +1,4 @@
-import weaver.jp.JoinPoint;
+import weaver.jp.StmtJp;
 
 /**
  * 
@@ -7,16 +7,17 @@ import weaver.jp.JoinPoint;
  */
 function DeclJp(astNode) {
     // Parent constructor
-    JoinPoint.call(this,astNode);
+    StmtJp.call(this,astNode);
     
 }
 // Inheritance
-DeclJp.prototype = Object.create(JoinPoint.prototype);
+DeclJp.prototype = Object.create(StmtJp.prototype);
 DeclJp.prototype.constructor = DeclJp;
 
 // JoinPoint Types
 DeclJp._JP_TYPES = new Set();
 _lara_dummy_ = DeclJp._JP_TYPES.add('decl');
+_lara_dummy_ = DeclJp._JP_TYPES.add('stmt');
 _lara_dummy_ = DeclJp._JP_TYPES.add('joinpoint');
 
 
@@ -28,7 +29,7 @@ DeclJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
 	*/
 }
 
