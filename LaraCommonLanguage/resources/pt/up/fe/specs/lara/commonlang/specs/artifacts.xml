@@ -3,8 +3,8 @@
 
 	<!-- Attributes for all join points -->
 	<global>
-		<attribute name="line" type="string" tooltip="The starting line of the current node in the original code."/>
-		<attribute name="endLine" type="string" tooltip="The ending line of the current node in the original code."/>
+		<attribute name="line" type="integer" tooltip="The starting line of the current node in the original code."/>
+		<attribute name="endLine" type="integer" tooltip="The ending line of the current node in the original code."/>
 		<attribute name="code" type="string" tooltip="The source code corresponding to this join point."/>		
 		<attribute name="joinPointType" type="string" tooltip="A string with the type of the join point."/>	
 		<attribute name="instanceOf" type="boolean" tooltip="True if the current join point is an instance of the given type.">
@@ -19,9 +19,11 @@
 		<attribute name="parent" type="joinpoint" tooltip="Returns the parent joinpoint in the AST."/>	
 		<attribute name="children" type="joinpoint[]" tooltip="Returns an array with the children of the joinpoint."/>
 		<attribute name="descendants" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
-		<attribute name="hasChildren" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
+		<attribute name="hasChildren" type="boolean" tooltip="Returns an array with the descendants of the joinpoint."/>
 		<attribute name="astId" type="string" tooltip="The ID of the node in the AST."/>
-		<attribute name="hasAncestor" type="boolean" tooltip="Check if joinpoint has ancestor of type."/>
+		<attribute name="hasAncestor" type="boolean" tooltip="Check if joinpoint has ancestor of type.">
+			<parameter name="joinPointType" type="boolean" />
+		</attribute>
 		
 		
 

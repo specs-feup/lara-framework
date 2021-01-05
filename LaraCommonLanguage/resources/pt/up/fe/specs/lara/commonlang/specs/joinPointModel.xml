@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <joinpoints  root_class="program">
-
 	<joinpoint class="program"/>	
 	<joinpoint class="file"/>
-	<joinpoint class="decl"/>
+	<joinpoint class="stmt"/>
+	<joinpoint class="decl" extends="stmt"/>
 	<joinpoint class="class" extends="decl"/>
 	<joinpoint class="function" extends="decl"/>
 	<joinpoint class="method" extends="function"/>
@@ -12,18 +12,17 @@
 	<joinpoint class="expr"/>
 	<joinpoint class="call" extends="expr"/>
 	<joinpoint class="memberCall" extends="call"/>
-	<joinpoint class="constructorCall" extends="memberCall"/>	
-	<joinpoint class="fieldRef" extends="expr"/>
-	<joinpoint class="varRef" extends="expr"/>	
+	<joinpoint class="constructorCall" extends="memberCall"/>
+	<joinpoint class="varRef" extends="expr"/>		
+	<joinpoint class="fieldRef" extends="varRef"/>
 	<joinpoint class="varDecl" extends="decl"/>
 	<joinpoint class="param" extends="varDecl"/>
 	<joinpoint class="type"/>
-	<joinpoint class="stmt"/>
 	<joinpoint class="if" extends="stmt"/>
 	<joinpoint class="switch" extends="stmt"/>
 	<joinpoint class="case" extends="stmt"/>
 	<joinpoint class="loop" extends="stmt"/>
-	<joinpoint class="ternary" extends="stmt"/>
+	<joinpoint class="ternary" extends="expr"/>
 	<joinpoint class="binary" extends="expr"/>	
 	<joinpoint class="try" extends="stmt"/>
 	<joinpoint class="catch" extends="stmt"/>
