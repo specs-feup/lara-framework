@@ -66,3 +66,12 @@ Ast.getDescendants = function(astNode, accum) {
 Ast.getChild = function(astNode, index) {
 	return Ast.getChildren[index];
 }
+
+/**
+ * Converts the given AST node to the native join point supported by the current LARA compiler.
+ *
+ * @return {$jp} a native join point, as opposed to the join point of the current language specification.
+ */
+Ast.toWeaverJoinPoint = function(astNode) {
+	return Weaver.AST_METHODS.toJavaJoinPoint(astNode);
+}

@@ -127,3 +127,9 @@ Weaver.toJs = function(javaObject) {
 	return Weaver.getWeaverEngine().getScriptEngine().toJs(javaObject);
 }
 
+/**
+ * @return {String} the name of the currently executing LARA compiler.
+ */
+Weaver.getName = function() {
+	return Weaver.getWeaverEngine().getName();
+}
