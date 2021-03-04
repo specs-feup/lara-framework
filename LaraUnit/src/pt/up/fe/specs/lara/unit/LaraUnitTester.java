@@ -68,7 +68,7 @@ public class LaraUnitTester {
         // Get test files
         List<File> testFiles = SpecsIo.getFilesRecursive(testFolder, "lara");
 
-        LaraArgs globalArguments = new LaraArgs(baseFolder);
+        LaraArgs globalArguments = new LaraArgs(weaverEngine, baseFolder);
         globalArguments.addGlobalArgs(testFolder);
 
         try (LaraUnitHarnessBuilder laraUnitHarness = new LaraUnitHarnessBuilder(weaverEngine, baseFolder,

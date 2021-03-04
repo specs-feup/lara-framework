@@ -177,6 +177,7 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
     }
 
     private List<String> buildFileArgs(File testFile) {
+
         // Copy base args file
         LaraArgs testArgs = globalArguments.copy();
 

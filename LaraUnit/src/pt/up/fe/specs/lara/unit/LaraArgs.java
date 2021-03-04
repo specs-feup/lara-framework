@@ -17,6 +17,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.parsing.arguments.ArgumentsParser;
@@ -45,14 +48,16 @@ public class LaraArgs {
         return SpecsIo.removeExtension(testFile.getName()) + "." + ARGS_EXTENSION;
     }
 
+    private final WeaverEngine weaverEngine;
     private final File baseFolder;
     private final List<String> currentArgs;
 
-    public LaraArgs(File baseFolder) {
-        this(baseFolder, new ArrayList<>());
+    public LaraArgs(WeaverEngine weaverEngine, File baseFolder) {
+        this(weaverEngine, baseFolder, new ArrayList<>());
     }
 
-    private LaraArgs(File baseFolder, List<String> currentArgs) {
+    private LaraArgs(WeaverEngine weaverEngine, File baseFolder, List<String> currentArgs) {
+        this.weaverEngine = weaverEngine;
         this.baseFolder = baseFolder;
         this.currentArgs = currentArgs;
 
@@ -72,12 +77,14 @@ public class LaraArgs {
     }
 
     public LaraArgs copy() {
-        return new LaraArgs(baseFolder, new ArrayList<>(currentArgs));
+        return new LaraArgs(weaverEngine, baseFolder, new ArrayList<>(currentArgs));
     }
 
     public void addArgs(File argsFile) {
 
         ArgumentsParser parser = ArgumentsParser.newCommandLine();
+
+        boolean ignoreArgs = false;
 
         for (String line : StringLines.getLines(argsFile)) {
             String trimmedLine = line.trim();
@@ -89,6 +96,34 @@ public class LaraArgs {
 
             // Ignore comments
             if (line.startsWith(ARGS_COMMENT)) {
+                continue;
+            }
+
+            // Check if weaver section start
+            if (line.startsWith("Weaver ")) {
+                // Check if section should be used by current weaver
+                var weaverName = line.substring("Weaver ".length()).trim();
+                var isValidSection = weaverEngine.getName().equals(weaverName);
+                var message = isValidSection ? "it will be used" : "it will be ignored";
+                LaraLog.debug(
+                        "Found " + weaverName + " specific section during parsing of " + argsFile + ", " + message);
+
+                ignoreArgs = !isValidSection;
+                continue;
+            }
+
+            // Check if section end
+            if (line.equals("end")) {
+                // If currently in an ignore state, re-enable
+                if (ignoreArgs == true) {
+                    ignoreArgs = false;
+                    LaraLog.debug("Reenable parsing of arguments");
+                }
+                continue;
+            }
+
+            // If in an section for other weaver, ignore
+            if (ignoreArgs) {
                 continue;
             }
 
