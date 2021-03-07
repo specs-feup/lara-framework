@@ -1,0 +1,57 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Number of Lines
+ * @constructor
+ */
+function NOL() {
+	var id = "OO-NOL";
+	var name = "Number of Lines";
+	var sigla = "NOL";
+	var author = "";
+	var year = "";
+	var description = "Number of Lines.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+
+}
+
+// Inheritance
+NOL.prototype = Object.create(Metric.prototype);
+
+NOL.prototype.calculateForProject = function() {
+	var value = 0;
+	for ($file of  Query.search("file"))
+		value += this.calculateForFile($file);
+	return value;
+}
+
+NOL.prototype.calculateForFunction = function($function) {
+	return this.calculateForJoinPoint($function);
+}
+
+NOL.prototype.calculateForFile = function($file) {
+	// Add 1 more for the last empty line
+	return this.calculateForJoinPoint($file) + 1;
+}
+
+NOL.prototype.calculateForClass = function($class) {
+	var nol = this.calculateForJoinPoint($class);
+
+	for ($method of $class.allMethods){
+		
+		// if method not inside class
+		if($method.ancestor("class") === undefined)
+		{
+			nol+=this.calculateForJoinPoint($method);
+		}	
+		
+
+	}
+	return nol;
+}
+
+NOL.prototype.calculateForJoinPoint = function($jp) {
+	return $jp.endLine-$jp.line+1;
+}

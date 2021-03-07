@@ -1,0 +1,33 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Number of Classes
+ * @constructor
+ */
+function NOCl() {
+	var id = "OO-NOCl";
+	var name = "Number of Classes";
+	var sigla = "NOCl";
+	var author = "";
+	var year = "";
+	var description = "Number of Classes.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+
+}
+
+// Inheritance
+NOCl.prototype = Object.create(Metric.prototype);
+
+NOCl.prototype.calculateForProject = function($file) {
+	return Query.search("class").get().length;
+}
+
+NOCl.prototype.calculateForFile = function($file) {
+	return this.calculateForJoinPoint($file);
+}
+
+NOCl.prototype.calculateForJoinPoint = function($jp) {
+	return Query.searchFrom($jp, "class").get().length;
+}

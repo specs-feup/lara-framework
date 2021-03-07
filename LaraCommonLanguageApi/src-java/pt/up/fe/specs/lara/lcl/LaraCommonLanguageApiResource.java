@@ -22,10 +22,23 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
 
     // Lara Common Language
-    LARA_COMMON_LANGUAGE("LaraCommonLanguage.lara")
-
+    LARA_COMMON_LANGUAGE("LaraCommonLanguage.lara"),
+    
     // Metrics
-    ;
+    METRIC("metrics/Metric.lara"),
+    METRICS("metrics/Metrics.lara"),
+    
+    //Other Metrics
+    COGNI_COMPLEX("metrics/om/CogniComplex.lara"),
+    CYCLO_COMPLEX("metrics/om/CycloComplex.lara"),
+    LOC("metrics/om/LOC.lara"),
+    NOCL("metrics/om/NOCl.lara"),
+    NOFI("metrics/om/NOFi.lara"),
+    NOFU("metrics/om/NOFu.lara"),
+    NOL("metrics/om/NOL.lara"),
+    OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara");
+
+
 
     private final String resource;
 
