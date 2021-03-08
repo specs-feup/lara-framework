@@ -28,6 +28,24 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     METRIC("metrics/Metric.lara"),
     METRICS("metrics/Metrics.lara"),
     
+    //CK Metrics
+    CBO("metrics/ck/CBO.lara"),
+    DIT("metrics/ck/DIT.lara"),
+    LCOM("metrics/ck/LCOM.lara"),
+    NOC("metrics/ck/NOC.lara"),
+    RFC("metrics/ck/RFC.lara"),
+    WMC("metrics/ck/WMC.lara"),
+    CK_METRICS_INDEX("metrics/ck/CKMetricsIndex.lara"),
+    
+    
+    //LH Metrics
+    DAC("metrics/lh/DAC.lara"),
+    MPC("metrics/lh/MPC.lara"),
+    NOM("metrics/lh/NOM.lara"),
+    SIZE1("metrics/lh/SIZE1.lara"),
+    SIZE2("metrics/lh/SIZE2.lara"),
+    LH_METRICS_INDEX("metrics/lh/LHMetricsIndex.lara"),
+    
     //Other Metrics
     COGNI_COMPLEX("metrics/om/CogniComplex.lara"),
     CYCLO_COMPLEX("metrics/om/CycloComplex.lara"),

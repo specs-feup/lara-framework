@@ -1,0 +1,32 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Depth of Inheritance Tree
+ * @constructor
+ */
+function DIT() {
+	var id = "CK-DIT";
+	var name = "Depth of Inheritance Tree";
+	var sigla = "DIT";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Depth of Inheritance Tree (DIT) measures the maximum inheritance path from the class to the root class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+DIT.prototype = Object.create(Metric.prototype);
+
+// Override
+DIT.prototype.calculateForClass = function($class) {
+
+	var depth = 0;
+
+	for($classSuper of $class.superClasses){
+		depthSuperClass = this.calculateForClass($classSuper) + 1;
+		depth =  Math.max(depthSuperClass,depth);
+	}
+	return depth;
+}

@@ -1,0 +1,30 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Weighted Methods per Class
+ * @constructor
+ */
+function WMC() {
+	var id = "CK-WMC";
+	var name = "Weighted Methods per Class";
+	var sigla = "WMC";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Weighted Methods per Class (WMC) sums all the complexities of the methods in the class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+WMC.prototype = Object.create(Metric.prototype);
+
+
+// Override
+WMC.prototype.calculateForClass = function($class) {
+	var methodsComplexity = $class.allMethods.map($method=>(new CycloComplex()).calculateForFunction($method));
+
+	if(methodsComplexity.length!==0)
+		return methodsComplexity.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+	return 0;
+}

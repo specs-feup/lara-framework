@@ -1,3 +1,5 @@
+import lcl.LaraCommonLanguage;
+
 /**
  * Reprents a metric we want to extract.
  * @constructor
@@ -77,4 +79,3 @@ Metric.prototype.calculateForClass = function($class) {
 	throw new Error('Calculation not implemented');
 }
 */
-
