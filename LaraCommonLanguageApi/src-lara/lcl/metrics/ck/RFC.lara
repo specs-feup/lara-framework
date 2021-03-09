@@ -33,12 +33,10 @@ RFC.prototype.calculateForClass = function($class) {
 		methodsIds.add($method.id);
 		
 		// Get super calls
-		/*
 		if($method.instanceOf('constructor')){
 			for(constructorCall of $method.superCalls)
 				methodsIds.add(constructorCall.constructor.id);
 		}
-		*/
 		
 		for($memberCall of Query.searchFrom($method,"memberCall")){			
 			if($memberCall.method !== null && $memberCall.method.isCustom){
