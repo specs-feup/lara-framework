@@ -31,7 +31,7 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     //CK Metrics
     CBO("metrics/ck/CBO.lara"),
     DIT("metrics/ck/DIT.lara"),
-    LCOM("metrics/ck/LCOM.lara"),
+    LCOM94("metrics/ck/LCOM94.lara"),
     NOC("metrics/ck/NOC.lara"),
     RFC("metrics/ck/RFC.lara"),
     WMC("metrics/ck/WMC.lara"),
