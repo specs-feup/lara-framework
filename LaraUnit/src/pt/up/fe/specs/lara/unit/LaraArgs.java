@@ -34,6 +34,9 @@ public class LaraArgs {
     private static final String BASE_MACRO = "$BASE";
     private static final String SEPARATOR_MACRO = "$SEP";
 
+    private static final String IGNORE_DIRECTIVE = "Ignore";
+    private static final String IGNORE_ARG = "$IGNORE_TEST";
+
     private int includeIndex;
 
     public static String getArgsExtension() {
@@ -76,6 +79,10 @@ public class LaraArgs {
         return -1;
     }
 
+    public static String getIgnoreArg() {
+        return IGNORE_ARG;
+    }
+
     public LaraArgs copy() {
         return new LaraArgs(weaverEngine, baseFolder, new ArrayList<>(currentArgs));
     }
@@ -87,22 +94,29 @@ public class LaraArgs {
         boolean ignoreArgs = false;
 
         for (String line : StringLines.getLines(argsFile)) {
+
             String trimmedLine = line.trim();
 
             // Ignore empty lines
-            if (line.isEmpty()) {
+            if (trimmedLine.isEmpty()) {
                 continue;
             }
 
             // Ignore comments
-            if (line.startsWith(ARGS_COMMENT)) {
+            if (trimmedLine.startsWith(ARGS_COMMENT)) {
+                continue;
+            }
+
+            // Check if Ignore directive
+            if (trimmedLine.equals(IGNORE_DIRECTIVE)) {
+                addArg(IGNORE_ARG);
                 continue;
             }
 
             // Check if weaver section start
-            if (line.startsWith("Weaver ")) {
+            if (trimmedLine.startsWith("Weaver ")) {
                 // Check if section should be used by current weaver
-                var weaverName = line.substring("Weaver ".length()).trim();
+                var weaverName = trimmedLine.substring("Weaver ".length()).trim();
                 var isValidSection = weaverEngine.getName().equals(weaverName);
                 var message = isValidSection ? "it will be used" : "it will be ignored";
                 LaraLog.debug(
@@ -113,7 +127,7 @@ public class LaraArgs {
             }
 
             // Check if section end
-            if (line.equals("end")) {
+            if (trimmedLine.equals("end")) {
                 // If currently in an ignore state, re-enable
                 if (ignoreArgs == true) {
                     ignoreArgs = false;

@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.unit;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,13 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         LaraDocModule module = getModule(testFile);
 
         String importPath = module.getImportPath();
+
+        // Check if test should be ignore
+        if (ignoreTest(testFileArgs)) {
+            SpecsLogs.info("Found 'Ignore' directive for test file '" + testFile + "', ignoring");
+            return Arrays.asList(TestResult.success(importPath, testFile.getName(), 0));
+        }
+
         List<AspectIrElement> elements = module.getDocumentation().getTopLevelElements().stream()
                 // Only aspects and functions
                 .filter(element -> element instanceof AspectElement || element instanceof FunctionDeclElement)
@@ -83,6 +91,13 @@ public class LaraUnitHarnessBuilder implements AutoCloseable {
         }
 
         return testResults;
+    }
+
+    private boolean ignoreTest(List<String> testFileArgs) {
+        return testFileArgs.stream()
+                .filter(arg -> arg.equals(LaraArgs.getIgnoreArg()))
+                .findFirst()
+                .isPresent();
     }
 
     private TestResult testElement(AspectIrElement element, List<String> testFileArgs, String importPath) {
