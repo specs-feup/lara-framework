@@ -413,7 +413,7 @@ function laraGetter(object, property) {
 		// JS object
 		return value;
     }
-
+    
 	return value;
 }
 
@@ -426,6 +426,9 @@ function exit() {
 	throw "function 'exit()' has been deprecated. Please use another way of stoping the script (e.g., by returning)";
 }
 
+/**
+ * @return an array with the keys of an object
+ */
 function getKeys(object) {
 	var keys = [];
 	
@@ -434,4 +437,17 @@ function getKeys(object) {
 	}
 	
 	return keys;
+}
+
+/**
+ * @return an array with the values of an object
+ */
+function getValues(object) {
+	var values = [];
+	
+	for(var key in object) {
+		values.push(object[key]);
+	}
+	
+	return values;
 }
