@@ -61,7 +61,7 @@ public abstract class WeaverProfiler extends AGear {
 
     private WeavingReport report = new WeavingReport();
 
-    protected WeavingReport getReport() {
+    public WeavingReport getReport() {
         return report;
     }
 
