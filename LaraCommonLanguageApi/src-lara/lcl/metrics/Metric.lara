@@ -3,8 +3,9 @@ import lcl.LaraCommonLanguage;
 /**
  * Reprents a metric we want to extract.
  * @constructor
+ * @param {string} id - Unique id for the metric
  * @param {string} name - The name of the metric
- * @param {string} name - The sigla of the metric
+ * @param {string} sigla - The sigla of the metric
  * @param {string} author - The author of the metric
  * @param {number} year - The year in which the metric was purposed
  * @param {string} description - The name of the metric
