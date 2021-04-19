@@ -295,6 +295,15 @@ public class LaraIKeyFactory {
             return args;
         }
 
+        // Check if args is an existing JSON file
+        if (!trimmedArgs.startsWith("{")) {
+            var jsonFile = new File(trimmedArgs);
+            if (jsonFile.isFile() && SpecsIo.getExtension(jsonFile).equals("json")) {
+                return SpecsIo.read(jsonFile);
+            }
+        }
+
+        // Fix curly braces
         if (!trimmedArgs.startsWith("{")) {
             finalArgs = "{" + finalArgs;
         }
