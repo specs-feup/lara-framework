@@ -309,6 +309,7 @@ public class LaraIDataStore implements LaraiKeys {
 
     public String getAspectArgumentsStr() {
         if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
+
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
 
             // Parse aspect args (e.g., in case it is a file)

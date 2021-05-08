@@ -21,6 +21,13 @@ JavaInterop.arrayToList = function (array) {
 };
 
 /**
+ * 		Converts a JS array into a java.util.List where all objects are Strings.
+ **/
+JavaInterop.arrayToStringList = function (array) {
+	return JavaInterop.arrayToList(array.map(value => value.toString()));
+}
+
+/**
  * @param {object} value - value to test
  * @param {String} classname - the full qualified name of the Java class of the value 
  */
