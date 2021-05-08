@@ -32,14 +32,13 @@ Li and Henry Metrics are a set of 5 metrics to evaluate the maintainability of O
 
 * **Message Passing Coupling (MPC)** counts the number of send statements, i.e., the number of function calls. So we searched the descendants of each function for calls to other methods and returned the number of distinct calls.
 
-* **Data Abstraction Coupling (DAC)** counts the number of attributes that use another class as their type. For each field, it was taken into consideration not only the base type but also all inner types, e.g., a field of the type `Pair<String,Integer>` uses the types `Pair, `String` and `Integer`.
-
+* **Data Abstraction Coupling (DAC)** counts the number of attributes that use another class as their type. For each field, it was taken into consideration not only the base type but also all inner types, e.g., a field of the type `Pair<String,Integer>` uses the types `Pair`, `String` and `Integer`.
 
 ## Complexity Metrics
 
 The complexity metrics that we implemented were the cyclomatic and cognitive complexity. The former measures how difficult it is to test a code unit. The latter measures how difficult it is to read and understand the code. Both of these metrics can be calculated for the entire project, a file, a class, or a function.
 
-* **Cognitive Complexity (CogniComplex)** measure the relative understandability of methods. There are three types of increments: general increments that simply increase the complexity by 1; nesting level increments that, as the name implies, increments the nesting level but does not increase the overall complexity; and the nesting increments which increase the overall complexity by the current nesting level. 
+* **Cognitive Complexity (CogniComplex)** measures the relative understandability of methods. There are three types of increments: general increments that simply increase the complexity by 1; nesting level increments that, as the name implies, increments the nesting level but does not increase the overall complexity; and the nesting increments which increase the overall complexity by the current nesting level. 
 
 * **Cyclomatic complexity (CycloComplex)** measures the number of linearly independent paths through a program's source code.
 
