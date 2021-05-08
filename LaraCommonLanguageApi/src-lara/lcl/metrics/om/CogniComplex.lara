@@ -10,7 +10,7 @@ function CogniComplex() {
 	var sigla = "CogniComplex";
 	var author = "G. Ann Campbell";
 	var year = 2018;
-	var description = "CogniComplex (CC) measure the relative understandability of methods.";
+	var description = "CogniComplex (CoC) measure the relative understandability of methods.";
 
     // Parent constructor    
     Metric.call(this, id, name, sigla, author, year, description);
