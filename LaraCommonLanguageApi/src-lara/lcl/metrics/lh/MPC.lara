@@ -10,7 +10,7 @@ function MPC() {
 	var sigla = "MPC";
 	var author = "Li and Henry";
 	var year = 1993;
-	var description = "Message Passing Coupling (MPC) ounts the number of send statements defined in a class.";
+	var description = "Message Passing Coupling (MPC) counts the number of send statements defined in a class.";
 
     // Parent constructor    
     Metric.call(this, id, name, sigla, author, year, description);

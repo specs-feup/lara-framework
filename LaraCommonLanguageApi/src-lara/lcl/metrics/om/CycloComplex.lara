@@ -10,7 +10,7 @@ function CycloComplex() {
 	var sigla = "CycloComplex";
 	var author = "Thomas J. McCabe";
 	var year = 1976;
-	var description = "Cyclomatic complexity (CC) measures the number of linearly independent paths through a program's source code.";
+	var description = "Cyclomatic complexity (CyC) measures the number of linearly independent paths through a program's source code.";
 
     // Parent constructor    
     Metric.call(this, id, name, sigla, author, year, description);
