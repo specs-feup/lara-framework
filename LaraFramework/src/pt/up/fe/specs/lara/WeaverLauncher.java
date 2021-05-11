@@ -13,9 +13,17 @@
 
 package pt.up.fe.specs.lara;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
@@ -26,6 +34,7 @@ import pt.up.fe.specs.lara.doc.LaraDocLauncher;
 import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsSystem;
 
 /**
  * Utility methods what weavers can use to bootstrap execution.
@@ -142,6 +151,160 @@ public class WeaverLauncher {
         int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
 
         return Optional.of(docResults != -1);
+    }
+
+    public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand) {
+        return executeParallel(args, threads, weaverCommand, SpecsIo.getWorkingDir().getAbsolutePath());
+    }
+
+    /**
+     * 
+     * @param args
+     * @param threads
+     * @param weaverCommand
+     * @param workingDir
+     * @return an array with the same size as the number if args, with strings representing JSON objects that represent
+     *         the outputs of the execution. The order of the results is the same as the args
+     */
+    public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand, String workingDir) {
+
+        var workingFolder = SpecsIo.sanitizeWorkingDir(workingDir);
+
+        var customThreadPool = threads > 0 ? new ForkJoinPool(threads) : new ForkJoinPool();
+
+        // Choose executor
+        Function<String[], Boolean> clavaExecutor = weaverCommand.isEmpty() ? this::executeSafe
+                : weaverArgs -> this.executeOtherJvm(weaverArgs, weaverCommand, workingFolder);
+
+        SpecsLogs.info("Launching " + args.length + " instances of weaver " + engine.getName()
+                + " in parallel, using a parallelism level of "
+                + threads);
+
+        if (!weaverCommand.isEmpty()) {
+            SpecsLogs.info("Each weaver instance will run on a separate process, using the command " + weaverCommand);
+        }
+
+        // Create paths for the results
+        List<File> resultFiles = new ArrayList<>();
+        var resultsFolder = SpecsIo.getTempFolder("weaver_parallel_results_" + UUID.randomUUID());
+        SpecsLogs.debug(() -> "Create temporary folder for storing results of weaver parallel execution: "
+                + resultsFolder.getAbsolutePath());
+
+        for (int i = 0; i < args.length; i++) {
+            resultFiles.add(new File(resultsFolder, "weaver_parallel_result_" + i + ".json"));
+        }
+
+        try {
+
+            // Adapt the args so that each execution produces a result file
+            String[][] adaptedArgs = new String[args.length][];
+            for (int i = 0; i < args.length; i++) {
+                var newArgs = Arrays.copyOf(args[i], args[i].length + 2);
+                newArgs[newArgs.length - 2] = "-r";
+                newArgs[newArgs.length - 1] = resultFiles.get(i).getAbsolutePath();
+                adaptedArgs[i] = newArgs;
+            }
+
+            // var results =
+            customThreadPool.submit(() -> Arrays.asList(adaptedArgs).parallelStream()
+                    .map(clavaExecutor)
+                    .collect(Collectors.toList())).get();
+
+            // Find the file for each execution
+            return collectResults(resultFiles);
+
+            // return results.stream()
+            // .filter(result -> result == false)
+            // .findFirst()
+            // .orElse(true);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return collectResults(resultFiles);
+        } catch (ExecutionException e) {
+            SpecsLogs.info("Unrecoverable exception while executing parallel instances of weaver " + engine.getName()
+                    + ": " + e);
+            return collectResults(resultFiles);
+        } finally {
+            SpecsIo.deleteFolder(resultsFolder);
+        }
+
+    }
+
+    private String[] collectResults(List<File> resultFiles) {
+        List<String> results = new ArrayList<>();
+        for (var resultFile : resultFiles) {
+            // If file does not exist, create empty object
+            if (!resultFile.isFile()) {
+                results.add("{}");
+                continue;
+            }
+
+            results.add(SpecsIo.read(resultFile));
+        }
+
+        return results.toArray(size -> new String[size]);
+    }
+
+    private boolean executeSafe(String[] args) {
+        try {
+            // Create new WeaverEngine
+            var weaverEngineConstructor = getDefaultConstructor();
+            return new WeaverLauncher(weaverEngineConstructor.newInstance()).launch(args);
+
+        } catch (Exception e) {
+            SpecsLogs.info("Exception during weaver execution: " + e);
+            return false;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Constructor<WeaverEngine> getDefaultConstructor() {
+        var constructors = engine.getClass().getConstructors();
+        for (var constructor : constructors) {
+            if (constructor.getParameterCount() != 0) {
+                continue;
+            }
+
+            return (Constructor<WeaverEngine>) constructor;
+        }
+
+        throw new RuntimeException("Could not find default constructor for WeaverEngine " + engine.getClass());
+    }
+
+    private boolean executeOtherJvm(String[] args, List<String> weaverCommand, File workingDir) {
+        try {
+            // DEBUG
+            // if (true) {
+            // return ClavaWeaverLauncher.execute(args);
+            // }
+
+            List<String> newArgs = new ArrayList<>();
+            // newArgs.add("java");
+            // newArgs.add("-jar");
+            // newArgs.add("Clava.jar");
+            // newArgs.add("/usr/local/bin/clava");
+            newArgs.addAll(weaverCommand);
+            newArgs.addAll(Arrays.asList(args));
+
+            // ClavaLog.info(() -> "Launching Clava on another JVM with command: " + newArgs);
+
+            // var result = SpecsSystem.run(newArgs, SpecsIo.getWorkingDir());
+            var result = SpecsSystem.run(newArgs, workingDir);
+
+            return result == 0;
+
+            // return execute(args);
+        } catch (Exception e) {
+            SpecsLogs.info("Exception during weaver execution: " + e);
+            return false;
+        }
+    }
+
+    public static String[] executeParallelStatic(String[][] args, int threads, List<String> weaverCommand,
+            String workingDir) {
+
+        return new WeaverLauncher(WeaverEngine.getThreadLocalWeaver()).executeParallel(args, threads, weaverCommand,
+                workingDir);
     }
 
 }
