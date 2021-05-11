@@ -506,21 +506,28 @@ public class AspectClassProcessor {
         if (!optionalFile.isUsed()) {
             return;
         }
+
+        String canonicalPath = SpecsIo.getCanonicalPath(optionalFile.getFile());
+        canonicalPath = SpecsIo.normalizePath(canonicalPath);
+
         final boolean hasOutput = (aspect.parameters != null) && (aspect.parameters.output != null);
+
+        final String outputObjName = mainName + "_output";
+        code.append("var " + outputObjName + " = {};\n");
+
+        // If has output, write the output values. Otherwise, leave blank
         if (hasOutput) {
-            final String outputObjName = mainName + "_output";
-            code.append("var " + outputObjName + " = {};\n");
             for (final Parameter param : aspect.parameters.output.parameters) {
 
                 code.append(outputObjName + "." + param.name + " = " + mainName + "." + param.name);
                 code.append(";\n");
             }
             // code.append("printObject("+outputObjName+");\n");
-            String canonicalPath = SpecsIo.getCanonicalPath(optionalFile.getFile());
-            canonicalPath = SpecsIo.normalizePath(canonicalPath);
-            code.append(
-                    "JSONtoFile('" + canonicalPath + "'," + outputObjName + ");\n");
+
         }
+
+        code.append(
+                "JSONtoFile('" + canonicalPath + "'," + outputObjName + ");\n");
 
     }
 
