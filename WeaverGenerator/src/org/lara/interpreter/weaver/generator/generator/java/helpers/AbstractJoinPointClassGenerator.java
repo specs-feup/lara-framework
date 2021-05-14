@@ -291,7 +291,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         // Update also here for actionImpl
         GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getClazz(), fieldName);
-        GeneratorUtils.addSuperToString(javaC, fieldName);
+        // GeneratorUtils.addSuperToString(javaC, fieldName); // Do not add toString(), JoinPoint already implements it,
+        // and this one has bugs (e.g., param shows 'decl')
         // addSuperWeaverEngineSetter(javaC, fieldName);
         addGetSuperMethod(javaC, joinPointType, fieldName);
         return fieldName;
