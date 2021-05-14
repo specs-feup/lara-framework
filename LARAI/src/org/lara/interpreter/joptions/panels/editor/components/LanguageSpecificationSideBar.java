@@ -21,6 +21,9 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -44,10 +47,13 @@ import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.Select;
+import org.lara.language.specification.dsl.types.GenericType;
 
 import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class LanguageSpecificationSideBar extends JPanel {
+
+    private static final String SEPARATOR_TYPE = "%LARA_SIDEBAR_SEPARATOR%";
 
     /**
      * 
@@ -214,10 +220,11 @@ public class LanguageSpecificationSideBar extends JPanel {
         selects.removeAllElements();
         actions.removeAllElements();
         selectedBy.removeAllElements();
-        // Populate lists
-        selectedItem.getAttributes().forEach(attributes::addElement);
-        selectedItem.getSelects().forEach(selects::addElement);
-        selectedItem.getActions().forEach(actions::addElement);
+
+        // selectedItem.getAttributes().forEach(attributes::addElement);
+        getAttributes(selectedItem).forEach(attributes::addElement);
+        getSelects(selectedItem).forEach(selects::addElement);
+        getActions(selectedItem).forEach(actions::addElement);
         selectedItem.getSelectedBy().forEach(selectedBy::addElement);
 
         if (selectedItem.hasExtend()) {
@@ -230,6 +237,61 @@ public class LanguageSpecificationSideBar extends JPanel {
             extendsButton.setText("N/A");
         }
         revalidate();
+    }
+
+    private List<Attribute> getAttributes(JoinPointClass joinPoint) {
+        List<Attribute> attributes = new ArrayList<>();
+
+        get(joinPoint, attributes, jp -> jp.getAttributesSelf(),
+                jp -> new Attribute(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+
+        return attributes;
+    }
+
+    private List<Select> getSelects(JoinPointClass joinPoint) {
+        List<Select> selects = new ArrayList<>();
+
+        get(joinPoint, selects, jp -> jp.getSelectsSelf(),
+                jp -> new Select(jp, SEPARATOR_TYPE));
+
+        return selects;
+    }
+
+    private List<Action> getActions(JoinPointClass joinPoint) {
+        List<Action> actions = new ArrayList<>();
+
+        get(joinPoint, actions, jp -> jp.getActionsSelf(),
+                jp -> new Action(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+
+        return actions;
+    }
+    //
+    // private void getAttributes(JoinPointClass joinPoint, List<Attribute> elements) {
+    //
+    // // First element is a separator with the name of the join point
+    // elements.add(new Attribute(new GenericType(SEPARATOR_TYPE, false), joinPoint.getName()));
+    //
+    // // Populate lists
+    // elements.addAll(joinPoint.getAttributesSelf());
+    //
+    // if (joinPoint.getExtend().isPresent()) {
+    // getAttributes(joinPoint.getExtend().get(), elements);
+    // }
+    //
+    // }
+
+    private <T> void get(JoinPointClass joinPoint, List<T> elements, Function<JoinPointClass, List<T>> childrenGetter,
+            Function<JoinPointClass, T> separatorBuilder) {
+
+        // First element is a separator with the name of the join point
+        elements.add(separatorBuilder.apply(joinPoint));
+
+        // Populate lists
+        elements.addAll(childrenGetter.apply(joinPoint));
+
+        if (joinPoint.getExtend().isPresent()) {
+            get(joinPoint.getExtend().get(), elements, childrenGetter, separatorBuilder);
+        }
     }
 
     private void initRoot() {
@@ -325,7 +387,9 @@ public class LanguageSpecificationSideBar extends JPanel {
             Declaration declaration = value.getDeclaration();
             String toHtml = toHtml(declaration);
             String text = "<html><body style='width: " + listCharMaxWidth + "px'>" + toHtml;
-            text += value.getParameters().stream().map(d -> toHtml(d)).collect(Collectors.joining(", ", "(", ")"));
+            if (!declaration.getType().getType().equals(SEPARATOR_TYPE)) {
+                text += value.getParameters().stream().map(d -> toHtml(d)).collect(Collectors.joining(", ", "(", ")"));
+            }
             text += "</body></html>";
             setText(text);
             setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
@@ -364,7 +428,14 @@ public class LanguageSpecificationSideBar extends JPanel {
                 ofType = ": " + temp + "";
             }
 
-            String text = "<html><b><font color=\"#7f0055\">" + name + "</b>" + ofType + "</html>";
+            String text;
+            if (name.equals(SEPARATOR_TYPE)) {
+                text = "<html>" + getSeparatorHtml(value.getClazz().getName()) + "</html>";
+            } else {
+                text = "<html><b><font color=\"#7f0055\">" + name + "</b>" + ofType + "</html>";
+            }
+
+            // String text = "<html><b><font color=\"#7f0055\">" + name + "</b>" + ofType + "</html>";
             setText(text);
             setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
             // setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
@@ -408,9 +479,20 @@ public class LanguageSpecificationSideBar extends JPanel {
     }
 
     private static String toHtml(Declaration declaration) {
+        // Special case: declarations that are separators
+        //
+        if (declaration.getType().getType().equals(SEPARATOR_TYPE)) {
+            return getSeparatorHtml(declaration.getName());
+        }
+        //
+
         String toHtml = "<b><font color=\"#7f0055\">" + declaration.getType() + "</font> </b>"
                 + declaration.getName();
         return toHtml;
+    }
+
+    private static String getSeparatorHtml(String name) {
+        return "<em><font color=\"#808080\">-- " + name + "-- </font></em>";
     }
 
     private static String selectedBytoHtml(Select select) {
