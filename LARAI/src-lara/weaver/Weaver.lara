@@ -179,8 +179,9 @@ Weaver.runParallel = function(argsLists, threads, weaverCommand) {
 		safeArgsLists.push(argsList.map(value => value.toString()));
 	}
 
-
-	var jsonStrings = WeaverLauncher.executeParallelStatic(safeArgsLists, threads, JavaInterop.arrayToStringList(weaverCommand), WeaverDataStore.getContextFolder().getAbsolutePath());	
+	// WeaverOptions has a function for this, but imports Weaver
+	var weaverData = new WeaverDataStore(LaraI.getThreadLocalData());
+	var jsonStrings = WeaverLauncher.executeParallelStatic(safeArgsLists, threads, JavaInterop.arrayToStringList(weaverCommand), weaverData.getContextFolder().getAbsolutePath());	
 
 	// Read each json file into its own object
 	var results = [];
