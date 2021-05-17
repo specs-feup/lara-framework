@@ -1367,7 +1367,7 @@ TOKEN :
 	    t=<IF> | t=<ELSE> | t=<TO> | t=<IN> | t=< SWITCH > | t=< CASE > |
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION>  | t=<_DEFAULT> |  t=<CLASS> | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
-	  	t=<FOR> | t=<WHILE> |t=<DO> | t=<INCLUDE> |t=< REPLACE >
+	  	t=<FOR> | t=<WHILE> |t=<DO> | t=<INCLUDE> |t=< REPLACE > |t=< CHECK > 
 	  )
 	  {return t;}
 	}
@@ -1385,7 +1385,7 @@ TOKEN :
 	    t=<INPUT> | t=<OUTPUT> | t=<CONDITION> | t=<_DEFAULT> | t=< CLASS > | t=< INTANCE_OF > |
 	    t=<BEFORE> |  t=<AFTER> | t=<AROUND> |
 	  	t=<FOR> | t=<WHILE> |t=<DO> | t=<INCLUDE> |
-	  	t=<DELETE > |t=< REPLACE > 
+	  	t=<DELETE > |t=< REPLACE > | t=< CHECK >
 	  )
 	  { jjtThis.setName(t.image);jjtThis.jjtSetValue(t.image);
 	   //jjtThis.setCoord(t,t);
