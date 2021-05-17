@@ -21,9 +21,12 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -40,6 +43,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.lara.interpreter.joptions.panels.editor.EditorPanel;
+import org.lara.interpreter.joptions.panels.editor.components.langspecsidebar.LangSpecSorting;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.Declaration;
@@ -49,6 +53,9 @@ import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.Select;
 import org.lara.language.specification.dsl.types.GenericType;
 
+import pt.up.fe.specs.util.SpecsEnums;
+import pt.up.fe.specs.util.SpecsStrings;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.swing.GenericActionListener;
 
 public class LanguageSpecificationSideBar extends JPanel {
@@ -60,12 +67,15 @@ public class LanguageSpecificationSideBar extends JPanel {
      */
     private static final long serialVersionUID = 1L;
 
+    private static final String PREFERENCE_SORTING_METHOD = "langSpecSortingMethod";
+
     private final LanguageSpecificationV2 langSpec;
     private JComboBox<JoinPointClass> joinPoints;
 
     private final EditorPanel editor;
 
     private JPanel rootPanel;
+    private JPanel sortPanel;
 
     private DefaultListModel<Attribute> attributes;
     private JoinPointClass currentExtend = null;
@@ -81,6 +91,8 @@ public class LanguageSpecificationSideBar extends JPanel {
     private JPanel joinPointPanel;
     private JPanel extendsPanel;
     private JButton extendsButton;
+
+    private LangSpecSorting sortingMethod;
 
     /**
      * This constructor exists for compatibility purposes
@@ -102,10 +114,30 @@ public class LanguageSpecificationSideBar extends JPanel {
         this.langSpec = langSpec;
         this.editor = editor;
 
+        // Get sorting method
+
+        this.sortingMethod = getSortingMethod();
+
         addHeader();
         addLists();
         init();
 
+    }
+
+    private LangSpecSorting getSortingMethod() {
+        // Using root join point to identify weaver
+        Preferences prefs = Preferences.userNodeForPackage(langSpec.getRoot().getClass());
+        String sortingMethodString = prefs.get(PREFERENCE_SORTING_METHOD, LangSpecSorting.ALPHABETICALLY.name());
+        return SpecsEnums.valueOf(LangSpecSorting.class, sortingMethodString);
+    }
+
+    private void setSortingMethod(LangSpecSorting sortingMethod) {
+        // Set internally
+        this.sortingMethod = sortingMethod;
+
+        // Update preferences
+        Preferences prefs = Preferences.userNodeForPackage(langSpec.getRoot().getClass());
+        prefs.put(PREFERENCE_SORTING_METHOD, sortingMethod.name());
     }
 
     private void addHeader() {
@@ -119,8 +151,16 @@ public class LanguageSpecificationSideBar extends JPanel {
         comp.setFont(comp.getFont().deriveFont(Font.BOLD, 14));
         // comp.setVerticalAlignment(SwingConstants.CENTER);
         topHeader.add(comp, BorderLayout.CENTER);
+
         rootPanel = new JPanel(new FlowLayout());
-        topHeader.add(rootPanel, BorderLayout.SOUTH);
+        sortPanel = new JPanel(new FlowLayout());
+
+        JPanel southTopHeader = new JPanel(new FlowLayout());
+        southTopHeader.add(rootPanel);
+        southTopHeader.add(sortPanel);
+
+        // topHeader.add(rootPanel, BorderLayout.SOUTH);
+        topHeader.add(southTopHeader, BorderLayout.SOUTH);
 
         header.add(topHeader, BorderLayout.NORTH);
 
@@ -198,6 +238,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
     private void init() {
         initRoot();
+        initSort();
         initExtends();
         initJoinPoints();
         joinPoints.setSelectedItem(langSpec.getRoot());
@@ -240,30 +281,48 @@ public class LanguageSpecificationSideBar extends JPanel {
     }
 
     private List<Attribute> getAttributes(JoinPointClass joinPoint) {
-        List<Attribute> attributes = new ArrayList<>();
 
-        get(joinPoint, attributes, jp -> jp.getAttributesSelf(),
-                jp -> new Attribute(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
-
-        return attributes;
+        switch (sortingMethod) {
+        case ALPHABETICALLY:
+            return getAlphabetical(joinPoint, jp -> jp.getAttributes());
+        case HIERARCHICALLY:
+            List<Attribute> attributes = new ArrayList<>();
+            getHierarchical(joinPoint, attributes, jp -> jp.getAttributesSelf(),
+                    jp -> new Attribute(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+            return attributes;
+        default:
+            throw new NotImplementedException(sortingMethod);
+        }
     }
 
     private List<Select> getSelects(JoinPointClass joinPoint) {
-        List<Select> selects = new ArrayList<>();
+        switch (sortingMethod) {
+        case ALPHABETICALLY:
+            return getAlphabetical(joinPoint, jp -> jp.getSelects());
+        case HIERARCHICALLY:
+            List<Select> selects = new ArrayList<>();
+            getHierarchical(joinPoint, selects, jp -> jp.getSelectsSelf(),
+                    jp -> new Select(jp, SEPARATOR_TYPE));
+            return selects;
+        default:
+            throw new NotImplementedException(sortingMethod);
+        }
 
-        get(joinPoint, selects, jp -> jp.getSelectsSelf(),
-                jp -> new Select(jp, SEPARATOR_TYPE));
-
-        return selects;
     }
 
     private List<Action> getActions(JoinPointClass joinPoint) {
-        List<Action> actions = new ArrayList<>();
+        switch (sortingMethod) {
+        case ALPHABETICALLY:
+            return getAlphabetical(joinPoint, jp -> jp.getActions());
+        case HIERARCHICALLY:
+            List<Action> actions = new ArrayList<>();
+            getHierarchical(joinPoint, actions, jp -> jp.getActionsSelf(),
+                    jp -> new Action(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+            return actions;
+        default:
+            throw new NotImplementedException(sortingMethod);
+        }
 
-        get(joinPoint, actions, jp -> jp.getActionsSelf(),
-                jp -> new Action(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
-
-        return actions;
     }
     //
     // private void getAttributes(JoinPointClass joinPoint, List<Attribute> elements) {
@@ -280,7 +339,16 @@ public class LanguageSpecificationSideBar extends JPanel {
     //
     // }
 
-    private <T> void get(JoinPointClass joinPoint, List<T> elements, Function<JoinPointClass, List<T>> childrenGetter,
+    private <T extends Comparable<T>> List<T> getAlphabetical(JoinPointClass joinPoint,
+            Function<JoinPointClass, List<T>> getter) {
+
+        var elements = getter.apply(joinPoint);
+        Collections.sort(elements);
+        return elements;
+    }
+
+    private <T> void getHierarchical(JoinPointClass joinPoint, List<T> elements,
+            Function<JoinPointClass, List<T>> childrenGetter,
             Function<JoinPointClass, T> separatorBuilder) {
 
         // First element is a separator with the name of the join point
@@ -290,7 +358,7 @@ public class LanguageSpecificationSideBar extends JPanel {
         elements.addAll(childrenGetter.apply(joinPoint));
 
         if (joinPoint.getExtend().isPresent()) {
-            get(joinPoint.getExtend().get(), elements, childrenGetter, separatorBuilder);
+            getHierarchical(joinPoint.getExtend().get(), elements, childrenGetter, separatorBuilder);
         }
     }
 
@@ -310,6 +378,33 @@ public class LanguageSpecificationSideBar extends JPanel {
         rootPanel.add(button);
         // rootPanel.setPreferredSize(new Dimension(50, 50));
 
+    }
+
+    private void initSort() {
+        JLabel jLabel = new JLabel("Sort: ");
+
+        JButton button = new JButton(" " + SpecsStrings.toCamelCase(sortingMethod.name()) + " ");
+        button.setContentAreaFilled(false);
+        button.setBorder(BorderFactory.createEtchedBorder());
+        button.addActionListener(new GenericActionListener(e -> updateSorting(e, button)));
+
+        // Add to panel
+        sortPanel.add(jLabel);
+        sortPanel.add(button);
+    }
+
+    private void updateSorting(ActionEvent event, JButton button) {
+
+        // Cycle to next option
+        var nextSorting = SpecsEnums.nextEnum(this.sortingMethod);
+
+        setSortingMethod(nextSorting);
+
+        // Update button
+        button.setText(" " + SpecsStrings.toCamelCase(nextSorting.name()) + " ");
+        button.repaint();
+
+        updateJPInfo((JoinPointClass) joinPoints.getSelectedItem());
     }
 
     private void initExtends() {
