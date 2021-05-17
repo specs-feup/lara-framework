@@ -19,6 +19,17 @@ var StringSet = function() {
 };
 
 /**
+ * Implement the generator. StringSet can be used e.g. in `for...of`
+ * 
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators}
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator}
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*}
+ */
+StringSet.prototype[Symbol.iterator] = function* () {
+	yield* Object.keys(this.setObj);
+};
+
+/**
  * 
  * @returns {StringSet} A new copy of the set
  */
