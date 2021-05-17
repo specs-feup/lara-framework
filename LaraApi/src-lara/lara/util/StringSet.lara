@@ -68,3 +68,62 @@ StringSet.prototype.isEmpty = function() {
 	return values.length === 0;
 	*/
 }
+
+/**
+ * 
+ * @returns A comma seperated list of the values in this set, delimited by
+ * brackets to denote a set like data-structure
+ */
+StringSet.prototype.toString = function() {
+	return '{' + this.values().join(', ') + '}';
+}
+
+/**
+ * 
+ * @param {StringSet} setA 
+ * @param {StringSet} setB 
+ * @returns {StringSet} A new set with the union of sets A and B
+ */
+StringSet.union = function(setA, setB) {
+	var setNew = new StringSet(setA.values());
+
+	for (var el in setB.setObj) {
+		setNew.add(el);
+	}
+
+    return setNew;
+}
+
+/**
+ * 
+ * @param {StringSet} setA 
+ * @param {StringSet} setB 
+ * @returns {StringSet} A new set with the insersection of sets A and B
+ */
+StringSet.intersection = function(setA, setB) {
+	var setNew = new StringSet();
+
+	for (var el in setA.setObj) {
+		if (setB.has(el))
+			setNew.add(el);
+	}
+
+    return setNew;
+}
+
+/**
+ * 
+ * @param {StringSet} setA 
+ * @param {StringSet} setB 
+ * @returns {StringSet} A new set with the difference of sets A and B, i.e.
+ * `A - B`. Note that is different from `B - A`.
+ */
+StringSet.difference = function(setA, setB) {
+	var setNew = new StringSet(setA.values());
+
+	for (var el in setB.setObj) {
+		setNew.remove(el);
+	}
+
+    return setNew;
+}
