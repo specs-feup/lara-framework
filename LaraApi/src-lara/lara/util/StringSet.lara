@@ -18,6 +18,10 @@ var StringSet = function() {
 	
 };
 
+/**
+ * 
+ * @returns {StringSet} A new copy of the set
+ */
 StringSet.prototype.copy = function() {
 	var newStringSet = new StringSet();
 	
@@ -28,21 +32,41 @@ StringSet.prototype.copy = function() {
 	return newStringSet;
 }
 
+/**
+ * Add an element to the set
+ * @param {String} str Element to be added
+ * @returns The element `str` itself
+ */
 StringSet.prototype.add = function(str) {
 	this.setObj[str] = this.val;
 	return str;
 }
 
+/**
+ * Check if element exists in the set
+ * @param {String} str Element to be checked
+ * @returns True if exists, false otherwise
+ */
 StringSet.prototype.has = function(str) {
 	return this.setObj[str] === this.val;
 }
 
+/**
+ * Remove an element from the set if it exists
+ * @param {String} str Element to be removed
+ * @returns {Boolean} True if the element `str` existed and was removed, false 
+ * otherwise
+ */
 StringSet.prototype.remove = function(str) {
 	var hasValue = this.has(str);
 	delete this.setObj[str];
 	return hasValue;
 }
 
+/**
+ * 
+ * @returns {String[]} A list of the elements in the set
+ */
 StringSet.prototype.values = function() {
 	var values = [];
 	for (var i in this.setObj) {
@@ -53,6 +77,10 @@ StringSet.prototype.values = function() {
 	return values;
 }
 
+/**
+ * 
+ * @returns {Boolean} True if the set is empty, false otherwise
+ */
 StringSet.prototype.isEmpty = function() {
 	// If has any property, returns true
 	for (var i in this.setObj) {
@@ -71,8 +99,8 @@ StringSet.prototype.isEmpty = function() {
 
 /**
  * 
- * @returns A comma seperated list of the values in this set, delimited by
- * brackets to denote a set like data-structure
+ * @returns {String} A comma seperated list of the values in this set,
+ * delimited by brackets to denote a set like data-structure
  */
 StringSet.prototype.toString = function() {
 	return '{' + this.values().join(', ') + '}';
