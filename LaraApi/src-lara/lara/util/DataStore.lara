@@ -228,7 +228,9 @@ DataStore.prototype.hasValue = function(key) {
 
 
 /**
- * The folder of the configuration file, it one was used, or undefined otherwise.
+ *
+ * @return {J#java.io.File} The folder of the configuration file, if one was used, or undefined otherwise.
+ *
  */
 DataStore.prototype.getConfigurationFolder = function() {
 	var currentFolder = this.data.get("joptions_current_folder_path");
@@ -237,7 +239,7 @@ DataStore.prototype.getConfigurationFolder = function() {
 		return undefined;
 	}
 	
-	return currentFolder;
+	return Io.getPath(currentFolder);
 }; 
 
 /**
