@@ -451,3 +451,22 @@ function getValues(object) {
 	
 	return values;
 }
+
+/**
+ * Acts as a constructor where you can pass the arguments object.
+ * 
+ * @return the constructed object, of the constructor if it could not be built.
+ */
+function newObject(aClass, arguments){
+	var obj = Object.create(aClass.prototype);
+	return (aClass.apply(obj, arguments) || obj);
+}
+
+/**
+ * Function to call aspects, returns the aspect with the results. 
+ */
+function callAspect(aspect) {
+	var aspectObj = newObject(aspect, Array.prototype.slice.call(arguments, 1));
+	aspectObj.call();
+	return aspectObj;
+}
