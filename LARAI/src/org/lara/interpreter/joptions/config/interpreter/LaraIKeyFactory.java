@@ -298,7 +298,12 @@ public class LaraIKeyFactory {
         // Check if args is an existing JSON file
         if (!trimmedArgs.startsWith("{")) {
             var jsonFile = new File(trimmedArgs);
-            if (jsonFile.isFile() && SpecsIo.getExtension(jsonFile).equals("json")) {
+            if (SpecsIo.getExtension(jsonFile).equals("json")) {
+                if (!jsonFile.isFile()) {
+                    throw new RuntimeException(
+                            "Passed file '" + jsonFile + "' as aspect arguments, but file does not exist.");
+                }
+
                 return SpecsIo.read(jsonFile);
             }
         }
