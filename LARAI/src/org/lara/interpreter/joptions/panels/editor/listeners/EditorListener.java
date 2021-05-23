@@ -105,19 +105,19 @@ public class EditorListener {
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 
-	    if (!tab.getOriginalText().equals(tab.getTextArea().getText())) {
-	        // when the text area changes, reparse the folds
-	        tab.getTextArea().getFoldManager().reparse();
-		if (!tab.isChanged()) {
-		    tab.getTabbedParent().setChanged(tab);
-		    tab.setChanged(true);
-		}
-	    } else {
-		if (tab.isChanged()) {
-		    tab.getTabbedParent().setTabTitle(tab);
-		    tab.setChanged(false);
-		}
-	    }
+        if (!tab.getOriginalText().equals(tab.getTextArea().getText())) {
+            // when the text area changes, reparse the folds
+            tab.getTextArea().getFoldManager().reparse();
+            if (!tab.isChanged()) {
+                tab.getTabbedParent().setChanged(tab);
+                tab.setChanged(true);
+            }
+        } else {
+            if (tab.isChanged()) {
+                tab.getTabbedParent().setTabTitle(tab);
+                tab.setChanged(false);
+            }
+        }
 	}
 
 	@Override
