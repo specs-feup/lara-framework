@@ -33,13 +33,10 @@ public class MainLaraTab extends SourceTextArea {
 
     public MainLaraTab(TabsContainerPanel parent) {
         super(parent);
-        EditorConfigurer.setLaraTextArea(this);// getTextArea());
-        // getTextArea().addParser(new EditorParser());
     }
 
     public MainLaraTab(File file, TabsContainerPanel parent) {
         super(file, parent);
-        // getTextArea().addParser(new EditorParser());
     }
 
     public boolean open() {
