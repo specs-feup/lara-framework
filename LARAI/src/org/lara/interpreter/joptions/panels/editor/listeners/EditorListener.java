@@ -13,6 +13,7 @@
 
 package org.lara.interpreter.joptions.panels.editor.listeners;
 
+import java.util.Timer;
 import java.util.function.Supplier;
 
 import javax.swing.JComponent;
@@ -24,23 +25,29 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.lara.interpreter.joptions.panels.editor.tabbed.SourceTextArea;
 import org.lara.interpreter.joptions.panels.editor.tabbed.TabsContainerPanel;
 
+import pt.up.fe.specs.util.utilities.SpecsTimerTask;
+
 public class EditorListener {
 
+    private static final long FOLD_REPARSING_DELAY_MS = 1500;
+
     private final SourceTextArea tab;
+    private Timer parseTimer;
 
     public static EditorListener newInstance(SourceTextArea laraTab) {
-	return new EditorListener(laraTab);
+        return new EditorListener(laraTab);
     }
 
     public EditorListener(SourceTextArea laraTab) {
-	tab = laraTab;
-	TabsContainerPanel tabParent = tab.getTabbedParent();
-	mapActions(laraTab.getTextArea(), () -> laraTab, tabParent);
+        tab = laraTab;
+        parseTimer = new Timer();
+        TabsContainerPanel tabParent = tab.getTabbedParent();
+        mapActions(laraTab.getTextArea(), () -> laraTab, tabParent);
 
-	TextEditorPane textArea = tab.getTextArea();
+        TextEditorPane textArea = tab.getTextArea();
 
-	textArea.getDocument().addDocumentListener(new ChangeListener());
-	// textArea.setTransferHandler(new FileTransferHandler(tabParent::open));
+        textArea.getDocument().addDocumentListener(new ChangeListener());
+        // textArea.setTransferHandler(new FileTransferHandler(tabParent::open));
     }
 
     /**
@@ -54,40 +61,40 @@ public class EditorListener {
      *            the pane we are working with
      */
     static void mapActions(JComponent component, Supplier<SourceTextArea> laraTab,
-	    TabsContainerPanel tabbedPane) {
+            TabsContainerPanel tabbedPane) {
 
-	ListenerUtils.mapKeyStroke(component, StrokesAndActions.CTRL_SHIFT_C,
-		RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
+        ListenerUtils.mapKeyStroke(component, StrokesAndActions.CTRL_SHIFT_C,
+                RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
 
-	// These are being used by the menus so are simply duplicated!
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_S_STROKE, StrokesAndActions.SAVE_ACTION,
-	// x -> laraTab.get().save());
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_S_STROKE,
-	// StrokesAndActions.SAVE_AS_ACTION,
-	// x -> tabbedPane.saveAll());
+        // These are being used by the menus so are simply duplicated!
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_S_STROKE, StrokesAndActions.SAVE_ACTION,
+        // x -> laraTab.get().save());
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_S_STROKE,
+        // StrokesAndActions.SAVE_AS_ACTION,
+        // x -> tabbedPane.saveAll());
 
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_O_STROKE, StrokesAndActions.OPEN_ACTION,
-	// x -> laraTab.get().open());
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_W_STROKE, StrokesAndActions.CLOSE_ACTION,
-	// x -> laraTab.get().close());
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_O_STROKE, StrokesAndActions.OPEN_ACTION,
+        // x -> laraTab.get().open());
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_W_STROKE, StrokesAndActions.CLOSE_ACTION,
+        // x -> laraTab.get().close());
 
-	// ListenerUtils.mapAction(component, StrokesAndActions.F5_STROKE, StrokesAndActions.REFRESH,
-	// x -> laraTab.get().refresh());
-	/**
-	 * Actions that are related to the tabbed pane
-	 */
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_N_STROKE, StrokesAndActions.NEW_TAB_ACTION,
-	// x -> tabbedPane.addTab());
-	// ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_N_STROKE,
-	// StrokesAndActions.NEW_TAB_OPEN_ACTION,
-	// openInNewTab(tabbedPane));
+        // ListenerUtils.mapAction(component, StrokesAndActions.F5_STROKE, StrokesAndActions.REFRESH,
+        // x -> laraTab.get().refresh());
+        /**
+         * Actions that are related to the tabbed pane
+         */
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_N_STROKE, StrokesAndActions.NEW_TAB_ACTION,
+        // x -> tabbedPane.addTab());
+        // ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_N_STROKE,
+        // StrokesAndActions.NEW_TAB_OPEN_ACTION,
+        // openInNewTab(tabbedPane));
 
-	ListenerUtils.removeTraversalKeys(component);
+        ListenerUtils.removeTraversalKeys(component);
 
-	ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_TAB, StrokesAndActions.PREVIOUS_ACTION,
-		x -> tabbedPane.navigatePrevious());
-	ListenerUtils.mapAction(component, StrokesAndActions.CTRL_TAB, StrokesAndActions.NEXT_ACTION,
-		x -> tabbedPane.navigateNext());
+        ListenerUtils.mapAction(component, StrokesAndActions.CTRL_SHIFT_TAB, StrokesAndActions.PREVIOUS_ACTION,
+                x -> tabbedPane.navigatePrevious());
+        ListenerUtils.mapAction(component, StrokesAndActions.CTRL_TAB, StrokesAndActions.NEXT_ACTION,
+                x -> tabbedPane.navigateNext());
     }
 
     // public static Consumer<ActionEvent> openInNewTab(TabsContainerPanel tabbedPane) {
@@ -102,33 +109,39 @@ public class EditorListener {
 
     public class ChangeListener implements DocumentListener {
 
-	@Override
-	public void changedUpdate(DocumentEvent e) {
+        @Override
+        public void changedUpdate(DocumentEvent e) {
 
-        if (!tab.getOriginalText().equals(tab.getTextArea().getText())) {
-            // when the text area changes, reparse the folds
-            tab.getTextArea().getFoldManager().reparse();
-            if (!tab.isChanged()) {
-                tab.getTabbedParent().setChanged(tab);
-                tab.setChanged(true);
-            }
-        } else {
-            if (tab.isChanged()) {
-                tab.getTabbedParent().setTabTitle(tab);
-                tab.setChanged(false);
+            if (!tab.getOriginalText().equals(tab.getTextArea().getText())) {
+                // when the text area changes, set timer to reparse the folds
+                // var start = System.nanoTime();
+                parseTimer.cancel();
+                parseTimer = new Timer();
+                parseTimer.schedule(new SpecsTimerTask(() -> tab.getTextArea().getFoldManager().reparse()),
+                        FOLD_REPARSING_DELAY_MS);
+                // System.out.println(SpecsStrings.takeTime("TASK", TimeUnit.NANOSECONDS, start));
+
+                if (!tab.isChanged()) {
+                    tab.getTabbedParent().setChanged(tab);
+                    tab.setChanged(true);
+                }
+            } else {
+                if (tab.isChanged()) {
+                    tab.getTabbedParent().setTabTitle(tab);
+                    tab.setChanged(false);
+                }
             }
         }
-	}
 
-	@Override
-	public void insertUpdate(DocumentEvent e) {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
 
-	}
+        }
 
-	@Override
-	public void removeUpdate(DocumentEvent e) {
+        @Override
+        public void removeUpdate(DocumentEvent e) {
 
-	}
+        }
 
     }
 
