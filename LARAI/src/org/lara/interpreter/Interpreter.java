@@ -48,6 +48,7 @@ import larac.utils.output.Output;
 import larac.utils.xml.Pair;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -177,12 +178,16 @@ public class Interpreter {
      * @throws ScriptException
      */
     public Object evaluate(String code) {
+        return evaluate(code, JsFileType.NORMAL);
+    }
+
+    public Object evaluate(String code, JsFileType type) {
 
         try {
             // System.out.println("CODE:\n" + code);
             // System.out.println("\nCODE END");
             // return engine.getEngine().eval(code);
-            return engine.eval(code);
+            return engine.eval(code, type);
             // } catch (ScriptException e) {
         } catch (Exception e) {
 

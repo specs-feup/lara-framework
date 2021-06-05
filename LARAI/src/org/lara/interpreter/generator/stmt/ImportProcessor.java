@@ -42,6 +42,7 @@ import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import Utils.LARASystem;
 import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
+import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -126,7 +127,9 @@ public class ImportProcessor {
 
                 // Add scripts that are directly included in the 'includeFolders'
                 final List<File> allJava = getAllJavaClassPaths(includeFolder); // right now it is just using jars
-                final List<File> allScripts = SpecsIo.getFiles(includeFolder, "js");// getAllScriptFiles(includeFolder);
+                final List<File> allScripts = new ArrayList<>();
+                allScripts.addAll(SpecsIo.getFiles(includeFolder, "js"));// getAllScriptFiles(includeFolder);
+                allScripts.addAll(SpecsIo.getFiles(includeFolder, "mjs"));
 
                 if (javaPath.exists()) {
                     final List<File> javaFolderFiles = getAllJavaClassPaths(javaPath);
@@ -292,19 +295,21 @@ public class ImportProcessor {
 
     private void importScript(ResourceProvider resource) {
         final String internalScripts = SpecsIo.getResource(resource);
-        evaluateImport(internalScripts, resource.getResource(), true);
+        var extension = SpecsIo.getExtension(resource.getFilename());
+        evaluateImport(internalScripts, resource.getResource(), true, JsFileType.getType(extension));
     }
 
     private void importScript(File source) {
         final String internalScripts = SpecsIo.read(source);
-        evaluateImport(internalScripts, source.getAbsolutePath(), false);
+        var extension = SpecsIo.getExtension(source);
+        evaluateImport(internalScripts, source.getAbsolutePath(), false, JsFileType.getType(extension));
     }
 
-    private void evaluateImport(final String internalScripts, String source, boolean isInternal) {
+    private void evaluateImport(final String internalScripts, String source, boolean isInternal, JsFileType type) {
         try {
 
             interpreter.out().println("  " + MessageConstants.BRANCH_STR + source);
-            interpreter.evaluate(internalScripts);
+            interpreter.evaluate(internalScripts, type);
         } catch (Exception e) {
             throw new ScriptImportException(source, isInternal, e);
         }
