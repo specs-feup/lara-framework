@@ -4,7 +4,7 @@ if(tools == undefined)
 tools.xilinx = {
 
 	init: function(args){
-		with(this){
+		//with(this){
 			if(args == undefined){
 				if(	 tools.xilinx.ModuleName == undefined
 				   ||
@@ -37,13 +37,13 @@ tools.xilinx = {
 			
 			if(tools.xilinx.rt == undefined)
 				tools.xilinx.rt = new org.reflect.xilinx.RunTools(pathFolder);
-		}
+		//}
 	},
 
 	xst: function(args){
 		
 		
-		with(tools.xilinx){
+		//with(tools.xilinx){
 			init(args);
 			tools.xilinx.xstOptions = new java.util.HashMap();
 			xstOptions.put("-ifmt", "mixed");
@@ -123,43 +123,43 @@ tools.xilinx = {
 										'}'+
 								'}'+
 						'});';
-			}
+			//}
 		/***/ 
 			
 	},
 
 	xpr: function(args){
-		with(tools.xilinx){
+		//with(tools.xilinx){
 			init(args);
 			rt.xpr(ModuleName);
 			return (new org.reflect.xilinx.Report()).getXPRReportStr(
 	                      rt.workingFolderStr, "function", ModuleName);
-		}
+		//}
 	},
 
 	ngdbuild: function(args){
-		with(tools.xilinx){
+		//with(tools.xilinx){
 			init(args);
 			rt.buildNgd(ModuleName, null); // no ucFile
-		}
+		//}
 	},
  
 	map: function(args){
-		with(tools.xilinx){
+		//with(tools.xilinx){
 			init(args);
 			 rt.map(ModuleName);
 			 
 			 return (new org.reflect.xilinx.Report()).getMAPReportStr(
 					 	rt.workingFolderStr, "function", ModuleName);
-		}
+		//}
 	},
 
 	par: function(args){
-	with(tools.xilinx){
+	//with(tools.xilinx){
 		init(args);
 		rt.par(ModuleName);
         return (new org.reflect.xilinx.Report()).getPARReportStr(
         			rt.workingFolderStr, "function", ModuleName);
-	}
+	//}
 	}
 }

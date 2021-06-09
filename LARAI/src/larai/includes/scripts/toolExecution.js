@@ -33,8 +33,8 @@ function run(tool, args, jpname, name, verbose, pipe) {
 	}
 }
 
-default_verbose_level = 2;
-default_pipe = 2;
+var default_verbose_level = 2;
+var default_pipe = 2;
 
 function cmd(command, args, verbose, pipe, exitOnError) {
 	args = (args === undefined) ? [] : args;

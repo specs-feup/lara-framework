@@ -43,7 +43,7 @@ public class EsprimaJsParser implements LaraParser {
     }
 
     private static JsEngine initEsprima() {
-        var javascriptEngine = JsEngineType.GRAALVM.newEngine();
+        var javascriptEngine = JsEngineType.GRAALVM_EXPERIMENTAL.newEngine();
 
         javascriptEngine.eval(LaraParserResource.ESPRIMA.read());
         // javascriptEngine.eval(LaraParserResource.ESPRIMA_LARA.read());

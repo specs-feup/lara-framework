@@ -457,9 +457,9 @@ function getValues(object) {
  * 
  * @return the constructed object, of the constructor if it could not be built.
  */
-function newObject(aClass, arguments){
+function newObject(aClass, args){
 	var obj = Object.create(aClass.prototype);
-	return (aClass.apply(obj, arguments) || obj);
+	return (aClass.apply(obj, args) || obj);
 }
 
 /**

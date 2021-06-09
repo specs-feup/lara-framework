@@ -103,7 +103,7 @@ public interface LaraiKeys {
             .setLabel("JavaScript Engine")
             // TODO: Change to GraalVM when transition is done
             // .setDefault(() -> JsEngineType.NASHORN);
-            .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
+            .setDefault(() -> JsEngineType.GRAALVM_EXPERIMENTAL);
     // .setDefault(() -> JsEngineType.GRAALVM);
 
     // No GUI, only CLI
