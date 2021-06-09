@@ -124,24 +124,86 @@ StringSet.prototype.toString = function () {
 var __isStringSet = (s) => s instanceof StringSet;
 
 /**
+ * Stores in this set the union of it with another another set
+ * @param {StringSet} otherSet 
+ * @returns {this}
+ */
+StringSet.prototype.union = function (otherSet) {
+	if (!__isStringSet(otherSet)) {
+		throw new Error(
+			"Invalid argument: must be instance of StringSet"
+		);
+	}
+
+	// for every element in the other set, add it to this set
+	for (var el of otherSet) {
+		this.add(el);
+	}
+
+	// return self object for chaining
+	return this;
+}
+
+/**
+ * Stores in this set the intersection of it with another another set
+ * @param {StringSet} otherSet 
+ * @returns {this}
+ */
+StringSet.prototype.intersection = function (otherSet) {
+	if (!__isStringSet(otherSet)) {
+		throw new Error(
+			"Invalid argument: must be instance of StringSet"
+		);
+	}
+
+	// for every element in this set that does not exist in the other set,
+	// remove it from this set
+	for (var el of this) {
+		if (!otherSet.has(el)) {
+			this.remove(el);
+		}
+	}
+
+	// return self object for chaining
+	return this;
+}
+
+/**
+ * Stores in this set the difference of it with another another set (i.e.
+ * `this - otherSet`). Notice that is not equivalent to `otherSet - this`.
+ * @param {StringSet} otherSet 
+ * @returns {this}
+ */
+StringSet.prototype.difference = function (otherSet) {
+	if (!__isStringSet(otherSet)) {
+		throw new Error(
+			"Invalid argument: must be instance of StringSet"
+		);
+	}
+
+	for (var el of otherSet) {
+		if (this.has(el)) {
+			this.remove(el);
+		}
+	}
+
+	return this;
+}
+
+/**
  * 
  * @param {StringSet} setA 
  * @param {StringSet} setB 
  * @returns {StringSet} A new set with the union of sets A and B
  */
 StringSet.union = function (setA, setB) {
-	if (!__isStringSet(setA) || !__isStringSet(setA))
+	if (!__isStringSet(setA) || !__isStringSet(setB))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
 
-	var setNew = new StringSet(setA.values());
-
-	for (var el in setB.setObj) {
-		setNew.add(el);
-	}
-
-	return setNew;
+	var setNew = setA.copy();
+	return setNew.union(setB);
 }
 
 /**
@@ -151,19 +213,13 @@ StringSet.union = function (setA, setB) {
  * @returns {StringSet} A new set with the insersection of sets A and B
  */
 StringSet.intersection = function (setA, setB) {
-	if (!__isStringSet(setA) || !__isStringSet(setA))
+	if (!__isStringSet(setA) || !__isStringSet(setB))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
 
-	var setNew = new StringSet();
-
-	for (var el in setA.setObj) {
-		if (setB.has(el))
-			setNew.add(el);
-	}
-
-	return setNew;
+	var setNew = setA.copy();
+	return setNew.intersection(setB);
 }
 
 /**
@@ -174,16 +230,11 @@ StringSet.intersection = function (setA, setB) {
  * `A - B`. Note that is different from `B - A`.
  */
 StringSet.difference = function (setA, setB) {
-	if (!__isStringSet(setA) || !__isStringSet(setA))
+	if (!__isStringSet(setA) || !__isStringSet(setB))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
 
-	var setNew = new StringSet(setA.values());
-
-	for (var el in setB.setObj) {
-		setNew.remove(el);
-	}
-
-	return setNew;
+	var setNew = setA.copy();
+	return setNew.difference(setB);
 }
