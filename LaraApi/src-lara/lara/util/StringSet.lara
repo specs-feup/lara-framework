@@ -7,15 +7,15 @@
  *
  * @param {Object...} [args=[]] - Objects that will be transformed to Strings and used as the initial values of the set.
  */
-var StringSet = function() {
+var StringSet = function () {
 	this.setObj = {};
 	this.val = {};
-		
+
 	var argsArray = arrayFromArgs(arguments);
-	for(var arg of argsArray) {
+	for (var arg of argsArray) {
 		this.add(arg.toString());
 	}
-	
+
 };
 
 /**
@@ -33,10 +33,10 @@ StringSet.prototype[Symbol.iterator] = function* () {
  * 
  * @returns {StringSet} A new copy of the set
  */
-StringSet.prototype.copy = function() {
+StringSet.prototype.copy = function () {
 	var newStringSet = new StringSet();
-	
-	for(var value of this.values()) {
+
+	for (var value of this.values()) {
 		newStringSet.add(value);
 	}
 
@@ -48,7 +48,7 @@ StringSet.prototype.copy = function() {
  * @param {String} str Element to be added
  * @returns The element `str` itself
  */
-StringSet.prototype.add = function(str) {
+StringSet.prototype.add = function (str) {
 	this.setObj[str] = this.val;
 	return str;
 }
@@ -58,7 +58,7 @@ StringSet.prototype.add = function(str) {
  * @param {String} str Element to be checked
  * @returns True if exists, false otherwise
  */
-StringSet.prototype.has = function(str) {
+StringSet.prototype.has = function (str) {
 	return this.setObj[str] === this.val;
 }
 
@@ -68,7 +68,7 @@ StringSet.prototype.has = function(str) {
  * @returns {Boolean} True if the element `str` existed and was removed, false 
  * otherwise
  */
-StringSet.prototype.remove = function(str) {
+StringSet.prototype.remove = function (str) {
 	var hasValue = this.has(str);
 	delete this.setObj[str];
 	return hasValue;
@@ -78,7 +78,7 @@ StringSet.prototype.remove = function(str) {
  * 
  * @returns {String[]} A list of the elements in the set
  */
-StringSet.prototype.values = function() {
+StringSet.prototype.values = function () {
 	var values = [];
 	for (var i in this.setObj) {
 		if (this.setObj[i] === this.val) {
@@ -92,20 +92,20 @@ StringSet.prototype.values = function() {
  * 
  * @returns {Boolean} True if the set is empty, false otherwise
  */
-StringSet.prototype.isEmpty = function() {
+StringSet.prototype.isEmpty = function () {
 	// If has any property, returns true
 	for (var i in this.setObj) {
 		return false;
 	}
 
 	return true;
-	
-//	println("IS EMPTY SUPPOSED:" + (this.values().length === 0));
-//	println("IS EMPTY HW:" + this.setObj.length);	
-/*
-	var values = this.values();
-	return values.length === 0;
-	*/
+
+	//	println("IS EMPTY SUPPOSED:" + (this.values().length === 0));
+	//	println("IS EMPTY HW:" + this.setObj.length);	
+	/*
+		var values = this.values();
+		return values.length === 0;
+		*/
 }
 
 /**
@@ -113,7 +113,7 @@ StringSet.prototype.isEmpty = function() {
  * @returns {String} A comma seperated list of the values in this set,
  * delimited by brackets to denote a set like data-structure
  */
-StringSet.prototype.toString = function() {
+StringSet.prototype.toString = function () {
 	return '{' + this.values().join(', ') + '}';
 }
 
@@ -129,19 +129,19 @@ var __isStringSet = (s) => s instanceof StringSet;
  * @param {StringSet} setB 
  * @returns {StringSet} A new set with the union of sets A and B
  */
-StringSet.union = function(setA, setB) {
-	if(!__isStringSet(setA) || !__isStringSet(setA))
+StringSet.union = function (setA, setB) {
+	if (!__isStringSet(setA) || !__isStringSet(setA))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
-	
+
 	var setNew = new StringSet(setA.values());
 
 	for (var el in setB.setObj) {
 		setNew.add(el);
 	}
 
-    return setNew;
+	return setNew;
 }
 
 /**
@@ -150,12 +150,12 @@ StringSet.union = function(setA, setB) {
  * @param {StringSet} setB 
  * @returns {StringSet} A new set with the insersection of sets A and B
  */
-StringSet.intersection = function(setA, setB) {
-	if(!__isStringSet(setA) || !__isStringSet(setA))
+StringSet.intersection = function (setA, setB) {
+	if (!__isStringSet(setA) || !__isStringSet(setA))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
-	
+
 	var setNew = new StringSet();
 
 	for (var el in setA.setObj) {
@@ -163,7 +163,7 @@ StringSet.intersection = function(setA, setB) {
 			setNew.add(el);
 	}
 
-    return setNew;
+	return setNew;
 }
 
 /**
@@ -173,17 +173,17 @@ StringSet.intersection = function(setA, setB) {
  * @returns {StringSet} A new set with the difference of sets A and B, i.e.
  * `A - B`. Note that is different from `B - A`.
  */
-StringSet.difference = function(setA, setB) {
-	if(!__isStringSet(setA) || !__isStringSet(setA))
+StringSet.difference = function (setA, setB) {
+	if (!__isStringSet(setA) || !__isStringSet(setA))
 		throw new Error(
 			"Invalid arguments: setA and setB must be instances of StringSet"
 		);
-	
+
 	var setNew = new StringSet(setA.values());
 
 	for (var el in setB.setObj) {
 		setNew.remove(el);
 	}
 
-    return setNew;
+	return setNew;
 }
