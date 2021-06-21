@@ -16,11 +16,36 @@ JoinPoints.getInstance = function() {
 
 
 /**
+ * Converts an AST node to a JointPoint.
+ *
+ * @param {node}
+ * @return {$jp} 
+ *
+ * It seems you cannot have static and prototype functions with the same name.
+ */
+ /*
+JoinPoints.toJoinPoint = function(node) {
+	JoinPoints._INSTANCE.toJoinPoint(node);
+}
+*/
+
+
+/**
  * 
  * @return {$jp} the current root node of the AST
  */
 JoinPoints.prototype.root = function() {
 	return Weaver.getWeaverEngine().getRootJp();
+}
+
+/**
+ * Converts an AST node to a JointPoint.
+ *
+ * @param {node}
+ * @return {$jp} 
+ */
+JoinPoints.prototype.toJoinPoint = function(node) {
+	throw "JoinPoints.toJoinPoint: not implemented";
 }
 
 /**
