@@ -17,6 +17,7 @@ import org.lara.interpreter.exception.ApplyException;
 import org.lara.interpreter.exception.AspectDefException;
 import org.lara.interpreter.exception.UserException;
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsLogs;
@@ -44,17 +45,24 @@ public class ExceptionUtils {
         // System.out.println("MEMBER: " + scriptEngine.asValue(original).getMemberKeys());
         // System.out.println("CLASS: " + scriptEngine.asValue(original).getClass());
 
-        Throwable e;
-        if (!(original instanceof Throwable)) {
+    	// Check if throwable
+    	if(original instanceof Throwable) {
+    		return (Throwable) original;
+    	}
+    	
+    	// Check if it is a JsEngine error
+    	var jsEngineException = WeaverEngine.getThreadLocalWeaver().getScriptEngine()
+    			.getException(original)
+    			.orElse(null);
+    	
+    	if(jsEngineException != null) {
+    		return jsEngineException;
+    	}
 
-            // If no option is available than it is treated as a string (using
-            // toString);
-            // System.out.println("ORIGINAL CLASS: " + original.getClass());
-            e = new RuntimeException(original.toString());
-        } else {
-            e = (Throwable) original;
-        }
-        return e;
+        // If no option is available than it is treated as a string (using toString);
+    	SpecsLogs.info("Could not decode exception with class '"+original.getClass()+"', returning .toString()");
+    	
+    	return new RuntimeException(original.toString());
     }
 
     public static void throwAspectException(Object original, String aspectName, String aspectCoords,

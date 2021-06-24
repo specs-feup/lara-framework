@@ -396,6 +396,7 @@ function laraGetter(object, property) {
 	var value = object[property];
 	var type = typeof value;
 
+
 	// If type is function, assume it should be called without arguments
 	if(type === 'function') {
 		
