@@ -26,11 +26,19 @@ MathExtra.simplify = function(expression, constants) {
 
 
 /**
+ * Attempts to convert a mathematical expression to valid C code (e.g., converts ^ to a call to pow()).
+ *
+ */
+MathExtra.convertToC = function(expression) {	
+	return LaraExtraApiTools.convertToC(expression);
+}
+
+
+/**
  * Attempts to simplify a mathematical expression, returning a string that represents C code.
  *
  */
 MathExtra.simplifyToC = function(expression, constants) {
 	var simplifiedExpr = MathExtra.simplify(expression, constants);
-	
-	return LaraExtraApiTools.convertToC(expression);
+	return MathExtra.convertToC(simplifiedExpr);
 }
