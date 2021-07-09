@@ -33,6 +33,10 @@ public class LaraExtraApiTools {
 
         return SymjaPlusUtils.simplify(expression, stringConstants);
     }
+
+    public static String convertToC(String expression) {
+        return SymjaPlusUtils.convertToC(expression);
+    }
 }
 
 // cmd("sh dsfklsd fskld fsdkl fsjkl ") > "log.txt";

@@ -23,3 +23,14 @@ MathExtra.simplify = function(expression, constants) {
 	
 	return LaraExtraApiTools.simplifyExpression(expression, map);
 }
+
+
+/**
+ * Attempts to simplify a mathematical expression, returning a string that represents C code.
+ *
+ */
+MathExtra.simplifyToC = function(expression, constants) {
+	var simplifiedExpr = MathExtra.simplify(expression, constants);
+	
+	return LaraExtraApiTools.convertToC(expression);
+}
