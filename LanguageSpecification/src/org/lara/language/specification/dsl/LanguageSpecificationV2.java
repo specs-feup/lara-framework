@@ -436,11 +436,14 @@ public class LanguageSpecificationV2 {
 
         dot.append("digraph " + langSpecName + "join_point_hierarchy {\n"
                 + "node [color=lightblue2, style=filled];\n"
-                + "rankdir=\"LR\"\n"
+                // + "rankdir=\"LR\"\n"
+                + "rankdir=\"RL\"\n"
                 + "node [fontsize=10, shape=box, height=0.25]\n"
                 + "edge [fontsize=10]\n");
         for (var jp : getAllJoinPoints()) {
-            jp.getExtend().map(parent -> dot.append("\"" + parent.getName() + "\"->\"" + jp.getName() + "\"\n"));
+            // jp.getExtend().map(parent -> dot.append("\"" + parent.getName() + "\"->\"" + jp.getName() + "\"\n"));
+            // "Invert" arrow direction
+            jp.getExtend().map(parent -> dot.append("\"" + jp.getName() + "\"->\"" + parent.getName() + "\"\n"));
         }
         dot.append("}\n");
 
