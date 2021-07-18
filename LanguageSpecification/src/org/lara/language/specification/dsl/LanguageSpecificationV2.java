@@ -408,4 +408,42 @@ public class LanguageSpecificationV2 {
         return false;
     }
 
+    /**
+     * Builds a hierarchy diagram in DOT format.
+     * 
+     * @return a string with the Language Specification hierarchy diagram in DOT format
+     */
+    public String toHierarchyDiagram() {
+        return toHierarchyDiagram("");
+    }
+
+    /**
+     * Builds a hierarchy diagram in DOT format.
+     * 
+     * 
+     * 
+     * @param langSpecName
+     *            the name of the language specification.
+     * 
+     * @return a string with the Language Specification hierarchy diagram in DOT format
+     */
+    public String toHierarchyDiagram(String langSpecName) {
+
+        langSpecName = langSpecName == null ? "" : langSpecName;
+        langSpecName = langSpecName.isBlank() ? langSpecName : langSpecName + "_";
+
+        var dot = new StringBuilder();
+
+        dot.append("digraph " + langSpecName + "join_point_hierarchy {\n"
+                + "node [color=lightblue2, style=filled];\n"
+                + "rankdir=\"LR\"\n"
+                + "node [fontsize=10, shape=box, height=0.25]\n"
+                + "edge [fontsize=10]\n");
+        for (var jp : getAllJoinPoints()) {
+            jp.getExtend().map(parent -> dot.append("\"" + parent.getName() + "\"->\"" + jp.getName() + "\"\n"));
+        }
+        dot.append("}\n");
+
+        return dot.toString();
+    }
 }
