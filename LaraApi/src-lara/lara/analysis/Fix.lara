@@ -1,0 +1,12 @@
+var Fix = function($node, fixAction) {
+	this.$node = $node;
+	this.fixAction = fixAction;
+};
+
+Fix.prototype.getNode = function() {
+	return this.$node;
+}
+
+Fix.prototype.execute = function() {
+	this.fixAction(this.$node);
+}

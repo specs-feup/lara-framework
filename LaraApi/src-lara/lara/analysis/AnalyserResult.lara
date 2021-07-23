@@ -1,0 +1,22 @@
+// Abstract class created as a model for every result of analyser
+ 
+var AnalyserResult = function(name, node, message, fix) {
+    this.name = name;
+    this.node = node;
+    this.message = message;   
+    this.fix = fix;
+    this.line = node.line;
+};
+
+AnalyserResult.prototype.analyse = function($startNode) {
+    notImplemented("AnalyserResult.analyse");
+}
+
+AnalyserResult.prototype.getName = function() {
+	return this.name;
+}
+
+AnalyserResult.prototype.getNode = function() {
+	return this.node;
+}
+
