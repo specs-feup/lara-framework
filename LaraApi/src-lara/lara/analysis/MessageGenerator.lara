@@ -1,0 +1,47 @@
+import weaver.Query;
+import lara.Io;
+import lara.analysis.ResultList;
+
+// Class sorting resultLists and generating an analysis report
+
+var MessageGenerator = function() {
+    this.globalFileResultList = {};
+    this.fileOutputFlag = 0;
+};
+
+MessageGenerator.prototype.enableFileOutput = function() {
+	this.fileOutputFlag = 1;
+}
+
+MessageGenerator.prototype.append = function(resultList) {
+    if (resultList === undefined) {
+    		return;
+    }     
+    var fileName = resultList.fileName;
+    var fileResultList = this.globalFileResultList[fileName];
+    if (fileResultList === undefined) {
+        fileResultList = [];
+        this.globalFileResultList[fileName] = fileResultList;
+    }
+    for (var result of resultList.list) {
+        fileResultList.push(result);
+    }
+}
+
+MessageGenerator.prototype.generateReport = function() {
+    if (this.globalFileResultList === undefined) {
+    		return;
+    }
+    for (var fileName in this.globalFileResultList) {
+        var message = "";
+        var analysisFileName = Io.getPath(Clava.getData().getContextFolder(), "AnalysisReports/analysis_" + fileName + "_report.txt");
+        for (var result of this.globalFileResultList[fileName]) {
+            message += fileName + "/l." + result.node.line + ": " + result.message;
+        }
+        if (this.fileOutputFlag === 0) {
+		      println(message);
+		      return;
+	      }
+        Io.writeFile(analysisFileName, message);
+    }
+}

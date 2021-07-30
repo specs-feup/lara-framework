@@ -1,0 +1,9 @@
+// Main abstract class to create all the other analysers
+
+var Analyser = function() {
+    
+};
+
+Analyser.prototype.analyse = function($startNode) {
+    notImplemented("Analyser.analyse");
+}

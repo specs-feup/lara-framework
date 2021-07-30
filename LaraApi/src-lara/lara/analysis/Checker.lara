@@ -1,0 +1,14 @@
+// Abstract class created as a model for every checker
+
+var Checker = function(name) {
+	this.name = name;
+};
+
+Checker.prototype.check = function($node){
+    notImplemented("Checker.check");
+}
+
+Checker.prototype.getName = function() {
+	return this.name;
+
+}

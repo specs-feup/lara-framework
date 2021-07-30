@@ -1,0 +1,18 @@
+import lara.analysis.AnalyserResult;
+
+var CheckResult = function(name, node, message, fix) {
+    AnalyserResult.call(this, name, node, message, fix);
+};
+
+CheckResult.prototype = Object.create(AnalyserResult.prototype);
+
+CheckResult.prototype.performFix = function() {
+    if (this.fix === undefined) {
+        return;
+    }
+	this.fix.execute();
+}
+
+CheckResult.prototype.getMessage = function() {
+    return this.message;
+}
