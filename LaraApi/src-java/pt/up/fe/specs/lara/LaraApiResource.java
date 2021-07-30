@@ -22,7 +22,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 public enum LaraApiResource implements LaraResourceProvider {
 
     // Analysis
-    ANALYSER("analysis/Analyser.lara");
+    ANALYSER("analysis/Analyser.lara"),
     ANALYSER_RESULT("analysis/AnalyserResult.lara"),
     CHECK_BASED_ANALYSER("analysis/CheckBasedAnalyser.lara"),
     CHECKER("analysis/Checker.lara"),
