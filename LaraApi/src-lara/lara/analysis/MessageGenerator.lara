@@ -6,11 +6,12 @@ import lara.analysis.ResultList;
 
 var MessageGenerator = function() {
     this.globalFileResultList = {};
-    this.fileOutputFlag = 0;
+    this.fileOutputFlag = false;
+	this.printMessage = true;
 };
 
 MessageGenerator.prototype.enableFileOutput = function() {
-	this.fileOutputFlag = 1;
+	this.fileOutputFlag = true;
 }
 
 MessageGenerator.prototype.append = function(resultList) {
@@ -32,16 +33,41 @@ MessageGenerator.prototype.generateReport = function() {
     if (this.globalFileResultList === undefined) {
     		return;
     }
+
+	var allMessages = {};
+	
     for (var fileName in this.globalFileResultList) {
-        var message = "";
-        var analysisFileName = Io.getPath(Clava.getData().getContextFolder(), "AnalysisReports/analysis_" + fileName + "_report.txt");
+		var messages = [];
+        //var message = "";
+
         for (var result of this.globalFileResultList[fileName]) {
-            message += fileName + "/l." + result.node.line + ": " + result.message;
+            //message += fileName + "/l." + result.node.line + ": " + result.message;
+			messages.push(fileName + "/l." + result.node.line + ": " + result.message);
         }
+		
+		if(this.fileOutputFlag || this.printMessage) {
+			var message = messages.join("\n");
+			if(this.printMessage) {
+				println(message);
+			}
+			
+			if(this.fileOutputFlag) {
+				var analysisFileName = Io.getPath(Clava.getData().getContextFolder(), "AnalysisReports/analysis_" + fileName + "_report.txt");
+				Io.writeFile(analysisFileName, message);
+			}			
+		}
+		
+/*
         if (this.fileOutputFlag === 0) {
 		      println(message);
 		      return;
 	      }
         Io.writeFile(analysisFileName, message);
+*/
+		
+		// Store messages of file
+		allMessages[fileName] = messages;
     }
+	
+	return allMessages;
 }
