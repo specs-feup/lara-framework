@@ -4,14 +4,17 @@ import lara.analysis.ResultList;
 
 // Class sorting resultLists and generating an analysis report
 
-var MessageGenerator = function() {
+var MessageGenerator = function(printMessage, writeFile) {
+
     this.globalFileResultList = {};
-    this.fileOutputFlag = false;
-	this.printMessage = true;
+	this.printMessage = printMessage === undefined ? true : printMessage;
+	this.writeFile = writeFile === undefined ? false : writeFile;
+	//this.printMessage = true;
+    //this.fileOutputFlag = false;
 };
 
 MessageGenerator.prototype.enableFileOutput = function() {
-	this.fileOutputFlag = true;
+	this.writeFile = true;
 }
 
 MessageGenerator.prototype.append = function(resultList) {
@@ -45,13 +48,13 @@ MessageGenerator.prototype.generateReport = function() {
 			messages.push(fileName + "/l." + result.node.line + ": " + result.message);
         }
 		
-		if(this.fileOutputFlag || this.printMessage) {
+		if(this.writeFile || this.printMessage) {
 			var message = messages.join("\n");
 			if(this.printMessage) {
 				println(message);
 			}
 			
-			if(this.fileOutputFlag) {
+			if(this.writeFile) {
 				var analysisFileName = Io.getPath(Clava.getData().getContextFolder(), "AnalysisReports/analysis_" + fileName + "_report.txt");
 				Io.writeFile(analysisFileName, message);
 			}			
