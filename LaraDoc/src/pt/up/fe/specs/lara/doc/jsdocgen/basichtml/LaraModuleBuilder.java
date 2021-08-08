@@ -195,7 +195,7 @@ public class LaraModuleBuilder {
         }
 
         // if (!elements.isEmpty()) {
-        // SpecsLogs.msgWarn("Did not consume all AspectIrElements: "
+        // SpecsLogs.warn("Did not consume all AspectIrElements: "
         // + elements.stream().map(element -> element.getClass().getName()).collect(Collectors.toSet()));
         // }
 

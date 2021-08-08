@@ -154,11 +154,11 @@ public abstract class ApplicationWorker<T> {
 	Throwable ourCause = ex.getCause();
 
 	if (ourCause == null) {
-	    SpecsLogs.msgWarn("\nAn Exception" + prefix + ", but could not get cause.");
+	    SpecsLogs.warn("\nAn Exception" + prefix + ", but could not get cause.");
 	} else {
 
 	    SpecsLogs.msgInfo("");
-	    SpecsLogs.msgWarn(ourCause.toString(), ourCause);
+	    SpecsLogs.warn(ourCause.toString(), ourCause);
 	}
     }
 

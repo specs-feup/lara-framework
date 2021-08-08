@@ -188,7 +188,7 @@ public abstract class LaraDocNode extends ATreeNode<LaraDocNode> {
 
     public void remove(LaraDocNode node) {
         if (!hasNode(node)) {
-            SpecsLogs.msgWarn("Removing node that does not exist as child. Node: " + node + "\n Parent:" + this);
+            SpecsLogs.warn("Removing node that does not exist as child. Node: " + node + "\n Parent:" + this);
             return;
         }
 

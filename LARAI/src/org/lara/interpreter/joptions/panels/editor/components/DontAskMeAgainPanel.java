@@ -71,7 +71,7 @@ public class DontAskMeAgainPanel extends JPanel {
     // try {
     // askSave = !Preferences.userRoot().nodeExists(askSaveSetting);
     // } catch (BackingStoreException e) {
-    // SpecsLogs.msgWarn("Could not get 'ask to save' setting:\n", e);
+    // SpecsLogs.warn("Could not get 'ask to save' setting:\n", e);
     // }
     // if (askSave) {
     // for (int i = 0; i < tabbedPane.getTabCount(); i++) {
@@ -90,7 +90,7 @@ public class DontAskMeAgainPanel extends JPanel {
     // SourceTextArea editorTab = getTab(i);
     // boolean wasSaved = editorTab.save();
     // if (!wasSaved) {
-    // SpecsLogs.msgWarn("Could not save file " + editorTab.getLaraFile());
+    // SpecsLogs.warn("Could not save file " + editorTab.getLaraFile());
     // }
     // }
     // return true;

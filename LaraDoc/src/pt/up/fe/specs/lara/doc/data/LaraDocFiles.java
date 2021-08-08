@@ -114,7 +114,7 @@ public class LaraDocFiles {
 
     private LaraDocPackage getCurrentPackage() {
         if (packageNameStack.isEmpty()) {
-            SpecsLogs.msgWarn("Package name stack is empty, using default name");
+            SpecsLogs.warn("Package name stack is empty, using default name");
         }
 
         String packageName = !packageNameStack.isEmpty() ? packageNameStack.peek() : DEFAULT_PACKAGE_ID;

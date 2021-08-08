@@ -173,7 +173,7 @@ public class SourceTextArea extends JPanel {
             closeReloadPane();
             return true;
         } catch (IOException e) {
-            SpecsLogs.msgWarn("Error message:\n", e);
+            SpecsLogs.warn("Error message:\n", e);
             JOptionPane.showMessageDialog(this, e.getMessage(), "Save Exception", JOptionPane.ERROR_MESSAGE);
         }
         return false;
@@ -211,7 +211,7 @@ public class SourceTextArea extends JPanel {
             tabsContainer.updateOpenedFiles();
             return true;
         } catch (IOException e) {
-            SpecsLogs.msgWarn("Error message:\n", e);
+            SpecsLogs.warn("Error message:\n", e);
         }
         return false;
     }
@@ -349,7 +349,7 @@ public class SourceTextArea extends JPanel {
             updateLastModified();
             // tabbedParent.setTabTitle(this);
         } catch (IOException e) {
-            SpecsLogs.msgWarn("Could not reload file:\n", e);
+            SpecsLogs.warn("Could not reload file:\n", e);
         }
     }
 

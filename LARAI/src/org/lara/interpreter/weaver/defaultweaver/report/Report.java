@@ -152,7 +152,7 @@ public class Report {
             }
 
         } catch (final Exception e) {// Catch exception if any
-            SpecsLogs.msgWarn("Error: " + e.getMessage(), e);
+            SpecsLogs.warn("Error: " + e.getMessage(), e);
             // Throwing a RuntimeException so that we can detect if there was
             // any problem
             // It should be caught at a higher level

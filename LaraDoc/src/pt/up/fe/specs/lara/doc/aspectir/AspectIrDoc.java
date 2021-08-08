@@ -199,7 +199,7 @@ public class AspectIrDoc {
                 .collect(Collectors.toList());
 
         if (prototypeLiterals.size() != 1) {
-            SpecsLogs.msgWarn("Expected to find one 'prototype' literal, found "
+            SpecsLogs.warn("Expected to find one 'prototype' literal, found "
                     + prototypeLiterals.size() + ":\n " + CodeElems.toXml(codeElem));
             return "";
         }
@@ -215,7 +215,7 @@ public class AspectIrDoc {
                 .collect(Collectors.toList());
 
         if (idNodes.size() != 1) {
-            SpecsLogs.msgWarn("Expected to find one id node, found "
+            SpecsLogs.warn("Expected to find one id node, found "
                     + idNodes.size() + ":\n " + BaseNodes.toXml(parent));
             return "";
         }

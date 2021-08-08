@@ -816,7 +816,7 @@ public class LaraC {
                     + e.generateExceptionBuilder().getRuntimeException());
             return Optional.empty();
         } catch (Exception e) {
-            SpecsLogs.msgWarn("Could not compile file '" + laraFile + "'", e);
+            SpecsLogs.warn("Could not compile file '" + laraFile + "'", e);
             return Optional.empty();
         }
 

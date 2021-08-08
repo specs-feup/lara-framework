@@ -31,8 +31,8 @@ public interface ClassProvider {
 	try {
 	    return new GenericClassProvider(Class.forName(s));
 	} catch (ClassNotFoundException e) {
-	    SpecsLogs.msgWarn("Error message:\n", e);
-	    SpecsLogs.msgWarn("Using Object instead");
+	    SpecsLogs.warn("Error message:\n", e);
+	    SpecsLogs.warn("Using Object instead");
 	    return new GenericClassProvider(Object.class);
 	}
     }

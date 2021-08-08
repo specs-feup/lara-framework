@@ -198,7 +198,7 @@ public class OutlinePanel extends JPanel {
 
                 }
             } catch (IOException e) {
-                SpecsLogs.msgWarn("Could not load the needed icon resource");
+                SpecsLogs.warn("Could not load the needed icon resource");
             }
             return null;
         }

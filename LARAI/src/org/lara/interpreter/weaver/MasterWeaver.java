@@ -363,7 +363,7 @@ public class MasterWeaver {
         if (message == null) {
             throwable = e.getCause();
         }
-        SpecsLogs.msgWarn("Problem during select " + selectName + ": " + throwable.getMessage(), throwable);
+        SpecsLogs.warn("Problem during select " + selectName + ": " + throwable.getMessage(), throwable);
     }
 
     /**

@@ -113,7 +113,7 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
             try (final InputStream inputConfigStream = new FileInputStream(globalFile);) {
                 properties.load(inputConfigStream);
             } catch (IOException e) {
-                SpecsLogs.msgWarn("Error message:\n", e);
+                SpecsLogs.warn("Error message:\n", e);
             }
         }
     }

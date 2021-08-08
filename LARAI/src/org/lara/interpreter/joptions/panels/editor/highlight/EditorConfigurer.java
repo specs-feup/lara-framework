@@ -59,7 +59,7 @@ public class EditorConfigurer {
             theme = Theme.load(SpecsIo.resourceToStream("org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"));
 
         } catch (IOException e) {
-            SpecsLogs.msgWarn("Could not load selected theme, will use default\n", e);
+            SpecsLogs.warn("Could not load selected theme, will use default\n", e);
         }
     }
 
@@ -180,7 +180,7 @@ public class EditorConfigurer {
     public static boolean loadFile(SourceTextArea sourceTextArea, File inputFile) {
         TextEditorPane textArea = sourceTextArea.getTextArea();
         if (inputFile.isDirectory()) {
-            SpecsLogs.msgWarn(
+            SpecsLogs.warn(
                     "Input file cannot be a directory: '" + SpecsIo.getCanonicalPath(inputFile) + "'\n");
             return false;
         }
@@ -194,7 +194,7 @@ public class EditorConfigurer {
 
             return true;
         } catch (IOException e) {
-            SpecsLogs.msgWarn("Error message:\n", e);
+            SpecsLogs.warn("Error message:\n", e);
         }
         return false;
     }

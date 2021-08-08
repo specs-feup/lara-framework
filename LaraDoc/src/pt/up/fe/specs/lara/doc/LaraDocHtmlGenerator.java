@@ -134,7 +134,7 @@ public class LaraDocHtmlGenerator {
 
         // Check if there is any class missing
         if (!laraDocNodes.isEmpty()) {
-            SpecsLogs.msgWarn("List of documentation nodes is not empty, check this: " + laraDocNodes);
+            SpecsLogs.warn("List of documentation nodes is not empty, check this: " + laraDocNodes);
         }
 
         LaraDocResource.JQUERY.write(outputFolder);
@@ -360,7 +360,7 @@ public class LaraDocHtmlGenerator {
 
         // Check
         if (!nodeChildren.isEmpty()) {
-            SpecsLogs.msgWarn("Nodes not supported: "
+            SpecsLogs.warn("Nodes not supported: "
                     + nodeChildren.stream().map(child -> child.getClass().getName()).collect(Collectors.toSet()));
         }
 
