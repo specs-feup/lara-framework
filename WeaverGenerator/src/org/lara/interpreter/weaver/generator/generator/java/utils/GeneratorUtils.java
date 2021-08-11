@@ -634,13 +634,22 @@ public class GeneratorUtils {
     public static Method generateActionImplMethod(Method original, String actionName, String returnType,
             JavaClass targetClass, boolean hasEvents) {
         Method cloned = original.clone();
+        // System.out.println("ORIGINAL: " + original.getParams());
         original.setName(original.getName() + GenConstants.getImplementationSufix());
         cloned.clearCode();
         cloned.add(Modifier.FINAL);
         String joinedArgs = StringUtils.join(original.getParams(), Argument::getName, ", ");
+
+        // Special case: when single argument is an array, it will be used as the varargs of triggerAction() that
+        // expected Object[]. This can raise a warning, it might be ambiguous since we want to pass the array as
+        // the only value of the varags, and not each element of the array as an arguments of the args.
+        if (original.getParams().size() == 1 && original.getParams().get(0).getClassType().isArray()) {
+            joinedArgs = "new Object[] { " + joinedArgs + "}";
+        }
+
         cloned.appendCodeln("try {");
         cloned.appendCode("\t");
-
+        // System.out.println("JOINED ARGS '" + joinedArgs + "': " + original.getParams());
         if (hasEvents) {
             targetClass.addImport(Stage.class);
             targetClass.addImport(Optional.class);
@@ -684,6 +693,7 @@ public class GeneratorUtils {
             }
             newArgs.add(argStr);
         }
+
         // System.out.println(actionName + ": " + newArgs);
         cloned.appendCodeln("this." + original.getName() + "(" + StringUtils.join(newArgs, ", ") + ");");
         if (hasEvents) {
