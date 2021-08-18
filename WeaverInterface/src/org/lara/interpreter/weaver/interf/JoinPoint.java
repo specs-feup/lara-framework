@@ -34,8 +34,6 @@ import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
-// import jdk.nashorn.internal.runtime.Undefined;
-
 /**
  * Abstract class used by the LARA interpreter to define a join point instance
  */
