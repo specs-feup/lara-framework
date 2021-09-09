@@ -137,6 +137,7 @@ public class Interpreter {
     public Object interpret(Aspects asps) {
 
         importProcessor.importAndInitialize();
+
         final StringBuilder mainCall = aspectProcessor.generateJavaScript(asps);
 
         return executeMainAspect(mainCall);

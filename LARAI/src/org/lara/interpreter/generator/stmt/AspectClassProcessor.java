@@ -55,9 +55,9 @@ public class AspectClassProcessor {
 
     }
 
-    public StringBuilder generateJavaScriptDocV1(Aspects asps) {
-        return generateAspects(asps, false);
-    }
+    // public StringBuilder generateJavaScriptDocV1(Aspects asps) {
+    // return generateAspects(asps, false);
+    // }
 
     public StringBuilder generateJavaScriptDoc(Aspects asps) {
         StringBuilder jsCode = new StringBuilder();
@@ -135,6 +135,7 @@ public class AspectClassProcessor {
     private StringBuilder generateAspects(Aspects asps, boolean evaluate) {
         // first the aspects declaration
         for (final Aspect asp : asps.aspects.values()) {
+
             setCurrentAspect(asp.name);
             try {
                 final StringBuilder aspectConstructor = getAspectJavascript(asp);
@@ -164,6 +165,7 @@ public class AspectClassProcessor {
     }
 
     private void generateDeclarations(Aspects asps, boolean evaluate) {
+        // System.out.println("ASPS: " + asps.main);
         // then the global variables declaration
         for (final Statement stmt : asps.declarations) {
 

@@ -622,6 +622,7 @@ public class LaraI {
 
         try {
             // Start interpretation
+
             interpreter.interpret(asps);
 
             String main = options.getMainAspect();
