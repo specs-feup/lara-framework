@@ -31,4 +31,8 @@ public class GenericLaraResourceProvider implements LaraResourceProvider {
         return originalResource;
     }
 
+    @Override
+    public String toString() {
+        return getResource();
+    }
 }

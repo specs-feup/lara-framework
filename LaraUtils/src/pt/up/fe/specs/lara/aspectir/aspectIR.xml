@@ -11,6 +11,7 @@
 		<member name="aspect" type="Aspect" count="*" />
 		<member name="main" where="attribute" type="string" count="0..1" />
 		<member name="declaration" type="Statement" count="*"/>
+		<!--  <member name="scriptImport" type="string" count="*"/>  -->
 	</type>
 		
 <!-- ASPECT DEFINITION ************************************************ -->	
