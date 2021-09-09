@@ -6,20 +6,15 @@
 package org.dojo.jsl.parser.ast;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import larac.LaraC;
-import larac.exceptions.LARACompilerException;
+import larac.imports.LaraImports;
 import larac.utils.output.MessageConstants;
 import pt.up.fe.specs.util.SpecsIo;
-import tdrc.utils.StringUtils;
 
 public class ASTImport extends SimpleNode {
 
@@ -110,7 +105,7 @@ public class ASTImport extends SimpleNode {
         // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filePath))
         // .collect(Collectors.toList());
         if (!resources.isEmpty()) {
-            resources.forEach(r -> importLaraResource(lara, filePath, r));
+            resources.forEach(r -> LaraImports.importLaraResource(lara, filePath, r));
             anyImported = true;
         }
 
@@ -132,7 +127,7 @@ public class ASTImport extends SimpleNode {
             for (final File importingLaraFile : files) {
                 var extension = SpecsIo.getExtension(importingLaraFile);
                 if (importingLaraFile.isFile() && LaraC.getSupportedExtensions().contains(extension)) {
-                    importLaraFile(lara, filePath, importingLaraFile);
+                    LaraImports.importLaraFile(lara, filePath, importingLaraFile);
                 }
             }
         } else {
@@ -247,40 +242,50 @@ public class ASTImport extends SimpleNode {
      * @param filePath
      */
     private boolean importSingleName(final LaraC lara, String fileName, String filePath) {
+
+        // Get LARA imports
+        var laraImports = lara.getOptions().getLaraImports(fileName, filePath);
+
+        laraImports.stream().forEach(laraImport -> laraImport.resolveImport(lara));
+
+        // true if there where imports found
+        return !laraImports.isEmpty();
+
+        /*
         String relativePath = filePath + fileName;
-
+        
         var foundImport = false;
-
+        
         // var filesToCheck = getFilesToCheck(lara, relativePath);
-
+        
         // 1.
         // Check include folders
         for (final File path : lara.getOptions().getIncludeFolders()) {
             for (var ext : LaraC.getSupportedExtensions()) {
                 var importPath = relativePath + "." + ext;
-
+        
                 final File importingFile = new File(path, importPath);
                 if (importingFile.exists()) {
                     lara.printSubTopic("Importing " + importingFile);
-                    importLaraFile(lara, importPath, importingFile);
+                    LaraImports.importLaraFile(lara, importPath, importingFile);
                     foundImport = true;
                 }
             }
         }
-
+        
         // 2.
         // Check resource by filename, instead of resource name
         for (var ext : LaraC.getSupportedExtensions()) {
             var importPath = relativePath + "." + ext;
-
+        
             var resource = lara.getOptions().getIncludeResourcesMap().get(importPath);
             if (!resource.isEmpty()) {
-                importLaraResource(lara, importPath, resource.get(0));
-
+                LaraImports.importLaraResource(lara, importPath, resource.get(0));
+        
                 // importScriptFile(lara, filepath, findFirst.get());
                 foundImport = true;
             }
-
+        
             // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
             // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(importPath))
             // .findFirst();
@@ -291,11 +296,11 @@ public class ASTImport extends SimpleNode {
             // // importScriptFile(lara, filepath, findFirst.get());
             // foundImport = true;
             // }
-
+        
         }
-
+        
         return foundImport;
-
+        */
     }
 
     /*
@@ -337,116 +342,18 @@ public class ASTImport extends SimpleNode {
     }
     */
 
-    private List<String> getFilesToCheck(LaraC lara, String relativePath) {
-
-        var filesToCheck = new ArrayList<String>();
-
-        for (final File path : lara.getOptions().getIncludeFolders()) {
-            for (var ext : LaraC.getSupportedScriptExtensions()) {
-                filesToCheck.add(relativePath + "." + ext);
-            }
-        }
-
-        return filesToCheck;
-    }
-
-    private static void importLaraFile(final LaraC lara, final String importPath, final File importingFile) {
-        String canonicalPath = SpecsIo.getCanonicalPath(importingFile);
-        if (lara.wasImported(canonicalPath)) {
-            LaraC importedLARA = lara.getImportedLARA(canonicalPath);
-            if (importedLARA == null) {
-                throw new LARACompilerException("Problem with recursive import with file: " + canonicalPath
-                        + " one occurrence is: " + lara.getLaraPath());
-            }
-            // LaraLog.debug("ALREADY IMPORTED:" + importedLARA);
-            lara.addPreviouslyImportedLARA(importedLARA);
-            lara.println(" Aspects from file " + importPath + " were already imported. Will ignore this import.");
-            return;
-        }
-        lara.printSubTopic(" Importing aspects from file " + importPath);
-        lara.addImportedLARA(canonicalPath, null);
-        final LaraC importingLara = LaraC.newImporter(importingFile, lara.getOptions(), lara.languageSpec(),
-                lara.getPrint(), lara.getImportedLARA());
-        rearrangeImportedLaraAndImportAspects(lara, importPath, importingLara);
-        lara.setImportedLARA(importingLara.getImportedLARA());
-        lara.addImportedLARA(canonicalPath, importingLara);
-    }
-
-    private static void importLaraResource(final LaraC lara, String filePath,
-            final LaraResourceProvider importingResource) {
-        String importName = importingResource.getFileLocation();
-        String resource = importingResource.getResource();
-        // if (lara.wasImported(resource)) {
-
-        if (lara.wasImported(importName)) {
-            LaraC importedLARA = lara.getImportedLARA(importName);
-            if (importedLARA == null) {
-                throw new LARACompilerException("Problem with recursive import with resource: " + resource
-                        + " one occurrence is: " + lara.getLaraPath());
-            }
-            lara.addPreviouslyImportedLARA(importedLARA);
-            lara.println(" Aspects from import " + importName + " were already imported. Will ignore this import.");
-            return;
-        }
-
-        if (importName.equals(resource)) {
-            lara.printSubTopic(" Importing aspects from resource " + resource);
-        } else {
-            lara.printSubTopic(" Importing aspects from resource " + resource + " (import '" + importName + "')");
-        }
-
-        // lara.addImportedLARA(resource);
-        lara.addImportedLARA(importName, null);
-        final LaraC importingLara = LaraC.newImporter(importingResource, lara.getOptions(), lara.languageSpec(),
-                lara.getPrint(), lara.getImportedLARA());
-        rearrangeImportedLaraAndImportAspects(lara, resource.replace("/", File.separator), importingLara);
-        lara.setImportedLARA(importingLara.getImportedLARA());
-        lara.addImportedLARA(importName, importingLara);
-
-    }
-
-    private static void rearrangeImportedLaraAndImportAspects(final LaraC lara, String filePath,
-            final LaraC importingLara) {
-        String prefix = filePath.replace(".lara", MessageConstants.NAME_SEPARATOR);
-        prefix = prefix.replace(File.separator, MessageConstants.NAME_SEPARATOR);
-
-        importingLara.setPrefix(prefix);
-        lara.println("Organizing imported aspects from " + filePath);
-        importingLara.toAspectIR();
-        lara.println("Finished organizing imported aspects!");
-        importAspects(lara, filePath, importingLara);
-    }
-
-    public static void importAspects(final LaraC lara, String filePath, final LaraC importingLara) {
-        List<ASTAspectDef> importingAspects = importingLara.aspectIR().getAspectdefs();
-
-        if (!importingAspects.isEmpty()) {
-            for (final ASTAspectDef importingAsp : importingAspects) {
-                final String key = importingLara.getPrefix() + importingAsp.getName();
-
-                lara.aspectIR().getImportedAspectDefs().put(key, importingAsp);
-            }
-            String importingAspectsStr = StringUtils.join(importingAspects, ASTAspectDef::getName, ", ");
-            lara.println(" Imported the following aspects: " + importingAspectsStr);
-        }
-
-        Map<String, SimpleNode> globalElements = importingLara.aspectIR().getGlobalElements();
-
-        if (!globalElements.isEmpty()) {
-            globalElements.entrySet()
-                    .forEach(e -> lara.aspectIR().addGlobalElement(e.getKey(), e.getValue(), filePath));
-            String importingAspectsStr = StringUtils.join(globalElements.keySet(), ", ");
-            lara.println(" Imported the following aspects: " + importingAspectsStr);
-        }
-        // Recursive import
-        Map<String, ASTAspectDef> recursiveImport = importingLara.aspectIR().getImportedAspectDefs();
-        if (!recursiveImport.isEmpty()) {
-            lara.aspectIR().getImportedAspectDefs().putAll(recursiveImport);
-            String importedFromImporting = StringUtils.join(recursiveImport.keySet(),
-                    s -> s.replace(MessageConstants.NAME_SEPARATOR, "."), ",");
-            lara.println(" Recursive import: " + importedFromImporting);
-        }
-    }
+    // private List<String> getFilesToCheck(LaraC lara, String relativePath) {
+    //
+    // var filesToCheck = new ArrayList<String>();
+    //
+    // for (final File path : lara.getOptions().getIncludeFolders()) {
+    // for (var ext : LaraC.getSupportedScriptExtensions()) {
+    // filesToCheck.add(relativePath + "." + ext);
+    // }
+    // }
+    //
+    // return filesToCheck;
+    // }
 
     @Override
     public void toXML(Document doc, Element parent) {

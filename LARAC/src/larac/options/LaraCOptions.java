@@ -19,7 +19,9 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
@@ -30,6 +32,9 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import larac.LaraC;
 import larac.exceptions.LARACompilerException;
+import larac.imports.FileLaraImport;
+import larac.imports.LaraImport;
+import larac.imports.ResourceLaraImport;
 import larac.options.optionprovider.OptionUtils;
 import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
@@ -59,6 +64,8 @@ public class LaraCOptions {
     private Lazy<MultiMap<String, LaraResourceProvider>> includeResourcesMap;
     private boolean documentationMode;
 
+    private Map<String, List<LaraImport>> importsCache;
+
     private Options options;
     private CommandLine command;
 
@@ -76,6 +83,8 @@ public class LaraCOptions {
         includeFolders = new ArrayList<>();
         includeResources = new ArrayList<>();
         includeResourcesMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
+        importsCache = new HashMap<>();
+
         // Add working dir to the included paths
         final File workingDir = SpecsIo.getWorkingDir();
         includeFolders.add(workingDir);
@@ -390,6 +399,9 @@ public class LaraCOptions {
      */
     public void setIncludeFolders(List<File> includeFolders) {
         this.includeFolders = includeFolders;
+
+        // Reset
+        importsCache = new HashMap<>();
     }
 
     /**
@@ -435,6 +447,9 @@ public class LaraCOptions {
         if (includeResourcesMap.isInitialized()) {
             includeResourcesMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
         }
+
+        // Reset
+        importsCache = new HashMap<>();
     }
 
     /**
@@ -463,6 +478,52 @@ public class LaraCOptions {
 
     public void setDocumentationMode(boolean documentationMode) {
         this.documentationMode = documentationMode;
+    }
+
+    public List<LaraImport> getLaraImports(String filename, String filePath) {
+        // Using forward slash as separator, since it is an illegal charater for a filename, both in Windows and Linux
+        var key = filename + "////" + filePath;
+
+        var laraImports = importsCache.get(key);
+
+        if (laraImports == null) {
+            laraImports = buildLaraImports(filename, filePath);
+            importsCache.put(key, laraImports);
+        }
+
+        return laraImports;
+    }
+
+    private List<LaraImport> buildLaraImports(String filename, String filePath) {
+        var laraImports = new ArrayList<LaraImport>();
+
+        String relativePath = filePath + filename;
+
+        // 1.
+        // Check include folders
+        for (final File path : getIncludeFolders()) {
+            for (var ext : LaraC.getSupportedExtensions()) {
+                var importPath = relativePath + "." + ext;
+
+                final File importingFile = new File(path, importPath);
+                if (importingFile.exists()) {
+                    laraImports.add(new FileLaraImport(importPath, importingFile));
+                }
+            }
+        }
+
+        // 2.
+        // Check resource by filename, instead of resource name
+        for (var ext : LaraC.getSupportedExtensions()) {
+            var importPath = relativePath + "." + ext;
+
+            var resource = getIncludeResourcesMap().get(importPath);
+            if (!resource.isEmpty()) {
+                laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
+            }
+        }
+
+        return laraImports;
     }
 
 }
