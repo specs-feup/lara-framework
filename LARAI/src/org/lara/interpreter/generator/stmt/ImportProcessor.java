@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.api.LaraIo;
@@ -45,6 +47,7 @@ import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
+import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
@@ -57,6 +60,7 @@ public class ImportProcessor {
             ExceptionUtils.class, UserException.class, FilterExpression.class, JoinPoint.class, LaraIo.class };
 
     private final Interpreter interpreter;
+    private final Set<String> loadedSources;
 
     public static ImportProcessor newInstance(Interpreter interpreter) {
         return new ImportProcessor(interpreter);
@@ -64,6 +68,7 @@ public class ImportProcessor {
 
     private ImportProcessor(Interpreter interpreter) {
         this.interpreter = interpreter;
+        this.loadedSources = new HashSet<>();
     }
 
     /**
@@ -308,8 +313,18 @@ public class ImportProcessor {
     private void evaluateImport(final String internalScripts, String source, boolean isInternal, JsFileType type) {
         try {
 
+            // Check if source was already loaded
+            if (loadedSources.contains(source)) {
+                LaraLog.debug("ImportProcessor: ignoring already loaded source '" + source + "'");
+                return;
+            }
+
             interpreter.out().println("  " + MessageConstants.BRANCH_STR + source);
             interpreter.evaluate(internalScripts, type);
+
+            // Add source to loaded sources
+            loadedSources.add(source);
+
         } catch (Exception e) {
             throw new ScriptImportException(source, isInternal, e);
         }
