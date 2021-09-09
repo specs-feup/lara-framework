@@ -6,9 +6,9 @@
 package org.dojo.jsl.parser.ast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
@@ -39,6 +39,7 @@ public class ASTImport extends SimpleNode {
 
     @Override
     public void declareGlobal(LaraC lara) {
+
         // Ignore imports if in documentation mode
         if (lara.getOptions().isDocumentationMode()) {
             return;
@@ -58,11 +59,12 @@ public class ASTImport extends SimpleNode {
 
         } else {
             // String fileName = value + ".lara";
-            var validLaraImport = importSingleLara(lara, value + ".lara", filePath);
+            // var validLaraImport = importSingleLara(lara, value + ".lara", filePath);
+            // var validScriptImport = importSingleScript(lara, value.toString(), filePath);
 
-            var validScriptImport = importSingleScript(lara, value.toString(), filePath);
+            var validImport = importSingleName(lara, value.toString(), filePath);
 
-            var validImport = validLaraImport || validScriptImport;
+            // var validImport = validLaraImport || validScriptImport;
             if (!validImport) {
                 var importValue = filePath + value;
                 var exts = LaraC.getSupportedExtensions().stream().collect(Collectors.joining(", .", ".", ""));
@@ -101,10 +103,12 @@ public class ASTImport extends SimpleNode {
 
         // 2.
         // Search the resources defined in the given package;
-        List<LaraResourceProvider> resources = lara.getOptions().getIncludeResources().stream()
-                // .filter(r -> r.getResourceLocation().replace("/", File.separator).equals(filePath))
-                .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filePath))
-                .collect(Collectors.toList());
+
+        var resources = lara.getOptions().getIncludeResourcesMap().get(filePath);
+        // List<LaraResourceProvider> resources = lara.getOptions().getIncludeResources().stream()
+        // // .filter(r -> r.getResourceLocation().replace("/", File.separator).equals(filePath))
+        // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filePath))
+        // .collect(Collectors.toList());
         if (!resources.isEmpty()) {
             resources.forEach(r -> importLaraResource(lara, filePath, r));
             anyImported = true;
@@ -145,43 +149,38 @@ public class ASTImport extends SimpleNode {
      * @param filePath
      * @return true if the file was a valid .lara file for import, false otherwise
      */
-    private boolean importSingleLara(final LaraC lara, String fileName, String filePath) {
-        String relativePath = filePath + fileName;
-
-        // 1.
-        // Check include folders
-        for (final File path : lara.getOptions().getIncludeFolders()) {
-            final File importingFile = new File(path, relativePath);
-            if (importingFile.exists()) {
-                lara.printSubTopic("Importing " + importingFile);
-                if (!importingFile.exists()) {
-                    throw newException(
-                            "Import: Could not find file '" + fileName + "' on file path: " + path + relativePath);
-                }
-
-                importLaraFile(lara, relativePath, importingFile);
-                return true;
-            }
-        }
-
-        // 2.
-        // Check resource by filename, instead of resource name
-        Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
-                // .filter(r -> r.getResource().replace("/", File.separator).equals(relativePath))
-                .filter(r -> r.getFileLocation().replace("/", File.separator).equals(relativePath))
-                .findFirst();
-
-        if (findFirst.isPresent()) {
-            importLaraResource(lara, relativePath, findFirst.get());
-            return true;
-        }
-
-        return false;
-
-        // throw newException(
-        // "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
-
-    }
+    // private boolean importSingleLara(final LaraC lara, String fileName, String filePath) {
+    // String relativePath = filePath + fileName;
+    //
+    // // 1.
+    // // Check include folders
+    // for (final File path : lara.getOptions().getIncludeFolders()) {
+    // final File importingFile = new File(path, relativePath);
+    // if (importingFile.exists()) {
+    // lara.printSubTopic("Importing " + importingFile);
+    // importLaraFile(lara, relativePath, importingFile);
+    // return true;
+    // }
+    // }
+    //
+    // // 2.
+    // // Check resource by filename, instead of resource name
+    // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+    // // .filter(r -> r.getResource().replace("/", File.separator).equals(relativePath))
+    // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(relativePath))
+    // .findFirst();
+    //
+    // if (findFirst.isPresent()) {
+    // importLaraResource(lara, relativePath, findFirst.get());
+    // return true;
+    // }
+    //
+    // return false;
+    //
+    // // throw newException(
+    // // "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
+    //
+    // }
 
     /**
      * Imports a single file (either .js or .lara) with a given name, in the file path
@@ -190,59 +189,112 @@ public class ASTImport extends SimpleNode {
      * @param fileName
      * @param filePath
      */
-    private boolean importSingleScript(final LaraC lara, String fileName, String filePath) {
+    // private boolean importSingleScript(final LaraC lara, String fileName, String filePath) {
+    // String relativePath = filePath + fileName;
+    //
+    // var filesToCheck = getFilesToCheck(lara, relativePath);
+    //
+    // var foundImport = false;
+    //
+    // // 1.
+    // // Check include folders
+    // for (final File path : lara.getOptions().getIncludeFolders()) {
+    // for (var ext : LaraC.getSupportedScriptExtensions()) {
+    // var filepath = relativePath + "." + ext;
+    //
+    // final File importingFile = new File(path, filepath);
+    // if (importingFile.exists()) {
+    // lara.printSubTopic("Importing " + importingFile);
+    // importLaraFile(lara, filepath, importingFile);
+    // foundImport = true;
+    // break;
+    // }
+    // }
+    // }
+    //
+    // // 2.
+    // // Check resource by filename, instead of resource name
+    // for (var ext : LaraC.getSupportedScriptExtensions()) {
+    // var filepath = relativePath + "." + ext;
+    //
+    // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+    // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filepath))
+    // .findFirst();
+    //
+    // if (findFirst.isPresent()) {
+    // importLaraResource(lara, filepath, findFirst.get());
+    //
+    // // importScriptFile(lara, filepath, findFirst.get());
+    // foundImport = true;
+    // break;
+    // }
+    //
+    // }
+    //
+    // return foundImport;
+    //
+    // }
+
+    /**
+     * Imports all files associated with a single import name (e.g. .lara, .js).
+     * 
+     * <p>
+     * For instance, if filePath and fileName resolve to lara.EgImport, will import lara/EgImport.lara and
+     * lara/EgImport.js, if they exist.
+     * 
+     * @param lara
+     * @param fileName
+     * @param filePath
+     */
+    private boolean importSingleName(final LaraC lara, String fileName, String filePath) {
         String relativePath = filePath + fileName;
+
+        var foundImport = false;
+
+        // var filesToCheck = getFilesToCheck(lara, relativePath);
 
         // 1.
         // Check include folders
         for (final File path : lara.getOptions().getIncludeFolders()) {
-            for (var ext : LaraC.getSupportedScriptExtensions()) {
-                var filepath = relativePath + "." + ext;
+            for (var ext : LaraC.getSupportedExtensions()) {
+                var importPath = relativePath + "." + ext;
 
-                final File importingFile = new File(path, filepath);
+                final File importingFile = new File(path, importPath);
                 if (importingFile.exists()) {
                     lara.printSubTopic("Importing " + importingFile);
-                    importLaraFile(lara, filepath, importingFile);
-                    return true;
+                    importLaraFile(lara, importPath, importingFile);
+                    foundImport = true;
                 }
             }
         }
 
         // 2.
         // Check resource by filename, instead of resource name
-        for (var ext : LaraC.getSupportedScriptExtensions()) {
-            var filepath = relativePath + "." + ext;
+        for (var ext : LaraC.getSupportedExtensions()) {
+            var importPath = relativePath + "." + ext;
 
-            Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
-                    .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filepath))
-                    .findFirst();
-
-            if (findFirst.isPresent()) {
-                importLaraResource(lara, filepath, findFirst.get());
+            var resource = lara.getOptions().getIncludeResourcesMap().get(importPath);
+            if (!resource.isEmpty()) {
+                importLaraResource(lara, importPath, resource.get(0));
 
                 // importScriptFile(lara, filepath, findFirst.get());
-                return true;
+                foundImport = true;
             }
+
+            // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+            // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(importPath))
+            // .findFirst();
+            //
+            // if (findFirst.isPresent()) {
+            // importLaraResource(lara, importPath, findFirst.get());
+            //
+            // // importScriptFile(lara, filepath, findFirst.get());
+            // foundImport = true;
+            // }
 
         }
 
-        return false;
-
-        //
-        // // 2.
-        // // Check resource by filename, instead of resource name
-        // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
-        // // .filter(r -> r.getResource().replace("/", File.separator).equals(relativePath))
-        // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(relativePath))
-        // .findFirst();
-        //
-        // if (findFirst.isPresent()) {
-        // importLaraResource(lara, relativePath, findFirst.get());
-        // return;
-        // }
-        //
-        // throw newException(
-        // "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
+        return foundImport;
 
     }
 
@@ -284,6 +336,19 @@ public class ASTImport extends SimpleNode {
         return false;
     }
     */
+
+    private List<String> getFilesToCheck(LaraC lara, String relativePath) {
+
+        var filesToCheck = new ArrayList<String>();
+
+        for (final File path : lara.getOptions().getIncludeFolders()) {
+            for (var ext : LaraC.getSupportedScriptExtensions()) {
+                filesToCheck.add(relativePath + "." + ext);
+            }
+        }
+
+        return filesToCheck;
+    }
 
     private static void importLaraFile(final LaraC lara, final String importPath, final File importingFile) {
         String canonicalPath = SpecsIo.getCanonicalPath(importingFile);

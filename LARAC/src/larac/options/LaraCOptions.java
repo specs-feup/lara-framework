@@ -35,6 +35,8 @@ import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
 import pt.up.fe.specs.util.SpecsFactory;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.JarPath;
 
@@ -54,6 +56,7 @@ public class LaraCOptions {
     // include aspects in the given directories (separated by the file separator)
     private List<File> includeFolders;
     private List<LaraResourceProvider> includeResources;
+    private Lazy<MultiMap<String, LaraResourceProvider>> includeResourcesMap;
     private boolean documentationMode;
 
     private Options options;
@@ -72,6 +75,7 @@ public class LaraCOptions {
         xmlSpecDir = outputDir = new File(MessageConstants.HOME_DIR);
         includeFolders = new ArrayList<>();
         includeResources = new ArrayList<>();
+        includeResourcesMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
         // Add working dir to the included paths
         final File workingDir = SpecsIo.getWorkingDir();
         includeFolders.add(workingDir);
@@ -407,8 +411,30 @@ public class LaraCOptions {
         return includeResources;
     }
 
+    public MultiMap<String, LaraResourceProvider> getIncludeResourcesMap() {
+        return includeResourcesMap.get();
+        // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+        // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(importPath))
+        // .findFirst();
+    }
+
+    private MultiMap<String, LaraResourceProvider> buildIncludeResourcesMap() {
+        var resourcesMap = new MultiMap<String, LaraResourceProvider>();
+
+        for (var resource : getIncludeResources()) {
+            resourcesMap.put(resource.getFileLocation().replace("/", File.separator), resource);
+        }
+
+        return resourcesMap;
+    }
+
     public void setIncludeResources(List<LaraResourceProvider> includeResources) {
         this.includeResources = includeResources;
+
+        // Reset in case it is initialized
+        if (includeResourcesMap.isInitialized()) {
+            includeResourcesMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
+        }
     }
 
     /**
