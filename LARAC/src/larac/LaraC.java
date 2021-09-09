@@ -18,9 +18,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.JAXBException;
@@ -31,9 +35,11 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.apache.commons.io.input.BOMInputStream;
 import org.dojo.jsl.parser.ast.ASTStart;
 import org.dojo.jsl.parser.ast.LARAEcmaScript;
+import org.dojo.jsl.parser.ast.LARAEcmaScriptTreeConstants;
 import org.dojo.jsl.parser.ast.ParseException;
 import org.dojo.jsl.parser.ast.Token;
 import org.dojo.jsl.parser.ast.TokenMgrError;
+import org.dojo.jsl.parser.ast.utils.ASTScriptImport;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -70,6 +76,14 @@ public class LaraC {
     public static final String FRONT_END_VERSION = "Lara compiler version: 2.51";
 
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
+
+    private static final Collection<String> SUPPORTED_LARA_EXT = new LinkedHashSet<>(Arrays.asList("lara"));
+    private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js"));
+    private static final Collection<String> SUPPORTED_EXT = new LinkedHashSet<>();
+    static {
+        SUPPORTED_EXT.addAll(SUPPORTED_LARA_EXT);
+        SUPPORTED_EXT.addAll(SUPPORTED_SCRIPT_EXT);
+    }
 
     private Output print;
     private String jarPath;
@@ -150,6 +164,7 @@ public class LaraC {
      */
     public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecificationV2 langSpec,
             Output output, Map<String, LaraC> importedFiles) {
+
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraFile(laraC, laraFile);
         laraC.parseForImport(importedFiles);
@@ -176,6 +191,7 @@ public class LaraC {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraResource(laraC, laraResource);
         laraC.parseForImport(importedFiles);
+
         return laraC;
     }
 
@@ -185,6 +201,14 @@ public class LaraC {
         print = output;
         languageSpec = langSpec;
         // languageSpecV2 = JoinPointFactory.fromOld(langSpec);
+    }
+
+    public static Collection<String> getSupportedScriptExtensions() {
+        return SUPPORTED_SCRIPT_EXT;
+    }
+
+    public static Collection<String> getSupportedExtensions() {
+        return SUPPORTED_EXT;
     }
 
     private void parseForImport(Map<String, LaraC> importedFiles) {
@@ -290,6 +314,25 @@ public class LaraC {
         // return false;
         // }
 
+        var extension = SpecsIo.getExtension(laraPath).toLowerCase();
+
+        // System.out.println("EXTENSION: " + extension);
+
+        if (extension.equals("lara")) {
+            parseLara();
+        } else if (SUPPORTED_SCRIPT_EXT.contains(extension)) {
+            parseScript();
+        } else {
+            throw new RuntimeException("Tried to import unsupported file type: " + extension
+                    + ". Supported types: lara, " + SUPPORTED_SCRIPT_EXT.stream().collect(Collectors.joining(", ")));
+        }
+
+        println("Parse Successful!");
+        aspectIR.getAst().setLara(this);
+        return true;
+    }
+
+    private void parseLara() {
         // try (BOMInputStream bis = new BOMInputStream(new FileInputStream(laraFile));
         try (BOMInputStream bis = new BOMInputStream(getLaraStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(bis));) {
@@ -299,10 +342,12 @@ public class LaraC {
         } catch (Exception e) {
             throw new LARACompilerException("when parsing: " + laraPath, e);
         }
+    }
 
-        println("Parse Successful!");
-        aspectIR.getAst().setLara(this);
-        return true;
+    private void parseScript() {
+        var ast = new ASTStart(LARAEcmaScriptTreeConstants.JJTSTART);
+        ast.jjtAddChild(new ASTScriptImport(getLaraStream(), getLaraPath()), 0);
+        aspectIR.setAst(ast);
     }
 
     public static ASTStart javaCCParser(BufferedReader br) {

@@ -22,6 +22,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
 
 public class ASTImport extends SimpleNode {
+
     public ASTImport(int id) {
         super(id);
     }
@@ -43,7 +44,6 @@ public class ASTImport extends SimpleNode {
             return;
         }
 
-        String fileName = value + ".lara";
         String filePath = "";
         if (getChildren() != null) {
             for (final Node n : getChildren()) {
@@ -52,13 +52,25 @@ public class ASTImport extends SimpleNode {
         }
 
         MessageConstants.addSpace();
-        if (fileName.equals("*.lara")) {
+        if (value.equals("*")) {
 
             importAllLara(lara, filePath);
 
         } else {
+            // String fileName = value + ".lara";
+            var validLaraImport = importSingleLara(lara, value + ".lara", filePath);
 
-            importSingleLara(lara, fileName, filePath);
+            var validScriptImport = importSingleScript(lara, value.toString(), filePath);
+
+            var validImport = validLaraImport || validScriptImport;
+            if (!validImport) {
+                var importValue = filePath + value;
+                var exts = LaraC.getSupportedExtensions().stream().collect(Collectors.joining(", .", ".", ""));
+                throw newException(
+                        "No valid file (" + exts + ") was found in the included folders/resources for the import: "
+                                + importValue);
+            }
+
         }
         MessageConstants.removeSpace();
         lara.println("");
@@ -114,8 +126,8 @@ public class ASTImport extends SimpleNode {
         final File[] files = importingDir.listFiles();
         if (files.length != 0) {
             for (final File importingLaraFile : files) {
-                if (importingLaraFile.isFile() && SpecsIo.getExtension(importingLaraFile).equals("lara")) {
-
+                var extension = SpecsIo.getExtension(importingLaraFile);
+                if (importingLaraFile.isFile() && LaraC.getSupportedExtensions().contains(extension)) {
                     importLaraFile(lara, filePath, importingLaraFile);
                 }
             }
@@ -131,8 +143,9 @@ public class ASTImport extends SimpleNode {
      * @param lara
      * @param fileName
      * @param filePath
+     * @return true if the file was a valid .lara file for import, false otherwise
      */
-    private void importSingleLara(final LaraC lara, String fileName, String filePath) {
+    private boolean importSingleLara(final LaraC lara, String fileName, String filePath) {
         String relativePath = filePath + fileName;
 
         // 1.
@@ -147,7 +160,7 @@ public class ASTImport extends SimpleNode {
                 }
 
                 importLaraFile(lara, relativePath, importingFile);
-                return;
+                return true;
             }
         }
 
@@ -160,13 +173,79 @@ public class ASTImport extends SimpleNode {
 
         if (findFirst.isPresent()) {
             importLaraResource(lara, relativePath, findFirst.get());
-            return;
+            return true;
         }
 
-        throw newException(
-                "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
+        return false;
+
+        // throw newException(
+        // "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
 
     }
+
+    /**
+     * Imports a single file (either .js or .lara) with a given name, in the file path
+     * 
+     * @param lara
+     * @param fileName
+     * @param filePath
+     */
+    private boolean importSingleScript(final LaraC lara, String fileName, String filePath) {
+        String relativePath = filePath + fileName;
+
+        // 1.
+        // Check include folders
+        for (final File path : lara.getOptions().getIncludeFolders()) {
+            for (var ext : LaraC.getSupportedScriptExtensions()) {
+                var filepath = relativePath + "." + ext;
+
+                final File importingFile = new File(path, filepath);
+                if (importingFile.exists()) {
+                    lara.printSubTopic("Importing " + importingFile);
+                    importLaraFile(lara, filepath, importingFile);
+                    return true;
+                }
+            }
+        }
+
+        // 2.
+        // Check resource by filename, instead of resource name
+        for (var ext : LaraC.getSupportedScriptExtensions()) {
+            var filepath = relativePath + "." + ext;
+
+            Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+                    .filter(r -> r.getFileLocation().replace("/", File.separator).equals(filepath))
+                    .findFirst();
+
+            if (findFirst.isPresent()) {
+                importLaraResource(lara, filepath, findFirst.get());
+
+                // importScriptFile(lara, filepath, findFirst.get());
+                return true;
+            }
+
+        }
+
+        return false;
+
+        //
+        // // 2.
+        // // Check resource by filename, instead of resource name
+        // Optional<LaraResourceProvider> findFirst = lara.getOptions().getIncludeResources().stream()
+        // // .filter(r -> r.getResource().replace("/", File.separator).equals(relativePath))
+        // .filter(r -> r.getFileLocation().replace("/", File.separator).equals(relativePath))
+        // .findFirst();
+        //
+        // if (findFirst.isPresent()) {
+        // importLaraResource(lara, relativePath, findFirst.get());
+        // return;
+        // }
+        //
+        // throw newException(
+        // "No aspect was found in the included folders/resources for the aspect file: " + relativePath);
+
+    }
+
     /*
     private boolean importFromResource(final LaraC lara, String relativePath) {
     
@@ -287,6 +366,7 @@ public class ASTImport extends SimpleNode {
         }
 
         Map<String, SimpleNode> globalElements = importingLara.aspectIR().getGlobalElements();
+
         if (!globalElements.isEmpty()) {
             globalElements.entrySet()
                     .forEach(e -> lara.aspectIR().addGlobalElement(e.getKey(), e.getValue(), filePath));
