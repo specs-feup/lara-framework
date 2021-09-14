@@ -874,4 +874,8 @@ public class LaraC {
 
     }
 
+    public static boolean isSupportedExtension(String filenameExtension) {
+        return SUPPORTED_EXT.contains(filenameExtension.toLowerCase());
+    }
+
 }
