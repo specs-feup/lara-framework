@@ -101,6 +101,7 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Util
     ACCUMULATOR("util/Accumulator.lara"),
+    ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
     CODE_INSERTER("util/CodeInserter.lara"),
     COMBINATION("util/Combinations.lara"),
