@@ -25,7 +25,7 @@ aspectdef AccumulatorTest
 	println("Array get:" + acc.get(["step1", "step2"]));
 	
 	// Use keys to print contents
-	for(key of acc.keys()) {
+	for(var key of acc.keys()) {
 		println("key: " + key.join(", ") + " -> value: " + acc.get(key));
 	}
 	
