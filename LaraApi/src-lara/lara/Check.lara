@@ -162,8 +162,8 @@ Check.isRegex = function(variable, source) {
 /**
  * Checks if the given value is a join point. If a type is given, checks if the join point is an instance of the given type. Otherwise, throws an exception.
  *
- * @param $jp
- * @param type
+ * @param {$jp} $jp
+ * @param {string} [type=undefined]
  * @param {boolean} [isOptional=false] - If true, passes check if value is undefined
  */
 Check.isJoinPoint = function($jp, type, isOptional) {

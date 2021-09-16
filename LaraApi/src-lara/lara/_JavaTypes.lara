@@ -70,4 +70,3 @@ _JavaTypes.getJavaDiff = function() {
 _JavaTypes.getXStreamUtils = function() {
 	return _JavaTypes.getType("org.suikasoft.XStreamPlus.XStreamUtils");
 }
-
