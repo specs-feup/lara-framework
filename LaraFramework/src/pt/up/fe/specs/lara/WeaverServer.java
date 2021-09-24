@@ -24,6 +24,7 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import larai.LaraI;
 import pt.up.fe.specs.gearman.GearmanUtils;
 import pt.up.fe.specs.gearman.specsworker.GenericSpecsWorker;
 import pt.up.fe.specs.gearman.utils.GearmanSecurityManager;
@@ -90,9 +91,10 @@ public class WeaverServer {
             Gson gson = new GsonBuilder().create();
             var args = gson.fromJson(dataString, String[].class);
 
+            LaraI.setServerMode();
             new WeaverLauncher(engine).launch(args);
 
-            return new byte[0];
+            return "Execution ended successfully".getBytes();
         };
     }
 }

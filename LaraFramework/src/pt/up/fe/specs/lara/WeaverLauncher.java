@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -92,6 +91,12 @@ public class WeaverLauncher {
             return docGeneratorResult.get();
         }
 
+        // If server flag is present, run server
+        Optional<Boolean> serverResult = runServer(args);
+        if (serverResult.isPresent()) {
+            return serverResult.get();
+        }
+
         return LaraI.exec(args, engine);
     }
 
@@ -99,10 +104,12 @@ public class WeaverLauncher {
         // Look for flag
         String unitTestingFlag = "-" + LaraiKeys.getUnitTestFlag();
 
-        int flagIndex = IntStream.range(0, args.length)
-                .filter(index -> unitTestingFlag.equals(args[index]))
-                .findFirst()
-                .orElse(-1);
+        int flagIndex = args.length == 0 ? -1 : unitTestingFlag.equals(args[0]) ? 0 : -1;
+
+        // int flagIndex = IntStream.range(0, args.length)
+        // .filter(index -> unitTestingFlag.equals(args[index]))
+        // .findFirst()
+        // .orElse(-1);
 
         if (flagIndex == -1) {
             return Optional.empty();
@@ -129,10 +136,12 @@ public class WeaverLauncher {
         // Look for flag
         String docGeneratorFlag = "-" + LaraiKeys.getDocGeneratorFlag();
 
-        int flagIndex = IntStream.range(0, args.length)
-                .filter(index -> docGeneratorFlag.equals(args[index]))
-                .findFirst()
-                .orElse(-1);
+        int flagIndex = args.length == 0 ? -1 : docGeneratorFlag.equals(args[0]) ? 0 : -1;
+
+        // int flagIndex = IntStream.range(0, args.length)
+        // .filter(index -> docGeneratorFlag.equals(args[index]))
+        // .findFirst()
+        // .orElse(-1);
 
         if (flagIndex == -1) {
             return Optional.empty();
@@ -151,6 +160,43 @@ public class WeaverLauncher {
         int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
 
         return Optional.of(docResults != -1);
+    }
+
+    private Optional<Boolean> runServer(String[] args) {
+        // Look for flag
+        String serverFlag = "-" + LaraiKeys.getServerFlag();
+
+        int flagIndex = args.length == 0 ? -1 : serverFlag.equals(args[0]) ? 0 : -1;
+
+        // int flagIndex = IntStream.range(0, args.length)
+        // .filter(index -> serverFlag.equals(args[index]))
+        // .findFirst()
+        // .orElse(-1);
+
+        if (flagIndex == -1) {
+            return Optional.empty();
+        }
+
+        SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
+
+        LaraI.setServerMode();
+
+        // Remove flag
+        String[] newArgs = new String[args.length - 1];
+        int currentIndex = 0;
+        for (int i = 0; i < args.length; i++) {
+            if (i == flagIndex) {
+                continue;
+            }
+
+            newArgs[currentIndex] = args[i];
+            currentIndex++;
+        }
+
+        // Run server
+        new WeaverServer(engine).execute(newArgs);
+
+        return Optional.of(true);
     }
 
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand) {
