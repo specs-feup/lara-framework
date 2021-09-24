@@ -86,6 +86,7 @@ public class LaraI {
     public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
 
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
+    private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
 
     // TODO: Put LARASystem.class eventually
     private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
@@ -93,6 +94,14 @@ public class LaraI {
 
     public static boolean isRunningGui() {
         return RUNNING_GUI.get();
+    }
+
+    public static boolean isServerMode() {
+        return SERVER_MODE.get();
+    }
+
+    public static void setServerMode() {
+        SERVER_MODE.set(true);
     }
 
     /**
