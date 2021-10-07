@@ -24,6 +24,8 @@ import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
 
+import pt.up.fe.specs.util.DotRenderFormat;
+import pt.up.fe.specs.util.SpecsGraphviz;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class WeaverGenerator {
@@ -310,6 +312,18 @@ public class WeaverGenerator {
             File jsonDir = new File(generator.getOutDir(), packagePath);
             File jsonOutFile = new File(jsonDir, generator.getWeaverName() + ".json");
             printJson(generator, jsonOutFile);
+
+            // Also generate the graph
+            File dotOutFile = new File(jsonDir, generator.getWeaverName() + ".dotty");
+            var graphName = generator.getWeaverName() + "_join_point_hierarchy";
+            var graph = generator.getLanguageSpecificationV2().toHierarchyDiagram(graphName);
+            SpecsIo.write(dotOutFile, graph);
+
+            // If dot available, generate PNG and SVG
+            if (SpecsGraphviz.isDotAvailable()) {
+                SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.PNG);
+                SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.SVG);
+            }
         }
         System.out.println("Weaver successfully created!");
     }
