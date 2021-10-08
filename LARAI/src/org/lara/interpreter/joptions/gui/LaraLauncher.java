@@ -92,6 +92,11 @@ public class LaraLauncher {
         StoreDefinition laraiDefinition = OptionsParser.getLaraStoreDefinition(engine);
 
         String appName = engine.getName();
+
+        var implVersion = SpecsSystem.getBuildNumber();
+        if (implVersion != null) {
+            appName += " (build " + implVersion + ")";
+        }
         // String appName;
         // if (engine.getName().isPresent()) {
         // appName = engine.getName().get();
