@@ -142,7 +142,7 @@ public class AspectClassProcessor {
                 aspectConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(aspectConstructor);
                 if (evaluate) {
-                    interpreter.evaluate(aspectConstructor.toString());
+                    interpreter.evaluate(aspectConstructor.toString(), asps.getDocLocation());
                 }
             } catch (Exception e) {
                 throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
@@ -175,7 +175,7 @@ public class AspectClassProcessor {
                 globalsConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(globalsConstructor);
                 if (evaluate) {
-                    interpreter.evaluate(globalsConstructor.toString());
+                    interpreter.evaluate(globalsConstructor.toString(), asps.getDocLocation());
                 }
             } catch (Exception e) {
                 throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),

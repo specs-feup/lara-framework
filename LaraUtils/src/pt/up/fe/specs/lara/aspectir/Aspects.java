@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 
 /****************************** Class Aspects ******************************/
 public class Aspects extends Base implements IElement {
+    public String doc_location;
     public String xml_location;
     public String xmltag;
     public IElement parent;
@@ -32,6 +33,8 @@ public class Aspects extends Base implements IElement {
 
     public Aspects(Element e,
             String rootName, Document doc) throws DOMException, Exception {
+
+        doc_location = doc.getDocumentURI();
 
         if (e == null)
             return;
@@ -56,14 +59,14 @@ public class Aspects extends Base implements IElement {
             if (q.getNodeName().equals("aspect")) {
                 Aspect _m;
                 _m = new Aspect(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (aspects.containsKey(_m.name))
                     throw new Exception(" Error duplicate: " + _m.name);
                 aspects.put(_m.name, _m);
             } else if (q.getNodeName().equals("declaration")) {
                 Statement _m;
                 _m = new Statement(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (declarations.contains(_m))
                     throw new Exception(" Error duplicate: " + _m);
                 declarations.add(_m);
@@ -92,6 +95,8 @@ public class Aspects extends Base implements IElement {
     public Aspects(Document doc,
             String rootName) throws Exception {
 
+        doc_location = doc.getDocumentURI();
+
         main = "";
         Element e = (Element) doc.getFirstChild();
         if (e == null)
@@ -117,14 +122,14 @@ public class Aspects extends Base implements IElement {
             if (q.getNodeName().equals("aspect")) {
                 Aspect _m;
                 _m = new Aspect(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (aspects.containsKey(_m.name))
                     throw new Exception(" Error duplicate: " + _m.name);
                 aspects.put(_m.name, _m);
             } else if (q.getNodeName().equals("declaration")) {
                 Statement _m;
                 _m = new Statement(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (declarations.contains(_m))
                     throw new Exception(" Error duplicate: " + _m);
                 declarations.add(_m);
@@ -137,6 +142,10 @@ public class Aspects extends Base implements IElement {
         }
         if (!e.getTextContent().trim().isEmpty())
             throw new Exception("Error unexpected: text");
+    }
+
+    public String getDocLocation() {
+        return doc_location != null ? doc_location : "unnamed_aspect";
     }
 
     @Override
@@ -163,14 +172,14 @@ public class Aspects extends Base implements IElement {
             if (q.getNodeName().equals("aspect")) {
                 Aspect _m;
                 _m = new Aspect(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (aspects.containsKey(_m.name))
                     throw new Exception(" Error duplicate: " + _m.name);
                 aspects.put(_m.name, _m);
             } else if (q.getNodeName().equals("declaration")) {
                 Statement _m;
                 _m = new Statement(q, "", doc);
-                _m.parent = (IElement) this;
+                _m.parent = this;
                 if (declarations.contains(_m))
                     throw new Exception(" Error duplicate: " + _m);
                 declarations.add(_m);

@@ -45,24 +45,24 @@ public class ExceptionUtils {
         // System.out.println("MEMBER: " + scriptEngine.asValue(original).getMemberKeys());
         // System.out.println("CLASS: " + scriptEngine.asValue(original).getClass());
 
-    	// Check if throwable
-    	if(original instanceof Throwable) {
-    		return (Throwable) original;
-    	}
-    	
-    	// Check if it is a JsEngine error
-    	var jsEngineException = WeaverEngine.getThreadLocalWeaver().getScriptEngine()
-    			.getException(original)
-    			.orElse(null);
-    	
-    	if(jsEngineException != null) {
-    		return jsEngineException;
-    	}
+        // Check if throwable
+        if (original instanceof Throwable) {
+            return (Throwable) original;
+        }
+
+        // Check if it is a JsEngine error
+        var jsEngineException = WeaverEngine.getThreadLocalWeaver().getScriptEngine()
+                .getException(original)
+                .orElse(null);
+
+        if (jsEngineException != null) {
+            return jsEngineException;
+        }
 
         // If no option is available than it is treated as a string (using toString);
-    	SpecsLogs.info("Could not decode exception with class '"+original.getClass()+"', returning .toString()");
-    	
-    	return new RuntimeException(original.toString());
+        SpecsLogs.info("Could not decode exception with class '" + original.getClass() + "', returning .toString()");
+
+        return new RuntimeException(original.toString());
     }
 
     public static void throwAspectException(Object original, String aspectName, String aspectCoords,

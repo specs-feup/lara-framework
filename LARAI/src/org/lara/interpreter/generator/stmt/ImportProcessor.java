@@ -187,8 +187,8 @@ public class ImportProcessor {
         final String laraPath = LARASystem.LARAPATH + "  = '" + jarDir.getAbsolutePath().replace('\\', '/') + "';\n";
         final String attribute = "var " + Interpreter.ATTRIBUTES
                 + " = { set: function(newReport){ mergeObjects(this,newReport);}};\n";
-        interpreter.evaluate(laraPath);
-        interpreter.evaluate(attribute);
+        interpreter.evaluate(laraPath, "import_and_initialize");
+        interpreter.evaluate(attribute, "import_and_initialize");
         LaraI laraI = interpreter.getLaraI();
 
         if (laraI.getOptions().useStackTrace()) {
@@ -211,7 +211,7 @@ public class ImportProcessor {
         // importClass(classToImport);
         try {
             String code = classToImport.getSimpleName() + " = Java.type('" + classToImport.getCanonicalName() + "');\n";
-            interpreter.evaluate(code);
+            interpreter.evaluate(code, "import_class_" + classToImport.getSimpleName());
         } catch (Exception e) {
             throw new JavaImportException(new File(classToImport.getCanonicalName()), e);
         }
@@ -331,7 +331,7 @@ public class ImportProcessor {
             }
 
             interpreter.out().println("  " + MessageConstants.BRANCH_STR + source);
-            interpreter.evaluate(internalScripts, type);
+            interpreter.evaluate(internalScripts, type, source);
 
             // Add source to loaded sources
             loadedSources.add(source);

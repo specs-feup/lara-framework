@@ -149,7 +149,7 @@ public class Interpreter {
         String code = mainCall.toString();
         long begin = LaraI.getCurrentTime();
         laraInterp.getWeaver().setInitialTime(begin);
-        final Object result = evaluate(code);// cx.evaluateString(scope, code, "<js>", 1, null);
+        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
         // exportMetrics();
@@ -178,17 +178,17 @@ public class Interpreter {
      * @return
      * @throws ScriptException
      */
-    public Object evaluate(String code) {
-        return evaluate(code, JsFileType.NORMAL);
+    public Object evaluate(String code, String source) {
+        return evaluate(code, JsFileType.NORMAL, source);
     }
 
-    public Object evaluate(String code, JsFileType type) {
+    public Object evaluate(String code, JsFileType type, String source) {
 
         try {
             // System.out.println("CODE:\n" + code);
             // System.out.println("\nCODE END");
             // return engine.getEngine().eval(code);
-            return engine.eval(code, type);
+            return engine.eval(code, type, source);
             // } catch (ScriptException e) {
         } catch (Exception e) {
 
