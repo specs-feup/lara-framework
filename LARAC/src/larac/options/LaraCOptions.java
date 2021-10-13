@@ -48,6 +48,8 @@ import pt.up.fe.specs.util.utilities.JarPath;
 public class LaraCOptions {
     public static final String CONFIG_FILE_NAME = "larac.properties";
 
+    private static final String SKIP_ARGS = "#lara_c_options_skip";
+
     // Display the Aspect-IR
     private boolean showAspectIR;
     // Display all available information in the console
@@ -71,6 +73,10 @@ public class LaraCOptions {
 
     public LaraCOptions() {
         setDefaultOptions();
+    }
+
+    public static String getSkipArgs() {
+        return SKIP_ARGS;
     }
 
     /**
@@ -108,6 +114,11 @@ public class LaraCOptions {
         }
 
         String laraFileName = args[0];
+
+        if (laraFileName.equals(SKIP_ARGS)) {
+            return true;
+        }
+
         setLaraFile(larac, laraFileName);
 
         command = OptionUtils.parseOptions(options, args, MessageConstants.LARAC_HELP_EXEC);

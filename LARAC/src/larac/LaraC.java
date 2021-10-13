@@ -204,8 +204,10 @@ public class LaraC {
         // languageSpecV2 = JoinPointFactory.fromOld(langSpec);
     }
 
-    public void setToJsMode(boolean toJsMode) {
+    public void setToJsMode(boolean toJsMode, String laraFilename, String laraCode) {
         this.toJsMode = toJsMode;
+        setLaraPath(laraFilename);
+        setLaraStreamProvider(() -> SpecsIo.toInputStream(laraCode));
     }
 
     public boolean isToJsMode() {
@@ -758,7 +760,10 @@ public class LaraC {
             printTopic("Dumping AST");
             getAspectIR().getAst().dump("  ");
         }
-        importedLARA.put(SpecsIo.getCanonicalPath(laraFile), this);
+
+        if (laraFile != null) {
+            importedLARA.put(SpecsIo.getCanonicalPath(laraFile), this);
+        }
 
         // Organize Aspects in AST according to the language specification
         printTopic("Organizing Aspects");
