@@ -105,6 +105,7 @@ public class LaraC {
     private List<LaraC> previouslyImportedLARA = new ArrayList<>();
 
     private boolean readyToParse = false;
+    private boolean toJsMode = false;
 
     /**
      * Create a LaraC instance with the input arguments and the default output stream
@@ -201,6 +202,14 @@ public class LaraC {
         print = output;
         languageSpec = langSpec;
         // languageSpecV2 = JoinPointFactory.fromOld(langSpec);
+    }
+
+    public void setToJsMode(boolean toJsMode) {
+        this.toJsMode = toJsMode;
+    }
+
+    public boolean isToJsMode() {
+        return toJsMode;
     }
 
     public static Collection<String> getSupportedScriptExtensions() {
@@ -373,7 +382,12 @@ public class LaraC {
         } finally {
 
             if (!parser.exceptions.isEmpty()) {
-                throw new SyntaxException(parser.exceptions, possibleException);
+                if (parser.exceptions.size() == 1) {
+                    throw new RuntimeException("Problems while parsing LARA", parser.exceptions.get(0));
+                } else {
+                    throw new SyntaxException(parser.exceptions, possibleException);
+                }
+
             } else if (possibleException != null) {
                 parser.exceptions.add(possibleException);
                 possibleException.printStackTrace();

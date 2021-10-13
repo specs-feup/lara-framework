@@ -6,8 +6,11 @@
 package org.dojo.jsl.parser.ast;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dojo.jsl.parser.ast.utils.ASTJSImport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,6 +40,12 @@ public class ASTImport extends SimpleNode {
 
         // Ignore imports if in documentation mode
         if (lara.getOptions().isDocumentationMode()) {
+            return;
+        }
+
+        // Transform into script import if in toJs mode
+        if (lara.isToJsMode()) {
+            toJsImport(lara);
             return;
         }
 
@@ -72,6 +81,27 @@ public class ASTImport extends SimpleNode {
         MessageConstants.removeSpace();
         lara.println("");
 
+    }
+
+    private void toJsImport(LaraC lara) {
+        // System.out.println("LABEL: " + label);
+        lara.getAspectIR()
+                .addGlobalStatement(new ASTJSImport(getQualifiedImport()));
+
+    }
+
+    private List<String> getQualifiedImport() {
+        var qualifiedImport = new ArrayList<String>();
+
+        if (getChildren() != null) {
+            for (final Node n : getChildren()) {
+                qualifiedImport.add(((ASTIdentifier) n).value.toString());
+            }
+        }
+
+        qualifiedImport.add(value.toString());
+
+        return qualifiedImport;
     }
 
     /**
@@ -355,8 +385,36 @@ public class ASTImport extends SimpleNode {
     // return filesToCheck;
     // }
 
+    // @Override
+    // public void globalToXML(Document doc, Element parent) {
+    // SpecsCheck.checkArgument(parent.getNodeName().equals("aspects"),
+    // () -> "Expected node to be 'aspects', is '" + parent.getNodeName() + "'");
+    //
+    // // HACK: To avoid regeneration the Java classes from XML, using attributes Statement already has
+    // final Element statementDeclEl = doc.createElement("declaration");
+    // statementDeclEl.setAttribute("name", "ScriptImport");
+    // statementDeclEl.setAttribute("coord", path);
+    // statementDeclEl.setAttribute("desc", scriptContents.get());
+    // // statementDeclEl.setAttribute("script", scriptContents.get());
+    // // final Element statementDeclEl = doc.createElement("scriptImport");
+    // // statementDeclEl.setNodeValue(scriptContents.get());
+    //
+    // // System.out.println("PARENT: " + parent.getNodeName());
+    // // final Element statementDeclEl = doc.createElement("scriptImport");
+    // // statementDeclEl.setNodeValue(scriptContents.get());
+    // // statementDeclEl.setAttribute("name", "scriptImport");
+    // // statementDeclEl.setAttribute("path", path);
+    // // statementDeclEl.setAttribute("script", scriptContents.get());
+    // // statementDeclEl.setAttribute("coord", getCoords());
+    // // addXMLComent(statementDeclEl);
+    // parent.appendChild(statementDeclEl);
+    // toXML(doc, statementDeclEl);
+    // }
+
     @Override
     public void toXML(Document doc, Element parent) {
+        // System.out.println("PARENT: " + parent.getNodeName());
+
     }
 }
 /*
