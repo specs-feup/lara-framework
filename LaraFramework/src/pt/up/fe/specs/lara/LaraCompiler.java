@@ -27,6 +27,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.w3c.dom.Document;
 
 import larac.LaraC;
+import larac.options.LaraCOptions;
 import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
@@ -57,25 +58,21 @@ public class LaraCompiler {
         aspectProcessor = buildAspectProcessor();
     }
 
-    public String compile(String filename, String code) {
-        var baseFolder = SpecsIo.getTempFolder("lara-compiler");
-        var laraFile = new File(baseFolder, filename);
-        SpecsIo.write(laraFile, code);
-
-        // return compile(SpecsIo.read(laraFile), laraFile.getName());
-        return compile(laraFile);
-    }
-
     public String compile(File laraFile) {
         SpecsCheck.checkArgument(laraFile.isFile(), () -> "LARA file '" + laraFile + "' does not exist");
 
+        return compile(laraFile.getName(), SpecsIo.read(laraFile));
+    }
+
+    public String compile(String laraFilename, String laraCode) {
+
         var args = new ArrayList<>();
-        args.add(laraFile.getAbsolutePath());
+        args.add(LaraCOptions.getSkipArgs());
 
         var lara = new LaraC(args.toArray(new String[0]), weaver.getLanguageSpecificationV2(), new Output(1));
 
         // Enable parsing directly to JS (e.g. transforms imports into scriptImports)
-        lara.setToJsMode(true);
+        lara.setToJsMode(true, laraFilename, laraCode);
 
         Document aspectIr = lara.compile();
 
