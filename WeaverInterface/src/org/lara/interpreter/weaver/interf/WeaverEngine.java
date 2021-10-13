@@ -89,6 +89,10 @@ public abstract class WeaverEngine {
         this.scriptEngine = scriptEngine;
     }
 
+    public boolean hasScriptEngine() {
+        return this.scriptEngine != null;
+    }
+
     private static File createTemporaryWeaverFolder() {
         String folderName = "lara_weaver_" + UUID.randomUUID().toString();
         return SpecsIo.mkdir(SpecsIo.getTempFolder(), folderName);
