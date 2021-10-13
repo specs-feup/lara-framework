@@ -106,6 +106,9 @@ public class StatementProcessor {
         case SCRIPTIMPORT:
             scriptImportStmt(stat, ret);
             break;
+        case JSIMPORT:
+            jsImportStmt(stat, ret);
+            break;
         default:
             ret.append(LaraIUtils.getSpace(depth) + "throw 'Aspect-IR statement type " + stat.name
                     + " is not implemented. Please contact the developers for further information.'" + sufix);
@@ -115,6 +118,10 @@ public class StatementProcessor {
 
     private void scriptImportStmt(Statement stat, StringBuilder ret) {
         ret.append(stat.desc);
+    }
+
+    private void jsImportStmt(Statement stat, StringBuilder ret) {
+        ret.append("import '" + stat.desc + "';\n");
     }
 
     private void throwStmt(Statement stat, int depth, String sufix, final StringBuilder ret) {

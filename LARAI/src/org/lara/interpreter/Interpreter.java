@@ -100,6 +100,10 @@ public class Interpreter {
      *            the scope for this interpreter
      */
     public Interpreter(LaraI laraInt, JsEngine engine) {
+        this(laraInt, engine, true);
+    }
+
+    public Interpreter(LaraI laraInt, JsEngine engine, boolean importScripts) {
         laraInterp = laraInt;
         options = laraInterp.getOptions();
         out = laraInterp.out;
@@ -111,7 +115,11 @@ public class Interpreter {
         if (options.useStackTrace()) {
             stackStrace = new CallStackTrace();
         }
-        importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+
+        if (importScripts) {
+            importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+        }
+
         if (options.isJavaScriptStream()) { // AFTER it is initialized
             setprintStream(out.getOutStream());
         }

@@ -63,7 +63,8 @@ public class LaraIUtils {
         EXIT,
         SELECT,
         APPLY,
-        SCRIPTIMPORT;
+        SCRIPTIMPORT,
+        JSIMPORT;
     }
 
     public static String getSpace(int depth) {

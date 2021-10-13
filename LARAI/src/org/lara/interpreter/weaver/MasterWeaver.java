@@ -192,6 +192,13 @@ public class MasterWeaver {
         }
     }
 
+    public void simpleBegin() {
+        weaverEngine.setWeaver();
+
+        setActions(weaverEngine.getActions());
+        setRoot(weaverEngine.getRoot());
+    }
+
     private final static String PATH_MODEL_BEGIN = "(path())==('";
     private final static String PATH_MODEL_END = "')";
 

@@ -24,6 +24,9 @@ import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.events.EventTriggerGenerator;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import pt.up.fe.specs.lara.aspectir.Aspect;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -31,7 +34,9 @@ import pt.up.fe.specs.lara.aspectir.ExprOp;
 import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.lara.aspectir.Statement;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * A processor that deals with Aspect related constructions
@@ -558,6 +563,65 @@ public class AspectClassProcessor {
 
     public void setCurrentAspect(String currentAspect) {
         this.currentAspect = currentAspect;
+    }
+
+    public String toSimpleJs(Document aspectIR) throws DOMException, Exception {
+        StringBuilder jsCode = new StringBuilder();
+
+        var docChildren = aspectIR.getChildNodes();
+
+        // Expects single children of type 'aspects'
+        SpecsCheck.checkArgument(docChildren.getLength() == 1, () -> "Expected one child: " + docChildren.getLength());
+        var aspects = docChildren.item(0);
+        SpecsCheck.checkArgument(aspects.getNodeName().equals("aspects"),
+                () -> "Expected child of type 'aspects': " + aspects.getNodeName());
+
+        var children = aspects.getChildNodes();
+
+        for (int i = 0; i < children.getLength(); i++) {
+            var child = children.item(i);
+
+            SpecsCheck.checkArgument(child instanceof Element,
+                    () -> "Expected node to be an element: " + child.getClass());
+
+            var element = (Element) child;
+            var nodeName = child.getNodeName();
+
+            if (nodeName.equals("aspect")) {
+                var aspect = new Aspect(element, "", aspectIR);
+                setCurrentAspect(aspect.name);
+                jsCode.append(getAspectJavascript(aspect));
+                continue;
+            }
+
+            if (nodeName.equals("declaration")) {
+                var statement = new Statement(element, "", aspectIR);
+                jsCode.append(interpreter.getJavascriptString(statement, 0));
+                continue;
+            }
+
+            SpecsLogs.info("Element not implemented yet: " + nodeName);
+        }
+
+        // // first the aspects declaration
+        // try {
+        // for (final Aspect asp : asps.aspects.values()) {
+        // setCurrentAspect(asp.name);
+        // jsCode.append(getAspectJavascript(asp));
+        // }
+        //
+        // // then the global variables declaration
+        // for (final Statement stmt : asps.declarations) {
+        // jsCode.append(interpreter.getJavascriptString(stmt, 0));
+        // }
+        //
+        // } catch (Exception e) {
+        // throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
+        // "generating documentation", e);
+        // }
+
+        return jsCode.toString();
+
     }
 
 }
