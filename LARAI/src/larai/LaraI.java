@@ -291,6 +291,9 @@ public class LaraI {
     public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
         SpecsLogs.debug("Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
 
+        // Set weaver (e.g. for help message to access name and build number)
+        weaverEngine.setWeaver();
+
         // Reset global state
         MessageConstants.order = 1;
         if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {

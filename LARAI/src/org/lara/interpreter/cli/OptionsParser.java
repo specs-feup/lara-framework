@@ -190,16 +190,24 @@ public class OptionsParser {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null); // So it stays the same order the options are added
         StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
         String usageSyntax = "<aspect.lara> [options] [-c <file>]  | -c <file>";
+        PrintWriter pw = new PrintWriter(sw);
         if (CLIConfigOption.ALLOW_GUI) {
-            usageSyntax += "[-g]";
+            usageSyntax += " [-g]";
         }
         formatter.printHelp(pw, HELP_MAX_WIDTH,
                 usageSyntax,
                 "", options, leftPadding, formatter.getDescPadding(), "", false);
         pw.flush();
-        return sw.toString();
+
+        var output = sw.toString();
+
+        if (WeaverEngine.isWeaverSet()) {
+            var weaver = WeaverEngine.getThreadLocalWeaver();
+            output = weaver.getNameAndBuild() + "\n" + output;
+        }
+
+        return output;
     }
     /*
     public static String getHelp() {
