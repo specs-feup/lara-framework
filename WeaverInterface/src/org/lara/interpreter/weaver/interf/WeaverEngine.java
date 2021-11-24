@@ -36,6 +36,7 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -261,6 +262,23 @@ public abstract class WeaverEngine {
     }
 
     /**
+     * The name of the weaver with the build number, if available.
+     *
+     * @return
+     */
+    public String getNameAndBuild() {
+        var appName = getName();
+
+        var implVersion = SpecsSystem.getBuildNumber();
+        if (implVersion != null) {
+            appName += " (build " + implVersion + ")";
+        }
+
+        return appName;
+
+    }
+
+    /**
      * Return a list of resources that are lara files
      *
      * @return
@@ -364,11 +382,11 @@ public abstract class WeaverEngine {
         THREAD_LOCAL_WEAVER.set(this);
     }
 
-    public boolean isWeaverSet() {
+    public static boolean isWeaverSet() {
         return THREAD_LOCAL_WEAVER.isSet();
     }
 
-    public void removeWeaver() {
+    public static void removeWeaver() {
         THREAD_LOCAL_WEAVER.remove();
     }
 
