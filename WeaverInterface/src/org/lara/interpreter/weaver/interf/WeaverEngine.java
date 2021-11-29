@@ -379,6 +379,17 @@ public abstract class WeaverEngine {
     }
 
     public void setWeaver() {
+        // If already set, check the weaver.
+        // If it is the same, just return. Otherwise, throw exception.
+        if (WeaverEngine.isWeaverSet()) {
+            if (getThreadLocalWeaver() == this) {
+                return;
+            }
+
+            throw new RuntimeException("Trying to set a different thread-local weaver (" + this
+                    + ") without removing the previous weaver (" + getThreadLocalWeaver() + ")");
+        }
+
         THREAD_LOCAL_WEAVER.set(this);
     }
 
