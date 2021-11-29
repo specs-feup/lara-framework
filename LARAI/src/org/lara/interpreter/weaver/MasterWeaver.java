@@ -675,8 +675,8 @@ public class MasterWeaver {
             throw new WeaverEngineException("closing", e);
         } finally {
             // Remove if it is set
-            if (weaverEngine.isWeaverSet()) {
-                weaverEngine.removeWeaver();
+            if (WeaverEngine.isWeaverSet()) {
+                WeaverEngine.removeWeaver();
             }
 
             // Delete weaver folder, if created
@@ -708,8 +708,8 @@ public class MasterWeaver {
     }
 
     public void removeWeaverEngine() {
-        if (weaverEngine.isWeaverSet()) {
-            weaverEngine.removeWeaver();
+        if (WeaverEngine.isWeaverSet()) {
+            WeaverEngine.removeWeaver();
         }
     }
 

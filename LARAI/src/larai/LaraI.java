@@ -246,8 +246,8 @@ public class LaraI {
             // var finalException = treatExceptionInInterpreter(larai, e);
             // System.out.println(finalException);
         } finally {
-            if (weaverEngine.isWeaverSet()) {
-                weaverEngine.removeWeaver();
+            if (WeaverEngine.isWeaverSet()) {
+                WeaverEngine.removeWeaver();
             }
 
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
@@ -372,8 +372,8 @@ public class LaraI {
 
             throw prettyRuntimeException(e);
         } finally {
-            if (weaverEngine.isWeaverSet()) {
-                weaverEngine.removeWeaver();
+            if (WeaverEngine.isWeaverSet()) {
+                WeaverEngine.removeWeaver();
             }
         }
         // return true;
