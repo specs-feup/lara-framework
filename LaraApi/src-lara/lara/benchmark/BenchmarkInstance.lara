@@ -123,6 +123,8 @@ BenchmarkInstance.prototype.compile = function() {
 
 /**
  * Executes the current version of the benchmark. Requires calling .compile() first.
+ *
+ * @return {ProcessExecutor} the ProcessExecutor used to execute this instance
  */
 BenchmarkInstance.prototype.execute = function() {
 
