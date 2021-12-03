@@ -14,17 +14,16 @@
 package pt.up.fe.specs.lara.doc.parser;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
+import larac.LaraC;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -32,7 +31,6 @@ import pt.up.fe.specs.lara.doc.LaraDocs;
 import pt.up.fe.specs.lara.doc.LaraToJs;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
-import pt.up.fe.specs.lara.doc.data.LaraDocJs;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
 import pt.up.fe.specs.lara.doc.data.LaraDocNode;
 import pt.up.fe.specs.lara.doc.data.LaraDocPackage;
@@ -42,6 +40,7 @@ import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
 /**
@@ -52,7 +51,7 @@ import pt.up.fe.specs.util.properties.SpecsProperties;
  */
 public class LaraDocParser {
 
-    private static final Set<String> ALLOWED_EXTENSIONS = new HashSet<>(Arrays.asList("lara"));
+    // private static final Set<String> ALLOWED_EXTENSIONS = new HashSet<>(Arrays.asList("lara"));
 
     // private static boolean defaultNameFilter(String name) {
     // if (name.startsWith("_")) {
@@ -73,7 +72,7 @@ public class LaraDocParser {
     }
 
     public LaraDocParser(Predicate<File> nameFilter, LanguageSpecificationV2 languageSpecification) {
-        this.packagesPaths = new MultiMap<>();
+        this.packagesPaths = new MultiMap<>(() -> new LinkedHashMap<>());
         this.nameFilter = nameFilter;
         this.languageSpecification = languageSpecification;
     }
@@ -109,7 +108,8 @@ public class LaraDocParser {
                 LaraDocModule.class);
 
         for (LaraDocModule module : modules) {
-            if (module.hasMainLara()) {
+            // if (module.hasMainLara()) {
+            if (module.hasMainFile()) {
                 continue;
             }
 
@@ -193,7 +193,8 @@ public class LaraDocParser {
         // If not a LARA file, ignore
         // String filenameLowercase = filename.toLowerCase();
         String extension = SpecsIo.getExtension(laraFile).toLowerCase();
-        if (!ALLOWED_EXTENSIONS.contains(extension)) {
+        if (!LaraC.isSupportedExtension(extension)) {
+            // if (!ALLOWED_EXTENSIONS.contains(extension)) {
             return;
         }
 
@@ -206,8 +207,8 @@ public class LaraDocParser {
 
         switch (extension) {
         case "lara":
+        case "js":
             String importPath = LaraDocs.getImportPath(laraFile, baseFolder);
-
             /*
             LaraDocModule module = currentNode.getNode(LaraDocModule.class, importPath)
                     .orElse(new LaraDocModule(importPath));
@@ -228,19 +229,24 @@ public class LaraDocParser {
 
             if (isBaseFile) {
                 module.setBaseLara(laraFile);
-            } else {
+            } else if (extension.equals("lara")) {
                 module.setMainLara(laraFile);
+            } else if (extension.equals("js")) {
+                module.setMainJs(laraFile);
+            } else {
+                throw new CaseNotDefinedException(extension);
             }
 
             break;
 
-        case "js":
-            currentNode.getOrCreateNode(LaraDocJs.class, laraFile.getName(),
-                    () -> new LaraDocJs(laraFile));
-
-            // LaraDocJs jsNode = new LaraDocJs(laraFile);
-            // currentNode.add(jsNode);
-            break;
+        // case "js":
+        // // Get or create module from current node
+        // var moduleJs = currentNode.getOrCreateNode(LaraDocJs.class, laraFile.getName(),
+        // () -> new LaraDocJs(laraFile));
+        //
+        // // LaraDocJs jsNode = new LaraDocJs(laraFile);
+        // // currentNode.add(jsNode);
+        // break;
 
         default:
             throw new RuntimeException("Not implemented for files with extension '" + extension + "'");
@@ -305,6 +311,7 @@ public class LaraDocParser {
         List<LaraDocModule> modules = SpecsCollections.toList(laraDoc.getDescendantsStream(), LaraDocModule.class);
 
         for (LaraDocModule module : modules) {
+
             // Add info about a module to the same AspectIrDoc
             AspectIrDocBuilder laraDocBuilder = new AspectIrDocBuilder();
 
@@ -315,6 +322,11 @@ public class LaraDocParser {
                     continue;
                 }
                 laraDocBuilder.parse(aspectIr.get());
+            }
+
+            // Parse JS file
+            if (module.getMainJs() != null) {
+                laraDocBuilder.parseJs(SpecsIo.read(module.getMainJs()));
             }
 
             // Add information about import path to class files in module

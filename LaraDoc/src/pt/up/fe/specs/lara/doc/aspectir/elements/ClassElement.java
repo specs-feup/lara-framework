@@ -56,6 +56,7 @@ public class ClassElement extends AAspectIrElement {
             staticElements.add(assignment);
             return;
         case INSTANCE:
+        case CONSTRUCTOR:
             instanceElements.add(assignment);
             return;
         default:

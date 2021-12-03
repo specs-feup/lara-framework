@@ -16,12 +16,17 @@ public class AssignmentElement extends AAspectIrElement {
     private AspectIrElement rightHand;
     private AssignmentType assignmentType;
 
-    public AssignmentElement(String leftHand, AspectIrElement rightHand, LaraDocComment laraDocComment) {
+    public AssignmentElement(String name, AspectIrElement element, AssignmentType namedType,
+            LaraDocComment laraDocComment) {
         super(laraDocComment);
 
-        this.leftHand = leftHand;
-        this.rightHand = rightHand;
-        this.assignmentType = null;
+        this.leftHand = name;
+        this.rightHand = element;
+        this.assignmentType = namedType;
+    }
+
+    public AssignmentElement(String name, AspectIrElement element, LaraDocComment laraDocComment) {
+        this(name, element, null, laraDocComment);
     }
 
     public String getLeftHand() {

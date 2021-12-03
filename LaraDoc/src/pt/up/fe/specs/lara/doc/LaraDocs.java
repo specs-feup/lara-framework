@@ -15,9 +15,10 @@ package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
 
+import larac.LaraC;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundleProperty;
-import pt.up.fe.specs.util.Preconditions;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
@@ -26,10 +27,17 @@ public class LaraDocs {
     public static String getImportPath(File laraFile, File baseFolder) {
         String relativePath = SpecsIo.getRelativePath(laraFile, baseFolder);
 
-        // Relative paths are always normalized
-        Preconditions.checkArgument(relativePath.endsWith(".lara"), "Expected file to end in '.lara': " + laraFile);
+        var extension = SpecsIo.getExtension(relativePath);
 
-        return relativePath.replace('/', '.').substring(0, relativePath.length() - ".lara".length());
+        // Relative paths are always normalized
+        // Preconditions.checkArgument(relativePath.endsWith(".lara"), "Expected file to end in '.lara': " + laraFile);
+        SpecsCheck.checkArgument(LaraC.isSupportedExtension(extension),
+                () -> "Expected file to have extensions " + LaraC.getSupportedExtensions() + ": " + laraFile);
+
+        // +1 because of . before extension
+        int endIndex = extension.length() + 1;
+
+        return relativePath.replace('/', '.').substring(0, relativePath.length() - endIndex);
     }
 
     public static String getBundleName(SpecsProperties laraBundle) {

@@ -31,6 +31,7 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
+import larac.LaraC;
 import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
@@ -50,6 +51,12 @@ import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
+/**
+ * @deprecated Replaced by LaraDocParser
+ * @author JBispo
+ *
+ */
+@Deprecated
 public class LaraDoc {
 
     private static final Set<String> FILES_TO_COPY = new HashSet<>(Arrays.asList("lara.resource", "lara.bundle"));
@@ -106,116 +113,21 @@ public class LaraDoc {
 
         return AspectClassProcessor.newInstance(interpreter);
     }
-    /*
-    public void convertFilesV1() {
-    
-        List<File> allFiles = SpecsIo.getFilesRecursive(inputPath);
-    
-        // TODO: Filter contents of folders that have file lara.resource
-    
-        List<File> resourceFiles = allFiles.stream()
-                .filter(file -> file.getName().equals("lara.resource"))
-                .collect(Collectors.toList());
-    
-    
-        List<File> filteredFiles = new ArrayList<>(allFiles);
-        for (File resourceFile : resourceFiles) {
-            String resourceFolder = resourceFile.getParentFile().getAbsolutePath();
-            filteredFiles = filteredFiles.stream()
-                    .filter(file -> !file.getAbsolutePath().startsWith(resourceFolder))
-                    .collect(Collectors.toList());
-        }
-    
-        // Parse LARA files
-        filteredFiles.stream()
-                .filter(file -> file.getName().endsWith(".lara"))
-                .forEach(this::convertLara);
-    
-        System.out.println("ALL LARA FILES:" + allFiles.stream()
-                .filter(file -> file.getName().endsWith(".lara"))
-                .count());
-    
-        System.out.println("FILTERED LARA FILES:" + filteredFiles.stream()
-                .filter(file -> file.getName().endsWith(".lara"))
-                .count());
-    
-        // Copy JS files, bundle files and resource files
-        filteredFiles.stream()
-                .filter(LaraDoc::copyFileFilter)
-                .forEach(this::copyFile);
-    }
-    */
 
-    /*
-    private void convertLara(File laraFile) {
-        // Pass through LaraC
-        System.out.println("COMPILING FILE " + laraFile);
-        List<String> args = new ArrayList<>();
-    
-        args.add(laraFile.getAbsolutePath());
-        args.add("--doc");
-        args.add("--verbose");
-        args.add("0");
-        LaraC larac = new LaraC(args.toArray(new String[0]), languageSpecification, new Output());
-        Document aspectIr = null;
-    
-        try {
-            aspectIr = larac.compile();
-        } catch (Exception e) {
-            SpecsLogs.msgInfo("Could not compile file '" + laraFile + "'");
-            return;
-        }
-    
-        // String aspectXml = toXml(aspectIr);
-    
-        // LaraI.main(args);
-        Aspects asps = null;
-        try {
-            asps = new Aspects(aspectIr, "");
-            // System.out.println("--- IR BEFORE ---");
-            // lara.printAspectIR();
-            // System.out.println("--- IR AFTER ---");
-    
-        } catch (Exception e) {
-            SpecsLogs.msgInfo("Could not create aspects: " + e.getMessage());
-            return;
-            // throw new RuntimeException("Could not create aspects", e);
-        }
-    
-        // Pass through LaraI
-        AspectClassProcessor aspectClassProcessor = aspectProcessor.get();
-        StringBuilder jsCode = aspectClassProcessor.generateJavaScriptDoc(asps);
-    
-        // Save js to the same relative location as the original file
-        String relativePath = SpecsIo.getRelativePath(laraFile, inputPath);
-        File jsFile = new File(outputFolder, SpecsIo.removeExtension(relativePath) + ".js");
-    
-        SpecsIo.write(jsFile, jsCode.toString());
-    }
-    */
-    private static boolean copyFileFilter(File file) {
-        String filename = file.getName().toLowerCase();
+    // private static boolean copyFileFilter(File file) {
+    // String filename = file.getName().toLowerCase();
+    //
+    // if (filename.endsWith(".js")) {
+    // return true;
+    // }
+    //
+    // if (FILES_TO_COPY.contains(filename)) {
+    // return true;
+    // }
+    //
+    // return false;
+    // }
 
-        if (filename.endsWith(".js")) {
-            return true;
-        }
-
-        if (FILES_TO_COPY.contains(filename)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /*
-    private void copyFile(File file) {
-        // Save to the same relative location as the original file
-        String relativePath = SpecsIo.getRelativePath(file, inputPath);
-        File newFile = new File(outputFolder, relativePath);
-    
-        SpecsIo.copy(file, newFile);
-    }
-    */
     public LaraDocFiles buildLaraDoc() {
         // Collect information
         LaraDocFiles laraDocFiles = collectInformation();
@@ -256,6 +168,7 @@ public class LaraDoc {
      * Collects information about LARA files.
      */
     public LaraDocFiles collectInformation() {
+
         LaraDocFiles laraDocFiles = new LaraDocFiles();
 
         for (Entry<String, List<File>> entry : packagesPaths.entrySet()) {
@@ -319,13 +232,20 @@ public class LaraDoc {
     }
 
     private void collectInformationFile(File laraFile, File baseFolder, LaraDocFiles laraDocFiles) {
+
         // If not a LARA file, ignore
         String filename = laraFile.getName();
         String filenameLowercase = filename.toLowerCase();
-        String laraExtension = ".lara";
-        if (!filenameLowercase.endsWith(laraExtension)) {
+        var filenameExtension = SpecsIo.getExtension(filenameLowercase);
+
+        if (!LaraC.isSupportedExtension(filenameExtension)) {
             return;
         }
+
+        // String laraExtension = ".lara";
+        // if (!filenameLowercase.endsWith(laraExtension)) {
+        // return;
+        // }
 
         String importPath = getImportPath(laraFile, baseFolder);
 
@@ -427,8 +347,9 @@ public class LaraDoc {
         String relativePath = SpecsIo.getRelativePath(laraFile, baseFolder);
 
         // Relative paths are always normalized
-        Preconditions.checkArgument(relativePath.endsWith(".lara"), "Expected file to end in '.lara': " + laraFile);
-
+        // Preconditions.checkArgument(relativePath.endsWith(".lara"), "Expected file to end in '.lara': " + laraFile);
+        Preconditions.checkArgument(LaraC.isSupportedExtension(SpecsIo.getExtension(relativePath)),
+                "Expected file to end in '.lara': " + laraFile);
         return relativePath.replace('/', '.').substring(0, relativePath.length() - ".lara".length());
     }
 

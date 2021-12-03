@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 
@@ -35,6 +36,8 @@ public class LaraDocModule extends LaraDocNode {
     private final String importPath;
     private File mainLara;
     private File baseLara;
+    private File mainJs;
+
     private AspectIrDoc documentation;
 
     public LaraDocModule(String importPath) {
@@ -58,13 +61,32 @@ public class LaraDocModule extends LaraDocNode {
 
         builder.append("Module '" + importPath + "'");
 
+        List<File> sources = new ArrayList<>();
+        if (mainLara != null) {
+            sources.add(mainLara);
+        }
+        if (mainJs != null) {
+            sources.add(mainJs);
+        }
+        if (baseLara != null) {
+            sources.add(baseLara);
+        }
+
+        var sourcesString = sources.stream()
+                .map(File::getName)
+                .collect(Collectors.joining(" + ", "(", ")"));
+
+        builder.append(" ").append(sourcesString);
+        /*
         builder.append(" (");
+        
         builder.append(mainLara);
         if (baseLara != null) {
             builder.append(" + ").append(baseLara);
         }
+        
         builder.append(")");
-
+        */
         return builder.toString();
     }
 
@@ -94,8 +116,16 @@ public class LaraDocModule extends LaraDocNode {
         return mainLara != null;
     }
 
+    public boolean hasMainFile() {
+        return mainLara != null || mainJs != null;
+    }
+
     public void setMainLara(File mainLara) {
         this.mainLara = mainLara;
+    }
+
+    public void setMainJs(File mainJs) {
+        this.mainJs = mainJs;
     }
 
     public Optional<File> getBaseLara() {
@@ -109,12 +139,20 @@ public class LaraDocModule extends LaraDocNode {
     public List<File> getLaraFiles() {
         List<File> laraFiles = new ArrayList<>();
 
-        laraFiles.add(mainLara);
+        // laraFiles.add(mainLara);
+        if (mainLara != null) {
+            laraFiles.add(mainLara);
+        }
+
         if (baseLara != null) {
             laraFiles.add(baseLara);
         }
 
         return laraFiles;
+    }
+
+    public File getMainJs() {
+        return mainJs;
     }
 
     public void setDocumentation(AspectIrDoc documentation) {

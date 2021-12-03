@@ -14,7 +14,9 @@ public enum JsDocTagName {
      * Properties NAME
      */
     CLASS("class"),
-    RETURNS("constructor"),
+    // RETURNS("constructor"),
+    RETURNS("returns"),
+    CONSTRUCTOR("constructor"),
     /**
      * Properties NAME, TYPE_NAME, OPTIONAL, DEFAULT_VALUE
      */
@@ -28,7 +30,7 @@ public enum JsDocTagName {
      * <p>
      * Properties NAME_PATH
      */
-    AUGMENTS("augments"),
+    AUGMENTS("augments"), // TODO: Should be renamed to super?
     DEPRECATED("deprecated"),
     TEST("test"),
     /**

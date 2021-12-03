@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.doc;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -62,7 +63,8 @@ public class PackagesMap {
         // System.out.println("CONTENTS:" + contents);
         // System.out.println("MAP:" + argsMap);
 
-        MultiMap<String, File> packagesMap = new MultiMap<>();
+        // Using LinkedHashMap to preserve order
+        MultiMap<String, File> packagesMap = new MultiMap<>(() -> new LinkedHashMap<>());
 
         for (Entry<String, String[]> entry : argsMap.entrySet()) {
             String packageName = entry.getKey();
