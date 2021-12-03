@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 import pt.up.fe.specs.jsengine.libs.EsprimaNode;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentType;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
@@ -85,7 +85,7 @@ public class EsprimaParser {
         return classElement;
     }
 
-    private AssignmentElement parseClassMember(EsprimaNode classMember) {
+    private NamedElement parseClassMember(EsprimaNode classMember) {
         var type = classMember.getType();
 
         switch (type) {
@@ -98,7 +98,7 @@ public class EsprimaParser {
 
     }
 
-    private AssignmentElement parseMethodDefinition(EsprimaNode method) {
+    private NamedElement parseMethodDefinition(EsprimaNode method) {
         var memberLaraComment = commentParser.parse(method.getComment().getCode());
 
         var name = method.getAsNode("key").getAsString("name");
@@ -110,16 +110,16 @@ public class EsprimaParser {
         var functionElement = parseFunctionExpression(function, name, memberLaraComment);
 
         var kind = method.getAsString("kind");
-        var memberType = method.getAsBool("static") ? AssignmentType.STATIC
-                : kind.equals("constructor") ? AssignmentType.CONSTRUCTOR : AssignmentType.INSTANCE;
+        var memberType = method.getAsBool("static") ? NamedType.STATIC
+                : kind.equals("constructor") ? NamedType.CONSTRUCTOR : NamedType.INSTANCE;
 
         // Mark as constructor
-        if (memberType == AssignmentType.CONSTRUCTOR) {
+        if (memberType == NamedType.CONSTRUCTOR) {
             memberLaraComment.addTagIfMissing(new JsDocTag(JsDocTagName.CONSTRUCTOR));
         }
 
         // return null;
-        return new AssignmentElement(name, functionElement, memberType, memberLaraComment);
+        return new NamedElement(name, functionElement, memberType, memberLaraComment);
     }
 
     private FunctionDeclElement parseFunctionExpression(EsprimaNode function, String name,

@@ -22,8 +22,8 @@ public class ClassElement extends AAspectIrElement {
 
     private final String className;
     private final List<String> parameters;
-    private final List<AssignmentElement> staticElements;
-    private final List<AssignmentElement> instanceElements;
+    private final List<NamedElement> staticElements;
+    private final List<NamedElement> instanceElements;
 
     public ClassElement(String className, List<String> parameters, LaraDocComment laraDocComment) {
         super(laraDocComment);
@@ -42,15 +42,15 @@ public class ClassElement extends AAspectIrElement {
         return parameters;
     }
 
-    public List<AssignmentElement> getStaticElements() {
+    public List<NamedElement> getStaticElements() {
         return staticElements;
     }
 
-    public List<AssignmentElement> getInstanceElements() {
+    public List<NamedElement> getInstanceElements() {
         return instanceElements;
     }
 
-    public void addAssignment(AssignmentElement assignment) {
+    public void addAssignment(NamedElement assignment) {
         switch (assignment.getAssignmentType()) {
         case STATIC:
             staticElements.add(assignment);

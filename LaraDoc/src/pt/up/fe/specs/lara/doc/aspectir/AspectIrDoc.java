@@ -16,8 +16,8 @@ import pt.up.fe.specs.lara.aspectir.CodeElem;
 import pt.up.fe.specs.lara.aspectir.ExprId;
 import pt.up.fe.specs.lara.aspectir.ExprLiteral;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentType;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.CodeElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
@@ -79,8 +79,8 @@ public class AspectIrDoc {
                 .forEach(topLevelElements::add);
 
         // Bind assignments to variable declarations, whenever possible
-        SpecsCollections.remove(aspectIrElements, AssignmentElement.class::isInstance).stream()
-                .map(AssignmentElement.class::cast)
+        SpecsCollections.remove(aspectIrElements, NamedElement.class::isInstance).stream()
+                .map(NamedElement.class::cast)
                 .forEach(assignment -> bindAssignment(assignment, classes, topLevelElements, nameExcluder));
 
         Preconditions.checkArgument(aspectIrElements.isEmpty(), "Expected list of aspect elements to be empty: %s",
@@ -89,10 +89,10 @@ public class AspectIrDoc {
         return new AspectIrDoc(topLevelElements, nameExcluder);
     }
 
-    private static void bindAssignment(AssignmentElement assignment, Map<String, ClassElement> classes,
+    private static void bindAssignment(NamedElement assignment, Map<String, ClassElement> classes,
             List<AspectIrElement> topLevelElements, Predicate<String> nameExcluder) {
 
-        String leftHand = assignment.getLeftHand();
+        String leftHand = assignment.getFullName();
 
         // Split by '.'
         String[] parts = leftHand.split("\\.");
@@ -105,8 +105,8 @@ public class AspectIrDoc {
             }
 
             // If name already exists, is a redefinition; otherwise is a global assignment
-            AssignmentType type = classes.containsKey(parts[0]) ? AssignmentType.REDEFINITION
-                    : AssignmentType.GLOBAL;
+            NamedType type = classes.containsKey(parts[0]) ? NamedType.REDEFINITION
+                    : NamedType.GLOBAL;
             assignment.setAssignmentType(type);
 
             // In both cases, they are added to top-level elements
@@ -129,7 +129,7 @@ public class AspectIrDoc {
                 return;
             }
 
-            assignment.setAssignmentType(AssignmentType.GLOBAL);
+            assignment.setAssignmentType(NamedType.GLOBAL);
             // In both cases, they are added to top-level elements
             topLevelElements.add(assignment);
             // Add alias
@@ -140,19 +140,19 @@ public class AspectIrDoc {
         }
 
         // Check if instance or static member
-        AssignmentType type = parts[1].equals("prototype") ? AssignmentType.INSTANCE : AssignmentType.STATIC;
+        NamedType type = parts[1].equals("prototype") ? NamedType.INSTANCE : NamedType.STATIC;
         assignment.setAssignmentType(type);
 
         // If static, start from index 1. Otherwise means that index 1 is prototype, start from index 2
-        int startingIndex = type == AssignmentType.STATIC ? 1 : 2;
+        int startingIndex = type == NamedType.STATIC ? 1 : 2;
         String memberName = IntStream.range(startingIndex, parts.length)
                 .mapToObj(i -> parts[i])
                 .collect(Collectors.joining("."));
 
         // // If instance and member name is empty, means prototype inheritance
-        if (type == AssignmentType.INSTANCE && memberName.isEmpty()) {
+        if (type == NamedType.INSTANCE && memberName.isEmpty()) {
             // Determine from where it inherits from
-            String parentClass = extractParentClass(assignment.getRightHand());
+            String parentClass = extractParentClass(assignment.getElement());
 
             // Check if tag already exist for this value
             boolean hasTag = classElement.getComment().getTags(JsDocTagName.AUGMENTS).stream()

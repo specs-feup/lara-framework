@@ -1,6 +1,6 @@
 package pt.up.fe.specs.lara.doc.aspectir.elements;
 
-public enum AssignmentType {
+public enum NamedType {
 
     CONSTRUCTOR,
     INSTANCE,
