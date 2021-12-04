@@ -108,21 +108,10 @@ public class AspectIrParser {
                 "Expected one component, has " + statement.components.size());
 
         Expression expression = CodeElems.get(0, statement.components, Expression.class);
-        // CodeElem firstElement = statement.components.get(0);
-        // Preconditions.checkArgument(firstElement instanceof Expression,
-        // "Expected first code element of function decl to be an expression");
-        //
-        // Expression expression = (Expression) firstElement;
 
         ExprOp functionOp = CodeElems.getOp(expression, ExtraOp.FN.getName())
                 .orElseThrow(() -> new RuntimeException("Expected to find a function: " + expression));
 
-        // Preconditions.checkArgument(expression.exprs.size() == 1,
-        // "Expected one expression, has " + expression.exprs.size());
-        //
-        // ExprOp op = CodeElems.get(0, expression.exprs, ExprOp.class);
-
-        // return parseFunctionDecl(op, laraComment);
         return parseFunctionOp(functionOp, laraComment);
     }
 

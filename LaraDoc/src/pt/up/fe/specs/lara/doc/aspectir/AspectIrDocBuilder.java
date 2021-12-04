@@ -112,11 +112,6 @@ public class AspectIrDocBuilder {
         SpecsIo.write(new File("output.txt"), new Gson().toJson(program.getNode()));
         // System.out.println(program.getChildren().size());
 
-        // Add top-level element, if it has comment
-        // if (program.hasComment()) {
-        // System.out.println("COMMENTS: " + program.getComments());
-        // }
-
         // Collect nodes that should be documented
         List<EsprimaNode> documentedNodes = new ArrayList<>();
 
@@ -124,14 +119,21 @@ public class AspectIrDocBuilder {
 
         // Add documentation for top-level elements
         for (var node : documentedNodes) {
-            // // Check if it has comment
-            // if (!node.hasComment()) {
-            // continue;
-            // }
-            //
-            // System.out.println("FOUND COMMENT: " + node.getType());
-            //
-            // System.out.println(node.getComment());
+            // System.out.println("NODE: " + node.getType());
+
+            // One declaration can have one or more declarators
+            if (node.getType().equals("VariableDeclaration")) {
+                for (var declarator : node.getAsNodes("declarations")) {
+                    // Use comment from declaration as base
+                    LaraDocComment laraComment = commentParser.parse(node.getComment().getCode());
+
+                    // Add information to the comment based on the node
+                    AspectIrElement aspectIrElement = esprimaParser.parse(declarator, laraComment);
+                    aspectIrElements.add(aspectIrElement);
+                }
+
+                continue;
+            }
 
             // First create and populate a comment object based on an existing comment, if present
             LaraDocComment laraComment = commentParser.parse(node.getComment().getCode());
@@ -173,7 +175,8 @@ public class AspectIrDocBuilder {
             node.getAsNodes("body").stream().forEach(child -> getDocumentedNodes(child, documentedNodes));
             return;
         case "ClassDeclaration":
-            // case "MethodDefinition":
+        case "FunctionDeclaration":
+        case "VariableDeclaration":
             // Add self
             documentedNodes.add(node);
 
@@ -186,6 +189,7 @@ public class AspectIrDocBuilder {
         // documentedNodes.add(node);
         // return;
         default:
+            System.out.println("JS node not being handled: " + node.getType());
             // Do nothing
         }
 

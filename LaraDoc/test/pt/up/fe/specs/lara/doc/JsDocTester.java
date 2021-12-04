@@ -31,7 +31,7 @@ public class JsDocTester {
 
         SpecsIo.resourceCopy("pt/up/fe/specs/lara/doc/docExample.js", tempFolder);
         String[] args = { "--weaver", "org.lara.interpreter.weaver.defaultweaver.DefaultWeaver", "--output",
-                "./doctest", "--clean", "--exclude", "_", "--packages",
+                "./run/doctest", "--clean", "--exclude", "_", "--packages",
                 "{'Test API': ['" + tempFolder.getAbsolutePath().replace('\\', '/') + "']}" };
         LaraDocLauncher.main(args);
     }
