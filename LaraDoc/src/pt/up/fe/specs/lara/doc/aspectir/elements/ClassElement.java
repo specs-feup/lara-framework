@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.doc.aspectir.elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 
@@ -24,6 +25,7 @@ public class ClassElement extends AAspectIrElement {
     private final List<String> parameters;
     private final List<NamedElement> staticElements;
     private final List<NamedElement> instanceElements;
+    private String parentClass;
 
     public ClassElement(String className, List<String> parameters, LaraDocComment laraDocComment) {
         super(laraDocComment);
@@ -32,6 +34,15 @@ public class ClassElement extends AAspectIrElement {
         this.parameters = parameters;
         this.staticElements = new ArrayList<>();
         this.instanceElements = new ArrayList<>();
+        this.parentClass = null;
+    }
+
+    public Optional<String> getParentClass() {
+        return Optional.ofNullable(parentClass);
+    }
+
+    public void setParentClass(String parentClass) {
+        this.parentClass = parentClass;
     }
 
     public String getClassName() {

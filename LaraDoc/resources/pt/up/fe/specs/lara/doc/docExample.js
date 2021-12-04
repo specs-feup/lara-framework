@@ -9,7 +9,9 @@
 	 * @param {string} stringParam - A string parameter
 	 * @param {number} [optionalNumberParam=0] - An optional
 	 */
- 	constructor() {
+ 	constructor(stringParam) {
+ 		this.stringParam = stringParam;
+ 		this.optionalNumberParam = optionalNumberParam !== undefined ? optionalNumberParam : 0;
  	}
  	
  	/**
@@ -35,6 +37,18 @@
     static staticMethod() {
     	
   	}
+ }
+ 
+ /**
+  * Example of derived class
+  */
+ class ExampleDerivedClass extends ExampleClass {
+ 
+ 	constructor(stringParam, anotherParam) {
+ 		super(stringParam);
+ 		
+ 		this.anotherParam = anotherParam;
+ 	}
  }
  
  /**

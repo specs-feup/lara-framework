@@ -13,20 +13,30 @@ import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 public class NamedElement extends AAspectIrElement {
 
     private final String fullName;
-    private AspectIrElement element;
+    private FunctionDeclElement element;
     private NamedType namedType;
+    private String parentClass;
 
-    public NamedElement(String name, AspectIrElement element, NamedType namedType,
+    public NamedElement(String name, FunctionDeclElement element, NamedType namedType,
             LaraDocComment laraDocComment) {
         super(laraDocComment);
 
         this.fullName = name;
         this.element = element;
         this.namedType = namedType;
+        this.parentClass = null;
     }
 
-    public NamedElement(String name, AspectIrElement element, LaraDocComment laraDocComment) {
+    public NamedElement(String name, FunctionDeclElement element, LaraDocComment laraDocComment) {
         this(name, element, null, laraDocComment);
+    }
+
+    public void setParentClass(String parentClass) {
+        this.parentClass = parentClass;
+    }
+
+    public Optional<String> getParentClass() {
+        return Optional.ofNullable(parentClass);
     }
 
     public String getFullName() {
@@ -38,15 +48,16 @@ public class NamedElement extends AAspectIrElement {
     }
 
     public Optional<FunctionDeclElement> getRightFunctionDecl() {
-        if (element == null) {
-            return Optional.empty();
-        }
-
-        if (!(element instanceof FunctionDeclElement)) {
-            return Optional.empty();
-        }
-
-        return Optional.of((FunctionDeclElement) element);
+        return Optional.ofNullable(element);
+        // if (element == null) {
+        // return Optional.empty();
+        // }
+        //
+        // if (!(element instanceof FunctionDeclElement)) {
+        // return Optional.empty();
+        // }
+        //
+        // return Optional.of(element);
     }
 
     public void setAssignmentType(NamedType assignmentType) {

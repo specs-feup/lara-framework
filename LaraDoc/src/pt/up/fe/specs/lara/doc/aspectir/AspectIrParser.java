@@ -38,16 +38,16 @@ import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.CodeElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.classmap.BiFunctionClassMap;
@@ -360,26 +360,75 @@ public class AspectIrParser {
 
         // Get code for the left hand
         String leftHandCode = CodeElems.getLaraCode(op.exprs.get(0));
-        AspectIrElement rightHand = parseRightHand(op.exprs.get(1), laraComment);
+        // AspectIrElement rightHand = parseRightHand(op.exprs.get(1), laraComment);
+
+        var functionDecl = extractFunctionDecl(op.exprs.get(1), laraComment);
+        var parentClass = extractParentClass(op.exprs.get(1));
+
         // laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, leftHandCode));
 
-        return Optional.of(new NamedElement(leftHandCode, rightHand, laraComment));
+        // return Optional.of(new NamedElement(leftHandCode, rightHand, laraComment));
+        var namedElement = new NamedElement(leftHandCode, functionDecl, laraComment);
+        namedElement.setParentClass(parentClass);
+
+        return Optional.of(namedElement);
     }
 
-    private AspectIrElement parseRightHand(Expression expression, LaraDocComment laraComment) {
+    private FunctionDeclElement extractFunctionDecl(Expression expression, LaraDocComment laraComment) {
         // Check if function
-        if (expression instanceof ExprOp) {
-            ExprOp op = (ExprOp) expression;
-
-            if (op.name.equals("FN")) {
-                return parseFunctionOp(op, laraComment, null);
-            }
-
-            // System.out.println("ANOTHER OP: " + CodeElems.toXml(op));
-            return new CodeElement(expression, laraComment);
+        if (!(expression instanceof ExprOp)) {
+            return null;
         }
 
-        return new CodeElement(expression, laraComment);
+        ExprOp op = (ExprOp) expression;
+
+        if (!op.name.equals("FN")) {
+            return null;
+        }
+
+        var element = parseFunctionOp(op, laraComment, null);
+
+        SpecsCheck.checkArgument(element instanceof FunctionDeclElement,
+                () -> "Expected a FunctionDecl, found " + element.getClass().getName());
+
+        return (FunctionDeclElement) element;
+    }
+
+    private static String extractParentClass(CodeElem codeElem) {
+
+        // Look for a property that has a literal 'prototype' and an id
+        List<ExprLiteral> prototypeLiterals = BaseNodes.toStream(codeElem)
+                .filter(ExprLiteral.class::isInstance)
+                .map(ExprLiteral.class::cast)
+                .filter(literal -> "prototype".equals(literal.value))
+                .collect(Collectors.toList());
+
+        if (prototypeLiterals.size() != 1) {
+            // SpecsLogs.warn("Expected to find one 'prototype' literal, found "
+            // + prototypeLiterals.size() + ":\n " + CodeElems.toXml(codeElem));
+            // return "";
+            return null;
+        }
+
+        ExprLiteral prototypeLiteral = prototypeLiterals.get(0);
+
+        Base parent = (Base) prototypeLiteral.getParent();
+
+        // Look for ID node
+        List<ExprId> idNodes = BaseNodes.toStream(parent)
+                .filter(ExprId.class::isInstance)
+                .map(ExprId.class::cast)
+                .collect(Collectors.toList());
+
+        if (idNodes.size() != 1) {
+            // SpecsLogs.warn("Expected to find one id node, found "
+            // + idNodes.size() + ":\n " + BaseNodes.toXml(parent));
+            // return "";
+            return null;
+        }
+
+        ExprId id = idNodes.get(0);
+        return id.name;
     }
 
     private AspectIrElement parseVarDeclStatement(Statement statement, LaraDocComment laraComment) {

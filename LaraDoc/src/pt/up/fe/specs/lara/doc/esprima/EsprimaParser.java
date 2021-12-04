@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 
 import pt.up.fe.specs.jsengine.libs.EsprimaNode;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.comments.LaraCommentsParser;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -63,11 +63,25 @@ public class EsprimaParser {
 
         var className = node.getAsNode("id").getAsString("name");
 
+        var classElement = new ClassElement(className, Collections.emptyList(), laraComment);
+
         // Add Class tag, with property name
         laraComment.getTag(JsDocTagName.CLASS).setValueIfMissing(JsDocTagProperty.NAME, className);
         laraComment.getTag(JsDocTagName.ALIAS).setValueIfMissing(JsDocTagProperty.NAME_PATH, className);
 
-        var classElement = new ClassElement(className, Collections.emptyList(), laraComment);
+        // Add super class
+        if (node.hasValueFor("superClass")) {
+            var superClass = node.getAsNode("superClass").getAsString("name");
+
+            // Add to class
+            classElement.setParentClass(superClass);
+
+            // Add tag
+            JsDocTag augmentsTag = new JsDocTag(JsDocTagName.AUGMENTS)
+                    .setValue(JsDocTagProperty.NAME_PATH, superClass);
+
+            laraComment.addTag(augmentsTag);
+        }
 
         // Add members of the class element
         for (var classMember : node.getAsNode("body").getAsNodes("body")) {
