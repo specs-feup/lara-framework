@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
@@ -117,7 +117,7 @@ public class LaraModuleBuilder {
             // }
 
             // Static members
-            List<NamedElement> staticMembers = classElement.getStaticElements();
+            List<AssignmentElement> staticMembers = classElement.getStaticElements();
             AspectIrElement.sort(staticMembers);
 
             List<String> staticIds = new ArrayList<>();
@@ -126,7 +126,7 @@ public class LaraModuleBuilder {
 
                 htmlCode.append("<h2>Static Members</h2>");
 
-                for (NamedElement staticMember : staticMembers) {
+                for (AssignmentElement staticMember : staticMembers) {
                     String staticId = nextId();
                     boolean isFunction = staticMember.getRightFunctionDecl().isPresent();
 
@@ -150,13 +150,13 @@ public class LaraModuleBuilder {
             // Instance members
             List<String> instanceIds = new ArrayList<>();
             List<String> instanceNames = new ArrayList<>();
-            List<NamedElement> instanceMembers = classElement.getInstanceElements();
+            List<AssignmentElement> instanceMembers = classElement.getInstanceElements();
             AspectIrElement.sort(instanceMembers);
 
             if (!instanceMembers.isEmpty()) {
                 htmlCode.append("<h2>Instance Members</h2>");
 
-                for (NamedElement instanceMember : instanceMembers) {
+                for (AssignmentElement instanceMember : instanceMembers) {
                     String instanceId = nextId();
                     boolean isFunction = instanceMember.getRightFunctionDecl().isPresent();
                     instanceIds.add(instanceId);
@@ -209,7 +209,7 @@ public class LaraModuleBuilder {
 
     }
 
-    private String parseMemberNameToc(NamedElement member) {
+    private String parseMemberNameToc(AssignmentElement member) {
         String memberName = member.getNamePath();
         boolean isFunction = member.getRightFunctionDecl().isPresent();
         if (isFunction) {

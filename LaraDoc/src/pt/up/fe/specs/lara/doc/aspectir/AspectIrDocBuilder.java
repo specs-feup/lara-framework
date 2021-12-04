@@ -128,8 +128,7 @@ public class AspectIrDocBuilder {
                     LaraDocComment laraComment = commentParser.parse(node.getComment().getCode());
 
                     // Add information to the comment based on the node
-                    AspectIrElement aspectIrElement = esprimaParser.parse(declarator, laraComment);
-                    aspectIrElements.add(aspectIrElement);
+                    esprimaParser.parseTry(declarator, laraComment).ifPresent(aspectIrElements::add);
                 }
 
                 continue;
@@ -142,8 +141,9 @@ public class AspectIrDocBuilder {
             // System.out.println("LARA DOC COMMENT: " + laraComment);
 
             // Add information to the comment based on the node
-            AspectIrElement aspectIrElement = esprimaParser.parse(node, laraComment);
-            aspectIrElements.add(aspectIrElement);
+            esprimaParser.parseTry(node, laraComment).ifPresent(aspectIrElements::add);
+            // AspectIrElement aspectIrElement = esprimaParser.parse(node, laraComment);
+            // aspectIrElements.add(aspectIrElement);
 
         }
 
@@ -177,6 +177,7 @@ public class AspectIrDocBuilder {
         case "ClassDeclaration":
         case "FunctionDeclaration":
         case "VariableDeclaration":
+        case "ExpressionStatement":
             // Add self
             documentedNodes.add(node);
 

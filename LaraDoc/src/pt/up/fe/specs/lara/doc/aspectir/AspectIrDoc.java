@@ -13,7 +13,7 @@ import com.google.common.base.Preconditions;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
@@ -72,8 +72,8 @@ public class AspectIrDoc {
                 .forEach(topLevelElements::add);
 
         // Bind assignments to variable declarations, whenever possible
-        SpecsCollections.remove(aspectIrElements, NamedElement.class::isInstance).stream()
-                .map(NamedElement.class::cast)
+        SpecsCollections.remove(aspectIrElements, AssignmentElement.class::isInstance).stream()
+                .map(AssignmentElement.class::cast)
                 .forEach(assignment -> bindAssignment(assignment, classes, topLevelElements, nameExcluder));
 
         Preconditions.checkArgument(aspectIrElements.isEmpty(), "Expected list of aspect elements to be empty: %s",
@@ -82,10 +82,10 @@ public class AspectIrDoc {
         return new AspectIrDoc(topLevelElements, nameExcluder);
     }
 
-    private static void bindAssignment(NamedElement assignment, Map<String, ClassElement> classes,
+    private static void bindAssignment(AssignmentElement assignment, Map<String, ClassElement> classes,
             List<AspectIrElement> topLevelElements, Predicate<String> nameExcluder) {
 
-        String leftHand = assignment.getFullName();
+        String leftHand = assignment.getLeftHand();
 
         // Split by '.'
         String[] parts = leftHand.split("\\.");

@@ -8,8 +8,8 @@ import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 public class VarDeclElement extends AAspectIrElement {
 
     private final String varDeclName;
-    private final List<NamedElement> staticElements;
-    private final List<NamedElement> instanceElements;
+    private final List<AssignmentElement> staticElements;
+    private final List<AssignmentElement> instanceElements;
 
     public VarDeclElement(String varDeclName, LaraDocComment laraDocComment) {
         super(laraDocComment);
@@ -23,15 +23,15 @@ public class VarDeclElement extends AAspectIrElement {
         return varDeclName;
     }
 
-    public List<NamedElement> getStaticElements() {
+    public List<AssignmentElement> getStaticElements() {
         return staticElements;
     }
 
-    public List<NamedElement> getInstanceElements() {
+    public List<AssignmentElement> getInstanceElements() {
         return instanceElements;
     }
 
-    public void addAssignment(NamedElement assignment) {
+    public void addAssignment(AssignmentElement assignment) {
         switch (assignment.getAssignmentType()) {
         case STATIC:
             staticElements.add(assignment);

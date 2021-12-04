@@ -10,14 +10,14 @@ import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
 
-public class NamedElement extends AAspectIrElement {
+public class AssignmentElement extends AAspectIrElement {
 
     private final String fullName;
     private FunctionDeclElement element;
     private NamedType namedType;
     private String parentClass;
 
-    public NamedElement(String name, FunctionDeclElement element, NamedType namedType,
+    public AssignmentElement(String name, FunctionDeclElement element, NamedType namedType,
             LaraDocComment laraDocComment) {
         super(laraDocComment);
 
@@ -27,7 +27,7 @@ public class NamedElement extends AAspectIrElement {
         this.parentClass = null;
     }
 
-    public NamedElement(String name, FunctionDeclElement element, LaraDocComment laraDocComment) {
+    public AssignmentElement(String name, FunctionDeclElement element, LaraDocComment laraDocComment) {
         this(name, element, null, laraDocComment);
     }
 
@@ -39,7 +39,7 @@ public class NamedElement extends AAspectIrElement {
         return Optional.ofNullable(parentClass);
     }
 
-    public String getFullName() {
+    public String getLeftHand() {
         return fullName;
     }
 

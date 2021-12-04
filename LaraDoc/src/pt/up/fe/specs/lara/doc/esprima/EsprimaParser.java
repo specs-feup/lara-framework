@@ -16,16 +16,16 @@ package pt.up.fe.specs.lara.doc.esprima;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import pt.up.fe.specs.jsengine.libs.EsprimaNode;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.NamedType;
-import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraCommentsParser;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -45,6 +45,10 @@ public class EsprimaParser {
         commentParser = new LaraCommentsParser();
     }
 
+    public Optional<AspectIrElement> parseTry(EsprimaNode node, LaraDocComment laraComment) {
+        return Optional.ofNullable(parse(node, laraComment));
+    }
+
     public AspectIrElement parse(EsprimaNode node, LaraDocComment laraComment) {
         var type = node.getType();
         // Check type of node
@@ -55,14 +59,86 @@ public class EsprimaParser {
             return parseFunctionDeclaration(node, laraComment);
         case "VariableDeclarator":
             return parseVariableDeclarator(node, laraComment);
+        case "ExpressionStatement":
+            return parseExpressionStatement(node, laraComment);
         default:
             if (!seenUnsupportedNodes.contains(type)) {
                 SpecsLogs.msgInfo("EsprimaParser does not support yet node of type '" + type + "'");
                 seenUnsupportedNodes.add(type);
             }
 
-            return new StatementElement(laraComment);
+            return null;
+        // return new StatementElement(laraComment);
         }
+    }
+
+    private AspectIrElement parseExpressionStatement(EsprimaNode node, LaraDocComment laraComment) {
+
+        var expr = node.getAsNode("expression");
+
+        // Must be assignment
+        if (!expr.getType().equals("AssignmentExpression")) {
+            return null;
+        }
+
+        var leftMember = expr.getAsNode("left");
+
+        // Must be member expression
+        if (!leftMember.getType().equals("MemberExpression")) {
+            return null;
+        }
+
+        var memberObject = leftMember.getAsNode("object");
+
+        var classId = memberObject.getType().equals("MemberExpression") ? memberObject.getAsNode("object")
+                : memberObject;
+
+        if (!classId.getType().equals("Identifier")) {
+            return null;
+        }
+        System.out.println("CLASS ID: " + classId);
+        var className = classId.getAsString("name");
+
+        var isInstanceMember = isInstanceMember(memberObject);
+
+        var property = leftMember.getAsNode("property");
+        if (!property.getType().equals("Identifier")) {
+            return null;
+        }
+
+        var memberName = property.getAsString("name");
+
+        var rightMember = expr.getAsNode("right");
+
+        FunctionDeclElement function = null;
+        if (rightMember.getType().equals("FunctionExpression")) {
+            function = parseFunctionExpression(rightMember, memberName, laraComment);
+        }
+
+        System.out.println("Class name: " + className);
+        System.out.println("Member name: " + memberName);
+        System.out.println("Is static: " + !isInstanceMember);
+
+        var namedType = isInstanceMember ? NamedType.INSTANCE : NamedType.STATIC;
+
+        var prototype = isInstanceMember ? ".prototype" : "";
+        var fullName = className + prototype + "." + memberName;
+
+        return new AssignmentElement(fullName, function, namedType, laraComment);
+    }
+
+    private boolean isInstanceMember(EsprimaNode memberObject) {
+        if (!memberObject.getType().equals("MemberExpression")) {
+            return false;
+        }
+
+        var property = memberObject.getAsNode("property");
+
+        if (!property.getType().equals("Identifier")) {
+            return false;
+        }
+
+        return property.getAsString("name").equals("prototype");
     }
 
     private AspectIrElement parseVariableDeclarator(EsprimaNode node, LaraDocComment laraComment) {
@@ -164,7 +240,7 @@ public class EsprimaParser {
             // System.out.println("Member type: " + classMember.getType());
             // System.out.println("Member keys: " + classMember.getKeys());
 
-            var element = parseClassMember(classMember);
+            var element = parseClassMember(className, classMember);
 
             if (element != null) {
                 classElement.addAssignment(element);
@@ -175,12 +251,12 @@ public class EsprimaParser {
         return classElement;
     }
 
-    private NamedElement parseClassMember(EsprimaNode classMember) {
+    private AssignmentElement parseClassMember(String className, EsprimaNode classMember) {
         var type = classMember.getType();
 
         switch (type) {
         case "MethodDefinition":
-            return parseMethodDefinition(classMember);
+            return parseMethodDefinition(className, classMember);
         default:
             SpecsLogs.info("parseClassMember not implemented for type '" + type + "'");
             return null;
@@ -188,7 +264,7 @@ public class EsprimaParser {
 
     }
 
-    private NamedElement parseMethodDefinition(EsprimaNode method) {
+    private AssignmentElement parseMethodDefinition(String className, EsprimaNode method) {
         var name = method.getAsNode("key").getAsString("name");
 
         var memberLaraComment = commentParser.parse(method.getComment().getCode());
@@ -209,8 +285,12 @@ public class EsprimaParser {
             memberLaraComment.addTagIfMissing(new JsDocTag(JsDocTagName.CONSTRUCTOR));
         }
 
+        var prototype = memberType == NamedType.STATIC ? "" : ".prototype";
+
+        var fullName = className + prototype + "." + name;
+
         // return null;
-        return new NamedElement(name, functionElement, memberType, memberLaraComment);
+        return new AssignmentElement(fullName, functionElement, memberType, memberLaraComment);
     }
 
     private FunctionDeclElement parseFunctionExpression(EsprimaNode function, String name,

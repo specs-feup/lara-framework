@@ -49,6 +49,9 @@
  		
  		this.anotherParam = anotherParam;
  	}
+ 	
+ 	derivedFoo() {
+ 	}
  }
  
  /**
@@ -114,3 +117,5 @@ var ExampleLegacyStaticClass = {};
 ExampleLegacyStaticClass.legacyStaticMethod = function () {
 	return 0;
 }
+
+ExampleLegacyStaticClass.LEGACY_STATIC_CLASS_VAR = 0

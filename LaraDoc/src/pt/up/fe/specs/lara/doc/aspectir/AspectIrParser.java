@@ -40,7 +40,7 @@ import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -313,7 +313,7 @@ public class AspectIrParser {
         Expression expression = (Expression) firstElement;
 
         // Detect assignment
-        Optional<NamedElement> assignment = parseAssignmentTry(expression, laraComment);
+        Optional<AssignmentElement> assignment = parseAssignmentTry(expression, laraComment);
         if (assignment.isPresent()) {
             // System.out.println("ASSIGNMENT:" + CodeElems.toXml(expression));
             return assignment.get();
@@ -328,7 +328,7 @@ public class AspectIrParser {
         return null;
     }
 
-    private Optional<NamedElement> parseAssignmentTry(Expression expression, LaraDocComment laraComment) {
+    private Optional<AssignmentElement> parseAssignmentTry(Expression expression, LaraDocComment laraComment) {
 
         if (expression.exprs.size() != 1) {
             return Optional.empty();
@@ -357,7 +357,7 @@ public class AspectIrParser {
         // laraComment.addTagIfMissing(new JsDocTag("alias").setValue(JsDocTagProperty.NAME_PATH, leftHandCode));
 
         // return Optional.of(new NamedElement(leftHandCode, rightHand, laraComment));
-        var namedElement = new NamedElement(leftHandCode, functionDecl, laraComment);
+        var namedElement = new AssignmentElement(leftHandCode, functionDecl, laraComment);
         namedElement.setParentClass(parentClass);
 
         return Optional.of(namedElement);

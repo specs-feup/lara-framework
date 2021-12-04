@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import pt.up.fe.specs.lara.doc.aspectir.elements.NamedElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTag;
@@ -27,7 +27,7 @@ import pt.up.fe.specs.util.utilities.StringLines;
 
 public class HtmlGenerators {
 
-    public static String generateAssignment(NamedElement assignment, String id) {
+    public static String generateAssignment(AssignmentElement assignment, String id) {
         StringBuilder assignmentCode = new StringBuilder();
         assignmentCode.append("<p>");
 
