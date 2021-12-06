@@ -13,11 +13,8 @@
 
 package pt.up.fe.specs.lara.doc.aspectir;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.Gson;
 
 import pt.up.fe.specs.jsengine.libs.EsprimaNode;
 import pt.up.fe.specs.jsengine.libs.JsEsprima;
@@ -30,7 +27,6 @@ import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
 import pt.up.fe.specs.lara.doc.esprima.EsprimaParser;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagName;
 import pt.up.fe.specs.lara.doc.jsdoc.JsDocTagProperty;
-import pt.up.fe.specs.util.SpecsIo;
 
 /**
  * Incrementally builds an AspectIrDoc.
@@ -109,7 +105,7 @@ public class AspectIrDocBuilder {
 
     public void parseJs(String jsCode) {
         var program = JsEsprima.parse(jsCode);
-        SpecsIo.write(new File("output.txt"), new Gson().toJson(program.getNode()));
+        // SpecsIo.write(new File("output.txt"), new Gson().toJson(program.getNode()));
         // System.out.println(program.getChildren().size());
 
         // Collect nodes that should be documented
