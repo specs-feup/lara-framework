@@ -27,6 +27,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.arguments.ArgumentsParser;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocTop;
+import pt.up.fe.specs.lara.doc.html.StaticPageLaraDocHtmlGenerator;
 import pt.up.fe.specs.lara.doc.jsdocgen.BasicHtmlGenerator;
 import pt.up.fe.specs.lara.doc.parser.LaraDocParser;
 import pt.up.fe.specs.util.SpecsIo;
@@ -116,7 +117,8 @@ public class LaraDocLauncher {
         // System.out.println("LARA DOC TOP:\n" + laraDocTop);
 
         // Generate documentation
-        LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
+        // LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
+        var generator = new StaticPageLaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
 
         LanguageSpecification langSpec = data.get(INCLUDE_LANGUAGE_SPECIFICATION)
                 ? weaverEngine.getLanguageSpecification()
