@@ -96,7 +96,7 @@ public class EsprimaParser {
         if (!classId.getType().equals("Identifier")) {
             return null;
         }
-        System.out.println("CLASS ID: " + classId);
+        // System.out.println("CLASS ID: " + classId);
         var className = classId.getAsString("name");
 
         var isInstanceMember = isInstanceMember(memberObject);
@@ -115,9 +115,9 @@ public class EsprimaParser {
             function = parseFunctionExpression(rightMember, memberName, laraComment);
         }
 
-        System.out.println("Class name: " + className);
-        System.out.println("Member name: " + memberName);
-        System.out.println("Is static: " + !isInstanceMember);
+        // System.out.println("Class name: " + className);
+        // System.out.println("Member name: " + memberName);
+        // System.out.println("Is static: " + !isInstanceMember);
 
         var namedType = isInstanceMember ? NamedType.INSTANCE : NamedType.STATIC;
 
