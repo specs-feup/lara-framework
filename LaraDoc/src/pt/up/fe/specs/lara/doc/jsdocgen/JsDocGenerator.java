@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 import org.lara.language.specification.ast.LangSpecNode;
 
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 public interface JsDocGenerator {
 
@@ -33,6 +34,10 @@ public interface JsDocGenerator {
     // File queue(List<File> inputFiles, File outputFolder);
     // Optional<File> generate(List<File> inputFiles, File outputFolder);
     Optional<File> generate(LaraDocModule module, File outputFolder);
+
+    default String generate(LaraDocModule module) {
+        throw new NotImplementedException(this);
+    }
 
     /**
      * Generates HTML for Language Specification nodes.
