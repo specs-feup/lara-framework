@@ -1,3 +1,6 @@
+// Store scroll position of sidebar
+sidebarScrollTop = undefined;
+
 function update_doc(doc_link) {
 	//document.getElementById("doc_frame").src=doc_link; 
 	//document.getElementById("doc_content").innerHTML='<object type="text/html" data="' + doc_link +  '" ></object>';
@@ -26,3 +29,17 @@ function goToTop() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
 }
+
+function saveScroll() {
+	sidebarScrollTop = $("#column1").scrollTop();
+	console.log("Saved " + sidebarScrollTop);
+}
+
+// Update scroll position of sidebar
+if(sidebarScrollTop !== undefined) {
+	console.log("Updating: " + sidebarScrollTop);
+	$("#column1").scrollTop(sidebarScrollTop);
+}
+
+
+console.log("Scroll top: " + $("#column1").scrollTop());
