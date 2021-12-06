@@ -30,6 +30,8 @@ public class JsDocTester {
         SpecsIo.deleteFolderContents(tempFolder);
 
         SpecsIo.resourceCopy("pt/up/fe/specs/lara/doc/docExample.js", tempFolder);
+        SpecsIo.resourceCopy("pt/up/fe/specs/lara/doc/docExample2.js", tempFolder);
+
         String[] args = { "--weaver", "org.lara.interpreter.weaver.defaultweaver.DefaultWeaver", "--output",
                 "./run/doctest", "--clean", "--exclude", "_", "--packages",
                 "{'Test API': ['" + tempFolder.getAbsolutePath().replace('\\', '/') + "']}" };
