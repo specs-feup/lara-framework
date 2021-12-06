@@ -48,6 +48,13 @@ public class BasicHtmlGenerator implements JsDocGenerator {
     }
 
     @Override
+    public String generate(LaraDocModule module) {
+        LaraModuleBuilder moduleBuilder = new LaraModuleBuilder(module, getNameFilter());
+
+        return moduleBuilder.getHtml();
+    }
+
+    @Override
     public Optional<File> generate(LangSpecNode langNode, File outputFolder) {
         String langNodeHtml = langNode.toHtml();
 
