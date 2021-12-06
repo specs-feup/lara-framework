@@ -31,7 +31,7 @@ import pt.up.fe.specs.lara.doc.aspectir.AspectIrDoc;
  * @author JoaoBispo
  *
  */
-public class LaraDocModule extends LaraDocNode {
+public class LaraDocModule extends LaraDocNode implements Comparable<LaraDocModule> {
 
     private final String importPath;
     private File mainLara;
@@ -165,6 +165,11 @@ public class LaraDocModule extends LaraDocNode {
 
     public AspectIrDoc getDocumentation() {
         return getDocumentationTry().orElseThrow(() -> new RuntimeException("Documentation not set"));
+    }
+
+    @Override
+    public int compareTo(LaraDocModule o) {
+        return this.getImportPath().compareTo(o.getImportPath());
     }
 
 }

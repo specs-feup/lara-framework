@@ -26,7 +26,7 @@ import java.util.Map;
  * @author JoaoBispo
  *
  */
-public class LaraDocBundle extends LaraDocNode {
+public class LaraDocBundle extends LaraDocNode implements Comparable<LaraDocBundle> {
 
     private final String bundleName;
     private final Map<String, LaraDocPackage> bundlePackages;
@@ -75,6 +75,11 @@ public class LaraDocBundle extends LaraDocNode {
 
     public String getBundleName() {
         return bundleName;
+    }
+
+    @Override
+    public int compareTo(LaraDocBundle o) {
+        return this.getBundleName().compareTo(o.getBundleName());
     }
 
 }

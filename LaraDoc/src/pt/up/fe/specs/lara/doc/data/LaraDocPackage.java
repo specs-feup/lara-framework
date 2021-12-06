@@ -110,7 +110,7 @@ public class LaraDocPackage extends LaraDocNode implements Comparable<LaraDocPac
 
     @Override
     public int compareTo(LaraDocPackage o) {
-        return packageName.compareTo(o.packageName);
+        return getPackageName().compareTo(o.getPackageName());
     }
 
 }
