@@ -64,6 +64,11 @@ public abstract class EcmaNode extends DataNode<EcmaNode> {
     }
 
     @Override
+    protected Class<EcmaNode> getBaseClass() {
+        return EcmaNode.class;
+    }
+
+    @Override
     public String toContentString() {
         return getData().toInlinedString();
     }

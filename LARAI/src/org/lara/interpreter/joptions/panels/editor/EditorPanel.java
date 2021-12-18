@@ -544,7 +544,7 @@ public class EditorPanel extends GuiTab {
         // System.out.println(optionsDataStore);
 
         DataStore tempDS = DataStore.newInstance(
-                optionsDataStore.getStoreDefinition().map(sd -> sd.getName()).orElse(optionsDataStore.getName()),
+                optionsDataStore.getStoreDefinitionTry().map(sd -> sd.getName()).orElse(optionsDataStore.getName()),
                 optionsDataStore);
         tempDS.setRaw(LaraiKeys.DEBUG_MODE, true);
         tempDS.setRaw(LaraiKeys.TRACE_MODE, true);
