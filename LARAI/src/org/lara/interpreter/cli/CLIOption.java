@@ -40,6 +40,7 @@ public enum CLIOption implements WeaverOption {
             "outputs to a log file. If file ends in .zip, compresses the file", LaraiKeys.LOG_FILE),
     includes("i", OptionArguments.ONE_ARG, "dir",
             "includes folder (imports files with extensions: lara, jar, js, class)", LaraiKeys.INCLUDES_FOLDER),
+    autoimport("ai", OptionArguments.NO_ARGS, LaraiKeys.AUTOMATICALLY_IMPORT_JS),
     dependencies("dep", OptionArguments.ONE_ARG, "urls",
             "external dependencies (URLs, git repos)", LaraiKeys.EXTERNAL_DEPENDENCIES),
     report("r", OptionArguments.ONE_ARG, "file_name.json", "Output file for the main aspect, in JSON format",
@@ -67,16 +68,20 @@ public enum CLIOption implements WeaverOption {
     private String argName;
     private DataKey<?> dataKey;
 
-    CLIOption(String shortArgument, String description, DataKey<?> dataKey) {
-        this(shortArgument, OptionArguments.NO_ARGS, "", description, dataKey);
-    }
-
     CLIOption(String shortArgument, OptionArguments args, String argName, String description, DataKey<?> dataKey) {
         this.shortArgument = shortArgument;
         this.description = description;
         hasArgs = args;
         this.argName = argName;
         this.dataKey = dataKey;
+    }
+
+    CLIOption(String shortArgument, String description, DataKey<?> dataKey) {
+        this(shortArgument, OptionArguments.NO_ARGS, "", description, dataKey);
+    }
+
+    CLIOption(String shortArgument, OptionArguments args, DataKey<?> dataKey) {
+        this(shortArgument, args, dataKey.getName(), dataKey.getLabel(), dataKey);
     }
 
     @Override

@@ -125,13 +125,13 @@ public class ImportProcessor {
                     continue;
                 }
 
-                var importScripts = true;
-                if (includeFolder.getName().endsWith("-lara")) {
-                    interpreter.out().println("Included folder '" + includeFolder
-                            + "' ends in '-lara', not importing scripts (except from 'scripts' folder)");
-
-                    importScripts = false;
-                }
+                // var importScripts = true;
+                // if (includeFolder.getName().endsWith("-lara")) {
+                // interpreter.out().println("Included folder '" + includeFolder
+                // + "' ends in '-lara', not importing scripts (except from 'scripts' folder)");
+                //
+                // importScripts = false;
+                // }
 
                 // Get JAVA files from "java" folder
                 final File javaPath = new File(includeFolder, "java");
@@ -141,6 +141,8 @@ public class ImportProcessor {
                 // Add scripts that are directly included in the 'includeFolders'
                 final List<File> allJava = getAllJavaClassPaths(includeFolder); // right now it is just using jars
                 final List<File> allScripts = new ArrayList<>();
+
+                var importScripts = interpreter.getOptions().isAutomaticallyIncludeJs();
 
                 if (importScripts) {
                     allScripts.addAll(SpecsIo.getFiles(includeFolder, "js"));// getAllScriptFiles(includeFolder);

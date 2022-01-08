@@ -56,7 +56,8 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
 
 /**
- * TODO: Should deprecate and just use DataStore directly?
+ * TODO: Should deprecate and just use DataStore directly? TODO: Also, the "ifs" in the getters interfere with the
+ * default values set in the DataKey
  * 
  * @author JoaoBispo
  *
@@ -278,6 +279,14 @@ public class LaraIDataStore implements LaraiKeys {
         return FileList.newInstance();
     }
 
+    public boolean isAutomaticallyIncludeJs() {
+        return dataStore.get(LaraiKeys.AUTOMATICALLY_IMPORT_JS);
+        // if (dataStore.hasValue(LaraiKeys.AUTOMATICALLY_IMPORT_JS)) {
+        // return dataStore.get(LaraiKeys.AUTOMATICALLY_IMPORT_JS);
+        // }
+        // return false;
+    }
+
     public StringList getExternalDependencies() {
         if (dataStore.hasValue(LaraiKeys.EXTERNAL_DEPENDENCIES)) {
             return dataStore.get(LaraiKeys.EXTERNAL_DEPENDENCIES);
@@ -494,4 +503,8 @@ public class LaraIDataStore implements LaraiKeys {
         files.add(gitRepoFolder);
     }
 
+    @Override
+    public String toString() {
+        return dataStore.toString();
+    }
 }

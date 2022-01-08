@@ -73,6 +73,9 @@ public interface LaraiKeys {
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
             .setLabel("Includes Folder (LARA, JS scripts, JARs)");
 
+    DataKey<Boolean> AUTOMATICALLY_IMPORT_JS = KeyFactory.bool("autoimportjs")
+            .setLabel("Automatically import JS files in include folders");
+
     DataKey<StringList> EXTERNAL_DEPENDENCIES = KeyFactory.stringList("external_dependencies")
             .setLabel("External dependencies (URLs, git repos)");
 
@@ -131,9 +134,8 @@ public interface LaraiKeys {
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
-                    INCLUDES_FOLDER,
-                    EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE, METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE,
-                    LOG_JS_OUTPUT,
+                    INCLUDES_FOLDER, AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE,
+                    METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
                     DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)
             .build();
 
