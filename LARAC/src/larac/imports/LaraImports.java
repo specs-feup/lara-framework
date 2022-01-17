@@ -53,6 +53,7 @@ public class LaraImports {
 
     public static void importLaraResource(final LaraC lara, String filePath,
             final LaraResourceProvider importingResource) {
+
         String importName = importingResource.getFileLocation();
         String resource = importingResource.getResource();
         // if (lara.wasImported(resource)) {
@@ -92,6 +93,7 @@ public class LaraImports {
         importingLara.setPrefix(prefix);
         lara.println("Organizing imported aspects from " + filePath);
         importingLara.toAspectIR();
+
         lara.println("Finished organizing imported aspects!");
         LaraImports.importAspects(lara, filePath, importingLara);
     }

@@ -347,7 +347,6 @@ public class LaraC {
         // try (BOMInputStream bis = new BOMInputStream(new FileInputStream(laraFile));
         try (BOMInputStream bis = new BOMInputStream(getLaraStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(bis));) {
-
             ASTStart ast = javaCCParser(br);
             aspectIR.setAst(ast);
         } catch (Exception e) {
@@ -897,4 +896,70 @@ public class LaraC {
         return SUPPORTED_EXT.contains(filenameExtension.toLowerCase());
     }
 
+    /**
+     * 
+     * Generates a XML document with the AspectIR corresponding to the JS code that needs to be executed in order to
+     * import the given name, using the same format as the imports in LARA files (e.g. weaver.Query).
+     * 
+     * @param importName
+     */
+    public Document importLara(String importName) {
+        // Create LaraC based on current LaraC, to keep imports
+
+        LaraC laraC = new LaraC(options, languageSpec, print);
+        // laraC.getOptions().setLaraResource(laraC, laraResource);
+        laraC.setLaraPath("dummy.lara");
+        laraC.setLaraStreamProvider(() -> SpecsIo.toInputStream("import " + importName + ";"));
+        laraC.parseForImport(getImportedLARA());
+
+        // laraC.compile();
+        // laraC.parse();
+
+        // var previouslyImported = new HashSet<>(getImportedLARA().keySet());
+
+        // System.out.println("IMPORTED LARA BEFORE: " + previouslyImported);
+
+        if (importName.endsWith(".")) {
+            throw new RuntimeException("Invalid import, cannot end with '.': " + importName);
+        }
+
+        // Split into fileName and filePath
+        int dotIndex = importName.lastIndexOf('.');
+
+        var fileName = dotIndex == -1 ? importName : importName.substring(dotIndex + 1);
+        var filePath = dotIndex == -1 ? "" : importName.substring(0, dotIndex + 1);
+        filePath = filePath.replace('.', '\\');
+
+        // Get LARA imports
+        var laraImports = getOptions().getLaraImports(fileName, filePath);
+
+        laraImports.stream().forEach(laraImport -> laraImport.resolveImport(laraC));
+
+        // var currentlyImported = getImportedLARA();
+        // System.out.println("IMPORTED LARA AFTER: " + currentlyImported);
+
+        // var newKeys = new HashSet<>(currentlyImported.keySet());
+        // System.out.println("NEW KEYS BEFORE: " + newKeys);
+        // newKeys.removeAll(previouslyImported);
+
+        // System.out.println("NEW KEYS AFTER: " + newKeys);
+
+        var aspectIr = laraC.getAspectIR();
+        var doc = aspectIr.toXML();
+
+        return doc;
+
+        // for (var key : newKeys) {
+        // System.out.println("KEY: " + key);
+        // var larac = currentlyImported.get(key);
+        // var aspectIr = larac.getAspectIR();
+        //
+        // System.out.println("IS PARSED? " + larac.isParsed());
+        // // Alternatively, we could call larac.createXML();, but this is more explicit
+        // var doc = aspectIr.toXML();
+        //
+        // System.out.println("DOC: " + doc);
+        // }
+
+    }
 }

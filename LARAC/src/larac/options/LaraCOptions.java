@@ -519,6 +519,7 @@ public class LaraCOptions {
                 final File importingFile = new File(path, importPath);
                 if (importingFile.exists()) {
                     laraImports.add(new FileLaraImport(importPath, importingFile));
+                    // System.out.println("FILE: " + importingFile);
                 }
             }
         }
@@ -531,6 +532,7 @@ public class LaraCOptions {
             var resource = getIncludeResourcesMap().get(importPath);
             if (!resource.isEmpty()) {
                 laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
+                // System.out.println("RESOURCE: " + resource.get(0));
             }
         }
 
