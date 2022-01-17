@@ -16,14 +16,9 @@ package pt.up.fe.specs.lara;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
-import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.w3c.dom.Document;
 
 import larac.LaraC;
@@ -85,25 +80,29 @@ public class LaraCompiler {
     }
 
     private AspectClassProcessor buildAspectProcessor() {
-
-        // Create LARA Interpreter
-        DataStore laraiConfig = DataStore.newInstance("LaraCompiler");
-        laraiConfig.set(LaraiKeys.LARA_FILE, new File(""));
-        LaraI larai = LaraI.newInstance(laraiConfig, weaver);
-
-        // Create MasterWeaver
-        FileList folderApplication = FileList.newInstance();
-        MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
-        larai.setWeaver(masterWeaver);
-
-        // Create interpreter
-        Interpreter interpreter = new Interpreter(larai, jsEngine, false);
-        larai.setInterpreter(interpreter);
-        // larai.getInterpreter().getImportProcessor().importAndInitialize();
-
-        masterWeaver.simpleBegin();
-
-        var aspectProcessor = AspectClassProcessor.newInstance(interpreter);
-        return aspectProcessor;
+        return LaraI.buildAspectProcessor(weaver, jsEngine);
     }
+
+    // public static AspectClassProcessor buildAspectProcessor(WeaverEngine weaver, JsEngine jsEngine) {
+    //
+    // // Create LARA Interpreter
+    // DataStore laraiConfig = DataStore.newInstance("LaraCompiler");
+    // laraiConfig.set(LaraiKeys.LARA_FILE, new File(""));
+    // LaraI larai = LaraI.newInstance(laraiConfig, weaver);
+    //
+    // // Create MasterWeaver
+    // FileList folderApplication = FileList.newInstance();
+    // MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
+    // larai.setWeaver(masterWeaver);
+    //
+    // // Create interpreter
+    // Interpreter interpreter = new Interpreter(larai, jsEngine, false);
+    // larai.setInterpreter(interpreter);
+    // // larai.getInterpreter().getImportProcessor().importAndInitialize();
+    //
+    // masterWeaver.simpleBegin();
+    //
+    // var aspectProcessor = AspectClassProcessor.newInstance(interpreter);
+    // return aspectProcessor;
+    // }
 }

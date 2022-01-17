@@ -31,6 +31,7 @@ import org.lara.interpreter.cli.OptionsConverter;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.cli.OptionsParser.ExecutionMode;
 import org.lara.interpreter.exception.LaraIException;
+import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.gui.LaraLauncher;
@@ -68,6 +69,7 @@ import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
+import tdrc.utils.Pair;
 
 /**
  * An interpreter for the LARA language, which converts the Aspect-IR into a javascript representation and runs that
@@ -111,6 +113,15 @@ public class LaraI {
 
     public static DataStore getThreadLocalData() {
         return THREAD_LOCAL_WEAVER_DATA.get();
+    }
+
+    /**
+     * Thread-scope LaraC
+     */
+    private static final SpecsThreadLocal<LaraC> THREAD_LOCAL_LARAC = new SpecsThreadLocal<>(LaraC.class);
+
+    public static LaraC getThreadLocalLarac() {
+        return THREAD_LOCAL_LARAC.get();
     }
 
     private LaraIDataStore options;
@@ -197,6 +208,7 @@ public class LaraI {
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
+        LaraC laraC = null;
 
         MessageConstants.order = 1;
         larac.utils.output.MessageConstants.order = 1;
@@ -221,10 +233,12 @@ public class LaraI {
                 larai.out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, ". LARA Options"));
                 larai.out.println(dataStore);
             }
+
             if (!larai.quit) {
-                larai.compile(weaverEngine.getLanguageSpecificationV2());
-            }
-            if (!larai.quit) {
+                laraC = larai.compile(weaverEngine.getLanguageSpecificationV2());
+                THREAD_LOCAL_LARAC.setWithWarning(laraC);
+                // }
+                // if (!larai.quit) {
                 larai.startAspectIR();
 
                 larai.interpret(weaverEngine);
@@ -250,7 +264,10 @@ public class LaraI {
                 WeaverEngine.removeWeaver();
             }
 
-            THREAD_LOCAL_WEAVER_DATA.removeWithWarning(dataStore);
+            THREAD_LOCAL_WEAVER_DATA.removeWithWarning();
+            if (laraC != null) {
+                THREAD_LOCAL_LARAC.removeWithWarning();
+            }
 
         }
 
@@ -480,7 +497,8 @@ public class LaraI {
      * @return
      * @throws Exception
      */
-    public Document compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec, LaraIDataStore options,
+    public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
+            LaraIDataStore options,
             Output out) throws Exception {
 
         // Process Lara Bundles in include folders
@@ -535,7 +553,9 @@ public class LaraI {
         Document compile = lara.compile();
         this.setNumMainLaraTokens(lara.getNumTokens());
         out.println("Processed " + getNumMainLaraTokens() + " tokens from the LARA file.");
-        return compile;
+
+        return Pair.newInstance(compile, lara);
+        // return compile;
 
     }
 
@@ -547,16 +567,20 @@ public class LaraI {
         return resource.getResource();
     }
 
-    private void compile(LanguageSpecificationV2 languageSpecification) {
+    private LaraC compile(LanguageSpecificationV2 languageSpecification) {
 
         // final String aspectIR_name = this.options.getAspectIR_name();
         final String extention = SpecsIo.getExtension(options.getLaraFile());
 
         Document aspectIR;
+        LaraC larac = null;
         if (extention.equals("lara")) {
             try {
-                aspectIR = compileWithLARAC(options.getLaraFile(), languageSpecification, options,
+                var result = compileWithLARAC(options.getLaraFile(), languageSpecification, options,
                         out);
+
+                aspectIR = result.getLeft();
+                larac = result.getRight();
 
                 quit = aspectIR == null;
                 if (quit) {
@@ -580,6 +604,7 @@ public class LaraI {
         }
 
         aspectIRDocument = aspectIR;
+        return larac;
     }
 
     private void interpret(WeaverEngine weaverEngine) {
@@ -816,4 +841,48 @@ public class LaraI {
         this.mainLaraTokens = mainLaraTokens;
     }
 
+    public static AspectClassProcessor buildAspectProcessor(WeaverEngine weaver, JsEngine jsEngine) {
+
+        // Create LARA Interpreter
+        DataStore laraiConfig = DataStore.newInstance("LaraCompiler");
+        laraiConfig.set(LaraiKeys.LARA_FILE, new File(""));
+        LaraI larai = LaraI.newInstance(laraiConfig, weaver);
+
+        // Create MasterWeaver
+        FileList folderApplication = FileList.newInstance();
+        MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
+        larai.setWeaver(masterWeaver);
+
+        // Create interpreter
+        Interpreter interpreter = new Interpreter(larai, jsEngine, false);
+        larai.setInterpreter(interpreter);
+        // larai.getInterpreter().getImportProcessor().importAndInitialize();
+
+        masterWeaver.simpleBegin();
+
+        var aspectProcessor = AspectClassProcessor.newInstance(interpreter);
+        return aspectProcessor;
+    }
+
+    /**
+     * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
+     * 
+     * @param importName
+     */
+    public static void loadLaraImport(String importName) {
+        var laraC = getThreadLocalLarac();
+        var weaver = WeaverEngine.getThreadLocalWeaver();
+
+        var aspectProcessor = LaraI.buildAspectProcessor(weaver, weaver.getScriptEngine());
+        try {
+            var jsCode = aspectProcessor.toSimpleJs(laraC.importLara(importName));
+
+            if (!jsCode.strip().isBlank()) {
+                weaver.getScriptEngine().eval(jsCode);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while loading LARA import", e);
+        }
+    }
 }
