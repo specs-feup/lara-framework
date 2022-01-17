@@ -471,3 +471,10 @@ function callAspect(aspect) {
 	aspectObj.call();
 	return aspectObj;
 }
+
+function laraImport(importName) {
+	checkString(importName, "laraImport (LaraCore.js)");
+	
+	//LaraI.getThreadLocalLarac().importLara(importName);
+	LaraI.loadLaraImport(importName);
+}
