@@ -1,4 +1,4 @@
-//import lara.util.StringSet;
+laraImport("lara.util.StringSet");
 
 /**
  * Counts occurrences of tuples.

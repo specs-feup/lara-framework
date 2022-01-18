@@ -100,7 +100,6 @@ public enum LaraApiResource implements LaraResourceProvider {
     JAVA_INTEROP("JavaInterop.lara"),
 
     // Util
-    ACCUMULATOR("util/Accumulator.lara"),
     ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
     CODE_INSERTER("util/CodeInserter.lara"),
