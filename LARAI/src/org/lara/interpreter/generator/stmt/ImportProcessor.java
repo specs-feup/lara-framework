@@ -212,7 +212,7 @@ public class ImportProcessor {
     public void importClassWithSimpleName(Class<?> classToImport) {
         // importClass(classToImport);
         try {
-            String code = classToImport.getSimpleName() + " = Java.type('" + classToImport.getCanonicalName() + "');\n";
+            String code = "var " + classToImport.getSimpleName() + " = Java.type('" + classToImport.getCanonicalName() + "');\n";
             interpreter.evaluate(code, "import_class_" + classToImport.getSimpleName());
         } catch (Exception e) {
             throw new JavaImportException(new File(classToImport.getCanonicalName()), e);

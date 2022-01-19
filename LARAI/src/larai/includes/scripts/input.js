@@ -1,5 +1,5 @@
 //Read an input on the console
-read = function(message) {
+function read(message) {
 	if (message != undefined)
 		print(message.toString());
 	var inp = new java.util.Scanner('java.lang.System.in');
