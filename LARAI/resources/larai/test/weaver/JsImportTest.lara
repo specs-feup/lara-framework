@@ -1,0 +1,9 @@
+//import JsImport; // This might never work while generated aspects have "with"
+
+aspectdef Test
+
+	laraImport("JsImport");
+
+	println("Imported JsImportTest.lara");
+
+end
