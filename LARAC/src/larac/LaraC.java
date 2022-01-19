@@ -78,7 +78,7 @@ public class LaraC {
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
 
     private static final Collection<String> SUPPORTED_LARA_EXT = new LinkedHashSet<>(Arrays.asList("lara"));
-    private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js"));
+    private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js", "mjs"));
     private static final Collection<String> SUPPORTED_EXT = new LinkedHashSet<>();
     static {
         SUPPORTED_EXT.addAll(SUPPORTED_LARA_EXT);

@@ -30,6 +30,7 @@ import tdrc.utils.StringUtils;
 public class LaraImports {
 
     public static void importLaraFile(final LaraC lara, final String importPath, final File importingFile) {
+
         String canonicalPath = SpecsIo.getCanonicalPath(importingFile);
         if (lara.wasImported(canonicalPath)) {
             LaraC importedLARA = lara.getImportedLARA(canonicalPath);
