@@ -254,7 +254,8 @@ public class AspectClassProcessor {
         inputInit.append(LaraIUtils.getSpace(2)
                 + "throw new UserException('error: function [aspect()] must be used as constructor!'," + line
                 + ");\n\n");
-        inputInit.append(LaraIUtils.getSpace(1) + "//with(this){\n");
+        // inputInit.append(LaraIUtils.getSpace(1) + "//with(this){\n");
+        inputInit.append(LaraIUtils.getSpace(1) + "with(this){\n");
         final StringBuilder outputInit = new StringBuilder();
         final boolean hasInput = (asp.parameters != null) && (asp.parameters.input != null);
         final boolean hasOutput = (asp.parameters != null) && (asp.parameters.output != null);
@@ -275,7 +276,8 @@ public class AspectClassProcessor {
             }
         }
         if (hasOutput) {
-            outputInit.append(LaraIUtils.getSpace(1) + "//with(this) {");
+            // outputInit.append(LaraIUtils.getSpace(1) + "//with(this) {");
+            outputInit.append(LaraIUtils.getSpace(1) + "with(this) {");
             for (final Parameter param : asp.parameters.output.parameters) {
 
                 outputInit.append(LaraIUtils.getSpace(2) + "this." + param.name + " = ");
@@ -287,9 +289,11 @@ public class AspectClassProcessor {
                 outputInit.append(";\n");
 
             }
-            outputInit.append(LaraIUtils.getSpace(1) + "//}");
+            // outputInit.append(LaraIUtils.getSpace(1) + "//}");
+            outputInit.append(LaraIUtils.getSpace(1) + "}");
         }
-        inputInit.append(LaraIUtils.getSpace(1) + "//}\n");
+        // inputInit.append(LaraIUtils.getSpace(1) + "//}\n");
+        inputInit.append(LaraIUtils.getSpace(1) + "}\n");
         final StringBuilder staticFields = new StringBuilder();
         if (asp.staticBlock != null) {
             for (final Statement stat : asp.staticBlock.statements) {
@@ -342,7 +346,8 @@ public class AspectClassProcessor {
 
             EventTriggerGenerator.triggerAspectBegin(asp, aspectConstructor, hasInput, 1);
         }
-        aspectConstructor.append(LaraIUtils.getSpace(1) + "//with (this){\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(1) + "//with (this){\n");
+        aspectConstructor.append(LaraIUtils.getSpace(1) + "with (this){\n");
         // generateFilterMethod(aspectConstructor, 2);
         aspectConstructor.append(LaraIUtils.getSpace(2) + "try{\n");
 
@@ -426,12 +431,14 @@ public class AspectClassProcessor {
 
         aspectConstructor.append(LaraIUtils.getSpace(2) + "}\n");
 
-        aspectConstructor.append(LaraIUtils.getSpace(1) + "//}\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(1) + "//}\n");
+        aspectConstructor.append(LaraIUtils.getSpace(1) + "}\n");
 
         aspectConstructor.append("}\n");
 
         if (asp.staticBlock != null) {
-            aspectConstructor.append("//with(" + asp.name + "){\n");
+            // aspectConstructor.append("//with(" + asp.name + "){\n");
+            aspectConstructor.append("with(" + asp.name + "){\n");
             for (final Statement stat : asp.staticBlock.statements) {
                 final String sufix = ";\n";
                 if (stat.name.equals("fndecl")) {
@@ -453,7 +460,8 @@ public class AspectClassProcessor {
                     aspectConstructor.append(interpreter.processStatement(stat, asp.name + ".", 1, sufix));
                 }
             }
-            aspectConstructor.append("//}\n");
+            // aspectConstructor.append("//}\n");
+            aspectConstructor.append("}\n");
         }
         // if (this.options.isDebug()) {
         // this.out.println(aspectConstructor.toString());
