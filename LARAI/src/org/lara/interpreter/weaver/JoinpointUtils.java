@@ -20,6 +20,7 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.jsengine.JsFileType;
 
 /**
  * Utility class for handling the LaraJoinpoint class
@@ -222,7 +223,10 @@ public class JoinpointUtils {
             Object result3 = scriptEngine.eval("_EVAL_.name == _expected_0", localScope);
             System.out.println("_EVAL_.name == _expected_0: " + result3);
             */
-            Object result = scriptEngine.eval(sb.toString(), localScope);
+            Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.NORMAL);
+            // Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.MODULE);
+            // Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.COMMON);
+
             res = scriptEngine.asBoolean(result);
             // res = false;
 

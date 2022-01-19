@@ -188,6 +188,7 @@ public class Interpreter {
      */
     public Object evaluate(String code, String source) {
         return evaluate(code, JsFileType.NORMAL, source);
+        // return evaluate(code, JsFileType.MODULE, source);
     }
 
     public Object evaluate(String code, JsFileType type, String source) {
