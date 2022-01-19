@@ -186,7 +186,8 @@ public class ImportProcessor {
         }
 
         final File jarDir = new File(LaraIUtils.getJarFoldername());
-        final String laraPath = LARASystem.LARAPATH + "  = '" + jarDir.getAbsolutePath().replace('\\', '/') + "';\n";
+        final String laraPath = "var " + LARASystem.LARAPATH + "  = '" + jarDir.getAbsolutePath().replace('\\', '/')
+                + "';\n";
         final String attribute = "var " + Interpreter.ATTRIBUTES
                 + " = { set: function(newReport){ mergeObjects(this,newReport);}};\n";
         interpreter.evaluate(laraPath, "import_and_initialize");
@@ -212,7 +213,8 @@ public class ImportProcessor {
     public void importClassWithSimpleName(Class<?> classToImport) {
         // importClass(classToImport);
         try {
-            String code = "var " + classToImport.getSimpleName() + " = Java.type('" + classToImport.getCanonicalName() + "');\n";
+            String code = "var " + classToImport.getSimpleName() + " = Java.type('" + classToImport.getCanonicalName()
+                    + "');\n";
             interpreter.evaluate(code, "import_class_" + classToImport.getSimpleName());
         } catch (Exception e) {
             throw new JavaImportException(new File(classToImport.getCanonicalName()), e);
