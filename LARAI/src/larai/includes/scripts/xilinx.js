@@ -1,3 +1,5 @@
+//TODO: "with" was commented, but this was not tested. Most likely, this version is not working
+
 if(tools == undefined)
 	var tools = new Object();
 
