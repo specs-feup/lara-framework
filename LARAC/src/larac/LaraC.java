@@ -930,7 +930,7 @@ public class LaraC {
 
         var fileName = dotIndex == -1 ? importName : importName.substring(dotIndex + 1);
         var filePath = dotIndex == -1 ? "" : importName.substring(0, dotIndex + 1);
-        filePath = filePath.replace('.', '\\');
+        filePath = filePath.replace('.', '/');
 
         // Get LARA imports
         var laraImports = getOptions().getLaraImports(fileName, filePath);
