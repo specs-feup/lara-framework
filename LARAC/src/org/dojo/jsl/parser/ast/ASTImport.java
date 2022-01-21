@@ -8,9 +8,9 @@ package org.dojo.jsl.parser.ast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.dojo.jsl.parser.ast.utils.ASTJSImport;
+import org.dojo.jsl.parser.ast.utils.ASTLaraImport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,36 +38,41 @@ public class ASTImport extends SimpleNode {
     @Override
     public void declareGlobal(LaraC lara) {
 
+        // Add call to laraImport
+        getLara().getAspectIR()
+                .addGlobalStatement(new ASTLaraImport(getQualifiedImport()));
+
+        /*        
         // Ignore imports if in documentation mode
         if (lara.getOptions().isDocumentationMode()) {
             return;
         }
-
+        
         // Transform into script import if in toJs mode
         if (lara.isToJsMode()) {
             toJsImport(lara);
             return;
         }
-
+        
         String filePath = "";
         if (getChildren() != null) {
             for (final Node n : getChildren()) {
                 filePath += ((ASTIdentifier) n).value + File.separator;
             }
         }
-
+        
         MessageConstants.addSpace();
         if (value.equals("*")) {
-
+        
             importAllLara(lara, filePath);
-
+        
         } else {
             // String fileName = value + ".lara";
             // var validLaraImport = importSingleLara(lara, value + ".lara", filePath);
             // var validScriptImport = importSingleScript(lara, value.toString(), filePath);
-
+        
             var validImport = importSingleName(lara, value.toString(), filePath);
-
+        
             // var validImport = validLaraImport || validScriptImport;
             if (!validImport) {
                 var importValue = filePath + value;
@@ -76,11 +81,11 @@ public class ASTImport extends SimpleNode {
                         "No valid file (" + exts + ") was found in the included folders/resources for the import: "
                                 + importValue);
             }
-
+        
         }
         MessageConstants.removeSpace();
         lara.println("");
-
+        */
     }
 
     private void toJsImport(LaraC lara) {
