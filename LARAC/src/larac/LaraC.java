@@ -198,6 +198,17 @@ public class LaraC {
         return laraC;
     }
 
+    // public static LaraC newImporter(String filename, String laraCode, LaraCOptions options,
+    // LanguageSpecificationV2 langSpec,
+    // Output output, Map<String, LaraC> importedFiles) {
+    //
+    // LaraC laraC = new LaraC(options, langSpec, output);
+    // laraC.setLaraPath(filename);
+    // laraC.setLaraStreamProvider(() -> SpecsIo.toInputStream(laraCode));
+    // laraC.parseForImport(importedFiles);
+    // return laraC;
+    // }
+
     private LaraC(LaraCOptions options, LanguageSpecificationV2 langSpec, Output output) {
         setParsed(false);
         this.options = options;

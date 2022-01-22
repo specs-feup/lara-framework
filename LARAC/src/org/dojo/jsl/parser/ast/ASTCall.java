@@ -102,6 +102,7 @@ public class ASTCall extends SimpleNode {
             throw newException("Called aspect/variable does not exist: \"" + aspName + "\"");
         }
         Types aspectType = aspectDeclaration.getType();
+
         /*
         	// and if it is indeed an aspect
         	if (!(aspectType.equals(Types.Aspect) || aspectType.equals(Types.AspectSTATIC))) {
@@ -145,6 +146,9 @@ public class ASTCall extends SimpleNode {
 
     @Override
     public void toXML(Document doc, Element parent) {
+        // System.out.println("AspectDeclName: " + aspectDeclaration.getName());
+        // System.out.println("AspectDeclType: " + aspectDeclaration.getType());
+
         String varName = aspectDeclaration.getName();
         // if (aspectDeclaration.getType() == Types.AspectSTATIC) {
         // If using a complex LHS, then wrap the call with an assignment
@@ -166,7 +170,11 @@ public class ASTCall extends SimpleNode {
                 aspectDeclaration.toXML(doc, assignEl);
             }
 
-        } else if (aspectDeclaration.getType().equals(Types.AspectSTATIC)) {
+        }
+        // This 'if' assumes all code is present, and that we can obtain the declaration of any aspect
+        // However, for separate compilation this is not the case.
+        // Assume that all calls are made over aspects
+        else if (aspectDeclaration.getType().equals(Types.AspectSTATIC) || true) {
 
             if (aspVarName != null) {
                 varName = aspVarName;
@@ -174,6 +182,7 @@ public class ASTCall extends SimpleNode {
                 varName = aspectDeclaration.getName() + aspectDeclaration.staticName
                         + aspectDeclaration.staticCounter++;
             }
+
             SimpleNode initExpr = LaraCNodeFactory.newAllocExpr(aspectDeclaration.getName());
             // if (aspectDeclaration.getType().equals(Types.AspectSTATIC)) {
             // } else {

@@ -52,23 +52,23 @@ public class Variable {
     }
     */
     public Variable(String name) {
-	this.name = name;
-	// initialize = expression = null;
-	type = Types.getDefault();
-	notFound = false;
+        this.name = name;
+        // initialize = expression = null;
+        type = Types.getDefault();
+        notFound = false;
     }
 
     public Variable(String name, Types type) {
-	this.name = name;
-	this.type = type;
-	notFound = false;
+        this.name = name;
+        this.type = type;
+        notFound = false;
     }
 
     /**
      * @return the name
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -76,14 +76,14 @@ public class Variable {
      *            the name to set
      */
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     /**
      * @return the type
      */
     public Types getType() {
-	return type;
+        return type;
     }
 
     /**
@@ -91,7 +91,7 @@ public class Variable {
      *            the type to set
      */
     public void setType(Types type) {
-	this.type = type;
+        this.type = type;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Variable {
      * @return the expression
      */
     public SimpleNode getExpression() {
-	return expression;
+        return expression;
     }
 
     /**
@@ -119,36 +119,36 @@ public class Variable {
      *            the expression to set
      */
     public void setExpression(SimpleNode expression) {
-	this.expression = expression;
+        this.expression = expression;
     }
 
     public void printIR() {
-	new NormalMsg()
-		.println("name \"" + getName() + "\"" + "\n type: " + type + "\n"); // + "\n initialize: " + initialize
+        new NormalMsg()
+                .println("name \"" + getName() + "\"" + "\n type: " + type + "\n"); // + "\n initialize: " + initialize
     }
 
     public void toXML(Document doc, Element parent) {
-	final Element el = doc.createElement("id");
-	parent.appendChild(el);
-	// String xmlName = name.startsWith("$")?name.substring(1):name;
-	final String xmlName = name;
-	el.setAttribute("name", xmlName);
-	// if(type != Types.Undefined)
-	// el.setAttribute("type", type.name());
+        final Element el = doc.createElement("id");
+        parent.appendChild(el);
+        // String xmlName = name.startsWith("$")?name.substring(1):name;
+        final String xmlName = name;
+        el.setAttribute("name", xmlName);
+        // if(type != Types.Undefined)
+        // el.setAttribute("type", type.name());
 
     }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-	final Variable newVar = new Variable(getName());
-	return newVar;
+        final Variable newVar = new Variable(getName());
+        return newVar;
     }
 
     /**
      * @return the notFound
      */
     public boolean isNotFound() {
-	return notFound;
+        return notFound;
     }
 
     /**
@@ -156,6 +156,6 @@ public class Variable {
      *            the notFound to set
      */
     public void setNotFound(boolean notFound) {
-	this.notFound = notFound;
+        this.notFound = notFound;
     }
 }

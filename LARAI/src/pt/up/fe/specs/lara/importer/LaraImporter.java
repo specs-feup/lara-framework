@@ -20,11 +20,9 @@ import java.util.List;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.w3c.dom.Document;
 
 import larac.LaraC;
 import larac.options.LaraCOptions;
-import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraCompiler;
@@ -33,7 +31,6 @@ import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
-import tdrc.utils.StringUtils;
 
 /**
  * Resolves Lara imports.
@@ -90,7 +87,7 @@ public class LaraImporter {
                 var importingFile = new File(path, importPath);
 
                 if (importingFile.exists()) {
-                    laraImports.add(buildLaraImport(importingFile));
+                    laraImports.add(buildLaraImport(importName, importingFile));
                 }
             }
         }
@@ -103,7 +100,7 @@ public class LaraImporter {
             var resources = apisMap.get().get(importPath);
             if (!resources.isEmpty()) {
 
-                resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
+                resources.forEach(resource -> laraImports.add(buildLaraImport(importName, resource)));
                 // System.out.println("IMPORT PATH: " + importPath);
                 // System.out.println("RESOURCE: " + resource.get(0).);
                 // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
@@ -143,12 +140,13 @@ public class LaraImporter {
 
     }
 
-    private LaraImportData buildLaraImport(ResourceProvider resource) {
-        return buildLaraImport(resource.read(), resource.getResource());
+    private LaraImportData buildLaraImport(String importName, ResourceProvider resource) {
+        // return buildLaraImport(resource.read(), resource.getResource());
+        return buildLaraImport(importName, resource.read(), resource.getFilename());
     }
 
-    private LaraImportData buildLaraImport(File importingFile) {
-        return buildLaraImport(SpecsIo.read(importingFile), importingFile.getName());
+    private LaraImportData buildLaraImport(String importName, File importingFile) {
+        return buildLaraImport(importName, SpecsIo.read(importingFile), importingFile.getName());
     }
 
     private void runLaraCompiler(String code, String filename) {
@@ -162,7 +160,7 @@ public class LaraImporter {
         }
     }
 
-    private LaraImportData buildLaraImport(String code, String filename) {
+    private LaraImportData buildLaraImport(String importName, String code, String filename) {
         var ext = SpecsIo.getExtension(filename);
 
         switch (ext) {
@@ -171,45 +169,65 @@ public class LaraImporter {
         case "mjs":
             return new LaraImportData(filename, code, JsFileType.MODULE);
         case "lara":
+            /*
+            // If LARA, let LaraC take care of importing
+            
+            var larac = interpreter.getLaraI().getLaraC();
+            Document aspectIr = larac.importLara(importName);
+            */
+            /*
+            // System.out.println("LARAC: " + interpreter.getLaraI().getLaraC());
+            var larac = interpreter.getLaraI().getLaraC();
+            
+            
+            
+            // var lara = new LaraC(args.toArray(new String[0]),
+            // interpreter.getLaraI().getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
+            larac.addImportedLARA(importName, null);
+            var importingLara = LaraC.newImporter(filename, code, larac.getOptions(), larac.languageSpec(),
+                    larac.getPrint(), larac.getImportedLARA());
+            LaraImports.rearrangeImportedLaraAndImportAspects(larac, filename, importingLara);
+            larac.setImportedLARA(importingLara.getImportedLARA());
+            larac.addImportedLARA(importName, importingLara);
+            
+            var aspectIr = importingLara.getAspectIR().toXML();
+            */
             // Compile LARA file
             var args = new ArrayList<>();
             args.add(LaraCOptions.getSkipArgs());
-
             var lara = new LaraC(args.toArray(new String[0]),
                     interpreter.getLaraI().getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
-
-            // final LaraC importingLara = LaraC.newImporter(importingResource, lara.getOptions(), lara.languageSpec(),
-            // lara.getPrint(), lara.getImportedLARA());
-
             // lara.setLaraFile(new File(filename));
             lara.setLaraPath(filename);
             lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
 
-            String prefix = filename.replace(".lara", MessageConstants.NAME_SEPARATOR);
-            prefix = prefix.replace("/", MessageConstants.NAME_SEPARATOR);
-            lara.setPrefix(prefix);
+            // String prefix = filename.replace(".lara", MessageConstants.NAME_SEPARATOR);
+            // prefix = prefix.replace("/", MessageConstants.NAME_SEPARATOR);
+            // lara.setPrefix(prefix);
 
             // lara.addImportedLARA(filename, null);
-            System.out.println("Filename: " + filename);
-            System.out.println("Prefix: " + prefix);
-            if (filename.equals("clava/Clava.lara")) {
-                // lara.getOptions().setDebug(true);
-                // lara.getOptions().setShowAspectIR(true);
-            }
+            // System.out.println("Filename: " + filename);
+            // System.out.println("Prefix: " + prefix);
+            // if (filename.equals("clava/Clava.lara")) {
+            // lara.getOptions().setDebug(true);
+            // lara.getOptions().setShowAspectIR(true);
+            // }
 
             // Enable parsing directly to JS (e.g. transforms imports into scriptImports)
             // lara.setToJsMode(true, filename, code);
 
-            Document aspectIr = lara.compile();
-            // LaraImports.rearrangeImportedLaraAndImportAspects(lara, filename, lara);
+            var aspectIr = lara.compile();
+            // LaraImports.rearrangeImportedLaraAndImportAspects(larac, filename, importingLara);
 
-            if (filename.equals("Clava.lara")) {
-                try {
-                    System.out.println(StringUtils.xmlToStringBuffer(aspectIr, MessageConstants.INDENT).toString());
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not print AspectIR", e);
-                }
-            }
+            // if (true) {
+            // // if (filename.equals("Clava.lara")) {
+            // try {
+            // System.out.println("PRINTING ASPECT IR");
+            // System.out.println(StringUtils.xmlToStringBuffer(aspectIr, MessageConstants.INDENT).toString());
+            // } catch (Exception e) {
+            // throw new RuntimeException("Could not print AspectIR", e);
+            // }
+            // }
 
             // System.out.println("FILENAME: " + filename);
 
@@ -217,10 +235,12 @@ public class LaraImporter {
             try {
                 var jsCode = processor.toSimpleJs(aspectIr);
 
-                if (filename.equals("clava/clava/Clava.lara")) {
-                    System.out.println("Lara to Js Begin:\n" + jsCode);
-                    System.out.println("Lara to Js End");
-                }
+                // if (true) {
+                // // if (filename.equals("clava/clava/Clava.lara")) {
+                // System.out.println("LARA FILE: " + filename);
+                // System.out.println("Lara to Js Begin:\n" + jsCode);
+                // System.out.println("Lara to Js End");
+                // }
 
                 // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
                 return new LaraImportData(filename, jsCode, JsFileType.NORMAL);

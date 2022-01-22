@@ -53,6 +53,7 @@ public class ASTAspectDef extends SimpleNode {
         ASTFinalize,
         ASTCheck,
         ASTOutput;
+
         public static boolean contains(String member) {
 
             if (member != null) {
@@ -547,6 +548,7 @@ public class ASTAspectDef extends SimpleNode {
         // final ASTAllocationExpression alloc = newAllocExpr(nameWithPrefix);
 
         staticVar = new Variable(nameWithPrefix, Types.AspectSTATIC);
+        // System.out.println("STATIC VAR CREATED: " + nameWithPrefix);
         // staticVar.setInitialize(alloc);
     }
 
