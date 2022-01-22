@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 
 import larac.LaraC;
 import larac.options.LaraCOptions;
@@ -61,9 +62,37 @@ public class LaraImporter {
 
         var laraImportName = new LaraImportName(importName);
 
+        // Prepare include paths
+        var includePaths = new ArrayList<File>();
+
+        // Add workspace folder to include paths
+        if (larai.getWeaverArgs().hasValue(LaraiKeys.WORKSPACE_FOLDER)) {
+            var workspace = larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
+            for (var workspacePath : workspace) {
+                if (!workspacePath.isDirectory()) {
+                    continue;
+                }
+
+                includePaths.add(workspacePath);
+            }
+        }
+        // System.out.println("WORKSPACE: " + larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER));
+        // for (var file : larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles()) {
+        //
+        // System.out.println("IMPORTER COMPLETE PATH: " + file.getAbsolutePath());
+        // System.out.println("IMPORTER FILES IN PATH: " + SpecsIo.getFilesRecursive(file));
+        //
+        // }
+
+        // includePaths.add(SpecsIo.getWorkingDir().getAbsoluteFile());
+
+        // Add include folders
+        includePaths.addAll(includes);
+
         // 1.
-        // Check include folders
-        for (var path : includes) {
+        // Check include paths
+        for (var path : includePaths) {
+            // System.out.println("PATH: " + path);
             for (var ext : LaraC.getSupportedExtensions()) {
 
                 var importPath = laraImportName.getFullPath() + "." + ext;
