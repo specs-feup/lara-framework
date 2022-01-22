@@ -16,12 +16,16 @@ package pt.up.fe.specs.lara.importer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+import org.lara.interpreter.Interpreter;
+import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.w3c.dom.Document;
 
 import larac.LaraC;
+import larac.options.LaraCOptions;
+import larac.utils.output.MessageConstants;
+import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.util.SpecsIo;
@@ -29,6 +33,7 @@ import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import tdrc.utils.StringUtils;
 
 /**
  * Resolves Lara imports.
@@ -38,6 +43,7 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
  */
 public class LaraImporter {
 
+    private final Interpreter interpreter;
     private final WeaverEngine weaver;
     private final List<File> includes;
     private final List<ResourceProvider> apis;
@@ -45,7 +51,9 @@ public class LaraImporter {
     private final LaraCompiler laraCompiler;
     private Exception laraCompilationException;
 
-    public LaraImporter(WeaverEngine weaver, List<File> includes, List<ResourceProvider> apis) {
+    public LaraImporter(Interpreter interpreter, WeaverEngine weaver, List<File> includes,
+            List<ResourceProvider> apis) {
+        this.interpreter = interpreter;
         this.weaver = weaver;
         this.includes = includes;
         this.apis = apis;
@@ -164,11 +172,56 @@ public class LaraImporter {
             return new LaraImportData(filename, code, JsFileType.MODULE);
         case "lara":
             // Compile LARA file
+            var args = new ArrayList<>();
+            args.add(LaraCOptions.getSkipArgs());
+
+            var lara = new LaraC(args.toArray(new String[0]),
+                    interpreter.getLaraI().getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
+
+            // lara.setLaraFile(new File(filename));
+            lara.setLaraPath(filename);
+            lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
+
+            if (filename.equals("Clava.lara")) {
+                // lara.getOptions().setDebug(true);
+                // lara.getOptions().setShowAspectIR(true);
+            }
+
+            // Enable parsing directly to JS (e.g. transforms imports into scriptImports)
+            // lara.setToJsMode(true, filename, code);
+
+            Document aspectIr = lara.compile();
+
+            if (filename.equals("Clava.lara")) {
+                try {
+                    System.out.println(StringUtils.xmlToStringBuffer(aspectIr, MessageConstants.INDENT).toString());
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not print AspectIR", e);
+                }
+            }
+
+            // System.out.println("FILENAME: " + filename);
+
+            var processor = AspectClassProcessor.newInstance(interpreter);
+            try {
+                var jsCode = processor.toSimpleJs(aspectIr);
+
+                if (filename.equals("Clava.lara")) {
+                    System.out.println("Lara to Js Begin:\n" + jsCode);
+                    System.out.println("Lara to Js End");
+                }
+
+                // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
+                return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
+            } catch (Exception e) {
+                throw new RuntimeException("Error during LARA compilation", e);
+            }
+            /*
             var executor = Executors.newSingleThreadExecutor();
             // System.out.println("CODE: " + code);
             executor.execute(() -> runLaraCompiler(code, filename));
             executor.shutdown();
-
+            
             var timeout = 1000l;
             var timeunit = TimeUnit.SECONDS;
             try {
@@ -177,15 +230,17 @@ public class LaraImporter {
                 // Thread.currentThread().interrupt();
                 throw new RuntimeException("Could not compile the LARA file under the alot time", e);
             }
-
+            
             // Check if there is any exception
             if (laraCompilationException != null) {
                 throw new RuntimeException("Error during LARA compilation", laraCompilationException);
             }
-            // System.out.println("Lara to Js Begin:\n" + laraCompiler.getLastCompilation());
-            // System.out.println("Lara to Js End");
+            
+            System.out.println("Lara to Js Begin:\n" + laraCompiler.getLastCompilation());
+            System.out.println("Lara to Js End");
             // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
             return new LaraImportData(filename, laraCompiler.getLastCompilation(), JsFileType.NORMAL);
+            */
         default:
             throw new CaseNotDefinedException(ext);
         }

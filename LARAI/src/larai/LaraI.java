@@ -488,6 +488,12 @@ public class LaraI {
         // }
     }
 
+    // public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
+    // LaraIDataStore options,
+    // Output out) throws Exception {
+    //
+    // }
+
     /**
      * Compile the lara file with LARAC, according to a {@link LanguageSpecification}
      *
@@ -877,7 +883,8 @@ public class LaraI {
         var apis = LaraI.getThreadLocalLarai().getOptions().getLaraAPIs();
 
         // Find files to import
-        var laraImporter = new LaraImporter(weaverEngine, includes.getFiles(), apis);
+        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai().getInterpreter(), weaverEngine,
+                includes.getFiles(), apis);
         var laraImports = laraImporter.getLaraImports(importName);
 
         // System.out.println("IMPORTS: " + laraImports);
