@@ -883,8 +883,7 @@ public class LaraI {
         var apis = LaraI.getThreadLocalLarai().getOptions().getLaraAPIs();
 
         // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai().getInterpreter(), weaverEngine,
-                includes.getFiles(), apis);
+        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), includes.getFiles(), apis);
         var laraImports = laraImporter.getLaraImports(importName);
 
         // System.out.println("IMPORTS: " + laraImports);
