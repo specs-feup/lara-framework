@@ -25,7 +25,6 @@ import larac.LaraC;
 import larac.options.LaraCOptions;
 import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
@@ -41,22 +40,22 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 public class LaraImporter {
 
     private final Interpreter interpreter;
-    private final WeaverEngine weaver;
+    // private final WeaverEngine weaver;
     private final List<File> includes;
     private final List<ResourceProvider> apis;
     private final Lazy<MultiMap<String, ResourceProvider>> apisMap;
-    private final LaraCompiler laraCompiler;
-    private Exception laraCompilationException;
+    // private final LaraCompiler laraCompiler;
+    // private Exception laraCompilationException;
 
     public LaraImporter(Interpreter interpreter, WeaverEngine weaver, List<File> includes,
             List<ResourceProvider> apis) {
         this.interpreter = interpreter;
-        this.weaver = weaver;
+        // this.weaver = weaver;
         this.includes = includes;
         this.apis = apis;
         this.apisMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
-        this.laraCompiler = new LaraCompiler(weaver.getLanguageSpecificationV2());
-        this.laraCompilationException = null;
+        // this.laraCompiler = new LaraCompiler(weaver.getLanguageSpecificationV2());
+        // this.laraCompilationException = null;
     }
 
     /**
@@ -87,7 +86,7 @@ public class LaraImporter {
                 var importingFile = new File(path, importPath);
 
                 if (importingFile.exists()) {
-                    laraImports.add(buildLaraImport(importName, importingFile));
+                    laraImports.add(buildLaraImport(importingFile));
                 }
             }
         }
@@ -100,7 +99,7 @@ public class LaraImporter {
             var resources = apisMap.get().get(importPath);
             if (!resources.isEmpty()) {
 
-                resources.forEach(resource -> laraImports.add(buildLaraImport(importName, resource)));
+                resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
                 // System.out.println("IMPORT PATH: " + importPath);
                 // System.out.println("RESOURCE: " + resource.get(0).);
                 // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
@@ -140,27 +139,27 @@ public class LaraImporter {
 
     }
 
-    private LaraImportData buildLaraImport(String importName, ResourceProvider resource) {
+    private LaraImportData buildLaraImport(ResourceProvider resource) {
         // return buildLaraImport(resource.read(), resource.getResource());
-        return buildLaraImport(importName, resource.read(), resource.getFilename());
+        return buildLaraImport(resource.read(), resource.getFilename());
     }
 
-    private LaraImportData buildLaraImport(String importName, File importingFile) {
-        return buildLaraImport(importName, SpecsIo.read(importingFile), importingFile.getName());
+    private LaraImportData buildLaraImport(File importingFile) {
+        return buildLaraImport(SpecsIo.read(importingFile), importingFile.getName());
     }
 
-    private void runLaraCompiler(String code, String filename) {
-        // Reset before running
-        laraCompilationException = null;
+    // private void runLaraCompiler(String code, String filename) {
+    // // Reset before running
+    // laraCompilationException = null;
+    //
+    // try {
+    // laraCompiler.compile(filename, code);
+    // } catch (Exception e) {
+    // laraCompilationException = e;
+    // }
+    // }
 
-        try {
-            laraCompiler.compile(filename, code);
-        } catch (Exception e) {
-            laraCompilationException = e;
-        }
-    }
-
-    private LaraImportData buildLaraImport(String importName, String code, String filename) {
+    private LaraImportData buildLaraImport(String code, String filename) {
         var ext = SpecsIo.getExtension(filename);
 
         switch (ext) {

@@ -139,7 +139,6 @@ public class LaraI {
 
     private final WeaverEngine weaverEngine;
     private int mainLaraTokens = -1;
-    private LaraC laraC;
 
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
@@ -216,6 +215,7 @@ public class LaraI {
 
         LaraI larai = null;
         try {
+
             if (dataStore == null) {
                 throw new NullPointerException("The DataStore cannot be null");
             }
@@ -236,7 +236,7 @@ public class LaraI {
             }
 
             if (!larai.quit) {
-                larai.laraC = larai.compile(weaverEngine.getLanguageSpecificationV2());
+                larai.compile(weaverEngine.getLanguageSpecificationV2());
                 THREAD_LOCAL_LARAI.setWithWarning(larai);
                 // }
                 // if (!larai.quit) {
@@ -267,7 +267,6 @@ public class LaraI {
 
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning();
             if (larai != null) {
-                larai.laraC = null;
                 THREAD_LOCAL_LARAI.removeWithWarning();
             }
 
@@ -847,10 +846,6 @@ public class LaraI {
 
     public void setNumMainLaraTokens(int mainLaraTokens) {
         this.mainLaraTokens = mainLaraTokens;
-    }
-
-    public LaraC getLaraC() {
-        return laraC;
     }
 
     public static AspectClassProcessor buildAspectProcessor(WeaverEngine weaver, JsEngine jsEngine) {
