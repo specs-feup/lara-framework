@@ -144,7 +144,7 @@ public class LaraImporter {
     }
 
     private LaraImportData buildLaraImport(ResourceProvider resource) {
-        return buildLaraImport(resource.read(), resource.getFileLocation());
+        return buildLaraImport(resource.read(), resource.getResource());
     }
 
     private LaraImportData buildLaraImport(File importingFile) {
@@ -185,8 +185,13 @@ public class LaraImporter {
             lara.setLaraPath(filename);
             lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
 
+            String prefix = filename.replace(".lara", MessageConstants.NAME_SEPARATOR);
+            prefix = prefix.replace("/", MessageConstants.NAME_SEPARATOR);
+            lara.setPrefix(prefix);
+
             // lara.addImportedLARA(filename, null);
             System.out.println("Filename: " + filename);
+            System.out.println("Prefix: " + prefix);
             if (filename.equals("clava/Clava.lara")) {
                 // lara.getOptions().setDebug(true);
                 // lara.getOptions().setShowAspectIR(true);
@@ -212,7 +217,7 @@ public class LaraImporter {
             try {
                 var jsCode = processor.toSimpleJs(aspectIr);
 
-                if (filename.equals("Clava.lara")) {
+                if (filename.equals("clava/clava/Clava.lara")) {
                     System.out.println("Lara to Js Begin:\n" + jsCode);
                     System.out.println("Lara to Js End");
                 }
