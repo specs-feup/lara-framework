@@ -472,9 +472,18 @@ function callAspect(aspect) {
 	return aspectObj;
 }
 
+let _LARA_IMPORT_LOADED = {};
+
 function laraImport(importName) {
 	checkString(importName, "laraImport (LaraCore.js)");
 	
-	//LaraI.getThreadLocalLarac().importLara(importName);
+	// Return if already loaded
+	if(_LARA_IMPORT_LOADED[importName] !== undefined) {
+		return;
+	}
+	
+	// Import 
+	_LARA_IMPORT_LOADED[importName] = true;
+	
 	LaraI.loadLaraImport(importName);
 }
