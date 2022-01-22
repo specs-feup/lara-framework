@@ -144,7 +144,7 @@ public class LaraImporter {
     }
 
     private LaraImportData buildLaraImport(ResourceProvider resource) {
-        return buildLaraImport(resource.read(), resource.getFilename());
+        return buildLaraImport(resource.read(), resource.getFileLocation());
     }
 
     private LaraImportData buildLaraImport(File importingFile) {
@@ -178,11 +178,16 @@ public class LaraImporter {
             var lara = new LaraC(args.toArray(new String[0]),
                     interpreter.getLaraI().getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
 
+            // final LaraC importingLara = LaraC.newImporter(importingResource, lara.getOptions(), lara.languageSpec(),
+            // lara.getPrint(), lara.getImportedLARA());
+
             // lara.setLaraFile(new File(filename));
             lara.setLaraPath(filename);
             lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
 
-            if (filename.equals("Clava.lara")) {
+            // lara.addImportedLARA(filename, null);
+            System.out.println("Filename: " + filename);
+            if (filename.equals("clava/Clava.lara")) {
                 // lara.getOptions().setDebug(true);
                 // lara.getOptions().setShowAspectIR(true);
             }
@@ -191,6 +196,7 @@ public class LaraImporter {
             // lara.setToJsMode(true, filename, code);
 
             Document aspectIr = lara.compile();
+            // LaraImports.rearrangeImportedLaraAndImportAspects(lara, filename, lara);
 
             if (filename.equals("Clava.lara")) {
                 try {
