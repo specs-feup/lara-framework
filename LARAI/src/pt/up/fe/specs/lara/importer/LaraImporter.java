@@ -1,0 +1,204 @@
+/**
+ * Copyright 2022 SPeCS.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License. under the License.
+ */
+
+package pt.up.fe.specs.lara.importer;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+
+import larac.LaraC;
+import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.lara.LaraCompiler;
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
+import pt.up.fe.specs.util.lazy.Lazy;
+import pt.up.fe.specs.util.providers.ResourceProvider;
+
+/**
+ * Resolves Lara imports.
+ * 
+ * @author Joao Bispo
+ *
+ */
+public class LaraImporter {
+
+    private final WeaverEngine weaver;
+    private final List<File> includes;
+    private final List<ResourceProvider> apis;
+    private final Lazy<MultiMap<String, ResourceProvider>> apisMap;
+    private final LaraCompiler laraCompiler;
+    private Exception laraCompilationException;
+
+    public LaraImporter(WeaverEngine weaver, List<File> includes, List<ResourceProvider> apis) {
+        this.weaver = weaver;
+        this.includes = includes;
+        this.apis = apis;
+        this.apisMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
+        this.laraCompiler = new LaraCompiler(weaver.getLanguageSpecificationV2());
+        this.laraCompilationException = null;
+    }
+
+    /**
+     * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
+     * 
+     * @param importName
+     */
+    public List<LaraImportData> getLaraImports(String importName) {
+
+        List<LaraImportData> laraImports = new ArrayList<>();
+
+        // Split into fileName and filePath
+        // int dotIndex = importName.lastIndexOf('.');
+        // var fileName = dotIndex == -1 ? importName : importName.substring(dotIndex + 1);
+        // var filePath = dotIndex == -1 ? "" : importName.substring(0, dotIndex + 1);
+        // filePath = filePath.replace('.', '/');
+        //
+        // String relativePath = filePath + fileName;
+
+        var laraImportName = new LaraImportName(importName);
+
+        // 1.
+        // Check include folders
+        for (var path : includes) {
+            for (var ext : LaraC.getSupportedExtensions()) {
+
+                var importPath = laraImportName.getFullPath() + "." + ext;
+                var importingFile = new File(path, importPath);
+
+                if (importingFile.exists()) {
+                    laraImports.add(buildLaraImport(importingFile));
+                }
+            }
+        }
+
+        // 2.
+        // Check resource by filename, instead of resource name
+        for (var ext : LaraC.getSupportedExtensions()) {
+            var importPath = laraImportName.getFullPath() + "." + ext;
+            // System.out.println("IMPORT PATH:" + importPath);
+            var resources = apisMap.get().get(importPath);
+            if (!resources.isEmpty()) {
+
+                resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
+                // System.out.println("IMPORT PATH: " + importPath);
+                // System.out.println("RESOURCE: " + resource.get(0).);
+                // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
+                // System.out.println("RESOURCE: " + resource.get(0));
+            }
+        }
+
+        return laraImports;
+
+        /*
+        // 1.
+        // Check include folders
+        for (final File path : getIncludeFolders()) {
+            for (var ext : LaraC.getSupportedExtensions()) {
+                var importPath = relativePath + "." + ext;
+        
+                final File importingFile = new File(path, importPath);
+                if (importingFile.exists()) {
+                    laraImports.add(new FileLaraImport(importPath, importingFile));
+                    // System.out.println("FILE: " + importingFile);
+                }
+            }
+        }
+        
+        // 2.
+        // Check resource by filename, instead of resource name
+        for (var ext : LaraC.getSupportedExtensions()) {
+            var importPath = relativePath + "." + ext;
+        
+            var resource = getIncludeResourcesMap().get(importPath);
+            if (!resource.isEmpty()) {
+                laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
+                // System.out.println("RESOURCE: " + resource.get(0));
+            }
+        }
+        */
+
+    }
+
+    private LaraImportData buildLaraImport(ResourceProvider resource) {
+        return buildLaraImport(resource.read(), resource.getFilename());
+    }
+
+    private LaraImportData buildLaraImport(File importingFile) {
+        return buildLaraImport(SpecsIo.read(importingFile), importingFile.getName());
+    }
+
+    private void runLaraCompiler(String code, String filename) {
+        // Reset before running
+        laraCompilationException = null;
+
+        try {
+            laraCompiler.compile(filename, code);
+        } catch (Exception e) {
+            laraCompilationException = e;
+        }
+    }
+
+    private LaraImportData buildLaraImport(String code, String filename) {
+        var ext = SpecsIo.getExtension(filename);
+
+        switch (ext) {
+        case "js":
+            return new LaraImportData(filename, code, JsFileType.NORMAL);
+        case "mjs":
+            return new LaraImportData(filename, code, JsFileType.MODULE);
+        case "lara":
+            // Compile LARA file
+            var executor = Executors.newSingleThreadExecutor();
+            // System.out.println("CODE: " + code);
+            executor.execute(() -> runLaraCompiler(code, filename));
+            executor.shutdown();
+
+            var timeout = 1000l;
+            var timeunit = TimeUnit.SECONDS;
+            try {
+                executor.awaitTermination(timeout, timeunit);
+            } catch (InterruptedException e) {
+                // Thread.currentThread().interrupt();
+                throw new RuntimeException("Could not compile the LARA file under the alot time", e);
+            }
+
+            // Check if there is any exception
+            if (laraCompilationException != null) {
+                throw new RuntimeException("Error during LARA compilation", laraCompilationException);
+            }
+            // System.out.println("Lara to Js Begin:\n" + laraCompiler.getLastCompilation());
+            // System.out.println("Lara to Js End");
+            // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
+            return new LaraImportData(filename, laraCompiler.getLastCompilation(), JsFileType.NORMAL);
+        default:
+            throw new CaseNotDefinedException(ext);
+        }
+
+    }
+
+    private MultiMap<String, ResourceProvider> buildIncludeResourcesMap() {
+        var resourcesMap = new MultiMap<String, ResourceProvider>();
+
+        for (var resource : apis) {
+            resourcesMap.put(resource.getFileLocation(), resource);
+        }
+        // System.out.println("RESOURCE MAP: " + resourcesMap);
+        return resourcesMap;
+    }
+}

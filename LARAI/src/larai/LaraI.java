@@ -61,6 +61,7 @@ import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
+import pt.up.fe.specs.lara.importer.LaraImporter;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
@@ -118,10 +119,10 @@ public class LaraI {
     /**
      * Thread-scope LaraC
      */
-    private static final SpecsThreadLocal<LaraC> THREAD_LOCAL_LARAC = new SpecsThreadLocal<>(LaraC.class);
+    private static final SpecsThreadLocal<LaraI> THREAD_LOCAL_LARAI = new SpecsThreadLocal<>(LaraI.class);
 
-    public static LaraC getThreadLocalLarac() {
-        return THREAD_LOCAL_LARAC.get();
+    public static LaraI getThreadLocalLarai() {
+        return THREAD_LOCAL_LARAI.get();
     }
 
     private LaraIDataStore options;
@@ -236,7 +237,7 @@ public class LaraI {
 
             if (!larai.quit) {
                 laraC = larai.compile(weaverEngine.getLanguageSpecificationV2());
-                THREAD_LOCAL_LARAC.setWithWarning(laraC);
+                THREAD_LOCAL_LARAI.setWithWarning(larai);
                 // }
                 // if (!larai.quit) {
                 larai.startAspectIR();
@@ -266,7 +267,7 @@ public class LaraI {
 
             THREAD_LOCAL_WEAVER_DATA.removeWithWarning();
             if (laraC != null) {
-                THREAD_LOCAL_LARAC.removeWithWarning();
+                THREAD_LOCAL_LARAI.removeWithWarning();
             }
 
         }
@@ -870,19 +871,38 @@ public class LaraI {
      * @param importName
      */
     public static void loadLaraImport(String importName) {
+
+        var weaverEngine = WeaverEngine.getThreadLocalWeaver();
+        var includes = LaraI.getThreadLocalData().get(LaraiKeys.INCLUDES_FOLDER);
+        var apis = LaraI.getThreadLocalLarai().getOptions().getLaraAPIs();
+
+        // Find files to import
+        var laraImporter = new LaraImporter(weaverEngine, includes.getFiles(), apis);
+        var laraImports = laraImporter.getLaraImports(importName);
+
+        // System.out.println("IMPORTS: " + laraImports);
+
+        // Import JS code
+        for (var laraImport : laraImports) {
+            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
+            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType());
+        }
+
+        /*
         var laraC = getThreadLocalLarac();
         var weaver = WeaverEngine.getThreadLocalWeaver();
-
+        
         var aspectProcessor = LaraI.buildAspectProcessor(weaver, weaver.getScriptEngine());
         try {
             var jsCode = aspectProcessor.toSimpleJs(laraC.importLara(importName));
-
+        
             if (!jsCode.strip().isBlank()) {
                 weaver.getScriptEngine().eval(jsCode);
             }
-
+        
         } catch (Exception e) {
             throw new RuntimeException("Exception while loading LARA import", e);
         }
+        */
     }
 }

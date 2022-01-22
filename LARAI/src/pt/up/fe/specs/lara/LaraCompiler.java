@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.w3c.dom.Document;
 
 import larac.LaraC;
@@ -38,11 +39,14 @@ import pt.up.fe.specs.util.SpecsIo;
  */
 public class LaraCompiler {
 
+    private final LanguageSpecificationV2 langSpec;
     private final WeaverEngine weaver;
     private final JsEngine jsEngine;
-    private final AspectClassProcessor aspectProcessor;
+    private AspectClassProcessor aspectProcessor;
+    private String lastCompilation = null;
 
-    public LaraCompiler() {
+    public LaraCompiler(LanguageSpecificationV2 langSpec) {
+        this.langSpec = langSpec;
         this.weaver = new DefaultWeaver();
         this.jsEngine = JsEngineType.GRAALVM.newEngine();
 
@@ -50,7 +54,22 @@ public class LaraCompiler {
             weaver.setScriptEngine(jsEngine);
         }
 
-        aspectProcessor = buildAspectProcessor();
+        // aspectProcessor = buildAspectProcessor();
+        // Delay initialization, so that we can build the object and make it run on another thread
+        aspectProcessor = null;
+        lastCompilation = null;
+    }
+
+    /**
+     * @deprecated use the constructor that accepts the language specification
+     */
+    @Deprecated
+    public LaraCompiler() {
+        this(new DefaultWeaver().getLanguageSpecificationV2());
+    }
+
+    public String getLastCompilation() {
+        return lastCompilation;
     }
 
     public String compile(File laraFile) {
@@ -64,7 +83,7 @@ public class LaraCompiler {
         var args = new ArrayList<>();
         args.add(LaraCOptions.getSkipArgs());
 
-        var lara = new LaraC(args.toArray(new String[0]), weaver.getLanguageSpecificationV2(), new Output(1));
+        var lara = new LaraC(args.toArray(new String[0]), langSpec, new Output(1));
 
         // Enable parsing directly to JS (e.g. transforms imports into scriptImports)
         lara.setToJsMode(true, laraFilename, laraCode);
@@ -72,11 +91,25 @@ public class LaraCompiler {
         Document aspectIr = lara.compile();
 
         try {
-            return aspectProcessor.toSimpleJs(aspectIr);
+            return toSimpleJs(aspectIr);
         } catch (Exception e) {
             throw new RuntimeException("Could not generate JavaScript from the AspectIR", e);
         }
 
+    }
+
+    private String toSimpleJs(Document aspectIr) {
+        if (aspectProcessor == null) {
+            aspectProcessor = buildAspectProcessor();
+        }
+
+        try {
+            lastCompilation = aspectProcessor.toSimpleJs(aspectIr);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not compile LARA file to JS", e);
+        }
+
+        return lastCompilation;
     }
 
     private AspectClassProcessor buildAspectProcessor() {

@@ -252,7 +252,9 @@ public class AspectClassProcessor {
         int line = coordinates.getLineBegin();
         inputInit.append(LaraIUtils.getSpace(1) + "if(!(this instanceof " + asp.name + "))\n");
         inputInit.append(LaraIUtils.getSpace(2)
-                + "throw new UserException('error: function [aspect()] must be used as constructor!'," + line
+                // + "throw new UserException('error: function [aspect()] in " + asp.name
+                + "throw new UserException('error: function [aspect()]"
+                + " must be used as constructor!'," + line
                 + ");\n\n");
         // inputInit.append(LaraIUtils.getSpace(1) + "//with(this){\n");
         inputInit.append(LaraIUtils.getSpace(1) + "with(this){\n");
