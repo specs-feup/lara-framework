@@ -54,13 +54,13 @@ public class WeaverApiTest {
         newTester().test("WeaverTest.lara");
     }
 
-    // @Test
+    @Test
     public void testImportMultipleFiles() {
         newTester().test("ImportMultipleFilesTest.lara", "ImportMultipleFiles.lara", "ImportMultipleFiles.js",
                 "ImportMultipleFiles.mjs");
     }
 
-    // @Test
+    @Test
     public void testJsImportTest() {
         newTester().test("JsImportTest.lara", "JsImport.mjs", "JsImportFile.js");
     }

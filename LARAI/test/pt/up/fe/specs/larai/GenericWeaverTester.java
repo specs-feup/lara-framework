@@ -148,13 +148,13 @@ public class GenericWeaverTester {
         // Prepare folder
         File workFolder = SpecsIo.mkdir(WORK_FOLDER);
         SpecsIo.deleteFolderContents(workFolder);
-
         // File outputFolder = null;
 
         // Prepare files
         code.forEach(resource -> resource.write(workFolder, true, GenericWeaverTester::resourceNameMapper));
         File laraFile = lara.write(workFolder);
-
+        // System.out.println("COMPLETE PATH: " + workFolder.getAbsolutePath());
+        // System.out.println("FILES IN PATH: " + SpecsIo.getFilesRecursive(workFolder));
         DataStore data = DataStore.newInstance("LARAI Weaver Test");
 
         // Set LaraI configurations
