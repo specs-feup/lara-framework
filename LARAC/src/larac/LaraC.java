@@ -80,7 +80,7 @@ public class LaraC {
     private static final Collection<String> SUPPORTED_LARA_EXT = new LinkedHashSet<>(Arrays.asList("lara"));
     // private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js", "mjs"));
     // Disabled .mjs since it is not properly working for imports
-    private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js"));
+    private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js", "mjs"));
     private static final Collection<String> SUPPORTED_EXT = new LinkedHashSet<>();
     static {
         SUPPORTED_EXT.addAll(SUPPORTED_LARA_EXT);
