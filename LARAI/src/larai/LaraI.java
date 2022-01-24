@@ -886,6 +886,10 @@ public class LaraI {
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), includes.getFiles(), apis);
         var laraImports = laraImporter.getLaraImports(importName);
 
+        if (laraImports.isEmpty()) {
+            throw new RuntimeException("Could not find files for import '" + importName + "'");
+        }
+
         // System.out.println("IMPORTS: " + laraImports);
 
         // Import JS code
