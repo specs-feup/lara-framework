@@ -1,1 +1,1 @@
-LaraLoc Totals:[laraStmts: 8, aspects: 2, functions: 1, comments: 4]
+LaraLoc Totals:[laraStmts: 9, aspects: 2, functions: 1, comments: 4]
