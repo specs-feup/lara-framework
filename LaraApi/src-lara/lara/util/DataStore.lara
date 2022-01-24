@@ -26,8 +26,8 @@ function DataStore(data, definition) {
 	this.definition = definition !== undefined ? definition : undefined;
 	// If no definition as argument, try to get one from data
 	if(this.definition === undefined) {
-		if(this.data.getStoreDefinition().isPresent()) {
-			this.definition = this.data.getStoreDefinition().get();
+		if(this.data.getStoreDefinitionTry().isPresent()) {
+			this.definition = this.data.getStoreDefinitionTry().get();
 		}
 	}
 	
