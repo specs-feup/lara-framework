@@ -265,9 +265,13 @@ function info(message, origin) {
 	println(composedMessage);
 }
 
+/**
+ * @param {string|function} message - The message to print. Accepts functions, that are only evaluated if debug information is enabled. Use functions if the debug message can include expensive processing.
+ */
 function debug(message, origin) {
 	if(LARA_DEBUG) {
-		info("[DEBUG] " + message, origin);
+		let processedMessage = isFunction(message) ? message() : message;
+		info("[DEBUG] " + processedMessage, origin);
 	}
 }
 
@@ -476,14 +480,15 @@ let _LARA_IMPORT_LOADED = {};
 
 function laraImport(importName) {
 	checkString(importName, "laraImport (LaraCore.js)");
-	
+
 	// Return if already loaded
 	if(_LARA_IMPORT_LOADED[importName] !== undefined) {
+		debug(() => "laraImport: import " + importName + " already processed, ignoring");	
 		return;
 	}
-	
+
 	// Import 
 	_LARA_IMPORT_LOADED[importName] = true;
-	
+	debug(() => "laraImport: importing " + importName);		
 	LaraI.loadLaraImport(importName);
 }
