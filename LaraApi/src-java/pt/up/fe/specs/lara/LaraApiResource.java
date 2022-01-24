@@ -76,6 +76,9 @@ public enum LaraApiResource implements LaraResourceProvider {
     MUTATION_RESULT("mutation/MutationResult.lara"),
     MUTATOR("mutation/Mutator.lara"),
 
+    // Pass
+    PASS("pass/Pass.js"),
+
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
     SI_UNIT("units/SiUnit.lara"),
