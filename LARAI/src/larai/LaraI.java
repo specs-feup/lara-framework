@@ -894,7 +894,7 @@ public class LaraI {
 
         // Import JS code
         for (var laraImport : laraImports) {
-            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
+            // SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType());
         }
 

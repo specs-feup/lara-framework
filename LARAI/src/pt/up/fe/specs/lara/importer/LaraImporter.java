@@ -26,6 +26,7 @@ import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -57,7 +58,6 @@ public class LaraImporter {
      * @param importName
      */
     public List<LaraImportData> getLaraImports(String importName) {
-
         List<LaraImportData> laraImports = new ArrayList<>();
 
         var laraImportName = new LaraImportName(importName);
@@ -89,21 +89,58 @@ public class LaraImporter {
         // Add include folders
         includePaths.addAll(includes);
 
-        // 1.
-        // Check include paths
-        for (var path : includePaths) {
-            // System.out.println("PATH: " + path);
-            for (var ext : LaraC.getSupportedExtensions()) {
+        ext: for (var ext : LaraC.getSupportedExtensions()) {
+
+            // 1.
+            // Check include paths
+            for (var path : includePaths) {
 
                 var importPath = laraImportName.getFullPath() + "." + ext;
                 var importingFile = new File(path, importPath);
 
                 if (importingFile.exists()) {
                     laraImports.add(buildLaraImport(importingFile));
+                    SpecsLogs.debug(() -> "Adding file '" + importingFile.getAbsolutePath() + "' for import '"
+                            + importName + "'");
+                    continue ext;
+                }
+            }
+
+            // 2.
+            // Check resource by filename, instead of resource name
+            var importPath = laraImportName.getFullPath() + "." + ext;
+            // System.out.println("IMPORT PATH:" + importPath);
+            var resources = apisMap.get().get(importPath);
+            if (!resources.isEmpty()) {
+                for (var resource : resources) {
+                    SpecsLogs.debug(
+                            () -> "Adding resource '" + resource.getResource() + "' for import '" + importName + "'");
+                    laraImports.add(buildLaraImport(resource));
+                    // System.out.println("IMPORT PATH: " + importPath);
+                    // System.out.println("RESOURCE: " + resource.get(0).);
+                    // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
+                    // System.out.println("RESOURCE: " + resource.get(0));
+                }
+
+                continue ext;
+            }
+        }
+        /*
+        // 1.
+        // Check include paths
+        for (var path : includePaths) {
+            // System.out.println("PATH: " + path);
+            for (var ext : LaraC.getSupportedExtensions()) {
+        
+                var importPath = laraImportName.getFullPath() + "." + ext;
+                var importingFile = new File(path, importPath);
+        
+                if (importingFile.exists()) {
+                    laraImports.add(buildLaraImport(importingFile));
                 }
             }
         }
-
+        
         // 2.
         // Check resource by filename, instead of resource name
         for (var ext : LaraC.getSupportedExtensions()) {
@@ -111,7 +148,7 @@ public class LaraImporter {
             // System.out.println("IMPORT PATH:" + importPath);
             var resources = apisMap.get().get(importPath);
             if (!resources.isEmpty()) {
-
+        
                 resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
                 // System.out.println("IMPORT PATH: " + importPath);
                 // System.out.println("RESOURCE: " + resource.get(0).);
@@ -119,7 +156,7 @@ public class LaraImporter {
                 // System.out.println("RESOURCE: " + resource.get(0));
             }
         }
-
+        */
         return laraImports;
 
     }
