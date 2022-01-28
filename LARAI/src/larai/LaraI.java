@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -49,6 +50,7 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
@@ -877,13 +879,27 @@ public class LaraI {
      * @param importName
      */
     public static void loadLaraImport(String importName) {
-
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-        var includes = LaraI.getThreadLocalData().get(LaraiKeys.INCLUDES_FOLDER);
+
+        // Prepare includes
+        var includes = new LinkedHashSet<File>();
+
+        // Add working directory
+        includes.add(SpecsIo.getWorkingDir());
+
+        // Add context folder, if present
+        var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
+        if (configurationFolder.isDirectory()) {
+            includes.add(configurationFolder);
+        }
+
+        // Add user includes
+        includes.addAll(LaraI.getThreadLocalData().get(LaraiKeys.INCLUDES_FOLDER).getFiles());
+
         var apis = LaraI.getThreadLocalLarai().getOptions().getLaraAPIs();
 
         // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), includes.getFiles(), apis);
+        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
         var laraImports = laraImporter.getLaraImports(importName);
 
         if (laraImports.isEmpty()) {
