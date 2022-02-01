@@ -61,6 +61,7 @@ import larac.LaraC;
 import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
+import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
@@ -238,13 +239,19 @@ public class LaraI {
             }
 
             if (!larai.quit) {
-                larai.compile(weaverEngine.getLanguageSpecificationV2());
                 THREAD_LOCAL_LARAI.setWithWarning(larai);
-                // }
-                // if (!larai.quit) {
-                larai.startAspectIR();
 
-                larai.interpret(weaverEngine);
+                var entryScript = larai.options.getLaraFile();
+                var extension = SpecsIo.getExtension(entryScript);
+
+                if (extension.equals("lara")) {
+                    executeLara(larai);
+                } else if (LaraC.getSupportedScriptExtensions().contains(extension)) {
+                    larai.executeJsScript();
+                } else {
+                    throw new RuntimeException("Extension not supported as starting script: ." + extension);
+                }
+
             }
 
             long end = getCurrentTime() - start;
@@ -275,6 +282,99 @@ public class LaraI {
         }
 
         // return false;
+    }
+
+    private void executeJsScript() {
+        var engine = createJsEngine(options.getJsEngine());
+
+        // Set javascript engine in WeaverEngine
+        weaverEngine.setScriptEngine(engine);
+
+        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter (JS mode)"));
+
+        List<File> workspaceSources = new ArrayList<>();
+        workspaceSources.addAll(options.getWorkingDir().getFiles());
+
+        final FileList folderApplication = FileList.newInstance(workspaceSources);
+
+        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Loading Weaver"));
+        long begin = getCurrentTime();
+        weaver = new MasterWeaver(this, weaverEngine, folderApplication, engine);
+
+        try {
+            // Create interpreter
+            interpreter = new Interpreter(this, engine);
+        } catch (Exception e) {
+            throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
+        }
+
+        boolean isWorking = weaver.begin();
+
+        long end = getCurrentTime() - begin;
+        getWeavingProfile().report(ReportField.INIT_TIME, (int) end);
+        out.println(MessageConstants.getElapsedTimeMessage(end));
+
+        if (!isWorking) {
+            finish(engine);
+            return;
+        }
+
+        try {
+
+            // Load script
+            var startScript = options.getLaraFile();
+
+            engine.eval(SpecsIo.read(startScript), JsFileType.getType(SpecsIo.getExtension(startScript)));
+
+            // larai.getWeaverEngine().
+
+            // Determine starting function to call
+            // Can be set in options, or get first
+
+            String main = options.getMainAspect();
+
+            // // Start interpretation
+            //
+            // interpreter.interpret(asps);
+            //
+
+            // if (main == null) {
+            //
+            // main = asps.main;
+            // }
+
+            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
+                    options.getLaraFile().getPath());
+            finish(engine);
+        } catch (Exception e) {
+            // Rethrow exception
+            // throw e;
+            throw new RuntimeException("Exception during interpretation", e);
+        } finally {
+            // Close weaver
+            weaver.close();
+        }
+
+        // Close weaver
+        // larai.getWeaverEngine().
+
+        /*      
+        
+        
+        
+        
+        */
+    }
+
+    private static void executeLara(LaraI larai) throws Exception {
+        var weaverEngine = larai.getWeaverEngine();
+
+        larai.compile(weaverEngine.getLanguageSpecificationV2());
+        // }
+        // if (!larai.quit) {
+        larai.startAspectIR();
+
+        larai.interpret(weaverEngine);
     }
 
     private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
@@ -628,7 +728,8 @@ public class LaraI {
 
         // weaverEngine.setScriptEngine(engine);
         // try {
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
+        out.println(
+                MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter (LARA mode)"));
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
 
         List<File> workspaceSources = new ArrayList<>();
