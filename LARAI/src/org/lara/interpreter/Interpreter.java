@@ -142,27 +142,44 @@ public class Interpreter {
      * @return the main aspect after its execution
      * @throws ScriptException
      */
-    public Object interpret(Aspects asps) {
+    public StringBuilder interpretLara(Aspects asps) {
 
         importProcessor.importAndInitialize();
 
-        final StringBuilder mainCall = aspectProcessor.generateJavaScript(asps);
-
-        return executeMainAspect(mainCall);
+        return aspectProcessor.generateJavaScript(asps);
     }
-
-    private Object executeMainAspect(final StringBuilder mainCall) {
-
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
+    
+    public Object executeMainAspect(final StringBuilder mainCall) {
+        long start = setupStage();
+        
         String code = mainCall.toString();
+        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
+        
+        completeStage(start);
+        return result;
+    }
+    
+    public Object executeMainAspect(File mainFile) {
+        long start = setupStage();
+        
+        final Object result = evaluate(mainFile);
+        
+        completeStage(start);
+        return result;
+    }
+    
+    private long setupStage() {
+        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));        
         long begin = LaraI.getCurrentTime();
         laraInterp.getWeaver().setInitialTime(begin);
-        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
+        return begin;
+    }
+    
+    private void completeStage(long begin) {
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
         // exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
-        return result;
     }
 
     /**
@@ -222,6 +239,14 @@ public class Interpreter {
             // throw new RuntimeException(e);
         }
 
+    }
+    
+    public Object evaluate(File jsFile) {
+        try {
+            return engine.evalFile(jsFile);
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
     }
 
     /**
