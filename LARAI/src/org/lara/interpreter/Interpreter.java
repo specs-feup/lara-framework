@@ -118,6 +118,7 @@ public class Interpreter {
 
         if (importScripts) {
             importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+            importProcessor.importAndInitialize();
         }
 
         if (options.isJavaScriptStream()) { // AFTER it is initialized
@@ -143,9 +144,6 @@ public class Interpreter {
      * @throws ScriptException
      */
     public StringBuilder interpretLara(Aspects asps) {
-
-        importProcessor.importAndInitialize();
-
         return aspectProcessor.generateJavaScript(asps);
     }
     
