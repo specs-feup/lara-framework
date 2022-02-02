@@ -304,6 +304,9 @@ public class LaraI {
         try {
             // Create interpreter
             interpreter = new Interpreter(this, engine);
+
+            interpreter.init();
+
         } catch (Exception e) {
             throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
         }

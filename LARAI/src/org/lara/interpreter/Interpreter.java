@@ -151,6 +151,10 @@ public class Interpreter {
         return executeMainAspect(mainCall);
     }
 
+    public void init() {
+        importProcessor.importAndInitialize();
+    }
+
     private Object executeMainAspect(final StringBuilder mainCall) {
 
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
