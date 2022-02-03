@@ -152,7 +152,7 @@ public class LaraLoc {
         File srcFolder = SpecsIo.getWorkingDir();
 
         for (File laraFile : laraFiles) {
-            SpecsLogs.msgInfo("LaraLoc: processing '" + laraFile + "' " + progress.next());
+            SpecsLogs.info("LaraLoc: processing '" + laraFile + "' " + progress.next());
 
             LaraStats fileStats = new LaraStats(weaverEngine.getLanguageSpecificationV2());
             fileStats.addFileStats(laraFile);
