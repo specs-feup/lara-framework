@@ -235,11 +235,13 @@ DataStore.prototype.hasValue = function(key) {
 DataStore.prototype.getConfigurationFolder = function() {
 	var currentFolder = this.data.get("joptions_current_folder_path");
 	
-	if(isUndefined(currentFolder)) {
+	//if(isUndefined(currentFolder)) {
+	if(currentFolder.isEmpty()) {	
 		return undefined;
 	}
 	
-	return Io.getPath(currentFolder);
+	//return Io.getPath(currentFolder);
+	return Io.getPath(currentFolder.get());	
 }; 
 
 /**

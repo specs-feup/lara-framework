@@ -888,10 +888,18 @@ public class LaraI {
         includes.add(SpecsIo.getWorkingDir());
 
         // Add context folder, if present
-        var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
-        if (configurationFolder.isDirectory()) {
+        var configurationFolder = LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH)
+                .map(File::new)
+                .orElse(null);
+
+        if (configurationFolder != null && configurationFolder.isDirectory()) {
             includes.add(configurationFolder);
         }
+
+        // var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
+        // if (configurationFolder.isDirectory()) {
+        // includes.add(configurationFolder);
+        // }
 
         // Add user includes
         includes.addAll(LaraI.getThreadLocalData().get(LaraiKeys.INCLUDES_FOLDER).getFiles());

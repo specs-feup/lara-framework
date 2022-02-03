@@ -134,7 +134,7 @@ public class FileWithCheckBoxPanel extends KeyPanel<OptionalFile> {
             String relativePath = IoUtils.getRelativePath(file, new File(currentFolderPath.get()));
             // Always using relative path if setup file is defined, should be more useful
             textField.setText(relativePath);
-
+        
         } else {
             textField.setText(file.getAbsolutePath());
         }*/
@@ -185,7 +185,7 @@ public class FileWithCheckBoxPanel extends KeyPanel<OptionalFile> {
 
         // When showing the path in the GUI, make it relative to the current setup file
 
-        Optional<String> currentFolder = getData().getTry(JOptionKeys.CURRENT_FOLDER_PATH);
+        Optional<String> currentFolder = getData().get(JOptionKeys.CURRENT_FOLDER_PATH);
         // System.out.println("GUI SET ENTRY VALUE:" + currentValue);
         // System.out.println("GUI SET CURRENT FOLDER:" + currentFolder);
         if (currentFolder.isPresent()) {

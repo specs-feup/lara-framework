@@ -181,7 +181,7 @@ public class LaraIKeyFactory {
             // System.out.println("CUSTOM GETTER - MAKE RELATIVE:" + dataStore.get(JOptionKeys.USE_RELATIVE_PATHS));
 
             // If it has a working folder set
-            Optional<String> workingFolder = dataStore.getTry(JOptionKeys.CURRENT_FOLDER_PATH);
+            Optional<String> workingFolder = dataStore.get(JOptionKeys.CURRENT_FOLDER_PATH);
             if (workingFolder.isPresent()) {
                 // If path is not absolute, create new file with working folder as parent
 
