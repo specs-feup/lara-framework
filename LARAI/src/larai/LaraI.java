@@ -880,6 +880,7 @@ public class LaraI {
      */
     public static void loadLaraImport(String importName) {
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
+        var larai = LaraI.getThreadLocalLarai();
 
         // Prepare includes
         var includes = new LinkedHashSet<File>();
@@ -902,9 +903,9 @@ public class LaraI {
         // }
 
         // Add user includes
-        includes.addAll(LaraI.getThreadLocalData().get(LaraiKeys.INCLUDES_FOLDER).getFiles());
+        includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
-        var apis = LaraI.getThreadLocalLarai().getOptions().getLaraAPIs();
+        var apis = larai.getOptions().getLaraAPIs();
 
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
