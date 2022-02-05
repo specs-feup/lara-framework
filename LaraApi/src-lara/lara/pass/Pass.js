@@ -8,10 +8,10 @@ laraImport('weaver.Query');
  */
 class Pass {
 	
-	#name;
+	_name;
 	
 	constructor(name) {
-		this.#name = name;
+		this._name = name;
 	}
 	
 	/*
@@ -21,11 +21,11 @@ class Pass {
 	*/
 	
 	get name() {
-		return this.#name;
+		return this._name;
 	}
 
 	set name(name) {
-		this.#name = name;
+		this._name = name;
 	}
 	
 	
