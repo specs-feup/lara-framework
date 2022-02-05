@@ -38,9 +38,9 @@ import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.lara.aspectir.Parameter;
 import pt.up.fe.specs.lara.aspectir.Statement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.AspectElement;
+import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.ClassElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.FunctionDeclElement;
-import pt.up.fe.specs.lara.doc.aspectir.elements.AssignmentElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.StatementElement;
 import pt.up.fe.specs.lara.doc.aspectir.elements.VarDeclElement;
 import pt.up.fe.specs.lara.doc.comments.LaraDocComment;
@@ -91,9 +91,11 @@ public class AspectIrParser {
             return parseExprStatement(statement, laraComment);
         case "fndecl":
             return parseFunctionDeclStatement(statement, laraComment);
+        case "LaraImport":
+            return new StatementElement(laraComment);
         default:
             if (!seenUnsupportedNodes.contains(statement.name)) {
-                SpecsLogs.msgInfo("AspectIrParser does not support yet statement '" + statement.name + "'");
+                SpecsLogs.info("AspectIrParser does not support yet statement '" + statement.name + "'");
                 seenUnsupportedNodes.add(statement.name);
             }
 
