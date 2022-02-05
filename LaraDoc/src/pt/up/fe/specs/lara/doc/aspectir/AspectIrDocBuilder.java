@@ -104,7 +104,9 @@ public class AspectIrDocBuilder {
     }
 
     public void parseJs(String jsCode) {
+
         var program = JsEsprima.parse(jsCode);
+
         // SpecsIo.write(new File("output.txt"), new Gson().toJson(program.getNode()));
         // System.out.println(program.getChildren().size());
 
