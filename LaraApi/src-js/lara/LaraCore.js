@@ -422,6 +422,19 @@ function laraGetter(object, property) {
 	return value;
 }
 
+function jpGetter(object, property) {
+	// If not a Java object, treat it as a normal JS object
+	if(!isJavaClass(object)) {
+		return object[property];
+	}
+	
+	// Special case: property 'class'
+	if(property === 'class') {
+		return object.class;
+	}
+		
+	return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
+}
 
 function stringReplacer(string, oldSequence, newSequence) {
 	return string.replace(oldSequence, newSequence);

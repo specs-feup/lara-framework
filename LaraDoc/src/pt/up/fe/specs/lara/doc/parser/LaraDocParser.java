@@ -326,7 +326,20 @@ public class LaraDocParser {
 
             // Parse JS file
             if (module.getMainJs() != null) {
-                laraDocBuilder.parseJs(SpecsIo.read(module.getMainJs()));
+                try {
+                    laraDocBuilder.parseJs(SpecsIo.read(module.getMainJs()));
+                } catch (Exception e) {
+                    Throwable underlyingCause = e;
+                    var childCause = e.getCause();
+                    while (childCause != null) {
+                        underlyingCause = childCause;
+                        childCause = underlyingCause.getCause();
+                    }
+
+                    SpecsLogs.info(
+                            "[PROBLEM] could not parse JS code for module " + module.getImportPath() + ": "
+                                    + underlyingCause.getMessage());
+                }
             }
 
             // Add information about import path to class files in module

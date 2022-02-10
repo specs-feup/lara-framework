@@ -3,6 +3,7 @@ import lara.Check;
 import lara.Strings;
 
 import weaver.util.WeaverDataStore;
+import lara.util.PrintOnce;
 
 /**
  * Contains utility methods related to the weaver. 
@@ -102,6 +103,10 @@ Weaver.hasAttribute = function(jp, attributeName) {
 Weaver.serialize = function($jp) {
 	Check.isJoinPoint($jp);
 
+    if (SpecsSystem.getJavaVersionNumber() > 16) {
+		PrintOnce.message("Weaver.serialize: Java version 17 or higher detected, XML serialization of AST might not work");
+    }
+
 	return Strings.toXml($jp.node);
 }
 
@@ -113,6 +118,10 @@ Weaver.serialize = function($jp) {
  * @return {$jp} The deserialized join point. 
  */
 Weaver.deserialize = function(string) {
+    if (SpecsSystem.getJavaVersionNumber() > 16) {
+		PrintOnce.message("Weaver.deserialize: Java version 17 or higher detected, XML serialization of AST might not work");
+    }
+
 	return Weaver.AST_METHODS.toJavaJoinPoint(Strings.fromXml(string));	
 }
 
