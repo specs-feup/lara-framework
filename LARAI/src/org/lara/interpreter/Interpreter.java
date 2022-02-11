@@ -146,33 +146,33 @@ public class Interpreter {
     public StringBuilder interpretLara(Aspects asps) {
         return aspectProcessor.generateJavaScript(asps);
     }
-    
+
     public Object executeMainAspect(final StringBuilder mainCall) {
         long start = setupStage();
-        
+
         String code = mainCall.toString();
         final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
-        
+
         completeStage(start);
         return result;
     }
-    
+
     public Object executeMainAspect(File mainFile) {
         long start = setupStage();
-        
+
         final Object result = evaluate(mainFile);
-        
+
         completeStage(start);
         return result;
     }
-    
+
     private long setupStage() {
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));        
+        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
         long begin = LaraI.getCurrentTime();
         laraInterp.getWeaver().setInitialTime(begin);
         return begin;
     }
-    
+
     private void completeStage(long begin) {
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
@@ -238,13 +238,15 @@ public class Interpreter {
         }
 
     }
-    
+
     public Object evaluate(File jsFile) {
-        try {
-            return engine.evalFile(jsFile);
-        } catch (Exception e) {
-            throw new EvaluationException(e);
-        }
+        return engine.evalFile(jsFile);
+
+        // try {
+        // return engine.evalFile(jsFile);
+        // } catch (Exception e) {
+        // throw new EvaluationException(e);
+        // }
     }
 
     /**

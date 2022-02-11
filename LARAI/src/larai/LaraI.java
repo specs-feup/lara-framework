@@ -253,9 +253,11 @@ public class LaraI {
 
             // } catch (final Throwable e) {
         } catch (Exception e) {
+            // throw new RuntimeException("Exception during interpretation", e);
             // throw new RuntimeException(e);
 
             throw treatExceptionInInterpreter(larai, e);
+
             // var finalException = treatExceptionInInterpreter(larai, e);
             // System.out.println(finalException);
         } finally {
@@ -385,7 +387,7 @@ public class LaraI {
             return LaraiResult.newInstance(success, isRunningGui);
 
         } catch (final Exception e) {
-
+            // throw new RuntimeException("", e);
             throw prettyRuntimeException(e);
         } finally {
             if (WeaverEngine.isWeaverSet()) {
