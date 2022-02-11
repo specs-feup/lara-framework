@@ -223,7 +223,8 @@ public class JoinpointUtils {
             Object result3 = scriptEngine.eval("_EVAL_.name == _expected_0", localScope);
             System.out.println("_EVAL_.name == _expected_0: " + result3);
             */
-            Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.NORMAL);
+            Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.NORMAL,
+                    "JoinpointUtils.evalFilter()");
             // Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.MODULE);
             // Object result = scriptEngine.eval(sb.toString(), localScope, JsFileType.COMMON);
 
