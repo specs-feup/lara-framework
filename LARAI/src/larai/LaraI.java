@@ -237,7 +237,6 @@ public class LaraI {
                 larai.out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, ". LARA Options"));
                 larai.out.println(dataStore);
             }
-            
 
             if (!larai.quit) {
                 THREAD_LOCAL_LARAI.setWithWarning(larai);
@@ -667,9 +666,16 @@ public class LaraI {
             // Start interpretation
 
             final String extension = SpecsIo.getExtension(options.getLaraFile());
+
+            // If JS file
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
                 interpreter.executeMainAspect(options.getLaraFile());
-            } else {
+
+                // Close weaver
+                weaver.close();
+            }
+            // If LARA file
+            else {
                 compile(weaverEngine.getLanguageSpecificationV2());
                 startAspectIR();
                 final StringBuilder mainCall = interpreter.interpretLara(asps);
