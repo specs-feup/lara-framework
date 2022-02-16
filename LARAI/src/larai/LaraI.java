@@ -168,6 +168,12 @@ public class LaraI {
         return new LaraI(dataStore, weaverEngine);
     }
 
+    public static LaraI newInstance(WeaverEngine weaverEngine) {
+        DataStore data = DataStore.newInstance("EmptyLarai");
+        data.add(LaraiKeys.LARA_FILE, new File(""));
+        return LaraI.newInstance(data, weaverEngine);
+    }
+
     public WeaverEngine getWeaverEngine() {
         return weaverEngine;
     }
@@ -919,6 +925,10 @@ public class LaraI {
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
         var apis = larai.getOptions().getLaraAPIs();
+
+        // for (var api : apis) {
+        // System.out.println("File location: " + api.getFileLocation());
+        // }
 
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
