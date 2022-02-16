@@ -17,8 +17,9 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -45,8 +46,67 @@ public class WeaverLauncher {
 
     private final WeaverEngine engine;
 
+    private final Map<String, Function<String[], Boolean>> tasks;
+
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
+        tasks = buildTaskMap();
+    }
+
+    private Map<String, Function<String[], Boolean>> buildTaskMap() {
+        var taskMap = new HashMap<String, Function<String[], Boolean>>();
+
+        // If unit testing flag is present, run unit tester
+        taskMap.put("-" + LaraiKeys.getUnitTestFlag(), args -> executeUnitTester(args));
+
+        // If doc generator flag is present, run doc generator
+        taskMap.put("-" + LaraiKeys.getDocGeneratorFlag(), args -> executeDocGenerator(args));
+
+        // If server flag is present, run server
+        taskMap.put("-" + LaraiKeys.getServerFlag(), args -> executeServer(args));
+
+        // If api flag is present, copy APIs to a folder
+        taskMap.put("-" + LaraiKeys.getApiFlag(), args -> executeApiExtractor(args));
+
+        return taskMap;
+    }
+
+    private boolean executeApiExtractor(String[] args) {
+
+        if (args.length < 2) {
+            SpecsLogs.info("Expected output folder as second parameter");
+            return false;
+        }
+
+        var outputFolder = SpecsIo.mkdir(args[1]);
+
+        // Get APIs
+        LaraI larai = LaraI.newInstance(engine);
+        var api = larai.getOptions().getLaraAPIs();
+
+        // Create LARA compiler
+        var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
+
+        SpecsLogs.info("Extracting APIs to '" + outputFolder.getAbsolutePath() + "'");
+
+        for (var apiFile : api) {
+            var fileLocation = apiFile.getFileLocation();
+
+            var destinationFile = new File(outputFolder, fileLocation);
+            var fileContents = SpecsIo.getResource(apiFile);
+
+            // If LARA file, first convert to JavaScript
+            if (SpecsIo.getExtension(fileLocation).equals("lara")) {
+                destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
+
+                fileContents = laraCompiler.compile(apiFile.getFilename(), fileContents);
+            }
+
+            SpecsLogs.info("Writing file " + destinationFile);
+            SpecsIo.write(destinationFile, fileContents);
+        }
+
+        return true;
     }
 
     public boolean launchExternal(String[] args) {
@@ -79,41 +139,88 @@ public class WeaverLauncher {
      */
     public boolean launch(String[] args) {
 
+        // If no flags, just launch
+        if (args.length == 0) {
+            return LaraI.exec(args, engine);
+        }
+
+        var firstArg = args[0];
+
+        // Check if first argument activates a predefined task
+        var task = tasks.get(firstArg);
+
+        if (task != null) {
+            return task.apply(args);
+        }
+
+        // No predefined task, just execute as usual
+        return LaraI.exec(args, engine);
+
+        /*
         // If unit testing flag is present, run unit tester
         Optional<Boolean> unitTesterResult = runUnitTester(args);
         if (unitTesterResult.isPresent()) {
             return unitTesterResult.get();
         }
-
+        
         // If doc generator flag is present, run doc generator
         Optional<Boolean> docGeneratorResult = runDocGenerator(args);
         if (docGeneratorResult.isPresent()) {
             return docGeneratorResult.get();
         }
-
+        
         // If server flag is present, run server
         Optional<Boolean> serverResult = runServer(args);
         if (serverResult.isPresent()) {
             return serverResult.get();
         }
-
+        
         return LaraI.exec(args, engine);
+        */
     }
 
-    private Optional<Boolean> runUnitTester(String[] args) {
-        // Look for flag
-        String unitTestingFlag = "-" + LaraiKeys.getUnitTestFlag();
+    // /**
+    // * @deprecated
+    // * @param args
+    // * @return
+    // */
+    // @Deprecated
+    // private Optional<Boolean> runUnitTester(String[] args) {
+    // // Look for flag
+    // String unitTestingFlag = "-" + LaraiKeys.getUnitTestFlag();
+    //
+    // int flagIndex = args.length == 0 ? -1 : unitTestingFlag.equals(args[0]) ? 0 : -1;
+    //
+    // // int flagIndex = IntStream.range(0, args.length)
+    // // .filter(index -> unitTestingFlag.equals(args[index]))
+    // // .findFirst()
+    // // .orElse(-1);
+    //
+    // if (flagIndex == -1) {
+    // return Optional.empty();
+    // }
+    //
+    // List<String> laraUnitArgs = new ArrayList<>();
+    // // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
+    // laraUnitArgs.add("--weaver");
+    // laraUnitArgs.add(engine.getClass().getName());
+    //
+    // // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
+    // for (int i = flagIndex + 1; i < args.length; i++) {
+    // laraUnitArgs.add(args[i]);
+    // }
+    //
+    // SpecsLogs.debug("Launching lara-unit with flags '" + laraUnitArgs + "'");
+    //
+    // int unitResults = LaraUnitLauncher.execute(laraUnitArgs.toArray(new String[0]));
+    //
+    // return Optional.of(unitResults == 0);
+    // }
 
-        int flagIndex = args.length == 0 ? -1 : unitTestingFlag.equals(args[0]) ? 0 : -1;
+    private Boolean executeUnitTester(String[] args) {
 
-        // int flagIndex = IntStream.range(0, args.length)
-        // .filter(index -> unitTestingFlag.equals(args[index]))
-        // .findFirst()
-        // .orElse(-1);
-
-        if (flagIndex == -1) {
-            return Optional.empty();
-        }
+        // First index is the task flag
+        int flagIndex = 1;
 
         List<String> laraUnitArgs = new ArrayList<>();
         // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
@@ -129,23 +236,49 @@ public class WeaverLauncher {
 
         int unitResults = LaraUnitLauncher.execute(laraUnitArgs.toArray(new String[0]));
 
-        return Optional.of(unitResults == 0);
+        return unitResults == 0;
     }
 
-    private Optional<Boolean> runDocGenerator(String[] args) {
-        // Look for flag
-        String docGeneratorFlag = "-" + LaraiKeys.getDocGeneratorFlag();
+    // /**
+    // * @deprecated
+    // * @param args
+    // * @return
+    // */
+    // @Deprecated
+    // private Optional<Boolean> runDocGenerator(String[] args) {
+    // // Look for flag
+    // String docGeneratorFlag = "-" + LaraiKeys.getDocGeneratorFlag();
+    //
+    // int flagIndex = args.length == 0 ? -1 : docGeneratorFlag.equals(args[0]) ? 0 : -1;
+    //
+    // // int flagIndex = IntStream.range(0, args.length)
+    // // .filter(index -> docGeneratorFlag.equals(args[index]))
+    // // .findFirst()
+    // // .orElse(-1);
+    //
+    // if (flagIndex == -1) {
+    // return Optional.empty();
+    // }
+    //
+    // List<String> laraDocArgs = new ArrayList<>();
+    // laraDocArgs.add("--weaver");
+    // laraDocArgs.add(engine.getClass().getName());
+    //
+    // for (int i = flagIndex + 1; i < args.length; i++) {
+    // laraDocArgs.add(args[i]);
+    // }
+    //
+    // SpecsLogs.debug("Launching lara-doc with flags '" + laraDocArgs + "'");
+    //
+    // int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
+    //
+    // return Optional.of(docResults != -1);
+    // }
 
-        int flagIndex = args.length == 0 ? -1 : docGeneratorFlag.equals(args[0]) ? 0 : -1;
+    private Boolean executeDocGenerator(String[] args) {
 
-        // int flagIndex = IntStream.range(0, args.length)
-        // .filter(index -> docGeneratorFlag.equals(args[index]))
-        // .findFirst()
-        // .orElse(-1);
-
-        if (flagIndex == -1) {
-            return Optional.empty();
-        }
+        // First index is the task flag
+        int flagIndex = 1;
 
         List<String> laraDocArgs = new ArrayList<>();
         laraDocArgs.add("--weaver");
@@ -159,23 +292,56 @@ public class WeaverLauncher {
 
         int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
 
-        return Optional.of(docResults != -1);
+        return docResults != -1;
     }
 
-    private Optional<Boolean> runServer(String[] args) {
-        // Look for flag
-        String serverFlag = "-" + LaraiKeys.getServerFlag();
+    // /**
+    // * @deprecated
+    // * @param args
+    // * @return
+    // */
+    // @Deprecated
+    // private Optional<Boolean> runServer(String[] args) {
+    // // Look for flag
+    // String serverFlag = "-" + LaraiKeys.getServerFlag();
+    //
+    // int flagIndex = args.length == 0 ? -1 : serverFlag.equals(args[0]) ? 0 : -1;
+    //
+    // // int flagIndex = IntStream.range(0, args.length)
+    // // .filter(index -> serverFlag.equals(args[index]))
+    // // .findFirst()
+    // // .orElse(-1);
+    //
+    // if (flagIndex == -1) {
+    // return Optional.empty();
+    // }
+    //
+    // SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
+    //
+    // LaraI.setServerMode();
+    //
+    // // Remove flag
+    // String[] newArgs = new String[args.length - 1];
+    // int currentIndex = 0;
+    // for (int i = 0; i < args.length; i++) {
+    // if (i == flagIndex) {
+    // continue;
+    // }
+    //
+    // newArgs[currentIndex] = args[i];
+    // currentIndex++;
+    // }
+    //
+    // // Run server
+    // new WeaverServer(engine).execute(newArgs);
+    //
+    // return Optional.of(true);
+    // }
 
-        int flagIndex = args.length == 0 ? -1 : serverFlag.equals(args[0]) ? 0 : -1;
+    private Boolean executeServer(String[] args) {
 
-        // int flagIndex = IntStream.range(0, args.length)
-        // .filter(index -> serverFlag.equals(args[index]))
-        // .findFirst()
-        // .orElse(-1);
-
-        if (flagIndex == -1) {
-            return Optional.empty();
-        }
+        // First index is the task flag
+        int flagIndex = 1;
 
         SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
 
@@ -196,7 +362,7 @@ public class WeaverLauncher {
         // Run server
         new WeaverServer(engine).execute(newArgs);
 
-        return Optional.of(true);
+        return true;
     }
 
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand) {
