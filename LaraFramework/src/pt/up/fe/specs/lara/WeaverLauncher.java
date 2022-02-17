@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -44,6 +45,8 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
  *
  */
 public class WeaverLauncher {
+
+    private static final String FLAG_KEEP_LARA = "--keepLara";
 
     private final WeaverEngine engine;
 
@@ -74,12 +77,35 @@ public class WeaverLauncher {
 
     private boolean executeApiExtractor(String[] args) {
 
-        if (args.length < 2) {
-            SpecsLogs.info("Expected output folder as second parameter");
+        // Options
+        var keepLara = false;
+
+        var processedArgs = new ArrayList<String>();
+
+        // Remove first argument (e.g. -api)
+        IntStream.range(1, args.length)
+                .mapToObj(i -> args[i])
+                .forEach(processedArgs::add);
+
+        int index = -1;
+
+        index = processedArgs.indexOf("--help");
+        if (index != -1) {
+            SpecsLogs.info("<lara compiler> -api [--keepLara] <output folder>");
+            return true;
+        }
+
+        while ((index = processedArgs.indexOf(FLAG_KEEP_LARA)) != -1) {
+            processedArgs.remove(index);
+            keepLara = true;
+        }
+
+        if (processedArgs.isEmpty()) {
+            SpecsLogs.info("Expected output folder as parameter");
             return false;
         }
 
-        var outputFolder = SpecsIo.mkdir(args[1]);
+        var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
         // Get APIs
         LaraI larai = LaraI.newInstance(engine);
@@ -99,7 +125,7 @@ public class WeaverLauncher {
             var fileContents = SpecsIo.getResource(apiFile);
 
             // If LARA file, first convert to JavaScript
-            if (SpecsIo.getExtension(fileLocation).equals("lara")) {
+            if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
                 destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
 
                 fileContents = laraCompiler.compile(apiFile.getFilename(), fileContents);
