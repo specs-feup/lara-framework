@@ -220,7 +220,7 @@ public class WeaverLauncher {
     private Boolean executeUnitTester(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         List<String> laraUnitArgs = new ArrayList<>();
         // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
@@ -278,7 +278,7 @@ public class WeaverLauncher {
     private Boolean executeDocGenerator(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         List<String> laraDocArgs = new ArrayList<>();
         laraDocArgs.add("--weaver");
@@ -341,7 +341,7 @@ public class WeaverLauncher {
     private Boolean executeServer(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
 
