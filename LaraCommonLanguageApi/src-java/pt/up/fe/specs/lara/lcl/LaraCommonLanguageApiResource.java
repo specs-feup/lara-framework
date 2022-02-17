@@ -23,12 +23,12 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
 
     // Lara Common Language
     LARA_COMMON_LANGUAGE("LaraCommonLanguage.lara"),
-    
+
     // Metrics
     METRIC("metrics/Metric.lara"),
     METRICS("metrics/Metrics.lara"),
-    
-    //CK Metrics
+
+    // CK Metrics
     CBO("metrics/ck/CBO.lara"),
     DIT("metrics/ck/DIT.lara"),
     LCOM94("metrics/ck/LCOM94.lara"),
@@ -36,17 +36,16 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     RFC("metrics/ck/RFC.lara"),
     WMC("metrics/ck/WMC.lara"),
     CK_METRICS_INDEX("metrics/ck/CKMetricsIndex.lara"),
-    
-    
-    //LH Metrics
+
+    // LH Metrics
     DAC("metrics/lh/DAC.lara"),
     MPC("metrics/lh/MPC.lara"),
     NOM("metrics/lh/NOM.lara"),
     SIZE1("metrics/lh/SIZE1.lara"),
     SIZE2("metrics/lh/SIZE2.lara"),
     LH_METRICS_INDEX("metrics/lh/LHMetricsIndex.lara"),
-    
-    //Other Metrics
+
+    // Other Metrics
     COGNI_COMPLEX("metrics/om/CogniComplex.lara"),
     CYCLO_COMPLEX("metrics/om/CycloComplex.lara"),
     LOC("metrics/om/LOC.lara"),
@@ -54,9 +53,10 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     NOFI("metrics/om/NOFi.lara"),
     NOFU("metrics/om/NOFu.lara"),
     NOL("metrics/om/NOL.lara"),
-    OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara");
+    OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara"),
 
-
+    // Machine-learning
+    CODE2VEC("ml/Code2Vec.js");
 
     private final String resource;
 
