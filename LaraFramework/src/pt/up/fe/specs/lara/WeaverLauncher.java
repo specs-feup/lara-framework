@@ -35,6 +35,7 @@ import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 
 /**
  * Utility methods what weavers can use to bootstrap execution.
@@ -82,7 +83,9 @@ public class WeaverLauncher {
 
         // Get APIs
         LaraI larai = LaraI.newInstance(engine);
-        var api = larai.getOptions().getLaraAPIs();
+        var api = new ArrayList<ResourceProvider>();
+        api.addAll(larai.getOptions().getCoreScripts());
+        api.addAll(larai.getOptions().getLaraAPIs());
 
         // Create LARA compiler
         var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
