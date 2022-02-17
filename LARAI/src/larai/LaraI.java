@@ -654,7 +654,7 @@ public class LaraI {
 
         try {
             // Create interpreter
-            interpreter = new Interpreter(this, engine);
+            interpreter = new Interpreter(this, engine, options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD));
         } catch (Exception e) {
             throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
         }

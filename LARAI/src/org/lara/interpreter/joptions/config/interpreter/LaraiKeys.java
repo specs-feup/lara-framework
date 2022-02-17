@@ -117,6 +117,9 @@ public interface LaraiKeys {
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
     // .setDefault(() -> JsEngineType.GRAALVM);
 
+    DataKey<Boolean> API_AUTOLOAD = KeyFactory.bool("api_autoload")
+            .setLabel("Autoload select APIs into execution environment").setDefault(() -> true);
+
     // No GUI, only CLI
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
@@ -140,7 +143,7 @@ public interface LaraiKeys {
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
                     INCLUDES_FOLDER, AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE,
                     METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE, API_AUTOLOAD)
             .build();
 
     // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")
