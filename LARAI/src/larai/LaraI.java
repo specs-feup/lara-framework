@@ -622,7 +622,7 @@ public class LaraI {
 
     private void interpret(WeaverEngine weaverEngine) throws Exception {
         // NashornScriptEngine engine = createJsEngine();
-        JsEngine engine = createJsEngine(options.getJsEngine());
+        JsEngine engine = createLaraJsEngine(options.getJsEngine());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -729,7 +729,22 @@ public class LaraI {
     //
     // }
 
-    private JsEngine createJsEngine(JsEngineType engineType) {
+    /**
+     * Creates a JS engine prepared for LARA execution (e.g. adds a mapper for objects of type JoinPoint, when .toJs()
+     * is called).
+     * 
+     * @param engineType
+     * @return
+     */
+    public JsEngine createLaraJsEngine(JsEngineType engineType) {
+        var coreEngine = createCoreJsEngine(engineType);
+
+        // Register mapper for JoinPoints
+
+        return coreEngine;
+    }
+
+    private JsEngine createCoreJsEngine(JsEngineType engineType) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
             return engineType.newEngine(engineType, FORBIDDEN_CLASSES);
