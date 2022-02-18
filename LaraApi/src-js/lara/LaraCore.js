@@ -505,3 +505,16 @@ function laraImport(importName) {
 	debug(() => "laraImport: importing " + importName);		
 	LaraI.loadLaraImport(importName);
 }
+
+
+const _jpHandler = {
+
+  get(target, prop, receiver) {
+	return jpGetter(target, prop);
+  },
+  
+};
+
+function wrapJoinPoint(javaJp) {
+	return new Proxy(javaJp, _jpHandler);
+}
