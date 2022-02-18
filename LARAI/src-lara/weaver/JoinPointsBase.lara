@@ -35,7 +35,7 @@ JoinPoints.toJoinPoint = function(node) {
  * @return {$jp} the current root node of the AST
  */
 JoinPoints.prototype.root = function() {
-	return Weaver.getWeaverEngine().getRootJp();
+	return wrapJoinPoint(Weaver.getWeaverEngine().getRootJp());
 }
 
 /**

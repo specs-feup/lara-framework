@@ -45,6 +45,7 @@ import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
@@ -740,8 +741,17 @@ public class LaraI {
         var coreEngine = createCoreJsEngine(engineType);
 
         // Register mapper for JoinPoints
+        coreEngine.addToJsRule(JoinPoint.class, jp -> joinPointToJs(jp, coreEngine));
 
         return coreEngine;
+    }
+
+    private Object joinPointToJs(JoinPoint joinPoint, JsEngine engine) {
+
+        // Wrap join point around a proxy
+        var jpWrapper = engine.eval("var jpWrapper = wrapJoinPoint; jpWrapper;");
+        return engine.call(jpWrapper, joinPoint);
+
     }
 
     private JsEngine createCoreJsEngine(JsEngineType engineType) {
