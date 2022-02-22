@@ -178,9 +178,30 @@ function checkArray(variable, source) {
 };
 
 
-function isJoinPoint($jp) {
-	return Weaver.isJoinPoint($jp);
+/**
+ * @param {$jp} $joinpoint - the object to test 
+ * @param {String} [type = undefined] - the type of the join point to test for
+ * 
+ * @return {boolean} if no type is provided, returns true if the given object is a join point, false otherwise. 
+ * If a type is provided, returns true if the given value is a join point that is an instance of the given type, false if it is not an instance of the given type, and throws an exception if the given object is not a join point. 
+ */
+function isJoinPoint($joinpoint, type) {
+	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
+
+	// If no type to compare to, just return result of test
+	if(type === undefined) {
+		return isJoinPoint;
+	}
+
+	// Throw error if asking to compare type of something that is not a join point
+	if(!isJoinPoint) {
+		throw new Error("Weaver.isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point");
+	}
+	
+	return $joinpoint.instanceOf(type);
 }
+
+//	println("Calling LaraCore.js isJoinPoint");
 
 function checkJoinPoint($jp, source) {
     
@@ -428,10 +449,30 @@ function jpGetter(object, property) {
 		return object[property];
 	}
 	
-	// Special case: property 'class'
-	if(property === 'class') {
-		return object.class;
+	if(property === "valueOf") {
+   		return function() {
+   			return object;
+   		};
+  	} 	
+
+   	if(property === "toString") {
+   		return function() {
+   			return object.toString();
+   		};
+  	}
+	/*
+	// Special case: property 'valueOf'
+	if(property === 'valueOf') {
+		//println("ADADAS");
+		//return "ADADAS";
+		return object.toString();
 	}
+	*/
+	
+	// Special case: property 'class'
+	//if(property === 'class') {
+	//	return object.class;
+	//}
 		
 	return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
 }
@@ -443,6 +484,7 @@ function stringReplacer(string, oldSequence, newSequence) {
 function exit() {
 	throw "function 'exit()' has been deprecated. Please use another way of stoping the script (e.g., by returning)";
 }
+
 
 /**
  * @return an array with the keys of an object
@@ -509,7 +551,47 @@ function laraImport(importName) {
 
 const _jpHandler = {
 
+//  apply: function(target, thisArg, argumentsList) {
+//  	println("APPPLYLYY");
+//  },
+
   get(target, prop, receiver) {
+  	
+  	if(prop === "_isProxy") {
+  		return true;
+  	}
+  	
+  	if(typeof prop === 'symbol') {
+  		return Reflect.get(...arguments);
+  	/*
+  		let symName = prop.description;
+  		if(symName === "Symbol.toPrimitive") {
+  			return new String(target.toString());
+  			//return target.toString();
+  			//return target;  			
+  			//return prop[Symbol.toPrimitive]();
+  			//return this;
+  		}
+  		//println("SYMBOL: " + prop.valueOf());
+  		//printlnObject("SYM:" + prop.description);
+ 	
+ 		throw new Error("_jpHAndler: case not defined for Symbol with description '"+symName+"'");
+*/
+  	}
+ 
+ /*
+   	if(prop === "valueOf") {
+   		return function() {
+   			return target;
+   		};
+  	} 	
+
+   	if(prop === "toString") {
+   		return function() {
+   			return target.toString();
+   		};
+  	}
+*/
 	return jpGetter(target, prop);
   },
   
