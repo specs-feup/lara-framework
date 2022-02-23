@@ -356,6 +356,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.addImport(List.class);
         final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
         fillWithActions.addArgument(listStringType, "actions");
+        fillWithActions.appendCode("super.fillWithActions(actions);\n");
         for (final Action action : actionsForAll) {
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
             abstJPClass.add(m);
