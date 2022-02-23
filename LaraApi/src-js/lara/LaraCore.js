@@ -186,7 +186,11 @@ function checkArray(variable, source) {
  * If a type is provided, returns true if the given value is a join point that is an instance of the given type, false if it is not an instance of the given type, and throws an exception if the given object is not a join point. 
  */
 function isJoinPoint($joinpoint, type) {
-	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
+	
+	//var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
+	//println("JP: " + $joinpoint);
+	//println("Is? : "  +  _isJpProxy($joinpoint));
+	const isJoinPoint = _isJpProxy($joinpoint);
 
 	// If no type to compare to, just return result of test
 	if(type === undefined) {
@@ -195,7 +199,7 @@ function isJoinPoint($joinpoint, type) {
 
 	// Throw error if asking to compare type of something that is not a join point
 	if(!isJoinPoint) {
-		throw new Error("Weaver.isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point");
+		throw new Error("isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point");
 	}
 	
 	return $joinpoint.instanceOf(type);
@@ -443,7 +447,9 @@ function laraGetter(object, property) {
 	return value;
 }
 
+/*
 function jpGetter(object, property) {
+	
 	// If not a Java object, treat it as a normal JS object
 	if(!isJavaClass(object)) {
 		return object[property];
@@ -460,14 +466,6 @@ function jpGetter(object, property) {
    			return object.toString();
    		};
   	}
-	/*
-	// Special case: property 'valueOf'
-	if(property === 'valueOf') {
-		//println("ADADAS");
-		//return "ADADAS";
-		return object.toString();
-	}
-	*/
 	
 	// Special case: property 'class'
 	//if(property === 'class') {
@@ -476,6 +474,7 @@ function jpGetter(object, property) {
 		
 	return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(object, property);
 }
+*/
 
 function stringReplacer(string, oldSequence, newSequence) {
 	return string.replace(oldSequence, newSequence);
@@ -551,52 +550,119 @@ function laraImport(importName) {
 
 const _jpHandler = {
 
-//  apply: function(target, thisArg, argumentsList) {
-//  	println("APPPLYLYY");
-//  },
-
+/*
+  apply(target, thisArg, argumentsList) {
+		println("Proxy apply");
+		 return Reflect.get(...arguments);
+  },
+*/
   get(target, prop, receiver) {
-  	
-  	if(prop === "_isProxy") {
+	//println("Proxy get");  	
+	
+	// Special property, that identifies this JS object as a Proxy Join Point
+  	if(prop === "_isJpProxy") {
   		return true;
   	}
+
+    /*
+   	if(isString(prop)) {
+		println("String: " + prop);
+		println("Has attribute: " + target.hasAttribute(prop));		
+	}
+	*/
   	
+  	// If this is an attribute of the join point, call corresponding method
+  	// Due to the format of the attribute names, this will only match for attributes that do not receive arguments
+  	// Since attributes that receive arguments need to be called as functions, they do not need to be converted,
+  	// only property-like attributes
+  	if(isString(prop) && target.hasAttribute(prop)) {
+		//println("Has attribute " + prop);
+		
+		// Build getter name
+		const getterName = "get" + prop.substring(0, 1).toUpperCase() + prop.substring(1, prop.length);
+		
+		// Check: this must always be zero
+		const args = arrayFromArgs(...arguments);
+		if(args.length !== 0) {
+			throw new Error("_jpHandler: check if this should happend, attribute with arguments? " + args);			
+		}
+
+		
+		// Get arguments
+		//println("Args: " + arrayFromArgs(...arguments));
+		// Invoke getter
+		return Java.type("pt.up.fe.specs.util.SpecsSystem").invoke(target, getterName, );
+		
+		//println("Getter: " + getterName);
+                
+	}
+
+
+	// Proceed as usual
+  	return Reflect.get(...arguments);
+  	/*
+  	// If a symbol, take care of it normally
   	if(typeof prop === 'symbol') {
   		return Reflect.get(...arguments);
-  	/*
-  		let symName = prop.description;
-  		if(symName === "Symbol.toPrimitive") {
-  			return new String(target.toString());
-  			//return target.toString();
-  			//return target;  			
-  			//return prop[Symbol.toPrimitive]();
-  			//return this;
-  		}
-  		//println("SYMBOL: " + prop.valueOf());
-  		//printlnObject("SYM:" + prop.description);
- 	
- 		throw new Error("_jpHAndler: case not defined for Symbol with description '"+symName+"'");
-*/
   	}
  
- /*
-   	if(prop === "valueOf") {
+	println("Proxy prop: " + prop);  
+ */
+ 	// If not a Java object, treat it as a normal JS object
+	//if(!isJavaClass(object)) {
+	//	return object[property];
+	//}
+	/*
+	// Handle valueOf
+	if(prop === "valueOf") {
    		return function() {
    			return target;
    		};
   	} 	
-
+*/
+/*
+	// Handle toString
    	if(prop === "toString") {
    		return function() {
    			return target.toString();
    		};
   	}
+
+	// Resolve propery
+	try {
+	return Java.type("pt.up.fe.specs.util.SpecsSystem").invokeAsGetter(target, prop);
+	} catch(e) {
+		return Reflect.get(...arguments);
+	}
+	//return jpGetter(target, prop);
 */
-	return jpGetter(target, prop);
   },
+  
+  
   
 };
 
+/**
+ * Wraps a Java join point with a proxy JS object taylored to handle join points.
+ */
 function wrapJoinPoint(javaJp) {
+	// If already a proxy join point, return itself
+	if(_isJpProxy(javaJp)) {
+		return javaJp;
+	}
+	
+	if(!isJavaClass(javaJp)) {
+		throw new Error("Given Java join point is not a Java class: " + (typeof javaJp));
+	}
+	
+	var isJavaJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint(javaJp);
+	if(!isJavaJoinPoint) {
+		throw new Error("Given Java join point is a Java class but is not a JoinPoint: " + javaJp.getClass());		
+	}
+	
 	return new Proxy(javaJp, _jpHandler);
+}
+
+function _isJpProxy($jp) {
+	return $jp._isJpProxy === true;
 }
