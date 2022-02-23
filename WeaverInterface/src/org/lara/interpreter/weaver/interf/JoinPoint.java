@@ -51,11 +51,17 @@ public abstract class JoinPoint {
     // return BASE_JOINPOINT_CLASS;
     // }
 
+    /**
+     * @deprecated laraGetter should no longer be necessary, after JP Proxy
+     * @return
+     */
+    @Deprecated
     public static String getLaraGetterName() {
         return LARA_GETTER;
     }
 
     public static boolean isJoinPoint(Object value) {
+        // SpecsLogs.warn("Should this be called?");
         return value instanceof JoinPoint;
     }
 
@@ -196,6 +202,7 @@ public abstract class JoinPoint {
         attributes.add("selects");
         attributes.add("attributes");
         attributes.add("actions");
+        attributes.add("joinPointType");
     }
 
     /**
