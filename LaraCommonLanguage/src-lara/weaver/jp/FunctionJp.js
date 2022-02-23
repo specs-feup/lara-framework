@@ -1,6 +1,8 @@
-// laraImport("weaver.jp.DeclJp");
+laraImport("weaver.jp.DeclJp");
 // import DeclJp from "./DeclJp";
-const DeclJp = require("./DeclJp");
+// const DeclJp = require("./DeclJp");
+// const DeclJp = load("./DeclJp.js");
+
 
 /**
  * 
@@ -55,10 +57,14 @@ class FunctionJp extends DeclJp {
 	get stmts() { throw this.constructor.name + '.stmts not implemented'; }
 
 	get hasBody() { throw this.constructor.name + '.hasBody not implemented'; }
-
-	// 
-	// get LEL() { return "UPS"; }
+	
+	get LEL() { return "UPS but JS"; }
+	
+	// back compat
+	static call(obj, astNode) {
+		new FunctionJp(astNode);
+	}
 
 }
 
-module.exports = FunctionJp;
+// module.exports = FunctionJp;

@@ -1,6 +1,7 @@
-// laraImport("weaver.jp.JoinPoint")
+laraImport("weaver.jp.JoinPoint")
 // import JoinPoint from "./JoinPoint";
-const JoinPoint = require("./JoinPoint");
+// const JoinPoint = require("./JoinPoint");
+// const JoinPoint = load("./JoinPoint.js");
 
 /**
  * 
@@ -38,6 +39,11 @@ class StmtJp extends JoinPoint {
 	}
 	
 	get joinPointType() { return 'stmt'; }
+	
+	// back compat
+	static call(obj, astNode) {
+		new StmtJp(astNode);
+	}
 }
 
-module.exports = StmtJp;
+// module.exports = StmtJp;

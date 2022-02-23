@@ -1,6 +1,7 @@
-// laraImport("weaver.jp.StmtJp")
+laraImport("weaver.jp.StmtJp")
 // import StmtJp from "./StmtJp";
-const StmtJp = require("./StmtJp");
+// const StmtJp = require("./StmtJp");
+// const StmtJp = laraImport("./StmtJp.js");
 
 /**
  * 
@@ -39,7 +40,23 @@ class DeclJp extends StmtJp {
 	}
 	
 	get joinPointType() { return 'decl'; }
+	
+	// back compat
+	static call(obj, astNode) {
+		/*
+		const classToObject = theClass => {
+		  const originalClass = theClass || {}
+		  const keys = Object.getOwnPropertyNames(Object.getPrototypeOf(originalClass))
+		  return keys.reduce((classAsObj, key) => {
+		    classAsObj[key] = originalClass[key]
+		    return classAsObj
+		  }, {})
+		}
+		*/
+		new DeclJp(astNode);
+		// classToObject(new DeclJp(astNode)).call(obj, astNode);
+	}
 
 }
 
-module.exports = DeclJp;
+// module.exports = DeclJp;

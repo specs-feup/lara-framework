@@ -133,8 +133,8 @@ class JoinPoint {
 
 }
 
-module.exports = JoinPoint;
+// module.exports = JoinPoint;
 
-let point = new JoinPoint("arg");
-console.log(point)
-console.log(point.toString())
+// let point = new JoinPoint("arg");
+// console.log(point)
+// console.log(point.toString())
