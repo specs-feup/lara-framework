@@ -42,7 +42,19 @@ class StmtJp extends JoinPoint {
 	
 	// back compat
 	static call(obj, astNode) {
-		new StmtJp(astNode);
+		// console.log(obj);console.log("\n")
+		// console.log(StmtJp.prototype);console.log("\n")
+		// console.log(Object.keys(new StmtJp(astNode)));console.log("\n")
+		// console.log(obj.line);console.log("\n")
+		// console.log(new StmtJp(astNode).line);console.log("\n")
+		// console.log(Object.keys(new StmtJp(astNode)))
+		Object.assign(obj, new StmtJp(astNode));
+		// console.log(new StmtJp(astNode).line);console.log("\n")
+		// console.log(new StmtJp(astNode).astNode);console.log("\n")
+		// console.log(obj.line);console.log("\n")
+		// console.log(obj.astNode);console.log("\n")
+		// Object.setPrototypeOf(new StmtJp(astNode), obj);
+		// (new StmtJp(astNode)).call(obj, astNode);
 	}
 }
 

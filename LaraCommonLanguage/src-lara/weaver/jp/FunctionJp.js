@@ -62,7 +62,7 @@ class FunctionJp extends DeclJp {
 	
 	// back compat
 	static call(obj, astNode) {
-		new FunctionJp(astNode);
+		Object.assign(obj, new FunctionJp(astNode));
 	}
 
 }

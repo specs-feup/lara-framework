@@ -130,6 +130,11 @@ class JoinPoint {
 	get line() { throw this.constructor.name + '.line not implemented'; }
 
 	get astId() { throw this.constructor.name + '.astId not implemented'; }
+	
+	// back compat
+	static call(obj, astNode) {
+		Object.assign(obj, new JoinPoint(astNode));
+	}
 
 }
 

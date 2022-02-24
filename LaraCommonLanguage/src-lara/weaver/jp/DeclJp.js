@@ -43,18 +43,7 @@ class DeclJp extends StmtJp {
 	
 	// back compat
 	static call(obj, astNode) {
-		/*
-		const classToObject = theClass => {
-		  const originalClass = theClass || {}
-		  const keys = Object.getOwnPropertyNames(Object.getPrototypeOf(originalClass))
-		  return keys.reduce((classAsObj, key) => {
-		    classAsObj[key] = originalClass[key]
-		    return classAsObj
-		  }, {})
-		}
-		*/
-		new DeclJp(astNode);
-		// classToObject(new DeclJp(astNode)).call(obj, astNode);
+		Object.assign(obj, new DeclJp(astNode));
 	}
 
 }
