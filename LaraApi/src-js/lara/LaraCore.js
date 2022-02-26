@@ -563,6 +563,10 @@ const _jpHandler = {
   	if(prop === "_isJpProxy") {
   		return true;
   	}
+  	
+ 	if(prop === "_proxyTarget") {
+  		return target;
+  	}
 
     /*
    	if(isString(prop)) {
@@ -665,4 +669,16 @@ function wrapJoinPoint(javaJp) {
 
 function _isJpProxy($jp) {
 	return $jp._isJpProxy === true;
+}
+
+function _getJpProxyTarget($jp) {
+	if(!_isJpProxy($jp)) {
+		throw new Error("Given value is not a proxy join point: " + $jp);
+	}
+	
+	return $jp._proxyTarget;
+}
+
+function toJavaJp($jp) {
+	return _getJpProxyTarget($jp);
 }
