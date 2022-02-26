@@ -914,9 +914,11 @@ public class GeneratorUtils {
             cloned.appendCodeln(");");
             cloned.appendCodeln("\t}");
             // cloned.appendCodeln("\treturn result;");
-            cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();"); // return Undefined if result ==
-                                                                                      // null
-
+            // cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();"); // return Undefined if result
+            // ==
+            // null
+            cloned.appendCodeln("\treturn getWeaverEngine().getScriptEngine().toJs(result);"); // use JS engine
+                                                                                               // conversor
         }
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
