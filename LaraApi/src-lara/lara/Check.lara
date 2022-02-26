@@ -168,9 +168,44 @@ Check.isRegex = function(variable, source) {
  */
 Check.isJoinPoint = function($jp, type, isOptional) {
 		
+	if($jp === undefined) {
+
+		if(!isOptional) {
+			throw new Error("Join point is undefined and is not optional");		
+		}
+
+		// No problem
+		return;
+	}		
+
+	if(!isJoinPoint($jp)) {
+		throw new Error("Expected variable to be of type join point, but it is of type '" + (typeof $jp) + "'");
+	}
+	
+	if(type !== undefined && !$jp.instanceOf(type)) {
+		throw new Error("Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'");		
+	}
+
+/*
 	if(isOptional && $jp === undefined) {
 		return;
 	}	
+
+	// Check if proxy object
+	//println("Class: " + $jp.getClass());
+//	var javaClass = $jp.getClass();
+	//println("Class: " + $jp._isProxy);
+	println("Class: " + $jp.class);	
+	
+	// Test if class is join point (should work since join points have a proxy object around them)
+	var javaClass = $jp.class;
+	
+	if(javaClass === undefined) {
+		throw "Expected variable to be a proxy around a Java class, but $jp.class returned undefined'";	
+	}
+
+	println("Join poin class: " + _JavaTypes.getJoinPoint());
+	println("Is join point: " + _JavaTypes.getJoinPoint().isAssignableFrom(javaClass));
 		
 	if(!_JavaTypes.getJoinPoint().isJoinPoint($jp)) {
 		throw "Expected variable to be of type join point, but it is of type '" + (typeof $jp) + "'";
@@ -179,6 +214,7 @@ Check.isJoinPoint = function($jp, type, isOptional) {
 	if(type !== undefined && !$jp.instanceOf(type)) {
 		throw "Expected join point to be an instance of type '"+type+"' but its type is '"+$jp.joinPointType+"'";		
 	}
+	*/
 }
 
 
