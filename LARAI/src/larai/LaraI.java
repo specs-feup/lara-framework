@@ -48,7 +48,6 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -501,7 +500,7 @@ public class LaraI {
     // }
 
     /**
-     * Compile the lara file with LARAC, according to a {@link LanguageSpecification}
+     * Compile the lara file with LARAC, according to a {@link LanguageSpecificationV2}
      *
      * @param fileName
      * @param langSpec
