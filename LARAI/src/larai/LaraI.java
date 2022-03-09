@@ -13,6 +13,9 @@
 package larai;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -620,8 +623,19 @@ public class LaraI {
     }
 
     private void interpret(WeaverEngine weaverEngine) throws Exception {
-        // NashornScriptEngine engine = createJsEngine();
-        JsEngine engine = createJsEngine(options.getJsEngine());
+        String engineWorkingDir = SpecsIo.getWorkingDir().getAbsolutePath();
+        var configFolder = getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH);
+        if (!configFolder.isEmpty()) {
+            engineWorkingDir = configFolder.get();
+        }
+
+        Path path = Paths.get(engineWorkingDir);
+
+        try {
+            path = Paths.get(engineWorkingDir + "/node_modules");
+        } catch (InvalidPathException e) {}
+
+        JsEngine engine = createJsEngine(options.getJsEngine(), path);
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -729,12 +743,16 @@ public class LaraI {
     // }
 
     private JsEngine createJsEngine(JsEngineType engineType) {
+        return createJsEngine(engineType, null);
+    }
+
+    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES);
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return engineType.newEngine(engineType, Collections.emptyList());
+        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory);
         // return new NashornEngine();
     }
 
