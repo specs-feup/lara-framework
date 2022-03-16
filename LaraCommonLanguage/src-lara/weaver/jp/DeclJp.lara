@@ -46,3 +46,8 @@ _lara_dummy_ = Object.defineProperty(DeclJp.prototype, 'joinPointType', {
 	get: function () { return 'decl'; }
 });
 
+_lara_dummy_ = Object.defineProperty(DeclJp.prototype, 'isStatic', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isStatic not implemented'; }
+});
+

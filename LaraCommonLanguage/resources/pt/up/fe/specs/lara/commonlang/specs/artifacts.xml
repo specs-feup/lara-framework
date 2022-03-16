@@ -35,10 +35,18 @@
 		<attribute name="id" type="string" tooltip="The id of the file."/>
 	</artifact>
 	
+	<artifact class="decl">
+		<attribute name="isStatic" type="boolean" tooltip="Returns true if decl is considered static"/>
+	</artifact>
+	
 	<artifact class="call" default="name">
 		<attribute name="name" type="string" tooltip="The name of the function called."/>
 		<attribute name="function" type="function" tooltip="The function called."/>
 	</artifact>
+	
+	<!--  classType  -->
+	<!--  classType  -->
+	<!--  classType  -->
 	
 	<artifact class="class" default="name">
 		<attribute name="id" type="string" tooltip="The id of the class."/>
@@ -101,6 +109,9 @@
 		<attribute name="isPointer" type="Boolean" />
 		<attribute name="isPrimitive" type="Boolean" />
 		<attribute name="isClass" type="Boolean" />
+		
+		<!--  attribute name="isClassType" type="Boolean" /-->
+		<!-- attribute name="classType" type="classType" /-->
 	</artifact>
 	
 	<artifact class="varRef" default="name">

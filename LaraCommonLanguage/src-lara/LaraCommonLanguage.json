@@ -1443,6 +1443,15 @@
 					},
 					{
 						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
+					{
+						"type": "attribute",
 						"children": [
 									{
 										"type": "String[]",
@@ -1755,6 +1764,15 @@
 									{
 										"type": "stmt[]",
 										"name": "stmts"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
 									}]
 					},
 					{
@@ -2465,6 +2483,15 @@
 			"name": "decl",
 			"extends": "stmt"		,
 			"children": [
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
 					{
 						"type": "attribute",
 						"children": [
@@ -3413,6 +3440,15 @@
 					},
 					{
 						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
+					{
+						"type": "attribute",
 						"children": [
 									{
 										"type": "String[]",
@@ -4194,6 +4230,15 @@
 									{
 										"type": "stmt[]",
 										"name": "stmts"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
 									}]
 					},
 					{
@@ -5709,6 +5754,15 @@
 					},
 					{
 						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
+					{
+						"type": "attribute",
 						"children": [
 									{
 										"type": "String[]",
@@ -5953,6 +6007,15 @@
 									{
 										"type": "String",
 										"name": "name"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
 									}]
 					},
 					{
@@ -7992,6 +8055,15 @@
 									{
 										"type": "String",
 										"name": "name"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
 									}]
 					},
 					{

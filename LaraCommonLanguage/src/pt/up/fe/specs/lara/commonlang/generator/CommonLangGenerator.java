@@ -225,7 +225,7 @@ public class CommonLangGenerator {
         var jpClassName = getJoinPointClassName(jpName);
         // check if has JS definition in list
         // System.err.println("getJpResource::" + jpClassName);
-        if (classesInJS.contains(jpClassName)) return "weaver/jp/" + jpClassName + ".js";
+        // if (classesInJS.contains(jpClassName)) return "weaver/jp/" + jpClassName + ".js";
         return "weaver/jp/" + jpClassName + ".lara";
     }
 
