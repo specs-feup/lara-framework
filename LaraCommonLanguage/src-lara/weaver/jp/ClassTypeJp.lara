@@ -1,0 +1,49 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ClassTypeJp(astNode) {
+    // Parent constructor
+    DeclJp.call(this,astNode);
+    
+}
+// Inheritance
+ClassTypeJp.prototype = Object.create(DeclJp.prototype);
+ClassTypeJp.prototype.constructor = ClassTypeJp;
+
+// JoinPoint Types
+ClassTypeJp._JP_TYPES = new Set();
+_lara_dummy_ = ClassTypeJp._JP_TYPES.add('classType');
+_lara_dummy_ = ClassTypeJp._JP_TYPES.add('decl');
+_lara_dummy_ = ClassTypeJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ClassTypeJp._JP_TYPES.add('joinpoint');
+
+
+ClassTypeJp.prototype.instanceOf = function(joinPointType) {
+	return ClassTypeJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ClassTypeJp.prototype.types = function(joinPointType) {
+	return ClassTypeJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'classType'; }
+});
+

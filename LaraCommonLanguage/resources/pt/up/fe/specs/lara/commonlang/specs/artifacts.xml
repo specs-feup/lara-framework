@@ -44,9 +44,15 @@
 		<attribute name="function" type="function" tooltip="The function called."/>
 	</artifact>
 	
-	<!--  classType  -->
-	<!--  classType  -->
-	<!--  classType  -->
+	
+	<artifact class="classType" default="name">
+
+	</artifact>
+	
+	<artifact class="interface" default="name">
+		<attribute name="methods" type="method[]" tooltip="The methods of this interface"/>
+		<attribute name="interfaces" type="interface[]" tooltip="The interfaces that this interface extends"/>		
+	</artifact>
 	
 	<artifact class="class" default="name">
 		<attribute name="id" type="string" tooltip="The id of the class."/>
@@ -59,6 +65,7 @@
 		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
 		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
+		<attribute name="interfaces" type="interface[]" tooltip="The interfaces that this class implements"/>
 	</artifact>
 	
 	<artifact class="method" default="name">
@@ -109,9 +116,9 @@
 		<attribute name="isPointer" type="Boolean" />
 		<attribute name="isPrimitive" type="Boolean" />
 		<attribute name="isClass" type="Boolean" />
-		
-		<!--  attribute name="isClassType" type="Boolean" /-->
-		<!-- attribute name="classType" type="classType" /-->
+		<attribute name="isInterface" type="Boolean" />
+		<attribute name="isClassType" type="Boolean" />
+		<attribute name="classType" type="classType" />
 	</artifact>
 	
 	<artifact class="varRef" default="name">

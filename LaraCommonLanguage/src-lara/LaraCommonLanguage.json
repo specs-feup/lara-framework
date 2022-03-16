@@ -1349,7 +1349,7 @@
 		{
 			"type": "joinpoint",
 			"name": "class",
-			"extends": "decl"		,
+			"extends": "classType"		,
 			"children": [
 					{
 						"type": "attribute",
@@ -1398,6 +1398,15 @@
 					},
 					{
 						"type": "attribute",
+						"tooltip": "The interfaces that this class implements",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "interfaces"
+									}]
+					},
+					{
+						"type": "attribute",
 						"tooltip": "Check if the class is defined by the user.",
 						"children": [
 									{
@@ -1441,6 +1450,236 @@
 										"name": "superClasses"
 									}]
 					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "attributes"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "selects"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "actions"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The ID of the node in the AST.",
+						"children": [
+									{
+										"type": "String",
+										"name": "astId"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the children of the joinpoint.",
+						"children": [
+									{
+										"type": "joinpoint[]",
+										"name": "children"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The source code corresponding to this join point.",
+						"children": [
+									{
+										"type": "String",
+										"name": "code"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the descendants of the joinpoint.",
+						"children": [
+									{
+										"type": "joinpoint[]",
+										"name": "descendants"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The ending line of the current node in the original code.",
+						"children": [
+									{
+										"type": "Integer",
+										"name": "endLine"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the join point are equal.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "equals"
+									},
+									{
+										"type": "joinpoint",
+										"name": "joinPoint"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Check if joinpoint has ancestor of type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "hasAncestor"
+									},
+									{
+										"type": "boolean",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the descendants of the joinpoint.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "hasChildren"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the current join point is an instance of the given type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "A string with the type of the join point.",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The starting line of the current node in the original code.",
+						"children": [
+									{
+										"type": "Integer",
+										"name": "line"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns the parent joinpoint in the AST.",
+						"children": [
+									{
+										"type": "joinpoint",
+										"name": "parent"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the join point are of the same type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "sameTypeAs"
+									},
+									{
+										"type": "joinpoint",
+										"name": "joinPoint"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "a String with the type of the join point",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "true if the current join point is an instance of the given type",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String",
+										"name": "name"
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "void",
+										"name": "insert"
+									},
+									{
+										"type": "[before| after| replace]",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "String",
+										"name": "code",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "void",
+										"name": "def"
+									},
+									{
+										"type": "String",
+										"name": "attribute",
+										"defaultValue": ""
+									},
+									{
+										"type": "Object",
+										"name": "value",
+										"defaultValue": ""
+									}]
+					}]
+		},
+		{
+			"type": "joinpoint",
+			"name": "classType",
+			"extends": "decl"		,
+			"children": [
 					{
 						"type": "attribute",
 						"tooltip": "Returns true if decl is considered static",
@@ -4946,6 +5185,254 @@
 		},
 		{
 			"type": "joinpoint",
+			"name": "interface",
+			"extends": "classType"		,
+			"children": [
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface extends",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "interfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "methods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns true if decl is considered static",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "isStatic"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "attributes"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "selects"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "actions"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The ID of the node in the AST.",
+						"children": [
+									{
+										"type": "String",
+										"name": "astId"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the children of the joinpoint.",
+						"children": [
+									{
+										"type": "joinpoint[]",
+										"name": "children"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The source code corresponding to this join point.",
+						"children": [
+									{
+										"type": "String",
+										"name": "code"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the descendants of the joinpoint.",
+						"children": [
+									{
+										"type": "joinpoint[]",
+										"name": "descendants"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The ending line of the current node in the original code.",
+						"children": [
+									{
+										"type": "Integer",
+										"name": "endLine"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the join point are equal.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "equals"
+									},
+									{
+										"type": "joinpoint",
+										"name": "joinPoint"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Check if joinpoint has ancestor of type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "hasAncestor"
+									},
+									{
+										"type": "boolean",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns an array with the descendants of the joinpoint.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "hasChildren"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the current join point is an instance of the given type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "A string with the type of the join point.",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The starting line of the current node in the original code.",
+						"children": [
+									{
+										"type": "Integer",
+										"name": "line"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "Returns the parent joinpoint in the AST.",
+						"children": [
+									{
+										"type": "joinpoint",
+										"name": "parent"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "True if the join point are of the same type.",
+						"children": [
+									{
+										"type": "boolean",
+										"name": "sameTypeAs"
+									},
+									{
+										"type": "joinpoint",
+										"name": "joinPoint"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "a String with the type of the join point",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "true if the current join point is an instance of the given type",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String",
+										"name": "name"
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "void",
+										"name": "insert"
+									},
+									{
+										"type": "[before| after| replace]",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "String",
+										"name": "code",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "void",
+										"name": "def"
+									},
+									{
+										"type": "String",
+										"name": "attribute",
+										"defaultValue": ""
+									},
+									{
+										"type": "Object",
+										"name": "value",
+										"defaultValue": ""
+									}]
+					}]
+		},
+		{
+			"type": "joinpoint",
 			"name": "lambda",
 			"extends": "expr"		,
 			"children": [
@@ -7790,6 +8277,14 @@
 						"type": "attribute",
 						"children": [
 									{
+										"type": "classType",
+										"name": "classType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
 										"type": "Boolean",
 										"name": "isArray"
 									}]
@@ -7800,6 +8295,22 @@
 									{
 										"type": "Boolean",
 										"name": "isClass"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "isClassType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "isInterface"
 									}]
 					},
 					{

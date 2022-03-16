@@ -4,7 +4,9 @@
 	<joinpoint class="file"/>
 	<joinpoint class="stmt"/>
 	<joinpoint class="decl" extends="stmt"/>
-	<joinpoint class="class" extends="decl"/>
+	<joinpoint class="interface" extends="classType"/>
+	<joinpoint class="class" extends="classType"/>
+	<joinpoint class="classType" extends="decl"/>
 	<joinpoint class="function" extends="decl"/>
 	<joinpoint class="method" extends="function"/>
 	<joinpoint class="constructor" extends="method"/>

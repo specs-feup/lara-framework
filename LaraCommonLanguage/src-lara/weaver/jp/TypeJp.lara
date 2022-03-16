@@ -65,3 +65,18 @@ _lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isClass', {
 	get: function () { throw this.constructor.name + '.isClass not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isInterface', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isInterface not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isClassType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isClassType not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'classType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.classType not implemented'; }
+});
+
