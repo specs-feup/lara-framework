@@ -74,10 +74,24 @@ Selector._parseFilter = function(filter, name) {
 
 /// INSTANCE FUNCTIONS
 Selector.prototype[Symbol.iterator] = function* () {
+
+	/*
 	var $jps = this.get();
 	for(var $jp of $jps) {
 		yield $jp;
 	}	
+	*/
+	if(this._$currentJps === undefined) {
+		println("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
+		yield undefined;
+	}
+	
+
+	for(var $jpChain of this._$currentJps) {
+		yield $jpChain[this._lastName];
+	}
+	
+	this._$currentJps = undefined;	
 }
 
 
