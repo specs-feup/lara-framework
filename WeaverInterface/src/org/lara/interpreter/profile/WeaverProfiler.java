@@ -178,7 +178,7 @@ public abstract class WeaverProfiler extends AGear {
     }
 
     protected void iterateJPs(LaraJoinPoint laraJoinPoint, Consumer<JoinPoint> jp) {
-        jp.accept(laraJoinPoint.getReference());
+        jp.accept(laraJoinPoint.getReferenceImpl());
         if (!laraJoinPoint.isLeaf()) {
             laraJoinPoint.getChildren().forEach(ljp -> iterateJPs(ljp, jp));
         }

@@ -81,7 +81,7 @@ public class LaraJoinPoint {
         leaf = false;
         children = new ArrayList<>();
         // laraJoinPoint = this;
-        setReference(jp);
+        setReferenceImpl(jp);
     }
 
     /**
@@ -213,19 +213,33 @@ public class LaraJoinPoint {
     }
 
     /**
+     * 
+     * @return
+     */
+    public JoinPoint getReferenceImpl() {
+        return _jp_reference_;
+    }
+
+    /**
      * @return the reference
      */
-    public JoinPoint getReference() {
+    public Object getReference() {
+        return _jp_reference_.toJs();
         // TODO: In Graal mode, return a JavaScript object which emulates nashorn behaviour when accessing attributes
-        return _jp_reference_;
+        // return _jp_reference_;
     }
 
     /**
      * @param reference
      *            the reference to set
      */
-    public void setReference(JoinPoint reference) {
+    public void setReferenceImpl(JoinPoint reference) {
         _jp_reference_ = reference;
+    }
+
+    public void setReference(Object jpReference) {
+        throw new RuntimeException("Not implemented for the JS side");
+        // _jp_reference_ = reference;
     }
 
     @Override
@@ -237,7 +251,7 @@ public class LaraJoinPoint {
         final String space2 = space + "\t";
 
         String ret = "\n" + space + "JoinPoint {";
-        ret += "\n" + space2 + "type : " + getReference().get_class();
+        ret += "\n" + space2 + "type : " + getReferenceImpl().get_class();
         ret += "\n" + space2;
         if (classAlias == null) {
             ret += "LARA Root for Select";

@@ -49,7 +49,7 @@ public class SelectUtils {
             for (final LaraJoinPoint aChild : aChildren) {
 
                 for (final LaraJoinPoint bChild : bChildren) {
-                    if (aChild.getReference().same(bChild.getReference())) {
+                    if (aChild.getReferenceImpl().same(bChild.getReferenceImpl())) {
                         final LaraJoinPoint cChild = join(aChild, bChild);
 
                         if (cChild != null) {

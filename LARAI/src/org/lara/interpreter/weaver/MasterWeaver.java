@@ -297,6 +297,7 @@ public class MasterWeaver {
             FilterExpression[][] filterChain,
             Object localScope, LaraJoinPoint root, String aspect_name, String selectName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
         final JoinPoint rootSelect = weaverEngine.select();
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
@@ -306,7 +307,7 @@ public class MasterWeaver {
         }
         // rootSelect.setWeaverEngine(weaverEngine);
         final MWRoot mwRoot = new MWRoot();
-        root.setReference(mwRoot);
+        root.setReferenceImpl(mwRoot);
         if (jpUtils.evalFilter(rootSelect, filterChain[0], localScope)) {
             final LaraJoinPoint wRoot = new LaraJoinPoint(rootSelect);
             wRoot.setClassAlias(aliasChain[0]);
@@ -352,7 +353,7 @@ public class MasterWeaver {
         } else {
             // currentWeaver = weavers.get(getApplicationFolder());
         }
-        root.setReference(defWeaver.select());
+        root.setReferenceImpl(defWeaver.select());
         generateSelect(root, jpChain, aliasChain, filterChain, 0, localScope);
     }
 
@@ -391,7 +392,7 @@ public class MasterWeaver {
         // System.out.println("SELECT 1");
 
         final LaraJoinPoint root = LaraJoinPoint.createRoot();
-        root.setReference(null);
+        root.setReferenceImpl(null);
         // TRIGGER SELECT BEGIN EVENT
         if (eventTrigger.hasListeners()) {
             eventTrigger.triggerSelect(Stage.BEGIN, aspect_name, selectName, jpChain, aliasChain, filterChain,
@@ -502,7 +503,7 @@ public class MasterWeaver {
             current.setLeaf(true);
             return;
         }
-        final JoinPoint lastJP = current.getReference();
+        final JoinPoint lastJP = current.getReferenceImpl();
         String selectName = jpChain[pos];
 
         try {
