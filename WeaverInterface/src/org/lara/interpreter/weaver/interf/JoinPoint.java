@@ -576,4 +576,13 @@ public abstract class JoinPoint {
         return attributes.contains(attributeName);
     }
 
+    /**
+     * Converts the current Java join point to a JS join point.
+     * 
+     * @return the JavaScript join point of this Java join point
+     */
+    public Object toJs() {
+        return getWeaverEngine().getScriptEngine().toJs(this);
+    }
+
 }
