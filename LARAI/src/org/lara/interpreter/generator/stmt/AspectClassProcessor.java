@@ -19,7 +19,6 @@ import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.utils.Coordinates;
-import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.weaver.MasterWeaver;
@@ -384,14 +383,18 @@ public class AspectClassProcessor {
         aspectConstructor.append(LaraIUtils.getSpace(3) + "} else this.checked = false;\n");
         aspectConstructor.append(LaraIUtils.getSpace(2) + "} catch (e){\n");
         aspectConstructor.append(LaraIUtils.getSpace(3) + "this.exception = e;\n");
-        aspectConstructor.append(LaraIUtils.getSpace(3) + "e = e == undefined?'undefined exception':e;\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(3) + "e = e == undefined?'undefined exception':e;\n");
         aspectConstructor.append(LaraIUtils.getSpace(3)
                 + "this.__currentLine__ = this.__currentLine__ == undefined?1:this.__currentLine__;\n");
-        // Gson gson = new Gson();
-        // String json = gson.toJson(lines);
-        String aspectCoords = coord.replace("\\", "\\\\");
-        aspectConstructor.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
-                + ".throwAspectException(e, '" + asp.name + "','" + aspectCoords + "',this.__currentLine__);\n");
+
+        // String aspectCoords = coord.replace("\\", "\\\\");
+        // aspectConstructor.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
+        // + ".throwAspectException(e, '" + asp.name + "','" + aspectCoords + "',this.__currentLine__);\n");
+
+        aspectConstructor.append(LaraIUtils.getSpace(3) + "throw e;\n");
+        // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw new Error('Exception while executing aspect "
+        // + currentAspect + "', {cause: e});\n");
+
         // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw " + ExceptionUtils.class.getSimpleName()
         // + ".processAspectException(e, '" + asp.name + "','" + aspectCoords
         // + "',this.__currentLine__).toString();\n");

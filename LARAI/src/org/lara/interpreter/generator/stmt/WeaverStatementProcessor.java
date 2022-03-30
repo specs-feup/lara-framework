@@ -24,7 +24,6 @@ import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.utils.Coordinates;
-import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Operators;
 import org.lara.interpreter.utils.SelectUtils;
@@ -146,12 +145,15 @@ public class WeaverStatementProcessor {
 
         ret.append(getLoopForSelect(selectLabel.toString(), stat.label, select, codeExpr, conditionExpr, depth + 1));
         ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
-        ret.append(LaraIUtils.getSpace(depth + 1) + "e = e == undefined?'undefined exception':e;\n");
-        // Gson gson = new Gson();
-        // String json = gson.toJson(lines);
-        ret.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
-                + ".throwApplyException(e, '" + stat.label + "', '" + selectLabel
-                + "',this.__currentLine__);\n");
+
+        ret.append(LaraIUtils.getSpace(depth + 1) + " throw e\n");
+        // ret.append(LaraIUtils.getSpace(depth + 1) + " throw new Error('Exception while executing apply around "
+        // + lastInChain + "' , {cause: e})\n");
+        // ret.append(LaraIUtils.getSpace(depth + 1) + "e = e == undefined?'undefined exception':e;\n");
+
+        // ret.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
+        // + ".throwApplyException(e, '" + stat.label + "', '" + selectLabel
+        // + "',this.__currentLine__);\n");
         ret.append(LaraIUtils.getSpace(depth) + "}");
         ret.append(LaraIUtils.getSpace(depth) + "//After: apply to " + selectLabel + "\n");
         ret.append(after);
@@ -200,10 +202,26 @@ public class WeaverStatementProcessor {
             // var __appWrapper_ = __appList__.get(_apply_counter_0); //foreach app
             ret.append(LaraIUtils.getSpace(depth) + "var " + jpWrapper + " = " + jpArrayName + ".get(" + counterName
                     + ");\n");
-            ret.append(LaraIUtils.getSpace(depth) + "if(!" + jpWrapper + "." + JoinpointUtils.getAliasProperty()
-                    + ".equals('" + simpleJPName + "')) {\n");
+            // ret.append("println('Jp wrapper class: ' + " + jpWrapper + ".getClassAlias());\n");
+            // ret.append("println('Jp wrapper class is program_hidden_0? : ' + (new String(" + jpWrapper
+            // + ".getClassAlias()).toString() === 'program_hidden_0'));\n");
+            // ret.append("println('Jp wrapper class is program_hidden_0? : ' + " + jpWrapper
+            // + ".getClassAlias().toString() === 'program_hidden_0');\n");
+
+            // ret.append(LaraIUtils.getSpace(depth) + "if(!" + jpWrapper + "." + JoinpointUtils.getAliasProperty()
+            // + ".equals('" + simpleJPName + "')) {\n");
+
+            // ret.append("println('Alias : ' + " + jpWrapper + "." + JoinpointUtils.getAliasProperty() + ");\n");
+            // ret.append("println('Simple jp name: ' + '" + simpleJPName + "');\n");
+            // ret.append("println('Are equal? ' + (" + jpWrapper + "." + JoinpointUtils.getAliasProperty() + " === '"
+            // + simpleJPName + "'));\n");
+
+            ret.append(LaraIUtils.getSpace(depth) + "if(!(" + jpWrapper + "." + JoinpointUtils.getAliasProperty()
+                    + " === '" + simpleJPName + "')) {\n");
+            // ret.append("println('Not equal');\n");
             ret.append(LaraIUtils.getSpace(depth + 1) + "continue;\n");
             ret.append(LaraIUtils.getSpace(depth) + "}\n");
+            // ret.append("println('Equal');\n");
             ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = " + jpWrapper + "."
                     + JoinpointUtils.getReferenceProperty() + ";\n");
             // ret.append(LaraIUtils.getSpace(depth) + "println('current wrapper: '+" + jpWrapper + ");\n");

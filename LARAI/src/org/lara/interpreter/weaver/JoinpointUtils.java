@@ -29,11 +29,12 @@ import pt.up.fe.specs.jsengine.JsFileType;
  */
 public class JoinpointUtils {
 
-    private static final String LARA_JOIN_POINT_PROPERTY = "laraJoinPoint";
-    private static final String IS_EMPTY_PROPERTY = "isEmpty";
+    // private static final String LARA_JOIN_POINT_PROPERTY = "laraJoinPoint";
+    // private static final String IS_EMPTY_PROPERTY = "isEmpty";
     private static final String REFERENCE_PROPERTY = "getReference";
-    private static final String ALIAS_PROPERTY = "classAlias";
-    private static final String PARENT_PROPERTY = "_jp_parent_";
+    // private static final String ALIAS_PROPERTY = "classAlias";
+    private static final String ALIAS_PROPERTY = "getClassAlias";
+    // private static final String PARENT_PROPERTY = "_jp_parent_";
     private static final String HAS_CHILDREN_FUNCTION = "hasChildren";
     private final JsEngine scriptEngine;
     // TODO: Java 9 replace
@@ -169,8 +170,7 @@ public class JoinpointUtils {
         // System.out.println("BINDINGS: " + scriptEngine.getBindings());
         // scriptEngine.getJsEngine().put(localScope, JoinpointUtils.EVAL_NAME, jp);
 
-        // TODO: Use JS JP wrapper instead of "naked" JP
-        scriptEngine.put(localScope, JoinpointUtils.EVAL_NAME, jp);
+        scriptEngine.put(localScope, JoinpointUtils.EVAL_NAME, jp.toJs());
         // localScope.put(JoinpointUtils.EVAL_NAME, jp);
 
         final StringBuilder sb = new StringBuilder();
@@ -258,12 +258,12 @@ public class JoinpointUtils {
     }
 
     public static String getAliasProperty() {
-        return ALIAS_PROPERTY;
+        return ALIAS_PROPERTY + "().toString()";
     }
 
-    public static String getParentProperty() {
-        return PARENT_PROPERTY;
-    }
+    // public static String getParentProperty() {
+    // return PARENT_PROPERTY;
+    // }
 
     public static String invokeHasChildren() {
         return HAS_CHILDREN_FUNCTION + "()";
