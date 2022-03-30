@@ -48,7 +48,10 @@ Weaver.writeCode = function(outputFolder) {
  * @param {String} type 
  */
 Weaver.isJoinPoint = function($joinpoint, type) {
-	println("Calling Weaver.isJoinPoint");
+	//if(!_isJpProxy($joinpoint)) {
+	//	throw "Not a jp proxy";
+	//}
+	// println("Is jp proxy: " + _isJpProxy($joinpoint));
 	return isJoinPoint($joinpoint, type);
 	/*
 	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
