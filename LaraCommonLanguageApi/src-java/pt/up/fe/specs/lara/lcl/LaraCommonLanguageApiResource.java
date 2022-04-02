@@ -54,9 +54,13 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     NOFI("metrics/om/NOFi.lara"),
     NOFU("metrics/om/NOFu.lara"),
     NOL("metrics/om/NOL.lara"),
-    OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara");
+    OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara"),
 
 
+    // Patterns Detection
+    PATTERNS_READER("patterns/PatternsReader.js"),
+    DETECTION_ALGORITHM("patterns/DetectionAlgorithm.js"),
+    DETECTION_ALGORITHM_TESTS("patterns/DetectionAlgorithmTests.js");
 
     private final String resource;
 
