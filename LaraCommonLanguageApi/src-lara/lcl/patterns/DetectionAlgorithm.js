@@ -29,7 +29,7 @@ class DetectionAlgorithm {
 				
 				var isAbstraction = this.checkAbstraction(classType, this.members[depth][1]);
 				if (!isAbstraction) continue;
-	
+				
 				var isConnections = this.checkConnections(classType, candidates, depth);
 				if (!isConnections) continue;
 	
@@ -49,8 +49,9 @@ class DetectionAlgorithm {
 	}
 	
 	checkAbstraction(classType, abstractionLevel) {
-		if (abstractionLevel == "Abstract" && classType.instanceOf("interface")) return true;
-		if (abstractionLevel == "Abstracted" && classType.instanceOf("interface")) return true;
+		if (abstractionLevel == "Abstracted" && (classType.instanceOf("interface") || classType.instanceOf("class"))) return true;
+		if (abstractionLevel == "Abstract" && classType.instanceOf("class")) return true;
+		if (abstractionLevel == "Interface" && classType.instanceOf("interface")) return true;
 		if (abstractionLevel == "Normal" && classType.instanceOf("class")) return true;
 		if (abstractionLevel == "Any" && classType.instanceOf("classType")) return true;
 		return false;
@@ -130,8 +131,12 @@ class DetectionAlgorithm {
 	}
 	
 	checkRelationHas(fromObj, toObj) {
+		
+		var $fields = fromObj.fields;
+		
+		if ($fields == undefined) return false;
 	
-		for (var $field of fromObj.fields) {
+		for (var $field of $fields) {
 			var classType = $field.type.classType;
 			if (classType == null) continue;
 			
