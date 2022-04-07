@@ -125,6 +125,10 @@ ProcessExecutor.prototype.setOutputPrefix = function(outputPrefix) {
 	return this;
 }
 
+/**
+ * 
+ * @param {(string...|string[])} command - The command to be executed. Accepts a command as a sequence of strings, or as an array with strings. 
+ */
 ProcessExecutor.prototype.execute = function(command) {
 
 	//if(!isString(command) && !isArray(command)) {
