@@ -287,7 +287,8 @@ function debugObject(object, origin) {
  * Converts an arguments object to a JavaScript array (Array).
  * 
  * If there is a single argument after the start index and that argument is an array, that array will be returned.
- * @deprecated This helper is kept for Lara code using directly the `arguments` object. If you are using Javascript, consider using [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters](rest parameters) to extract the variadic arguments of your function, and using the `flattenArgsArray` function to perform the single-element flattening, if needed.
+ * This helper is kept for Lara code using directly the `arguments` object. If you are using Javascript, consider using [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters](rest parameters) to extract the variadic arguments of your function, and using the `flattenArgsArray` function to perform the single-element flattening, if needed.
+ *
  * @args {Arguments} args  - The original arguments object.
  * @args {Number} [start=0] - The index where we begin the conversion (inclusive).
  * */
