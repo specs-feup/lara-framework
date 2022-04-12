@@ -39,10 +39,12 @@ class PassResult {
 	}
 	
 	toString() {
-		let print = "PassResult { name: " + this.name + 
-			"; isUndefined: " + this.isUndefined;
+		let print = "PassResult { name: " + this.name; 
+
 	
-		if(!this.isUndefined) {
+		if(this.isUndefined) {
+			print += "; isUndefined: " + this.isUndefined;			
+		} else {
 			print += "; appliedPass: " + this.appliedPass
 				+ "; insertedLiteralCode: " + this.insertedLiteralCode
 				+ "; location: " + this.location;
