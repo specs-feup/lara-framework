@@ -73,6 +73,12 @@ Selector._parseFilter = function(filter, name) {
 
 
 /// INSTANCE FUNCTIONS
+
+/**
+ * Generator function, allows Selector to be used in for..of statements.
+ *
+ * Returns join points iteratively, as if .get() was called.
+ */
 Selector.prototype[Symbol.iterator] = function* () {
 
 	/*
