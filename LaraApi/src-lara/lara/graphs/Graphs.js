@@ -11,6 +11,10 @@ class Graphs {
 		Graphs.#isLibLoaded = true;
 	}
 	
+	static addNode(graph, nodeData) {
+		return graph.add({ group: 'nodes', data: nodeData});
+	}
+	
 	static toDot(graph) {
 		var dot = "digraph test {\n";
 		
@@ -18,7 +22,7 @@ class Graphs {
 		for(const node of graph.nodes()) {
 			//println("Node: ")
 			//printlnObject(node.data());
-			dot += '"' + node.id() + '" [label="'+node.data().toString()+'"];\n'
+			dot += '"' + node.id() + '" [label="'+node.data().toString()+'" shape=box];\n'
 			//println("Id: " + node.id)
 		}
 		
