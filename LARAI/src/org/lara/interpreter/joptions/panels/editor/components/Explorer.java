@@ -614,7 +614,7 @@ public class Explorer extends JPanel {
 
     private static File getFile(TreePath path) {
         Object lastPathComponent = path.getLastPathComponent();
-        if (lastPathComponent == null) {
+        if (lastPathComponent == null || !(lastPathComponent instanceof FileNode)) {
             return null;
         }
         FileNode node = (FileNode) lastPathComponent;
