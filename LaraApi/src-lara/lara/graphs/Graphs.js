@@ -16,12 +16,12 @@ class Graphs {
 	}
 	
 	static addEdge(graph, sourceNode, targetNode, edgeData) {
-		edgeData ?? new GraphEdge();
+		const _edgeData = edgeData ?? new GraphEdge();
 		
-		edgeData.source = sourceNode.id();
-		edgeData.target = targetNode.id();
+		_edgeData.source = sourceNode.id();
+		_edgeData.target = targetNode.id();
 				
-		return graph.add({ group: 'edges', data: edgeData});
+		return graph.add({ group: 'edges', data: _edgeData});
 	}
 	
 	static toDot(graph) {
