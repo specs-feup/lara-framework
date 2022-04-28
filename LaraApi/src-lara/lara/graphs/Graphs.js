@@ -1,7 +1,25 @@
+/**
+ * Utility class related with graph creation and manipulation.
+ *
+ * Current implementation uses Cytoscape.js (https://js.cytoscape.org/)
+ */
 class Graphs {
 	
 	static #isLibLoaded = false;
 	
+	/**
+	 * @param {Object} [config = {}] configuration for the graph, according to what Cytoscape accepts as configuration object
+	 */
+	static newGraph(config) {
+		// Ensure library is loaded
+		Graphs.loadLibrary();
+
+		const _config = config ?? {};
+		
+		return cytoscape(_config);
+	}
+
+
 	static loadLibrary() {
 		if(Graphs.#isLibLoaded) {
 			return;
