@@ -196,6 +196,7 @@ public abstract class JoinPoint {
         attributes.add("selects");
         attributes.add("attributes");
         attributes.add("actions");
+        attributes.add("self");
     }
 
     /**
@@ -582,4 +583,7 @@ public abstract class JoinPoint {
         return dump.toString();
     }
 
+    public final JoinPoint getSelf() {
+        return this;
+    }
 }
