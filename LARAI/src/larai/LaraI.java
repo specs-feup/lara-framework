@@ -947,21 +947,5 @@ public class LaraI {
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
         }
 
-        /*
-        var laraC = getThreadLocalLarac();
-        var weaver = WeaverEngine.getThreadLocalWeaver();
-        
-        var aspectProcessor = LaraI.buildAspectProcessor(weaver, weaver.getScriptEngine());
-        try {
-            var jsCode = aspectProcessor.toSimpleJs(laraC.importLara(importName));
-        
-            if (!jsCode.strip().isBlank()) {
-                weaver.getScriptEngine().eval(jsCode);
-            }
-        
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while loading LARA import", e);
-        }
-        */
     }
 }
