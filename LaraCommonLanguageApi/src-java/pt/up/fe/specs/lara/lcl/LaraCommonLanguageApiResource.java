@@ -60,7 +60,8 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     // Patterns Detection
     PATTERNS_READER("patterns/PatternsReader.js"),
     DETECTION_ALGORITHM("patterns/DetectionAlgorithm.js"),
-    DETECTION_ALGORITHM_LIGHT("patterns/DetectionAlgorithmLight.js");
+    DETECTION_ALGORITHM_LIGHT("patterns/DetectionAlgorithmLight.js"),
+    GROUPING_UTILS("patterns/grouping/GroupingUtils.js");
 
     private final String resource;
 

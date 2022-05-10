@@ -36,7 +36,7 @@ class DetectionAlgorithmLight {
 	
 		this.recursive(classTypes, [], 0);
 		
-		this.detections = this.#removeDuplicates(this.detections);
+		this.detections = this.constructor.removeDuplicates(this.detections);
 	
 		return this.detections;
 	}
@@ -189,7 +189,7 @@ class DetectionAlgorithmLight {
 		return $fromObj.relationUses.includes(toObj.name);
 	}
 	
-	#removeDuplicates(detections) {
+	 static removeDuplicates(detections) {
 		
 		function arrayEquals(a, b) {
 			return Array.isArray(a) &&

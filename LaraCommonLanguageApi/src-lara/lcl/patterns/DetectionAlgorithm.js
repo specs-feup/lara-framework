@@ -23,6 +23,8 @@ class DetectionAlgorithm {
 		var classTypes = Query.search("classType").get();
 		
 		this.recursive(classTypes, [], 0);
+		
+		this.detections = DetectionAlgorithmLight.removeDuplicates(this.detections);
 	
 		return this.detections;
 	}
