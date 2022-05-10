@@ -71,6 +71,7 @@
 		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
 		<attribute name="interfaces" type="interface[]" tooltip="The interfaces that this class DIRECTLY extends"/>	
 		<attribute name="allInterfaces" type="interface[]" tooltip="The interfaces that this class extends"/>		
+		<attribute name="isAbstract" type="boolean" tooltip="Check if the class is abstract."/>
 	</artifact>
 	
 	<artifact class="method" default="name">

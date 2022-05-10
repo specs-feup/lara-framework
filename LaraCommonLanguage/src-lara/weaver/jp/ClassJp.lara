@@ -103,6 +103,11 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'isCustom', {
 	get: function () { throw this.constructor.name + '.isCustom not implemented'; }
 });
 
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'isAbstract', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isAbstract not implemented'; }
+});
+
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'interfaces', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.interfaces not implemented'; }

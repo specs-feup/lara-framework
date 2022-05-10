@@ -1,26 +1,41 @@
 laraImport("lcl.LaraCommonLanguage");
 laraImport("weaver.Query");
 
-class DetectionAlgorithm {
+class DetectionAlgorithmLight {
 
 	constructor(members, connections) {
 		this.members = members;
 		this.connections = connections;
 		this.detections = [];
+		this.classTypesMap = new Map();
 	}
 	
 	detect() {
 		this.detections = [];
 		
+		this.classTypesMap = new Map();
+		
 		var classTypes = Query.search("classType").get();
 		
+		for (var i = 0 ; i < classTypes.length ; i++) {
+			var classType = classTypes[i];
+	 	// for (const classType of classTypes) {
+			// print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name);
+			// println(" (" + Array.from(classType.types()) + ")");
+			var classTypeObject = new ClassTypeObject(classType);
+			classTypeObject.compute();
+			this.classTypesMap.set(classType.name, classTypeObject);
+		}
+	
 		this.recursive(classTypes, [], 0);
+		
+		this.detections = this.#removeDuplicates(this.detections);
 	
 		return this.detections;
 	}
 	
 	recursive(classTypes, candidates, depth) {
-	
+		
 		if (depth < this.members.length) {
 	
 			for (var i = 0 ; i < classTypes.length ; i++) {
@@ -54,8 +69,8 @@ class DetectionAlgorithm {
 	
 	/*
 	checkAbstraction(classType, abstractionLevel) {
-		if (abstractionLevel == "Abstracted" && (classType.instanceOf("interface") || classType.instanceOf("class"))) return true;
-		if (abstractionLevel == "Abstract" && classType.instanceOf("class")) return true;
+		if (abstractionLevel == "Abstracted" && (classType.instanceOf("interface") || (classType.instanceOf("class") && classType.isAbstract()))) return true;
+		if (abstractionLevel == "Abstract" && classType.instanceOf("class") && classType.isAbstract()) return true;
 		if (abstractionLevel == "Interface" && classType.instanceOf("interface")) return true;
 		if (abstractionLevel == "Normal" && classType.instanceOf("class")) return true;
 		if (abstractionLevel == "Any" && classType.instanceOf("classType")) return true;
@@ -126,8 +141,99 @@ class DetectionAlgorithm {
 	}
 	
 	checkRelationCalls(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationCalls.includes(toObj.name);
+	}
 	
-		var $calls = Query.searchFrom(fromObj, "call").get();
+	checkRelationCreates(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationCreates.includes(toObj.name);
+	}
+	
+	checkRelationHas(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationHas.includes(toObj.name);
+	}
+	
+	checkRelationInherits(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationInherits.includes(toObj.name);
+	}
+	
+	checkRelationReferences(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationReferences.includes(toObj.name);
+	}
+	
+	checkRelationUses(fromObj, toObj) {
+		
+		var $fromObj = this.classTypesMap.get(fromObj.name);
+		
+		return $fromObj.relationUses.includes(toObj.name);
+	}
+	
+	#removeDuplicates(detections) {
+		
+		function arrayEquals(a, b) {
+			return Array.isArray(a) &&
+		    	Array.isArray(b) &&
+			    a.length === b.length &&
+			    a.every((val, index) => val === b[index]);
+		}
+		
+		let out = [];
+		detections.forEach((detection) => {
+			for (var o of out) {
+				if (arrayEquals(detection, o)) return;
+			}
+			
+			out.push(detection);
+		});
+		
+		return out;
+	}
+}
+
+	
+class ClassTypeObject {
+	
+	
+	constructor(classType) {
+		this.classType = classType;
+	}
+	
+	compute() {
+		this.#computeRelationCalls();
+		this.#computeRelationCreates();
+		this.#computeRelationHas();
+		this.#computeRelationInherits();
+		this.#computeRelationReferences();
+		this.#computeRelationUses();
+		
+		this.relationCalls = [...new Set(this.relationCalls)];
+		this.relationCreates = [...new Set(this.relationCreates)];
+		this.relationHas = [...new Set(this.relationHas)];
+		this.relationInherits = [...new Set(this.relationInherits)];
+		this.relationReferences = [...new Set(this.relationReferences)];
+		this.relationUses = [...new Set(this.relationUses)];
+	}
+	
+	
+	#computeRelationCalls() {
+		
+		this.relationCalls = [];
+	
+		var $calls = Query.searchFrom(this.classType, "call").get();
 		
 		for(var $call of $calls) {
 	
@@ -136,26 +242,32 @@ class DetectionAlgorithm {
 			if ($call.method == undefined || $call.method == null) continue;
 			if ($call.method.isStatic) continue;
 	
-			if (toObj.name == $call.method.class.name) return true;
+			// push name
+			this.relationCalls.push($call.method.class.name);
 		}
-	
-		return false;
 	}
 	
-	checkRelationCreates(fromObj, toObj) {
+	#computeRelationCreates() {
 		
-		var $constructorCalls = Query.searchFrom(fromObj, "constructorCall").get();
+		this.relationCreates = [];
+		
+		var $constructorCalls = Query.searchFrom(this.classType, "constructorCall").get();
 		
 		for(var $constructorCall of $constructorCalls) {
-			if (toObj.name == $constructorCall.method.class.name) return true;
+			
+			// filter out
+			if ($constructorCall.method == undefined || $constructorCall.method == null) continue;
+			 
+			// push name
+			this.relationCreates.push($constructorCall.method.class.name);
 		}
-		
-		return false;
 	}
 	
-	checkRelationHas(fromObj, toObj) {
+	#computeRelationHas() {
 		
-		var $fields = fromObj.fields;
+		this.relationHas = [];
+		
+		var $fields = this.classType.fields;
 		
 		if ($fields == undefined) return false;
 	
@@ -163,37 +275,44 @@ class DetectionAlgorithm {
 			var classType = $field.type.classType;
 			if (classType == null) continue;
 			
-			if (toObj.name == classType.name) return true;
+			// push name
+			this.relationHas.push(classType.name);
 		}
-		
-		return false;
 	}
 	
-	checkRelationInherits(fromObj, toObj) {
+	#computeRelationInherits() {
+		
+		this.relationInherits = [];
 	
-		// var superClasses = fromObj.allSuperClasses;
-		// var interfaces = fromObj.allInterfaces;
-		var superClasses = fromObj.superClasses;
-		var interfaces = fromObj.interfaces;
+		// var superClasses = this.classType.allSuperClasses;
+		// var interfaces = this.classType.allInterfaces;
+		var superClasses = this.classType.superClasses;
+		var interfaces = this.classType.interfaces;
+		
+		if (!superClasses) superClasses = [];
+		if (!interfaces) interfaces = [];
 	
 		var names = superClasses.map(c => c.name)
 			.concat(interfaces.map(i => i.name));
 	
 		for (var name of names) {
-			if (toObj.name == name) return true;
+			
+			// push name
+			this.relationInherits.push(name);
 		}
-		return false;
 	}
 	
-	checkRelationReferences(fromObj, toObj) {
+	#computeRelationReferences() {
+		
+		this.relationReferences = [];
 	
+		//
 		// //  and constructors
-		var $constructors = Query.searchFrom(fromObj, "constructor").get(); 
-	
-		// 
-		// for(var $method of fromObj.allMethods) {
-		for(var $method of fromObj.methods.concat($constructors)) {
-			// if ($method.instanceOf("constructorCall")) continue;
+		var $constructors = Query.searchFrom(this.classType, "constructor").get(); 
+		//  
+		// for(var $method of this.classType.allMethods) {
+		for(var $method of this.classType.methods.concat($constructors)) {
+			// if ($method.instanceOf("constructor")) continue;
 			if ($method.isStatic) continue;
 			
 			for (var $param of $method.params) {
@@ -201,18 +320,19 @@ class DetectionAlgorithm {
 				var classType = $param.type.classType;
 				if (classType == null) continue;
 	
-				if (toObj.name == classType.name) return true;
+				// push name
+				this.relationReferences.push(classType.name);
 			}
 		}
-	
-		return false;
 	}
 	
-	checkRelationUses(fromObj, toObj) {
+	#computeRelationUses() {
+		
+		this.relationUses = [];
 	
 		// 
-		// for(var $method of fromObj.allMethods) {
-		for(var $method of fromObj.methods) {
+		// for(var $method of this.classType.allMethods) {
+		for(var $method of this.classType.methods) {
 	
 			// filter constructors, and static
 			if ($method.instanceOf("constructor")) continue;
@@ -221,9 +341,9 @@ class DetectionAlgorithm {
 			var classType = $method.returnType.classType;
 			if (classType == null) continue;
 			
-			if (toObj.name == classType.name) return true;
+			// push name
+			this.relationUses.push(classType.name);
 		}
-	
-		return false;
 	}
-}
+	
+};
