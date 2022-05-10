@@ -8,6 +8,12 @@ class DetectionAlgorithmLight {
 		this.connections = connections;
 		this.detections = [];
 		this.classTypesMap = new Map();
+		
+		this.dpCoreCompatibility = false;
+	}
+	
+	setCompatibility(dpCoreCompatibility) {
+		this.dpCoreCompatibility = dpCoreCompatibility;
 	}
 	
 	detect() {
@@ -23,6 +29,7 @@ class DetectionAlgorithmLight {
 			// print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name);
 			// println(" (" + Array.from(classType.types()) + ")");
 			var classTypeObject = new ClassTypeObject(classType);
+			classTypeObject.setCompatibility(this.dpCoreCompatibility);
 			classTypeObject.compute();
 			this.classTypesMap.set(classType.name, classTypeObject);
 		}
@@ -202,14 +209,60 @@ class DetectionAlgorithmLight {
 		
 		return out;
 	}
+	
+	
+	static getScope(element) {
+		// println("   + " + element);
+		if (element == null) return null;
+		if (element == undefined) return null;
+		
+		if (element.joinPointType == "class") return element;
+		if (element.joinPointType == "interface") return element;
+		if (element.joinPointType == "classType") return element;
+		
+		if (element.joinPointType == "constructorCall") return element;
+		
+		return this.getScope(element.parent);
+	}
+	
+	static callsFunctionResult($call) {
+		
+		var isFunctionResult = false;
+		for (var child of $call.children) {
+			// skip type
+			if (child.joinPointType == "type") continue;
+			
+			if (child.code.includes("()")) isFunctionResult = true;
+			// if (child.code.match("()")) isFunctionResult = true;
+			/*
+			if (child.joinPointType == "expr") {
+				skip = isFunctionResult;
+			}
+			else if (child.joinPointType == "memberCall") {
+				skip = isFunctionResult;
+			}
+			else {
+				skip = isFunctionResult;
+			}
+			*/
+			break;
+		}
+		
+		return isFunctionResult;
+	}
 }
 
 	
 class ClassTypeObject {
 	
-	
 	constructor(classType) {
 		this.classType = classType;
+		
+		this.dpCoreCompatibility = false;
+	}
+	
+	setCompatibility(dpCoreCompatibility) {
+		this.dpCoreCompatibility = dpCoreCompatibility;
 	}
 	
 	compute() {
@@ -241,6 +294,45 @@ class ClassTypeObject {
 			if ($call.instanceOf("constructorCall")) continue;
 			if ($call.method == undefined || $call.method == null) continue;
 			if ($call.method.isStatic) continue;
+			
+			// filter out of scope
+			let scopeElement = DetectionAlgorithmLight.getScope($call);
+			if (scopeElement.instanceOf("constructorCall")) continue;
+			
+			/*
+			if (this.classType.name == "MyTopicSubscriber"
+			 || this.classType.name == "Observer"
+			 || (this.classType.name == "DrawApplication" && $call.method.class.name == "PaletteButton")) {
+				
+				println();
+				
+				println(this.classType.name + " => " + $call.method.class.name + " (" + $call.method.parent.name + ")");
+				println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call) + ")");
+				println(this.classType.name + " => " + $call.function.class.name);
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call).code + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent.code + ")");
+				println($call.method.id);
+				println($call.parent.parent.code);
+				/*println($call.method.name);
+				println($call.code);
+				println($call.children);
+				
+				for (var child of $call.children) {
+				// if ($call.children.length > 1) {
+					// println($call.children[1].code);
+					println("   -> (" + child.joinPointType + ") " + child.code);
+					println("   -> " + child.code.includes("()"));
+				}
+				/* * /
+			}
+			/* */
+			
+			// check if expr only
+			let callsFunctionResult = DetectionAlgorithmLight.callsFunctionResult($call);
+			if (callsFunctionResult == true && this.dpCoreCompatibility == true) continue;
 	
 			// push name
 			this.relationCalls.push($call.method.class.name);

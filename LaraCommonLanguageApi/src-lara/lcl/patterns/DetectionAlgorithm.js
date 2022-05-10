@@ -1,12 +1,20 @@
 laraImport("lcl.LaraCommonLanguage");
 laraImport("weaver.Query");
 
+laraImport("lcl.patterns.DetectionAlgorithmLight");
+
 class DetectionAlgorithm {
 
 	constructor(members, connections) {
 		this.members = members;
 		this.connections = connections;
 		this.detections = [];
+		
+		this.dpCoreCompatibility = false;
+	}
+	
+	setCompatibility(dpCoreCompatibility) {
+		this.dpCoreCompatibility = dpCoreCompatibility;
 	}
 	
 	detect() {
@@ -136,6 +144,14 @@ class DetectionAlgorithm {
 			if ($call.method == undefined || $call.method == null) continue;
 			if ($call.method.isStatic) continue;
 	
+			// filter out of scope
+			let scopeElement = DetectionAlgorithmLight.getScope($call);
+			if (scopeElement.instanceOf("constructorCall")) continue;
+			
+			// check if expr only
+			let callsFunctionResult = DetectionAlgorithmLight.callsFunctionResult($call);
+			if (callsFunctionResult == true && this.dpCoreCompatibility == true) continue;
+			
 			if (toObj.name == $call.method.class.name) return true;
 		}
 	
