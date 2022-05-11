@@ -232,7 +232,7 @@ class DetectionAlgorithmLight {
 			// skip type
 			if (child.joinPointType == "type") continue;
 			
-			if (child.code.includes("()")) isFunctionResult = true;
+			if (child.code.includes("(") && child.code.includes(")")) isFunctionResult = true;
 			// if (child.code.match("()")) isFunctionResult = true;
 			/*
 			if (child.joinPointType == "expr") {
@@ -249,6 +249,15 @@ class DetectionAlgorithmLight {
 		}
 		
 		return isFunctionResult;
+	}
+	
+	static callsSuper($call) {
+		
+		for (var child of $call.children) {
+			if (child.code == "super") return true;
+		}
+		
+		return false;
 	}
 }
 
@@ -330,9 +339,66 @@ class ClassTypeObject {
 			}
 			/* */
 			
+			
 			// check if expr only
 			let callsFunctionResult = DetectionAlgorithmLight.callsFunctionResult($call);
 			if (callsFunctionResult == true && this.dpCoreCompatibility == true) continue;
+			
+			// check if calls super
+			let callsSuper = DetectionAlgorithmLight.callsSuper($call);
+			if (callsSuper == true) continue;
+			
+			// check if protected method
+			let protectedMethod = false;
+			for (var child of $call.children) {
+				if (child.code.startsWith($call.method.name)) protectedMethod = true;
+				break
+			}
+			if (protectedMethod == true) continue;
+			
+			/*
+			if (this.classType.name == "StandardDrawingView") {
+				
+				println();
+				
+				var superClasses = this.classType.allSuperClasses;
+				var interfaces = this.classType.allInterfaces;
+				
+				if (!superClasses) superClasses = [];
+				if (!interfaces) interfaces = [];
+			
+				var names = superClasses.map(c => c.name).concat(interfaces.map(i => i.name));
+				
+				println(this.classType.name + " => " + $call.method.class.name + " (" + $call.method.parent.name + ")");
+				println(this.classType.name + " => " + $call.method.name + " (" + DetectionAlgorithmLight.getScope($call).name + ")");
+				println(this.classType.name + " => " + names.includes($call.method.parent.name));
+				// this.classType.all;
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call).code + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent + ")");
+				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent.code + ")");
+				println($call.method.id);
+				println($call.parent.code);
+				// println($call.parent.parent);
+				// println($call.parent.parent.code);
+				
+				for (var child of $call.children) {
+					println(" -> " + child + " :: " + child.code);
+				}
+				/*println($call.method.name);
+				println($call.code);
+				println($call.children);
+				
+				for (var child of $call.children) {
+				// if ($call.children.length > 1) {
+					// println($call.children[1].code);
+					println("   -> (" + child.joinPointType + ") " + child.code);
+					println("   -> " + child.code.includes("()"));
+				}
+				/* * /
+			}
+			/* */
 	
 			// push name
 			this.relationCalls.push($call.method.class.name);
@@ -349,6 +415,11 @@ class ClassTypeObject {
 			
 			// filter out
 			if ($constructorCall.method == undefined || $constructorCall.method == null) continue;
+			
+			// filter out of scope
+			let scopeElement = DetectionAlgorithmLight.getScope($constructorCall.parent);
+			if (scopeElement.instanceOf("constructorCall")) continue;
+			if (scopeElement.name != this.classType.name) continue;
 			 
 			// push name
 			this.relationCreates.push($constructorCall.method.class.name);

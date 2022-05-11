@@ -154,6 +154,18 @@ class DetectionAlgorithm {
 			let callsFunctionResult = DetectionAlgorithmLight.callsFunctionResult($call);
 			if (callsFunctionResult == true && this.dpCoreCompatibility == true) continue;
 			
+			// check if calls super
+			let callsSuper = DetectionAlgorithmLight.callsSuper($call);
+			if (callsSuper == true) continue;
+			
+			// check if protected method
+			let protectedMethod = false;
+			for (var child of $call.children) {
+				if (child.code.startsWith($call.method.name)) protectedMethod = true;
+				break
+			}
+			if (protectedMethod == true) continue;
+			
 			if (toObj.name == $call.method.class.name) return true;
 		}
 	
@@ -165,6 +177,15 @@ class DetectionAlgorithm {
 		var $constructorCalls = Query.searchFrom(fromObj, "constructorCall").get();
 		
 		for(var $constructorCall of $constructorCalls) {
+			
+			// filter out
+			if ($constructorCall.method == undefined || $constructorCall.method == null) continue;
+			
+			// filter out of scope
+			let scopeElement = DetectionAlgorithmLight.getScope($constructorCall.parent);
+			if (scopeElement.instanceOf("constructorCall")) continue;
+			if (scopeElement.name != this.classType.name) continue;
+			
 			if (toObj.name == $constructorCall.method.class.name) return true;
 		}
 		
