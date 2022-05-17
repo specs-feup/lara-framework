@@ -62,6 +62,8 @@ public enum LaraApiResource implements LaraResourceProvider {
     GRAPHS("graphs/Graphs.js"),
     GRAPH_NODE("graphs/GraphNode.js"),
     GRAPH_EDGE("graphs/GraphEdge.js"),
+    NODE_DATA("graphs/NodeData.js"),
+    EDGE_DATA("graphs/EdgeData.js"),
 
     // Iterators
     LARA_ITERATOR("iterators/LaraIterator.lara"),

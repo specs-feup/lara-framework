@@ -1,3 +1,6 @@
+laraImport("lara.graphs.NodeData");
+laraImport("lara.graphs.EdgeData");
+
 /**
  * Utility class related with graph creation and manipulation.
  *
@@ -30,12 +33,24 @@ class Graphs {
 	}
 	
 	static addNode(graph, nodeData) {
-		return graph.add({ group: 'nodes', data: nodeData});
+		let _nodeData = nodeData ?? {};
+		
+		// Check if NodeData
+		if(!(_nodeData instanceof NodeData)) {
+			_nodeData = Object.assign(new NodeData(), _nodeData);
+		}
+		
+		return graph.add({ group: 'nodes', data: _nodeData});
 	}
 	
 	static addEdge(graph, sourceNode, targetNode, edgeData) {
-		const _edgeData = edgeData ?? new GraphEdge();
-		
+		let _edgeData = edgeData ?? {};
+
+		// Check if EdgeData
+		if(!(_edgeData instanceof EdgeData)) {
+			_edgeData = Object.assign(new EdgeData(), _edgeData);
+		}
+				
 		_edgeData.source = sourceNode.id();
 		_edgeData.target = targetNode.id();
 				

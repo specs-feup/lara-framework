@@ -1,16 +1,14 @@
+laraImport("lara.graphs.EdgeData");
+
 /**
  * Base class for graph edges.
  */
-class GraphEdge {
-	
-	id;
-	source;
-	target;
-	
+class GraphEdge extends EdgeData {
+		
 	constructor(id, source, target) {
-		this.id = id;
-		this.source = source;	
-		this.target = target;			
+		super(id, source, target);
+		
+		println("!!! Class lara.graphs.GraphEdge is deprecated, please use lara.graphs.EdgeData instead");
 	}	
 	
 }
