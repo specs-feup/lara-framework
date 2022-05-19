@@ -70,10 +70,10 @@ class Graphs {
 		
 		for(const edge of graph.edges()) {
 			dot += '"' + edge.data().source + '" -> "' + edge.data().target + '" [label="'+Graphs._sanitizeDotLabel(edge.data().toString())+'"];\n'
-			println("Edge: ")
-			printlnObject(edge.data());
-			println("Source: " + edge.data().source);
-			println("Target: " + edge.data().target);
+			//println("Edge: ")
+			//printlnObject(edge.data());
+			//println("Source: " + edge.data().source);
+			//println("Target: " + edge.data().target);
 		}
 		
 		dot += "}\n";
