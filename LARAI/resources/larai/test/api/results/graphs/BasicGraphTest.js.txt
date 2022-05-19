@@ -1,0 +1,12 @@
+Node 1 id() is string: true
+Node 1 data() is NodeData: true
+Node 1 data correct: true
+Node 2 id() is string: true
+Node 2 data() is NodeData: true
+Node 2 data correct: true
+Edge 1 id() is string: true
+Edge 1 data() is EdgeData: true
+Edge 1 data correct: true
+Edge 2 id() is string: true
+Edge 2 data() is EdgeData: true
+Edge 2 data correct: true
