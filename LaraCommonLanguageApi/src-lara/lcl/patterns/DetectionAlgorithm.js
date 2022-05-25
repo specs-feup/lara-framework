@@ -11,25 +11,48 @@ class DetectionAlgorithm {
 		this.detections = [];
 		
 		this.dpCoreCompatibility = false;
+		this.fullNaming = false;
 	}
 	
 	setCompatibility(dpCoreCompatibility) {
 		this.dpCoreCompatibility = dpCoreCompatibility;
 	}
 	
-	detect() {
+	setFullNaming(fullNaming) {
+		this.fullNaming = fullNaming;
+	}
+	
+	parseRelations() {
+		var classTypes = Query.search("classType").get();
+	}
+	
+	detect(members, connections) {
+		if (typeof members !== "undefined" && typeof connections !== "undefined") {
+			// it was previously parsed
+			this.members = members;
+			this.connections = connections;
+		}
+		else {
+			// back-compactability, parse again
+			this.parseRelations();
+		}
 		this.detections = [];
 		
 		var classTypes = Query.search("classType").get();
 		
-		this.recursive(classTypes, [], 0);
+		this.#recursive(classTypes, [], 0);
 		
 		this.detections = DetectionAlgorithmLight.removeDuplicates(this.detections);
 	
 		return this.detections;
 	}
 	
-	recursive(classTypes, candidates, depth) {
+	detect() {
+		this.parseRelations();
+		return this.detect(this.members, this.connections);
+	}
+	
+	#recursive(classTypes, candidates, depth) {
 	
 		if (depth < this.members.length) {
 	
@@ -53,7 +76,7 @@ class DetectionAlgorithm {
 	
 				// println(":: " + candidates.map(x => x.name));
 				
-				this.recursive(newClassTypes, newCandidates, depth + 1);
+				this.#recursive(newClassTypes, newCandidates, depth + 1);
 			}
 		}
 		else {

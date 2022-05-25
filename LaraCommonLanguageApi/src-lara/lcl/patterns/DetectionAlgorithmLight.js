@@ -10,14 +10,18 @@ class DetectionAlgorithmLight {
 		this.classTypesMap = new Map();
 		
 		this.dpCoreCompatibility = false;
+		this.fullNaming = false;
 	}
 	
 	setCompatibility(dpCoreCompatibility) {
 		this.dpCoreCompatibility = dpCoreCompatibility;
 	}
 	
-	detect() {
-		this.detections = [];
+	setFullNaming(fullNaming) {
+		this.fullNaming = fullNaming;
+	}
+	
+	parseRelations() {
 		
 		this.classTypesMap = new Map();
 		
@@ -26,22 +30,45 @@ class DetectionAlgorithmLight {
 		for (var i = 0 ; i < classTypes.length ; i++) {
 			var classType = classTypes[i];
 	 	// for (const classType of classTypes) {
-			// print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name);
-			// println(" (" + Array.from(classType.types()) + ")");
+			// print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name + " / " + classType._qualifiedName);
+			// println();// " (" + Array.from(classType.types()) + ")");
 			var classTypeObject = new ClassTypeObject(classType);
 			classTypeObject.setCompatibility(this.dpCoreCompatibility);
+			classTypeObject.setFullNaming(this.fullNaming);
 			classTypeObject.compute();
-			this.classTypesMap.set(classType.name, classTypeObject);
-		}
+			this.classTypesMap.set(this.#namingOf(classType), classTypeObject);
+		}	
+	}
 	
-		this.recursive(classTypes, [], 0);
+	detect(members, connections) {
+		if (typeof members !== "undefined" && typeof connections !== "undefined") {
+			// it was previously parsed
+			this.members = members;
+			this.connections = connections;
+		}
+		else {
+			// back-compactability, parse again
+			this.parseRelations();
+		}
+		this.detections = [];
+	
+		this.#recursive(Array.from(this.classTypesMap.values()).map(obj => obj.classType), [], 0);
 		
 		this.detections = this.constructor.removeDuplicates(this.detections);
 	
 		return this.detections;
 	}
 	
-	recursive(classTypes, candidates, depth) {
+	#namingOf(classType) {
+		if (this.fullNaming) {
+			return classType._qualifiedName;
+		}
+		else {
+			return classType.name
+		}
+	}
+	
+	#recursive(classTypes, candidates, depth) {
 		
 		if (depth < this.members.length) {
 	
@@ -65,11 +92,11 @@ class DetectionAlgorithmLight {
 	
 				// println(":: " + candidates.map(x => x.name));
 				
-				this.recursive(newClassTypes, newCandidates, depth + 1);
+				this.#recursive(newClassTypes, newCandidates, depth + 1);
 			}
 		}
 		else {
-			this.detections.push(candidates.map(x => x.name));
+			this.detections.push(candidates.map(x => this.#namingOf(x)));
 			// println(":: " + candidates.map(x => x.name));
 		}
 	}
@@ -149,44 +176,44 @@ class DetectionAlgorithmLight {
 	
 	checkRelationCalls(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationCalls.includes(toObj.name);
+		return $fromObj.relationCalls.includes(this.#namingOf(toObj));
 	}
 	
 	checkRelationCreates(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationCreates.includes(toObj.name);
+		return $fromObj.relationCreates.includes(this.#namingOf(toObj));
 	}
 	
 	checkRelationHas(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationHas.includes(toObj.name);
+		return $fromObj.relationHas.includes(this.#namingOf(toObj));
 	}
 	
 	checkRelationInherits(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationInherits.includes(toObj.name);
+		return $fromObj.relationInherits.includes(this.#namingOf(toObj));
 	}
 	
 	checkRelationReferences(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationReferences.includes(toObj.name);
+		return $fromObj.relationReferences.includes(this.#namingOf(toObj));
 	}
 	
 	checkRelationUses(fromObj, toObj) {
 		
-		var $fromObj = this.classTypesMap.get(fromObj.name);
+		var $fromObj = this.classTypesMap.get(this.#namingOf(fromObj));
 		
-		return $fromObj.relationUses.includes(toObj.name);
+		return $fromObj.relationUses.includes(this.#namingOf(toObj));
 	}
 	
 	 static removeDuplicates(detections) {
@@ -268,10 +295,24 @@ class ClassTypeObject {
 		this.classType = classType;
 		
 		this.dpCoreCompatibility = false;
+		this.fullNaming = false;
 	}
 	
 	setCompatibility(dpCoreCompatibility) {
 		this.dpCoreCompatibility = dpCoreCompatibility;
+	}
+	
+	setFullNaming(fullNaming) {
+		this.fullNaming = fullNaming;
+	}
+	
+	#namingOf(classType) {
+		if (this.fullNaming) {
+			return classType._qualifiedName;
+		}
+		else {
+			return classType.name
+		}
 	}
 	
 	compute() {
@@ -300,6 +341,7 @@ class ClassTypeObject {
 		for(var $call of $calls) {
 	
 			// filter out constructor calls
+			if ($call == undefined || $call == null) continue;
 			if ($call.instanceOf("constructorCall")) continue;
 			if ($call.method == undefined || $call.method == null) continue;
 			if ($call.method.isStatic) continue;
@@ -307,37 +349,6 @@ class ClassTypeObject {
 			// filter out of scope
 			let scopeElement = DetectionAlgorithmLight.getScope($call);
 			if (scopeElement.instanceOf("constructorCall")) continue;
-			
-			/*
-			if (this.classType.name == "MyTopicSubscriber"
-			 || this.classType.name == "Observer"
-			 || (this.classType.name == "DrawApplication" && $call.method.class.name == "PaletteButton")) {
-				
-				println();
-				
-				println(this.classType.name + " => " + $call.method.class.name + " (" + $call.method.parent.name + ")");
-				println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call) + ")");
-				println(this.classType.name + " => " + $call.function.class.name);
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call).code + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent.code + ")");
-				println($call.method.id);
-				println($call.parent.parent.code);
-				/*println($call.method.name);
-				println($call.code);
-				println($call.children);
-				
-				for (var child of $call.children) {
-				// if ($call.children.length > 1) {
-					// println($call.children[1].code);
-					println("   -> (" + child.joinPointType + ") " + child.code);
-					println("   -> " + child.code.includes("()"));
-				}
-				/* * /
-			}
-			/* */
 			
 			
 			// check if expr only
@@ -355,53 +366,9 @@ class ClassTypeObject {
 				break
 			}
 			if (protectedMethod == true) continue;
-			
-			/*
-			if (this.classType.name == "StandardDrawingView") {
-				
-				println();
-				
-				var superClasses = this.classType.allSuperClasses;
-				var interfaces = this.classType.allInterfaces;
-				
-				if (!superClasses) superClasses = [];
-				if (!interfaces) interfaces = [];
-			
-				var names = superClasses.map(c => c.name).concat(interfaces.map(i => i.name));
-				
-				println(this.classType.name + " => " + $call.method.class.name + " (" + $call.method.parent.name + ")");
-				println(this.classType.name + " => " + $call.method.name + " (" + DetectionAlgorithmLight.getScope($call).name + ")");
-				println(this.classType.name + " => " + names.includes($call.method.parent.name));
-				// this.classType.all;
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + this.#getScope($call).code + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent + ")");
-				// println(this.classType.name + " => " + $call.method.class.name + " (" + $call.parent.parent.parent.parent.parent.code + ")");
-				println($call.method.id);
-				println($call.parent.code);
-				// println($call.parent.parent);
-				// println($call.parent.parent.code);
-				
-				for (var child of $call.children) {
-					println(" -> " + child + " :: " + child.code);
-				}
-				/*println($call.method.name);
-				println($call.code);
-				println($call.children);
-				
-				for (var child of $call.children) {
-				// if ($call.children.length > 1) {
-					// println($call.children[1].code);
-					println("   -> (" + child.joinPointType + ") " + child.code);
-					println("   -> " + child.code.includes("()"));
-				}
-				/* * /
-			}
-			/* */
 	
 			// push name
-			this.relationCalls.push($call.method.class.name);
+			this.relationCalls.push(this.#namingOf($call.method.class));
 		}
 	}
 	
@@ -418,11 +385,12 @@ class ClassTypeObject {
 			
 			// filter out of scope
 			let scopeElement = DetectionAlgorithmLight.getScope($constructorCall.parent);
+			if (scopeElement == null || scopeElement == undefined) continue;
 			if (scopeElement.instanceOf("constructorCall")) continue;
 			if (scopeElement.name != this.classType.name) continue;
 			 
 			// push name
-			this.relationCreates.push($constructorCall.method.class.name);
+			this.relationCreates.push(this.#namingOf($constructorCall.method.class));
 		}
 	}
 	
@@ -439,7 +407,7 @@ class ClassTypeObject {
 			if (classType == null) continue;
 			
 			// push name
-			this.relationHas.push(classType.name);
+			this.relationHas.push(this.#namingOf(classType));
 		}
 	}
 	
@@ -455,8 +423,8 @@ class ClassTypeObject {
 		if (!superClasses) superClasses = [];
 		if (!interfaces) interfaces = [];
 	
-		var names = superClasses.map(c => c.name)
-			.concat(interfaces.map(i => i.name));
+		var names = superClasses.map(c => this.#namingOf(c))
+			.concat(interfaces.map(i => this.#namingOf(i)));
 	
 		for (var name of names) {
 			
@@ -484,7 +452,7 @@ class ClassTypeObject {
 				if (classType == null) continue;
 	
 				// push name
-				this.relationReferences.push(classType.name);
+				this.relationReferences.push(this.#namingOf(classType));
 			}
 		}
 	}
@@ -498,6 +466,7 @@ class ClassTypeObject {
 		for(var $method of this.classType.methods) {
 	
 			// filter constructors, and static
+			if ($method == null || $method == undefined) continue;
 			if ($method.instanceOf("constructor")) continue;
 			if ($method.isStatic) continue;
 			
@@ -505,7 +474,7 @@ class ClassTypeObject {
 			if (classType == null) continue;
 			
 			// push name
-			this.relationUses.push(classType.name);
+			this.relationUses.push(this.#namingOf(classType));
 		}
 	}
 	
