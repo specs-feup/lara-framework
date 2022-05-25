@@ -27,6 +27,7 @@ import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -175,9 +176,11 @@ public class LaraImporter {
 
         switch (ext) {
         case "js":
-            return new LaraImportData(filename, code, JsFileType.NORMAL);
+            var jsCode = processCode(code, filename);
+            return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
         case "mjs":
-            return new LaraImportData(filename, code, JsFileType.MODULE);
+            var mjsCode = processCode(code, filename);
+            return new LaraImportData(filename, mjsCode, JsFileType.MODULE);
         case "lara":
             // Compile LARA file
             var args = new ArrayList<>();
@@ -203,7 +206,7 @@ public class LaraImporter {
 
             var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
             try {
-                var jsCode = processor.toSimpleJs(aspectIr);
+                var aspectJsCode = processor.toSimpleJs(aspectIr);
 
                 // if (true) {
                 // // if (filename.equals("clava/clava/Clava.lara")) {
@@ -213,7 +216,7 @@ public class LaraImporter {
                 // }
 
                 // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
-                return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
+                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL);
             } catch (Exception e) {
                 throw new RuntimeException("Error during LARA compilation", e);
             }
@@ -222,6 +225,30 @@ public class LaraImporter {
             throw new CaseNotDefinedException(ext);
         }
 
+    }
+
+    /**
+     * Processes JS code that is going to be loaded.
+     * 
+     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
+     * 
+     * @param code
+     * @param filename
+     * @return
+     */
+    private String processCode(String code, String filename) {
+        var template = "if(typeof <VARNAME> === 'undefined') {\r\n"
+                + "    println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class '<VARNAME>'\");\r\n"
+                + "} else {\r\n"
+                + "    globalThis.<VARNAME> = <VARNAME>;\r\n"
+                + "}";
+
+        // Get varname
+        var varName = SpecsStrings.escapeJson(SpecsIo.removeExtension(new File(filename).getName()));
+        var escapedFilename = SpecsStrings.escapeJson(filename);
+        var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
+
+        return code + "\n\n" + globalizeCode;
     }
 
     private MultiMap<String, ResourceProvider> buildIncludeResourcesMap() {
