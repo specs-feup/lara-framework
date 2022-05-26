@@ -320,8 +320,23 @@ public class EsprimaParser {
 
     private List<String> getParams(EsprimaNode function) {
         return function.getAsNodes("params").stream()
-                .map(param -> param.getAsString("name"))
+                .map(this::getParamName)
                 .collect(Collectors.toList());
+    }
+
+    private String getParamName(EsprimaNode node) {
+        var nodeType = node.getAsString("type");
+        switch (nodeType) {
+        case "Identifier":
+            return node.getAsString("name");
+        case "RestElement":
+            return "..." + getParamName(node.getAsNode("argument"));
+        case "AssignmentPattern":
+            return getParamName(node.getAsNode("left"));
+        default:
+            throw new RuntimeException("Case not defined: " + nodeType + " for node '" + node + "'");
+        }
+
     }
 
 }

@@ -41,11 +41,13 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
+import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.jsengine.JsEngineType;
+import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
@@ -73,6 +75,7 @@ public class LaraIDataStore implements LaraiKeys {
     private Tools tools = null;
     // private final DataStore weaverDataStore;
     private final List<ResourceProvider> laraAPIs;
+    private final List<ResourceProvider> coreScripts;
 
     private final GitRepos gitRepos;
 
@@ -88,6 +91,10 @@ public class LaraIDataStore implements LaraiKeys {
         laraAPIs.addAll(WeaverApis.getApis());
         laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
         laraAPIs.addAll(weaverEngine.getAspectsAPI());
+
+        coreScripts = new ArrayList<>();
+        coreScripts.addAll(Arrays.asList(JsLaraCompatibilityResource.values()));
+        coreScripts.addAll(Arrays.asList(JsApiResource.values()));
 
         // laraAPIs = weaverEngine.getAspectsAPI();
         for (WeaverOption option : weaverEngine.getOptions()) {
@@ -347,6 +354,10 @@ public class LaraIDataStore implements LaraiKeys {
 
     public List<ResourceProvider> getLaraAPIs() {
         return laraAPIs;
+    }
+
+    public List<ResourceProvider> getCoreScripts() {
+        return coreScripts;
     }
 
     public Map<String, String> getBundleTags() {

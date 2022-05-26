@@ -37,6 +37,7 @@ import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.lara.loc.LaraStats;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
@@ -181,6 +182,14 @@ public class LaraIUtils {
         }
         if (cmd.hasOption(CLIOption.version.shortOption())) {
             System.out.println(LaraI.LARAI_VERSION_TEXT);
+
+            var implVersion = SpecsSystem.getBuildNumber();
+            if (implVersion == null) {
+                implVersion = "<build number not founnd>";
+            }
+
+            System.out.println("Build: " + implVersion);
+
             return true;
         }
         return false;

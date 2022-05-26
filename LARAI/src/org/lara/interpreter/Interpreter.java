@@ -118,6 +118,7 @@ public class Interpreter {
 
         if (importScripts) {
             importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+            importProcessor.importAndInitialize();
         }
 
         if (options.isJavaScriptStream()) { // AFTER it is initialized
@@ -142,27 +143,41 @@ public class Interpreter {
      * @return the main aspect after its execution
      * @throws ScriptException
      */
-    public Object interpret(Aspects asps) {
-
-        importProcessor.importAndInitialize();
-
-        final StringBuilder mainCall = aspectProcessor.generateJavaScript(asps);
-
-        return executeMainAspect(mainCall);
+    public StringBuilder interpretLara(Aspects asps) {
+        return aspectProcessor.generateJavaScript(asps);
     }
 
-    private Object executeMainAspect(final StringBuilder mainCall) {
+    public Object executeMainAspect(final StringBuilder mainCall) {
+        long start = setupStage();
 
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
         String code = mainCall.toString();
+        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
+
+        completeStage(start);
+        return result;
+    }
+
+    public Object executeMainAspect(File mainFile) {
+        long start = setupStage();
+
+        final Object result = evaluate(mainFile);
+
+        completeStage(start);
+        return result;
+    }
+
+    private long setupStage() {
+        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
         long begin = LaraI.getCurrentTime();
         laraInterp.getWeaver().setInitialTime(begin);
-        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
+        return begin;
+    }
+
+    private void completeStage(long begin) {
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
         // exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
-        return result;
     }
 
     /**
@@ -222,6 +237,16 @@ public class Interpreter {
             // throw new RuntimeException(e);
         }
 
+    }
+
+    public Object evaluate(File jsFile) {
+        return engine.evalFile(jsFile);
+
+        // try {
+        // return engine.evalFile(jsFile);
+        // } catch (Exception e) {
+        // throw new EvaluationException(e);
+        // }
     }
 
     /**

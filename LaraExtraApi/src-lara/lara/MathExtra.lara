@@ -28,7 +28,7 @@ MathExtra.simplify = function(expression, constants) {
 		}
 	
 	}
-	
+
 	return LaraExtraApiTools.simplifyExpression(expression, map);
 }
 

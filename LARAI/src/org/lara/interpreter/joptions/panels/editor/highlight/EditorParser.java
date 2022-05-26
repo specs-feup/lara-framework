@@ -70,13 +70,15 @@ public class EditorParser extends AbstractParser {
 
     @Override
     public ParseResult parse(RSyntaxDocument doc, String style) {
+
         // lines = new ArrayList<>();
         DefaultParseResult result = new DefaultParseResult(this);
 
         Element root = doc.getDefaultRootElement();
         result.setParsedLines(0, root.getElementCount() - 1);
 
-        if (doc.getLength() == 0) {
+        // Only LARA syntax is supported right now
+        if (doc.getLength() == 0 || !style.equals("text/lara")) {
             return result;
         }
 

@@ -287,7 +287,8 @@ function debugObject(object, origin) {
  * Converts an arguments object to a JavaScript array (Array).
  * 
  * If there is a single argument after the start index and that argument is an array, that array will be returned.
- * 
+ * This helper is kept for Lara code using directly the `arguments` object. If you are using Javascript, consider using [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters](rest parameters) to extract the variadic arguments of your function, and using the `flattenArgsArray` function to perform the single-element flattening, if needed.
+ *
  * @args {Arguments} args  - The original arguments object.
  * @args {Number} [start=0] - The index where we begin the conversion (inclusive).
  * */
@@ -327,6 +328,32 @@ function arrayFromArgs(args, start) {
 		
 	return newArray;
 	*/
+}
+
+/**
+ * Flatten an Arguments array. In this context, it means that if the array only contains one element,
+ * and that element is an Array, it will be returned instead of the outer Array.
+ * 
+ * This is implemented for compatibility reasons. As the Lara language used ES5 as its
+ * base, there was no spread operator to pass argument arrays to variadic functions, so there
+ * is calling code expecting to be able to pass a single array as the variadic argument.
+ * 
+ * @param {ArrayLike<any>} args Arguments array. Must be some array-like object.
+ * @returns Flattened argument array
+ */
+function flattenArgsArray(args) {
+	checkDefined(args, 'args', 'LaraCore collapseArgsArray');
+	if (args.length === 1) {
+		const singleArgument = args[0];
+		if (isArray(singleArgument)) {
+			return singleArgument;
+		}
+		if (isJavaList(singleArgument)) {
+			return toArray(singleArgument);
+		}
+	}
+	// use Array.from to ensure it is an array, not some other Array-like variable
+	return Array.from(args);
 }
 
 /**
