@@ -25,6 +25,7 @@ import larac.options.LaraCOptions;
 import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
@@ -164,11 +165,15 @@ public class LaraImporter {
 
     private LaraImportData buildLaraImport(ResourceProvider resource) {
         // return buildLaraImport(resource.read(), resource.getResource());
-        return buildLaraImport(resource.read(), resource.getFilename());
+        var code = resource.read();
+        SpecsCheck.checkNotNull(code, () -> "laraImport: could not read resource '" + resource.getResource() + "'");
+        return buildLaraImport(code, resource.getFilename());
     }
 
     private LaraImportData buildLaraImport(File importingFile) {
-        return buildLaraImport(SpecsIo.read(importingFile), importingFile.getName());
+        var code = SpecsIo.read(importingFile);
+        SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
+        return buildLaraImport(code, importingFile.getName());
     }
 
     private LaraImportData buildLaraImport(String code, String filename) {
