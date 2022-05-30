@@ -29,14 +29,23 @@ class DetectionAlgorithmLight {
 		
 		for (var i = 0 ; i < classTypes.length ; i++) {
 			var classType = classTypes[i];
-	 	// for (const classType of classTypes) {
-			// print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name + " / " + classType._qualifiedName);
+			var classTypeName = this.#namingOf(classType);
+			// println("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name + " / " + classType._qualifiedName);
 			// println();// " (" + Array.from(classType.types()) + ")");
+			
+			// avoid duplicates
+			if (this.classTypesMap.has(classTypeName)) {
+				println("warning: duplicate of '" + classTypeName + "' - skipping");
+				continue;
+				// println("warn: duplicate of '" + classTypeName + "' - overwriting");
+			}
+			
+			
 			var classTypeObject = new ClassTypeObject(classType);
 			classTypeObject.setCompatibility(this.dpCoreCompatibility);
 			classTypeObject.setFullNaming(this.fullNaming);
 			classTypeObject.compute();
-			this.classTypesMap.set(this.#namingOf(classType), classTypeObject);
+			this.classTypesMap.set(classTypeName, classTypeObject);
 		}	
 	}
 	
@@ -90,7 +99,7 @@ class DetectionAlgorithmLight {
 				newClassTypes.splice(i, 1);
 				newCandidates.push(classType);
 	
-				// println(":: " + candidates.map(x => x.name));
+				// println(":: " + newCandidates.map(x => x.name));
 				
 				this.#recursive(newClassTypes, newCandidates, depth + 1);
 			}
@@ -239,7 +248,6 @@ class DetectionAlgorithmLight {
 	
 	
 	static getScope(element) {
-		// println("   + " + element);
 		if (element == null) return null;
 		if (element == undefined) return null;
 		
@@ -248,7 +256,7 @@ class DetectionAlgorithmLight {
 		if (element.joinPointType == "classType") return element;
 		
 		if (element.joinPointType == "constructorCall") return element;
-		
+
 		return this.getScope(element.parent);
 	}
 	
@@ -335,11 +343,11 @@ class ClassTypeObject {
 	#computeRelationCalls() {
 		
 		this.relationCalls = [];
-	
+
 		var $calls = Query.searchFrom(this.classType, "call").get();
 		
 		for(var $call of $calls) {
-	
+			
 			// filter out constructor calls
 			if ($call == undefined || $call == null) continue;
 			if ($call.instanceOf("constructorCall")) continue;
@@ -348,7 +356,7 @@ class ClassTypeObject {
 			
 			// filter out of scope
 			let scopeElement = DetectionAlgorithmLight.getScope($call);
-			if (scopeElement.instanceOf("constructorCall")) continue;
+			if (scopeElement != null && scopeElement.instanceOf("constructorCall")) continue;
 			
 			
 			// check if expr only
@@ -388,7 +396,7 @@ class ClassTypeObject {
 			if (scopeElement == null || scopeElement == undefined) continue;
 			if (scopeElement.instanceOf("constructorCall")) continue;
 			if (scopeElement.name != this.classType.name) continue;
-			 
+
 			// push name
 			this.relationCreates.push(this.#namingOf($constructorCall.method.class));
 		}
@@ -415,7 +423,7 @@ class ClassTypeObject {
 		
 		this.relationInherits = [];
 	
-		// var superClasses = this.classType.allSuperClasses;
+	    // var superClasses = this.classType.allSuperClasses;
 		// var interfaces = this.classType.allInterfaces;
 		var superClasses = this.classType.superClasses;
 		var interfaces = this.classType.interfaces;
@@ -442,6 +450,7 @@ class ClassTypeObject {
 		var $constructors = Query.searchFrom(this.classType, "constructor").get(); 
 		//  
 		// for(var $method of this.classType.allMethods) {
+		// for(var $method of this.classType.allMethods.concat($constructors)) {
 		for(var $method of this.classType.methods.concat($constructors)) {
 			// if ($method.instanceOf("constructor")) continue;
 			if ($method.isStatic) continue;
