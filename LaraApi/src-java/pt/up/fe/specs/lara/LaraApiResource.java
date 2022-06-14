@@ -85,6 +85,7 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Pass
     PASS("pass/Pass.js"),
+    PASS_APPLY_ARG("pass/PassApplyArg.js"),
     PASSES("pass/Passes.js"),
     PASS_RESULT("pass/PassResult.js"),
 
