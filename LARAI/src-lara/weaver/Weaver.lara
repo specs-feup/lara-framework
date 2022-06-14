@@ -48,6 +48,8 @@ Weaver.writeCode = function(outputFolder) {
  * @param {String} type 
  */
 Weaver.isJoinPoint = function($joinpoint, type) {
+	return isJoinPoint($joinpoint, type);
+	/*
 	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
 
 	if(type === undefined) {
@@ -59,6 +61,7 @@ Weaver.isJoinPoint = function($joinpoint, type) {
 	}
 	
 	return $joinpoint.instanceOf(type);
+	*/
 }
 
 /**
