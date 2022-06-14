@@ -178,13 +178,24 @@ function checkArray(variable, source) {
 };
 
 
-function isJoinPoint($jp) {
-	return Weaver.isJoinPoint($jp);
+function isJoinPoint($jp, type) {
+	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($jp);
+
+	if(type === undefined) {
+		return isJoinPoint;
+	}
+
+	if(!isJoinPoint) {
+		throw "isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point";
+	}
+	
+	return $jp.instanceOf(type);
+	//return Weaver.isJoinPoint($jp);
 }
 
 function checkJoinPoint($jp, source) {
     
-    if(Weaver.isJoinPoint($jp)) {
+    if(isJoinPoint($jp)) {
         
         return;
     }
@@ -202,7 +213,7 @@ function checkJoinPointType($jp, type, source) {
    
     checkJoinPoint($jp, source);
    
-    if(Weaver.isJoinPoint($jp, type)) {
+    if(isJoinPoint($jp, type)) {
         
         return;
     }
@@ -216,7 +227,7 @@ function checkJoinPointType($jp, type, source) {
 }
 
 function isString(variable) {
-	return (typeof variable) === "string";
+	return (typeof variable) === "string" || (variable instanceof String);
 };
 
 function isObject(variable) {
