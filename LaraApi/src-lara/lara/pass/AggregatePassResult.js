@@ -1,4 +1,4 @@
-class AgregatePassResult {
+class AggregatePassResult {
   /**
    * Pass this result came from
    * @type {Pass}

@@ -83,7 +83,7 @@ class Pass {
       }
     }
 
-    return AgregatePassResult({
+    return AggregatePassResult({
       pass: this.constructor,
       casesFound: matchingJps.length,
       casesApplied,
