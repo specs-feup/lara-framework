@@ -19,12 +19,13 @@ class Pass {
   }
 
   get name() {
-    return this.#name;
+    return this.constructor.name;
   }
 
-  set name(name) {
-    this.#name = name;
-  }
+  /**
+   * @deprecated Automatically infered
+   */
+  set name(_name) {}
 
   /**
    * Applies this pass starting at the given join point. If no join point is given, uses the root join point.
