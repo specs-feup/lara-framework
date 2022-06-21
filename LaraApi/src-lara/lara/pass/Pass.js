@@ -8,10 +8,13 @@ laraImport("lara.pass.PassResult");
  *  - _apply_impl($jp)
  */
 class Pass {
-  #name;
-
-  constructor(name) {
-    this.#name = name;
+  constructor(_name) {
+    if (this.constructor === Pass) {
+      throw new AbstractClassError({
+        kind: "constructor",
+        baseClass: Pass,
+      });
+    }
   }
 
   get name() {
@@ -43,9 +46,12 @@ class Pass {
    * @abstract
    */
   _apply_impl($jp) {
-    throw new Error(
-      `Method '_apply_impl' of pass ${this.name} not implemented`
-    );
+    throw new AbstractClassError({
+      kind: "abstractMethod",
+      baseClass: Pass,
+      derivedClass: this.constructor,
+      method: this._apply_impl,
+    });
   }
 
   _new_default_result() {
