@@ -1,5 +1,6 @@
 laraImport("weaver.Query");
 laraImport("lara.pass.PassResult");
+laraImport("lara.util.AbstractClassError");
 
 /**
  * Represents a Lara transformation pass.
