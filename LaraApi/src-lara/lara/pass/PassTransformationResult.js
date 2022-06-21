@@ -20,7 +20,7 @@ class PassTransformationResult {
   constructor({ pass, $joinpoint, insertedLiteralCode }) {
     this.#pass = pass;
     this.#joinpoint = $joinpoint;
-    this.insertedLiteralCode = insertedLiteralCode;
+    this.#insertedLiteralCode = insertedLiteralCode;
   }
 
   get pass() {
@@ -33,5 +33,9 @@ class PassTransformationResult {
 
   get insertedLiteralCode() {
     return this.#insertedLiteralCode;
+  }
+
+  toString() {
+    return `PassTransformationResult { pass: ${this.pass.name}, $joinpoint: ${this.$joinpoint}, insertedLiteralCode: ${this.insertedLiteralCode} }`;
   }
 }

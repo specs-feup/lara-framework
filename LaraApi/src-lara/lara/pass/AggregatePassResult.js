@@ -62,4 +62,8 @@ class AggregatePassResult {
   get insertedLiteralCode() {
     return this.#insertedLiteralCode;
   }
+
+  toString() {
+    return `AggregatePassResult { pass: ${this.pass.name}, casesFound: ${this.casesFound}, casesApplied: ${this.casesApplied}, transformationErrors: [${this.transformationErrors.length} errors], insertedLiteralCode: ${this.insertedLiteralCode} }`;
+  }
 }
