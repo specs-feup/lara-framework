@@ -16,6 +16,7 @@ package org.lara.interpreter.weaver.interf.events;
 public enum Stage {
 
     BEGIN,
+    DURING,
     END,;
 
     /**
