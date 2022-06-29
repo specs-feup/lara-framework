@@ -1,5 +1,6 @@
 import weaver.JoinPoints;
 import weaver.Weaver;
+import weaver.TraversalType;
 import lara.util.JpFilter;
 import lara.util.Accumulator;
 import lara.Check;
@@ -101,9 +102,25 @@ Selector.prototype[Symbol.iterator] = function* () {
 }
 
 
+/**
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. 
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
+ */
+Selector.prototype.search = function(name, filter, traversal) {
+	if(traversal === undefined) {
+		traversal = TraversalType.PREORDER;
+	}
+	
+	switch(traversal) {
+		case TraversalType.PREORDER: 
+			return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});		
+		case TraversalType.POSTORDER:
+			return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendantsPostorder($jp, name);});
+		default:
+			throw new Error("Traversal type not implemented: " + traversal);
+	}
 
-Selector.prototype.search = function(name, filter) {
-	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
 }
 
 Selector.prototype.children = function(name, filter) {

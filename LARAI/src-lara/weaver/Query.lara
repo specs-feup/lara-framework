@@ -16,9 +16,10 @@ var Query = {};
  *
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. 
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
  */
-function search(type, filter) {
-	return Query.search(type, filter);
+function search(type, filter, traversal) {
+	return Query.search(type, filter, traversal);
 }
 
 /**
@@ -27,9 +28,10 @@ function search(type, filter) {
  * @param {$jp} $baseJp - starting join point for the search.
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType  
  */
-function searchFrom($baseJp, type, filter) {
-	return Query.searchFrom($baseJp, type, filter);
+function searchFrom($baseJp, type, filter, traversal) {
+	return Query.searchFrom($baseJp, type, filter, traversal);
 }
 
 /**
@@ -38,9 +40,10 @@ function searchFrom($baseJp, type, filter) {
  * @param {$jp} $baseJp - starting join point for the search.
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
  */
-function searchFromInclusive($baseJp, type, filter) {
-	return Query.searchFromInclusive($baseJp, type, filter);
+function searchFromInclusive($baseJp, type, filter, traversal) {
+	return Query.searchFromInclusive($baseJp, type, filter, traversal);
 }
 
 
@@ -56,9 +59,10 @@ Query.root = function() {
  *
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType  
  */
-Query.search = function(type, filter) {
-	return Query.searchFrom(undefined, type, filter);
+Query.search = function(type, filter, traversal) {
+	return Query.searchFrom(undefined, type, filter, traversal);
 	//return (new Selector()).search(type, filter);
 }
 
@@ -68,12 +72,13 @@ Query.search = function(type, filter) {
  * @param {$jp} $baseJp - starting join point for the search.
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. If the value is an object, each field of the object represents a rule that will be applied over the attribute that has the same name as the name of the field. If the value is not an object (e.g., String, Regex, Lambda), it is interpreted as a single rule that will be applied over the default attribute of the given type. E.g., if type is 'function', the value is a String 'foo' and the default attribute of function is 'name', this is equivalent as passing as value the object {'name':'foo'}. Rules can be a String (i.e., will match the value of the attribute against a string), a Regex (will match the value of the attribute against a regex) or a Function (i.e., function receives the value of the attribute and returns true if there is a match, or false otherwise).
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
  *
  * @return {weaver.Selector} the results of the search.
  */
-Query.searchFrom = function($baseJp, type, filter) {
+Query.searchFrom = function($baseJp, type, filter, traversal) {
 	// These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
-	return (new Selector($baseJp)).search(type, filter);
+	return (new Selector($baseJp)).search(type, filter, traversal);
 }
 
 /**
@@ -82,9 +87,10 @@ Query.searchFrom = function($baseJp, type, filter) {
  * @param {$jp} $baseJp - starting join point for the search.
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
  */
-Query.searchFromInclusive = function($baseJp, type, filter) {
-	return (new Selector($baseJp, true)).search(type, filter);
+Query.searchFromInclusive = function($baseJp, type, filter, traversal) {
+	return (new Selector($baseJp, true)).search(type, filter, traversal);
 }
 
 Query.childrenFrom = function($baseJp, type, filter) {
