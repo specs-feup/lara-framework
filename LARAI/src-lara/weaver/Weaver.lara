@@ -3,7 +3,6 @@ import lara.Check;
 import lara.Strings;
 
 import weaver.util.WeaverDataStore;
-import weaver.WeaverLauncher;
 import lara.util.PrintOnce;
 
 /**
@@ -194,6 +193,8 @@ Weaver.runParallel = function(argsLists, threads, weaverCommand) {
 
 	// WeaverOptions has a function for this, but imports Weaver
 	var weaverData = new WeaverDataStore(LaraI.getThreadLocalData());
+	
+	var WeaverLauncher = Java.type("pt.up.fe.specs.lara.WeaverLauncher");
 	var jsonStrings = WeaverLauncher.executeParallelStatic(safeArgsLists, threads, JavaInterop.arrayToStringList(weaverCommand), weaverData.getContextFolder().getAbsolutePath());	
 
 	// Read each json file into its own object
