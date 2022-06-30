@@ -1,5 +1,5 @@
-import weaver.Selector;
-import weaver.JoinPoints;
+laraImport("weaver.Selector");
+laraImport("weaver.JoinPoints");
 
 /**
  * Class for selection of join points. Provides an API similar to the keyword 'select'. 
