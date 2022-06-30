@@ -2,41 +2,6 @@ laraImport("weaver.Selector");
 laraImport("weaver.JoinPoints");
 
 /**
- * The same as Query.search(), but available as a global function.
- *
- * @param {String} type - type of the join point to search.
- * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
- * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
- */
-function search(type, filter, traversal) {
-  return Query.search(type, filter, traversal);
-}
-
-/**
- * The same as Query.searchFrom(), but available as a global function.
- *
- * @param {$jp} $baseJp - starting join point for the search.
- * @param {String} type - type of the join point to search.
- * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
- * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
- */
-function searchFrom($baseJp, type, filter, traversal) {
-  return Query.searchFrom($baseJp, type, filter, traversal);
-}
-
-/**
- * The same as Query.searchFromInclusive(), but available as a global function.
- *
- * @param {$jp} $baseJp - starting join point for the search.
- * @param {String} type - type of the join point to search.
- * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
- * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
- */
-function searchFromInclusive($baseJp, type, filter, traversal) {
-  return Query.searchFromInclusive($baseJp, type, filter, traversal);
-}
-
-/**
  * Class for selection of join points. Provides an API similar to the keyword 'select'.
  *
  * Search functions of this class return weaver.Selector objects, please refer to that class for more details regarding available functions and search options.
@@ -99,4 +64,39 @@ class Query {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).scope(type, filter);
   }
+}
+
+/**
+ * The same as Query.search(), but available as a global function.
+ *
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ */
+function search(type, filter, traversal) {
+  return Query.search(type, filter, traversal);
+}
+
+/**
+ * The same as Query.searchFrom(), but available as a global function.
+ *
+ * @param {$jp} $baseJp - starting join point for the search.
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ */
+function searchFrom($baseJp, type, filter, traversal) {
+  return Query.searchFrom($baseJp, type, filter, traversal);
+}
+
+/**
+ * The same as Query.searchFromInclusive(), but available as a global function.
+ *
+ * @param {$jp} $baseJp - starting join point for the search.
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ */
+function searchFromInclusive($baseJp, type, filter, traversal) {
+  return Query.searchFromInclusive($baseJp, type, filter, traversal);
 }
