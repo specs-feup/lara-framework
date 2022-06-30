@@ -3,6 +3,7 @@ import lara.Check;
 import lara.Strings;
 
 import weaver.util.WeaverDataStore;
+import weaver.WeaverLauncher;
 import lara.util.PrintOnce;
 
 /**
