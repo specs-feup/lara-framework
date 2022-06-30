@@ -47,9 +47,9 @@ class Query {
   /**
    * Returns the root node of the current AST.
    */
-  static root = function () {
+  static root() {
     return new JoinPoints().root();
-  };
+  }
 
   /**
    * The same as Query.searchFrom(), but uses the root node as $baseJp.
@@ -58,10 +58,10 @@ class Query {
    * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
    * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
    */
-  static search = function (type, filter, traversal) {
+  static search(type, filter, traversal) {
     return Query.searchFrom(undefined, type, filter, traversal);
     //return (new Selector()).search(type, filter);
-  };
+  }
 
   /**
    * In-depth search of join points of the given type, starting from a base join point (exclusive).
@@ -73,10 +73,10 @@ class Query {
    *
    * @return {weaver.Selector} the results of the search.
    */
-  static searchFrom = function ($baseJp, type, filter, traversal) {
+  static searchFrom($baseJp, type, filter, traversal) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).search(type, filter, traversal);
-  };
+  }
 
   /**
    * The same as Query.searchFrom(), but $baseJp is included in the search.
@@ -86,17 +86,17 @@ class Query {
    * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
    * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
    */
-  static searchFromInclusive = function ($baseJp, type, filter, traversal) {
+  static searchFromInclusive($baseJp, type, filter, traversal) {
     return new Selector($baseJp, true).search(type, filter, traversal);
-  };
+  }
 
-  static childrenFrom = function ($baseJp, type, filter) {
+  static childrenFrom($baseJp, type, filter) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).children(type, filter);
-  };
+  }
 
-  static scopeFrom = function ($baseJp, type, filter) {
+  static scopeFrom($baseJp, type, filter) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).scope(type, filter);
-  };
+  }
 }
