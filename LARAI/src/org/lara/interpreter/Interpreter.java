@@ -184,8 +184,6 @@ public class Interpreter {
             // outputJsonFile.getFile().getAbsolutePath();
         }
 
-        System.out.println("PROCESSED MAIN SCRIPT:\n" + processedCode);
-
         return processedCode.toString();
     }
 
