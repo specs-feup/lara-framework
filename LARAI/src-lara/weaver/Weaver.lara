@@ -4,6 +4,7 @@ import lara.Strings;
 
 import weaver.util.WeaverDataStore;
 import lara.util.PrintOnce;
+import lara.JavaInterop;
 
 /**
  * Contains utility methods related to the weaver. 
