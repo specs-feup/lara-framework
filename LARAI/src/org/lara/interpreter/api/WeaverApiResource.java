@@ -29,6 +29,7 @@ public enum WeaverApiResource implements LaraResourceProvider {
     AST("Ast.lara"),
     JOIN_POINTS("JoinPointsBase.lara"),
     QUERY("Query.lara"),
+    SCRIPT("Script.js"),
     SELECTOR("Selector.lara"),
     TRAVERSAL_TYPE("TraversalType.js"),
     WEAVER("Weaver.lara"),
