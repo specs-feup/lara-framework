@@ -160,31 +160,10 @@ public class Interpreter {
     public Object executeMainAspect(File mainFile) {
         long start = setupStage();
 
-        // Load main script code and process it
-        var jsFileType = JsFileType.getType(SpecsIo.getExtension(mainFile));
-        var code = SpecsIo.read(mainFile);
-        var processedCode = processMainJsScript(code);
-
-        final Object result = evaluate(processedCode, jsFileType, mainFile.getAbsolutePath());
+        final Object result = evaluate(mainFile);
 
         completeStage(start);
         return result;
-    }
-
-    private String processMainJsScript(String code) {
-        var processedCode = new StringBuilder(code);
-
-        // If report file enabled, suffix code for writing the outputs usin weaver.Script
-        var outputJsonFile = options.getReportFile();
-        if (outputJsonFile.isUsed()) {
-            processedCode.append("\nlaraImport('weaver.Script');\n");
-            processedCode.append("laraImport('lara.Io');\n");
-            processedCode.append(
-                    "Io.writeJson('" + SpecsIo.normalizePath(outputJsonFile.getFile()) + "', Script.getOutput());\n");
-            // outputJsonFile.getFile().getAbsolutePath();
-        }
-
-        return processedCode.toString();
     }
 
     private long setupStage() {
