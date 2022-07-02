@@ -1,7 +1,7 @@
 laraImport("lcl.LaraCommonLanguage");
 laraImport("weaver.Query");
 
-class DetectionAlgorithmLight {
+class DetectionAlgorithm {
 
 	constructor(members, connections) {
 		this.members = members;
