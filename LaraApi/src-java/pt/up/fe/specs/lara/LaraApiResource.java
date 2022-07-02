@@ -85,7 +85,12 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Pass
     PASS("pass/Pass.js"),
+    PASS_APPLY_ARG("pass/PassApplyArg.js"),
+    PASSES("pass/Passes.js"),
     PASS_RESULT("pass/PassResult.js"),
+    PASS_AGREGGATE_PASS_RESULT("pass/AggregatePassResult.js"),
+    PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
+    PASS_PASS_TRANSFORMATION_RESULT("pass/PassTransformationResult.js"),
 
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
@@ -111,6 +116,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     JAVA_INTEROP("JavaInterop.lara"),
 
     // Util
+    ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
     ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
     CODE_INSERTER("util/CodeInserter.lara"),

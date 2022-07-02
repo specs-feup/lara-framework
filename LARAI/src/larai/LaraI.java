@@ -72,6 +72,7 @@ import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import tdrc.utils.Pair;
 
@@ -679,6 +680,8 @@ public class LaraI {
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
                 interpreter.executeMainAspect(options.getLaraFile());
 
+                postMainJsExecution();
+
                 // Close weaver
                 weaver.close();
             }
@@ -707,6 +710,18 @@ public class LaraI {
             // Rethrow exception
             throw e;
             // throw new RuntimeException("Exception during weaving:", e);
+        }
+
+    }
+
+    private void postMainJsExecution() {
+
+        // If report file enabled, eval writing the outputs using weaver.Script
+        var outputJsonFile = options.getReportFile();
+        if (outputJsonFile.isUsed()) {
+            var template = new Replacer(() -> "org/lara/interpreter/outputResult.js.template");
+            template.replace("<OUTPUT_JSON_PATH>", SpecsIo.normalizePath(outputJsonFile.getFile()));
+            interpreter.evaluate(template.toString(), JsFileType.NORMAL, "LaraI.postMainJsExecution() - output json");
         }
 
     }

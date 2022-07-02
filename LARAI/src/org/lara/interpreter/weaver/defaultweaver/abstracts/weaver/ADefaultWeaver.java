@@ -21,7 +21,7 @@ public abstract class ADefaultWeaver extends WeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {};
+        String[] weaverActions= {"report"};
         return Arrays.asList(weaverActions);
     }
 

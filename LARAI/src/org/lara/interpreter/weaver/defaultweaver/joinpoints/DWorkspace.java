@@ -36,7 +36,7 @@ public class DWorkspace extends AWorkspace {
     private final Map<File, DWFolder> folders;
 
     public DWorkspace() {
-	folders = new HashMap<>();
+        folders = new HashMap<>();
     }
 
     /*
@@ -46,27 +46,32 @@ public class DWorkspace extends AWorkspace {
      */
     @Override
     public List<? extends AFolder> selectFolder() {
-	return new ArrayList<AFolder>(folders.values());
+        return new ArrayList<AFolder>(folders.values());
     }
 
     public void addFolder(File dir) {
-	File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
-	if (!folders.containsKey(canonicalFile)) {
-	    folders.put(canonicalFile, new DWFolder(canonicalFile));
-	}
+        File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
+        if (!folders.containsKey(canonicalFile)) {
+            folders.put(canonicalFile, new DWFolder(canonicalFile));
+        }
     }
 
     public boolean containsCanonical(File dir) {
-	File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
-	return folders.containsKey(canonicalFile);
+        File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
+        return folders.containsKey(canonicalFile);
     }
 
     @Override
     public Object getNode() {
-	return true;
+        return true;
     }
 
     public Collection<DWFolder> getFiles() {
-	return folders.values();
+        return folders.values();
+    }
+
+    @Override
+    public void reportImpl() {
+        System.out.println("Action report");
     }
 }

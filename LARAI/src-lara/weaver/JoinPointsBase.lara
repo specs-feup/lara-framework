@@ -16,21 +16,6 @@ JoinPoints.getInstance = function() {
 
 
 /**
- * Converts an AST node to a JointPoint.
- *
- * @param {node}
- * @return {$jp} 
- *
- * It seems you cannot have static and prototype functions with the same name.
- */
- /*
-JoinPoints.toJoinPoint = function(node) {
-	JoinPoints._INSTANCE.toJoinPoint(node);
-}
-*/
-
-
-/**
  * 
  * @return {$jp} the current root node of the AST
  */
@@ -47,27 +32,6 @@ JoinPoints.prototype.root = function() {
 JoinPoints.prototype.toJoinPoint = function(node) {
 	throw "JoinPoints.toJoinPoint: not implemented";
 }
-
-/**
- * 
- * @return {$jp[]} the children of the given node
- */
- /*
-JoinPoints.prototype.children = function($jp, jpType) {
-	throw "_WeaverHelper.children: not implemented";
-}
-*/
-
-/**
- * 
- * @return {$jp[]} the descendants of the given node
- */
- /*
-JoinPoints.prototype.descendants = function($jp, jpType) {
-	throw "_WeaverHelper.descendants: not implemented";
-}
-*/
-
 
 
 /**
@@ -99,10 +63,45 @@ JoinPoints.prototype._all_scope_nodes = function($jp) {
 
 /**
  * 
+ * @return {$jp[]} all the descendants of the given node, in post order
+ */
+JoinPoints.prototype._all_descendants_postorder = function($jp) {
+	
+	var descendants = [];
+
+	for(var child of this._all_children($jp)) {
+		var result = this._all_descendants_postorder_helper($jp);
+		for(var resultNode of result) {
+			descendants.push(resultNode);
+		}
+	}
+	
+	return descendants;
+}
+
+
+JoinPoints.prototype._all_descendants_postorder_helper = function($jp) {
+	
+	var nodes = [];
+	
+	for(var child of this._all_children($jp)) {
+		var postorderDescendants = this._all_descendants_postorder_helper(child);
+		for(var result of postorderDescendants) {
+			nodes.push(result);
+		}
+	}
+	
+	nodes.push($jp);
+	
+	return nodes;
+}
+
+/**
+ * 
  * @return {$jp[]} the nodes inside the scope of the given node.
  */
 JoinPoints.prototype.scope = function($jp, jpType) {
-	return this._getNodes(this._all_scope_nodes, $jp, jpType);
+	return this._getNodes(this._all_scope_nodes.bind(this), $jp, jpType);
 }
 
 /**
@@ -110,47 +109,24 @@ JoinPoints.prototype.scope = function($jp, jpType) {
  * @return {$jp[]} the children of the given node, according to the AST
  */
 JoinPoints.prototype.children = function($jp, jpType) {
-	return this._getNodes(this._all_children, $jp, jpType);
-
-/*
-	if($jp === undefined) {
-		return [];
-	}
-	
-	Check.isJoinPoint($jp);
-
-	var children = this._all_children($jp);
-	if(jpType === undefined) {
-		return children;
-	}
-	
-	return this._filterNodes(children, jpType);
-*/	
+	return this._getNodes(this._all_children.bind(this), $jp, jpType);
 }
 
 /**
  * 
- * @return {$jp[]} the descendants of the given node, according to the AST
+ * @return {$jp[]} the descendants of the given node, according to the AST, preorder traversal
  */
 JoinPoints.prototype.descendants = function($jp, jpType) {
-	return this._getNodes(this._all_descendants, $jp, jpType);
-	/*
-	if($jp === undefined) {
-		return [];
-	}
-
-	Check.isJoinPoint($jp);	
-
-	var descendants = this._all_descendants($jp);
-	
-	if(jpType === undefined) {
-		return descendants;
-	}	
-
-	return this._filterNodes(descendants, jpType);
-	*/
+	return this._getNodes(this._all_descendants.bind(this), $jp, jpType);
 }
 
+/**
+ * 
+ * @return {$jp[]} the descendants of the given node, according to the AST, postorder traversal
+ */
+JoinPoints.prototype.descendantsPostorder = function($jp, jpType) {
+	return this._getNodes(this._all_descendants_postorder.bind(this), $jp, jpType);	
+}
 
 /**
  * 
