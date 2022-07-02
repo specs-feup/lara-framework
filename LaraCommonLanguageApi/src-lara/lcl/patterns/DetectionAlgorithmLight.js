@@ -34,10 +34,17 @@ class DetectionAlgorithmLight {
 			// println();// " (" + Array.from(classType.types()) + ")");
 			
 			// avoid duplicates
+			if (classTypeName == undefined) {
+				// println("warning: duplicate of '" + classTypeName + "' - skipping");
+				// continue;
+				println("warn: undefined name for '" + classType.name + " => " + classType);
+			}
+			
+			// avoid duplicates
 			if (this.classTypesMap.has(classTypeName)) {
-				println("warning: duplicate of '" + classTypeName + "' - skipping");
-				continue;
-				// println("warn: duplicate of '" + classTypeName + "' - overwriting");
+				// println("warning: duplicate of '" + classTypeName + "' - skipping");
+				// continue;
+				println("warn: duplicate of '" + classTypeName + "' - overwriting");
 			}
 			
 			
@@ -266,6 +273,7 @@ class DetectionAlgorithmLight {
 		for (var child of $call.children) {
 			// skip type
 			if (child.joinPointType == "type") continue;
+			if (child.code == undefined) continue;
 			
 			if (child.code.includes("(") && child.code.includes(")")) isFunctionResult = true;
 			// if (child.code.match("()")) isFunctionResult = true;
@@ -355,16 +363,16 @@ class ClassTypeObject {
 			if ($call.method.isStatic) continue;
 			
 			// filter out of scope
-			let scopeElement = DetectionAlgorithmLight.getScope($call);
+			let scopeElement = DetectionAlgorithm.getScope($call);
 			if (scopeElement != null && scopeElement.instanceOf("constructorCall")) continue;
 			
 			
 			// check if expr only
-			let callsFunctionResult = DetectionAlgorithmLight.callsFunctionResult($call);
+			let callsFunctionResult = DetectionAlgorithm.callsFunctionResult($call);
 			if (callsFunctionResult == true && this.dpCoreCompatibility == true) continue;
 			
 			// check if calls super
-			let callsSuper = DetectionAlgorithmLight.callsSuper($call);
+			let callsSuper = DetectionAlgorithm.callsSuper($call);
 			if (callsSuper == true) continue;
 			
 			// check if protected method
@@ -374,7 +382,7 @@ class ClassTypeObject {
 				break
 			}
 			if (protectedMethod == true) continue;
-	
+			
 			// push name
 			this.relationCalls.push(this.#namingOf($call.method.class));
 		}
@@ -392,7 +400,7 @@ class ClassTypeObject {
 			if ($constructorCall.method == undefined || $constructorCall.method == null) continue;
 			
 			// filter out of scope
-			let scopeElement = DetectionAlgorithmLight.getScope($constructorCall.parent);
+			let scopeElement = DetectionAlgorithm.getScope($constructorCall.parent);
 			if (scopeElement == null || scopeElement == undefined) continue;
 			if (scopeElement.instanceOf("constructorCall")) continue;
 			if (scopeElement.name != this.classType.name) continue;
@@ -456,7 +464,7 @@ class ClassTypeObject {
 			if ($method.isStatic) continue;
 			
 			for (var $param of $method.params) {
-	
+				
 				var classType = $param.type.classType;
 				if (classType == null) continue;
 	
