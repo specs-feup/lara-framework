@@ -1,4 +1,4 @@
-import lara._JavaTypes;
+laraImport("lara._JavaTypes")";
 
 /**
  * Utility methods to check preconditions. 
