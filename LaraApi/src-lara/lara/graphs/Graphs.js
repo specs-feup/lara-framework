@@ -1,5 +1,6 @@
 laraImport("lara.graphs.NodeData");
 laraImport("lara.graphs.EdgeData");
+laraImport("lara.graphs.DotFormatter");
 
 /**
  * Utility class related with graph creation and manipulation.
@@ -57,7 +58,13 @@ class Graphs {
     return graph.add({ group: "edges", data: _edgeData });
   }
 
-  static toDot(graph) {
+  /**
+   *
+   * @param {graph} graph
+   * @param {lara.graphs.DotFormatter} dotFormatter
+   * @returns
+   */
+  static toDot(graph, dotFormatter) {
     var dot = "digraph test {\n";
 
     // Declare nodes
@@ -69,7 +76,14 @@ class Graphs {
         node.id() +
         '" [label="' +
         Graphs._sanitizeDotLabel(node.data().toString()) +
-        '" shape=box];\n';
+        '" shape=box';
+
+      if (dotFormatter !== undefined) {
+        const nodeAttrs = dotFormatter.getNodeAttributes(node);
+        dot += nodeAttrs.length === 0 ? "" : " " + nodeAttrs;
+      }
+
+      dot += "];\n";
       //println("Id: " + node.id)
     }
 
@@ -81,7 +95,14 @@ class Graphs {
         edge.data().target +
         '" [label="' +
         Graphs._sanitizeDotLabel(edge.data().toString()) +
-        '"];\n';
+        '"';
+
+      if (dotFormatter !== undefined) {
+        const edgeAttrs = dotFormatter.getEdgeAttributes(edge);
+        dot += edgeAttrs.length === 0 ? "" : " " + edgeAttrs;
+      }
+
+      dot += "];\n";
       //println("Edge: ")
       //printlnObject(edge.data());
       //println("Source: " + edge.data().source);
