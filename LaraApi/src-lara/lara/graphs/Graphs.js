@@ -124,7 +124,7 @@ class Graphs {
    * @param {boolean} [loopsAreLeafs = false]
    * @returns true if the outdegree (number of edges with this node as source) is zero, false otherwise. By default, if a node has a connection to itself (loop) it is not considered a leaf
    */
-  static isLeafNode(node, loopsAreLeafs = false) {
+  static isLeaf(node, loopsAreLeafs = false) {
     const includeLoops = !loopsAreLeafs;
     return node.outdegree(includeLoops) === 0;
   }
