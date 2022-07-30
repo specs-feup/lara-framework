@@ -128,4 +128,34 @@ class Graphs {
     const includeLoops = !loopsAreLeafs;
     return node.outdegree(includeLoops) === 0;
   }
+
+  /**
+   * Removes a node from the graph. Before removing the node, creates connections between all connecting sources and targets.
+   *
+   * @param {graph} graph
+   * @param {node} node
+   * @param {(edge, edge) -> EdgeData)} edgeMap function that receives the incoming edge and the outgoing edge, and returns a new EdgeData that replaces both edges
+   */
+  static removeNode(graph, node, edgeMapper) {
+    // Get edges of node
+    const edges = node.connectedEdges();
+
+    const incomingEdges = edges.filter((edge) => edge.target().equals(node));
+    const outgoingEdges = edges.filter((edge) => edge.source().equals(node));
+
+    for (const incoming of incomingEdges) {
+      for (const outgoing of outgoingEdges) {
+        const newEdgeData = edgeMapper(incoming, outgoing);
+        Graphs.addEdge(
+          graph,
+          incoming.source(),
+          outgoing.target(),
+          newEdgeData
+        );
+      }
+    }
+
+    // Remove node
+    node.remove();
+  }
 }
