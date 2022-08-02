@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.commonlang.generator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -215,9 +216,16 @@ public class CommonLangGenerator {
 
         return types;
     }
+    
+    // classes written in javascript
+    public static List<String> classesInJS = Arrays
+            .asList("DeclJp", "FunctionJp", "StmtJp", "JoinPoint");
 
     public static String getJpResource(String jpName) {
         var jpClassName = getJoinPointClassName(jpName);
+        // check if has JS definition in list
+        // System.err.println("getJpResource::" + jpClassName);
+        // if (classesInJS.contains(jpClassName)) return "weaver/jp/" + jpClassName + ".js";
         return "weaver/jp/" + jpClassName + ".lara";
     }
 

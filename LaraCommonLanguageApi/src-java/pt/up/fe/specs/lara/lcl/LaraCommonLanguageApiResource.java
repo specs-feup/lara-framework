@@ -56,8 +56,13 @@ public enum LaraCommonLanguageApiResource implements LaraResourceProvider {
     OTHER_METRICS_INDEX("metrics/om/OtherMetricsIndex.lara"),
 
     // Machine-learning
-    CODE2VEC("ml/Code2Vec.js");
+    CODE2VEC("ml/Code2Vec.js"),
 
+    // Patterns Detection
+    PATTERNS_READER("patterns/PatternsReader.js"),
+    DETECTION_ALGORITHM("patterns/DetectionAlgorithm.js"),
+    GROUPING_UTILS("patterns/grouping/GroupingUtils.js");
+    
     private final String resource;
 
     private static final String BASE_PACKAGE = "lcl/";

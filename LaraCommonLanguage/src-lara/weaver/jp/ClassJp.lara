@@ -1,4 +1,4 @@
-import weaver.jp.DeclJp;
+import weaver.jp.ClassTypeJp;
 
 /**
  * 
@@ -7,16 +7,17 @@ import weaver.jp.DeclJp;
  */
 function ClassJp(astNode) {
     // Parent constructor
-    DeclJp.call(this,astNode);
+    ClassTypeJp.call(this,astNode);
     
 }
 // Inheritance
-ClassJp.prototype = Object.create(DeclJp.prototype);
+ClassJp.prototype = Object.create(ClassTypeJp.prototype);
 ClassJp.prototype.constructor = ClassJp;
 
 // JoinPoint Types
 ClassJp._JP_TYPES = new Set();
 _lara_dummy_ = ClassJp._JP_TYPES.add('class');
+_lara_dummy_ = ClassJp._JP_TYPES.add('classType');
 _lara_dummy_ = ClassJp._JP_TYPES.add('decl');
 _lara_dummy_ = ClassJp._JP_TYPES.add('stmt');
 _lara_dummy_ = ClassJp._JP_TYPES.add('joinpoint');
@@ -30,7 +31,7 @@ ClassJp.prototype.instanceOf = function(joinPointType) {
 		return true;
 	}
 	
-	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	return (new ClassTypeJp(this.astNode)).instanceOf(joinPointType);
 	*/
 }
 
@@ -52,11 +53,6 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'id', {
 	get: function () { throw this.constructor.name + '.id not implemented'; }
 });
 
-_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'name', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.name not implemented'; }
-});
-
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'superClasses', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.superClasses not implemented'; }
@@ -67,14 +63,9 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'allSuperClasses', {
 	get: function () { throw this.constructor.name + '.allSuperClasses not implemented'; }
 });
 
-_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'allMethods', {
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'listOfAllMethods', {
 	configurable: true,
-	get: function () { throw this.constructor.name + '.allMethods not implemented'; }
-});
-
-_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'methods', {
-	configurable: true,
-	get: function () { throw this.constructor.name + '.methods not implemented'; }
+	get: function () { throw this.constructor.name + '.listOfAllMethods not implemented'; }
 });
 
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'constructors', {
@@ -95,5 +86,10 @@ _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'kind', {
 _lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'isCustom', {
 	configurable: true,
 	get: function () { throw this.constructor.name + '.isCustom not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassJp.prototype, 'isAbstract', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isAbstract not implemented'; }
 });
 

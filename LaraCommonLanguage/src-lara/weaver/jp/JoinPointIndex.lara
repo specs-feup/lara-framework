@@ -3,7 +3,9 @@ import weaver.jp.ProgramJp;
 import weaver.jp.FileJp;
 import weaver.jp.StmtJp;
 import weaver.jp.DeclJp;
+import weaver.jp.InterfaceJp;
 import weaver.jp.ClassJp;
+import weaver.jp.ClassTypeJp;
 import weaver.jp.FunctionJp;
 import weaver.jp.MethodJp;
 import weaver.jp.ConstructorJp;
@@ -41,7 +43,9 @@ var classesMapping = {
 	'FileJp': FileJp,
 	'StmtJp': StmtJp,
 	'DeclJp': DeclJp,
+	'InterfaceJp': InterfaceJp,
 	'ClassJp': ClassJp,
+	'ClassTypeJp': ClassTypeJp,
 	'FunctionJp': FunctionJp,
 	'MethodJp': MethodJp,
 	'ConstructorJp': ConstructorJp,
