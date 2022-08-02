@@ -1353,15 +1353,6 @@
 			"children": [
 					{
 						"type": "attribute",
-						"tooltip": "The methods and constructors of this class.",
-						"children": [
-									{
-										"type": "method[]",
-										"name": "allMethods"
-									}]
-					},
-					{
-						"type": "attribute",
 						"tooltip": "The superClasses this class and its superClasses extends.",
 						"children": [
 									{
@@ -1398,11 +1389,11 @@
 					},
 					{
 						"type": "attribute",
-						"tooltip": "The interfaces that this class implements",
+						"tooltip": "Check if the class is abstract.",
 						"children": [
 									{
-										"type": "interface[]",
-										"name": "interfaces"
+										"type": "boolean",
+										"name": "isAbstract"
 									}]
 					},
 					{
@@ -1425,20 +1416,11 @@
 					},
 					{
 						"type": "attribute",
-						"tooltip": "The methods of this class.",
+						"tooltip": "All the methods of this class and superClasses, interfaces.",
 						"children": [
 									{
 										"type": "method[]",
-										"name": "methods"
-									}]
-					},
-					{
-						"type": "attribute",
-						"tooltip": "The name of the class.",
-						"children": [
-									{
-										"type": "String",
-										"name": "name"
+										"name": "listOfAllMethods"
 									}]
 					},
 					{
@@ -1448,6 +1430,51 @@
 									{
 										"type": "class[]",
 										"name": "superClasses"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface extends",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "allInterfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface and the methods of the super interfaces",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "allMethods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface DIRECTLY extends",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "interfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "methods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The name of the interface.",
+						"children": [
+									{
+										"type": "String",
+										"name": "name"
 									}]
 					},
 					{
@@ -1680,6 +1707,51 @@
 			"name": "classType",
 			"extends": "decl"		,
 			"children": [
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface extends",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "allInterfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface and the methods of the super interfaces",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "allMethods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface DIRECTLY extends",
+						"children": [
+									{
+										"type": "interface[]",
+										"name": "interfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "methods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The name of the interface.",
+						"children": [
+									{
+										"type": "String",
+										"name": "name"
+									}]
+					},
 					{
 						"type": "attribute",
 						"tooltip": "Returns true if decl is considered static",
@@ -5194,6 +5266,24 @@
 						"children": [
 									{
 										"type": "interface[]",
+										"name": "allInterfaces"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The methods of this interface and the methods of the super interfaces",
+						"children": [
+									{
+										"type": "method[]",
+										"name": "allMethods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The interfaces that this interface DIRECTLY extends",
+						"children": [
+									{
+										"type": "interface[]",
 										"name": "interfaces"
 									}]
 					},
@@ -5204,6 +5294,15 @@
 									{
 										"type": "method[]",
 										"name": "methods"
+									}]
+					},
+					{
+						"type": "attribute",
+						"tooltip": "The name of the interface.",
+						"children": [
+									{
+										"type": "String",
+										"name": "name"
 									}]
 					},
 					{

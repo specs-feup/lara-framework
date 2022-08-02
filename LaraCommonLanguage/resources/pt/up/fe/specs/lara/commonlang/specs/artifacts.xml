@@ -46,10 +46,6 @@
 	
 	
 	<artifact class="classType" default="name">
-
-	</artifact>
-	
-	<artifact class="interface" default="name">
 		<attribute name="name" type="string" tooltip="The name of the interface."/>
 		<attribute name="methods" type="method[]" tooltip="The methods of this interface"/>
 		<attribute name="allMethods" type="method[]" tooltip="The methods of this interface and the methods of the super interfaces"/>
@@ -57,20 +53,19 @@
 		<attribute name="allInterfaces" type="interface[]" tooltip="The interfaces that this interface extends"/>		
 	</artifact>
 	
+	<artifact class="interface" default="name">
+
+	</artifact>
+	
 	<artifact class="class" default="name">
 		<attribute name="id" type="string" tooltip="The id of the class."/>
-		<attribute name="name" type="string" tooltip="The name of the class."/>
 		<attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
 		<attribute name="allSuperClasses" type="class[]" tooltip="The superClasses this class and its superClasses extends."/>
-		<attribute name="methods" type="method[]" tooltip="The methods of this class."/>
-		<attribute name="allMethods" type="method[]" tooltip="The methods and constructors of this class."/>
 		<attribute name="listOfAllMethods" type="method[]" tooltip="All the methods of this class and superClasses, interfaces."/>
 		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
 		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
 		<attribute name="kind" type="string" tooltip="The kind of record."/>
 		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
-		<attribute name="interfaces" type="interface[]" tooltip="The interfaces that this class DIRECTLY extends"/>	
-		<attribute name="allInterfaces" type="interface[]" tooltip="The interfaces that this class extends"/>		
 		<attribute name="isAbstract" type="boolean" tooltip="Check if the class is abstract."/>
 	</artifact>
 	

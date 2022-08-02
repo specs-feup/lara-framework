@@ -82,8 +82,3 @@ _lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'hasBody', {
 	get: function () { throw this.constructor.name + '.hasBody not implemented'; }
 });
 
-_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'LEL', {
-	configurable: true,
-	get: function () { return "UPS"; }
-});
-

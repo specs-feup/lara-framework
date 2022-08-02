@@ -47,3 +47,28 @@ _lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'joinPointType', {
 	get: function () { return 'classType'; }
 });
 
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'methods', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.methods not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'allMethods', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.allMethods not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'interfaces', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.interfaces not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ClassTypeJp.prototype, 'allInterfaces', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.allInterfaces not implemented'; }
+});
+
