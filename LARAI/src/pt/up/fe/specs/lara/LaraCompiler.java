@@ -60,14 +60,6 @@ public class LaraCompiler {
         lastCompilation = null;
     }
 
-    /**
-     * @deprecated use the constructor that accepts the language specification
-     */
-    @Deprecated
-    public LaraCompiler() {
-        this(new DefaultWeaver().getLanguageSpecificationV2());
-    }
-
     public String getLastCompilation() {
         return lastCompilation;
     }
