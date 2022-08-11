@@ -211,8 +211,13 @@ public class LaraI {
      * @return
      */
     public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
+
+        // Create new instance of the weaver engine, to avoid reuse of information between consecutive runs
+        var newWeaverEngine = SpecsSystem.newInstance(weaverEngine.getClass());
+
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        // var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, newWeaverEngine));
         return result == null ? false : result;
     }
 
