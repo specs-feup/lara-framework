@@ -19,12 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -66,8 +63,8 @@ import pt.up.fe.specs.util.utilities.StringList;
  */
 public class LaraIDataStore implements LaraiKeys {
 
-    private static final String GIT_QUERY_FOLDER = "folder";
-    private static final Set<String> GIT_URL_QUERIES = new HashSet<>(Arrays.asList(GIT_QUERY_FOLDER));
+    // private static final String GIT_QUERY_FOLDER = "folder";
+    // private static final Set<String> GIT_URL_QUERIES = new HashSet<>(Arrays.asList(GIT_QUERY_FOLDER));
 
     public static final String CONFIG_FILE_NAME = "larai.properties";
     private final DataStore dataStore;
@@ -462,10 +459,11 @@ public class LaraIDataStore implements LaraiKeys {
         String path = url.getPath().toLowerCase();
 
         if (path.endsWith(".git") || protocol.equals("git")) {
-            Map<String, String> query = SpecsIo.parseUrlQuery(url);
-            var gitDependency = url.getQuery() != null ? externalDependency.replace("?" + url.getQuery(), "")
-                    : externalDependency;
-            processGitDependency(gitDependency, files, query);
+            // Map<String, String> query = SpecsIo.parseUrlQuery(url);
+            // var gitDependency = url.getQuery() != null ? externalDependency.replace("?" + url.getQuery(), "")
+            // : externalDependency;
+            // processGitDependency(gitDependency, files, query);
+            processGitDependency(externalDependency, files);
             return;
         }
 
@@ -477,19 +475,20 @@ public class LaraIDataStore implements LaraiKeys {
         LaraLog.info("Could not determine the external dependency link kind: '" + externalDependency + "'");
     }
 
-    private void processGitDependency(String externalDependency, List<File> files, Map<String, String> query) {
+    private void processGitDependency(String externalDependency, List<File> files) {
+        // private void processGitDependency(String externalDependency, List<File> files, Map<String, String> query) {
         // Check queries
-        if (!query.isEmpty()) {
-            List<String> unsupportedQueries = query.keySet().stream()
-                    .map(String::toLowerCase)
-                    .filter(key -> !GIT_URL_QUERIES.contains(key))
-                    .collect(Collectors.toList());
-
-            if (!unsupportedQueries.isEmpty()) {
-                LaraLog.info("Found unsuppoted queries " + unsupportedQueries + " in git URL. Supported queries: "
-                        + GIT_URL_QUERIES);
-            }
-        }
+        // if (!query.isEmpty()) {
+        // List<String> unsupportedQueries = query.keySet().stream()
+        // .map(String::toLowerCase)
+        // .filter(key -> !GIT_URL_QUERIES.contains(key))
+        // .collect(Collectors.toList());
+        //
+        // if (!unsupportedQueries.isEmpty()) {
+        // LaraLog.info("Found unsuppoted queries " + unsupportedQueries + " in git URL. Supported queries: "
+        // + GIT_URL_QUERIES);
+        // }
+        // }
 
         File gitRepoFolder = gitRepos.getFolder(externalDependency);
         // File gitRepoFolder = SpecsGit.parseRepositoryUrl(externalDependency);
@@ -499,16 +498,16 @@ public class LaraIDataStore implements LaraiKeys {
         }
 
         // Check if there is a specific folder specified
-        var foldername = query.get(GIT_QUERY_FOLDER);
-        if (foldername != null) {
-            var specificFolder = new File(gitRepoFolder, foldername);
-            if (!specificFolder.isDirectory()) {
-                LaraLog.info("Repo folder '" + specificFolder + "' does not exist");
-            } else {
-                LaraLog.info("Adding folder '" + specificFolder + "' as LARA include");
-                gitRepoFolder = specificFolder;
-            }
-        }
+        // var foldername = query.get(GIT_QUERY_FOLDER);
+        // if (foldername != null) {
+        // var specificFolder = new File(gitRepoFolder, foldername);
+        // if (!specificFolder.isDirectory()) {
+        // LaraLog.info("Repo folder '" + specificFolder + "' does not exist");
+        // } else {
+        // LaraLog.info("Adding folder '" + specificFolder + "' as LARA include");
+        // gitRepoFolder = specificFolder;
+        // }
+        // }
 
         // Add repository
         files.add(gitRepoFolder);
