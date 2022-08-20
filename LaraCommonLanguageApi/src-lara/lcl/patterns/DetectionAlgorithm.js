@@ -9,8 +9,8 @@ class DetectionAlgorithm {
 		this.detections = [];
 		this.classTypesMap = new Map();
 		
+		this.fullNaming = true;
 		this.dpCoreCompatibility = false;
-		this.fullNaming = false;
 	}
 	
 	setCompatibility(dpCoreCompatibility) {
@@ -30,21 +30,30 @@ class DetectionAlgorithm {
 		for (var i = 0 ; i < classTypes.length ; i++) {
 			var classType = classTypes[i];
 			var classTypeName = this.#namingOf(classType);
-			// println("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name + " / " + classType._qualifiedName);
-			// println();// " (" + Array.from(classType.types()) + ")");
 			
+			/*
+			if (classTypeName == "Test") print("  - caching : " + i + "/" + classTypes.length + " ==> " + classType.name + " / " + classType._qualifiedName);
+			if (classTypeName == "Test") print("  ; code = " + classType.code.length);
+			if (classTypeName == "Test") println();// " (" + Array.from(classType.types()) + ")");
+			/**/
+		
 			// avoid duplicates
 			if (classTypeName == undefined) {
 				// println("warning: duplicate of '" + classTypeName + "' - skipping");
 				// continue;
-				println("warn: undefined name for '" + classType.name + " => " + classType);
+				println("warning: undefined name for '" + classType.name + "' => " + classType);
+			}
+			
+			if (classType.code != null && classType.code.length < 30) {
+				println("warning: code length of '" + classTypeName + "' is small. declaration ? - skipping ?");
+				// continue;
 			}
 			
 			// avoid duplicates
 			if (this.classTypesMap.has(classTypeName)) {
 				// println("warning: duplicate of '" + classTypeName + "' - skipping");
 				// continue;
-				println("warn: duplicate of '" + classTypeName + "' - overwriting");
+				println("warning: duplicate of '" + classTypeName + "' - overwriting");
 			}
 			
 			
@@ -117,25 +126,18 @@ class DetectionAlgorithm {
 		}
 	}
 	
-	/*
 	checkAbstraction(classType, abstractionLevel) {
-		if (abstractionLevel == "Abstracted" && (classType.instanceOf("interface") || (classType.instanceOf("class") && classType.isAbstract()))) return true;
-		if (abstractionLevel == "Abstract" && classType.instanceOf("class") && classType.isAbstract()) return true;
-		if (abstractionLevel == "Interface" && classType.instanceOf("interface")) return true;
-		if (abstractionLevel == "Normal" && classType.instanceOf("class")) return true;
-		if (abstractionLevel == "Any" && classType.instanceOf("classType")) return true;
-		return false;
-	}
-	*/
-	
-	checkAbstraction(classType, abstractionLevel) {
-		var abstraction = this.abstractionOf(classType);
+		// var abstraction = this.abstractionOf(classType);
+		var classTypeObject = this.classTypesMap.get(this.#namingOf(classType));// abstractionType
+		var abstraction = classTypeObject.abstractionType;
+		
 		if (abstractionLevel == abstraction) return true;
 		if (abstractionLevel == "Abstracted" && (abstraction == "Interface" || abstraction == "Abstract")) return true;
 		if (abstractionLevel == "Any") return true;
 		return false;
 	}
 	
+	// deprecated... with cache implementation in ClassTypeObject
 	abstractionOf(classType) {
 		if (classType.instanceOf("class") && !classType.isAbstract) return "Normal";
 		if (classType.instanceOf("class") && classType.isAbstract) return "Abstract";
@@ -332,6 +334,9 @@ class ClassTypeObject {
 	}
 	
 	compute() {
+		
+		this.#computeAbstraction();
+		
 		this.#computeRelationCalls();
 		this.#computeRelationCreates();
 		this.#computeRelationHas();
@@ -347,6 +352,18 @@ class ClassTypeObject {
 		this.relationUses = [...new Set(this.relationUses)];
 	}
 	
+	#computeAbstraction() {
+		
+		if (this.classType.instanceOf("class") && !this.classType.isAbstract) 
+			this.abstractionType = "Normal";
+		else if (this.classType.instanceOf("class") && this.classType.isAbstract) 
+			this.abstractionType = "Abstract";
+		else if (this.classType.instanceOf("interface")) 
+			this.abstractionType = "Interface";
+		else 
+			this.abstractionType = "Unknown";
+	}
+	
 	
 	#computeRelationCalls() {
 		
@@ -355,6 +372,7 @@ class ClassTypeObject {
 		var $calls = Query.searchFrom(this.classType, "call").get();
 		
 		for(var $call of $calls) {
+			if ($call.method == undefined || $call.method == null) continue;
 			
 			// filter out constructor calls
 			if ($call == undefined || $call == null) continue;
