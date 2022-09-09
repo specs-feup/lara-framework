@@ -2,103 +2,93 @@ laraImport("lara.pass.Pass");
 laraImport("lara.pass.PassApplyArg");
 
 class Passes {
-	
-	static apply($jp) {
-		// Ensure it is an array
-		const passesArray = arrayFromArgs(arguments, 1);
+  /**
+   * Applies a sequence of passes.
+   *
+   * @param {$jp} $jp - Apply pass using this join point as the starting point
+   * @param {...} args - An array or sequence of:
+   * 	1) Pass instance;
+   * 	2) Pass class;
+   * 	3) function that accepts a $jp;
+   * 	4) An array where the first element is 2) or 3), followed by arguments that are passed as arguments of the function or class constructor.
+   */
+  static apply($jp) {
+    // Ensure it is an array
+    const passesArray = arrayFromArgs(arguments, 1);
 
-		const results = [];
+    const results = [];
 
-		for(let i=0; i<passesArray.length; i++) {
-			const passElement = passesArray[i];
-			const argType = Passes.getArgType(passElement);
+    let argIndex = 0;
+    for (const pass of passesArray) {
+      argIndex++;
 
-			if(argType === undefined) {
-				throw new Error("Parameter #" + (i+1) + " is not valid: " + passElement);
-			}
+      // If not array, put inside array
+      const passArray = !Array.isArray(pass) ? [pass] : pass;
 
-			// If an instance of a Pass, just call apply over the given $jp
-			if(argType === PassApplyArg.PASS_INSTANCE) {
-				results.push(passElement.apply($jp));
-				continue;
-			}
+      results.push(Passes.#applyPass($jp, passArray, argIndex));
+    }
 
-			// Now it is either a function or a Pass class, either can receive arguments
-			// Check if next element is an array (of arguments) or an object
-			// Use empty array as default arguments value
-			let args = [];
-			let isArray = true;
-			if(i<(passesArray.length-1)) {
-				const nextElem = passesArray[i+1];
-				const nextElemType = Passes.getArgType(nextElem);
+    return results;
+  }
 
-				if(nextElemType.isArg) {
-					// Skip arguments
-					i++;					
-					args = nextElem;
+  static #applyPass($jp, passArray, index) {
+    if (passArray.length === 0) {
+      throw new Error(`Pass at position ${index} is an empty array`);
+    }
 
-					if(nextElemType === PassApplyArg.ARRAY_ARG) {
-						isArray = true;
-					} else if(nextElemType === PassApplyArg.OBJECT_ARG) {
-						isArray = false;
-					} else {
-						throw new Error("Not implemented yet for apply argument of type " + argType)
-					}
-				}
-			}
+    const pass = passArray[0];
 
-			// Both cases will return true if tested for function, first test in class of Pass
-			if(argType === PassApplyArg.PASS_CLASS) {
-				const passInstance = isArray ? new passElement(...args) : new passElement(args);
-				results.push(passInstance.apply($jp));
-				continue;
-			}
-			
-			// Finally, test if function
-			if(argType === PassApplyArg.FUNCTION) {
-				if(isArray) {
-					results.push(passElement($jp, ...args));					
-				} else {
-					results.push(passElement($jp, args));										
-				}
+    // Obtain type of pass argument
+    const argType = Passes.getArgType(pass);
 
-				continue;				
-			}
-			
-			throw new Error("Not implemented yet for apply argument of type " + argType);
-		}
-		
-		return results;
-	}
-	
-	static getArgType(applyArg) {
+    if (argType === undefined) {
+      throw new Error(
+        `Pass at position ${index} is not a Pass class, instance or a function`
+      );
+    }
 
-			// If an instance of a Pass, just call apply over the given $jp
-			if(applyArg instanceof Pass) {
-				return PassApplyArg.PASS_INSTANCE;
-			}
-	
-			// Check if it is an array argument		
-			if(Array.isArray(applyArg)) {
-				return PassApplyArg.ARRAY_ARG;
-			}
+    const passArgs = passArray.slice(1);
 
-			// Both Pass class and function will return true if tested for function, first test in class of Pass			
-			if(applyArg.prototype instanceof Pass) {
-				return PassApplyArg.PASS_CLASS;
-			}
-			
-			if(applyArg instanceof Function) {
-				return PassApplyArg.FUNCTION;
-			}
-			
-			// Finally, test if object
-			if((typeof applyArg) === 'object' && (applyArg !== null)) {
-				return PassApplyArg.OBJECT_ARG;
-			}
-			
-			return undefined;
-	}
-			
-	
+    // Check if there are arguments for the pass
+    if (passArgs.length > 0 && argType === PassApplyArg.PASS_INSTANCE) {
+      println(
+        `Pass at position ${index} is a Pass instance but has arguments, arguments will be ignored`
+      );
+    }
+
+    // If an instance of a Pass, just call apply over the given $jp
+    if (argType === PassApplyArg.PASS_INSTANCE) {
+      return pass.apply($jp);
+    }
+
+    // If a Pass class, instantiate with args
+    if (argType === PassApplyArg.PASS_CLASS) {
+      return new pass(...passArgs).apply($jp);
+    }
+
+    // If function, call it
+    if (argType === PassApplyArg.FUNCTION) {
+      return pass($jp, ...passArgs);
+    }
+
+    throw new Error("Not implemented for pass argument of type " + argType);
+  }
+
+  static getArgType(applyArg) {
+    // If an instance of a Pass, just call apply over the given $jp
+    if (applyArg instanceof Pass) {
+      return PassApplyArg.PASS_INSTANCE;
+    }
+
+    // Both Pass class and function will return true if tested for function, first test in class of Pass
+    if (applyArg.prototype instanceof Pass) {
+      return PassApplyArg.PASS_CLASS;
+    }
+
+    if (applyArg instanceof Function) {
+      return PassApplyArg.FUNCTION;
+    }
+
+    return undefined;
+  }
 }
