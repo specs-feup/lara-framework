@@ -185,7 +185,7 @@ public class LaraIUtils {
 
             var implVersion = SpecsSystem.getBuildNumber();
             if (implVersion == null) {
-                implVersion = "<build number not founnd>";
+                implVersion = "<build number not found>";
             }
 
             System.out.println("Build: " + implVersion);
