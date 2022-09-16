@@ -631,10 +631,6 @@ public class LaraI {
 
         Path path = Paths.get(engineWorkingDir);
 
-        try {
-            path = Paths.get(engineWorkingDir + "/node_modules");
-        } catch (InvalidPathException e) {}
-
         JsEngine engine = createJsEngine(options.getJsEngine(), path);
 
         // Set javascript engine in WeaverEngine
