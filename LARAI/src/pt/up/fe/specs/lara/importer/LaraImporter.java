@@ -68,11 +68,6 @@ public class LaraImporter {
 
         var includePaths = getIncludePaths();
 
-        // If *, return all imports inside a package
-        // if (laraImportName.getFilename().equals("*")) {
-        // return getLaraImportsStar(laraImportName, includePaths);
-        // }
-
         ext: for (var ext : LaraC.getSupportedExtensions()) {
 
             // 1.
@@ -93,17 +88,13 @@ public class LaraImporter {
             // 2.
             // Check resource by filename, instead of resource name
             var importPath = laraImportName.getFullPath() + "." + ext;
-            // System.out.println("IMPORT PATH:" + importPath);
+
             var resources = apisMap.get().get(importPath);
             if (!resources.isEmpty()) {
                 for (var resource : resources) {
                     SpecsLogs.debug(
                             () -> "Adding resource '" + resource.getResource() + "' for import '" + importName + "'");
                     laraImports.add(buildLaraImport(resource));
-                    // System.out.println("IMPORT PATH: " + importPath);
-                    // System.out.println("RESOURCE: " + resource.get(0).);
-                    // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
-                    // System.out.println("RESOURCE: " + resource.get(0));
                 }
 
                 continue ext;
@@ -129,27 +120,13 @@ public class LaraImporter {
                 includePaths.add(workspacePath);
             }
         }
-        // System.out.println("WORKSPACE: " + larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER));
-        // for (var file : larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles()) {
-        //
-        // System.out.println("IMPORTER COMPLETE PATH: " + file.getAbsolutePath());
-        // System.out.println("IMPORTER FILES IN PATH: " + SpecsIo.getFilesRecursive(file));
-        //
-        // }
 
         // Add include folders
         includePaths.addAll(includes);
         return includePaths;
     }
 
-    // private List<LaraImportData> getLaraImportsStar(LaraImportName laraImportName, List<File> includePaths) {
-    // // Set<LaraImportData>
-    // // TODO Auto-generated method stub
-    // return Collections.emptyList();
-    // }
-
     private LaraImportData buildLaraImport(ResourceProvider resource) {
-        // return buildLaraImport(resource.read(), resource.getResource());
         var code = resource.read();
         SpecsCheck.checkNotNull(code, () -> "laraImport: could not read resource '" + resource.getResource() + "'");
         return buildLaraImport(code, resource.getFilename());
@@ -182,30 +159,9 @@ public class LaraImporter {
 
             var aspectIr = lara.compile();
 
-            // if (true) {
-            // // if (filename.equals("Clava.lara")) {
-            // try {
-            // System.out.println("PRINTING ASPECT IR");
-            // System.out.println(StringUtils.xmlToStringBuffer(aspectIr, MessageConstants.INDENT).toString());
-            // } catch (Exception e) {
-            // throw new RuntimeException("Could not print AspectIR", e);
-            // }
-            // }
-
-            // System.out.println("FILENAME: " + filename);
-
             var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
             try {
                 var aspectJsCode = processor.toSimpleJs(aspectIr);
-
-                // if (true) {
-                // // if (filename.equals("clava/clava/Clava.lara")) {
-                // System.out.println("LARA FILE: " + filename);
-                // System.out.println("Lara to Js Begin:\n" + jsCode);
-                // System.out.println("Lara to Js End");
-                // }
-
-                // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
                 return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL);
             } catch (Exception e) {
                 throw new RuntimeException("Error during LARA compilation", e);
@@ -247,7 +203,7 @@ public class LaraImporter {
         for (var resource : apis) {
             resourcesMap.put(resource.getFileLocation(), resource);
         }
-        // System.out.println("RESOURCE MAP: " + resourcesMap);
+
         return resourcesMap;
     }
 

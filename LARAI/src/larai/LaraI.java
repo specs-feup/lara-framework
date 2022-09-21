@@ -923,48 +923,13 @@ public class LaraI {
     public static void loadLaraImport(String importName) {
 
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-        // var larai = LaraI.getThreadLocalLarai();
-        /*
-        // Prepare includes
-        var includes = new LinkedHashSet<File>();
-        
-        // Add working directory
-        includes.add(SpecsIo.getWorkingDir());
-        
-        // Add context folder, if present
-        var configurationFolder = LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH)
-                .map(File::new)
-                .orElse(null);
-        
-        if (configurationFolder != null && configurationFolder.isDirectory()) {
-            includes.add(configurationFolder);
-        }
-        
-        // var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
-        // if (configurationFolder.isDirectory()) {
-        // includes.add(configurationFolder);
-        // }
-        
-        // Add user includes
-        includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
-        
-        var apis = larai.getOptions().getLaraAPIs();
-        
-        // for (var api : apis) {
-        // System.out.println("File location: " + api.getFileLocation());
-        // }
-        
-        // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
-        */
+
         var laraImporter = getLaraImporter();
         var laraImports = laraImporter.getLaraImports(importName);
 
         if (laraImports.isEmpty()) {
             throw new RuntimeException("Could not find files for import '" + importName + "'");
         }
-
-        // System.out.println("IMPORTS: " + laraImports);
 
         // Import JS code
         for (var laraImport : laraImports) {
@@ -994,19 +959,10 @@ public class LaraI {
             includes.add(configurationFolder);
         }
 
-        // var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
-        // if (configurationFolder.isDirectory()) {
-        // includes.add(configurationFolder);
-        // }
-
         // Add user includes
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
         var apis = larai.getOptions().getLaraAPIs();
-
-        // for (var api : apis) {
-        // System.out.println("File location: " + api.getFileLocation());
-        // }
 
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
@@ -1014,21 +970,8 @@ public class LaraI {
         return laraImporter;
     }
 
-    // public static Object getLaraImportInPackage(String packageName) {
-    // var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-    // // var larai = LaraI.getThreadLocalLarai();
-    //
-    // return weaverEngine.getScriptEngine().toJs(Collections.emptyList());
-    // }
-
     public static Collection<String> getLaraImportInPackage(String packageName) {
         var laraImporter = getLaraImporter();
-
         return laraImporter.getImportsFromPackage(packageName);
-        // var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-        // var larai = LaraI.getThreadLocalLarai();
-
-        // return Collections.emptyList();
-        // return Arrays.asList("lara.util.PrintOnce");
     }
 }
