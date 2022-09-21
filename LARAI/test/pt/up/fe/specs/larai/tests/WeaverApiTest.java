@@ -85,4 +85,9 @@ public class WeaverApiTest {
         newTester().test("LaraImportFromMjsTest.mjs", "LaraImportFromMjsLara.lara", "LaraImportFromMjsJs.js",
                 "LaraImportFromMjsMjs.mjs");
     }
+
+    @Test
+    public void testLaraImportStar() {
+        newTester().test("LaraImportStar.js");
+    }
 }
