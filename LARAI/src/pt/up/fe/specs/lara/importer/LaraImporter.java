@@ -224,7 +224,7 @@ public class LaraImporter {
             for (var path : includePaths) {
 
                 // Get all files in path
-                var candidateFiles = SpecsIo.getFiles(path, ext);
+                var candidateFiles = SpecsIo.getFilesRecursive(path, ext);
 
                 for (var candidateFile : candidateFiles) {
 
