@@ -120,7 +120,6 @@ public enum LaraApiResource implements LaraResourceProvider {
     ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
     ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
-    CODE_INSERTER("util/CodeInserter.lara"),
     COMBINATION("util/Combinations.lara"),
     DATA_STORE("util/DataStore.lara"),
     ID_GENERATOR("util/IdGenerator.lara"),
