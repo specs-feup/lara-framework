@@ -541,5 +541,24 @@ function laraImport(importName) {
 	// Import 
 	_LARA_IMPORT_LOADED[importName] = true;
 	debug(() => "laraImport: importing " + importName);		
-	LaraI.loadLaraImport(importName);
+	
+	// Check if Kleene Start
+	if(importName.endsWith(".*")) {
+		_laraImportKleeneStar(importName.substring(0, importName.length - 2));
+	} 
+	// Simple import
+	else {
+		LaraI.loadLaraImport(importName);
+	}
+	
+	
+
+}
+
+function _laraImportKleeneStar(packageName) {
+	const laraImports = LaraI.getLaraImportInPackage(packageName);
+	
+	for(const singleLaraImport of laraImports) {
+		laraImport(singleLaraImport);
+	}
 }

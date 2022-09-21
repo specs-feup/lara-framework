@@ -15,6 +15,8 @@ package pt.up.fe.specs.lara.importer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
@@ -64,32 +66,12 @@ public class LaraImporter {
 
         var laraImportName = new LaraImportName(importName);
 
-        // Prepare include paths
-        var includePaths = new ArrayList<File>();
+        var includePaths = getIncludePaths();
 
-        // Add workspace folder to include paths
-        if (larai.getWeaverArgs().hasValue(LaraiKeys.WORKSPACE_FOLDER)) {
-            var workspace = larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
-            for (var workspacePath : workspace) {
-                if (!workspacePath.isDirectory()) {
-                    continue;
-                }
-
-                includePaths.add(workspacePath);
-            }
-        }
-        // System.out.println("WORKSPACE: " + larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER));
-        // for (var file : larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles()) {
-        //
-        // System.out.println("IMPORTER COMPLETE PATH: " + file.getAbsolutePath());
-        // System.out.println("IMPORTER FILES IN PATH: " + SpecsIo.getFilesRecursive(file));
-        //
+        // If *, return all imports inside a package
+        // if (laraImportName.getFilename().equals("*")) {
+        // return getLaraImportsStar(laraImportName, includePaths);
         // }
-
-        // includePaths.add(SpecsIo.getWorkingDir().getAbsoluteFile());
-
-        // Add include folders
-        includePaths.addAll(includes);
 
         ext: for (var ext : LaraC.getSupportedExtensions()) {
 
@@ -127,41 +109,44 @@ public class LaraImporter {
                 continue ext;
             }
         }
-        /*
-        // 1.
-        // Check include paths
-        for (var path : includePaths) {
-            // System.out.println("PATH: " + path);
-            for (var ext : LaraC.getSupportedExtensions()) {
-        
-                var importPath = laraImportName.getFullPath() + "." + ext;
-                var importingFile = new File(path, importPath);
-        
-                if (importingFile.exists()) {
-                    laraImports.add(buildLaraImport(importingFile));
-                }
-            }
-        }
-        
-        // 2.
-        // Check resource by filename, instead of resource name
-        for (var ext : LaraC.getSupportedExtensions()) {
-            var importPath = laraImportName.getFullPath() + "." + ext;
-            // System.out.println("IMPORT PATH:" + importPath);
-            var resources = apisMap.get().get(importPath);
-            if (!resources.isEmpty()) {
-        
-                resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
-                // System.out.println("IMPORT PATH: " + importPath);
-                // System.out.println("RESOURCE: " + resource.get(0).);
-                // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
-                // System.out.println("RESOURCE: " + resource.get(0));
-            }
-        }
-        */
+
         return laraImports;
 
     }
+
+    private ArrayList<File> getIncludePaths() {
+        // Prepare include paths
+        var includePaths = new ArrayList<File>();
+
+        // Add workspace folder to include paths
+        if (larai.getWeaverArgs().hasValue(LaraiKeys.WORKSPACE_FOLDER)) {
+            var workspace = larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
+            for (var workspacePath : workspace) {
+                if (!workspacePath.isDirectory()) {
+                    continue;
+                }
+
+                includePaths.add(workspacePath);
+            }
+        }
+        // System.out.println("WORKSPACE: " + larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER));
+        // for (var file : larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles()) {
+        //
+        // System.out.println("IMPORTER COMPLETE PATH: " + file.getAbsolutePath());
+        // System.out.println("IMPORTER FILES IN PATH: " + SpecsIo.getFilesRecursive(file));
+        //
+        // }
+
+        // Add include folders
+        includePaths.addAll(includes);
+        return includePaths;
+    }
+
+    // private List<LaraImportData> getLaraImportsStar(LaraImportName laraImportName, List<File> includePaths) {
+    // // Set<LaraImportData>
+    // // TODO Auto-generated method stub
+    // return Collections.emptyList();
+    // }
 
     private LaraImportData buildLaraImport(ResourceProvider resource) {
         // return buildLaraImport(resource.read(), resource.getResource());
@@ -264,5 +249,65 @@ public class LaraImporter {
         }
         // System.out.println("RESOURCE MAP: " + resourcesMap);
         return resourcesMap;
+    }
+
+    public Collection<String> getImportsFromPackage(String packageName) {
+        SpecsLogs.debug(() -> "Searching for imports in package '" + packageName + "'");
+
+        var packageNameAsPath = packageName.replace('.', '/');
+        var packageNameAsPathWithSlash = packageNameAsPath + "/";
+
+        var imports = new LinkedHashSet<String>();
+
+        var includePaths = getIncludePaths();
+
+        for (var ext : LaraC.getSupportedExtensions()) {
+
+            // 1.
+            // Check include paths
+            for (var path : includePaths) {
+
+                // Get all files in path
+                var candidateFiles = SpecsIo.getFiles(path, ext);
+
+                for (var candidateFile : candidateFiles) {
+
+                    // Equivalent package name
+                    var relativePath = SpecsIo.getRelativePath(candidateFile.getParentFile(), path);
+
+                    // Ignore files outside of package name
+                    if (!relativePath.equals(packageNameAsPath)) {
+                        continue;
+                    }
+
+                    // Found valid import
+                    var importName = SpecsIo.removeExtension(candidateFile);
+
+                    var importPath = relativePath + "/" + importName;
+                    imports.add(importPath.replace("/", "."));
+                }
+
+            }
+
+            // 2.
+            // Built-in resources
+
+            for (var resource : apis) {
+
+                // Consider resource only if location is the same as the package name
+                if (!resource.getResourceLocation().equals(packageNameAsPathWithSlash)) {
+                    continue;
+                }
+
+                // Found valid import
+                var importPath = SpecsIo.removeExtension(resource.getFileLocation()).replace('/', '.');
+                imports.add(importPath);
+            }
+
+        }
+
+        SpecsLogs.debug(() -> "Found imports: " + imports + "");
+
+        return imports;
     }
 }
