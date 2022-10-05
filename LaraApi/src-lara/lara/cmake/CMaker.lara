@@ -36,7 +36,7 @@ var CMaker = function(name, disableWeaving) {
 	
 };
 
-CMaker.prototype._MINIMUM_VERSION = "2.8";
+CMaker.prototype._MINIMUM_VERSION = "3.10";
 CMaker.prototype._EXE_VAR = "EXE_NAME";
 
 CMaker._DEFAULT_BIN_FOLDER = "bin";
