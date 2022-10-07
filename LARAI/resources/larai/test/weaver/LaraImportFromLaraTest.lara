@@ -1,0 +1,15 @@
+import LaraImportFromLaraLara;
+import LaraImportFromLaraJs;
+import LaraImportFromLaraMjs;
+
+aspectdef Test
+
+	var fromLara = new LaraImportFromLaraLara();
+	fromLara.print();
+	
+	var fomJs = new LaraImportFromLaraJs();
+	fomJs.print();
+	
+	var fomMjs = new LaraImportFromLaraMjs();
+	fomMjs.print();
+end

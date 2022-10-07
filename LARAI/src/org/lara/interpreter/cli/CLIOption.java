@@ -52,7 +52,7 @@ public enum CLIOption implements WeaverOption {
     bundle_tags("bt", OptionArguments.ONE_ARG, "bundle tags",
             "Bundle tags, in the following format: <TAG1>=<VALUE1>[,<TAG_N>=<VALUE_N>]*",
             LaraiKeys.BUNDLE_TAGS),
-    restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restric mode (some Java classes are not allowed)",
+    restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restrict mode (some Java classes are not allowed)",
             LaraiKeys.RESTRICT_MODE),
     call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
     jsengine("js", OptionArguments.ONE_ARG, "engine name",

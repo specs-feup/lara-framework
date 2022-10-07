@@ -23,12 +23,15 @@ public enum WeaverApiResource implements LaraResourceProvider {
 
     // Weaver utils
     WEAVER_DATA_STORE("util/WeaverDataStore.lara"),
+    ACTION_AWARE_CACHE("util/ActionAwareCache.js"),
 
     // Weaver
     AST("Ast.lara"),
     JOIN_POINTS("JoinPointsBase.lara"),
-    QUERY("Query.lara"),
+    QUERY("Query.js"),
+    SCRIPT("Script.js"),
     SELECTOR("Selector.lara"),
+    TRAVERSAL_TYPE("TraversalType.js"),
     WEAVER("Weaver.lara"),
     WEAVER_JPS("WeaverJps.lara"),
     WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara"),

@@ -1,0 +1,5 @@
+Imported JsImportFile
+Imported lara.Io: object
+Imported MjsImport
+Imported lara.Strings: object
+Imported JsImportTest.lara

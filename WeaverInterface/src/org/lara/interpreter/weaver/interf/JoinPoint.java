@@ -196,6 +196,7 @@ public abstract class JoinPoint {
         attributes.add("selects");
         attributes.add("attributes");
         attributes.add("actions");
+        attributes.add("self");
     }
 
     /**
@@ -569,4 +570,20 @@ public abstract class JoinPoint {
         return attributes.contains(attributeName);
     }
 
+    public String getDump() {
+        return dump(this, "");
+    }
+
+    public static String dump(JoinPoint jp, String prefix) {
+        StringBuilder dump = new StringBuilder();
+        dump.append(prefix).append(jp.toString()).append("\n");
+
+        jp.getJpChildrenStream().forEach(child -> dump.append(dump(child, prefix + "   ")));
+
+        return dump.toString();
+    }
+
+    public final JoinPoint getSelf() {
+        return this;
+    }
 }

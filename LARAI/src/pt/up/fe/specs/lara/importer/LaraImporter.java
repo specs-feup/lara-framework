@@ -15,6 +15,8 @@ package pt.up.fe.specs.lara.importer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
@@ -25,8 +27,10 @@ import larac.options.LaraCOptions;
 import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -62,32 +66,7 @@ public class LaraImporter {
 
         var laraImportName = new LaraImportName(importName);
 
-        // Prepare include paths
-        var includePaths = new ArrayList<File>();
-
-        // Add workspace folder to include paths
-        if (larai.getWeaverArgs().hasValue(LaraiKeys.WORKSPACE_FOLDER)) {
-            var workspace = larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
-            for (var workspacePath : workspace) {
-                if (!workspacePath.isDirectory()) {
-                    continue;
-                }
-
-                includePaths.add(workspacePath);
-            }
-        }
-        // System.out.println("WORKSPACE: " + larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER));
-        // for (var file : larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles()) {
-        //
-        // System.out.println("IMPORTER COMPLETE PATH: " + file.getAbsolutePath());
-        // System.out.println("IMPORTER FILES IN PATH: " + SpecsIo.getFilesRecursive(file));
-        //
-        // }
-
-        // includePaths.add(SpecsIo.getWorkingDir().getAbsoluteFile());
-
-        // Add include folders
-        includePaths.addAll(includes);
+        var includePaths = getIncludePaths();
 
         ext: for (var ext : LaraC.getSupportedExtensions()) {
 
@@ -109,65 +88,54 @@ public class LaraImporter {
             // 2.
             // Check resource by filename, instead of resource name
             var importPath = laraImportName.getFullPath() + "." + ext;
-            // System.out.println("IMPORT PATH:" + importPath);
+
             var resources = apisMap.get().get(importPath);
             if (!resources.isEmpty()) {
                 for (var resource : resources) {
                     SpecsLogs.debug(
                             () -> "Adding resource '" + resource.getResource() + "' for import '" + importName + "'");
                     laraImports.add(buildLaraImport(resource));
-                    // System.out.println("IMPORT PATH: " + importPath);
-                    // System.out.println("RESOURCE: " + resource.get(0).);
-                    // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
-                    // System.out.println("RESOURCE: " + resource.get(0));
                 }
 
                 continue ext;
             }
         }
-        /*
-        // 1.
-        // Check include paths
-        for (var path : includePaths) {
-            // System.out.println("PATH: " + path);
-            for (var ext : LaraC.getSupportedExtensions()) {
-        
-                var importPath = laraImportName.getFullPath() + "." + ext;
-                var importingFile = new File(path, importPath);
-        
-                if (importingFile.exists()) {
-                    laraImports.add(buildLaraImport(importingFile));
-                }
-            }
-        }
-        
-        // 2.
-        // Check resource by filename, instead of resource name
-        for (var ext : LaraC.getSupportedExtensions()) {
-            var importPath = laraImportName.getFullPath() + "." + ext;
-            // System.out.println("IMPORT PATH:" + importPath);
-            var resources = apisMap.get().get(importPath);
-            if (!resources.isEmpty()) {
-        
-                resources.forEach(resource -> laraImports.add(buildLaraImport(resource)));
-                // System.out.println("IMPORT PATH: " + importPath);
-                // System.out.println("RESOURCE: " + resource.get(0).);
-                // laraImports.add(new ResourceLaraImport(importPath, resource.get(0)));
-                // System.out.println("RESOURCE: " + resource.get(0));
-            }
-        }
-        */
+
         return laraImports;
 
     }
 
+    private ArrayList<File> getIncludePaths() {
+        // Prepare include paths
+        var includePaths = new ArrayList<File>();
+
+        // Add workspace folder to include paths
+        if (larai.getWeaverArgs().hasValue(LaraiKeys.WORKSPACE_FOLDER)) {
+            var workspace = larai.getWeaverArgs().get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
+            for (var workspacePath : workspace) {
+                if (!workspacePath.isDirectory()) {
+                    continue;
+                }
+
+                includePaths.add(workspacePath);
+            }
+        }
+
+        // Add include folders
+        includePaths.addAll(includes);
+        return includePaths;
+    }
+
     private LaraImportData buildLaraImport(ResourceProvider resource) {
-        // return buildLaraImport(resource.read(), resource.getResource());
-        return buildLaraImport(resource.read(), resource.getFilename());
+        var code = resource.read();
+        SpecsCheck.checkNotNull(code, () -> "laraImport: could not read resource '" + resource.getResource() + "'");
+        return buildLaraImport(code, resource.getFilename());
     }
 
     private LaraImportData buildLaraImport(File importingFile) {
-        return buildLaraImport(SpecsIo.read(importingFile), importingFile.getName());
+        var code = SpecsIo.read(importingFile);
+        SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
+        return buildLaraImport(code, importingFile.getName());
     }
 
     private LaraImportData buildLaraImport(String code, String filename) {
@@ -175,9 +143,11 @@ public class LaraImporter {
 
         switch (ext) {
         case "js":
-            return new LaraImportData(filename, code, JsFileType.NORMAL);
+            var jsCode = processCode(code, filename);
+            return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
         case "mjs":
-            return new LaraImportData(filename, code, JsFileType.MODULE);
+            var mjsCode = processCode(code, filename);
+            return new LaraImportData(filename, mjsCode, JsFileType.MODULE);
         case "lara":
             // Compile LARA file
             var args = new ArrayList<>();
@@ -189,31 +159,10 @@ public class LaraImporter {
 
             var aspectIr = lara.compile();
 
-            // if (true) {
-            // // if (filename.equals("Clava.lara")) {
-            // try {
-            // System.out.println("PRINTING ASPECT IR");
-            // System.out.println(StringUtils.xmlToStringBuffer(aspectIr, MessageConstants.INDENT).toString());
-            // } catch (Exception e) {
-            // throw new RuntimeException("Could not print AspectIR", e);
-            // }
-            // }
-
-            // System.out.println("FILENAME: " + filename);
-
             var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
             try {
-                var jsCode = processor.toSimpleJs(aspectIr);
-
-                // if (true) {
-                // // if (filename.equals("clava/clava/Clava.lara")) {
-                // System.out.println("LARA FILE: " + filename);
-                // System.out.println("Lara to Js Begin:\n" + jsCode);
-                // System.out.println("Lara to Js End");
-                // }
-
-                // System.out.println("COmpiled code:\n" + laraCompiler.getLastCompilation());
-                return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
+                var aspectJsCode = processor.toSimpleJs(aspectIr);
+                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL);
             } catch (Exception e) {
                 throw new RuntimeException("Error during LARA compilation", e);
             }
@@ -224,13 +173,97 @@ public class LaraImporter {
 
     }
 
+    /**
+     * Processes JS code that is going to be loaded.
+     * 
+     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
+     * 
+     * @param code
+     * @param filename
+     * @return
+     */
+    private String processCode(String code, String filename) {
+        var template = "if(typeof <VARNAME> === 'undefined') {\r\n"
+                + "    println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class '<VARNAME>'\");\r\n"
+                + "} else {\r\n"
+                + "    globalThis.<VARNAME> = <VARNAME>;\r\n"
+                + "}";
+
+        // Get varname
+        var varName = SpecsStrings.escapeJson(SpecsIo.removeExtension(new File(filename).getName()));
+        var escapedFilename = SpecsStrings.escapeJson(filename);
+        var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
+
+        return code + "\n\n" + globalizeCode;
+    }
+
     private MultiMap<String, ResourceProvider> buildIncludeResourcesMap() {
         var resourcesMap = new MultiMap<String, ResourceProvider>();
 
         for (var resource : apis) {
             resourcesMap.put(resource.getFileLocation(), resource);
         }
-        // System.out.println("RESOURCE MAP: " + resourcesMap);
+
         return resourcesMap;
+    }
+
+    public Collection<String> getImportsFromPackage(String packageName) {
+        SpecsLogs.debug(() -> "Searching for imports in package '" + packageName + "'");
+
+        var packageNameAsPath = packageName.replace('.', '/');
+        var packageNameAsPathWithSlash = packageNameAsPath + "/";
+
+        var imports = new LinkedHashSet<String>();
+
+        var includePaths = getIncludePaths();
+
+        for (var ext : LaraC.getSupportedExtensions()) {
+
+            // 1.
+            // Check include paths
+            for (var path : includePaths) {
+
+                // Get all files in path
+                var candidateFiles = SpecsIo.getFilesRecursive(path, ext);
+
+                for (var candidateFile : candidateFiles) {
+
+                    // Equivalent package name
+                    var relativePath = SpecsIo.getRelativePath(candidateFile.getParentFile(), path);
+
+                    // Ignore files outside of package name
+                    if (!relativePath.equals(packageNameAsPath)) {
+                        continue;
+                    }
+
+                    // Found valid import
+                    var importName = SpecsIo.removeExtension(candidateFile);
+
+                    var importPath = relativePath + "/" + importName;
+                    imports.add(importPath.replace("/", "."));
+                }
+
+            }
+
+            // 2.
+            // Built-in resources
+
+            for (var resource : apis) {
+
+                // Consider resource only if location is the same as the package name
+                if (!resource.getResourceLocation().equals(packageNameAsPathWithSlash)) {
+                    continue;
+                }
+
+                // Found valid import
+                var importPath = SpecsIo.removeExtension(resource.getFileLocation()).replace('/', '.');
+                imports.add(importPath);
+            }
+
+        }
+
+        SpecsLogs.debug(() -> "Found imports: " + imports + "");
+
+        return imports;
     }
 }

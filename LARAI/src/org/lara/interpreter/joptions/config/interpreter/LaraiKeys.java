@@ -108,7 +108,7 @@ public interface LaraiKeys {
     DataKey<String> BUNDLE_TAGS = KeyFactory.string("bundle_tags").setLabel("Bundle tags");
 
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
-            .setLabel("Restric mode (some Java classes are not allowed)");
+            .setLabel("Restrict mode (some Java classes are not allowed)");
 
     DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
             .setLabel("JavaScript Engine")

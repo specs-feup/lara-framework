@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -35,6 +36,7 @@ import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 
 /**
  * Utility methods what weavers can use to bootstrap execution.
@@ -43,6 +45,8 @@ import pt.up.fe.specs.util.SpecsSystem;
  *
  */
 public class WeaverLauncher {
+
+    private static final String FLAG_KEEP_LARA = "--keepLara";
 
     private final WeaverEngine engine;
 
@@ -73,16 +77,41 @@ public class WeaverLauncher {
 
     private boolean executeApiExtractor(String[] args) {
 
-        if (args.length < 2) {
-            SpecsLogs.info("Expected output folder as second parameter");
+        // Options
+        var keepLara = false;
+
+        var processedArgs = new ArrayList<String>();
+
+        // Remove first argument (e.g. -api)
+        IntStream.range(1, args.length)
+                .mapToObj(i -> args[i])
+                .forEach(processedArgs::add);
+
+        int index = -1;
+
+        index = processedArgs.indexOf("--help");
+        if (index != -1) {
+            SpecsLogs.info("<lara compiler> -api [--keepLara] <output folder>");
+            return true;
+        }
+
+        while ((index = processedArgs.indexOf(FLAG_KEEP_LARA)) != -1) {
+            processedArgs.remove(index);
+            keepLara = true;
+        }
+
+        if (processedArgs.isEmpty()) {
+            SpecsLogs.info("Expected output folder as parameter");
             return false;
         }
 
-        var outputFolder = SpecsIo.mkdir(args[1]);
+        var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
         // Get APIs
         LaraI larai = LaraI.newInstance(engine);
-        var api = larai.getOptions().getLaraAPIs();
+        var api = new ArrayList<ResourceProvider>();
+        api.addAll(larai.getOptions().getCoreScripts());
+        api.addAll(larai.getOptions().getLaraAPIs());
 
         // Create LARA compiler
         var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
@@ -96,7 +125,7 @@ public class WeaverLauncher {
             var fileContents = SpecsIo.getResource(apiFile);
 
             // If LARA file, first convert to JavaScript
-            if (SpecsIo.getExtension(fileLocation).equals("lara")) {
+            if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
                 destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
 
                 fileContents = laraCompiler.compile(apiFile.getFilename(), fileContents);
@@ -220,7 +249,7 @@ public class WeaverLauncher {
     private Boolean executeUnitTester(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         List<String> laraUnitArgs = new ArrayList<>();
         // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
@@ -278,7 +307,7 @@ public class WeaverLauncher {
     private Boolean executeDocGenerator(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         List<String> laraDocArgs = new ArrayList<>();
         laraDocArgs.add("--weaver");
@@ -341,7 +370,7 @@ public class WeaverLauncher {
     private Boolean executeServer(String[] args) {
 
         // First index is the task flag
-        int flagIndex = 1;
+        int flagIndex = 0;
 
         SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
 

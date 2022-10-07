@@ -326,9 +326,12 @@ public class LaraDocParser {
 
             // Parse JS file
             if (module.getMainJs() != null) {
+                var jsCode = SpecsIo.read(module.getMainJs());
+
                 try {
-                    laraDocBuilder.parseJs(SpecsIo.read(module.getMainJs()));
+                    laraDocBuilder.parseJs(jsCode);
                 } catch (Exception e) {
+
                     Throwable underlyingCause = e;
                     var childCause = e.getCause();
                     while (childCause != null) {

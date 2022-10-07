@@ -58,6 +58,14 @@ public enum LaraApiResource implements LaraResourceProvider {
     DSE_VARIANT("dse/DseVariant.lara"),
     VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
+    // Graphs
+    GRAPHS("graphs/Graphs.js"),
+    GRAPH_NODE("graphs/GraphNode.js"),
+    GRAPH_EDGE("graphs/GraphEdge.js"),
+    NODE_DATA("graphs/NodeData.js"),
+    EDGE_DATA("graphs/EdgeData.js"),
+    DOT_FORMATTER("graphs/DotFormatter.js"),
+
     // Iterators
     LARA_ITERATOR("iterators/LaraIterator.lara"),
     LINE_ITERATOR("iterators/LineIterator.lara"),
@@ -78,6 +86,12 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Pass
     PASS("pass/Pass.js"),
+    PASS_APPLY_ARG("pass/PassApplyArg.js"),
+    PASSES("pass/Passes.js"),
+    PASS_RESULT("pass/PassResult.js"),
+    PASS_AGREGGATE_PASS_RESULT("pass/AggregatePassResult.js"),
+    PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
+    PASS_PASS_TRANSFORMATION_RESULT("pass/PassTransformationResult.js"),
 
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
@@ -91,8 +105,8 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Lara
     _JAVA_TYPES("_JavaTypes.lara"),
-    CHECK("Check.lara"),
-    COLLECTIONS("Collections.lara"),
+    CHECK("Check.js"),
+    COLLECTIONS("Collections.js"),
     CSV("Csv.lara"),
     DEBUG("Debug.lara"),
     IO("Io.lara"),
@@ -103,9 +117,9 @@ public enum LaraApiResource implements LaraResourceProvider {
     JAVA_INTEROP("JavaInterop.lara"),
 
     // Util
+    ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
     ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
-    CODE_INSERTER("util/CodeInserter.lara"),
     COMBINATION("util/Combinations.lara"),
     DATA_STORE("util/DataStore.lara"),
     ID_GENERATOR("util/IdGenerator.lara"),

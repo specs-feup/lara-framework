@@ -74,6 +74,7 @@ import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import tdrc.utils.Pair;
 
@@ -212,8 +213,13 @@ public class LaraI {
      * @return
      */
     public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
+
+        // Create new instance of the weaver engine, to avoid reuse of information between consecutive runs
+        var newWeaverEngine = SpecsSystem.newInstance(weaverEngine.getClass());
+
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        // var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
+        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, newWeaverEngine));
         return result == null ? false : result;
     }
 
@@ -688,6 +694,8 @@ public class LaraI {
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
                 interpreter.executeMainAspect(options.getLaraFile());
 
+                postMainJsExecution();
+
                 // Close weaver
                 weaver.close();
             }
@@ -716,6 +724,18 @@ public class LaraI {
             // Rethrow exception
             throw e;
             // throw new RuntimeException("Exception during weaving:", e);
+        }
+
+    }
+
+    private void postMainJsExecution() {
+
+        // If report file enabled, eval writing the outputs using weaver.Script
+        var outputJsonFile = options.getReportFile();
+        if (outputJsonFile.isUsed()) {
+            var template = new Replacer(() -> "org/lara/interpreter/outputResult.js.template");
+            template.replace("<OUTPUT_JSON_PATH>", SpecsIo.normalizePath(outputJsonFile.getFile()));
+            interpreter.evaluate(template.toString(), JsFileType.NORMAL, "LaraI.postMainJsExecution() - output json");
         }
 
     }
@@ -908,9 +928,32 @@ public class LaraI {
     /**
      * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
      * 
+     * <p>
+     * Does not verify if import has already been imported.
+     * 
      * @param importName
      */
     public static void loadLaraImport(String importName) {
+
+        var weaverEngine = WeaverEngine.getThreadLocalWeaver();
+
+        var laraImporter = getLaraImporter();
+        var laraImports = laraImporter.getLaraImports(importName);
+
+        if (laraImports.isEmpty()) {
+            throw new RuntimeException("Could not find files for import '" + importName + "'");
+        }
+
+        // Import JS code
+        for (var laraImport : laraImports) {
+            // SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
+            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+                    laraImport.getFilename() + " (LARA import '" + importName + "')");
+        }
+
+    }
+
+    public static LaraImporter getLaraImporter() {
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
         var larai = LaraI.getThreadLocalLarai();
 
@@ -929,52 +972,19 @@ public class LaraI {
             includes.add(configurationFolder);
         }
 
-        // var configurationFolder = new File(LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH));
-        // if (configurationFolder.isDirectory()) {
-        // includes.add(configurationFolder);
-        // }
-
         // Add user includes
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
         var apis = larai.getOptions().getLaraAPIs();
 
-        // for (var api : apis) {
-        // System.out.println("File location: " + api.getFileLocation());
-        // }
-
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
-        var laraImports = laraImporter.getLaraImports(importName);
 
-        if (laraImports.isEmpty()) {
-            throw new RuntimeException("Could not find files for import '" + importName + "'");
-        }
+        return laraImporter;
+    }
 
-        // System.out.println("IMPORTS: " + laraImports);
-
-        // Import JS code
-        for (var laraImport : laraImports) {
-            // SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
-            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "')");
-        }
-
-        /*
-        var laraC = getThreadLocalLarac();
-        var weaver = WeaverEngine.getThreadLocalWeaver();
-        
-        var aspectProcessor = LaraI.buildAspectProcessor(weaver, weaver.getScriptEngine());
-        try {
-            var jsCode = aspectProcessor.toSimpleJs(laraC.importLara(importName));
-        
-            if (!jsCode.strip().isBlank()) {
-                weaver.getScriptEngine().eval(jsCode);
-            }
-        
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while loading LARA import", e);
-        }
-        */
+    public static Collection<String> getLaraImportInPackage(String packageName) {
+        var laraImporter = getLaraImporter();
+        return laraImporter.getImportsFromPackage(packageName);
     }
 }

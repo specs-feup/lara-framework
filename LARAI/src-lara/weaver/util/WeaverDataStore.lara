@@ -1,3 +1,4 @@
+import weaver.Weaver;
 import lara.Io;
 import lara.util.DataStore;
 
@@ -67,6 +68,34 @@ WeaverDataStore.prototype.setOutputFolder = function(outputFolder) {
 	var normalizedOutputFolder = Io.getPath(outputFolder);
 	//var normalizedOutputFolder = Io.mkdir(outputFolder);
 	this.put("output", normalizedOutputFolder);	
+}
+
+/**
+ * 
+ */
+WeaverDataStore.prototype.getSourceFolders = function() {
+	var sourcesFileList = this.get("workspace");		
+
+	return Weaver.toJs(sourcesFileList.getFiles());
+}
+
+/**
+ * 
+ */
+WeaverDataStore.prototype.setSourceFolders = function(sourceFolders) {
+	
+	var fileList = Java.type("org.lara.interpreter.joptions.keys.FileList").newInstance(sourceFolders);	
+	this.put("workspace", fileList);	
+}
+
+
+/**
+ * 
+ */
+WeaverDataStore.prototype.getIncludeFolders = function() {
+	var includesFileList = this.get("include");		
+
+	return Weaver.toJs(includesFileList.getFiles());
 }
 
 /**

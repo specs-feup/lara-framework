@@ -1,0 +1,50 @@
+import weaver.jp.ClassTypeJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function InterfaceJp(astNode) {
+    // Parent constructor
+    ClassTypeJp.call(this,astNode);
+    
+}
+// Inheritance
+InterfaceJp.prototype = Object.create(ClassTypeJp.prototype);
+InterfaceJp.prototype.constructor = InterfaceJp;
+
+// JoinPoint Types
+InterfaceJp._JP_TYPES = new Set();
+_lara_dummy_ = InterfaceJp._JP_TYPES.add('interface');
+_lara_dummy_ = InterfaceJp._JP_TYPES.add('classType');
+_lara_dummy_ = InterfaceJp._JP_TYPES.add('decl');
+_lara_dummy_ = InterfaceJp._JP_TYPES.add('stmt');
+_lara_dummy_ = InterfaceJp._JP_TYPES.add('joinpoint');
+
+
+InterfaceJp.prototype.instanceOf = function(joinPointType) {
+	return InterfaceJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new ClassTypeJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+InterfaceJp.prototype.types = function(joinPointType) {
+	return InterfaceJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(InterfaceJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'interface'; }
+});
+

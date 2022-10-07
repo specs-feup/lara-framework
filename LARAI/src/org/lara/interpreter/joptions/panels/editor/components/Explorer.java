@@ -51,6 +51,7 @@ import org.lara.interpreter.joptions.panels.editor.listeners.FileTreeCellRendere
 import org.lara.interpreter.joptions.panels.editor.listeners.GenericKeyListener;
 import org.lara.interpreter.joptions.panels.editor.utils.Factory;
 
+import pt.up.fe.specs.util.SpecsSwing;
 import pt.up.fe.specs.util.swing.GenericMouseListener;
 
 public class Explorer extends JPanel {
@@ -514,6 +515,21 @@ public class Explorer extends JPanel {
 
     }
 
+    public void openInSystemExplorer(ActionEvent e) {
+        TreePath[] selectionPaths = tree.getSelectionPaths();
+        if (selectionPaths == null) {
+            JOptionPane.showMessageDialog(parent, "Please first select a file to open.");
+            return;
+        }
+        for (TreePath treePath : selectionPaths) {
+            File file = getFile(treePath);
+            if (file != null) {
+                SpecsSwing.browseFileDirectory(file);
+            }
+        }
+
+    }
+
     public void newProject(ActionEvent e) {
         JFileChooser fc = Factory.newFileChooser("Open Project", JFileChooser.DIRECTORIES_ONLY, "Open",
                 Collections.emptyList(), lastDirectory);
@@ -598,7 +614,7 @@ public class Explorer extends JPanel {
 
     private static File getFile(TreePath path) {
         Object lastPathComponent = path.getLastPathComponent();
-        if (lastPathComponent == null) {
+        if (lastPathComponent == null || !(lastPathComponent instanceof FileNode)) {
             return null;
         }
         FileNode node = (FileNode) lastPathComponent;

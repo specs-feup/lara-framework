@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <actions>
+
+ 	<action name="report" class="workspace"/>
+
 <!-- 	<action name="insert" class="function"> -->
 <!-- 			<parameter name="position" type="string" default = "before"/> -->
 <!-- 			<parameter name="code" type="template"/> -->

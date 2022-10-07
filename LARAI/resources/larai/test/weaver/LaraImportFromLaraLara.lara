@@ -1,0 +1,11 @@
+/**
+ * @class
+ */
+var LaraImportFromLaraLara = function() {
+
+};
+
+
+LaraImportFromLaraLara.prototype.print = function() {
+	println("LaraImportFromLaraLara.print()");
+}

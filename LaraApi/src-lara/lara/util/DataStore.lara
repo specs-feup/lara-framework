@@ -244,6 +244,22 @@ DataStore.prototype.getConfigurationFolder = function() {
 	return Io.getPath(currentFolder.get());	
 }; 
 
+
+/**
+ *
+ * @return {J#java.io.File} The configuration file, if one was used, or undefined otherwise.
+ *
+ */
+DataStore.prototype.getConfigurationFile = function() {
+	var configFile = this.data.get("app_config");
+
+	if(isUndefined(configFile)) {	
+		return undefined;
+	}
+	
+	return configFile;	
+}; 
+
 /**
  * The folder that is considered the working folder of the current context.
  *  

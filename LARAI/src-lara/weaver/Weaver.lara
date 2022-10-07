@@ -4,6 +4,7 @@ import lara.Strings;
 
 import weaver.util.WeaverDataStore;
 import lara.util.PrintOnce;
+import lara.JavaInterop;
 
 /**
  * Contains utility methods related to the weaver. 
@@ -48,6 +49,8 @@ Weaver.writeCode = function(outputFolder) {
  * @param {String} type 
  */
 Weaver.isJoinPoint = function($joinpoint, type) {
+	return isJoinPoint($joinpoint, type);
+	/*
 	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
 
 	if(type === undefined) {
@@ -59,6 +62,7 @@ Weaver.isJoinPoint = function($joinpoint, type) {
 	}
 	
 	return $joinpoint.instanceOf(type);
+	*/
 }
 
 /**
@@ -190,6 +194,8 @@ Weaver.runParallel = function(argsLists, threads, weaverCommand) {
 
 	// WeaverOptions has a function for this, but imports Weaver
 	var weaverData = new WeaverDataStore(LaraI.getThreadLocalData());
+	
+	var WeaverLauncher = Java.type("pt.up.fe.specs.lara.WeaverLauncher");
 	var jsonStrings = WeaverLauncher.executeParallelStatic(safeArgsLists, threads, JavaInterop.arrayToStringList(weaverCommand), weaverData.getContextFolder().getAbsolutePath());	
 
 	// Read each json file into its own object

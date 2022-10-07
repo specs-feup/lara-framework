@@ -1,5 +1,6 @@
 import weaver.JoinPoints;
 import weaver.Weaver;
+import weaver.TraversalType;
 import lara.util.JpFilter;
 import lara.util.Accumulator;
 import lara.Check;
@@ -73,17 +74,53 @@ Selector._parseFilter = function(filter, name) {
 
 
 /// INSTANCE FUNCTIONS
+
+/**
+ * Generator function, allows Selector to be used in for..of statements.
+ *
+ * Returns join points iteratively, as if .get() was called.
+ */
 Selector.prototype[Symbol.iterator] = function* () {
+
+	/*
 	var $jps = this.get();
 	for(var $jp of $jps) {
 		yield $jp;
 	}	
+	*/
+	if(this._$currentJps === undefined) {
+		println("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
+		yield undefined;
+	}
+	
+
+	for(var $jpChain of this._$currentJps) {
+		yield $jpChain[this._lastName];
+	}
+	
+	this._$currentJps = undefined;	
 }
 
 
+/**
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. 
+ * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
+ */
+Selector.prototype.search = function(name, filter, traversal) {
+	if(traversal === undefined) {
+		traversal = TraversalType.PREORDER;
+	}
+	
+	switch(traversal) {
+		case TraversalType.PREORDER: 
+			return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});		
+		case TraversalType.POSTORDER:
+			return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendantsPostorder($jp, name);});
+		default:
+			throw new Error("Traversal type not implemented: " + traversal);
+	}
 
-Selector.prototype.search = function(name, filter) {
-	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.descendants($jp, name);});
 }
 
 Selector.prototype.children = function(name, filter) {

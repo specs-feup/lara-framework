@@ -129,4 +129,13 @@ public class LaraApiTest {
         newTester().test("util/TupleIdTest.lara");
     }
 
+    @Test
+    public void testGraphsBasic() {
+        newTester().test("graphs/BasicGraphTest.js");
+    }
+
+    @Test
+    public void testActionAwareCache() {
+        newTester().test("util/ActionAwareCacheTest.js");
+    }
 }

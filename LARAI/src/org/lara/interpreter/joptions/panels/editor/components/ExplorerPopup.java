@@ -29,25 +29,26 @@ public class ExplorerPopup extends JPopupMenu {
     private static final long serialVersionUID = 1L;
 
     public ExplorerPopup(Explorer explorer) {
-	// JPopupMenu popupMenu = new JPopupMenu("POPUP");
-	newItem("Open File", explorer::open);
-	newItem("Open Main Lara File", explorer::openMainLara);
-	addSeparator();
-	newItem("New Project", explorer::newProject);
-	newItem("Remove Project", explorer::removeProject);
-	addSeparator();
-	newItem("Expand", explorer::expand);
-	newItem("Collapse", explorer::collapse);
-	newItem("Refresh", e -> explorer.refresh());
+        // JPopupMenu popupMenu = new JPopupMenu("POPUP");
+        newItem("Open File", explorer::open);
+        newItem("Open Main Lara File", explorer::openMainLara);
+        newItem("Open in System Explorer", explorer::openInSystemExplorer);
+        addSeparator();
+        newItem("New Project", explorer::newProject);
+        newItem("Remove Project", explorer::removeProject);
+        addSeparator();
+        newItem("Expand", explorer::expand);
+        newItem("Collapse", explorer::collapse);
+        newItem("Refresh", e -> explorer.refresh());
     }
 
     private JMenuItem newItem(String name, Consumer<ActionEvent> listener) {
 
-	JMenuItem newItem = new JMenuItem(name);
+        JMenuItem newItem = new JMenuItem(name);
 
-	// newItem.setMnemonic(keyEvent);
-	newItem.addActionListener(new GenericActionListener(listener));
+        // newItem.setMnemonic(keyEvent);
+        newItem.addActionListener(new GenericActionListener(listener));
 
-	return add(newItem);
+        return add(newItem);
     }
 }
