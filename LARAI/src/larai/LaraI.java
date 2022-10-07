@@ -13,7 +13,6 @@
 package larai;
 
 import java.io.File;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -669,7 +668,7 @@ public class LaraI {
 
         try {
             // Create interpreter
-            interpreter = new Interpreter(this, engine, options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD));
+            interpreter = new Interpreter(this, engine);
         } catch (Exception e) {
             throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
         }
@@ -914,8 +913,12 @@ public class LaraI {
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
 
+        // Enables auto-loading of search APIs
+        // larai.getOptions().getWeaverArgs().set(LaraiKeys.API_AUTOLOAD, true);
+
         // Create interpreter
-        Interpreter interpreter = new Interpreter(larai, jsEngine, false);
+        Interpreter interpreter = new Interpreter(larai, jsEngine);
+        // Interpreter interpreter = new Interpreter(larai, jsEngine, false);
         larai.setInterpreter(interpreter);
         // larai.getInterpreter().getImportProcessor().importAndInitialize();
 

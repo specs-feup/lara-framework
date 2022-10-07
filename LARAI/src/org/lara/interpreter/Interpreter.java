@@ -29,6 +29,7 @@ import org.lara.interpreter.generator.stmt.ImportProcessor;
 import org.lara.interpreter.generator.stmt.StatementProcessor;
 import org.lara.interpreter.generator.stmt.WeaverStatementProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
@@ -100,10 +101,6 @@ public class Interpreter {
      *            the scope for this interpreter
      */
     public Interpreter(LaraI laraInt, JsEngine engine) {
-        this(laraInt, engine, true);
-    }
-
-    public Interpreter(LaraI laraInt, JsEngine engine, boolean importScripts) {
         laraInterp = laraInt;
         options = laraInterp.getOptions();
         out = laraInterp.out;
@@ -116,7 +113,7 @@ public class Interpreter {
             stackStrace = new CallStackTrace();
         }
 
-        if (importScripts) {
+        if (options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
             importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
             importProcessor.importAndInitialize();
         }
