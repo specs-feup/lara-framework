@@ -101,6 +101,10 @@ public class Interpreter {
      *            the scope for this interpreter
      */
     public Interpreter(LaraI laraInt, JsEngine engine) {
+        // this(laraInt, engine, true);
+        // }
+        //
+        // public Interpreter(LaraI laraInt, JsEngine engine, boolean importScripts) {
         laraInterp = laraInt;
         options = laraInterp.getOptions();
         out = laraInterp.out;
@@ -339,6 +343,9 @@ public class Interpreter {
             }
 
             // Check if laraGetter should be used
+            // System.out.println("EXP: " + getJavascriptString(exp.exprs.get(0), -1));
+            // System.out.println("EXP2: " + getJavascriptString(exp.exprs.get(1), 0));
+            // System.out.println("USE LARA GETTER?: " + useLaraGetter(exp));
             if (useLaraGetter(exp)) {
                 ret.append(JoinPoint.getLaraGetterName())
                         .append("(")
@@ -372,16 +379,29 @@ public class Interpreter {
     }
 
     private boolean useLaraGetter(Expression propertyExp) {
+        // var prop = getJavascriptString(propertyExp.exprs.get(1), 0).toString();
+        // var access = getJavascriptString(propertyExp.exprs.get(0), -1) + "[" +
+        // getJavascriptString(propertyExp.exprs.get(1), 0) + "]";
+        // if (prop.equals("'descendants'")) {
+        // System.out.println("Found descendants in " + access);
+        // }
 
         // If engine supports transforming properties into accessors,
         // always use properties
         if (getEngine().supportsProperties()) {
+            // if (prop.equals("'descendants'")) {
+            // System.out.println("1 false. Engine supports");
+            // }
             return false;
         }
 
         // If parent is a method, do not use laraGetter
         var parent = propertyExp.getParent();
         if (parent instanceof Expression && "method".equals(((Expression) parent).xmltag)) {
+
+            // if (prop.equals("'descendants'")) {
+            // System.out.println("2 false. Parent is a method");
+            // }
             return false;
             // var exprParent = (Expression) parent;
             // System.out.println("PARENT TAG: " + exprParent.xmltag);
@@ -393,6 +413,9 @@ public class Interpreter {
         // Do not use laraGetter if this is an arrow function
 
         if (opAncestor == null) {
+            // if (prop.equals("'descendants'")) {
+            // System.out.println("3 true. No op ancestor");
+            // }
             return true;
         }
 
@@ -406,10 +429,16 @@ public class Interpreter {
 
         // Look for the first property on the left hand
         if (currentLeftHand == propertyExp) {
+            // if (prop.equals("'descendants'")) {
+            // System.out.println("4 false. current left hand == propertyExp");
+            // }
             return false;
         }
         // System.out.println("LARA GETTER 2: " + propertyExp);
         // Otherwise, always use laraGeter
+        // if (prop.equals("'descendants'")) {
+        // System.out.println("5 true.");
+        // }
         return true;
 
     }

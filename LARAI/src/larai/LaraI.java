@@ -913,12 +913,11 @@ public class LaraI {
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
 
-        // Enables auto-loading of search APIs
-        // larai.getOptions().getWeaverArgs().set(LaraiKeys.API_AUTOLOAD, true);
+        // Disable API auto-load
+        larai.getOptions().getWeaverArgs().set(LaraiKeys.API_AUTOLOAD, false);
 
         // Create interpreter
         Interpreter interpreter = new Interpreter(larai, jsEngine);
-        // Interpreter interpreter = new Interpreter(larai, jsEngine, false);
         larai.setInterpreter(interpreter);
         // larai.getInterpreter().getImportProcessor().importAndInitialize();
 
