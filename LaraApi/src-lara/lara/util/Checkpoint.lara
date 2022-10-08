@@ -41,15 +41,17 @@ Checkpoint.prototype.save = function() {
 		return;
 	}
 	
+	var systemClass = Java.type("java.lang.System");
+	
 	// Time interval is defined
 	// If no timestamp yet, do nothing and record time
 	if(this.timestamp === undefined) {	
-		this.timestamp = System.nanos();
+		this.timestamp = systemClass.nanoTime();
 		return;
 	}
 	
 	// Get timestamp, check if passed interval
-	var currentTime = System.nanos();
+	var currentTime = systemClass.nanoTime();
 	var passedTime = currentTime - this.timestamp;
 	
 	// If passed more time than the set interval, save object and update timestamp

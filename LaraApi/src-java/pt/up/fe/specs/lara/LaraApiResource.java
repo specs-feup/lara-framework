@@ -37,7 +37,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     BENCHMARK_INSTANCE("benchmark/BenchmarkInstance.lara"),
 
     // CMake
-    CMAKER("cmake/CMaker.lara"),
+    CMAKER("cmake/CMaker.js"),
     CMAKER_SOURCES("cmake/CMakerSources.lara"),
     CMAKER_UTILS("cmake/CMakerUtils.lara"),
 

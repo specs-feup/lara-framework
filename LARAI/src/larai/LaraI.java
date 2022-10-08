@@ -13,6 +13,8 @@
 package larai;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +50,6 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -507,7 +508,7 @@ public class LaraI {
     // }
 
     /**
-     * Compile the lara file with LARAC, according to a {@link LanguageSpecification}
+     * Compile the lara file with LARAC, according to a {@link LanguageSpecificationV2}
      *
      * @param fileName
      * @param langSpec
@@ -627,8 +628,15 @@ public class LaraI {
     }
 
     private void interpret(WeaverEngine weaverEngine) throws Exception {
-        // NashornScriptEngine engine = createJsEngine();
-        JsEngine engine = createJsEngine(options.getJsEngine());
+        String engineWorkingDir = SpecsIo.getWorkingDir().getAbsolutePath();
+        var configFolder = getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH);
+        if (!configFolder.isEmpty()) {
+            engineWorkingDir = configFolder.get();
+        }
+
+        Path path = Paths.get(engineWorkingDir);
+
+        JsEngine engine = createJsEngine(options.getJsEngine(), path);
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -750,12 +758,16 @@ public class LaraI {
     // }
 
     private JsEngine createJsEngine(JsEngineType engineType) {
+        return createJsEngine(engineType, null);
+    }
+
+    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES);
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return engineType.newEngine(engineType, Collections.emptyList());
+        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory);
         // return new NashornEngine();
     }
 
@@ -901,8 +913,12 @@ public class LaraI {
         MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
         larai.setWeaver(masterWeaver);
 
+        // Enables auto-loading of search APIs
+        // larai.getOptions().getWeaverArgs().set(LaraiKeys.API_AUTOLOAD, true);
+
         // Create interpreter
-        Interpreter interpreter = new Interpreter(larai, jsEngine, false);
+        Interpreter interpreter = new Interpreter(larai, jsEngine);
+        // Interpreter interpreter = new Interpreter(larai, jsEngine, false);
         larai.setInterpreter(interpreter);
         // larai.getInterpreter().getImportProcessor().importAndInitialize();
 
