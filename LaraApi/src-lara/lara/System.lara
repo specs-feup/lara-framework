@@ -162,7 +162,8 @@ System.toc = function(nanoStart, message) {
 }
 
 System.getNumLogicalCores = function() {
-	return java.lang.Runtime.getRuntime().availableProcessors();
+	var runtimeClass = Java.type("java.lang.Runtime");
+	return runtimeClass.getRuntime().availableProcessors();
 }
 
 /**
