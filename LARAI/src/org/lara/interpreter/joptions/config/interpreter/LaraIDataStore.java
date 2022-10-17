@@ -50,7 +50,6 @@ import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
 
@@ -325,22 +324,26 @@ public class LaraIDataStore implements LaraiKeys {
 
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
 
-            // Parse aspect args (e.g., in case it is a file)
-            return parseAspectArgs(aspectArgs);
+            // Can return directly, custom getter of ASPECT_ARGS already parses files and sanitizes JSON
+            return aspectArgs;
+            // Parse aspect args (e.g., in case it is a file, sanitize)
+            // return parseAspectArgs(aspectArgs);
 
         }
         return "";
     }
 
-    private static String parseAspectArgs(String aspectArgs) {
-        // If string ends with '.properties', interpret as a path to a properties file
-        if (aspectArgs.trim().endsWith(".properties")) {
-            File properties = SpecsIo.existingFile(aspectArgs);
-            return SpecsProperties.newInstance(properties).toJson();
-        }
-
-        return aspectArgs;
-    }
+    // private static String parseAspectArgs(String aspectArgs) {
+    // // TODO: Not sure if this will work, the customGetter of ASPECT_ARGS already does some parsing and introduces
+    // // brackets {}
+    // // If string ends with '.properties', interpret as a path to a properties file
+    // if (aspectArgs.trim().endsWith(".properties")) {
+    // File properties = SpecsIo.existingFile(aspectArgs);
+    // return SpecsProperties.newInstance(properties).toJson();
+    // }
+    //
+    // return aspectArgs;
+    // }
 
     public boolean isJavaScriptStream() {
         if (dataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)) {

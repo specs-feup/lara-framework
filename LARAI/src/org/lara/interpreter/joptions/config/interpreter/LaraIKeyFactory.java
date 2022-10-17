@@ -36,7 +36,10 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.Utils.EnumCodec;
 import org.suikasoft.jOptions.gui.panels.option.FilePanel;
 
+import com.google.gson.Gson;
+
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.properties.SpecsProperties;
 
 public class LaraIKeyFactory {
 
@@ -295,16 +298,23 @@ public class LaraIKeyFactory {
             return args;
         }
 
-        // Check if args is an existing JSON file
+        // Check if args is an existing JSON or properties file
         if (!trimmedArgs.startsWith("{")) {
-            var jsonFile = new File(trimmedArgs);
-            if (SpecsIo.getExtension(jsonFile).equals("json")) {
-                if (!jsonFile.isFile()) {
+            var file = new File(trimmedArgs);
+            if (SpecsIo.getExtension(file).equals("json")) {
+                if (!file.isFile()) {
                     throw new RuntimeException(
-                            "Passed file '" + jsonFile + "' as aspect arguments, but file does not exist.");
+                            "Passed a JSON file '" + file + "' as aspect arguments, but file does not exist.");
                 }
 
-                return SpecsIo.read(jsonFile);
+                return SpecsIo.read(file);
+            } else if (SpecsIo.getExtension(file).equals("properties")) {
+                if (!file.isFile()) {
+                    throw new RuntimeException(
+                            "Passed a properties file '" + file + "' as aspect arguments, but file does not exist.");
+                }
+
+                return SpecsProperties.newInstance(file).toJson();
             }
         }
 
@@ -317,7 +327,15 @@ public class LaraIKeyFactory {
             finalArgs = finalArgs + "}";
         }
 
-        return finalArgs;
+        // Sanitize
+        var gson = new Gson();
+        try {
+            return gson.toJson(gson.fromJson(finalArgs, Object.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Passed invalid JSON as argument: '" + args + "'", e);
+        }
+
+        // return finalArgs;
     }
 
 }
