@@ -691,6 +691,9 @@ public class LaraI {
 
             // If JS file
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
+                // If aspect arguments present, load them to object laraArgs
+                loadAspectArguments();
+
                 interpreter.executeMainAspect(options.getLaraFile());
 
                 postMainJsExecution();
@@ -725,6 +728,14 @@ public class LaraI {
             // throw new RuntimeException("Exception during weaving:", e);
         }
 
+    }
+
+    private void loadAspectArguments() {
+        var jsonArgs = options.getAspectArgumentsStr();
+
+        var init = jsonArgs.isEmpty() ? "{}" : jsonArgs;
+
+        interpreter.evaluate("laraArgs = " + init + ";", "LARAI Preamble");
     }
 
     private void postMainJsExecution() {
