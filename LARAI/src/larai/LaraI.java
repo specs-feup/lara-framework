@@ -98,7 +98,7 @@ public class LaraI {
 
     // TODO: Put LARASystem.class eventually
     private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
-            LaraSystemTools.class);
+            LaraSystemTools.class, Runtime.class);
 
     public static boolean isRunningGui() {
         return RUNNING_GUI.get();
