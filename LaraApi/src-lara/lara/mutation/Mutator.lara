@@ -104,6 +104,20 @@ Mutator.prototype.getCurrentMutation = function() {
 	notImplemented("Mutator.getCurrentMutation");
 } 
 
+/**
+ * Adds a join point to this Mutator. Is only added if the Mutator can be applied over this join point, otherwise it will be ignored.
+ */
+Mutator.prototype.addJp = function($joinpoint) {
+	notImplemented("Mutator.addJp");
+}
+
+/**
+ * @deprecated use getName() instead
+ * @return {String} the name of this Mutator
+ */
+Mutator.prototype.getType = function() {
+	return this.getName();
+}
 
 Mutator.prototype._mutatePrivate = function() {
 	notImplemented("Mutator._mutatePrivate");
