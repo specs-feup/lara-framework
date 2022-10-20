@@ -43,7 +43,11 @@ public class LaraModuleBuilder {
         this.module = module;
         this.nameFilter = nameFilter;
         this.htmlCode = new StringBuilder();
-        this.toc = new TocBuilder("import " + module.getImportPath() + ";");
+        var imports = "<span style=\"font-weight:normal\"><i>(.js)</i></span><br>\n"
+                + "laraImport(\"" + module.getImportPath() + "\");<br><br>\n"
+                + "<span style=\"font-weight:normal\"><i>(.lara)</i></span><br>\n"
+                + "import " + module.getImportPath() + ";";
+        this.toc = new TocBuilder(imports);
 
         currentIdCounter = 0;
     }
