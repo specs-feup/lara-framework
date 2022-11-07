@@ -6,25 +6,6 @@ import lara.cmake.compilers.GenericCMakeCompiler;
  */
 var CMakerUtils = {};
 	
-CMakerUtils.parsePath = function(path) {
-	//println("ORIGINAL PATH: " + path);
-
-	// Ensure paths use / instead of \	
-	// Using regular expression in order to replace all
-	var parsedPath = Strings.replacer(path.toString(), /\\/g, '/');
-	//var parsedPath = Strings.replacer(path.toString(), '\\\\', '/');
-
-	//println("NO SLASH PATH: " + parsedPath);
-
-	// Escape characters
-	var parsedPath = Strings.escapeJson(parsedPath);
-	
-	//println("ESCAPED PATH: " + parsedPath);
-	
-	return parsedPath;
-}	
-	
-
 CMakerUtils._compilerTable = {};	
 CMakerUtils._compilerTable["gcc"] = function() {return new GenericCMakeCompiler("gcc", "g++");};
 CMakerUtils._compilerTable["clang"] = function() {return new GenericCMakeCompiler("clang", "clang++");};
