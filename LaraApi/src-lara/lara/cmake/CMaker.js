@@ -1,7 +1,7 @@
 laraImport("lara.cmake.CMakerUtils");
 laraImport("lara.cmake.CMakerSources");
-laraImport("lara.Tool");
-laraImport("lara.ToolUtils");
+laraImport("lara.tool.Tool");
+laraImport("lara.tool.ToolUtils");
 
 laraImport("lara.Strings");
 laraImport("lara.Platforms");
