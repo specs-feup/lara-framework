@@ -93,6 +93,10 @@ public enum LaraApiResource implements LaraResourceProvider {
     PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
     PASS_PASS_TRANSFORMATION_RESULT("pass/PassTransformationResult.js"),
 
+    // Tool
+    TOOL("tool/Tool.js"),
+    TOOL_UTILS("tool/ToolUtils.js"),
+
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
     SI_UNIT("units/SiUnit.lara"),
