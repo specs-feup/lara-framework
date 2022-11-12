@@ -493,7 +493,9 @@ public class WeaverLauncher {
             return new WeaverLauncher(weaverEngineConstructor.newInstance()).launch(args);
 
         } catch (Exception e) {
+            // throw new RuntimeException("Could not execute", e);
             SpecsLogs.info("Exception during weaver execution: " + e);
+            e.printStackTrace();
             return false;
         }
     }
@@ -537,6 +539,7 @@ public class WeaverLauncher {
             // return execute(args);
         } catch (Exception e) {
             SpecsLogs.info("Exception during weaver execution: " + e);
+            e.printStackTrace();
             return false;
         }
     }
