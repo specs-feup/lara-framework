@@ -266,10 +266,10 @@ public class LaraI {
 
             // } catch (final Throwable e) {
         } catch (Exception e) {
-            // throw new RuntimeException("Exception during interpretation", e);
+            throw new RuntimeException("Exception during interpretation", e);
             // throw new RuntimeException(e);
 
-            throw treatExceptionInInterpreter(larai, e);
+            // throw treatExceptionInInterpreter(larai, e);
 
             // var finalException = treatExceptionInInterpreter(larai, e);
             // System.out.println(finalException);
@@ -400,8 +400,8 @@ public class LaraI {
             return LaraiResult.newInstance(success, isRunningGui);
 
         } catch (final Exception e) {
-            // throw new RuntimeException("", e);
-            throw prettyRuntimeException(e);
+            throw new RuntimeException("Exception while executing LARA script", e);
+            // throw prettyRuntimeException(e);
         } finally {
             if (WeaverEngine.isWeaverSet()) {
                 WeaverEngine.removeWeaver();
@@ -463,7 +463,7 @@ public class LaraI {
     /**
      * Builds the pretty printed runtime exception if the exception given in of type {@link BaseException}.
      * <p>
-     * If a normal expcetion is given, then it outputs the same exception.
+     * If a normal exception is given, then it outputs the same exception.
      *
      * @param e
      * @return
