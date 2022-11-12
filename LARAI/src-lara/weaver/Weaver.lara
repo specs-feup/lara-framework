@@ -165,7 +165,7 @@ Weaver.getName = function() {
  * @param {int} [threads = -1] -  Number of threads to use
  * @param {string[]|string} [weaverCommand = []] -  The command we should use to call the weaver (e.g., /usr/local/bin/clava)
  *
- * @return {Boolean} true if none of the weaver executions had problems, false otherwise
+ * @return {Object[]} a list with the results of each of the executions. The executing script must use weaver.Script to set the output (i.e. Script.setOutput()) 
  */
 Weaver.runParallel = function(argsLists, threads, weaverCommand) {
 
