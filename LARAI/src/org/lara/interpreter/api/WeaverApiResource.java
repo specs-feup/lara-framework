@@ -32,7 +32,7 @@ public enum WeaverApiResource implements LaraResourceProvider {
     SCRIPT("Script.js"),
     SELECTOR("Selector.lara"),
     TRAVERSAL_TYPE("TraversalType.js"),
-    WEAVER("Weaver.lara"),
+    WEAVER("Weaver.js"),
     WEAVER_JPS("WeaverJps.lara"),
     WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara"),
     WEAVER_OPTIONS("WeaverOptions.lara");
