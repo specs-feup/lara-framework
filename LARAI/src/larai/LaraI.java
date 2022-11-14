@@ -954,7 +954,8 @@ public class LaraI {
         var laraImports = laraImporter.getLaraImports(importName);
 
         if (laraImports.isEmpty()) {
-            throw new RuntimeException("Could not find files for import '" + importName + "'");
+            throw new RuntimeException("Could not find files for import '" + importName + "'. Current include paths: "
+                    + laraImporter.getIncludes());
         }
 
         // Import JS code

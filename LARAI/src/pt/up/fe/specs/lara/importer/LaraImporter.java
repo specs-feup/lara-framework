@@ -56,6 +56,10 @@ public class LaraImporter {
         this.apisMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
     }
 
+    public List<File> getIncludes() {
+        return includes;
+    }
+
     /**
      * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
      * 
