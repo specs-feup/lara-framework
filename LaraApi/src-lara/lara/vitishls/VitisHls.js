@@ -13,6 +13,7 @@ class VitisHls extends Tool {
     vitisDir;
     vitisProjName;
     sourceFiles = [];
+    flowTarget = "vivado";
 
     constructor(topFunction, clock = 10, platform = "xcvu5p-flva2104-1-e", disableWeaving = false) {
         super("VITIS-HLS", disableWeaving);
@@ -44,6 +45,14 @@ class VitisHls extends Tool {
             this.clock = clock;
         }
         return this;
+    }
+
+    setFlowTarget(target) {
+        if (target != "vitis" && target != "vivado") {
+            println(`[${this.toolName}] Flow target must be either "vitis" or "vivado"!`);
+        }
+        else
+            this.flowTarget = target;
     }
 
     addSource(file) {
@@ -113,7 +122,7 @@ class VitisHls extends Tool {
 open_project ${this.vitisProjName}
 set_top ${this.topFunction}
 ${this.#getTclInputFiles()}
-open_solution \"solution1\" -flow_target vitis
+open_solution \"solution1\" -flow_target ${this.flowTarget}
 set_part { ${this.platform}}
 create_clock -period ${this.clock} -name default
 csynth_design
@@ -139,7 +148,7 @@ exit
 
     prettyPrintReport(report) {
         const period = this.preciseStr(report["clockEstim"], 2);
-        const freq = this.preciseStr(report["clockTarget"], 2);
+        const freq = this.preciseStr(report["fmax"], 2);
 
         const out = `
 ----------------------------------------
@@ -147,7 +156,7 @@ Vitis HLS synthesis report
 
 Targeted a ${report["platform"]} with target clock ${freq} ns
 
-Achieved an estimated clock of ${period} ns(${freq} MHz)
+Achieved an estimated clock of ${period} ns (${freq} MHz)
 
 Latency of ${report["latency"]} cycles for top function ${report["topFun"]
             }

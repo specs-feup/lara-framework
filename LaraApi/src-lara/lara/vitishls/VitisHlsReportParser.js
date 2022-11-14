@@ -24,7 +24,7 @@ class VitisHlsReportParser {
         const raw = this.#getRawJSON();
 
         const fmax = this.calculateMaxFrequency(raw["EstimatedClockPeriod"]);
-        const execTime = this.calculateExecutionTime(raw["Latency"], fmax);
+        const execTime = this.calculateExecutionTime(raw["Worst-caseLatency"], fmax);
 
         var json = {
             "platform": raw["Part"],
@@ -37,7 +37,7 @@ class VitisHlsReportParser {
             "LUT": raw["LUT"],
             "BRAM": raw["BRAM_18K"],
             "DSP": raw["DSP"],
-            "latency": raw["Latency"],
+            "latency": raw["Worst-caseLatency"],
             "availFF": raw["AVAIL_FF"],
             "availLUT": raw["AVAIL_LUT"],
             "availBRAM": raw["AVAIL_BRAM"],
