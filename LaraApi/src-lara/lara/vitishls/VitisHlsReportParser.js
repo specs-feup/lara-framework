@@ -24,24 +24,37 @@ class VitisHlsReportParser {
         const raw = this.#getRawJSON();
 
         const fmax = this.calculateMaxFrequency(raw["EstimatedClockPeriod"]);
-        const execTime = this.calculateExecutionTime(raw["Worst-caseLatency"], fmax);
+        const execTimeWorst = this.calculateExecutionTime(raw["Worst-caseLatency"], fmax);
+        const execTimeAvg = this.calculateExecutionTime(raw["Average-caseLatency"], fmax);
+        const execTimeBest = this.calculateExecutionTime(raw["Best-caseLatency"], fmax);
+        const hasFixedLatency = raw["Best-caseLatency"] === raw["Worst-caseLatency"];
 
         var json = {
             "platform": raw["Part"],
             "topFun": raw["TopModelName"],
+
             "clockTarget": raw["TargetClockPeriod"],
             "clockEstim": raw["EstimatedClockPeriod"],
             "fmax": fmax,
-            "execTime": execTime,
+
+            "latencyWorst": raw["Worst-caseLatency"],
+            "latencyAvg": raw["Average-caseLatency"],
+            "latencyBest": raw["Best-caseLatency"],
+            "hasFixedLatency": hasFixedLatency,
+            "execTimeWorst": execTimeWorst,
+            "execTimeAvg": execTimeAvg,
+            "execTimeBest": execTimeBest,
+
             "FF": raw["FF"],
             "LUT": raw["LUT"],
             "BRAM": raw["BRAM_18K"],
             "DSP": raw["DSP"],
-            "latency": raw["Worst-caseLatency"],
+
             "availFF": raw["AVAIL_FF"],
             "availLUT": raw["AVAIL_LUT"],
             "availBRAM": raw["AVAIL_BRAM"],
             "availDSP": raw["AVAIL_DSP"],
+
             "perFF": raw["FF"] * 100 / raw["AVAIL_FF"],
             "perLUT": raw["LUT"] * 100 / raw["AVAIL_LUT"],
             "perBRAM": raw["BRAM_18K"] * 100 / raw["AVAIL_BRAM"],

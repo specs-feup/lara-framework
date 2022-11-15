@@ -39,7 +39,7 @@ class VitisHls extends Tool {
     setClock(clock) {
         if (clock <= 0) {
             throw new Error(
-                `[${this.toolName}] Clock value must be a positive integer!`
+                `${this.#getTimestamp()} Clock value must be a positive integer!`
             );
         } else {
             this.clock = clock;
@@ -49,7 +49,7 @@ class VitisHls extends Tool {
 
     setFlowTarget(target) {
         if (target != "vitis" && target != "vivado") {
-            println(`[${this.toolName}] Flow target must be either "vitis" or "vivado"!`);
+            println(`${this.#getTimestamp()} Flow target must be either "vitis" or "vivado"!`);
         }
         else
             this.flowTarget = target;
@@ -59,8 +59,14 @@ class VitisHls extends Tool {
         this.sourceFiles.push(file);
     }
 
+    #getTimestamp() {
+        const curr = new Date();
+        const res = `[${this.toolName} ${curr.getHours()}:${curr.getMinutes()}:${curr.getSeconds()}]`;
+        return res;
+    }
+
     synthesize(verbose = true) {
-        println(`[${this.toolName}] Setting up Vitis HLS executor`);
+        println(`${this.#getTimestamp()} Setting up Vitis HLS executor`);
 
         this.clean();
         this.#generateTclFile();
@@ -79,14 +85,14 @@ class VitisHls extends Tool {
     }
 
     #executeVitis(verbose) {
-        println(`[${this.toolName}] Executing Vitis HLS`);
+        println(`${this.#getTimestamp()} Executing Vitis HLS`);
 
         const pe = new ProcessExecutor();
         pe.setWorkingDir(this.vitisDir);
         pe.setPrintToConsole(verbose);
         pe.execute("vitis_hls", "-f", "script.tcl");
 
-        println(`[${this.toolName}]Finished executing Vitis HLS`);
+        println(`${this.#getTimestamp()} Finished executing Vitis HLS`);
     }
 
     #getTclInputFiles() {
@@ -99,11 +105,7 @@ class VitisHls extends Tool {
 
         // if no files were added, we assume that every woven file should be used
         if (this.sourceFiles.length == 0) {
-            println(
-                "[" +
-                this.toolName +
-                "] No source files specified, assuming current AST is the input"
-            );
+            println(`${this.#getTimestamp()} No source files specified, assuming current AST is the input`);
             for (var file of Io.getFiles(Clava.getWeavingFolder())) {
                 const exts = [".c", ".cpp", ".h", ".hpp"];
                 const res = exts.some((ext) => file.name.includes(ext));
@@ -133,12 +135,12 @@ exit
     }
 
     getSynthesisReport() {
-        println(`[${this.toolName}] Processing synthesis report`);
+        println(`${this.#getTimestamp()} Processing synthesis report`);
 
         const parser = new VitisHlsReportParser(this.#getSynthesisReportPath());
         const json = parser.getSanitizedJSON();
 
-        println(`[${this.toolName}] Finished processing synthesis report`);
+        println(`${this.#getTimestamp()} Finished processing synthesis report`);
         return json;
     }
 
@@ -158,9 +160,15 @@ Targeted a ${report["platform"]} with target clock ${freq} ns
 
 Achieved an estimated clock of ${period} ns (${freq} MHz)
 
-Latency of ${report["latency"]} cycles for top function ${report["topFun"]
-            }
-Estimated execution time of ${report["execTime"]} s
+Estimated latency for top function ${report["topFun"]}:
+Worst case: ${report["latencyWorst"]} cycles
+  Avg case: ${report["latencyAvg"]} cycles
+ Best case: ${report["latencyBest"]} cycles
+
+Estimated execution time:
+Worst case: ${report["execTimeWorst"]} s
+  Avg case: ${report["execTimeAvg"]} s
+ Best case: ${report["execTimeBest"]} s
 
 Resource usage:
 FF:   ${report["FF"]} (${this.preciseStr(report["perFF"], 2)}%)
@@ -168,7 +176,6 @@ LUT:  ${report["LUT"]} (${this.preciseStr(report["perLUT"], 2)}%)
 BRAM: ${report["BRAM"]} (${this.preciseStr(report["perBRAM"], 2)}%)
 DSP:  ${report["DSP"]} (${this.preciseStr(report["perDSP"], 2)}%)
 ----------------------------------------`;
-
         println(out);
     }
 }
