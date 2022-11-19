@@ -61,7 +61,7 @@ class Graphs {
   /**
    *
    * @param {graph} graph
-   * @param {lara.graphs.DotFormatter} dotFormatter
+   * @param {lara.graphs.DotFormatter} [dotFormatter]
    * @returns
    */
   static toDot(graph, dotFormatter) {
@@ -157,5 +157,14 @@ class Graphs {
 
     // Remove node
     node.remove();
+  }
+
+  static show(graph) {
+    Graphs.showDot(Graphs.toDot(graph));
+  }
+
+  static showDot(dotGraph) {
+    const graphHelper = Java.type("pt.up.fe.specs.lara.util.GraphHelper");
+    graphHelper.showDot(dotGraph);
   }
 }

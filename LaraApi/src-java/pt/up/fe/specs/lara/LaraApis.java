@@ -20,6 +20,7 @@ import org.suikasoft.XStreamPlus.XStreamUtils;
 
 import pt.up.fe.specs.lang.ApacheStrings;
 import pt.up.fe.specs.lang.SpecsPlatforms;
+import pt.up.fe.specs.lara.util.GraphHelper;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -34,7 +35,7 @@ public class LaraApis {
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
             ApacheStrings.class, SpecsStrings.class, SpecsSystem.class, ProcessOutputAsString.class,
-            StringLines.class, XStreamUtils.class);
+            StringLines.class, XStreamUtils.class, GraphHelper.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;

@@ -26,5 +26,6 @@
 	</info>
 	<dependencies>
 		<dependency org="io.github.java-diff-utils" name="java-diff-utils" rev="4.7"/>
+		<dependency org="guru.nidi" name="graphviz-java" rev="0.18.1"/>
 	</dependencies>
 </ivy-module>
