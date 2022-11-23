@@ -106,6 +106,8 @@ Selector.prototype[Symbol.iterator] = function* () {
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. 
  * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType 
+ *
+ * @return {weaver.Selector} the results of the search.
  */
 Selector.prototype.search = function(name, filter, traversal) {
 	if(traversal === undefined) {
@@ -123,10 +125,21 @@ Selector.prototype.search = function(name, filter, traversal) {
 
 }
 
+/**
+ * Search in the children of the previously selected nodes.
+ *
+ * @param {String} type - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. 
+ *
+ * @return {weaver.Selector} the results of the search.
+ */
 Selector.prototype.children = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.children($jp, name);});
 }
 
+/*
+ * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
+ */
 Selector.prototype.scope = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.scope($jp, name);});
 }

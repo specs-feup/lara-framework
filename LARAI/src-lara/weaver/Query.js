@@ -20,8 +20,10 @@ class Query {
    * The same as Query.searchFrom(), but uses the root node as $baseJp.
    *
    * @param {String} type - type of the join point to search.
-   * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+   * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search. If the value is an object, each field of the object represents a rule that will be applied over the attribute that has the same name as the name of the field. If the value is not an object (e.g., String, Regex, Lambda), it is interpreted as a single rule that will be applied over the default attribute of the given type. E.g., if type is 'function', the value is a String 'foo' and the default attribute of function is 'name', this is equivalent as passing as value the object {'name':'foo'}. Rules can be a String (i.e., will match the value of the attribute against a string), a Regex (will match the value of the attribute against a regex) or a Function (i.e., function receives the value of the attribute and returns true if there is a match, or false otherwise).
    * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+   *
+   * @return {weaver.Selector} the results of the search.
    */
   static search(type, filter, traversal) {
     return Query.searchFrom(undefined, type, filter, traversal);
@@ -60,6 +62,14 @@ class Query {
     return new Selector($baseJp).children(type, filter);
   }
 
+  /**
+   * If $baseJp has the concept of scope (e.g. if, loop), search the direct children of that scope.
+   *
+   * @param {*} $baseJp
+   * @param {*} type
+   * @param {*} filter
+   * @returns
+   */
   static scopeFrom($baseJp, type, filter) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).scope(type, filter);
