@@ -171,10 +171,10 @@ Worst case: ${report["execTimeWorst"]} s
  Best case: ${report["execTimeBest"]} s
 
 Resource usage:
-FF:   ${report["FF"]} (${this.preciseStr(report["perFF"], 2)}%)
-LUT:  ${report["LUT"]} (${this.preciseStr(report["perLUT"], 2)}%)
-BRAM: ${report["BRAM"]} (${this.preciseStr(report["perBRAM"], 2)}%)
-DSP:  ${report["DSP"]} (${this.preciseStr(report["perDSP"], 2)}%)
+FF:   ${report["FF"]} (${this.preciseStr(report["perFF"] * 100, 2)}%)
+LUT:  ${report["LUT"]} (${this.preciseStr(report["perLUT"] * 100, 2)}%)
+BRAM: ${report["BRAM"]} (${this.preciseStr(report["perBRAM"] * 100, 2)}%)
+DSP:  ${report["DSP"]} (${this.preciseStr(report["perDSP"] * 100, 2)}%)
 ----------------------------------------`;
         println(out);
     }

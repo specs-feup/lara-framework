@@ -55,10 +55,10 @@ class VitisHlsReportParser {
             "availBRAM": raw["AVAIL_BRAM"],
             "availDSP": raw["AVAIL_DSP"],
 
-            "perFF": raw["FF"] * 100 / raw["AVAIL_FF"],
-            "perLUT": raw["LUT"] * 100 / raw["AVAIL_LUT"],
-            "perBRAM": raw["BRAM_18K"] * 100 / raw["AVAIL_BRAM"],
-            "perDSP": raw["DSP"] * 100 / raw["AVAIL_DSP"]
+            "perFF": raw["FF"] / raw["AVAIL_FF"],
+            "perLUT": raw["LUT"] / raw["AVAIL_LUT"],
+            "perBRAM": raw["BRAM_18K"] / raw["AVAIL_BRAM"],
+            "perDSP": raw["DSP"] / raw["AVAIL_DSP"]
         };
         return json;
     }
