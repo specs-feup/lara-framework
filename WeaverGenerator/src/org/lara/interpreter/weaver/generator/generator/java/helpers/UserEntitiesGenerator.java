@@ -65,7 +65,7 @@ public class UserEntitiesGenerator extends GeneratorHelper {
     @Override
     public JavaClass generate() {
         final JavaClass uDClass = new JavaClass(entity.getName(), javaGenerator.getEntitiesPackage());
-        uDClass.appendComment("\n");
+        uDClass.appendComment(ln());
         uDClass.add(JDocTag.AUTHOR, "Lara C.");
         for (final Attribute attribute : entity.getAttribute()) {
 
@@ -96,15 +96,15 @@ public class UserEntitiesGenerator extends GeneratorHelper {
         toString.add(Annotation.OVERRIDE);
         // default method
         // toString.appendCode("return super.toString();");
-        final StringBuffer buff = new StringBuffer("String json = \"{\\n\";\n");
+        final StringBuffer buff = new StringBuffer("String json = \"{\\n\";" + ln());
         for (final Field f : uDClass.getFields()) {
             final String name = f.getName();
             buff.append("json += \" ");
             buff.append(name);
             buff.append(": \"+get" + StringUtils.firstCharToUpper(name));
-            buff.append("() + \",\\n\";\n");
+            buff.append("() + \",\\n\";" + ln());
         }
-        buff.append("json+=\"}\";\n");
+        buff.append("json+=\"}\";" + ln());
         buff.append("return json;");
         toString.setMethodBody(buff);
         uDClass.add(toString);

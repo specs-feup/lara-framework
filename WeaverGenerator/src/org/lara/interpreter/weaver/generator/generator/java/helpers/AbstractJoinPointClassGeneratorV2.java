@@ -70,7 +70,7 @@ public class AbstractJoinPointClassGeneratorV2 extends GeneratorHelper {
                 javaGenerator.getJoinPointClassPackage());
         javaC.add(Modifier.ABSTRACT);
         javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
-        javaC.appendComment("\nThis class is overwritten by the Weaver Generator.\n\n");
+        javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator." + ln() + ln());
         joinPoint.getToolTip().ifPresent(javaC::appendComment);
 
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());

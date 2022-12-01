@@ -88,7 +88,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         // getActions.addModifier(Modifier.ABSTRACT);
         getActions.add(Annotation.OVERRIDE);
         getActions.add(Modifier.FINAL);
-        getActions.appendComment("Does the generated code implements events?\n");
+        getActions.appendComment("Does the generated code implements events?" + ln());
         getActions.addJavaDocTag(JDocTag.RETURN, "true if implements events, false otherwise");
 
         getActions.appendCode("return " + javaGenerator.hasEvents() + ";");
@@ -111,7 +111,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
                 + JavaAbstractsGenerator.getWeaverText(weaverName, javaGenerator.getAUserJoinPointType());
         java.appendComment(text);
 
-        java.appendComment("\nThe implementation of the abstract methods is mandatory!");
+        java.appendComment(ln() + "The implementation of the abstract methods is mandatory!");
         java.add(JDocTag.AUTHOR, "Lara C.");
         // java.addInterface(new JavaType(WeaverEngine.class));
         java.setSuperClass(new JavaType(WeaverEngine.class));
@@ -132,19 +132,11 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         // getActions.addModifier(Modifier.ABSTRACT);
         getActions.add(Annotation.OVERRIDE);
         getActions.add(Modifier.FINAL);
-        getActions.appendComment("Get the list of available actions in the weaver\n");
+        getActions.appendComment("Get the list of available actions in the weaver" + ln());
         getActions.addJavaDocTag(JDocTag.RETURN, "list with all actions");
         final List<Action> actions = javaGenerator.getLanguageSpecification().getActionModel().getActionsList()
                 .getAction();
 
-        /*
-         * Use ArrayList getActions.appendCode(
-         * "List<String> weaverActions = new ArrayList<String>();\n"); String
-         * joinedActions = StringUtils.join(actions, action ->
-         * "weaverActions.add(\"" + action.getName() + "\");", "\n");
-         * getActions.appendCode(joinedActions); getActions.appendCode(
-         * "\nreturn weaverActions;");
-         */
         /* Use Arrays.asList() */
         final Function<Action, String> mapper = a -> '"' + a.getName() + '"';
         // String joinedActions = StringUtils.join(actions, mapper, ", ");
@@ -157,7 +149,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         final Method getRoot = new Method(JavaTypeFactory.getStringType(), "getRoot");
         getRoot.add(Annotation.OVERRIDE);
         getRoot.add(Modifier.FINAL);
-        getRoot.appendComment("Returns the name of the root\n");
+        getRoot.appendComment("Returns the name of the root" + ln());
         getRoot.addJavaDocTag(JDocTag.RETURN, "the root name");
         final String rootAlias = javaGenerator.getLanguageSpecification().getJpModel().getJoinPointList()
                 .getRootAlias();
@@ -172,7 +164,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         final Method getImportableClasses = new Method(listClassType, "getAllImportableClasses");
         getImportableClasses.add(Modifier.FINAL);
         getImportableClasses.add(Annotation.OVERRIDE);
-        getImportableClasses.appendComment("Returns a list of classes that may be imported and used in LARA.\n");
+        getImportableClasses.appendComment("Returns a list of classes that may be imported and used in LARA." + ln());
         getImportableClasses.addJavaDocTag(JDocTag.RETURN, "a list of importable classes");
         final List<TypeDef> entities = javaGenerator.getLanguageSpecification().getArtifacts().getTypeDefs();
         final List<EnumDef> enums = javaGenerator.getLanguageSpecification().getArtifacts().getEnumDefs();
@@ -216,7 +208,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         final Method handleFiles = new Method(JavaTypeFactory.getBooleanType(), "handlesApplicationFolder",
                 Modifier.ABSTRACT);
         handleFiles.appendComment(
-                "Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time.\n");
+                "Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time."
+                        + ln());
         handleFiles.addJavaDocTag(JDocTag.RETURN,
                 "true if the weaver is able to work with several files, false if only works with one file");
         java.add(handleFiles);
@@ -236,7 +229,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         final JavaType stringType = JavaTypeFactory.getStringType();
         stringType.setArray(true);
         begin.addArgument(stringType, "args");
-        begin.appendComment("Set a file/folder in the weaver if it is valid file/folder type for the weaver.\n");
+        begin.appendComment("Set a file/folder in the weaver if it is valid file/folder type for the weaver." + ln());
         begin.addJavaDocTag(JDocTag.PARAM, "source the file with the source code");
         begin.addJavaDocTag(JDocTag.PARAM, "outputDir output directory for the generated file(s)");
         begin.addJavaDocTag(JDocTag.PARAM, "args arguments to start the weaver");
@@ -266,7 +259,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     protected void addCloseMethod(JavaClass java) {
         final Method close = new Method(JavaTypeFactory.getBooleanType(), "close", Modifier.ABSTRACT);
         close.appendComment(
-                " Closes the weaver to the specified output directory location, if the weaver generates new file(s)\n");
+                " Closes the weaver to the specified output directory location, if the weaver generates new file(s)"
+                        + ln());
         close.addJavaDocTag(JDocTag.RETURN, "if close was successful");
         java.add(close);
     }

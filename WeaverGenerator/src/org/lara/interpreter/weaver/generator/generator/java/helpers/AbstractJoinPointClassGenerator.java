@@ -86,7 +86,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
                 javaGenerator.getJoinPointClassPackage());
         javaC.add(Modifier.ABSTRACT);
         javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
-        javaC.appendComment("\nThis class is overwritten by the Weaver Generator.\n\n");
+        javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator." + ln() + ln());
         String comment = joinPoint.getTooltip();
         if (comment != null) {
             javaC.appendComment(comment);
@@ -283,7 +283,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         final Constructor constructor = new Constructor(javaC);
         constructor.addArgument(joinPointType, fieldName);
         if (!superType.equals(superSuperType)) {
-            constructor.appendCode("super(" + fieldName + ");\n");
+            constructor.appendCode("super(" + fieldName + ");" + ln());
         }
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
 

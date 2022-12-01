@@ -80,7 +80,7 @@ public class UserEnumsGenerator extends GeneratorHelper {
         userEnum.add(constructor);
         userEnum.add(getName);
         userEnum.add(toString);
-        userEnum.appendComment("\n");
+        userEnum.appendComment(ln());
         userEnum.add(JDocTag.AUTHOR, "Lara C.");
         for (final EnumValue enumValue : enumDef.getValue()) {
 

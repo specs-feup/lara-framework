@@ -16,12 +16,14 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.specs.generators.java.classtypes.JavaClass;
 
+import pt.up.fe.specs.util.SpecsIo;
+
 public abstract class GeneratorHelper {
 
     protected JavaAbstractsGenerator javaGenerator;
 
     protected GeneratorHelper(JavaAbstractsGenerator javaGenerator) {
-	this.javaGenerator = javaGenerator;
+        this.javaGenerator = javaGenerator;
     }
 
     /**
@@ -34,4 +36,7 @@ public abstract class GeneratorHelper {
      */
     public abstract JavaClass generate();
 
+    protected static String ln() {
+        return SpecsIo.getNewline();
+    }
 }

@@ -92,7 +92,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.add(Modifier.ABSTRACT);
         abstJPClass.setSuperClass(GenConstants.getJoinPointInterfaceType());
         abstJPClass.appendComment("Abstract class containing the global attributes and default action exception.");
-        abstJPClass.appendComment("\nThis class is overwritten when the weaver generator is executed.");
+        abstJPClass.appendComment(ln() + "This class is overwritten when the weaver generator is executed.");
         abstJPClass.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
         // abstJPClass.setSuperClass(GenConstants.getJoinPointInterfaceType());
         // abstJPClass.addImport(JoinPoint.class.getCanonicalName());
@@ -196,8 +196,9 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         same.add(Annotation.OVERRIDE);
         same.addArgument(GenConstants.getJoinPointInterfaceType(), "iJoinPoint");
         same.appendCode(
-                "if (this.get_class().equals(iJoinPoint.get_class())) {\n" + "\n" + "        return this.compareNodes(("
-                        + abstJPClass.getName() + ") iJoinPoint);\n" + "    }\n" + "    return false;");
+                "if (this.get_class().equals(iJoinPoint.get_class())) {" + ln() + ln()
+                        + "        return this.compareNodes(("
+                        + abstJPClass.getName() + ") iJoinPoint);" + ln() + "    }" + ln() + "    return false;");
         abstJPClass.add(same);
     }
 
@@ -245,7 +246,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
                 Privacy.PROTECTED);
         fillWithAttributes.add(Annotation.OVERRIDE);
         fillWithAttributes.addArgument(JavaTypeFactory.getListStringJavaType(), "attributes");
-        fillWithAttributes.appendCode("//Attributes available for all join points\n");
+        fillWithAttributes.appendCode("//Attributes available for all join points" + ln());
         abstJPClass.add(fillWithAttributes);
 
         for (final Attribute attr : attributes) {
@@ -272,7 +273,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
                 fillWithAttributes.appendCode(")");
             }
 
-            fillWithAttributes.appendCode("\");\n");
+            fillWithAttributes.appendCode("\");" + ln());
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
                     abstJPClass, javaGenerator);
@@ -310,7 +311,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.add(fillWithSelects);
         fillWithSelects.add(Annotation.OVERRIDE);
         fillWithSelects.addArgument(JavaTypeFactory.getListStringJavaType(), "selects");
-        fillWithSelects.appendCode("//Selects available for all join points\r\n");
+        fillWithSelects.appendCode("//Selects available for all join points" + ln());
 
         // abstJPClass.addImport(List.class.getCanonicalName());
         for (final Select select : selects) {
@@ -323,7 +324,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             abstJPClass.add(selectMethod);
             abstJPClass.addImport(SelectOp.class);
 
-            fillWithSelects.appendCode("selects.add(\"" + select + "\");\r\n");
+            fillWithSelects.appendCode("selects.add(\"" + select + "\");" + ln());
         }
 
     }
@@ -364,7 +365,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             // " + arg.getName();
             String joinedArgs = StringUtils.join(m.getParams(), ", ");
             fillWithActions.appendCode(joinedArgs);
-            fillWithActions.appendCode(")\");\r\n");
+            fillWithActions.appendCode(")\");" + ln());
 
             Method cloned = GeneratorUtils.generateActionImplMethod(m, action.getName(), action.getReturn(),
                     abstJPClass, javaGenerator.hasEvents());

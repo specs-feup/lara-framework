@@ -67,7 +67,7 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         abstJPClass.setSuperClass(javaGenerator.getaJoinPointType());
         abstJPClass.add(Modifier.ABSTRACT);
         abstJPClass.appendComment(
-                "Abstract class which can be edited by the developer. This class will not be overwritten.\n");
+                "Abstract class which can be edited by the developer. This class will not be overwritten." + ln());
         abstJPClass.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
         abstJPClass.setSuperClass(javaGenerator.getaJoinPointType());
         // and add the following default implementation of the method

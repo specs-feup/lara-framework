@@ -56,10 +56,15 @@ import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
 import pt.up.fe.specs.util.SpecsCollections;
+import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
 public class GeneratorUtils {
+
+    private static String ln() {
+        return SpecsIo.getNewline();
+    }
 
     public static void createListOfAvailableAttributes(JavaClass javaC, LanguageSpecification langSpec,
             JoinPointType joinPoint, String superName, boolean isFinal) {
@@ -75,16 +80,16 @@ public class GeneratorUtils {
 
         if (superName != null) {
 
-            listSelects.appendCode("this." + superName + "." + fillAttributesName + "(attributes);\n");
+            listSelects.appendCode("this." + superName + "." + fillAttributesName + "(attributes);" + ln());
         } else {
-            listSelects.appendCode("super." + fillAttributesName + "(attributes);\n");
+            listSelects.appendCode("super." + fillAttributesName + "(attributes);" + ln());
         }
 
         final Artifact artifact = langSpec.getArtifacts().getArtifact(joinPoint.getClazz());
         if (artifact != null) {
             for (final Attribute attribute : artifact.getAttribute()) {
 
-                listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");\n");
+                listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
             }
         }
 
@@ -105,15 +110,15 @@ public class GeneratorUtils {
 
         if (superName != null) {
 
-            listSelects.appendCode("this." + superName + "." + fillSelectsName + "(selects);\n");
+            listSelects.appendCode("this." + superName + "." + fillSelectsName + "(selects);" + ln());
         } else {
 
-            listSelects.appendCode("super." + fillSelectsName + "(selects);\n");
+            listSelects.appendCode("super." + fillSelectsName + "(selects);" + ln());
         }
 
         for (final Select sel : joinPoint.getSelect()) {
 
-            listSelects.appendCode("selects.add(\"" + sel.getAlias() + "\");\n");
+            listSelects.appendCode("selects.add(\"" + sel.getAlias() + "\");" + ln());
         }
 
         javaC.add(listSelects);
@@ -156,11 +161,12 @@ public class GeneratorUtils {
             selectByName.appendCodeln("\t\tbreak;");
         }
 
-        selectByName.appendCode("\tdefault:\n\t\tjoinPointList = ");
+        selectByName.appendCode("\tdefault:" + ln() + "\t\tjoinPointList = ");
 
         String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
 
-        selectByName.appendCodeln(superCall + "." + selectMethodName + "(selectName);\n\t\tbreak;\n}");
+        selectByName
+                .appendCodeln(superCall + "." + selectMethodName + "(selectName);" + ln() + "\t\tbreak;" + ln() + "}");
         // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
         // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
         // selectByName.appendCodeln("}");
@@ -206,11 +212,11 @@ public class GeneratorUtils {
             selectByName.appendCodeln("\t\tbreak;");
         }
 
-        selectByName.appendCode("\tdefault:\n\t\tjoinPointList = ");
+        selectByName.appendCode("\tdefault:" + ln() + "\t\tjoinPointList = ");
 
         String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
 
-        selectByName.appendCodeln(superCall + "." + selectMethodName + "(selectName);\n\t\tbreak;\n}");
+        selectByName.appendCodeln(superCall + "." + selectMethodName + "(selectName);\n\t\tbreak;" + ln() + "}");
         // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
         // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
         // selectByName.appendCodeln("}");
@@ -239,14 +245,14 @@ public class GeneratorUtils {
 
             listActions.appendCode("super");
         }
-        listActions.appendCode("." + fillActionsName + "(actions);\n");
+        listActions.appendCode("." + fillActionsName + "(actions);" + ln());
 
         for (final Action act : langSpec.getActionModel().getJoinPointOwnActions(joinPoint.getClazz())) {
 
             listActions.appendCode("actions.add(\"" + act.getReturn() + " " + act.getName() + "(");
             final String joinedParams = StringUtils.join(act.getParameter(), Parameter::getType, ", ");
             listActions.appendCode(joinedParams);
-            listActions.appendCode(")\");\n");
+            listActions.appendCode(")\");" + ln());
         }
 
         javaC.add(listActions);
@@ -514,7 +520,7 @@ public class GeneratorUtils {
         final List<Argument> arguments = getter.getParams();
         final String argsList = StringUtils.join(arguments, Argument::getName, ", ");
         getter.appendCode(argsList);
-        getter.appendCode(");\n");
+        getter.appendCode(");" + ln());
         getter.appendCode(encapsulateBasedOnDimension(baseType, valueName, returnType.getArrayDimension(), 0));
         getter.appendCode("return " + GenConstants.getNativeArrayVarName() + "0;");
         getter.remove(Modifier.ABSTRACT);
@@ -530,7 +536,7 @@ public class GeneratorUtils {
             // return spaceStr + "Bindings " + nativeArrayVarName + position
             return spaceStr + "Object " + nativeArrayVarName + position
                     + " = getWeaverEngine().getScriptEngine().toNativeArray(" + valueName
-                    + position + ");\n";
+                    + position + ");" + ln();
         }
         String converted = "";
         final int currentNa = position;
@@ -538,15 +544,15 @@ public class GeneratorUtils {
         // int previousNa = dimension + 1;
         String currentBinding = nativeArrayVarName + currentNa;
         // converted += spaceStr + "Bindings " + currentBinding + " = Converter.newNativeArray();\n";
-        converted += spaceStr + "Object " + currentBinding + " = Converter.newNativeArray();\n";
+        converted += spaceStr + "Object " + currentBinding + " = Converter.newNativeArray();" + ln();
         String iNa = "i" + currentNa;
-        converted += spaceStr + "for (int " + iNa + " = 0; i < " + valueName + currentNa + ".length; i++) {\n";
+        converted += spaceStr + "for (int " + iNa + " = 0; i < " + valueName + currentNa + ".length; i++) {" + ln();
         converted += spaceStr + "\t" + baseType + StringUtils.repeat("[]", dimension - 1);
-        converted += " " + valueName + nextNa + " = " + valueName + currentNa + "[ " + iNa + "];\n";
+        converted += " " + valueName + nextNa + " = " + valueName + currentNa + "[ " + iNa + "];" + ln();
         converted += encapsulateBasedOnDimension(baseType, valueName, dimension - 1, position + 1);
         converted += spaceStr + "\t" + currentBinding + ".put(\"\"+" + iNa + ", " + nativeArrayVarName + nextNa
-                + ");\n";
-        converted += spaceStr + "}\n";
+                + ");" + ln();
+        converted += spaceStr + "}" + ln();
         return converted;
     }
 
@@ -825,12 +831,12 @@ public class GeneratorUtils {
         final Constructor enumConstr = new Constructor(enumerator);
         final JavaType stringType = JavaTypeFactory.getStringType();
         enumConstr.addArgument(stringType, "name");
-        enumConstr.appendCode("this.name = name;\n");
+        enumConstr.appendCode("this.name = name;" + ln());
 
         final Field nameField = new Field(stringType, "name");
         enumerator.add(nameField);
         final Method getName = new Method(stringType, "getName");
-        getName.appendCode("return name;\n");
+        getName.appendCode("return name;" + ln());
         enumerator.add(getName);
 
         enumerator.addInterface(JavaTypeFactory.convert(NamedEnum.class));
@@ -1032,9 +1038,11 @@ public class GeneratorUtils {
         // JoinPoint.class.getCanonicalName()
         method.appendCode("return this.getNode().equals(aJoinPoint.getNode());");
         method.appendComment(
-                "Compares the two join points based on their node reference of the used compiler/parsing tool.<br>\n"
-                        + "This is the default implementation for comparing two join points. <br>\n"
-                        + "<b>Note for developers:</b> A weaver may override this implementation in the editable abstract join point, so\n"
+                "Compares the two join points based on their node reference of the used compiler/parsing tool.<br>"
+                        + ln()
+                        + "This is the default implementation for comparing two join points. <br>" + ln()
+                        + "<b>Note for developers:</b> A weaver may override this implementation in the editable abstract join point, so"
+                        + ln()
                         + "the changes are made for all join points, or override this method in specific join points.");
         return method;
     }
@@ -1094,7 +1102,7 @@ public class GeneratorUtils {
         clazzMethod.appendCodeln(
                 "boolean isInstance = " + GenConstants.getClassName() + "().equals(" + argumentName + ");");
         clazzMethod.appendCodeln(
-                "if(isInstance) {\n\treturn true;\n}");
+                "if(isInstance) {" + ln() + "\treturn true;" + ln() + "}");
         clazzMethod.appendCodeln(
                 "return " + superNameStr + "." + GenConstants.getInstanceOfName() + "(" + argumentName + ");");
         javaC.add(clazzMethod);
@@ -1106,7 +1114,7 @@ public class GeneratorUtils {
         if (!joinedElements.isEmpty()) {
             arrayCode.append(joinedElements);
         }
-        arrayCode.append("};\nreturn Arrays.asList(" + listName + ");");
+        arrayCode.append("};" + ln() + "return Arrays.asList(" + listName + ");");
         return arrayCode;
     }
 

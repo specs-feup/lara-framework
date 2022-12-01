@@ -120,10 +120,11 @@ public class WeaverImplGenerator extends GeneratorHelper {
         final Method handleFiles = new Method(JavaTypeFactory.getBooleanType(), "handlesApplicationFolder");
         handleFiles
                 .appendComment(
-                        "Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time.\n");
+                        "Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time."
+                                + ln());
         handleFiles.addJavaDocTag(JDocTag.RETURN,
                 "true if the weaver is able to work with several files, false if only works with one file");
-        handleFiles.appendCode("//Can the weaver handle an application folder?\n");
+        handleFiles.appendCode("//Can the weaver handle an application folder?" + ln());
         handleFiles.appendCode("return true/false;");
         java.add(handleFiles);
     }
@@ -146,12 +147,12 @@ public class WeaverImplGenerator extends GeneratorHelper {
         final JavaType stringType = JavaTypeFactory.getStringType();
         stringType.setArray(true);
         begin.addArgument(dataStoreType, "args");
-        begin.appendComment("Set a file/folder in the weaver if it is valid file/folder type for the weaver.\n");
+        begin.appendComment("Set a file/folder in the weaver if it is valid file/folder type for the weaver." + ln());
         begin.addJavaDocTag(JDocTag.PARAM, "source the file with the source code");
         begin.addJavaDocTag(JDocTag.PARAM, "outputDir output directory for the generated file(s)");
         begin.addJavaDocTag(JDocTag.PARAM, "args arguments to start the weaver");
         begin.addJavaDocTag(JDocTag.RETURN, "true if the file type is valid");
-        begin.appendCode("//Initialize weaver with the input file/folder\n");
+        begin.appendCode("//Initialize weaver with the input file/folder" + ln());
         begin.appendCode("throw new UnsupportedOperationException(\"Method begin for " + java.getName()
                 + " is not yet implemented\");");
         java.add(begin);
@@ -168,7 +169,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
         rootName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(rootName);
         select.appendComment(" Return a JoinPoint instance of the language root, i.e., an instance of " + rootName);
         select.addJavaDocTag(JDocTag.RETURN, "an instance of the join point root/program");
-        select.appendCode("//return new <" + rootName + " implementation>;\n");
+        select.appendCode("//return new <" + rootName + " implementation>;" + ln());
         select.appendCode("throw new UnsupportedOperationException(\"Method select for " + java.getName()
                 + " is not yet implemented\");");
         java.add(select);
@@ -182,9 +183,10 @@ public class WeaverImplGenerator extends GeneratorHelper {
     private static void addCloseMethod(JavaClass java) {
         final Method close = new Method(JavaTypeFactory.getBooleanType(), "close");
         close.appendComment(
-                " Closes the weaver to the specified output directory location, if the weaver generates new file(s)\n");
+                " Closes the weaver to the specified output directory location, if the weaver generates new file(s)"
+                        + ln());
         close.addJavaDocTag(JDocTag.RETURN, "if close was successful");
-        close.appendCode("//Terminate weaver execution with final steps required and writing output files\n");
+        close.appendCode("//Terminate weaver execution with final steps required and writing output files" + ln());
         close.appendCode("throw new UnsupportedOperationException(\"Method close for " + java.getName()
                 + " is not yet implemented\");");
         java.add(close);
@@ -202,7 +204,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
         // listGearType += AGear.class.getSimpleName() + ">";
         final Method getGears = new Method(listType, "getGears");
         // close.addModifier(Modifier.ABSTRACT);
-        getGears.appendComment(" Returns a list of Gears associated to this weaver engine\n");
+        getGears.appendComment(" Returns a list of Gears associated to this weaver engine" + ln());
         getGears.addJavaDocTag(JDocTag.RETURN,
                 "a list of implementations of {@link AGear} or null if no gears are available");
         getGears.appendCode("return null; //i.e., no gears currently being used");

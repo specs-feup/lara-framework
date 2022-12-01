@@ -31,6 +31,7 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.utils.Utils;
 
+import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
 
 public class JoinPointImplClassGenerator {
@@ -44,6 +45,10 @@ public class JoinPointImplClassGenerator {
         this.joinPoint = joinPoint;
         this.javaGenerator = javaGenerator;
         this.abstractClass = abstractClass;
+    }
+
+    private static String ln() {
+        return SpecsIo.getNewline();
     }
 
     /**
@@ -73,7 +78,7 @@ public class JoinPointImplClassGenerator {
         final JavaClass javaC = new JavaClass(javaGenerator.getJoinPointPrefix() + className,
                 javaGenerator.getImplPackage());
         javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
-        javaC.appendComment("\nThis class is overwritten by the Weaver Generator.");
+        javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator.");
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
         addFieldsAndConstructors(javaC);

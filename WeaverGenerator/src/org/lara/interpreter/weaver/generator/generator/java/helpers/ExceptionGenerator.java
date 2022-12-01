@@ -62,15 +62,15 @@ public class ExceptionGenerator extends GeneratorHelper {
 
         Constructor eventConstr = new Constructor(eC);
         eventConstr.addArgument(eventF);
-        eventConstr.appendCode("this(" + eventF.getName() + ",null);\n");
+        eventConstr.appendCode("this(" + eventF.getName() + ",null);" + ln());
         eventConstr.appendComment("Create a new exception with a message");
         eventConstr.addJavaDocTag(JDocTag.PARAM, "event the exception message");
 
         Constructor completeConstr = new Constructor(eC);
         completeConstr.addArgument(eventF);
         completeConstr.addArgument(JavaTypeFactory.convert(Throwable.class), "cause");
-        completeConstr.appendCode("super(cause);\n");
-        completeConstr.appendCode("this." + eventF.getName() + " = " + eventF.getName() + ";\n");
+        completeConstr.appendCode("super(cause);" + ln());
+        completeConstr.appendCode("this." + eventF.getName() + " = " + eventF.getName() + ";" + ln());
         completeConstr.appendComment("Create a new exception with the cause and the triggering event");
         completeConstr.addJavaDocTag(JDocTag.PARAM, "event the event that caused the exception");
         completeConstr.addJavaDocTag(JDocTag.PARAM, "cause the cause of this exception");

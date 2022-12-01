@@ -28,6 +28,7 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.types.Primitive;
 
+import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -188,7 +189,7 @@ public class ConvertUtils {
     }
 
     private static StringBuilder reportAvailableTypes(LanguageSpecification languageSpecification) {
-        final StringBuilder message = new StringBuilder("\n\t Primitives: ");
+        final StringBuilder message = new StringBuilder(ln() + "\t Primitives: ");
         String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
                 + ", Object, Array, Map, Template, Joinpoint";
         message.append(join);
@@ -196,7 +197,7 @@ public class ConvertUtils {
         final List<TypeDef> objects = languageSpecification.getArtifacts().getTypeDefs();
         if (!objects.isEmpty()) {
 
-            message.append("\n\t Defined types: ");
+            message.append(ln() + "\t Defined types: ");
             final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
             message.append(objectsString);
         }
@@ -204,10 +205,14 @@ public class ConvertUtils {
         final List<JoinPointType> joinpoints = languageSpecification.getJpModel().getJoinPointList().getJoinpoint();
         if (!joinpoints.isEmpty()) {
 
-            message.append("\n\t Join point types: ");
+            message.append(ln() + "\t Join point types: ");
             final String jpsString = StringUtils.join(joinpoints, JoinPointType::getClazz, ", ");
             message.append(jpsString);
         }
         return message;
+    }
+
+    private static String ln() {
+        return SpecsIo.getNewline();
     }
 }
