@@ -186,13 +186,17 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         }
     }
 
+    // public Optional<String> getDirectDefaultAttribute() {
+    // return defaultAttribute;
+    // }
+
     public Optional<String> getDefaultAttribute() {
         // If present return
         if (defaultAttribute.isPresent()) {
             return defaultAttribute;
         }
 
-        // Check if super has default attribure
+        // Check if super has default attribute
         return getExtend().map(superJp -> superJp.getDefaultAttribute()).orElse(Optional.empty());
     }
 

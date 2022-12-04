@@ -89,7 +89,8 @@ public class NodeFactory {
 
     public static JoinPointNode toNode(JoinPointClass joinPoint) {
         Optional<JoinPointClass> extend = joinPoint.getExtend();
-        JoinPointNode jpNode = new JoinPointNode(joinPoint.getName(), extend.isPresent() ? extend.get().getName() : "");
+        JoinPointNode jpNode = new JoinPointNode(joinPoint.getName(), extend.isPresent() ? extend.get().getName() : "",
+                joinPoint.getDefaultAttribute().orElse(null));
         joinPoint.getToolTip().ifPresent(jpNode::setToolTip);
 
         for (Attribute attribute : joinPoint.getAttributes()) {

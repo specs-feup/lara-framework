@@ -13,16 +13,20 @@
 
 package org.lara.language.specification.ast;
 
+import java.util.Optional;
+
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
 public class JoinPointNode extends LangSpecNode {
 
     private final String name;
     private final String extend;
+    private final String defaultAttribute;
 
-    public JoinPointNode(String name, String extend) {
+    public JoinPointNode(String name, String extend, String defaultAttribute) {
         this.name = name;
         this.extend = extend;
+        this.defaultAttribute = defaultAttribute;
     }
 
     public String getName() {
@@ -31,6 +35,10 @@ public class JoinPointNode extends LangSpecNode {
 
     public String getExtend() {
         return extend;
+    }
+
+    public Optional<String> getDefaultAttribute() {
+        return Optional.ofNullable(defaultAttribute);
     }
 
     @Override
@@ -45,7 +53,10 @@ public class JoinPointNode extends LangSpecNode {
 
         builder.addLines("\"type\": \"joinpoint\",");
         builder.addLines("\"name\": \"" + name + "\",");
+        getDefaultAttribute().ifPresent(attr -> builder.addLines("\"defaultAttr\": \"" + attr + "\","));
+
         builder.add("\"extends\": \"" + extend + "\"");
+
         if (this.hasChildren()) {
             builder.addLine(",");
             builder.addLines(childrenToJson(builder.getCurrentIdentation() + 1));
