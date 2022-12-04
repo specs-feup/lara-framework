@@ -11,6 +11,8 @@ laraImport("weaver.JoinPoints");
 class Query {
   /**
    * Returns the root node of the current AST.
+   *
+   * @returns {$jp} the root node
    */
   static root() {
     return new JoinPoints().root();
@@ -31,7 +33,7 @@ class Query {
   }
 
   /**
-   * In-depth search of join points of the given type, starting from a base join point (exclusive).
+   * In-depth search of nodes of the given type, starting from a base node (exclusive).
    *
    * @param {$jp} $baseJp - starting join point for the search.
    * @param {String} type - type of the join point to search.
@@ -52,11 +54,22 @@ class Query {
    * @param {String} type - type of the join point to search.
    * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
    * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+   *
+   * @return {weaver.Selector} the results of the search.
    */
   static searchFromInclusive($baseJp, type, filter, traversal) {
     return new Selector($baseJp, true).search(type, filter, traversal);
   }
 
+  /**
+   * Search the direct children of the given $baseJp.
+   *
+   * @param {$jp} $baseJp - starting join point for the search.
+   * @param {String} type - type of the join point to search.
+   * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+   *
+   * @returns {weaver.Selector} the results of the search.
+   */
   static childrenFrom($baseJp, type, filter) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
     return new Selector($baseJp).children(type, filter);
@@ -65,10 +78,11 @@ class Query {
   /**
    * If $baseJp has the concept of scope (e.g. if, loop), search the direct children of that scope.
    *
-   * @param {*} $baseJp
-   * @param {*} type
-   * @param {*} filter
-   * @returns
+   * @param {$jp} $baseJp - starting join point for the search.
+   * @param {String} type - type of the join point to search.
+   * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+   *
+   * @returns {weaver.Selector} the results of the search.
    */
   static scopeFrom($baseJp, type, filter) {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
@@ -82,6 +96,8 @@ class Query {
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
  * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ *
+ * @returns {weaver.Selector} the results of the search.
  */
 function search(type, filter, traversal) {
   return Query.search(type, filter, traversal);
@@ -94,6 +110,8 @@ function search(type, filter, traversal) {
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
  * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ *
+ * @returns {weaver.Selector} the results of the search.
  */
 function searchFrom($baseJp, type, filter, traversal) {
   return Query.searchFrom($baseJp, type, filter, traversal);
@@ -106,6 +124,8 @@ function searchFrom($baseJp, type, filter, traversal) {
  * @param {String} type - type of the join point to search.
  * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
  * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
+ *
+ * @returns {weaver.Selector} the results of the search.
  */
 function searchFromInclusive($baseJp, type, filter, traversal) {
   return Query.searchFromInclusive($baseJp, type, filter, traversal);

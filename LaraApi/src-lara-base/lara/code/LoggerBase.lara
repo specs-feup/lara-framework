@@ -1,7 +1,11 @@
 import weaver.JoinPoints;
 
 /**
- * Logger object, for printing/saving information.
+ * Logger object, for inserting code that prints/saves information to files.
+ *
+ * @param {boolean} [isGlobal = false] - Not implemented, please ignore
+ * @param {String} [filename = undefined] - If set, instead of printing, will insert code for writing output to this file
+ *
  */
 var Logger = function(isGlobal, filename) {
 
@@ -55,6 +59,8 @@ Logger.prototype.isGlobalFn = function() {
 
 /**
  *  The 'last' join point after .log() is called.
+ * 
+ * @return {$jp} 
  */
 Logger.prototype.getAfterJp = function() {
 	return this.afterJp;
@@ -67,6 +73,7 @@ Logger.prototype._clear = function() {
 
 /**
  * Helper method which call 'log' with 'insertBefore' set to true
+ *
  */
 Logger.prototype.logBefore = function($jp) {
 	this.log($jp, true);
@@ -146,6 +153,9 @@ Logger.prototype.append = function(text) {
 
 /**
  * The same as 'append'.
+ *
+ * @param {String} text - the text to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.text = function(text) {
 	return this.append(text);
@@ -153,6 +163,9 @@ Logger.prototype.text = function(text) {
 
 /**
  * The same as 'append', but adds a new line at the end of the buffer.
+ *
+ * @param {String} text - the text to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.appendln = function(text) {
 	return this.append(text).ln();
@@ -161,6 +174,8 @@ Logger.prototype.appendln = function(text) {
 
 /**
  * Appends a new line to the buffer.
+ *
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.ln = function() {
     return this._append_private("\\n", this.Type.NORMAL);
@@ -168,6 +183,8 @@ Logger.prototype.ln = function() {
 
 /**
  * Appends a tab to the buffer.
+ *
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.tab = function() {
     return this.append("\\t");
@@ -175,6 +192,9 @@ Logger.prototype.tab = function() {
 
 /**
  * Appends an expression that represents a double.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.appendDouble = function(expr) {
     return this._append_private(expr, this.Type.DOUBLE);
@@ -182,6 +202,9 @@ Logger.prototype.appendDouble = function(expr) {
 
 /**
  * The same as 'appendDouble'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.double = function(expr) {
     return this.appendDouble(expr);
@@ -189,6 +212,9 @@ Logger.prototype.double = function(expr) {
 
 /**
  * Appends an expression that represents a int.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.appendInt = function(expr) {
     return this._append_private(expr, this.Type.INT);
@@ -196,6 +222,9 @@ Logger.prototype.appendInt = function(expr) {
 
 /**
  * The same as 'appendInt'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.int = function(expr) {
     return this.appendInt(expr);
@@ -203,6 +232,9 @@ Logger.prototype.int = function(expr) {
 
 /**
  * Appends an expression that represents a long.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.appendLong = function(expr) {
     return this._append_private(expr, this.Type.LONG);
@@ -210,6 +242,9 @@ Logger.prototype.appendLong = function(expr) {
 
 /**
  * The same as 'appendLong'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.long = function(expr) {
 	return this.appendLong(expr);
@@ -217,6 +252,9 @@ Logger.prototype.long = function(expr) {
 
 /**
  * Appends an expression that represents a string.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.appendString = function(expr) {
     return this._append_private(expr, this.Type.STRING);
@@ -224,6 +262,9 @@ Logger.prototype.appendString = function(expr) {
 
 /**
  * The same as 'appendString'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.string = function(expr) {
     return this.appendString(expr);
@@ -232,6 +273,9 @@ Logger.prototype.string = function(expr) {
 
 /**
  * Appends an expression that represents a char.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.appendChar = function(expr) {
     return this._append_private(expr, this.Type.CHAR);
@@ -240,6 +284,9 @@ Logger.prototype.appendChar = function(expr) {
 
 /**
  * The same as 'appendChar'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.char = function(expr) {
     return this.appendChar(expr);
@@ -247,7 +294,10 @@ Logger.prototype.char = function(expr) {
 
 
 /**
- * Appends an expression that represents a hex.
+ * Appends an expression that represents a hex number.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.appendHex = function(expr) {
     return this._append_private(expr, this.Type.HEX);
@@ -255,6 +305,9 @@ Logger.prototype.appendHex = function(expr) {
 
 /**
  * The same as 'appendHex'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.hex = function(expr) {
     return this.appendHex(expr);
@@ -262,6 +315,9 @@ Logger.prototype.hex = function(expr) {
 
 /**
  * Appends an expression that represents an octal.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance
  */
 Logger.prototype.appendOctal = function(expr) {
     return this._append_private(expr, this.Type.OCTAL);
@@ -269,6 +325,9 @@ Logger.prototype.appendOctal = function(expr) {
 
 /**
  * The same as 'appendOctal'.
+ *
+ * @param {$jp} expr - the expression to append
+ * @return {lara.code.Logger} the current logger instance 
  */
 Logger.prototype.octal = function(expr) {
     return this.appendOctal(expr);

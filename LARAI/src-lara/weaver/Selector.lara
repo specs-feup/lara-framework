@@ -10,6 +10,9 @@ import lara.Check;
 /**
  * Selects join points according to their type and filter rules.
  *
+ * @param {$jp} [$baseJp = undefined] - starting join point for the search.
+ * @param {boolean} [inclusive = false] - if true, $baseJp is included in the search.
+ *
  */
 var Selector = function($baseJp, inclusive) {
 	this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
@@ -139,6 +142,11 @@ Selector.prototype.children = function(name, filter) {
 
 /*
  * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
+ *
+ * @param {String} name - type of the join point to search.
+ * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+ *
+ * @returns {weaver.Selector} the results of the search. 
  */
 Selector.prototype.scope = function(name, filter) {
 	return this._searchPrivate(name, filter, function($jp, joinPoints, name) {return joinPoints.scope($jp, name);});
@@ -269,6 +277,7 @@ Selector.prototype.chain = function() {
 /**
  * Same as .first()
  * 
+ * @return {$jp} the first selected node
  */
 Selector.prototype.getFirst = function() {
 	var $jps = this.get();
@@ -281,7 +290,7 @@ Selector.prototype.getFirst = function() {
 }
 
 /**
- * @return {$jp} the first selected join point
+ * @return {$jp} the first selected node
  */
 Selector.prototype.first = function() {
 	return this.getFirst();
