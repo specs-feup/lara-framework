@@ -548,8 +548,8 @@ public abstract class JoinPoint {
 
     @Override
     public String toString() {
-        // return "Joinpoint '" + getJoinPointType() + "'";
-        return "'" + getJoinPointType() + "'";
+        return "Joinpoint '" + getJoinPointType() + "'";
+        // return "'" + getJoinPointType() + "'";
     }
 
     /**
