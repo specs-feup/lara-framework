@@ -94,8 +94,8 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
         String jarLoc = LaraIUtils.getJarFoldername();
         Properties properties = new Properties();
 
-        File globalFile = new File(jarLoc, LaraIDataStore.CONFIG_FILE_NAME);
-        File localFile = new File(LaraIDataStore.CONFIG_FILE_NAME);
+        File globalFile = new File(jarLoc, LaraIDataStore.getConfigFileName());
+        File localFile = new File(LaraIDataStore.getConfigFileName());
         loadProperties(properties, globalFile);
         loadProperties(properties, localFile);
 

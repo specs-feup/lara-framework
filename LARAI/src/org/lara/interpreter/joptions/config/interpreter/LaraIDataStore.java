@@ -32,6 +32,7 @@ import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.xml.sax.SAXException;
@@ -50,6 +51,7 @@ import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
 
@@ -66,6 +68,16 @@ public class LaraIDataStore implements LaraiKeys {
     // private static final Set<String> GIT_URL_QUERIES = new HashSet<>(Arrays.asList(GIT_QUERY_FOLDER));
 
     public static final String CONFIG_FILE_NAME = "larai.properties";
+    private static final String SYSTEM_OPTIONS_FILENAME = "system_options.xml";
+
+    public static String getConfigFileName() {
+        return CONFIG_FILE_NAME;
+    }
+
+    public static String getSystemOptionsFilename() {
+        return SYSTEM_OPTIONS_FILENAME;
+    }
+
     private final DataStore dataStore;
     private final LaraI larai;
     private Tools tools = null;
@@ -78,7 +90,12 @@ public class LaraIDataStore implements LaraiKeys {
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
         larai = lara;
 
-        this.dataStore = dataStore;
+        // Merge system-wise options with local options
+        var mergedDataStore = mergeSystemAndLocalOptions(weaverEngine, dataStore);
+
+        // this.dataStore = dataStore;
+        this.dataStore = mergedDataStore;
+
         this.gitRepos = new GitRepos();
 
         // weaverDataStore = DataStore.newInstance("Weaver Arguments");
@@ -95,10 +112,10 @@ public class LaraIDataStore implements LaraiKeys {
         // laraAPIs = weaverEngine.getAspectsAPI();
         for (WeaverOption option : weaverEngine.getOptions()) {
             DataKey<?> key = option.dataKey();
-            Optional<?> value = dataStore.getTry(key);
+            Optional<?> value = this.dataStore.getTry(key);
             if (value.isPresent()) {
                 // weaverDataStore.setRaw(key, value.get());
-                dataStore.setRaw(key, value.get());
+                this.dataStore.setRaw(key, value.get());
             }
         }
         setLaraProperties();
@@ -106,6 +123,42 @@ public class LaraIDataStore implements LaraiKeys {
         // System.out.println(".........................");
         // System.out.println("\n\n" + dataStore);
 
+    }
+
+    private DataStore mergeSystemAndLocalOptions(WeaverEngine weaverEngine, DataStore localArgs) {
+        var systemOptionsFilename = weaverEngine.getName() + "_" + getSystemOptionsFilename();
+
+        var storeDef = localArgs.getStoreDefinitionTry().orElse(null);
+
+        if (storeDef == null) {
+            SpecsLogs.debug(
+                    "Local data store does not have a store definition, system-wide options in file '"
+                            + systemOptionsFilename + "' not supported");
+            return localArgs;
+        }
+
+        var persistence = localArgs.getPersistence().orElse(null);
+
+        if (persistence == null) {
+            SpecsLogs.debug(
+                    "Local data store does not have an instance of AppPersistence set, system-wide options in file '"
+                            + systemOptionsFilename + "' not supported");
+            return localArgs;
+        }
+
+        DataStore mergedOptions = JOptionsUtils.loadDataStore(systemOptionsFilename, getClass(),
+                storeDef, persistence);
+
+        // Merge localArgs in the system config
+        for (var key : localArgs.getKeysWithValues()) {
+            mergedOptions.setRaw(key, localArgs.get(key));
+        }
+
+        SpecsLogs.debug(() -> "Loading system-wide options");
+        SpecsLogs.debug(() -> "Original options: " + localArgs);
+        SpecsLogs.debug(() -> "Merged options  : " + mergedOptions);
+
+        return mergedOptions;
     }
 
     /**
