@@ -146,19 +146,39 @@ public class LaraIDataStore implements LaraiKeys {
             return localArgs;
         }
 
-        DataStore mergedOptions = JOptionsUtils.loadDataStore(systemOptionsFilename, getClass(),
+        DataStore defaultOptions = JOptionsUtils.loadDataStore(systemOptionsFilename, getClass(),
                 storeDef, persistence);
 
-        // Merge localArgs in the system config
-        for (var key : localArgs.getKeysWithValues()) {
-            mergedOptions.setRaw(key, localArgs.get(key));
+        var defaultOptionsFile = defaultOptions.getConfigFile().orElse(null);
+        if (defaultOptionsFile != null) {
+            SpecsLogs.info("Loading default options in file '" + defaultOptionsFile.getAbsolutePath() + "'");
         }
 
         SpecsLogs.debug(() -> "Loading system-wide options");
         SpecsLogs.debug(() -> "Original options: " + localArgs);
-        SpecsLogs.debug(() -> "Merged options  : " + mergedOptions);
 
-        return mergedOptions;
+        // Merge default values in localArgs
+        var localArgsKeys = localArgs.getKeysWithValues();
+
+        for (var key : defaultOptions.getKeysWithValues()) {
+
+            // Only set if no value is set yet
+            if (localArgsKeys.contains(key)) {
+                continue;
+            }
+
+            // And if key is part of the store definition
+            if (!storeDef.hasKey(key)) {
+                continue;
+            }
+
+            localArgs.setRaw(key, defaultOptions.get(key));
+        }
+
+        SpecsLogs.debug(() -> "Merged options  : " + localArgs);
+
+        // return mergedOptions;
+        return localArgs;
     }
 
     /**

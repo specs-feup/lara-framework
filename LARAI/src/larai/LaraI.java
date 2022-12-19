@@ -53,6 +53,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import org.w3c.dom.DOMException;
@@ -289,7 +290,9 @@ public class LaraI {
     }
 
     private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
-        // String weaverName = weaverEngine.getName().orElse("<unnamed weaver>");
+
+        // Set store definition
+
         String weaverName = weaverEngine.getName();
         StoreDefinition weaverKeys = new StoreDefinitionBuilder(weaverName)
                 // Add LaraI keys
@@ -299,6 +302,13 @@ public class LaraI {
                 .build();
 
         dataStore.setStoreDefinition(weaverKeys);
+
+        // Set persistence, if not set
+        if (dataStore.getPersistence().isEmpty()) {
+            AppPersistence persistence = OptionsParser.getXmlPersistence(weaverKeys);
+            dataStore.setPersistence(persistence);
+        }
+
     }
 
     // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
