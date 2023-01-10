@@ -18,6 +18,21 @@ function printTo(message, stream){
 	}
 }
 
+function printf(message){
+	if(arguments.length === 0){
+		return;
+	}
+	
+	var msg = arguments[0];
+	
+	var subst = [];
+	for(var i = 1; i<arguments.length; i++) {
+		subst.push(arguments[i]);
+	}
+
+	outputStream.printf(msg.toString(), subst);
+}
+
 function printToln(message, stream){
 	if(message === null) {
 		message = "null";
@@ -37,6 +52,8 @@ function print(message){
 	
 	printTo(message,outputStream);
 }
+
+
 
 //Print a message and ends it with a new line
 function println(message){
@@ -276,3 +293,45 @@ function JSONtoFile(path, object) {
 	var content = JSON.stringify(object, undefined, '\t');
 	writeFile(path,content);
 }
+
+
+/**
+ * Implementation of console.log according to Mozilla: https://developer.mozilla.org/en-US/docs/Web/API/Console/log
+ */
+console.log = function () {
+  // Return if no args
+  if (arguments.length === 0) {
+    return;
+  }
+
+  // In the future, should this be configurable?
+  //var outStream = Java.type("java.lang.System").out;
+
+  // When there is only one argument
+  var msg = arguments[0];
+  if (arguments.length === 1) {
+    print(msg.toString());
+    return;
+  }
+
+  // If first argument is a string, interpret remaining args as substitution strings
+  if (typeof msg === "string" || msg instanceof String) {
+    var subst = [];
+    for (var i = 1; i < arguments.length; i++) {
+      subst.push(arguments[i]);
+    }
+
+    printf(msg.toString(), subst);
+
+    return;
+  }
+
+  // Concatenate all arguments
+  for (var i = 1; i < arguments.length; i++) {
+    msg = msg + arguments[i].toString();
+  }
+
+  print(msg);
+};
+
+
