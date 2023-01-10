@@ -150,7 +150,8 @@ System.sleep = function(durantionMilis) {
  * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
  */
 System.nanos = function() {
-	return java.lang.System.nanoTime();
+	var system = Java.type("java.lang.System");
+	return system.nanoTime();
 }
 
 System.toc = function(nanoStart, message) {
