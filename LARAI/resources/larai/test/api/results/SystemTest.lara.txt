@@ -1,1 +1,2 @@
 Logical cores working: true
+Testing System.nanos()
