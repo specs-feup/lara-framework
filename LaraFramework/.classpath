@@ -6,7 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LaraFramework&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GearmanPlus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverInterface"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverGenerator"/>
@@ -21,5 +20,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/LanguageSpecification"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LaraFramework&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
