@@ -102,7 +102,7 @@ public class LaraIDataStore implements LaraiKeys {
         laraAPIs = new ArrayList<>();
         laraAPIs.addAll(LaraApis.getApis());
         laraAPIs.addAll(WeaverApis.getApis());
-        //laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
+        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
         laraAPIs.addAll(weaverEngine.getAspectsAPI());
 
         coreScripts = new ArrayList<>();

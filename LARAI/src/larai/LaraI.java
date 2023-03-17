@@ -702,11 +702,11 @@ public class LaraI {
             // If JS file
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
                 // If aspect arguments present, load them to object laraArgs
-                //loadAspectArguments();
+                loadAspectArguments();
 
                 interpreter.executeMainAspect(options.getLaraFile());
 
-                //postMainJsExecution();
+                postMainJsExecution();
 
                 // Close weaver
                 weaver.close();
