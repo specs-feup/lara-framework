@@ -56,8 +56,15 @@ Mutator.prototype.mutate = function() {
 	}
 	
 	// If code is currently mutated, call restore first
-	if(this.isMutated && this.automaticRestore) {
-		this.restore();
+	// Otherwise, do nothing
+	if(this.isMutated) {
+		if(this.automaticRestore) {
+			this.restore();
+		} else {
+			println("Calling .mutate() without .restore()");
+			return;
+		}
+
 	}
 	
 	// Now can do the mutation
