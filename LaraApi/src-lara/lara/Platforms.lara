@@ -55,3 +55,10 @@ Platforms._testCustomPlatform = function(platform) {
 	
 	return Platforms._customPlatform === platform;
 }
+
+/**
+ * If platform has been previously set to a custom one, resets setting. Otherwise, does nothing.
+ */
+Platforms.setCurrent = function() {
+	Platforms._customPlatform = undefined;
+}
