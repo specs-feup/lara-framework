@@ -263,49 +263,6 @@ function getFnName(fn) {
   var fstr = fn.toString();
   return fstr.match(/function (.*)\)/)[0];
 }
-//
-//	switch(type){
-//
-//	case object:
-//		printObjectByType();
-//	default:
-//
-//	}
-/*
-	if(!(obj instanceof Object)){
-		println(space+obj.toString());
-        return;
-	}*/
-
-/*
-		print(space);
-		if(Array.isArray(obj)){
-			print("["+prop+"] ");
-		}else print(prop+": ");
-		var value = obj[prop];
-		if( value == undefined || value == null){
-			println(value);
-			return;
-		}
-		
-		if(Array.isArray(value)){
-			printObject(value);
-			return;
-		}
-		
-		println("->"+typeof value);
-		if(obj[prop] instanceof java.lang.Object){
-			println(obj[prop].toString());
-		}else
-		if ( obj[prop].constructor==Object || obj[prop].constructor==Array){
-			println("");
-			printObject(obj[prop], space+"  ");
-		} else {
-			print(obj[prop].toString());
-			println("");
-		}
-	}*/
-//}
 
 //Insert save to file functions (and others) here!
 function writeFile(path, content) {
@@ -324,42 +281,6 @@ function JSONtoFile(path, object) {
  */
 console.log = function () {
   lara_console_helper(outputStream, ...arguments);
-
-  /*
-  // Return if no args
-  if (arguments.length === 0) {
-    return;
-  }
-
-  // In the future, should this be configurable?
-  //var outStream = Java.type("java.lang.System").out;
-
-  // When there is only one argument
-  var msg = arguments[0];
-  if (arguments.length === 1) {
-    print(msg.toString());
-    return;
-  }
-
-  // If first argument is a string, interpret remaining args as substitution strings
-  if (typeof msg === "string" || msg instanceof String) {
-    var subst = [];
-    for (var i = 1; i < arguments.length; i++) {
-      subst.push(arguments[i]);
-    }
-
-    printf(msg.toString(), subst);
-
-    return;
-  }
-
-  // Concatenate all arguments
-  for (var i = 1; i < arguments.length; i++) {
-    msg = msg + arguments[i].toString();
-  }
-
-  print(msg);
-  */
 };
 
 console.err = function () {
@@ -376,9 +297,6 @@ lara_console_helper = function (stream) {
   if (args.length === 0) {
     return;
   }
-
-  // In the future, should this be configurable?
-  //var outStream = Java.type("java.lang.System").out;
 
   // When there is only one argument
   var msg = args[0];
