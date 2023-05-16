@@ -98,6 +98,9 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         addActions(javaC);
 
         String superTypeName = null;
+
+        // Returns itself if join point does extend anything
+        // This is testing if the node
         if (!joinPoint.equals(joinPoint.getExtends())) {
             final JoinPointType superType = (JoinPointType) joinPoint.getExtends();
 
@@ -204,7 +207,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
                 .getJoinPointOwnActions(joinPoint.getClazz());
 
         for (final Action action : actions) {
-
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
             javaC.add(m);
 
@@ -286,9 +288,15 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             constructor.appendCode("super(" + fieldName + ");" + ln());
         }
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
-
+        // System.out.println("addSuperMethods: " + joinPoint.getClazz());
         GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
 
+        // Add global methods for global attributes
+        var globalAttributes = javaGenerator.getLanguageSpecification().getArtifacts().getGlobalAttributes().values();
+        GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
+        // GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, superType.getClazz());
+        // addSuperGetters(javaC, fieldName, javaGenerator, parent);
+        // System.out.println("ABS JP: " + superType.getClazz());
         // Update also here for actionImpl
         GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getClazz(), fieldName);
         // GeneratorUtils.addSuperToString(javaC, fieldName); // Do not add toString(), JoinPoint already implements it,

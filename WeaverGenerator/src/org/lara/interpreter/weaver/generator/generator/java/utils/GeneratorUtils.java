@@ -258,6 +258,11 @@ public class GeneratorUtils {
         javaC.add(listActions);
     }
 
+    // public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
+    // JoinPointType current) {
+    // addSuperMethods(javaC, fieldName, generator, current, false);
+    // }
+
     /**
      * Add methods of the super join point to the java class
      *
@@ -268,13 +273,22 @@ public class GeneratorUtils {
      */
     public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
             JoinPointType current) {
+        // public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
+        // JoinPointType current, boolean calledOnBaseJp) {
         final String parentType = JoinPointModelConstructor.getJoinPointClass(current.getExtends());
         if (parentType == null || parentType.equals(current.getClazz())) {
             return;
         }
+        // if (parentType == null || calledOnBaseJp) {
+        // return;
+        // }
+        //
+        // var newCalledOnBaseJp = parentType.equals(current.getClazz());
+
         final JoinPointType parent = generator.getLanguageSpecification().getJpModel().getJoinPoint(parentType);
         addSuperGetters(javaC, fieldName, generator, parent);
         addSuperSelect(javaC, fieldName, generator, parent);
+        // addSuperMethods(javaC, fieldName, generator, parent, newCalledOnBaseJp);
         addSuperMethods(javaC, fieldName, generator, parent);
         addSuperDefs(javaC, fieldName, generator, parent);
     }
@@ -312,36 +326,48 @@ public class GeneratorUtils {
             JoinPointType parent) {
 
         final Artifact artifact = generator.getLanguageSpecification().getArtifacts().getArtifact(parent.getClazz());
-        if (artifact != null) {
-            for (final Attribute attribute : artifact.getAttribute()) {
-                String attrClassStr = attribute.getType().trim();
 
-                if (attrClassStr.startsWith("{")) { // then it is an enumerator
-                    // attrClassStr = extractEnumName(attribute.getName());
-                    attrClassStr = String.class.getSimpleName();
-                }
-
-                // if (ObjectOfPrimitives.contains(attrClassStr))
-                // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
-
-                String name = attribute.getName();
-                // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
-
-                JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
-                // type = JavaTypeFactory.primitiveUnwrap(type);
-                if (type.isArray()) {
-                    name += GenConstants.getArrayMethodSufix();
-                }
-                String sanitizedName = StringUtils.getSanitizedName(name);
-                if (generator.hasImplMode() && !type.isArray()) {
-                    name += GenConstants.getImplementationSufix();
-                }
-                final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter(),
-                        generator);
-                getter.add(Annotation.OVERRIDE);
-                javaC.add(getter);
-            }
+        if (artifact == null) {
+            return;
         }
+
+        addSuperGetters(javaC, fieldName, generator, artifact.getAttribute());
+    }
+
+    public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
+            Collection<Attribute> attributes) {
+
+        // System.out.println("JP: " + javaC.getName());
+        for (final Attribute attribute : attributes) {
+            // System.out.println("ATTR:" + attribute.getName());
+            String attrClassStr = attribute.getType().trim();
+
+            if (attrClassStr.startsWith("{")) { // then it is an enumerator
+                // attrClassStr = extractEnumName(attribute.getName());
+                attrClassStr = String.class.getSimpleName();
+            }
+
+            // if (ObjectOfPrimitives.contains(attrClassStr))
+            // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
+
+            String name = attribute.getName();
+            // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
+
+            JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
+            // type = JavaTypeFactory.primitiveUnwrap(type);
+            if (type.isArray()) {
+                name += GenConstants.getArrayMethodSufix();
+            }
+            String sanitizedName = StringUtils.getSanitizedName(name);
+            if (generator.hasImplMode() && !type.isArray()) {
+                name += GenConstants.getImplementationSufix();
+            }
+            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter(),
+                    generator);
+            getter.add(Annotation.OVERRIDE);
+            javaC.add(getter);
+        }
+
     }
 
     /**
@@ -360,9 +386,11 @@ public class GeneratorUtils {
         // the same thing as the code above
         // joinPointOwnActions.addAll(langSpec.getActionModel().getActionsForAll());
         for (final Action action : joinPointOwnActions) {
+
             if (javaGenerator.hasDefs() && action.getName().equals("def")) {
                 continue;
             }
+
             final Method m = generateActionMethod(action, javaGenerator);
             m.setName(m.getName() + GenConstants.getImplementationSufix());
             m.clearCode();
