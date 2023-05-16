@@ -23,7 +23,7 @@ public enum LaraDocResource implements ResourceProvider {
 
     // Doc
     INDEX_HTML("index.html"),
-    JQUERY("jquery-3.2.1.min.js"),
+    JQUERY("jquery-3.6.4.min.js"),
     JS_DOC_JS("JsDoc.js"),
     STYLES_CSS("styles.css");
 
