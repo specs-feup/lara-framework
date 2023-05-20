@@ -141,6 +141,11 @@ public abstract class JoinPoint {
         return Optional.empty();
     }
 
+    /**
+     * 
+     * @param type
+     * @return true, if this join point is an instance of the given type, false otherwise
+     */
     public boolean instanceOf(String type) {
 
         // Base type is 'joinpoint', is always true
@@ -153,6 +158,21 @@ public abstract class JoinPoint {
         }
         Optional<? extends JoinPoint> superType = getSuper();
         return superType.isPresent() ? superType.get().instanceOf(type) : false;
+    }
+
+    /**
+     * 
+     * @param type
+     * @return true, if this join point is an instance of any of the given types, false otherwise
+     */
+    public boolean instanceOf(String[] types) {
+        for (var type : types) {
+            if (instanceOf(type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
