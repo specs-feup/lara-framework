@@ -33,15 +33,6 @@
 					},
 					{
 						"type": "attribute",
-						"tooltip": "a String with the type of the join point",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
-									}]
-					},
-					{
-						"type": "attribute",
 						"tooltip": "true if the current join point is an instance of the given type",
 						"children": [
 									{
@@ -93,6 +84,7 @@
 		{
 			"type": "joinpoint",
 			"name": "file",
+			"defaultAttr": "name",
 			"extends": "joinpoint"		,
 			"children": [
 					{
@@ -133,15 +125,6 @@
 									{
 										"type": "String[]",
 										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"tooltip": "a String with the type of the join point",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
 									}]
 					},
 					{
@@ -202,6 +185,7 @@
 		{
 			"type": "joinpoint",
 			"name": "folder",
+			"defaultAttr": "path",
 			"extends": "joinpoint"		,
 			"children": [
 					{
@@ -234,15 +218,6 @@
 									{
 										"type": "String[]",
 										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"tooltip": "a String with the type of the join point",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
 									}]
 					},
 					{
@@ -303,6 +278,7 @@
 		{
 			"type": "joinpoint",
 			"name": "function",
+			"defaultAttr": "name",
 			"extends": "joinpoint"		,
 			"children": [
 					{
@@ -335,15 +311,6 @@
 									{
 										"type": "String[]",
 										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"tooltip": "a String with the type of the join point",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
 									}]
 					},
 					{
@@ -423,15 +390,6 @@
 									{
 										"type": "String[]",
 										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"tooltip": "a String with the type of the join point",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
 									}]
 					},
 					{
