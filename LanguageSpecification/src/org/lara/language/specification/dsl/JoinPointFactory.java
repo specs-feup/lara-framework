@@ -128,11 +128,12 @@ public class JoinPointFactory {
     }
 
     private static void addDefaultGlobalAttributes(LanguageSpecificationV2 langSpec) {
+        /*
         var joinPointType = new Attribute(PrimitiveClasses.STRING, "joinPointType");
         joinPointType.setDefault(true);
         joinPointType.setToolTip("a String with the type of the join point");
         langSpec.getGlobal().add(joinPointType);
-
+        */
         var instanceOf = new Attribute(PrimitiveClasses.BOOLEAN, "instanceOf",
                 Arrays.asList(new Declaration(PrimitiveClasses.STRING, "name")));
         instanceOf.setDefault(true);
