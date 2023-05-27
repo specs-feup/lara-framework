@@ -216,7 +216,8 @@ JoinPoints.getCode = function($jp) {
 	checkJoinPoint($jp);
 	
 	// Check if attribute code is defined
-	if(!Weaver.hasAttribute($jp, "code")) {
+	//if(!Weaver.hasAttribute($jp, "code")) {
+	if(!$jp.attributes.contains("code")) {	
 		throw "JoinPoints.getCode(): expected attribute 'code' to exist";
 	}
 	

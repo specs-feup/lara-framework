@@ -90,4 +90,5 @@ public class WeaverApiTest {
     public void testLaraImportStar() {
         newTester().test("LaraImportStar.js");
     }
+
 }

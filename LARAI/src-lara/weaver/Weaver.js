@@ -82,10 +82,12 @@ class Weaver {
   /**
    * @para {String|$jp} jp - a join point, or the name of a join point
    * @para {String} attributeName - the name of the attribute to check
+   * @deprecated Use $jp.attributes instead
    *
    * @return {boolean} true, if the given join point or join point name support the attribute with the given name
    */
   static hasAttribute(jp, attributeName) {
+    println("DEPRECATED Weaver.hasAttribute, use $jp.attributes");
     var jpType = Weaver.isJoinPoint(jp) ? jp.joinPointType : jp.toString();
     checkString(attributeName);
 

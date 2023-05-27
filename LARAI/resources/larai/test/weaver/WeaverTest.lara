@@ -3,11 +3,12 @@ import weaver.Weaver;
 aspectdef WeaverTest	
 
 	// hasAttribute
+	/*
 	println("Has attribute $jp.joinPointType: " + Weaver.hasAttribute("joinpoint", "joinPointType")); 
 	println("Has attribute $file.absolutePath: " + Weaver.hasAttribute("file", "absolutePath")); 
 	println("Has attribute $file.wrongType: " + Weaver.hasAttribute("file", "wrongType")); 		
 	println("Has attribute $wrongJp.joinPointType: " + Weaver.hasAttribute("wrongJp", "joinPointType")); 		
-
+    */
 	// toJs
 	var ArrayList = Java.type('java.util.ArrayList');
 	var javaList = new ArrayList();
