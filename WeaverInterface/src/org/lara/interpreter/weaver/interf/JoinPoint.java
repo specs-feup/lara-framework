@@ -212,11 +212,15 @@ public abstract class JoinPoint {
      */
     protected void fillWithAttributes(List<String> attributes) {
         // DEFAULT ATTRIBUTES
-        attributes.add("srcCode");
-        attributes.add("selects");
-        attributes.add("attributes");
+        // attributes.add("srcCode");
         attributes.add("actions");
+        attributes.add("attributes");
+        attributes.add("dump");
+        attributes.add("joinPointType");
+        attributes.add("node");
+        attributes.add("selects");
         attributes.add("self");
+        attributes.add("super");
     }
 
     /**
