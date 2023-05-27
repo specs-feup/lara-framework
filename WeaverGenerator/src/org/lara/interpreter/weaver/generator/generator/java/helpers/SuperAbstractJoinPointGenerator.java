@@ -246,6 +246,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
                 Privacy.PROTECTED);
         fillWithAttributes.add(Annotation.OVERRIDE);
         fillWithAttributes.addArgument(JavaTypeFactory.getListStringJavaType(), "attributes");
+        fillWithAttributes.appendCode("// Default attributes" + ln());
+        fillWithAttributes.appendCode("super.fillWithAttributes(attributes);" + ln() + ln());
         fillWithAttributes.appendCode("//Attributes available for all join points" + ln());
         abstJPClass.add(fillWithAttributes);
 
