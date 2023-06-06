@@ -94,7 +94,23 @@ async function copyFiles(sourceDir, destinationDir, extension) {
 }
 */
 
-function copyFiles(sourceDir, destinationDir, extension) {
+/**
+ * Copied files will have .mjs extension.
+ *
+ * @param {*} sourceDir
+ * @param {*} destinationDir
+ * @param {*} extension
+ * @returns
+ */
+function copyFiles(
+  sourceDir,
+  destinationDir,
+  extension,
+  targetExtension = undefined
+) {
+  // Update node to 15+
+  //targetExtension ??= extension;
+  targetExtension = targetExtension !== undefined ? targetExtension : extension;
   const copiedFiles = [];
 
   const files = fs.readdirSync(sourceDir);
@@ -102,7 +118,6 @@ function copyFiles(sourceDir, destinationDir, extension) {
   for (const file of files) {
     //console.log("FILE: " + file);
     const sourcePath = path.join(sourceDir, file);
-    const destinationPath = path.join(destinationDir, file);
 
     const fileStat = fs.statSync(sourcePath);
 
@@ -112,10 +127,17 @@ function copyFiles(sourceDir, destinationDir, extension) {
       const subDirectoryCopiedFiles = copyFiles(
         sourcePath,
         newDestinationDir,
-        extension
+        extension,
+        targetExtension
       );
       copiedFiles.push(...subDirectoryCopiedFiles);
     } else if (file.endsWith(extension)) {
+      const endIndex = file.length - extension.length;
+      const fileWithoutExtension = file.substring(0, endIndex);
+      const destinationPath = path.join(
+        destinationDir,
+        fileWithoutExtension + targetExtension
+      );
       fs.copyFileSync(sourcePath, destinationPath);
       console.log("Copied:", sourcePath, "->", destinationPath);
       copiedFiles.push(destinationPath);
@@ -130,7 +152,11 @@ function copyFiles(sourceDir, destinationDir, extension) {
 const jsSourceFolder = "dist";
 const jsDestinationFolder = "../LaraApi/src-lara";
 
-const copiedFiles = copyFiles(jsSourceFolder, jsDestinationFolder, ".js");
+const copiedFiles = [];
+copiedFiles.push(
+  ...copyFiles(jsSourceFolder, jsDestinationFolder, ".js", ".mjs")
+);
+//copiedFiles.push(...copyFiles(jsSourceFolder, jsDestinationFolder, ".mjs"));
 
 /*
 const copiedFiles = [];

@@ -7,7 +7,7 @@
  *
  * @param {Object...} [args=[]] - Objects that will be transformed to Strings and used as the initial values of the set.
  */
-class StringSet {
+export default class StringSet {
     setObj: { [key: string]: any } = {};
     val = {};
 
