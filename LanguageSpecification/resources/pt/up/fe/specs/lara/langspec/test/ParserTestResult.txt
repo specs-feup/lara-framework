@@ -18,7 +18,6 @@ joinpoint joinpoint {
 	int num_oper
 	int num_pointer_refs
 	int size
-	String joinPointType
 	Boolean instanceOf(String name)
 	selects {
 		
