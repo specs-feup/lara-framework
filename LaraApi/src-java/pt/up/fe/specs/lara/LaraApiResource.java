@@ -122,7 +122,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
-    STRING_SET("util/StringSet.lara"),
+    // STRING_SET("util/StringSet.lara"),
     TIME_UNITS("util/TimeUnits.lara"),
     TUPLE_ID("util/TupleId.lara"),
 

@@ -30,7 +30,7 @@ import pt.up.fe.specs.util.utilities.StringLines;
 public class LaraApis {
 
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResourcesFromEnum(LaraApiResource.class,
-            LaraApiBaseResource.class);
+            LaraApiBaseResource.class, LaraApiJsResource.class);
 
     private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
             ApacheStrings.class, SpecsStrings.class, SpecsSystem.class, ProcessOutputAsString.class,
