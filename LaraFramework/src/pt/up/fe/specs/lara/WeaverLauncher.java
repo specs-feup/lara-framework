@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
@@ -447,10 +447,31 @@ public class WeaverLauncher {
             }
 
             // var results =
-            customThreadPool.submit(() -> Arrays.asList(adaptedArgs).parallelStream()
-                    .map(clavaExecutor)
-                    .collect(Collectors.toList())).get();
+
+            // Launch tasks
+            List<ForkJoinTask<Boolean>> tasks = new ArrayList<>();
+            for (var weaverArgs : adaptedArgs) {
+                tasks.add(customThreadPool.submit(() -> clavaExecutor.apply(weaverArgs)));
+            }
+
+            // Stop accepting tasks, allows threads to be reclaimed
             customThreadPool.shutdown();
+
+            // Wait for tasks
+            for (var task : tasks) {
+                task.get();
+            }
+
+            // Arrays.asList(adaptedArgs).stream()
+            // .map(clavaExecutor)
+            // .forEach(null);
+            // .collect(Collectors.toList())
+
+            // customThreadPool.submit(
+
+            // customThreadPool.submit(() -> Arrays.asList(adaptedArgs).parallelStream()
+            // .map(clavaExecutor)
+            // .collect(Collectors.toList())).get();
 
             // Find the file for each execution
             return collectResults(resultFiles);
