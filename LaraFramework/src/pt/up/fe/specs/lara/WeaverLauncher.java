@@ -450,6 +450,7 @@ public class WeaverLauncher {
             customThreadPool.submit(() -> Arrays.asList(adaptedArgs).parallelStream()
                     .map(clavaExecutor)
                     .collect(Collectors.toList())).get();
+            customThreadPool.shutdown();
 
             // Find the file for each execution
             return collectResults(resultFiles);
