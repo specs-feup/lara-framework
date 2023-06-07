@@ -1,6 +1,1 @@
-Has attribute $jp.joinPointType: true
-Has attribute $file.absolutePath: true
-Has attribute $file.wrongType: false
-Has attribute $wrongJp.joinPointType: false
-
 43,14
