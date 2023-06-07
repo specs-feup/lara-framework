@@ -138,4 +138,9 @@ public class LaraApiTest {
     public void testActionAwareCache() {
         newTester().test("util/ActionAwareCacheTest.js");
     }
+
+    @Test
+    public void testStringSet() {
+        newTester().test("util/StringSetTest.js");
+    }
 }
