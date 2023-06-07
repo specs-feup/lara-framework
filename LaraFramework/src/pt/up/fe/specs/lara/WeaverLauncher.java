@@ -446,8 +446,6 @@ public class WeaverLauncher {
                 adaptedArgs[i] = newArgs;
             }
 
-            // var results =
-
             // Launch tasks
             List<ForkJoinTask<Boolean>> tasks = new ArrayList<>();
             for (var weaverArgs : adaptedArgs) {
