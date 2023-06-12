@@ -24,7 +24,7 @@ export function addActiveChildProcess(
   });
 }
 
-export async function handleExit(exitProcess = true): Promise<void> {
+export function handleExit(exitProcess = true): void {
   const closingChildren: Promise<number | null>[] = [];
 
   for (const child of Object.values(activeChildProcesses)) {
@@ -37,17 +37,22 @@ export async function handleExit(exitProcess = true): Promise<void> {
 
     child.kill();
   }
-  await Promise.all(closingChildren);
-  debug("Closed all child processes");
-
-  if (exitProcess) {
-    process.exit();
-  }
+  Promise.all(closingChildren)
+    .then((codes) => {
+      debug("Closed all child processes");
+      if (exitProcess) {
+        process.exit();
+      }
+    })
+    .catch((err: Error) => {
+      debug(`Error closing child processes: ${err}`);
+    });
 }
 
-// Listen for termination signals
-process.on("SIGINT", handleExit);
-process.on("SIGTERM", handleExit);
-process.on("SIGQUIT", handleExit);
-process.on("uncaughtException", handleExit);
-process.on("unhandledRejection", handleExit);
+export function listenForTerminationSignals(): void {
+  process.on("SIGINT", handleExit);
+  process.on("SIGTERM", handleExit);
+  process.on("SIGQUIT", handleExit);
+  process.on("uncaughtException", handleExit);
+  process.on("unhandledRejection", handleExit);
+}
