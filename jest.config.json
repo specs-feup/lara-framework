@@ -6,5 +6,7 @@
   //"verbose": true,
   "collectCoverage": true,
   "coverageDirectory": "coverage",
-  "coverageReporters": ["text", "lcov"]
+  "coverageReporters": ["text", "lcov"],
+  "collectCoverageFrom": ["src/**/*.(t|j)s"],
+  "coverageProvider": "v8"
 }
