@@ -451,4 +451,13 @@ public abstract class WeaverEngine {
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
     }
+
+    public List<ResourceProvider> getLaraApis() {
+        throw new NotImplementedException(this);
+    }
+
+    public List<ResourceProvider> getLaraCore() {
+        throw new NotImplementedException(this);
+    }
+
 }
