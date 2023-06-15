@@ -99,11 +99,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
         final String weaverName = javaGenerator.getWeaverName();
         final JavaClass java = new JavaClass(weaverName, javaGenerator.getWeaverPackage());
         java.setSuperClass(new JavaType("A" + weaverName, javaGenerator.getAbstractWeaverPackage()));
-        // java.addImport(File.class.getCanonicalName(),
-        // List.class.getCanonicalName(),
-        // ArrayList.class.getCanonicalName(),
-        // WeaverEngine.class.getCanonicalName(),
-        // JoinPoint.class.getCanonicalName());
+
         final String text = JavaAbstractsGenerator.getWeaverText(weaverName, javaGenerator.getAUserJoinPointType());
         java.appendComment(text);
         java.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
