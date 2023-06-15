@@ -24,22 +24,21 @@ import larai.JsLaraCompatibilityResource;
 import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
-import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
 
-    private final Lazy<List<ResourceProvider>> laraApis;
-    private final Lazy<List<ResourceProvider>> laraCore;
+    private final List<ResourceProvider> laraApis;
+    private final List<ResourceProvider> laraCore;
 
     public LaraWeaverEngine() {
-        laraApis = Lazy.newInstance(this::buildLaraApis);
-        laraCore = Lazy.newInstance(this::buildLaraCore);
+        laraApis = buildLaraApis();
+        laraCore = buildLaraCore();
     }
 
     @Override
     public List<ResourceProvider> getLaraApis() {
-        return laraApis.get();
+        return laraApis;
     }
 
     private List<ResourceProvider> buildLaraApis() {
@@ -54,7 +53,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     @Override
     public List<ResourceProvider> getLaraCore() {
-        return laraCore.get();
+        return laraCore;
     }
 
     private List<ResourceProvider> buildLaraCore() {
