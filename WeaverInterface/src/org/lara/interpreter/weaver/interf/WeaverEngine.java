@@ -51,6 +51,8 @@ import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
  */
 public abstract class WeaverEngine {
 
+    private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
+
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
@@ -453,11 +455,11 @@ public abstract class WeaverEngine {
     }
 
     public List<ResourceProvider> getLaraApis() {
-        throw new NotImplementedException(this);
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
     }
 
     public List<ResourceProvider> getLaraCore() {
-        throw new NotImplementedException(this);
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
     }
 
 }
