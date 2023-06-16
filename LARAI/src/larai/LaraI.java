@@ -564,7 +564,7 @@ public class LaraI {
         // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
         // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
         // laraAPIs.addAll(options.getLaraAPIs());
-        List<ResourceProvider> laraAPIs = options.getLaraAPIs();
+        List<ResourceProvider> laraAPIs = getWeaverEngine().getLaraApis();
         if (!laraAPIs.isEmpty()) {
             preprocess.add("-r");
             String resources = laraAPIs.stream().map(LaraI::getOriginalResource)
@@ -1002,8 +1002,6 @@ public class LaraI {
 
         // Add user includes
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
-
-        var apis = larai.getOptions().getLaraAPIs();
 
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes));

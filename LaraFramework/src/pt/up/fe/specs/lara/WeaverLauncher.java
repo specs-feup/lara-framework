@@ -108,10 +108,10 @@ public class WeaverLauncher {
         var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
         // Get APIs
-        LaraI larai = LaraI.newInstance(engine);
         var api = new ArrayList<ResourceProvider>();
-        api.addAll(larai.getOptions().getCoreScripts());
-        api.addAll(larai.getOptions().getLaraAPIs());
+
+        api.addAll(engine.getLaraCore());
+        api.addAll(engine.getLaraApis());
 
         // Create LARA compiler
         var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
