@@ -57,6 +57,7 @@ public abstract class WeaverEngine {
     private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
 
     private final static String APIS_FOLDER_SUFFIX = "_apis";
+    private final static String LARA_CORE_FOLDER_SUFFIX = "_lara_core";
 
     private final static String CHECKSUM_FILENAME = "checksum.txt";
 
@@ -474,16 +475,20 @@ public abstract class WeaverEngine {
     }
 
     public File getApisFolder() {
-        return getApiFolder(APIS_FOLDER_SUFFIX);
+        return getApiFolder(APIS_FOLDER_SUFFIX, getLaraApis());
     }
 
-    private File getApiFolder(String suffix) {
+    public File getLaraCoreFolder() {
+        return getApiFolder(LARA_CORE_FOLDER_SUFFIX, getLaraCore());
+    }
+
+    private File getApiFolder(String suffix, List<ResourceProvider> resources) {
         var key = getApiFoldername(suffix);
         var apisFolder = API_FOLDERS.get().get(key);
 
         // Build folder
         if (apisFolder == null) {
-            apisFolder = buildFolder(suffix, getLaraApis());
+            apisFolder = buildFolder(suffix, resources);
             API_FOLDERS.get().put(key, apisFolder);
         }
 
