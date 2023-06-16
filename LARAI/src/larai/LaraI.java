@@ -984,6 +984,10 @@ public class LaraI {
         // Prepare includes
         var includes = new LinkedHashSet<File>();
 
+        // Add weaver APIs
+        System.out.println("APIs folder: " + weaverEngine.getApisFolder());
+        includes.add(weaverEngine.getApisFolder());
+
         // Add working directory
         includes.add(SpecsIo.getWorkingDir());
 
@@ -1002,7 +1006,7 @@ public class LaraI {
         var apis = larai.getOptions().getLaraAPIs();
 
         // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
+        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes));
 
         return laraImporter;
     }

@@ -49,7 +49,11 @@ public class LaraImporter {
     private final List<ResourceProvider> apis;
     private final Lazy<MultiMap<String, ResourceProvider>> apisMap;
 
-    public LaraImporter(LaraI larai, List<File> includes, List<ResourceProvider> apis) {
+    public LaraImporter(LaraI larai, List<File> includes) {
+        this(larai, includes, new ArrayList<>());
+    }
+
+    private LaraImporter(LaraI larai, List<File> includes, List<ResourceProvider> apis) {
         this.larai = larai;
         this.includes = includes;
         this.apis = apis;

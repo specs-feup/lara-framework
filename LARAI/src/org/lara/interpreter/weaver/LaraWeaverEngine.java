@@ -47,7 +47,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         laraAPIs.addAll(WeaverApis.getApis());
         laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
         laraAPIs.addAll(getAspectsAPI());
-
         return laraAPIs;
     }
 
