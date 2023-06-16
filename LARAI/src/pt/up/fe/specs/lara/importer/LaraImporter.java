@@ -191,10 +191,10 @@ public class LaraImporter {
      * @return
      */
     private String processCode(String code, String filename) {
-        var template = "if(typeof <VARNAME> === 'undefined') {\r\n"
-                + "    println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class '<VARNAME>'\");\r\n"
-                + "} else {\r\n"
-                + "    globalThis.<VARNAME> = <VARNAME>;\r\n"
+        var template = "if(typeof <VARNAME> === 'undefined') {\n"
+                + "    println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class '<VARNAME>'\");\n"
+                + "} else {\n"
+                + "    globalThis.<VARNAME> = <VARNAME>;\n"
                 + "}";
 
         // Get varname
