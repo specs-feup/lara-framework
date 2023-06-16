@@ -53,11 +53,16 @@ public abstract class WeaverEngine {
 
     private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
 
+    private final static String APIS_FOLDER_SUFFIX = "_apis";
+
+    private final static String OK_FILENAME = "ok.txt";
+
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecificationV2> langSpec;
+    private final Lazy<File> apisFolder;
 
     private JsEngine scriptEngine;
 
@@ -69,6 +74,7 @@ public abstract class WeaverEngine {
 
         // langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
         langSpec = Lazy.newInstance(this::buildLangSpecsV2);
+        apisFolder = Lazy.newInstance(() -> buildFolder(APIS_FOLDER_SUFFIX, getLaraApis()));
     }
 
     /**
@@ -460,6 +466,62 @@ public abstract class WeaverEngine {
 
     public List<ResourceProvider> getLaraCore() {
         throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
+    }
+
+    public File getApisFolder() {
+        return apisFolder.get();
+    }
+
+    private File buildFolder(String suffix, List<ResourceProvider> resources) {
+
+        var folder = getResourcesFolder(suffix);
+        var extractResources = checkExtractResources(folder);
+
+        if (extractResources) {
+            extractResources(resources, folder);
+        }
+
+        return folder;
+    }
+
+    private boolean checkExtractResources(File resourcesFolder) {
+        // Check if there is a build number present. If not, warn user that folder will not be cached
+        var buildNumber = SpecsSystem.getBuildNumber();
+        if (buildNumber == null) {
+            SpecsLogs.info("No build number set, APIs will not be cached");
+            return true;
+        }
+
+        // Check if ok file exists
+        if (!new File(resourcesFolder, OK_FILENAME).isFile()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private File getResourcesFolder(String suffix) {
+        return SpecsIo.getTempFolder(getFoldername(suffix));
+
+    }
+
+    private String getFoldername(String suffix) {
+        return getNameAndBuild().replace(' ', '_') + suffix;
+    }
+
+    private void extractResources(List<ResourceProvider> resources, File destination) {
+
+        // Clean folder
+        SpecsIo.deleteFolderContents(destination, true);
+
+        // Extract resources
+        for (var resource : resources) {
+            SpecsIo.resourceCopy(resource, destination);
+        }
+
+        // Add file to signal all resources have been extracted
+        SpecsIo.write(new File(destination, OK_FILENAME),
+                "Extracted:\n" + resources.stream().map(r -> r.getResource()).collect(Collectors.joining("\n")));
     }
 
 }
