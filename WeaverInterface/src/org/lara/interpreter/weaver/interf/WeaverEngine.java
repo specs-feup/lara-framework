@@ -568,27 +568,7 @@ public abstract class WeaverEngine {
     }
 
     private String mergeChecksums(List<String> checksums) {
-        var numChecksums = checksums.size();
-
-        if (numChecksums == 0) {
-            throw new RuntimeException("Checksums cannot be empty");
-        }
-
-        if (numChecksums == 1) {
-            return checksums.get(0);
-        }
-
-        if (numChecksums == 2) {
-            return SpecsIo.getMd5(checksums.get(0) + checksums.get(1));
-        }
-
-        // Divide in half
-        var midIndex = numChecksums / 2;
-
-        var firstHalf = mergeChecksums(checksums.subList(0, midIndex));
-        var secondHalf = mergeChecksums(checksums.subList(midIndex, numChecksums));
-
-        return SpecsIo.getMd5(firstHalf + secondHalf);
+        return SpecsIo.getMd5(checksums.stream().collect(Collectors.joining()));
     }
 
     private File getResourcesFolder(String suffix) {
