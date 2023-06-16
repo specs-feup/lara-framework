@@ -485,6 +485,12 @@ public abstract class WeaverEngine {
     }
 
     private boolean checkExtractResources(File resourcesFolder) {
+        // TODO:
+        // Check if there an ok file
+        // If a build number is present, no more checks are required.
+        // If not, calculate ok.file contents for present resources
+        // If any diff from file on disk, re-extract
+
         // Check if there is a build number present. If not, warn user that folder will not be cached
         var buildNumber = SpecsSystem.getBuildNumber();
         if (buildNumber == null) {
