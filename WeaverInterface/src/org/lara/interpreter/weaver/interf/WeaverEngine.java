@@ -15,9 +15,7 @@ package org.lara.interpreter.weaver.interf;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,10 +38,11 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
+import pt.up.fe.specs.util.io.ResourceCollection;
+import pt.up.fe.specs.util.io.ResourcesAsFiles;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
-import pt.up.fe.specs.util.utilities.StringLines;
 
 /**
  * Interface for connecting the lara interpreter with the target language weaver. A Weaver can be associated to an
@@ -59,9 +58,11 @@ public abstract class WeaverEngine {
     private final static String APIS_FOLDER_SUFFIX = "_apis";
     private final static String LARA_CORE_FOLDER_SUFFIX = "_lara_core";
 
-    private final static String CHECKSUM_FILENAME = "checksum.txt";
+    // private final static String CHECKSUM_FILENAME = "checksum.txt";
 
-    private final static ThreadLocal<Map<String, File>> API_FOLDERS = ThreadLocal.withInitial(() -> new HashMap<>());
+    // private final static ThreadLocal<Map<String, File>> API_FOLDERS = ThreadLocal.withInitial(() -> new HashMap<>());
+    private final static ThreadLocal<ResourcesAsFiles> API_FOLDERS = ThreadLocal
+            .withInitial(() -> new ResourcesAsFiles());
 
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
@@ -72,6 +73,9 @@ public abstract class WeaverEngine {
 
     private JsEngine scriptEngine;
 
+    private final Lazy<ResourceCollection> laraApis;
+    private final Lazy<ResourceCollection> laraCore;
+
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
@@ -81,6 +85,11 @@ public abstract class WeaverEngine {
         // langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
         langSpec = Lazy.newInstance(this::buildLangSpecsV2);
         // apisFolder = Lazy.newInstance(() -> buildFolder(APIS_FOLDER_SUFFIX, getLaraApis()));
+
+        laraApis = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(APIS_FOLDER_SUFFIX),
+                SpecsSystem.getBuildNumber() != null, getLaraApis()));
+        laraCore = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(LARA_CORE_FOLDER_SUFFIX),
+                SpecsSystem.getBuildNumber() != null, getLaraCore()));
     }
 
     /**
@@ -475,133 +484,17 @@ public abstract class WeaverEngine {
     }
 
     public File getApisFolder() {
-        return getApiFolder(APIS_FOLDER_SUFFIX, getLaraApis());
+        return API_FOLDERS.get().getApiFolder(laraApis.get());
+        // return getApiFolder(APIS_FOLDER_SUFFIX, getLaraApis());
     }
 
     public File getLaraCoreFolder() {
-        return getApiFolder(LARA_CORE_FOLDER_SUFFIX, getLaraCore());
-    }
-
-    private File getApiFolder(String suffix, List<ResourceProvider> resources) {
-        var key = getApiFoldername(suffix);
-        var apisFolder = API_FOLDERS.get().get(key);
-
-        // Build folder
-        if (apisFolder == null) {
-            apisFolder = buildFolder(suffix, resources);
-            API_FOLDERS.get().put(key, apisFolder);
-        }
-
-        return apisFolder;
-
-    }
-
-    private File buildFolder(String suffix, List<ResourceProvider> resources) {
-
-        var folder = getResourcesFolder(suffix);
-        var extractResources = checkExtractResources(folder, resources);
-
-        if (extractResources) {
-            extractResources(resources, folder);
-        }
-
-        return folder;
-    }
-
-    /**
-     * 
-     * @param resourcesFolder
-     * @return if true, means that resources need to be extracted to files, false means that folder can be reuses as-is
-     */
-    private boolean checkExtractResources(File resourcesFolder, List<ResourceProvider> resources) {
-
-        // Check if checksum file exists
-        var checksumFile = new File(resourcesFolder, CHECKSUM_FILENAME);
-
-        // If no checksum file, needs to extract resources
-        if (!checksumFile.isFile()) {
-            return true;
-        }
-
-        // Check if has build number. If build number is present, checksum will always be the same, no need to check
-        var buildNumber = SpecsSystem.getBuildNumber();
-
-        if (buildNumber != null) {
-            return false;
-        }
-
-        // Checksum file has two lines, number of resources and checksum
-        var lines = StringLines.getLines(checksumFile);
-
-        // If less than two lines there is a problem with checksum file
-        if (lines.size() < 2) {
-            return true;
-        }
-
-        var numberOfResources = Integer.parseInt(lines.get(0));
-
-        // Number of resources changed
-        if (numberOfResources != resources.size()) {
-            return true;
-        }
-
-        // Calculate checksum of current resources and check if corresponds to the checksum in the file
-        // var savedChecksum = lines.subList(1, lines.size());
-        // var currentChecksum = calculateChecksums(resources);
-        var savedChecksum = lines.get(1);
-        var currentChecksum = mergeChecksums(calculateChecksums(resources));
-
-        if (!savedChecksum.equals(currentChecksum)) {
-            return true;
-        }
-
-        // Same checksum, can reuse folder
-        return false;
-    }
-
-    private List<String> calculateChecksums(List<ResourceProvider> resources) {
-        var checksums = resources.stream()
-                .map(resource -> SpecsIo.getMd5(SpecsIo.getResource(resource)))
-                .collect(Collectors.toList());
-
-        return checksums;
-        // return mergeChecksums(checksums);
-        // return resources.stream()
-        // .map(resource -> SpecsIo.getMd5(SpecsIo.getResource(resource)))
-        // .reduce((s1, s2) -> SpecsIo.getMd5(s1 + s2))
-        // .orElseThrow(() -> new RuntimeException("Could not calculate checksum"));
-    }
-
-    private String mergeChecksums(List<String> checksums) {
-        return SpecsIo.getMd5(checksums.stream().collect(Collectors.joining()));
-    }
-
-    private File getResourcesFolder(String suffix) {
-        return SpecsIo.getTempFolder(getApiFoldername(suffix));
-
+        return API_FOLDERS.get().getApiFolder(laraCore.get());
+        // return getApiFolder(LARA_CORE_FOLDER_SUFFIX, getLaraCore());
     }
 
     private String getApiFoldername(String suffix) {
         return getNameAndBuild().replace(' ', '_') + suffix;
-    }
-
-    private void extractResources(List<ResourceProvider> resources, File destination) {
-
-        // Clean folder
-        SpecsIo.deleteFolderContents(destination, true);
-
-        // Extract resources
-        for (var resource : resources) {
-            SpecsIo.resourceCopy(resource, destination);
-        }
-
-        // Write checksum file
-        var checksumContents = resources.size() + "\n"
-        // + calculateChecksums(resources).stream().collect(Collectors.joining("\n"));
-                + mergeChecksums(calculateChecksums(resources));
-        SpecsIo.write(new File(destination, CHECKSUM_FILENAME), checksumContents);
-        // SpecsIo.write(new File(destination, CHECKSUM_FILENAME),
-        // "Extracted:\n" + resources.stream().map(r -> r.getResource()).collect(Collectors.joining("\n")));
     }
 
 }
