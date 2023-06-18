@@ -59,6 +59,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         var coreScripts = new ArrayList<ResourceProvider>();
         coreScripts.addAll(Arrays.asList(JsLaraCompatibilityResource.values()));
         coreScripts.addAll(Arrays.asList(JsApiResource.values()));
+        coreScripts.addAll(getImportableScripts());
 
         return coreScripts;
     }
