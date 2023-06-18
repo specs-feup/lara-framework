@@ -36,7 +36,7 @@ import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.utilities.CachedValue;
 
 /**
  * Utility methods what weavers can use to bootstrap execution.
@@ -51,10 +51,12 @@ public class WeaverLauncher {
     private final WeaverEngine engine;
 
     private final Map<String, Function<String[], Boolean>> tasks;
+    private final CachedValue<LaraCompiler> laraCompiler;
 
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
         tasks = buildTaskMap();
+        laraCompiler = new CachedValue<>(() -> new LaraCompiler(this.engine.getLanguageSpecificationV2()));
     }
 
     private Map<String, Function<String[], Boolean>> buildTaskMap() {
@@ -107,35 +109,68 @@ public class WeaverLauncher {
 
         var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
+        copyAndProcessApiFolder(engine.getLaraCoreFolder(), outputFolder, keepLara);
+        copyAndProcessApiFolder(engine.getApisFolder(), outputFolder, keepLara);
+        /*        
         // Get APIs
         var api = new ArrayList<ResourceProvider>();
-
+        
         api.addAll(engine.getLaraCore());
         api.addAll(engine.getLaraApis());
-
+        
         // Create LARA compiler
-        var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
-
+        // var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
+        
         SpecsLogs.info("Extracting APIs to '" + outputFolder.getAbsolutePath() + "'");
-
+        
         for (var apiFile : api) {
             var fileLocation = apiFile.getFileLocation();
-
+        
             var destinationFile = new File(outputFolder, fileLocation);
             var fileContents = SpecsIo.getResource(apiFile);
+        
+            // If LARA file, first convert to JavaScript
+            if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
+                destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
+        
+                fileContents = getLaraCompiler().compile(apiFile.getFilename(), fileContents);
+            }
+        
+            SpecsLogs.info("Writing file " + destinationFile);
+            SpecsIo.write(destinationFile, fileContents);
+        }
+        */
+        return true;
+    }
+
+    private void copyAndProcessApiFolder(File apiFolder, File outputFolder, boolean keepLara) {
+
+        SpecsLogs.info("Extracting APIs in folder '" + apiFolder.getAbsolutePath() + "' to '"
+                + outputFolder.getAbsolutePath() + "'");
+
+        var apiFiles = SpecsIo.getFilesRecursive(apiFolder);
+
+        for (var apiFile : apiFiles) {
+            var fileLocation = SpecsIo.getRelativePath(apiFolder, apiFile);
+
+            var destinationFile = new File(outputFolder, fileLocation);
+            var fileContents = SpecsIo.read(apiFile);
 
             // If LARA file, first convert to JavaScript
             if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
                 destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
 
-                fileContents = laraCompiler.compile(apiFile.getFilename(), fileContents);
+                fileContents = getLaraCompiler().compile(apiFile.getPath(), fileContents);
             }
 
             SpecsLogs.info("Writing file " + destinationFile);
             SpecsIo.write(destinationFile, fileContents);
         }
 
-        return true;
+    }
+
+    private LaraCompiler getLaraCompiler() {
+        return laraCompiler.getValue();
     }
 
     public boolean launchExternal(String[] args) {
