@@ -118,7 +118,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
-    PRINT_ONCE("util/PrintOnce.lara"),
+    // PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
