@@ -9,32 +9,25 @@ import {
   activeChildProcesses,
   listenForTerminationSignals,
 } from "./ChildProcessHandling.js";
+import WeaverConfiguration from "./WeaverConfiguration.js";
+import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 
 listenForTerminationSignals();
 
 export default class WeaverLauncher {
   debug!: Debug.Debugger;
 
-  weaverName!: string;
-  weaverPrettyName!: string;
-  weaverFileName!: string;
+  #config!: WeaverConfiguration;
 
-  commandLineArgumentsConfig!: yargs.Arguments;
+  #midExecution = false;
 
-  midExecution = false;
-
-  constructor(
-    weaverName: string,
-    prettyWeaverName: string = WeaverLauncher.capitalizeFirstLetter(weaverName)
-  ) {
-    this.weaverName = weaverName;
-    this.weaverPrettyName = prettyWeaverName;
-    this.weaverFileName = `${prettyWeaverName}.js`;
-    this.debug = Debug(`WeaverLauncher:${prettyWeaverName}:main`);
+  constructor(config: WeaverConfiguration) {
+    this.#config = config;
+    this.debug = Debug(`WeaverLauncher:${this.#config.weaverPrettyName}:main`);
   }
 
   async execute(): Promise<void> {
-    this.commandLineArgumentsConfig = await this.generateConfig().parse();
+    await this.generateConfig().parse();
   }
 
   static capitalizeFirstLetter(string: string) {
@@ -42,7 +35,10 @@ export default class WeaverLauncher {
   }
 
   protected main(args: yargs.Arguments): void {
-    this.debug(`${this.weaverPrettyName} execution arguments: %O`, args);
+    this.debug(
+      `${this.#config.weaverPrettyName} execution arguments: %O`,
+      args
+    );
     void this.executeWeaver(args);
 
     if (args.watch) {
@@ -76,8 +72,8 @@ export default class WeaverLauncher {
   }
 
   async executeWeaver(args: yargs.Arguments) {
-    if (this.midExecution) return;
-    this.midExecution = true;
+    if (this.#midExecution) return;
+    this.#midExecution = true;
     const activeProcess = Object.values(activeChildProcesses)[0];
 
     if (activeProcess?.exitCode === null) {
@@ -94,22 +90,26 @@ export default class WeaverLauncher {
       }
     }
 
-    addActiveChildProcess(
-      fork(path.join("dist", this.weaverFileName), [JSON.stringify(args)])
-    );
-    this.midExecution = false;
+    const child = fork(path.join("dist", this.#config.weaverFileName));
+    child.send({
+      config: this.#config,
+      args,
+    } as WeaverMessageFromLauncher);
+
+    addActiveChildProcess(child);
+    this.#midExecution = false;
   }
 
   protected generateConfig() {
     return yargs(hideBin(process.argv))
-      .scriptName(this.weaverName)
+      .scriptName(this.#config.weaverName)
       .command({
         command: "$0 [script-file]",
-        describe: `Execute a ${this.weaverPrettyName} script`,
+        describe: `Execute a ${this.#config.weaverPrettyName} script`,
         builder: (yargs) => {
           return yargs
             .positional("script-file", {
-              describe: `Path to ${this.weaverPrettyName} script file`,
+              describe: `Path to ${this.#config.weaverPrettyName} script file`,
               type: "string",
             })
             .option("c", {
@@ -128,7 +128,7 @@ export default class WeaverLauncher {
         },
         handler: (argv) => {
           try {
-            console.log(`Executing ${this.weaverPrettyName} script...`);
+            console.log(`Executing ${this.#config.weaverPrettyName} script...`);
             void this.main(argv);
           } catch (error) {
             console.error(error);
@@ -137,15 +137,17 @@ export default class WeaverLauncher {
       })
       .command({
         command: "init",
-        describe: `Initialize a new ${this.weaverPrettyName} project`,
+        describe: `Initialize a new ${this.#config.weaverPrettyName} project`,
         handler: () => {
           // TODO: Implement
-          console.log(`Initializing new ${this.weaverPrettyName} project...`);
+          console.log(
+            `Initializing new ${this.#config.weaverPrettyName} project...`
+          );
         },
       })
       .help()
       .showHelpOnFail(true)
       .strict()
-      .pkgConf(this.weaverName);
+      .pkgConf(this.#config.weaverName);
   }
 }
