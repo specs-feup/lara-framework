@@ -646,7 +646,7 @@ public class LaraI {
 
         Path path = Paths.get(engineWorkingDir);
 
-        JsEngine engine = createJsEngine(options.getJsEngine(), path);
+        JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -778,17 +778,17 @@ public class LaraI {
     //
     // }
 
-    private JsEngine createJsEngine(JsEngineType engineType) {
-        return createJsEngine(engineType, null);
-    }
+    // private JsEngine createJsEngine(JsEngineType engineType) {
+    // return createJsEngine(engineType, null);
+    // }
 
-    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory) {
+    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory);
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory, nodeModulesFolder);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory);
+        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory, nodeModulesFolder);
         // return new NashornEngine();
     }
 
@@ -985,7 +985,8 @@ public class LaraI {
         var includes = new LinkedHashSet<File>();
 
         // Add weaver APIs
-        System.out.println("APIs folder: " + weaverEngine.getApisFolder());
+        System.out.println("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
+        // includes.add(new File(weaverEngine.getApisFolder(), "node_modules"));
         includes.add(weaverEngine.getApisFolder());
 
         // Add working directory
