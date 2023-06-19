@@ -19,6 +19,13 @@
     "type": "git",
     "url": "git+https://github.com/lm-sousa/Lara-JS.git"
   },
+  "keywords": [
+    "C",
+    "C++",
+    "source-to-source",
+    "compiler",
+    "metaprogramming"
+  ],
   "author": "L. Sousa",
   "license": "Apache-2.0",
   "bugs": {
