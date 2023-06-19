@@ -62,7 +62,7 @@ public abstract class WeaverEngine {
 
     // private final static ThreadLocal<Map<String, File>> API_FOLDERS = ThreadLocal.withInitial(() -> new HashMap<>());
     private final static ThreadLocal<ResourcesAsFiles> API_FOLDERS = ThreadLocal
-            .withInitial(() -> new ResourcesAsFiles());
+            .withInitial(() -> new ResourcesAsFiles("node_modules"));
 
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
