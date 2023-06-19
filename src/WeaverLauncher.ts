@@ -50,25 +50,17 @@ export default class WeaverLauncher {
         .watch(args.watch as string[], { ignoreInitial: true })
         .on("all", (event: string, filepath: string) => {
           try {
-            return this.filesystemEventHandler(event, filepath, args);
+            this.debug(
+              `Source file event: ${WeaverLauncher.capitalizeFirstLetter(
+                event
+              )} '${filepath}'`
+            );
+            void this.executeWeaver(args);
           } catch (error) {
             console.error(error);
           }
         });
     }
-  }
-
-  protected filesystemEventHandler(
-    event: string,
-    filepath: string,
-    args: yargs.Arguments
-  ) {
-    this.debug(
-      `Source file event: ${WeaverLauncher.capitalizeFirstLetter(
-        event
-      )} '${filepath}'`
-    );
-    void this.executeWeaver(args);
   }
 
   async executeWeaver(args: yargs.Arguments) {
