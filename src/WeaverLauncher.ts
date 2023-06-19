@@ -4,6 +4,8 @@ import * as path from "path";
 import * as chokidar from "chokidar";
 import { hideBin } from "yargs/helpers";
 import { fork } from "child_process";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import {
   addActiveChildProcess,
   activeChildProcesses,
@@ -82,7 +84,9 @@ export default class WeaverLauncher {
       }
     }
 
-    const child = fork(path.join("dist", this.#config.weaverFileName));
+    const child = fork(
+      path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
+    );
     child.send({
       config: this.#config,
       args,
