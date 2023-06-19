@@ -143,4 +143,9 @@ public class LaraApiTest {
     public void testStringSet() {
         newTester().test("util/StringSetTest.js");
     }
+
+    @Test
+    public void testPrintOnce() {
+        newTester().test("util/PrintOnceTest.js");
+    }
 }
