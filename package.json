@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
+  "exports": {
+    "./*": "./dist/*",
+    "./src/*": "./src/*"
+  },
   "files": [
     "dist",
     "src",

@@ -1,5 +1,5 @@
 import Debug from "debug";
-import yargs from "yargs";
+import yargs, { Arguments } from "yargs";
 import * as path from "path";
 import * as chokidar from "chokidar";
 import { hideBin } from "yargs/helpers";
@@ -36,7 +36,7 @@ export default class WeaverLauncher {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  protected main(args: yargs.Arguments): void {
+  protected main(args: Arguments): void {
     this.debug(
       `${this.#config.weaverPrettyName} execution arguments: %O`,
       args
@@ -65,7 +65,7 @@ export default class WeaverLauncher {
     }
   }
 
-  async executeWeaver(args: yargs.Arguments) {
+  async executeWeaver(args: Arguments) {
     if (this.#midExecution) return;
     this.#midExecution = true;
     const activeProcess = Object.values(activeChildProcesses)[0];
