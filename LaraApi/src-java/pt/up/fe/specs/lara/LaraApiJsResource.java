@@ -24,12 +24,11 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum LaraApiJsResource implements LaraResourceProvider {
 
-    INDEX_MJS("index.mjs"),
-    JAVATYPES_MJS("lara/core/JavaTypes.mjs"),
-    LARACORE_MJS("lara/core/LaraCore.mjs"),
-    OUTPUT_MJS("lara/core/output.mjs"),
-    PRINTONCE_MJS("lara/util/PrintOnce.mjs"),
-    STRINGSET_MJS("lara/util/StringSet.mjs");
+    JAVATYPES_JS("lara/core/JavaTypes.js"),
+    LARACORE_JS("lara/core/LaraCore.js"),
+    OUTPUT_JS("lara/core/output.js"),
+    PRINTONCE_JS("lara/util/PrintOnce.js"),
+    STRINGSET_JS("lara/util/StringSet.js");
 
     private final String resource;
 

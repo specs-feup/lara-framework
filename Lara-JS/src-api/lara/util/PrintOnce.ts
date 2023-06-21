@@ -1,6 +1,6 @@
 
-import { println } from "../core/output.js";
-import StringSet from "./StringSet.js";
+import { println } from "lara/core/output.js";
+import StringSet from "lara/util/StringSet.js";
 
 /**
  * @class
