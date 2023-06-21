@@ -19,9 +19,11 @@ import java.util.List;
 
 import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import larai.JsLaraCompatibilityResource;
 import pt.up.fe.specs.lara.JsApiResource;
+import pt.up.fe.specs.lara.LaraApiJsResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -63,5 +65,10 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         coreScripts.addAll(getImportableScripts());
 
         return coreScripts;
+    }
+
+    @Override
+    public List<LaraResourceProvider> getNpmResources() {
+        return Arrays.asList(LaraApiJsResource.values());
     }
 }

@@ -26,6 +26,7 @@ import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
@@ -38,8 +39,8 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
+import pt.up.fe.specs.util.io.NpmResourcesAsFiles;
 import pt.up.fe.specs.util.io.ResourceCollection;
-import pt.up.fe.specs.util.io.ResourcesAsFiles;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
@@ -61,8 +62,8 @@ public abstract class WeaverEngine {
     // private final static String CHECKSUM_FILENAME = "checksum.txt";
 
     // private final static ThreadLocal<Map<String, File>> API_FOLDERS = ThreadLocal.withInitial(() -> new HashMap<>());
-    private final static ThreadLocal<ResourcesAsFiles> API_FOLDERS = ThreadLocal
-            .withInitial(() -> new ResourcesAsFiles("node_modules"));
+    private final static ThreadLocal<NpmResourcesAsFiles> API_FOLDERS = ThreadLocal
+            .withInitial(() -> new NpmResourcesAsFiles());
 
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
@@ -495,6 +496,10 @@ public abstract class WeaverEngine {
 
     private String getApiFoldername(String suffix) {
         return getNameAndBuild().replace(' ', '_') + suffix;
+    }
+
+    public List<LaraResourceProvider> getNpmResources() {
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
     }
 
 }
