@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { isValidFileExtension, FileExtensions } from "./FileExtensions";
+import { isValidFileExtension, FileExtensions } from "./FileExtensions.js";
 
 describe("FileExtensions", () => {
   describe("isValidFileExtension", () => {

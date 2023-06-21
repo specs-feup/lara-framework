@@ -3,7 +3,7 @@ import {
   addActiveChildProcess,
   handleExit,
   activeChildProcesses,
-} from "./ChildProcessHandling";
+} from "./ChildProcessHandling.js";
 
 describe("ChildProcessHandling", () => {
   describe("addActiveChildProcess", () => {

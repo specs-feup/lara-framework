@@ -8,15 +8,27 @@
     "./src/*": "./src/*"
   },
   "files": [
-    "dist",
-    "src",
-    "README.md"
+    "api",
+    "code",
+    "src-api",
+    "src-code",
+    ".gitignore",
+    "jest.config.json",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "tsconfig.json"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b src-api src-code",
+    "build:api": "tsc -b src-api",
+    "build:code": "tsc -b src-code",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:api": "npm run test -- src-api",
+    "test:code": "npm run test -- src-code",
+    "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch"
   },
   "repository": {
