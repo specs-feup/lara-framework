@@ -970,7 +970,8 @@ public class LaraI {
 
         // Import JS code
         for (var laraImport : laraImports) {
-            // SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
+            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
+            // SpecsLogs.info(laraImport.getCode());
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
         }
@@ -985,7 +986,7 @@ public class LaraI {
         var includes = new LinkedHashSet<File>();
 
         // Add weaver APIs
-        System.out.println("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
+        SpecsLogs.info("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
         // includes.add(new File(weaverEngine.getApisFolder(), "node_modules"));
         includes.add(weaverEngine.getApisFolder());
 

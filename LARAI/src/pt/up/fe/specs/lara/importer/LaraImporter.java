@@ -18,9 +18,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import larac.LaraC;
 import larac.options.LaraCOptions;
@@ -48,6 +51,7 @@ public class LaraImporter {
     private final List<File> includes;
     private final List<ResourceProvider> apis;
     private final Lazy<MultiMap<String, ResourceProvider>> apisMap;
+    private final Set<String> npmImports;
 
     public LaraImporter(LaraI larai, List<File> includes) {
         this(larai, includes, new ArrayList<>());
@@ -58,6 +62,7 @@ public class LaraImporter {
         this.includes = includes;
         this.apis = apis;
         this.apisMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
+        this.npmImports = buildNpmImports();
     }
 
     public List<File> getIncludes() {
@@ -86,7 +91,17 @@ public class LaraImporter {
                 var importingFile = new File(path, importPath);
 
                 if (importingFile.exists()) {
-                    laraImports.add(buildLaraImport(importingFile));
+                    String forcedExtension = null;
+                    // Check if inside APIs folder, and if it is an automatically generated resource
+                    // System.out.println(npmImports);
+                    // System.out.println("Is " + importPath + " a NPM import? " + npmImports.contains(importPath));
+                    if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
+                        SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
+                        // System.out.println("TESTE: " + importPath);
+                        forcedExtension = "mjs";
+                    }
+
+                    laraImports.add(buildLaraImport(importingFile, forcedExtension));
                     SpecsLogs.debug(() -> "Adding file '" + importingFile.getAbsolutePath() + "' for import '"
                             + importName + "'");
                     continue ext;
@@ -111,6 +126,16 @@ public class LaraImporter {
 
         return laraImports;
 
+    }
+
+    /**
+     * 
+     * @return
+     */
+    private Set<String> buildNpmImports() {
+        return larai.getWeaverEngine().getNpmResources().stream()
+                .map(LaraResourceProvider::getOriginalResource)
+                .collect(Collectors.toSet());
     }
 
     private ArrayList<File> getIncludePaths() {
@@ -140,14 +165,24 @@ public class LaraImporter {
         return buildLaraImport(code, resource.getFilename());
     }
 
-    private LaraImportData buildLaraImport(File importingFile) {
+    // private LaraImportData buildLaraImport(File importingFile) {
+    // return buildLaraImport(importingFile, null);
+    // }
+
+    private LaraImportData buildLaraImport(File importingFile, String forcedExtension) {
         var code = SpecsIo.read(importingFile);
         SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
-        return buildLaraImport(code, importingFile.getName());
+        return buildLaraImport(code, importingFile.getName(), forcedExtension);
     }
 
     private LaraImportData buildLaraImport(String code, String filename) {
-        var ext = SpecsIo.getExtension(filename);
+        return buildLaraImport(code, filename, null);
+    }
+
+    private LaraImportData buildLaraImport(String code, String filename, String ext) {
+        if (ext == null) {
+            ext = SpecsIo.getExtension(filename);
+        }
 
         switch (ext) {
         case "js":
