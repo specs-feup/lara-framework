@@ -1,26 +1,24 @@
-
-import { println } from "lara/core/output.js";
-import StringSet from "lara/util/StringSet.js";
+import { println } from "../core/output.js";
+import StringSet from "./StringSet.js";
 
 /**
  * @class
  */
 class PrintOnce {
-    messagesSet = new StringSet();
+  messagesSet = new StringSet();
 
-    message(message: string) {
-        if (message === undefined) {
-            return;
-        }
-
-        if (this.messagesSet.has(message)) {
-            return;
-        }
-
-        this.messagesSet.add(message);
-        println(message);
+  message(message: string) {
+    if (message === undefined) {
+      return;
     }
+
+    if (this.messagesSet.has(message)) {
+      return;
+    }
+
+    this.messagesSet.add(message);
+    println(message);
+  }
 }
 
 export default new PrintOnce();
-
