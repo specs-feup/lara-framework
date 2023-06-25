@@ -1,13 +1,14 @@
-import { println } from "../core/output.js";
+//import { println } from "../core/output.js";
 import StringSet from "./StringSet.js";
+
 
 /**
  * @class
  */
 class PrintOnce {
-    messagesSet = new StringSet();
+    static messagesSet = new StringSet();
 
-    message(message: string) {
+    static  message(message: string) {
         if (message === undefined) {
             return;
         }
@@ -23,4 +24,4 @@ class PrintOnce {
     }
 }
 
-export default new PrintOnce();
+export default PrintOnce;
