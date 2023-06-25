@@ -26,7 +26,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
 
     CORETEST_JS("core/coretest.js"),
     CORE_JS("core.js"),
-    JAVATYPES_JS("lara/core/JavaTypes.js"),
+    JAVATYPES_JS("lara/util/JavaTypes.js"),
     LARACORE_JS("lara/core/LaraCore.js"),
     OUTPUT_JS("lara/core/output.js"),
     PRINTONCE_JS("lara/util/PrintOnce.js"),
