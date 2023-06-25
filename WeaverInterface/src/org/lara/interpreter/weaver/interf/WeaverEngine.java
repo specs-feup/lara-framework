@@ -15,7 +15,9 @@ package org.lara.interpreter.weaver.interf;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,11 +37,11 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.io.NpmResourcesAsFiles;
 import pt.up.fe.specs.util.io.ResourceCollection;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -77,6 +79,8 @@ public abstract class WeaverEngine {
     private final Lazy<ResourceCollection> laraApis;
     private final Lazy<ResourceCollection> laraCore;
 
+    private final Map<String, List<ResourceProvider>> apis;
+
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
@@ -91,6 +95,14 @@ public abstract class WeaverEngine {
                 SpecsSystem.getBuildNumber() != null, getLaraApis()));
         laraCore = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(LARA_CORE_FOLDER_SUFFIX),
                 SpecsSystem.getBuildNumber() != null, getLaraCore()));
+
+        apis = new HashMap<>();
+    }
+
+    protected void addApis(String key, List<ResourceProvider> resources) {
+        var previousValue = apis.put(key, resources);
+        SpecsCheck.checkArgument(previousValue == null,
+                () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
     /**
