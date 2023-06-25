@@ -1,6 +1,6 @@
 
-import { println } from "lara/core/output.js";
-import StringSet from "lara/util/StringSet.js";
+//import { println } from "../core/output.js";
+import StringSet from "./StringSet.js";
 
 /**
  * @class
@@ -18,6 +18,8 @@ class PrintOnce {
         }
 
         this.messagesSet.add(message);
+
+        // @ts-ignore
         println(message);
     }
 }

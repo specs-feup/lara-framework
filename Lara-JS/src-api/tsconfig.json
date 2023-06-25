@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../api",
     "rootDir": ".",
-    "baseUrl": "."
+    //"baseUrl": "."
   },
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
   "references": [{ "path": "../src-code" }]
