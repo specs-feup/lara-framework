@@ -148,4 +148,9 @@ public class LaraApiTest {
     public void testPrintOnce() {
         newTester().test("util/PrintOnceTest.js");
     }
+
+    @Test
+    public void testLaraCoreJs() {
+        newTester().test("LaraCoreTest.js");
+    }
 }
