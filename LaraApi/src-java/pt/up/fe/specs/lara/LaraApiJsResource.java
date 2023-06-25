@@ -24,6 +24,8 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum LaraApiJsResource implements LaraResourceProvider {
 
+    CORETEST_JS("core/coretest.js"),
+    CORE_JS("core.js"),
     JAVATYPES_JS("lara/core/JavaTypes.js"),
     LARACORE_JS("lara/core/LaraCore.js"),
     OUTPUT_JS("lara/core/output.js"),
