@@ -1,7 +1,4 @@
-//import { object2string, println } from "../larai/includes/scripts/output.js";
-//import Weaver from "../weaver/Weaver.js";
-//import JavaTypes from "./JavaTypes.js";
-export var LARA_DEBUG = false;
+export let LARA_DEBUG = false;
 export function setDebug(value) {
     if (value === undefined) {
         LARA_DEBUG = true;

@@ -1,7 +1,8 @@
-import JavaTypes from "./JavaTypes.js";
+/* eslint-disable */
+import JavaTypes from "../util/JavaTypes.js";
 //Print a message
-export var outputStream = JavaTypes.getType("java.lang.System").out;
-export var errorStream = JavaTypes.getType("java.lang.System").err;
+export let outputStream = JavaTypes.getType("java.lang.System").out;
+export let errorStream = JavaTypes.getType("java.lang.System").err;
 export function setPrintStream(stream) {
     outputStream = stream;
     errorStream = stream;
