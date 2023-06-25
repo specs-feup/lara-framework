@@ -30,12 +30,16 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
 
+    private static final String API_NAME = "lara-js";
+
     private final List<ResourceProvider> laraApis;
     private final List<ResourceProvider> laraCore;
 
     public LaraWeaverEngine() {
         laraApis = buildLaraApis();
         laraCore = buildLaraCore();
+
+        addApis(API_NAME, buildLaraApis());
     }
 
     @Override
