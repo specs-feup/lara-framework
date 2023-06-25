@@ -1,8 +1,9 @@
-import JavaTypes from "./JavaTypes.js";
+/* eslint-disable */
+import JavaTypes from "../util/JavaTypes.js";
 
 //Print a message
-export var outputStream = JavaTypes.getType("java.lang.System").out;
-export var errorStream = JavaTypes.getType("java.lang.System").err;
+export let outputStream = JavaTypes.getType("java.lang.System").out;
+export let errorStream = JavaTypes.getType("java.lang.System").err;
 
 export function setPrintStream(stream: any) {
     outputStream = stream;
@@ -155,10 +156,7 @@ export function object2stringSimple(
             var ar = space + "[\n";
             var content = [];
             for (var prop in obj) {
-                var prop2String = object2stringSimple(
-                    obj[prop],
-                    space + INDENT_CHAR
-                );
+        var prop2String = object2stringSimple(obj[prop], space + INDENT_CHAR);
                 content.push(prop2String);
             }
             ar += content.join(",\n");

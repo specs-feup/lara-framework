@@ -1,5 +1,4 @@
-
-//import { println } from "../core/output.js";
+import { println } from "../core/output.js";
 import StringSet from "./StringSet.js";
 
 /**
@@ -25,4 +24,3 @@ class PrintOnce {
 }
 
 export default new PrintOnce();
-
