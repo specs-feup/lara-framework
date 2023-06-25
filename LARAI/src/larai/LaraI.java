@@ -971,9 +971,44 @@ public class LaraI {
         // Import JS code
         for (var laraImport : laraImports) {
             SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
-            // SpecsLogs.info(laraImport.getCode());
-            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "')");
+
+            // Try to load as file
+            var jsFile = laraImport.getJsFile().orElse(null);
+
+            if (jsFile != null) {
+                weaverEngine.getScriptEngine().evalFile(jsFile, laraImport.getFileType(), laraImport.getCode());
+            } else {
+                // SpecsLogs.info(laraImport.getCode());
+                weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+                        laraImport.getFilename() + " (LARA import '" + importName + "')");
+            }
+
+            // if (laraImport.getSuffixCode().isPresent()) {
+            // System.out.println("SUFFIX CODE: " + laraImport.getSuffixCode().get());
+            // }
+
+            // weaverEngine.getScriptEngine().eval("println('Before suffix eval2: " + importName + "\\n')",
+            // JsFileType.MODULE,
+            // "test");
+
+            // weaverEngine.getScriptEngine().eval("println('Before suffix eval3: " + importName + "\\n')",
+            // JsFileType.MODULE,
+            // UUID.randomUUID().toString());
+
+            // System.out.println("HERE 1");
+            // weaverEngine.getScriptEngine().eval("println('adasdasdad\\n')",
+            // JsFileType.MODULE,
+            // UUID.randomUUID().toString());
+            // System.out.println("HERE 2");
+
+            // Eval any suffix code if present
+            // laraImport.getSuffixCode().ifPresent(suffixCode -> weaverEngine.getScriptEngine().eval(suffixCode,
+            // JsFileType.MODULE, "Suffix code for import '" + importName + "'"));
+            //
+            // weaverEngine.getScriptEngine().eval("println('After suffix eval: " + importName + "\\n')",
+            // JsFileType.MODULE,
+            // UUID.randomUUID().toString());
+
         }
 
     }
@@ -986,7 +1021,7 @@ public class LaraI {
         var includes = new LinkedHashSet<File>();
 
         // Add weaver APIs
-        SpecsLogs.info("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
+        // SpecsLogs.info("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
         // includes.add(new File(weaverEngine.getApisFolder(), "node_modules"));
         includes.add(weaverEngine.getApisFolder());
 

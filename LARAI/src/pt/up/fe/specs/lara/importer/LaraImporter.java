@@ -91,17 +91,17 @@ public class LaraImporter {
                 var importingFile = new File(path, importPath);
 
                 if (importingFile.exists()) {
-                    String forcedExtension = null;
+                    boolean isNpmImport = false;
                     // Check if inside APIs folder, and if it is an automatically generated resource
                     // System.out.println(npmImports);
                     // System.out.println("Is " + importPath + " a NPM import? " + npmImports.contains(importPath));
                     if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
                         SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
                         // System.out.println("TESTE: " + importPath);
-                        forcedExtension = "mjs";
+                        isNpmImport = true;
                     }
 
-                    laraImports.add(buildLaraImport(importingFile, forcedExtension));
+                    laraImports.add(buildLaraImport(importingFile, isNpmImport));
                     SpecsLogs.debug(() -> "Adding file '" + importingFile.getAbsolutePath() + "' for import '"
                             + importName + "'");
                     continue ext;
@@ -169,28 +169,34 @@ public class LaraImporter {
     // return buildLaraImport(importingFile, null);
     // }
 
-    private LaraImportData buildLaraImport(File importingFile, String forcedExtension) {
+    private LaraImportData buildLaraImport(File importingFile, boolean isNpmImport) {
+        // NPM imports are always accessed from file
         var code = SpecsIo.read(importingFile);
-        SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
-        return buildLaraImport(code, importingFile.getName(), forcedExtension);
+        var ext = isNpmImport ? "mjs" : null;
+        // SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
+        return buildLaraImport(code, importingFile.getName(), ext, importingFile, isNpmImport);
+
+        // Creating from file, no need to read the code
+        // return buildLaraImport(null, importingFile.getName(), forcedExtension, importingFile);
+
     }
 
     private LaraImportData buildLaraImport(String code, String filename) {
-        return buildLaraImport(code, filename, null);
+        return buildLaraImport(code, filename, null, null, false);
     }
 
-    private LaraImportData buildLaraImport(String code, String filename, String ext) {
+    private LaraImportData buildLaraImport(String code, String filename, String ext, File jsFile, boolean isNpmImport) {
         if (ext == null) {
             ext = SpecsIo.getExtension(filename);
         }
 
         switch (ext) {
         case "js":
-            var jsCode = processCode(code, filename);
-            return new LaraImportData(filename, jsCode, JsFileType.NORMAL);
+            var jsLaraImport = new LaraImportData(filename, processCode(code, filename), JsFileType.NORMAL, jsFile);
+            return jsLaraImport;
         case "mjs":
-            var mjsCode = processCode(code, filename);
-            return new LaraImportData(filename, mjsCode, JsFileType.MODULE);
+            var mjsLaraImport = new LaraImportData(filename, processCode(code, filename), JsFileType.MODULE, jsFile);
+            return mjsLaraImport;
         case "lara":
             // Compile LARA file
             var args = new ArrayList<>();
@@ -205,7 +211,10 @@ public class LaraImporter {
             var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
             try {
                 var aspectJsCode = processor.toSimpleJs(aspectIr);
-                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL);
+                // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
+                // LARA files need to be transformed, will never use the file to load,
+                // but directly the processed source code
+                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
             } catch (Exception e) {
                 throw new RuntimeException("Error during LARA compilation", e);
             }
@@ -238,6 +247,65 @@ public class LaraImporter {
         var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
 
         return code + "\n\n" + globalizeCode;
+    }
+
+    /**
+     * Generates code that needs to be evaluated after import is loaded.
+     * 
+     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
+     * 
+     * @param filename
+     * @return
+     */
+    private String processCodeTest(String filename, File jsFile) {
+        var template2 = "const coreImport = '<IMPORT_NAME>';\n"
+                + "    const importedObjects = Object.entries(await import(coreImport));\r\n"
+                + "println('Imp obj: ' + importedObjects)\n"
+                + "    importedObjects.forEach(([key, value]) => {\r\n"
+                + "        if (key === \"default\") {\r\n"
+                + "            // Get the name of the class from the file path.\r\n"
+                + "            key = coreImport.split(\"/\").pop().split(\".\")[0];\r\n"
+                + "            //println('Key: ' + key);\r\n"
+                + "        }\r\n"
+                + "\r\n"
+                + "        globalThis[key] = value;\r\n"
+                + "        println('Setting globally ' + key + ' to value: ' + value);\r\n"
+                + "    });\r\n";
+        /*        
+        var template2 = "const foo = Object.entries(await import(\"<IMPORT_NAME>\"));\n"
+                + "        console.log('HEY');"
+                + "    foo.forEach(([key, value]) => {\n"
+                + "        // @ts-ignore\n"
+                + "        globalThis[key] = value;\n"
+                + "        console.log('Setting key ' + key + ' with value ' + value);"
+                + "    });";
+        */
+        // Find node modules folder
+        var filepath = jsFile.getAbsolutePath();
+        var index = filepath.indexOf("node_modules");
+
+        // +1 for the slash
+        var importName = filepath.substring(index + "node_modules".length() + 1).replace('\\', '/');
+
+        System.out.println("FILENAME: " + jsFile.getAbsolutePath());
+        System.out.println("IMPORTNAME: " + importName);
+
+        return template2.replace("<IMPORT_NAME>", importName);
+        //
+        // var template = "if(typeof <VARNAME> === 'undefined') {\n"
+        // + " println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class
+        // '<VARNAME>'\");\n"
+        // + "} else {\n"
+        // + " globalThis.<VARNAME> = <VARNAME>;\n"
+        // + "}";
+        //
+        // // Get varname
+        // var varName = SpecsStrings.escapeJson(SpecsIo.removeExtension(new File(filename).getName()));
+        // var escapedFilename = SpecsStrings.escapeJson(filename);
+        // var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
+        //
+        // // return code + "\n\n" + globalizeCode;
+        // return globalizeCode;
     }
 
     private MultiMap<String, ResourceProvider> buildIncludeResourcesMap() {
