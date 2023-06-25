@@ -489,6 +489,16 @@ public abstract class WeaverEngine {
         // return getApiFolder(APIS_FOLDER_SUFFIX, getLaraApis());
     }
 
+    public List<File> getNewCoreFiles() {
+        // TODO: With current folder structure, just one, need to change this
+        return Arrays.asList(new File(getApisFolder(), "core.js"));
+    }
+
+    /**
+     * TODO: This represents the old core folder
+     * 
+     * @return
+     */
     public File getLaraCoreFolder() {
         return API_FOLDERS.get().getApiFolder(laraCore.get());
         // return getApiFolder(LARA_CORE_FOLDER_SUFFIX, getLaraCore());
