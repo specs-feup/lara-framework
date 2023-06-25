@@ -16,6 +16,7 @@ package pt.up.fe.specs.lara.importer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,7 @@ public class LaraImporter {
     private final List<ResourceProvider> apis;
     private final Lazy<MultiMap<String, ResourceProvider>> apisMap;
     private final Set<String> npmImports;
+    private final Set<File> npmApiFolders;
 
     public LaraImporter(LaraI larai, List<File> includes) {
         this(larai, includes, new ArrayList<>());
@@ -63,6 +65,7 @@ public class LaraImporter {
         this.apis = apis;
         this.apisMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
         this.npmImports = buildNpmImports();
+        this.npmApiFolders = new HashSet<>(larai.getWeaverEngine().getApiManager().getNpmApiFolders());
     }
 
     public List<File> getIncludes() {
@@ -95,7 +98,9 @@ public class LaraImporter {
                     // Check if inside APIs folder, and if it is an automatically generated resource
                     // System.out.println(npmImports);
                     // System.out.println("Is " + importPath + " a NPM import? " + npmImports.contains(importPath));
-                    if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
+
+                    // if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
+                    if (npmApiFolders.contains(path) && npmImports.contains(importPath)) {
                         SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
                         // System.out.println("TESTE: " + importPath);
                         isNpmImport = true;
@@ -246,7 +251,9 @@ public class LaraImporter {
         var escapedFilename = SpecsStrings.escapeJson(filename);
         var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
 
-        return code + "\n\n" + globalizeCode;
+        var processedCode = code + "\n\n" + globalizeCode;
+
+        return processedCode;
     }
 
     /**

@@ -42,7 +42,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.io.ResourceCollection;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
@@ -58,28 +57,17 @@ public abstract class WeaverEngine {
 
     private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
 
-    private final static String APIS_FOLDER_SUFFIX = "_apis";
-    private final static String LARA_CORE_FOLDER_SUFFIX = "_lara_core";
-
-    // private final static String CHECKSUM_FILENAME = "checksum.txt";
-
-    // private final static ThreadLocal<Map<String, File>> API_FOLDERS = ThreadLocal.withInitial(() -> new HashMap<>());
-    private final static ThreadLocal<NpmResourcesAsFiles> API_FOLDERS = ThreadLocal
-            .withInitial(() -> new NpmResourcesAsFiles());
-
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecificationV2> langSpec;
-    // private final Lazy<File> apisFolder;
 
     private JsEngine scriptEngine;
 
-    private final Lazy<ResourceCollection> laraApis;
-    private final Lazy<ResourceCollection> laraCore;
-
     private final Map<String, List<ResourceProvider>> apis;
+
+    private final Lazy<WeaverApiManager> apiManager;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
@@ -87,22 +75,24 @@ public abstract class WeaverEngine {
 
         scriptEngine = null;
 
-        // langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
         langSpec = Lazy.newInstance(this::buildLangSpecsV2);
-        // apisFolder = Lazy.newInstance(() -> buildFolder(APIS_FOLDER_SUFFIX, getLaraApis()));
-
-        laraApis = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(APIS_FOLDER_SUFFIX),
-                SpecsSystem.getBuildNumber() != null, getLaraApis()));
-        laraCore = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(LARA_CORE_FOLDER_SUFFIX),
-                SpecsSystem.getBuildNumber() != null, getLaraCore()));
 
         apis = new HashMap<>();
+        apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
     }
 
     protected void addApis(String key, List<ResourceProvider> resources) {
         var previousValue = apis.put(key, resources);
         SpecsCheck.checkArgument(previousValue == null,
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
+    }
+
+    public Map<String, List<ResourceProvider>> getApis() {
+        return apis;
+    }
+
+    public WeaverApiManager getApiManager() {
+        return apiManager.get();
     }
 
     /**
@@ -494,30 +484,6 @@ public abstract class WeaverEngine {
 
     public List<ResourceProvider> getLaraCore() {
         throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
-    public File getApisFolder() {
-        return API_FOLDERS.get().getApiFolder(laraApis.get());
-        // return getApiFolder(APIS_FOLDER_SUFFIX, getLaraApis());
-    }
-
-    public List<File> getNewCoreFiles() {
-        // TODO: With current folder structure, just one, need to change this
-        return Arrays.asList(new File(getApisFolder(), "core.js"));
-    }
-
-    /**
-     * TODO: This represents the old core folder
-     * 
-     * @return
-     */
-    public File getLaraCoreFolder() {
-        return API_FOLDERS.get().getApiFolder(laraCore.get());
-        // return getApiFolder(LARA_CORE_FOLDER_SUFFIX, getLaraCore());
-    }
-
-    private String getApiFoldername(String suffix) {
-        return getNameAndBuild().replace(' ', '_') + suffix;
     }
 
     public List<LaraResourceProvider> getNpmResources() {

@@ -646,7 +646,9 @@ public class LaraI {
 
         Path path = Paths.get(engineWorkingDir);
 
-        JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
+        // JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
+        JsEngine engine = createJsEngine(options.getJsEngine(), path,
+                weaverEngine.getApiManager().getNodeModulesFolder());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -976,7 +978,15 @@ public class LaraI {
             var jsFile = laraImport.getJsFile().orElse(null);
 
             if (jsFile != null) {
+                // if (laraImport.getCode() != null) {
+                // System.out.println("Rewriting " + jsFile);
+                // SpecsIo.write(jsFile, laraImport.getCode());
+                // }
+
                 weaverEngine.getScriptEngine().evalFile(jsFile, laraImport.getFileType(), laraImport.getCode());
+                // weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+                // laraImport.getFilename() + " (LARA import '" + importName + "')");
+                // weaverEngine.getScriptEngine().evalFile(jsFile, laraImport.getFileType(), null);
             } else {
                 // SpecsLogs.info(laraImport.getCode());
                 weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
@@ -1021,9 +1031,8 @@ public class LaraI {
         var includes = new LinkedHashSet<File>();
 
         // Add weaver APIs
-        // SpecsLogs.info("Using LARA APIs folder: " + weaverEngine.getApisFolder().getAbsolutePath());
-        // includes.add(new File(weaverEngine.getApisFolder(), "node_modules"));
-        includes.add(weaverEngine.getApisFolder());
+        weaverEngine.getApiManager().getNpmApiFolders().stream()
+                .forEach(includes::add);
 
         // Add working directory
         includes.add(SpecsIo.getWorkingDir());

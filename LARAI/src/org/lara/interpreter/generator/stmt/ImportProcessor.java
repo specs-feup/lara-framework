@@ -96,14 +96,14 @@ public class ImportProcessor {
         WeaverEngine engine = weaver.getEngine();
 
         // Import all scripts in the new 'core' folder as modules (.mjs)
-        var newFilesToImport = engine.getNewCoreFiles();
+        var newFilesToImport = engine.getApiManager().getNpmCoreFiles();
         newFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(source -> evaluateImport(SpecsIo.read(source), source.getAbsolutePath(), false,
                         JsFileType.MODULE));
         // evaluateImport(internalScripts, source.getAbsolutePath(), false, JsFileType.getType(extension));
 
         // Import all scripts in the old 'core' folder
-        var oldFilesToImport = SpecsIo.getFilesRecursive(engine.getLaraCoreFolder());
+        var oldFilesToImport = SpecsIo.getFilesRecursive(engine.getApiManager().getCoreFolder());
         oldFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(this::importScript);
 

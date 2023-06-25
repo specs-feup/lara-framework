@@ -109,8 +109,13 @@ public class WeaverLauncher {
 
         var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
-        copyAndProcessApiFolder(engine.getLaraCoreFolder(), outputFolder, keepLara);
-        copyAndProcessApiFolder(engine.getApisFolder(), outputFolder, keepLara);
+        copyAndProcessApiFolder(engine.getApiManager().getCoreFolder(), outputFolder, keepLara);
+
+        // copyAndProcessApiFolder(engine.getApisFolder(), outputFolder, keepLara);
+        for (var apiFolder : engine.getApiManager().getNpmApiFolders()) {
+            copyAndProcessApiFolder(apiFolder, outputFolder, keepLara);
+        }
+
         /*        
         // Get APIs
         var api = new ArrayList<ResourceProvider>();
