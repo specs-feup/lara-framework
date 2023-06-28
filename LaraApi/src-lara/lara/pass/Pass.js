@@ -1,7 +1,6 @@
 laraImport("weaver.Query");
-laraImport("lara.pass.PassResult");
 laraImport("lara.util.AbstractClassError");
-laraImport("lara.pass.AggregatePassResult");
+laraImport("lara.pass.results.PassResult");
 laraImport("lara.pass.PassTransformationError");
 
 /**
@@ -11,7 +10,8 @@ laraImport("lara.pass.PassTransformationError");
  *  - _apply_impl($jp)
  */
 class Pass {
-  constructor(_name) {
+
+  constructor() {
     if (this.constructor === Pass) {
       throw new AbstractClassError({
         kind: "constructor",
@@ -20,20 +20,18 @@ class Pass {
     }
   }
 
+  /**
+   * @return {string} Name of the pass
+   */
   get name() {
     return this.constructor.name;
   }
 
   /**
-   * @deprecated Automatically infered
-   */
-  set name(_name) {}
-
-  /**
-   * Applies this pass starting at the given join point. If no join point is given, uses the root join point.
+   * Applies this pass starting at the given join point. If no join point is given, uses the root join point
    *
-   * @param {$jp} $jp - The point in the code where the pass will be applied.
-   * @return {PassResult} - Object containing information about the results of applying this pass to the given node
+   * @param {JoinPoint} $jp Joint point on which the pass will be applied
+   * @return {PassResult} Results of applying this pass to the given joint point
    */
   apply($jp) {
     let $actualJp = $jp ?? Query.root();
@@ -42,88 +40,23 @@ class Pass {
         `Applying pass '${this.name}' to ${$actualJp.joinPointType} (${$actualJp.location})`
     );
 
-    const result = this._apply_impl($actualJp);
-    return result ?? this._new_default_result();
+    return this._apply_impl($actualJp);
   }
 
   /**
    * Apply tranformation to
-   * @abstract Contains default implementation only if matchJoinPoint and transformJoinpoint are implemented.
+   * @abstract Contains default implementation only if matchJoinPoint and transformJoinpoint are implemented
+   * 
+   * @param {JoinPoint} $jp Joint point on which the pass will be applied
+   * @return {PassResult} Results of applying this pass to the given joint point
    */
   _apply_impl($jp) {
-    if (
-      this.matchJoinpoint === Pass.prototype.matchJoinpoint ||
-      this.transformJoinpoint === Pass.prototype.transformJoinpoint
-    ) {
-      throw new AbstractClassError({
-        kind: "abstractMethod",
-        baseClass: Pass,
-        derivedClass: this.constructor,
-        method: this._apply_impl,
-      });
-    }
-
-    const matchingJps = [$jp, ...$jp.descendants].filter(($jp) =>
-      this.matchJoinpoint($jp)
-    );
-
-    let insertedLiteralCode = false;
-    let casesApplied = 0;
-    let transformationErrors = [];
-
-    for (const $jp of matchingJps) {
-      try {
-        const result = this.transformJoinpoint($jp);
-        casesApplied++;
-        insertedLiteralCode = insertedLiteralCode || result.insertedLiteralCode;
-      } catch (e) {
-        if (e instanceof PassTransformationError) {
-          transformationErrors.push(e);
-        } else throw e;
-      }
-    }
-
-    return new AggregatePassResult({
-      pass: this.constructor,
-      casesFound: matchingJps.length,
-      casesApplied,
-      transformationErrors,
-      insertedLiteralCode,
-    });
-  }
-
-  _new_default_result() {
-    return new PassResult(this.name);
-  }
-
-  /**
-   * Predicate that informs the pass whether a certain joinpoint should be transformed.
-   * @abstract
-   * @param {joinpoint} $jp Join point to match
-   * @returns {boolean}
-   */
-  matchJoinpoint($jp) {
     throw new AbstractClassError({
       kind: "abstractMethod",
       baseClass: Pass,
       derivedClass: this.constructor,
-      method: this.matchJoinpoint,
+      method: this._apply_impl,
     });
   }
 
-  /**
-   * Transformation to be applied to matching joinpoints
-   * @abstract
-   * @param {joinpoint} $jp Join point to transform
-   * @throws {PassTransformationError} If the transformation fails
-   * @return {PassTransformationResult} The result of the transformation
-   */
-  transformJoinpoint($jp) {
-    throw new AbstractClassError({
-      kind: "abstractMethod",
-      baseClass: Pass,
-      derivedClass: this.constructor,
-      method: this.transformJoinpoint,
-    });
-  }
 }

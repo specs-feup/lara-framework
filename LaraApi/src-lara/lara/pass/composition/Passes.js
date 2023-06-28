@@ -1,11 +1,11 @@
 laraImport("lara.pass.Pass");
-laraImport("lara.pass.PassApplyArg");
+laraImport("lara.pass.composition.PassApplyArg");
 
 class Passes {
   /**
    * Applies a sequence of passes.
    *
-   * @param {$jp} $jp - Apply pass using this join point as the starting point
+   * @param {JoinPoint} $jp - Apply pass using this join point as the starting point
    * @param {...} args - An array or sequence of:
    * 	1) Pass instance;
    * 	2) Pass class;
