@@ -34,11 +34,12 @@ class PassResult {
    */
 
   /**
-   * @param {string} name Name of the pass that generated this result
+   * @param {Pass} pass Pass which generated this result
+   * @param {JoinPoint} $jp Join point related to this pass result
    * @param {PassResultParams} [params] - Properties of a defined PassResult
    */
-  constructor(name, $jp, {appliedPass = true, insertedLiteralCode = false} = {}) {
-    this._name = name;
+  constructor(pass, $jp, {appliedPass = true, insertedLiteralCode = false} = {}) {
+    this._name = pass.name;
     this._$jp = $jp;
     this._appliedPass = appliedPass;
     this._insertedLiteralCode = insertedLiteralCode;
@@ -70,6 +71,12 @@ class PassResult {
    */
   get insertedLiteralCode() {
     return this._insertedLiteralCode;
+  }
+
+  toString() {
+    return `PassResult { name: ${this.name}; ` +
+      `appliedPass: ${this.appliedPass}; ` +
+      `insertedLiteralCode: ${this.insertedLiteralCode} }`;
   }
 
 }

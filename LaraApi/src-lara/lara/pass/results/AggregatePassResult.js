@@ -16,11 +16,11 @@ class AggregatePassResult extends PassResult {
 
 
   /**
-   * @param {string} name Name of the pass that generated this result
-   * @param {PassResultParams} [params] - Properties of a defined PassResult
+   * @param {Pass} pass Pass which generated this result
+   * @param {JoinPoint} $jp Join point related to this pass result
    */
-  constructor(name, $jp) {
-    super(name, $jp, {appliedPass: false, insertedLiteralCode: false});
+  constructor(pass, $jp) {
+    super(pass, $jp, {appliedPass: false, insertedLiteralCode: false});
     
     this._casesApplied = 0;
     this._intermediateResults = [];
@@ -86,9 +86,18 @@ class AggregatePassResult extends PassResult {
     this._intermediateResults.push(Object.freeze(result));
     if (result.appliedPass) {
       this._appliedPass = true;
-      this.casesApplied += 1;
+      this._casesApplied += 1;
     }
     this._insertedLiteralCode = this._insertedLiteralCode || result.insertedLiteralCode;
+  }
+
+  toString() {
+    return `PassResult { name: ${this.name}; ` +
+      `appliedPass: ${this.appliedPass}; ` +
+      `insertedLiteralCode: ${this.insertedLiteralCode}; ` +
+      `casesFound: ${this.casesFound}; ` +
+      `casesApplied: ${this.casesApplied}; ` +
+      `casesFailed: ${this.casesFailed} }`;
   }
 
 }

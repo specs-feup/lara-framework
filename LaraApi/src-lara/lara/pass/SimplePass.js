@@ -2,6 +2,7 @@ laraImport("weaver.TraversalType");
 laraImport("lara.util.AbstractClassError");
 laraImport("lara.pass.results.AggregatePassResult");
 laraImport("lara.pass.PassTransformationError");
+laraImport("lara.pass.Pass");
 
 /**
  * Represents a Lara transformation pass.
@@ -13,10 +14,10 @@ laraImport("lara.pass.PassTransformationError");
 class SimplePass extends Pass {
 
   /**
-   * 
    * @param {boolean} includeDescendants Apply pass to the join point's descendents  
    */
   constructor(includeDescendants=true) {
+    super();
     this.#includeDescendants = includeDescendants;
   }
 
@@ -62,11 +63,11 @@ class SimplePass extends Pass {
    * @return {AggregatePassResult} Results of applying this pass to the given joint point
    */
   _apply_impl($jp) {
-    const matchingJps = this._selectedJps($jp).filter(($jp) => {
+    const matchingJps = this._selectedJps($jp).filter(($jp) =>
       this.matchJoinpoint($jp)
-    });;
+    );
 
-    const aggResult = new AggregatePassResult(this.name, $jp);
+    const aggResult = new AggregatePassResult(this, $jp);
     for (const $jp of matchingJps) {
       try {
         const result = this.transformJoinpoint($jp);

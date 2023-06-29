@@ -24,7 +24,12 @@ class Pass {
    * @return {string} Name of the pass
    */
   get name() {
-    return this.constructor.name;
+    if (this.constructor === Pass) {
+      throw new AbstractClassError({
+        kind: "constructor",
+        baseClass: Pass,
+      });
+    }
   }
 
   /**
