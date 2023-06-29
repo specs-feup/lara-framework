@@ -5,7 +5,7 @@ import StringSet from "./StringSet.js";
 /**
  * @class
  */
-class PrintOnce {
+export default class PrintOnce {
     static messagesSet = new StringSet();
 
     static  message(message: string) {
@@ -23,5 +23,3 @@ class PrintOnce {
         println(message);
     }
 }
-
-export default PrintOnce;
