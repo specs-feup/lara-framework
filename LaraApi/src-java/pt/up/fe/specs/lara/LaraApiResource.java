@@ -59,7 +59,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
     // Graphs
-    GRAPHS("graphs/Graphs.js"),
+    GRAPHS("graphs/Graphs.mjs"),
     GRAPH_NODE("graphs/GraphNode.js"),
     GRAPH_EDGE("graphs/GraphEdge.js"),
     NODE_DATA("graphs/NodeData.js"),

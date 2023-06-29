@@ -2,6 +2,8 @@ laraImport("lara.graphs.NodeData");
 laraImport("lara.graphs.EdgeData");
 laraImport("lara.graphs.DotFormatter");
 
+import cytoscape from "lara-js/api/libs/cytoscape-3.21.1.min.cjs";
+
 /**
  * Utility class related with graph creation and manipulation.
  *
@@ -26,10 +28,10 @@ class Graphs {
     if (Graphs.#isLibLoaded) {
       return;
     }
+	
+	globalThis.cytoscape = cytoscape;
 
-    load(
-      "https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.1/cytoscape.min.js"
-    );
+
     Graphs.#isLibLoaded = true;
   }
 
