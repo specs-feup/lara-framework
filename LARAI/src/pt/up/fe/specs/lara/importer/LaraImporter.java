@@ -191,16 +191,23 @@ public class LaraImporter {
     }
 
     private LaraImportData buildLaraImport(String code, String filename, String ext, File jsFile, boolean isNpmImport) {
+        if (isNpmImport) {
+            SpecsCheck.checkNotNull(jsFile, () -> "jsFile is null");
+            return new LaraImportData(filename, processCode(code, jsFile), JsFileType.MODULE, jsFile);
+        }
+
         if (ext == null) {
             ext = SpecsIo.getExtension(filename);
         }
 
         switch (ext) {
         case "js":
-            var jsLaraImport = new LaraImportData(filename, processCode(code, filename), JsFileType.NORMAL, jsFile);
+            var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL, jsFile);
+            // var jsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.NORMAL, jsFile);
             return jsLaraImport;
         case "mjs":
-            var mjsLaraImport = new LaraImportData(filename, processCode(code, filename), JsFileType.MODULE, jsFile);
+            var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE, jsFile);
+            // var mjsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.MODULE, jsFile);
             return mjsLaraImport;
         case "lara":
             // Compile LARA file
@@ -239,7 +246,7 @@ public class LaraImporter {
      * @param filename
      * @return
      */
-    private String processCode(String code, String filename) {
+    private String processCodeOld(String code, String filename) {
         var template = "if(typeof <VARNAME> === 'undefined') {\n"
                 + "    println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class '<VARNAME>'\");\n"
                 + "} else {\n"
@@ -264,29 +271,23 @@ public class LaraImporter {
      * @param filename
      * @return
      */
-    private String processCodeTest(String filename, File jsFile) {
-        var template2 = "const coreImport = '<IMPORT_NAME>';\n"
-                + "    const importedObjects = Object.entries(await import(coreImport));\r\n"
-                + "println('Imp obj: ' + importedObjects)\n"
-                + "    importedObjects.forEach(([key, value]) => {\r\n"
-                + "        if (key === \"default\") {\r\n"
-                + "            // Get the name of the class from the file path.\r\n"
-                + "            key = coreImport.split(\"/\").pop().split(\".\")[0];\r\n"
-                + "            //println('Key: ' + key);\r\n"
-                + "        }\r\n"
-                + "\r\n"
-                + "        globalThis[key] = value;\r\n"
-                + "        println('Setting globally ' + key + ' to value: ' + value);\r\n"
-                + "    });\r\n";
-        /*        
-        var template2 = "const foo = Object.entries(await import(\"<IMPORT_NAME>\"));\n"
-                + "        console.log('HEY');"
-                + "    foo.forEach(([key, value]) => {\n"
-                + "        // @ts-ignore\n"
-                + "        globalThis[key] = value;\n"
-                + "        console.log('Setting key ' + key + ' with value ' + value);"
-                + "    });";
-        */
+    private String processCode(String filename, File jsFile) {
+
+        var template2 = "import * as Foo from \"<IMPORT_NAME>\"\n"
+                + "\n"
+                + "const foo = Object.entries(Foo);\n"
+                + "foo.forEach(([key, value]) => {\n"
+                + "\n"
+                + "    if (key === \"default\") {\n"
+                + "        // Get the name of the class from the file path.\n"
+                + "        key = \"<MODULE_NAME>\";\n"
+                + "    }\n"
+                + "\n"
+                + "    // @ts-ignore\n"
+                + "    globalThis[key] = value;\n"
+                + "});\n"
+                + "";
+
         // Find node modules folder
         var filepath = jsFile.getAbsolutePath();
         var index = filepath.indexOf("node_modules");
@@ -294,25 +295,7 @@ public class LaraImporter {
         // +1 for the slash
         var importName = filepath.substring(index + "node_modules".length() + 1).replace('\\', '/');
 
-        System.out.println("FILENAME: " + jsFile.getAbsolutePath());
-        System.out.println("IMPORTNAME: " + importName);
-
-        return template2.replace("<IMPORT_NAME>", importName);
-        //
-        // var template = "if(typeof <VARNAME> === 'undefined') {\n"
-        // + " println(\"Warning: using laraImport() for file '<FILE>', however it does not define a variable or class
-        // '<VARNAME>'\");\n"
-        // + "} else {\n"
-        // + " globalThis.<VARNAME> = <VARNAME>;\n"
-        // + "}";
-        //
-        // // Get varname
-        // var varName = SpecsStrings.escapeJson(SpecsIo.removeExtension(new File(filename).getName()));
-        // var escapedFilename = SpecsStrings.escapeJson(filename);
-        // var globalizeCode = template.replace("<VARNAME>", varName).replace("<FILE>", escapedFilename);
-        //
-        // // return code + "\n\n" + globalizeCode;
-        // return globalizeCode;
+        return template2.replace("<IMPORT_NAME>", importName).replace("<MODULE_NAME>", SpecsIo.removeExtension(jsFile));
     }
 
     private MultiMap<String, ResourceProvider> buildIncludeResourcesMap() {
