@@ -28,8 +28,8 @@ export default class WeaverLauncher {
     this.debug = Debug(`WeaverLauncher:${this.#config.weaverPrettyName}:main`);
   }
 
-  async execute(): Promise<void> {
-    await this.generateConfig().parse();
+  async execute(customArgs: string | undefined = undefined): Promise<void> {
+    await this.generateConfig(customArgs).parse();
   }
 
   static capitalizeFirstLetter(string: string) {
@@ -96,8 +96,8 @@ export default class WeaverLauncher {
     this.#midExecution = false;
   }
 
-  protected generateConfig() {
-    return yargs(hideBin(process.argv))
+  protected generateConfig(args: string | undefined = undefined) {
+    return yargs(args ?? hideBin(process.argv))
       .scriptName(this.#config.weaverName)
       .command({
         command: "$0 [script-file]",
