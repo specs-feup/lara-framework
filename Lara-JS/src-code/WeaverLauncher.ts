@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import {
   addActiveChildProcess,
-  activeChildProcesses,
+  getActiveChildProcesses,
   listenForTerminationSignals,
 } from "./ChildProcessHandling.js";
 import WeaverConfiguration from "./WeaverConfiguration.js";
@@ -65,10 +65,10 @@ export default class WeaverLauncher {
     }
   }
 
-  async executeWeaver(args: Arguments) {
+  protected async executeWeaver(args: Arguments) {
     if (this.#midExecution) return;
     this.#midExecution = true;
-    const activeProcess = Object.values(activeChildProcesses)[0];
+    const activeProcess = Object.values(getActiveChildProcesses())[0];
 
     if (activeProcess?.exitCode === null) {
       const promise = new Promise((resolve) => {

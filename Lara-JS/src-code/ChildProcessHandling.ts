@@ -1,16 +1,15 @@
 import Debug from "debug";
-import { fork, spawn } from "child_process";
+import { ChildProcess } from "child_process";
 
 const debug = Debug("ChildProcessHandling");
 
-export const activeChildProcesses: Record<
-  number,
-  ReturnType<typeof fork> | ReturnType<typeof spawn>
-> = {};
+const activeChildProcesses: Record<number, ChildProcess> = {};
 
-export function addActiveChildProcess(
-  child: ReturnType<typeof fork> | ReturnType<typeof spawn>
-): void {
+export function getActiveChildProcesses(): typeof activeChildProcesses {
+  return activeChildProcesses;
+}
+
+export function addActiveChildProcess(child: ChildProcess) {
   if (child.pid === undefined) {
     throw new Error("Child process doesn't have a pid");
   }
@@ -19,7 +18,7 @@ export function addActiveChildProcess(
   activeChildProcesses[pid] = child;
 
   // Listen for the 'exit' event of the child process
-  child.on("exit", () => {
+  child.once("exit", () => {
     delete activeChildProcesses[pid];
   });
 }
