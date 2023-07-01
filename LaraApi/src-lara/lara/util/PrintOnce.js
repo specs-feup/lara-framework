@@ -1,9 +1,9 @@
-//import { print } from "../core/output.js";
+//import { println } from "../core/output.js";
 import StringSet from "./StringSet.js";
 /**
  * @class
  */
-class PrintOnce {
+export default class PrintOnce {
     static messagesSet = new StringSet();
     static message(message) {
         if (message === undefined) {
@@ -17,6 +17,4 @@ class PrintOnce {
         println(message);
     }
 }
-//export default new PrintOnce();
-export default PrintOnce;
 //# sourceMappingURL=PrintOnce.js.map

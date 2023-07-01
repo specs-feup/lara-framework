@@ -974,50 +974,8 @@ public class LaraI {
         for (var laraImport : laraImports) {
             SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
-            // Try to load as file
-            var jsFile = laraImport.getJsFile().orElse(null);
-
-            if (jsFile != null) {
-                // if (laraImport.getCode() != null) {
-                // System.out.println("Rewriting " + jsFile);
-                // SpecsIo.write(jsFile, laraImport.getCode());
-                // }
-
-                weaverEngine.getScriptEngine().evalFile(jsFile, laraImport.getFileType(), laraImport.getCode());
-                // weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                // laraImport.getFilename() + " (LARA import '" + importName + "')");
-                // weaverEngine.getScriptEngine().evalFile(jsFile, laraImport.getFileType(), null);
-            } else {
-                // SpecsLogs.info(laraImport.getCode());
-                weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                        laraImport.getFilename() + " (LARA import '" + importName + "')");
-            }
-
-            // if (laraImport.getSuffixCode().isPresent()) {
-            // System.out.println("SUFFIX CODE: " + laraImport.getSuffixCode().get());
-            // }
-
-            // weaverEngine.getScriptEngine().eval("println('Before suffix eval2: " + importName + "\\n')",
-            // JsFileType.MODULE,
-            // "test");
-
-            // weaverEngine.getScriptEngine().eval("println('Before suffix eval3: " + importName + "\\n')",
-            // JsFileType.MODULE,
-            // UUID.randomUUID().toString());
-
-            // System.out.println("HERE 1");
-            // weaverEngine.getScriptEngine().eval("println('adasdasdad\\n')",
-            // JsFileType.MODULE,
-            // UUID.randomUUID().toString());
-            // System.out.println("HERE 2");
-
-            // Eval any suffix code if present
-            // laraImport.getSuffixCode().ifPresent(suffixCode -> weaverEngine.getScriptEngine().eval(suffixCode,
-            // JsFileType.MODULE, "Suffix code for import '" + importName + "'"));
-            //
-            // weaverEngine.getScriptEngine().eval("println('After suffix eval: " + importName + "\\n')",
-            // JsFileType.MODULE,
-            // UUID.randomUUID().toString());
+            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+                    laraImport.getFilename() + " (LARA import '" + importName + "')");
 
         }
 

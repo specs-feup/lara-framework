@@ -207,8 +207,13 @@ public class WeaverApiManager {
             // Copy all resources
             var resources = apis.get(packageName);
             numResources += resources.size();
-            resources.stream()
-                    .forEach(resource -> SpecsIo.resourceCopy(resource, apiFolder));
+
+            for (var resource : resources) {
+                // Manually sets destination folder to take into account that LaraResourceProvider
+                // can have extra folders to avoid classpath collision
+                var destinationFolder = new File(apiFolder, resource.getResourceLocation());
+                SpecsIo.resourceCopy(resource.getResource(), destinationFolder, false);
+            }
         }
 
         // Order keys so that checksum is repeatable

@@ -57,7 +57,7 @@ function copyFiles(
 // Copy JS files to Java project folder
 
 const jsSourceFolder = "api";
-const jsDestinationFolder = "../LaraApi/src-lara";
+const jsDestinationFolder = "../LaraApi/src-lara/";
 
 const copiedFiles = [];
 copiedFiles.push(
