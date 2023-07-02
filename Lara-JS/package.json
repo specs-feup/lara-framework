@@ -29,6 +29,10 @@
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
+    "docs:api": "typedoc src-api --name api --tsconfig src-api/tsconfig.json --entryPointStrategy Expand --json docs/api.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
+    "docs:code": "typedoc src-code --name code --tsconfig src-code/tsconfig.json --entryPointStrategy Expand --json docs/code.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
+    "docs:merge": "typedoc --entryPointStrategy Merge --includeVersion --out docs docs/api.json docs/code.json",
+    "docs": "npm run docs:api && npm run docs:code && npm run docs:merge",
     "java-dist": "node scripts/java-dist.js"
   },
   "repository": {
@@ -71,6 +75,8 @@
     "jest": "^29.5.0",
     "node-notifier": "^10.0.1",
     "ts-jest": "^29.1.0",
+    "typedoc": "^0.24.8",
+    "typedoc-plugin-merge-modules": "^5.0.1",
     "typescript": "^5.1.3"
   }
 }

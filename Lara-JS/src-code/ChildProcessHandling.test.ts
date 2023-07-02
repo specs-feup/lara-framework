@@ -2,15 +2,18 @@ import { jest } from "@jest/globals";
 import {
   addActiveChildProcess,
   handleExit,
-  activeChildProcesses,
+  getActiveChildProcesses,
 } from "./ChildProcessHandling.js";
 
 describe("ChildProcessHandling", () => {
   describe("addActiveChildProcess", () => {
     it("should add the child process to the activeChildProcesses object", () => {
-      const childProcess = { pid: 123, on: () => {} } as any;
+      const childProcess = {
+        pid: 123,
+        once: (code: string, callback: () => {}) => {},
+      } as any;
       addActiveChildProcess(childProcess);
-      expect(activeChildProcesses[childProcess.pid]).toBe(childProcess);
+      expect(getActiveChildProcesses()[childProcess.pid]).toBe(childProcess);
     });
   });
 
@@ -30,8 +33,8 @@ describe("ChildProcessHandling", () => {
           callback();
         },
       } as any;
-      activeChildProcesses[childProcess1.pid] = childProcess1;
-      activeChildProcesses[childProcess2.pid] = childProcess2;
+      getActiveChildProcesses()[childProcess1.pid] = childProcess1;
+      getActiveChildProcesses()[childProcess2.pid] = childProcess2;
 
       const childProcessKillSpy1 = jest
         .spyOn(childProcess1, "kill")
@@ -46,7 +49,7 @@ describe("ChildProcessHandling", () => {
         .spyOn(childProcess2, "once")
         .mockClear();
 
-      await handleExit(false);
+      handleExit(false);
 
       expect(childProcessKillSpy1).toHaveBeenCalledTimes(1);
       expect(childProcessOnceSpy1).toHaveBeenCalledTimes(1);

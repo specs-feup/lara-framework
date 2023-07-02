@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import {
   addActiveChildProcess,
-  activeChildProcesses,
+  getActiveChildProcesses,
   listenForTerminationSignals,
 } from "./ChildProcessHandling.js";
 import WeaverConfiguration from "./WeaverConfiguration.js";
@@ -28,8 +28,8 @@ export default class WeaverLauncher {
     this.debug = Debug(`WeaverLauncher:${this.#config.weaverPrettyName}:main`);
   }
 
-  async execute(): Promise<void> {
-    await this.generateConfig().parse();
+  async execute(customArgs: string | undefined = undefined): Promise<void> {
+    await this.generateConfig(customArgs).parse();
   }
 
   static capitalizeFirstLetter(string: string) {
@@ -65,10 +65,10 @@ export default class WeaverLauncher {
     }
   }
 
-  async executeWeaver(args: Arguments) {
+  protected async executeWeaver(args: Arguments) {
     if (this.#midExecution) return;
     this.#midExecution = true;
-    const activeProcess = Object.values(activeChildProcesses)[0];
+    const activeProcess = Object.values(getActiveChildProcesses())[0];
 
     if (activeProcess?.exitCode === null) {
       const promise = new Promise((resolve) => {
@@ -96,8 +96,8 @@ export default class WeaverLauncher {
     this.#midExecution = false;
   }
 
-  protected generateConfig() {
-    return yargs(hideBin(process.argv))
+  protected generateConfig(args: string | undefined = undefined) {
+    return yargs(args ?? hideBin(process.argv))
       .scriptName(this.#config.weaverName)
       .command({
         command: "$0 [script-file]",
