@@ -24,7 +24,6 @@ import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.utils.Coordinates;
-import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.LaraIUtils.Operators;
 import org.lara.interpreter.utils.SelectUtils;
@@ -142,17 +141,26 @@ public class WeaverStatementProcessor {
 
         // out.println(select);
         ret.append(LaraIUtils.getSpace(depth) + "//Apply to " + selectLabel + "\n");
-        ret.append(LaraIUtils.getSpace(depth) + "try{\n");
+
+        // ret.append(LaraIUtils.getSpace(depth) + "try{\n");
 
         ret.append(getLoopForSelect(selectLabel.toString(), stat.label, select, codeExpr, conditionExpr, depth + 1));
-        ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
-        ret.append(LaraIUtils.getSpace(depth + 1) + "e = e == undefined?'undefined exception':e;\n");
-        // Gson gson = new Gson();
-        // String json = gson.toJson(lines);
-        ret.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
-                + ".throwApplyException(e, '" + stat.label + "', '" + selectLabel
-                + "',this.__currentLine__);\n");
-        ret.append(LaraIUtils.getSpace(depth) + "}");
+
+        // ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
+        // ret.append(LaraIUtils.getSpace(depth + 1) + "e = e == undefined?'undefined exception':e;\n");
+        //
+        // ret.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
+        // + ".throwApplyException(e, '" + stat.label + "', '" + selectLabel
+        // + "',this.__currentLine__);\n");
+        // ret.append(LaraIUtils.getSpace(depth) + "}");
+
+        // ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
+
+        // ret.append(LaraIUtils.getSpace(3) + "throw new Error('Execution error in LARA file: " + stat.label + ", "
+        // + selectLabel + ", LARA line ' + this.__currentLine__, { cause: e });\n");
+
+        // ret.append(LaraIUtils.getSpace(depth) + "}");
+
         ret.append(LaraIUtils.getSpace(depth) + "//After: apply to " + selectLabel + "\n");
         ret.append(after);
         // TRIGGER APPLY END EVENT
