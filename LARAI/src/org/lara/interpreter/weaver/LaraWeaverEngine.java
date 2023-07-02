@@ -39,7 +39,11 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         laraApis = buildLaraApis();
         laraCore = buildLaraCore();
 
+        // Add LARA APIs
         addApis(API_NAME, laraApis);
+
+        // Add weaver-specific APIs
+        addWeaverApis();
     }
 
     @Override

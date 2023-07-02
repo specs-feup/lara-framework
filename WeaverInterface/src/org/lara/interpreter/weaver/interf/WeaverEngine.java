@@ -87,6 +87,14 @@ public abstract class WeaverEngine {
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
+    /**
+     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
+     */
+    protected void addWeaverApis() {
+        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
+        addApis(getName(), getAspectsAPI());
+    }
+
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
     }
