@@ -147,8 +147,8 @@ function generateJoinpointAction(
     }
     fs.writeSync(outputFile, `${parameterName}: ${type}, `);
   });
-
-  fs.writeSync(outputFile, `): any;\n`);
+  const type = interpretType(action.type, joinpointNameSet, enumNameSet);
+  fs.writeSync(outputFile, `): ${type};\n`);
 }
 
 function generateEnums(enums, outputFile) {
