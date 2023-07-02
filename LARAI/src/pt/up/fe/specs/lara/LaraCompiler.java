@@ -55,7 +55,6 @@ public class LaraCompiler {
             weaver.setScriptEngine(jsEngine);
         }
 
-        // aspectProcessor = buildAspectProcessor();
         // Delay initialization, so that we can build the object and make it run on another thread
         aspectProcessor = null;
         lastCompilation = null;
@@ -115,26 +114,4 @@ public class LaraCompiler {
         return LaraI.buildAspectProcessor(weaver, jsEngine);
     }
 
-    // public static AspectClassProcessor buildAspectProcessor(WeaverEngine weaver, JsEngine jsEngine) {
-    //
-    // // Create LARA Interpreter
-    // DataStore laraiConfig = DataStore.newInstance("LaraCompiler");
-    // laraiConfig.set(LaraiKeys.LARA_FILE, new File(""));
-    // LaraI larai = LaraI.newInstance(laraiConfig, weaver);
-    //
-    // // Create MasterWeaver
-    // FileList folderApplication = FileList.newInstance();
-    // MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
-    // larai.setWeaver(masterWeaver);
-    //
-    // // Create interpreter
-    // Interpreter interpreter = new Interpreter(larai, jsEngine, false);
-    // larai.setInterpreter(interpreter);
-    // // larai.getInterpreter().getImportProcessor().importAndInitialize();
-    //
-    // masterWeaver.simpleBegin();
-    //
-    // var aspectProcessor = AspectClassProcessor.newInstance(interpreter);
-    // return aspectProcessor;
-    // }
 }
