@@ -44,6 +44,7 @@ public class LaraCompiler {
     private final JsEngine jsEngine;
     private AspectClassProcessor aspectProcessor;
     private String lastCompilation = null;
+    private boolean addMain;
 
     public LaraCompiler(LanguageSpecificationV2 langSpec) {
         this.langSpec = langSpec;
@@ -58,6 +59,12 @@ public class LaraCompiler {
         // Delay initialization, so that we can build the object and make it run on another thread
         aspectProcessor = null;
         lastCompilation = null;
+        this.addMain = false;
+    }
+
+    public LaraCompiler setAddMain(boolean addMain) {
+        this.addMain = addMain;
+        return this;
     }
 
     public String getLastCompilation() {
@@ -96,7 +103,7 @@ public class LaraCompiler {
         }
 
         try {
-            lastCompilation = aspectProcessor.toSimpleJs(aspectIr);
+            lastCompilation = aspectProcessor.toSimpleJs(aspectIr, addMain);
         } catch (Exception e) {
             throw new RuntimeException("Could not compile LARA file to JS", e);
         }

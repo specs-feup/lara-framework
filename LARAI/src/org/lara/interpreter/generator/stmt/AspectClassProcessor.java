@@ -57,7 +57,6 @@ public class AspectClassProcessor {
 
     private AspectClassProcessor(Interpreter interpreter) {
         this.interpreter = interpreter;
-
     }
 
     // public StringBuilder generateJavaScriptDocV1(Aspects asps) {
@@ -103,6 +102,10 @@ public class AspectClassProcessor {
         currentAspect = "";
         interpreter.out().println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Interpreting Aspects"));
         long begin = System.currentTimeMillis();
+
+        var code = getMainCallCode(asps, true);
+
+        /*
         final StringBuilder code;
         if (asps.aspects.isEmpty()) {
             interpreter.out().warnln("No aspects to execute!");
@@ -117,9 +120,10 @@ public class AspectClassProcessor {
             // System.out.println(generateJavaScriptDoc(asps));
             // System.out.println("--- LARADOC V2 END ---");
         }
-
+        
         code.append(MasterWeaver.WEAVER_NAME);
         code.append(".close();\n");
+        */
 
         interpreter.getLaraI().appendJs(code);
 
@@ -137,6 +141,21 @@ public class AspectClassProcessor {
         return code;
     }
 
+    public StringBuilder getMainCallCode(Aspects asps, boolean evaluate) {
+        final StringBuilder code;
+        if (asps.aspects.isEmpty()) {
+            interpreter.out().warnln("No aspects to execute!");
+            code = new StringBuilder();
+        } else {
+            code = generateAspects(asps, evaluate);
+        }
+
+        code.append(MasterWeaver.WEAVER_NAME);
+        code.append(".close();\n");
+
+        return code;
+    }
+
     private StringBuilder generateAspects(Aspects asps, boolean evaluate) {
         // first the aspects declaration
         for (final Aspect asp : asps.aspects.values()) {
@@ -147,6 +166,7 @@ public class AspectClassProcessor {
                 aspectConstructor.trimToSize();
                 interpreter.getLaraI().appendJs(aspectConstructor);
                 if (evaluate) {
+                    // System.out.println("CODE:\n" + aspectConstructor.toString());
                     interpreter.evaluate(aspectConstructor.toString(), asps.getDocLocation());
                 }
             } catch (Exception e) {
@@ -576,6 +596,10 @@ public class AspectClassProcessor {
     }
 
     public String toSimpleJs(Document aspectIR) throws DOMException, Exception {
+        return toSimpleJs(aspectIR, false);
+    }
+
+    public String toSimpleJs(Document aspectIR, boolean addMain) throws DOMException, Exception {
         StringBuilder jsCode = new StringBuilder();
 
         var docChildren = aspectIR.getChildNodes();
@@ -611,6 +635,13 @@ public class AspectClassProcessor {
             }
 
             SpecsLogs.info("Element not implemented yet: " + nodeName);
+        }
+
+        if (addMain) {
+            var asps = new Aspects(aspectIR, "");
+            var mainCode = getMainCallCode(asps, false);
+
+            jsCode.append("\n\n// Main call\n\n" + mainCode);
         }
 
         // // first the aspects declaration
