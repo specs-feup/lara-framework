@@ -167,10 +167,10 @@ public class Interpreter {
         return result;
     }
 
-    public Object executeMainAspect(String code, String source) {
+    public Object executeMainAspect(String code, JsFileType type, String source) {
         long start = setupStage();
 
-        final Object result = evaluate(code, source);
+        final Object result = evaluate(code, type, source);
 
         completeStage(start);
         return result;

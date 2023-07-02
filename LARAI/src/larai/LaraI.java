@@ -721,17 +721,8 @@ public class LaraI {
                     return laraCompiler.compile(options.getLaraFile());
                 });
                 // System.out.println("CODE:\n" + laraJsCode);
-                interpreter.executeMainAspect(laraJsCode, options.getLaraFile().getAbsolutePath());
-
-                // System.out.println("LARA JS: " + laraJsCode);
-
-                // compile(weaverEngine.getLanguageSpecificationV2());
-                // startAspectIR();
-                // final StringBuilder mainCall = interpreter.interpretLara(asps);
-                // interpreter.executeMainAspect(mainCall.toString(), options.getLaraFile().getAbsolutePath() +
-                // "_main");
-                // System.out.println("MAIN CALL:\n" + mainCall);
-                // interpreter.executeMainAspect(mainCall);
+                interpreter.executeMainAspect(laraJsCode, JsFileType.MODULE,
+                        options.getLaraFile().getAbsolutePath() + "->js");
             }
 
             String main = options.getMainAspect();
