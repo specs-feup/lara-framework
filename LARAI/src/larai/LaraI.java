@@ -64,6 +64,7 @@ import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
@@ -715,10 +716,22 @@ public class LaraI {
             }
             // If LARA file
             else {
-                compile(weaverEngine.getLanguageSpecificationV2());
-                startAspectIR();
-                final StringBuilder mainCall = interpreter.interpretLara(asps);
-                interpreter.executeMainAspect(mainCall);
+                var laraJsCode = SpecsSystem.executeOnThreadAndWait(() -> {
+                    var laraCompiler = new LaraCompiler(weaverEngine.getLanguageSpecificationV2()).setAddMain(true);
+                    return laraCompiler.compile(options.getLaraFile());
+                });
+                // System.out.println("CODE:\n" + laraJsCode);
+                interpreter.executeMainAspect(laraJsCode, options.getLaraFile().getAbsolutePath());
+
+                // System.out.println("LARA JS: " + laraJsCode);
+
+                // compile(weaverEngine.getLanguageSpecificationV2());
+                // startAspectIR();
+                // final StringBuilder mainCall = interpreter.interpretLara(asps);
+                // interpreter.executeMainAspect(mainCall.toString(), options.getLaraFile().getAbsolutePath() +
+                // "_main");
+                // System.out.println("MAIN CALL:\n" + mainCall);
+                // interpreter.executeMainAspect(mainCall);
             }
 
             String main = options.getMainAspect();
@@ -958,8 +971,8 @@ public class LaraI {
      * 
      * @param importName
      */
-    public static void loadLaraImport(String importName) {
-
+    public static Object[] loadLaraImport(String importName) {
+        // System.out.println("loadLaraImport '" + importName + "' begin");
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
 
         var laraImporter = getLaraImporter();
@@ -971,14 +984,21 @@ public class LaraI {
         }
 
         // Import JS code
+        List<Object> results = new ArrayList<>();
         for (var laraImport : laraImports) {
             SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
-            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+            // System.out.println("JS CODE:\n" + laraImport.getCode());
+
+            // Modules can return Promises, usually we want to wait on them
+            var result = weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
-
+            results.add(result);
+            // weaverEngine.getScriptEngine().await(result);
         }
+        // System.out.println("loadLaraImport '" + importName + "' end");
 
+        return results.toArray();
     }
 
     public static LaraImporter getLaraImporter() {
@@ -1017,4 +1037,9 @@ public class LaraI {
         var laraImporter = getLaraImporter();
         return laraImporter.getImportsFromPackage(packageName);
     }
+
+    // public static Object evalMjs(String code) {
+    // var weaverEngine = WeaverEngine.getThreadLocalWeaver();
+    // return weaverEngine.getScriptEngine().eval(code, JsFileType.MODULE, UUID.randomUUID().toString());
+    // }
 }

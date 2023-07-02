@@ -167,6 +167,15 @@ public class Interpreter {
         return result;
     }
 
+    public Object executeMainAspect(String code, String source) {
+        long start = setupStage();
+
+        final Object result = evaluate(code, source);
+
+        completeStage(start);
+        return result;
+    }
+
     private long setupStage() {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Executing Main Aspect"));
         long begin = LaraI.getCurrentTime();
