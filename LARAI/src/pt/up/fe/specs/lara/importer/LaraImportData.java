@@ -13,6 +13,9 @@
 
 package pt.up.fe.specs.lara.importer;
 
+import java.io.File;
+import java.util.Optional;
+
 import pt.up.fe.specs.jsengine.JsFileType;
 
 public class LaraImportData {
@@ -20,12 +23,19 @@ public class LaraImportData {
     private final String filename;
     private final String code;
     private final JsFileType fileType;
+    private final File jsFile;
+    private String suffixCode;
 
-    public LaraImportData(String filename, String code, JsFileType fileType) {
+    public LaraImportData(String filename, String code, JsFileType fileType, File jsFile) {
         this.filename = filename;
         this.code = code;
         this.fileType = fileType;
+        this.jsFile = jsFile;
     }
+
+    // public LaraImportData(String filename, String code, JsFileType fileType) {
+    // this(filename, code, fileType, null);
+    // }
 
     public String getFilename() {
         return filename;
@@ -37,6 +47,25 @@ public class LaraImportData {
 
     public JsFileType getFileType() {
         return fileType;
+    }
+
+    public Optional<File> getJsFile() {
+        return Optional.ofNullable(jsFile);
+    }
+
+    /**
+     * @return the postCode
+     */
+    public Optional<String> getSuffixCode() {
+        return Optional.ofNullable(suffixCode);
+    }
+
+    /**
+     * @param postCode
+     *            the postCode to set
+     */
+    public void setSuffixCode(String postCode) {
+        this.suffixCode = postCode;
     }
 
 }
