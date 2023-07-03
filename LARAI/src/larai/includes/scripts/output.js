@@ -1,12 +1,16 @@
 //Print a message
 //var outputStream = Java.type("java.lang.System").out;
+
+
 var outputStream = java.lang.System.out;
 var errorStream = java.lang.System.err;
+
 
 function setPrintStream(stream) {
   outputStream = stream;
   errorStream = stream;
 }
+
 
 function printTo(message, stream) {
   if (message === null || message === undefined) {
@@ -15,6 +19,7 @@ function printTo(message, stream) {
     stream.print(message.toString());
   }
 }
+
 
 function printf(message) {
   if (arguments.length === 0) {
@@ -49,6 +54,7 @@ function printfToStream(stream, message) {
   stream.printf(msg.toString(), subst);
 }
 
+
 function printToln(message, stream) {
   if (message === null) {
     message = "null";
@@ -61,6 +67,7 @@ function printToln(message, stream) {
   stream.println(message.toString());
 }
 
+
 function print(message) {
   if (arguments.length === 0) {
     return;
@@ -68,6 +75,7 @@ function print(message) {
 
   printTo(message, outputStream);
 }
+
 
 function printToStream(stream, message) {
   stream ??= outputStream;

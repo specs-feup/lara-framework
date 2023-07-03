@@ -1,4 +1,4 @@
-//import { println } from "../core/output.js";
+//import { print } from "../../core/output.js";
 import StringSet from "./StringSet.js";
 
 
@@ -21,5 +21,7 @@ export default class PrintOnce {
 
         // @ts-ignore
         println(message);
+        // @ts-ignore
+        //print("\nTest\n");
     }
 }

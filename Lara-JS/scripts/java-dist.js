@@ -96,11 +96,25 @@ const resources = copiedFiles.map((file) =>
 */
 //console.log(resources);
 
+const enumNames = {};
+
 const resourcesCode =
   Object.entries(resources)
     .filter(([key, value]) => value !== "index.js")
     .map(([key, value]) => {
       const enumName = key.toUpperCase().replace(/\./g, "_");
+
+      // Check for repeated enum names
+      if (enumNames[enumName] !== undefined) {
+        console.log(
+          "[PROBLEM] Repeated enum name '" +
+            enumName +
+            "'! Probably files where moved, recommended that 'api' folder is deleted"
+        );
+      } else {
+        enumNames[enumName] = 0;
+      }
+
       return `    ${enumName}("${value}")`;
     })
     .join(",\n") + ";";

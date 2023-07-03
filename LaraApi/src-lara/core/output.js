@@ -1,15 +1,18 @@
 /* eslint-disable */
-import JavaTypes from "../util/JavaTypes.js";
+/*
+import JavaTypes from "../lara/util/JavaTypes.js";
 
 //Print a message
 export let outputStream = JavaTypes.getType("java.lang.System").out;
 export let errorStream = JavaTypes.getType("java.lang.System").err;
-
+*/
+/*
 export function setPrintStream(stream: any) {
     outputStream = stream;
     errorStream = stream;
 }
-
+*/
+/*
 export function printTo(message: string | null | undefined, stream: any) {
     if (message === null || message === undefined) {
         stream.print(message);
@@ -17,7 +20,8 @@ export function printTo(message: string | null | undefined, stream: any) {
         stream.print(message.toString());
     }
 }
-
+*/
+/*
 export function printToln(message: string | null | undefined, stream: any) {
     if (message === null) {
         message = "null";
@@ -29,7 +33,9 @@ export function printToln(message: string | null | undefined, stream: any) {
 
     stream.println(message.toString());
 }
-
+*/
+export {};
+/*
 export function print(message?: string | undefined) {
     if (arguments.length == 0) {
         return;
@@ -37,7 +43,8 @@ export function print(message?: string | undefined) {
 
     printTo(message, outputStream);
 }
-
+*/
+/*
 //Print a message and ends it with a new line
 export function println(message?: string | undefined) {
     if (arguments.length == 0) {
@@ -46,7 +53,8 @@ export function println(message?: string | undefined) {
     }
     printToln(message, outputStream);
 }
-
+*/
+/*
 //Print an error message
 export function error(message?: string | undefined) {
     if (arguments.length == 0) {
@@ -84,11 +92,6 @@ export function object2string(obj: any, space?: string | undefined): string {
 
     if (space === undefined) space = "";
 
-    /*
-	if(ommitFunctions === undefined) {
-		ommitFunctions = false;
-	}
-*/
     if (obj === null)
         //since typeof null is "object"
         return space + "null";
@@ -220,3 +223,50 @@ export function JSONtoFile(path: string, object: any) {
     var content = JSON.stringify(object, undefined, "\t");
     writeFile(path, content);
 }
+*/
+/*
+let _LARA_IMPORT_LOADED = {};
+
+// @ts-ignore
+async function laraImport(importName) {
+    // @ts-ignore
+    checkString(importName, "laraImport (LaraCore.js)");
+
+    // Return if already loaded
+    // @ts-ignore
+    if(_LARA_IMPORT_LOADED[importName] !== undefined) {
+        // @ts-ignore
+        debug(() => "laraImport: import " + importName + " already processed, ignoring");
+        return;
+    }
+
+    // Import
+    // @ts-ignore
+    _LARA_IMPORT_LOADED[importName] = true;
+    // @ts-ignore
+    debug(() => "laraImport: importing " + importName);
+    
+    // Check if Kleene Start
+    if(importName.endsWith(".*")) {
+        // @ts-ignore
+        _laraImportKleeneStar(importName.substring(0, importName.length - 2));
+    }
+    // Simple import
+    else {
+        // @ts-ignore
+        const results = LaraI.loadLaraImport(importName);
+    
+        // Await on results
+        for(const result of results) {
+            await result;
+        }
+    }
+    
+    
+
+}
+
+// @ts-ignore
+globalThis.laraImport = laraImport;
+*/ 
+//# sourceMappingURL=output.js.map

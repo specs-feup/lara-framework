@@ -1,4 +1,4 @@
-//import { println } from "../core/output.js";
+//import { print } from "../../core/output.js";
 import StringSet from "./StringSet.js";
 /**
  * @class
@@ -15,6 +15,8 @@ export default class PrintOnce {
         this.messagesSet.add(message);
         // @ts-ignore
         println(message);
+        // @ts-ignore
+        //print("\nTest\n");
     }
 }
 //# sourceMappingURL=PrintOnce.js.map
