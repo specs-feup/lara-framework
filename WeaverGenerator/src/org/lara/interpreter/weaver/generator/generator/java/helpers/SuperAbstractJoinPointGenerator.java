@@ -125,38 +125,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         getWE.appendComment("Returns the Weaving Engine this join point pertains to.");
         getWE.appendCode("return " + weaverName + ".get" + weaverName + "();");
         abstJPClass.add(getWE);
-        /*
-        JavaClass weaverImplClass = javaGenerator.getWeaverImplClass();
-        String qualifiedName = weaverImplClass.getQualifiedName();
-        String weaverName = weaverImplClass.getName();
-        abstJPClass.addImport(qualifiedName);
-        abstJPClass.addImport(Preconditions.class);
-        // Add a field containing the specific engine type
-        JavaType weavingEngineClass = new JavaType(weaverName);
-        Field engineField = new Field(weavingEngineClass, "weaverEngine");
-        abstJPClass.add(engineField);
-        
-        // Override getWeavingEngine to return the engine with the specific <qualifiedName> class
-        Method getWE = new Method(weavingEngineClass, GenConstants.getWeaverEngineMethodName());
-        getWE.add(Annotation.OVERRIDE);
-        getWE.appendComment("Returns the Weaving Engine this join point pertains to.");
-        getWE.appendCode("return this.weaverEngine;");
-        abstJPClass.add(getWE);
-        // Override setWeavingEngine to verify if the weaving engine is the expected type (<qualifiedName>) and to store
-        // the engine in the new field
-        Method setWE = new Method(JavaTypeFactory.getVoidType(), GenConstants.setWeaverEngineMethodName());
-        setWE.add(Annotation.OVERRIDE);
-        setWE.appendComment("Sets the Weaving Engine this join point pertains to.");
-        setWE.addArgument(WeaverEngine.class, "weaverEngine");
-        
-        //
-        // JavaWeaver.class.getCanonicalName());
-        setWE.appendCodeln("Preconditions.checkArgument(weaverEngine instanceof " + weaverName + ",");
-        setWE.appendCodeln("\t\"The weaver engine class is expected to be " + qualifiedName + "\");");
-        setWE.appendCodeln("this.weaverEngine = (" + weaverName + ")weaverEngine;");
-        setWE.appendCode("super." + GenConstants.setWeaverEngineMethodName() + "(weaverEngine);");
-        abstJPClass.add(setWE);
-        */
     }
 
     /**

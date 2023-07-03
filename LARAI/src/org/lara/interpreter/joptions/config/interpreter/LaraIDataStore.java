@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
@@ -39,20 +37,15 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
-import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.jsengine.JsEngineType;
-import pt.up.fe.specs.lara.JsApiResource;
-import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.aspectir.Argument;
-import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringList;
 
 /**
@@ -81,9 +74,6 @@ public class LaraIDataStore implements LaraiKeys {
     private final DataStore dataStore;
     private final LaraI larai;
     private Tools tools = null;
-    // private final DataStore weaverDataStore;
-    private final List<ResourceProvider> laraAPIs;
-    private final List<ResourceProvider> coreScripts;
 
     private final GitRepos gitRepos;
 
@@ -98,18 +88,6 @@ public class LaraIDataStore implements LaraiKeys {
 
         this.gitRepos = new GitRepos();
 
-        // weaverDataStore = DataStore.newInstance("Weaver Arguments");
-        laraAPIs = new ArrayList<>();
-        laraAPIs.addAll(LaraApis.getApis());
-        laraAPIs.addAll(WeaverApis.getApis());
-        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
-        laraAPIs.addAll(weaverEngine.getAspectsAPI());
-
-        coreScripts = new ArrayList<>();
-        coreScripts.addAll(Arrays.asList(JsLaraCompatibilityResource.values()));
-        coreScripts.addAll(Arrays.asList(JsApiResource.values()));
-
-        // laraAPIs = weaverEngine.getAspectsAPI();
         for (WeaverOption option : weaverEngine.getOptions()) {
             DataKey<?> key = option.dataKey();
             Optional<?> value = this.dataStore.getTry(key);
@@ -425,13 +403,15 @@ public class LaraIDataStore implements LaraiKeys {
         return false;
     }
 
-    public List<ResourceProvider> getLaraAPIs() {
-        return laraAPIs;
-    }
+    // public List<ResourceProvider> getLaraAPIs() {
+    // return laraAPIs;
+    // }
 
+    /*
     public List<ResourceProvider> getCoreScripts() {
         return coreScripts;
     }
+    */
 
     public Map<String, String> getBundleTags() {
         // System.out.println("DATA STORE:" + dataStore);
