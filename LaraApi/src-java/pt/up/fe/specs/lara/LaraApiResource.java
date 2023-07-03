@@ -59,7 +59,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
     // Graphs
-    GRAPHS("graphs/Graphs.js"),
+    GRAPHS("graphs/Graphs.mjs"),
     GRAPH_NODE("graphs/GraphNode.js"),
     GRAPH_EDGE("graphs/GraphEdge.js"),
     NODE_DATA("graphs/NodeData.js"),
@@ -119,7 +119,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
-    PRINT_ONCE("util/PrintOnce.lara"),
+    // PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),

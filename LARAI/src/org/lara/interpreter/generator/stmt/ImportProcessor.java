@@ -34,6 +34,7 @@ import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.utils.WeaverSpecification;
+import org.lara.interpreter.weaver.LaraExtension;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -42,10 +43,8 @@ import org.lara.interpreter.weaver.utils.FilterExpression;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import Utils.LARASystem;
-import larai.JsLaraCompatibilityResource;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -82,21 +81,34 @@ public class ImportProcessor {
         interpreter.out().println("Importing internal scripts:");
 
         // JS scripts that are needed for older LARA code
-        for (final JsLaraCompatibilityResource resource : JsLaraCompatibilityResource.values()) {
-            importScript(resource);
-        }
+        // for (final JsLaraCompatibilityResource resource : JsLaraCompatibilityResource.values()) {
+        // importScript(resource);
+        // }
 
         // JS scripts from LaraApi
-        for (final JsApiResource resource : JsApiResource.values()) {
-            importScript(resource);
-        }
+        // for (final JsApiResource resource : JsApiResource.values()) {
+        // importScript(resource);
+        // }
 
         /* Load weaver API scripts */
         LaraI laraI = interpreter.getLaraI();
         MasterWeaver weaver = laraI.getWeaver();
         WeaverEngine engine = weaver.getEngine();
-        List<ResourceProvider> engineScripts = engine.getImportableScripts();
-        engineScripts.forEach(this::importScript);
+
+        // Import all scripts in the new 'core' folder as modules (.mjs)
+        var newFilesToImport = engine.getApiManager().getNpmCoreFiles();
+        newFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
+                .forEach(source -> evaluateImport(SpecsIo.read(source), source.getAbsolutePath(), false,
+                        JsFileType.MODULE));
+        // evaluateImport(internalScripts, source.getAbsolutePath(), false, JsFileType.getType(extension));
+
+        // Import all scripts in the old 'core' folder
+        var oldFilesToImport = SpecsIo.getFilesRecursive(engine.getApiManager().getCoreFolder());
+        oldFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
+                .forEach(this::importScript);
+
+        // List<ResourceProvider> engineScripts = engine.getImportableScripts();
+        // engineScripts.forEach(this::importScript);
 
         /* Load user scripts */
         FileList includeFolders = interpreter.getOptions().getProcessedIncludeDirs(engine);
