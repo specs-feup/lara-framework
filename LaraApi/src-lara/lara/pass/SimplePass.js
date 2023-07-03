@@ -49,7 +49,7 @@ class SimplePass extends Pass {
       case TraversalType.PREORDER:
         return [$jp, ...$jp.descendants];
       case TraversalType.POSTORDER:
-        return [$jp, ...$jp.descendantsPostorder];
+        throw new Error("Postorder descendants not implemented");
       default:
         throw new Error("Traversal type not implemented: " + traversal);
     }
