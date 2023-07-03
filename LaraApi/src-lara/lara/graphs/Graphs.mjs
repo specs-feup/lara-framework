@@ -28,9 +28,8 @@ class Graphs {
     if (Graphs.#isLibLoaded) {
       return;
     }
-	
-	globalThis.cytoscape = cytoscape;
 
+    globalThis.cytoscape = cytoscape;
 
     Graphs.#isLibLoaded = true;
   }
@@ -67,26 +66,24 @@ class Graphs {
    * @returns
    */
   static toDot(graph, dotFormatter) {
+    dotFormatter ?? new DotFormatter();
+
     var dot = "digraph test {\n";
 
     // Declare nodes
     for (const node of graph.nodes()) {
-      //println("Node: ")
-      //printlnObject(node.data());
       dot +=
         '"' +
         node.id() +
         '" [label="' +
-        Graphs._sanitizeDotLabel(node.data().toString()) +
+        dotFormatter.getNodeLabel(node) +
         '" shape=box';
 
-      if (dotFormatter !== undefined) {
-        const nodeAttrs = dotFormatter.getNodeAttributes(node);
-        dot += nodeAttrs.length === 0 ? "" : " " + nodeAttrs;
-      }
+      // Add node attributes
+      const nodeAttrs = dotFormatter.getNodeAttributes(node);
+      dot += nodeAttrs.length === 0 ? "" : " " + nodeAttrs;
 
       dot += "];\n";
-      //println("Id: " + node.id)
     }
 
     for (const edge of graph.edges()) {
@@ -96,28 +93,19 @@ class Graphs {
         '" -> "' +
         edge.data().target +
         '" [label="' +
-        Graphs._sanitizeDotLabel(edge.data().toString()) +
+        dotFormatter.getEdgeLabel(edge) +
         '"';
 
-      if (dotFormatter !== undefined) {
-        const edgeAttrs = dotFormatter.getEdgeAttributes(edge);
-        dot += edgeAttrs.length === 0 ? "" : " " + edgeAttrs;
-      }
+      // Get edge attributes
+      const edgeAttrs = dotFormatter.getEdgeAttributes(edge);
+      dot += edgeAttrs.length === 0 ? "" : " " + edgeAttrs;
 
       dot += "];\n";
-      //println("Edge: ")
-      //printlnObject(edge.data());
-      //println("Source: " + edge.data().source);
-      //println("Target: " + edge.data().target);
     }
 
     dot += "}\n";
 
     return dot;
-  }
-
-  static _sanitizeDotLabel(label) {
-    return label.replaceAll("\n", "\\l").replaceAll("\r", "");
   }
 
   /**
