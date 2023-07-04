@@ -10,7 +10,7 @@ if ("Java" in globalThis) {
     engine = Engine.GraalVM;
 }
 else {
-    java = await import("java");
+    //java = await import("java");
     engine = Engine.NodeJS;
 }
 /**

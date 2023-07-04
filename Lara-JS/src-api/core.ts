@@ -5,7 +5,7 @@
 //console.log("HEY")
 
 const prefix = "lara-js/api/core/"
-const coreImports = ["coretest.js"];
+const coreImports = ["coretest.js", "output.js"];
 
 // Test
 for(const coreImport of coreImports) {
