@@ -52,7 +52,9 @@ function generateJoinpoints(joinpoints, outputFile) {
 function generateJoinpoint(jp, outputFile) {
   fs.writeSync(
     outputFile,
-    `export class ${jp.name}${jp.extends ? ` extends ${jp.extends}` : ""} {\n`
+    `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
+      jp.extends ? ` extends ${jp.extends}` : ""
+    } {\n`
   );
   if (jp.name === "Joinpoint") {
     fs.writeSync(
@@ -80,10 +82,19 @@ function generateJoinpoint(jp, outputFile) {
   fs.writeSync(outputFile, `}\n\n`);
 }
 
+function generateDocumentation(tooltip) {
+  if (!tooltip) {
+    return "";
+  }
+  return `  /**\n   * ${tooltip.split("\n").join("\n   * ")}\n   */\n`;
+}
+
 function generateJoinpointAttribute(attribute, outputFile) {
   fs.writeSync(
     outputFile,
-    `  get ${attribute.name}(): ${attribute.type} { return ${
+    `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
+      attribute.type
+    } { return ${
       "wrapJoinPoint(this._javaObject.get" +
       capitalizeFirstLetter(attribute.name)
     })() }\n`
@@ -105,7 +116,11 @@ function generateJoinpointAction(action, outputFile) {
 
   fs.writeSync(
     outputFile,
-    `  ${action.name}(${parameters}): ${action.returnType} { return wrapJoinPoint(this._javaObject.${action.name}(${callParameters})); }\n`
+    `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
+      action.returnType
+    } { return wrapJoinPoint(this._javaObject.${
+      action.name
+    }(${callParameters})); }\n`
   );
 }
 
