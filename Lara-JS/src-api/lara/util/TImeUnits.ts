@@ -1,117 +1,89 @@
-class TimeUnits{
-    
-    _timerUnit: any;
-    _cppTimeUnit: any;
-    _unitsString: any;
-    _magnitudeFactorSeconds: any;
-    _magnitudeFactorNanoseconds: any;
-    unit: any;
-    
-    constructor(unit: any){
+interface TimerUnitI {
+  cppTimeUnit: string | undefined;
+  unitString: string;
+  magnitudeFactorSeconds: number | string;
+  magnitudeFactorNanoseconds: number;
+}
 
-        this._timerUnit = {
-            NANOSECONDS: 1,
-            MICROSECONDS: 2,
-            MILLISECONDS: 3,
-            SECONDS: 4,
-            MINUTES: 5,
-            HOURS: 6,
-            DAYS: 7,
-        };
+export enum TimerUnit {
+  NANOSECONDS = 1,
+  MICROSECONDS = 2,
+  MILLISECONDS = 3,
+  SECONDS = 4,
+  MINUTES = 5,
+  HOURS = 6,
+  DAYS = 7,
+}
 
-        // C++ std::chrono macros
-        this._cppTimeUnit = {
-            1: "nanoseconds",
-            2: "microseconds",
-            3: "milliseconds",
-            4: "seconds",
-            5: "minutes",
-            6: "hours",
-            7: undefined,
-        };
+const timerUnitData: Record<TimerUnit, TimerUnitI> = {
+  [TimerUnit.NANOSECONDS]: {
+    cppTimeUnit: "nanoseconds",
+    unitString: "ns",
+    magnitudeFactorSeconds: 1000000000,
+    magnitudeFactorNanoseconds: 1,
+  },
+  [TimerUnit.MICROSECONDS]: {
+    cppTimeUnit: "microseconds",
+    unitString: "us",
+    magnitudeFactorSeconds: 1000000,
+    magnitudeFactorNanoseconds: 1000,
+  },
+  [TimerUnit.MILLISECONDS]: {
+    cppTimeUnit: "milliseconds",
+    unitString: "ms",
+    magnitudeFactorSeconds: 1000,
+    magnitudeFactorNanoseconds: 1000000,
+  },
+  [TimerUnit.SECONDS]: {
+    cppTimeUnit: "seconds",
+    unitString: "s",
+    magnitudeFactorSeconds: 1,
+    magnitudeFactorNanoseconds: 1000000000,
+  },
+  [TimerUnit.MINUTES]: {
+    cppTimeUnit: "minutes",
+    unitString: "minutes",
+    magnitudeFactorSeconds: "1 / 60",
+    magnitudeFactorNanoseconds: 60000000000,
+  },
+  [TimerUnit.HOURS]: {
+    cppTimeUnit: "hours",
+    unitString: "hours",
+    magnitudeFactorSeconds: "1 / 3600",
+    magnitudeFactorNanoseconds: 3600000000000,
+  },
+  [TimerUnit.DAYS]: {
+    cppTimeUnit: undefined,
+    unitString: "days",
+    magnitudeFactorSeconds: "1 / 86400",
+    magnitudeFactorNanoseconds: 86400000000000,
+  },
+};
 
-        // units string value for output
-        this._unitsString = {
-            1: "ns",
-            2: "us",
-            3: "ms",
-            4: "s",
-            5: "minutes",
-            6: "hours",
-            7: "days",
-        };
+export default class TimeUnits {
+  #unit: TimerUnit;
 
-        // C conversion from seconds to other magintudes through multiplication
-        this._magnitudeFactorSeconds = {
-            1: 1000000000,
-            2: 1000000,
-            3: 1000,
-            4: 1,
-            5: "1/60",
-            6: "1/3600",
-            7: "1/86400",
-        };
-        // Java conversion from nanoseconds to other magintudes through multiplication
-        this._magnitudeFactorNanoseconds = {
-            1: 1,
-            2: 1000,
-            3: 1000000,
-            4: 1000000000,
-            5: 60000000000,
-            6: 3600000000000,
-            7: 86400000000000,
-        };
+  constructor(unit: TimerUnit = TimerUnit.MILLISECONDS) {
+    this.#unit = unit;
+  }
 
-        let decodedUnit = this._decodeUnit(unit);
+  getUnitsString() {
+    return timerUnitData[this.#unit].unitString;
+  }
 
-        // Read the unit or use the default
-        this.unit = decodedUnit === undefined ? this._timerUnit.MILLISECONDS : decodedUnit;
-    }
+  getCppTimeUnit() {
+    return timerUnitData[this.#unit].cppTimeUnit;
+  }
 
-    getUnitsString(){
-        return this._unitsString[this.unit];
-    }
-    
-    getCppTimeUnit() {
-        return this._cppTimeUnit[this.unit];
-    }
-    
-    getMagnitudeFactorFromSeconds() {
-        return this._magnitudeFactorSeconds[this.unit];
-    }
+  getMagnitudeFactorFromSeconds() {
+    return timerUnitData[this.#unit].magnitudeFactorSeconds;
+  }
 
-    getMagnitudeFactorFromNanoseconds() {
-        return this._magnitudeFactorNanoseconds[this.unit];
-    }
+  getMagnitudeFactorFromNanoseconds() {
+    return timerUnitData[this.#unit].magnitudeFactorNanoseconds;
+  }
 
-
-    toNanos(duration: number) {
-	    return duration * this._magnitudeFactorNanoseconds[this.unit];
-    }
-
-    _decodeUnit(unit: any) {
-        
-        if(unit === undefined) {
-            return unit;
-        }
-
-        if(typeof unit  === "number") {
-            if(unit < 1 || unit > 7) {
-                throw "Expected a number between 1 (nanoseconds) and 7 (days). You can also use strings (e.g., \"MICROSECONDS\")";
-            }
-            return unit;
-        }
-        if(typeof unit  === "string") {
-            const numberUnit: any = this._timerUnit[unit];
-            if(numberUnit === undefined) {
-                let names: Array<string> = [];
-                for(let propertyName in this._timerUnit) {
-                    names.push(propertyName);
-                }
-                throw "Time unit '"+ unit +"' not supported, available values: " + names.join(", ");
-            }
-            return numberUnit;
-        }
-        throw "Type '" + (typeof unit) + "' not supported as input, use 'string' or 'number'";
-    }
+  toNanos(duration: number) {
+    return duration * this.getMagnitudeFactorFromNanoseconds();
+  }
 }
