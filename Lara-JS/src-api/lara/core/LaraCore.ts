@@ -185,3 +185,13 @@ export function isArray(value: any) {
   return value instanceof Array;
 }
 
+export function toArray(objectWithLength: any) {
+	//return Array.prototype.slice.call(objectWithLength);
+	
+	var newArray = [];
+	for(var index in objectWithLength) {		
+		newArray.push(objectWithLength[index]);
+	}
+		
+	return newArray;
+}
