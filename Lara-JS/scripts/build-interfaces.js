@@ -116,7 +116,7 @@ function generateEnums(enums, outputFile) {
 }
 
 function generateEnum(e, outputFile) {
-  fs.writeSync(outputFile, `enum ${e.name} {\n`);
+  fs.writeSync(outputFile, `export enum ${e.name} {\n`);
   e.entries.forEach((entry) => {
     fs.writeSync(outputFile, `  ${entry},\n`);
   });
