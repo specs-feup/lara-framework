@@ -131,11 +131,11 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
   for (const jp of joinpoints) {
     fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);
   }
-  fs.writeSync(outputFile, `};\n\n`);
+  fs.writeSync(outputFile, `};\n`);
 
   fs.writeSync(
     outputFile,
-    `export function wrapJoinPoint(obj: any): any {
+    `\nexport function wrapJoinPoint(obj: any): any {
   if (obj === undefined) {
     return obj;
   }
@@ -166,6 +166,17 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
   }
 
   return new JoinpointMapper[obj.getType() as string](obj);
+}\n`
+  );
+
+  fs.writeSync(
+    outputFile,
+    `\nexport function unwrapJoinPoint(obj: any): any {
+  if (obj instanceof Joinpoint) {
+    return obj._javaObject;
+  }
+
+  return obj;
 }\n`
   );
 }
