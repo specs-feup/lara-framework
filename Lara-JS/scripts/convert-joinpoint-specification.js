@@ -122,14 +122,19 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   };
 }
 
+/**
+ *
+ * @param {string} notice
+ * @returns
+ */
 function convertDeprecationNotice(notice) {
   if (notice?.includes("DEPRECATED")) {
+    notice = notice.replace("[DEPRECATED:", "@deprecated");
+    notice = notice.replace("DEPRECATED:", "@deprecated");
+
     let splitTooltip = notice.split("]");
 
-    splitTooltip[0] = splitTooltip[0].replace("[DEPRECATED:", "@deprecated");
-
     notice = splitTooltip.slice(1).join("]") + "\n\n" + splitTooltip[0];
-    notice = notice.trim();
   }
   return notice;
 }
