@@ -57,9 +57,9 @@ function generateJoinpoint(jp, outputFile) {
   if (jp.name === "Joinpoint") {
     fs.writeSync(
       outputFile,
-      `  protected obj!: any;
+      `  _javaObject!: any;
   constructor(obj: any) {
-    this.obj = obj;
+    this._javaObject = obj;
   }\n`
     );
   }
@@ -84,7 +84,8 @@ function generateJoinpointAttribute(attribute, outputFile) {
   fs.writeSync(
     outputFile,
     `  get ${attribute.name}(): ${attribute.type} { return ${
-      "wrapJoinPoint(this.obj.get" + capitalizeFirstLetter(attribute.name)
+      "wrapJoinPoint(this._javaObject.get" +
+      capitalizeFirstLetter(attribute.name)
     })() }\n`
   );
 }
@@ -104,7 +105,7 @@ function generateJoinpointAction(action, outputFile) {
 
   fs.writeSync(
     outputFile,
-    `  ${action.name}(${parameters}): ${action.returnType} { return wrapJoinPoint(this.obj.${action.name}(${callParameters})); }\n`
+    `  ${action.name}(${parameters}): ${action.returnType} { return wrapJoinPoint(this._javaObject.${action.name}(${callParameters})); }\n`
   );
 }
 
