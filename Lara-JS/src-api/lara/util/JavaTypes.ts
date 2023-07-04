@@ -15,11 +15,13 @@ if ("Java" in globalThis) {
   engine = Engine.NodeJS;
   /**
    * This is a hack to load Java classes in NodeJS.
-   * If the dynamic import is not done inside the eval function,
-   * then GraalVM will try to load the 'java' module and silently fail.
+   * If the dynamic import is not done inside the eval function, then GraalVM
+   * will try to load the 'java' module and silently fail (even if it shouln't
+   * as this 'else' branch is never executed in a GraalVM environment).
    *
    * The anonymous async function is needed to avoid the following error:
-   * SyntaxError: await is only valid in async functions and the top level bodies of modules
+   * SyntaxError: await is only valid in async functions and the top level
+   * bodies of modules
    *
    */
   eval(`(async () => {
