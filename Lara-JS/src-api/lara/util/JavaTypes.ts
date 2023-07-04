@@ -6,20 +6,32 @@ enum Engine {
 }
 
 let engine: Engine = Engine.GraalVM;
-let java: { import(str: string): unknown } | undefined = undefined;
-  
+// eslint-disable-next-line prefer-const
+let java: any = undefined;
+
 if ("Java" in globalThis) {
   engine = Engine.GraalVM;
 } else {
-  //java = await import("java");
   engine = Engine.NodeJS;
+  /**
+   * This is a hack to load Java classes in NodeJS.
+   * If the dynamic import is not done inside the eval function,
+   * then GraalVM will try to load the 'java' module and silently fail.
+   *
+   * The anonymous async function is needed to avoid the following error:
+   * SyntaxError: await is only valid in async functions and the top level bodies of modules
+   *
+   */
+  eval(`(async () => {
+    const { default: javaLocal } = await import("java");
+    java = javaLocal;
+  })();`);
 }
 
 /**
  * Static variables with class names of Java classes used in the API.
  */
 export default class JavaTypes {
-
   static getType(javaType: string): any {
     checkString(javaType, "_JavaTypes.getType::javaType");
 
@@ -28,6 +40,7 @@ export default class JavaTypes {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         return Java.type(javaType);
       case Engine.NodeJS:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         return java?.import(javaType);
     }
   }
@@ -126,5 +139,4 @@ export default class JavaTypes {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JavaTypes.getType("org.suikasoft.XStreamPlus.XStreamUtils");
   }
-  
 }
