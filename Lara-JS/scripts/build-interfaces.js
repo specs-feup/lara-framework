@@ -38,6 +38,8 @@ import JavaTypes from "lara-js/api/lara/util/JavaTypes.js";\n\n`
   generateJoinpoints(specification.joinpoints, outputFile);
   generateEnums(specification.enums, outputFile);
 
+  generateJoinpointWrapper(specification.joinpoints, outputFile);
+
   fs.closeSync(outputFile);
 }
 
@@ -118,6 +120,54 @@ function generateEnum(e, outputFile) {
     fs.writeSync(outputFile, `  ${entry},\n`);
   });
   fs.writeSync(outputFile, `}\n\n`);
+}
+
+function generateJoinpointWrapper(joinpoints, outputFile) {
+  fs.writeSync(
+    outputFile,
+    `const JoinpointMapper: { [key: string]: typeof Joinpoint } = {\n`
+  );
+  for (const jp of joinpoints) {
+    fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);
+  }
+  fs.writeSync(outputFile, `};\n\n`);
+
+  fs.writeSync(
+    outputFile,
+    `export function wrapJoinPoint(obj: any): any {
+  // If already a proxy join point, return itself
+  if (obj === undefined) {
+    return obj;
+  }
+
+  if (obj instanceof Joinpoint) {
+    return obj;
+  }
+
+  if (typeof obj !== "object") {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(wrapJoinPoint);
+  }
+
+  if (!JavaTypes.isJavaObject(obj)) {
+    console.log("Given Java join point is not a Java class: " + typeof obj);
+    return obj;
+  }
+
+  const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
+  if (!isJavaJoinPoint) {
+    throw new Error(
+      "Given Java join point is a Java class but is not a JoinPoint: " +
+        obj.getClass()
+    );
+  }
+
+  return new JoinpointMapper[obj.getType() as string](obj);
+}\n`
+  );
 }
 
 const args = yargs(hideBin(process.argv))

@@ -1,5 +1,3 @@
-import { checkString } from "../core/LaraCore.js";
-
 enum Engine {
   GraalVM = "GraalVM",
   NodeJS = "NodeJS",
@@ -35,8 +33,6 @@ if ("Java" in globalThis) {
  */
 export default class JavaTypes {
   static getType(javaType: string): any {
-    checkString(javaType, "_JavaTypes.getType::javaType");
-
     switch (engine) {
       case Engine.GraalVM:
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -44,6 +40,16 @@ export default class JavaTypes {
       case Engine.NodeJS:
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         return java?.import(javaType);
+    }
+  }
+
+  static isJavaObject(obj: any) {
+    switch (engine) {
+      case Engine.GraalVM:
+        return Java.isJavaObject(obj);
+      case Engine.NodeJS:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        return java.instanceOf(obj, "java.lang.Object");
     }
   }
 
