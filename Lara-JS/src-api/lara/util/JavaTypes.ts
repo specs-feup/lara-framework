@@ -7,17 +7,19 @@ enum Engine {
 
 let engine: Engine = Engine.GraalVM;
 let java: { import(str: string): unknown } | undefined = undefined;
-
+  
 if ("Java" in globalThis) {
   engine = Engine.GraalVM;
 } else {
-  java = await import("java");
+  //java = await import("java");
   engine = Engine.NodeJS;
 }
+
 /**
  * Static variables with class names of Java classes used in the API.
  */
 export default class JavaTypes {
+
   static getType(javaType: string): any {
     checkString(javaType, "_JavaTypes.getType::javaType");
 
@@ -124,4 +126,5 @@ export default class JavaTypes {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JavaTypes.getType("org.suikasoft.XStreamPlus.XStreamUtils");
   }
+  
 }
