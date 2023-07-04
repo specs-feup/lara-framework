@@ -84,8 +84,8 @@ function generateJoinpointAttribute(attribute, outputFile) {
   fs.writeSync(
     outputFile,
     `  get ${attribute.name}(): ${attribute.type} { return ${
-      "this.obj.get" + capitalizeFirstLetter(attribute.name)
-    }() }\n`
+      "wrapJoinPoint(this.obj.get" + capitalizeFirstLetter(attribute.name)
+    })() }\n`
   );
 }
 
@@ -104,7 +104,7 @@ function generateJoinpointAction(action, outputFile) {
 
   fs.writeSync(
     outputFile,
-    `  ${action.name}(${parameters}): ${action.returnType} { return this.obj.${action.name}(${callParameters}); }\n`
+    `  ${action.name}(${parameters}): ${action.returnType} { return wrapJoinPoint(this.obj.${action.name}(${callParameters})); }\n`
   );
 }
 
@@ -135,7 +135,6 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
   fs.writeSync(
     outputFile,
     `export function wrapJoinPoint(obj: any): any {
-  // If already a proxy join point, return itself
   if (obj === undefined) {
     return obj;
   }
@@ -160,8 +159,8 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
   const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
   if (!isJavaJoinPoint) {
     throw new Error(
-      "Given Java join point is a Java class but is not a JoinPoint: " +
-        obj.getClass()
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      \`Given Java join point is a Java class but is not a JoinPoint: \${obj.getClass()}\`
     );
   }
 
