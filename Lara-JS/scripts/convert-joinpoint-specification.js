@@ -114,6 +114,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   return {
     name: jpName,
     originalName: jp.name,
+    tooltip: convertDeprecationNotice(jp.tooltip),
     extends: jp.extends
       ? interpretType(jp.extends, joinpointNameSet, enumNameSet)
       : undefined,
@@ -136,7 +137,7 @@ function convertDeprecationNotice(notice) {
 
     notice = splitTooltip.slice(1).join("]") + "\n\n" + splitTooltip[0];
   }
-  return notice;
+  return capitalizeFirstLetter(notice)?.trim();
 }
 
 function convertJoinpointAttribute(
@@ -223,6 +224,7 @@ function convertEnum(e) {
 }
 
 export function capitalizeFirstLetter(string) {
+  if (!string) return string;
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
