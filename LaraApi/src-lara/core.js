@@ -3,7 +3,7 @@
 //globalThis.coreFoo = coreFoo;
 //console.log("HEY")
 const prefix = "lara-js/api/core/";
-const coreImports = ["coretest.js", "output.js"];
+const coreImports = ["output.js"];
 // Test
 for (const coreImport of coreImports) {
     const foo = Object.entries(await import(prefix + coreImport));
