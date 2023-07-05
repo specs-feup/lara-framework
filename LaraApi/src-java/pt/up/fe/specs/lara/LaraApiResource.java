@@ -59,7 +59,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     VARIABLE_VARIANT("dse/VariableVariant.lara"),
 
     // Graphs
-    GRAPHS("graphs/Graphs.js"),
+    GRAPHS("graphs/Graphs.mjs"),
     GRAPH_NODE("graphs/GraphNode.js"),
     GRAPH_EDGE("graphs/GraphEdge.js"),
     NODE_DATA("graphs/NodeData.js"),
@@ -86,12 +86,13 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Pass
     PASS("pass/Pass.js"),
-    PASS_APPLY_ARG("pass/PassApplyArg.js"),
-    PASSES("pass/Passes.js"),
-    PASS_RESULT("pass/PassResult.js"),
-    PASS_AGREGGATE_PASS_RESULT("pass/AggregatePassResult.js"),
+    SIMPLE_PASS("pass/SimplePass.js"),
+    ADAPTER_PASS("pass/AdapterPass.js"),
     PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
-    PASS_PASS_TRANSFORMATION_RESULT("pass/PassTransformationResult.js"),
+    PASS_RESULT("pass/results/PassResult.js"),
+    PASS_AGREGGATE_PASS_RESULT("pass/results/AggregatePassResult.js"),
+    PASS_APPLY_ARG("pass/composition/PassApplyArg.js"),
+    PASSES("pass/composition/Passes.js"),
 
     // Tool
     TOOL("tool/Tool.js"),
@@ -118,7 +119,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
-    PRINT_ONCE("util/PrintOnce.lara"),
+    // PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),

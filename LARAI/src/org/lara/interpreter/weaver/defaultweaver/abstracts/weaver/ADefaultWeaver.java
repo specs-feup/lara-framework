@@ -1,6 +1,6 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.weaver;
 
-import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.LaraWeaverEngine;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * The implementation of the abstract methods is mandatory!
  * @author Lara C.
  */
-public abstract class ADefaultWeaver extends WeaverEngine {
+public abstract class ADefaultWeaver extends LaraWeaverEngine {
 
     /**
      * Get the list of available actions in the weaver

@@ -319,33 +319,5 @@ public class AbstractJoinPointClassGeneratorV2 extends GeneratorHelper {
         getSuperMethod.appendCodeln("return Optional.of(this." + fieldName + ");");
         javaC.add(getSuperMethod);
     }
-    /*
-    private void addSuperWeaverEngineSetter(JavaClass javaC, String fieldName) {
-        String SET_WEAVER_ENGINE_METHOD_NAME = "setWeaverEngine";
-        final Method setWeaverEngineMethod = new Method(JavaTypeFactory.getVoidType(), SET_WEAVER_ENGINE_METHOD_NAME);
-        setWeaverEngineMethod.add(Annotation.OVERRIDE);
-    
-        setWeaverEngineMethod.appendCodeln("this." + fieldName + "." + SET_WEAVER_ENGINE_METHOD_NAME + "(engine);");
-        setWeaverEngineMethod.appendCodeln("super." + SET_WEAVER_ENGINE_METHOD_NAME + "(engine);");
-        Method setWeaverEngineMethod2 = setWeaverEngineMethod.clone();
-        setWeaverEngineMethod.addArgument(WeaverEngine.class, "engine");
-        setWeaverEngineMethod2.addArgument(JoinPoint.class, "engine");
-    
-        javaC.add(setWeaverEngineMethod);
-        javaC.add(setWeaverEngineMethod2);
-    
-        //
-        // @Override
-        // public void setWeaverEngine(WeaverEngine engine) {
-        // aExpression.setWeaverEngine(engine);
-        // super.setWeaverEngine(engine);
-        // }
-        //
-        // @Override
-        // public void setWeaverEngine(JoinPoint reference) {
-        // aExpression.setWeaverEngine(reference);
-        // super.setWeaverEngine(reference);
-        // }
-    }
-    */
+
 }

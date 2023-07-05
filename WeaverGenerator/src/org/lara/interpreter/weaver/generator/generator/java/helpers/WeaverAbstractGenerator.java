@@ -19,10 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import org.lara.interpreter.weaver.LaraWeaverEngine;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
@@ -114,7 +114,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         java.appendComment(ln() + "The implementation of the abstract methods is mandatory!");
         java.add(JDocTag.AUTHOR, "Lara C.");
         // java.addInterface(new JavaType(WeaverEngine.class));
-        java.setSuperClass(new JavaType(WeaverEngine.class));
+        java.setSuperClass(new JavaType(LaraWeaverEngine.class));
         // java.addImport(ArrayList.class);
         java.addImport(Arrays.class);
         return java;

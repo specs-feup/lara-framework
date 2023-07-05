@@ -15,7 +15,9 @@ package org.lara.interpreter.weaver.interf;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
@@ -34,6 +37,7 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.jsengine.JsEngine;
+import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -51,6 +55,8 @@ import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
  */
 public abstract class WeaverEngine {
 
+    private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
+
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
@@ -59,14 +65,42 @@ public abstract class WeaverEngine {
 
     private JsEngine scriptEngine;
 
+    private final Map<String, List<ResourceProvider>> apis;
+
+    private final Lazy<WeaverApiManager> apiManager;
+
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
 
         scriptEngine = null;
 
-        // langSpec = Lazy.newInstance(() -> JoinPointFactory.fromOld(this.getLanguageSpecification()));
         langSpec = Lazy.newInstance(this::buildLangSpecsV2);
+
+        apis = new HashMap<>();
+        apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
+    }
+
+    protected void addApis(String key, List<ResourceProvider> resources) {
+        var previousValue = apis.put(key, resources);
+        SpecsCheck.checkArgument(previousValue == null,
+                () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
+    }
+
+    /**
+     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
+     */
+    protected void addWeaverApis() {
+        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
+        addApis(getName(), getAspectsAPI());
+    }
+
+    public Map<String, List<ResourceProvider>> getApis() {
+        return apis;
+    }
+
+    public WeaverApiManager getApiManager() {
+        return apiManager.get();
     }
 
     /**
@@ -451,4 +485,17 @@ public abstract class WeaverEngine {
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
     }
+
+    public List<ResourceProvider> getLaraApis() {
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
+    }
+
+    public List<ResourceProvider> getLaraCore() {
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
+    }
+
+    public List<LaraResourceProvider> getNpmResources() {
+        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
+    }
+
 }

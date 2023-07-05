@@ -564,7 +564,7 @@ public class LaraI {
         // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
         // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
         // laraAPIs.addAll(options.getLaraAPIs());
-        List<ResourceProvider> laraAPIs = options.getLaraAPIs();
+        List<ResourceProvider> laraAPIs = getWeaverEngine().getLaraApis();
         if (!laraAPIs.isEmpty()) {
             preprocess.add("-r");
             String resources = laraAPIs.stream().map(LaraI::getOriginalResource)
@@ -646,7 +646,9 @@ public class LaraI {
 
         Path path = Paths.get(engineWorkingDir);
 
-        JsEngine engine = createJsEngine(options.getJsEngine(), path);
+        // JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
+        JsEngine engine = createJsEngine(options.getJsEngine(), path,
+                weaverEngine.getApiManager().getNodeModulesFolder());
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -778,17 +780,17 @@ public class LaraI {
     //
     // }
 
-    private JsEngine createJsEngine(JsEngineType engineType) {
-        return createJsEngine(engineType, null);
-    }
+    // private JsEngine createJsEngine(JsEngineType engineType) {
+    // return createJsEngine(engineType, null);
+    // }
 
-    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory) {
+    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
         // return new GraalvmJsEngine();
         if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory);
+            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory, nodeModulesFolder);
             // return new NashornEngine(FORBIDDEN_CLASSES);
         }
-        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory);
+        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory, nodeModulesFolder);
         // return new NashornEngine();
     }
 
@@ -970,9 +972,11 @@ public class LaraI {
 
         // Import JS code
         for (var laraImport : laraImports) {
-            // SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "'");
+            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
+
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
+
         }
 
     }
@@ -983,6 +987,10 @@ public class LaraI {
 
         // Prepare includes
         var includes = new LinkedHashSet<File>();
+
+        // Add weaver APIs
+        weaverEngine.getApiManager().getNpmApiFolders().stream()
+                .forEach(includes::add);
 
         // Add working directory
         includes.add(SpecsIo.getWorkingDir());
@@ -999,10 +1007,8 @@ public class LaraI {
         // Add user includes
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
-        var apis = larai.getOptions().getLaraAPIs();
-
         // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes), apis);
+        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes));
 
         return laraImporter;
     }
