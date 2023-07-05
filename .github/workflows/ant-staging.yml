@@ -22,17 +22,17 @@ jobs:
     
     - uses: actions/checkout@v3
     
-    - name: Show working dir
-      run: |
-        ls -la
-        
-    - name: Show parent dir
-      run: |
-        ls -la ../        
-
-    - name: Show home dir
-      run: |
-        ls -la ~/
+    #- name: Show working dir
+    #  run: |
+    #    ls -la
+    #    
+    #- name: Show parent dir
+    #  run: |
+    #    ls -la ../        
+    #
+    #- name: Show home dir
+    #  run: |
+    #    ls -la ~/
     
     - name: Cache ivy dependencies
       id: cache-nivy
@@ -52,7 +52,7 @@ jobs:
     - name: Generate build.xml
       run: | 
         wget -N http://specs.fe.up.pt/tools/eclipse-build.jar
-        java -jar eclipse-build.jar https://github.com/specs-feup/specs-java-libs ../
+        java -jar eclipse-build.jar https://github.com/specs-feup/specs-java-libs ./
         wget -N -O /usr/share/ant/lib/ivy-2.5.0.jar specs.fe.up.pt/libs/ivy-2.5.0.jar
     - name: Build with Ant
       run: |
