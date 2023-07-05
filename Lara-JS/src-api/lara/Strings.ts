@@ -2,7 +2,6 @@ import JavaTypes from "./util/JavaTypes.js";
 import Check from "./Check.js";
 import{
 	isString,
-	stringReplacer,
 	checkType
 } from "./core/LaraCore.js"
 
@@ -43,8 +42,7 @@ export class Strings{
 	
 		Check.isRegex(oldSequence, "Strings.replacer()");
 	
-		// Using JS function defined in LaraCode.js, in order to be able to use the function 'replace' (which is a reserved keyword in LARA)
-		return stringReplacer(string, oldSequence, newSequence);             // Might not be necessary
+		return string.replace(oldSequence, newSequence);             
 	}
 
 	/**
@@ -53,7 +51,7 @@ export class Strings{
 	 * @return String with escaped code
 	 */
 	static escapeHtml(html: any){
-		return JavaTypes.ApacheStrings.escapeHtml(html);          //not sure if this works
+		return JavaTypes.ApacheStrings.escapeHtml(html);         
 	}
 
 	/**

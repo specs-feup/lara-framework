@@ -1,3 +1,4 @@
+import JavaTypes from "../util/JavaTypes.js";
 export let LARA_DEBUG = false;
 
 export function setDebug(value: any) {
@@ -200,6 +201,48 @@ export function isString(variable: any) {
 	return (typeof variable) === "string" || (variable instanceof String);
 };
 
-export function stringReplacer(string: any, oldSequence: any, newSequence: any) {     // Might not be necessary
-	return string.replace(oldSequence, newSequence);
+
+/**
+ * @param {*} variable
+ * @param {string} [javaClassname = java.lang.Object] 
+ *
+ * @return {boolean} true if the given object is an instance of the given Java class name
+ */
+export function isJavaClass(variable: any, javaClassname: string | undefined) {
+  if(javaClassname === undefined) {
+	  javaClassname = "java.lang.Object";
+  }
+	return JavaTypes.SpecsSystem.isInstance(javaClassname, variable);
+};
+
+/**
+ * Converts an arguments object to a JavaScript array (Array).
+ * 
+ * If there is a single argument after the start index and that argument is an array, that array will be returned.
+ * This helper is kept for Lara code using directly the `arguments` object. If you are using Javascript, consider using [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters](rest parameters) to extract the variadic arguments of your function, and using the `flattenArgsArray` function to perform the single-element flattening, if needed.
+ *
+ * @args {Arguments} args  - The original arguments object.
+ * @args {Number} [start=0] - The index where we begin the conversion (inclusive).
+ * */
+export function arrayFromArgs(args: any, start: any) {
+	
+  checkDefined(args, 'args', 'LaraCore arrayFromArgs');
+  
+  if(start === undefined || start < 0) {
+      start = 0;
+  }
+      
+  // If only one element and is already an array, just return the array
+  if(args.length === (start + 1) && isArray(args[start])) {		
+    return args[start];
+  }
+
+  if(args.length === (start + 1) && isJavaList(args[start])) {
+    return toArray(args[start]);
+  }
+  return Array.prototype.slice.call(args, start);
+}
+
+function isJavaList(list: any) {
+	return list instanceof Java.type("java.util.List");
 }
