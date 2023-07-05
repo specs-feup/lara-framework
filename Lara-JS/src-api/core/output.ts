@@ -234,6 +234,17 @@ export function JSONtoFile(path: string, object: any) {
     writeFile(path, content);
 }
 
+export function fileToJSON(path: string) {
+	var content = readFile(path);
+	return JSON.parse(content);
+}
+
+export function readFile(path: string) {
+	var file = new JavaTypes.JavaFile(path.toString());
+	var content = JavaTypes.SpecsIo.read(file);
+	return content;
+}
+
 
 // TODO: In order for console.log() to also log to .txt files this needs to be implemented
 
