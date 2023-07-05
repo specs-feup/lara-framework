@@ -195,3 +195,11 @@ export function toArray(objectWithLength: any) {
 		
 	return newArray;
 }
+
+export function isString(variable: any) {
+	return (typeof variable) === "string" || (variable instanceof String);
+};
+
+export function stringReplacer(string: any, oldSequence: any, newSequence: any) {     // Might not be necessary
+	return string.replace(oldSequence, newSequence);
+}
