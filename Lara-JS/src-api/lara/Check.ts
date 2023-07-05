@@ -11,7 +11,7 @@ export default class Check{
     /**
     * @throws an exception if the given expression evaluates to false.
     */
-    isTrue(booleanExpr: boolean, message: string | undefined, source: string | undefined) {
+    static isTrue(booleanExpr: boolean, message: string | undefined, source: string | undefined) {
         
         if (!booleanExpr) {
             if (message === undefined) {
@@ -47,7 +47,7 @@ export default class Check{
         throw message;
     };
 
-    instance(value:any, type:any, source:string | undefined, userTypeName:string | undefined) {
+    static instance(value:any, type:any, source:string | undefined, userTypeName:string | undefined) {
         if (typeof type !== "function") {
             throw "Check.instance: parameter type must be a function";
         }
@@ -86,8 +86,7 @@ export default class Check{
         throw message;
     };
 
-    type(value:any, type:any, source:any) {
-        println("TEST")
+    static type(value:any, type:any, source:any) {
         if (typeof type !== "string") {
             throw "Check.type: parameter type must be a string";
         }
@@ -110,25 +109,24 @@ export default class Check{
         throw message;
     };
     
-    isBoolean (variable: any, source: any) {
-        this.type(variable, "boolean", source);
+    static isBoolean (variable: any, source: any) {
+        Check.type(variable, "boolean", source);
     }
     
-    isString(variable: any, source: any) {
-        this.type(variable, "string", source);
+    static isString(variable: any, source: any) {
+        Check.type(variable, "string", source);
     }
 
-    isNumber(variable:any, source:any) {
-        this.type(variable, "number", source);
+    static isNumber(variable:any, source:any) {
+        Check.type(variable, "number", source);
     }
 
-    isArray(variable:any, source:any) {
-        this.type(variable, "array", source);
+    static isArray(variable:any, source:any) {
+        Check.type(variable, "array", source);
     }
     
-    isRegex (variable: any, source: any) {
-        println("h");
-        this.type(variable, "regex", source);
+    static isRegex (variable: any, source: any) {
+        Check.type(variable, "regex", source);
     }
 
     /**
@@ -138,7 +136,7 @@ export default class Check{
      * @param {string} [type=undefined]
      * @param {boolean} [isOptional=false] - If true, passes check if value is undefined
      */
-    isJoinPoint($jp: any, type: string | undefined, isOptional: boolean) {
+    static isJoinPoint($jp: any, type: string | undefined, isOptional: boolean) {
         if (isOptional && $jp === undefined) {
             return;
         }
