@@ -21,7 +21,7 @@ import{
  * Utility methods related with input/output operations on files.
  * @class
  */
-export class Io {
+export default class Io {
 
 	/**
  	* @return {boolean} true if the given object is a Java file, false otherwise.
