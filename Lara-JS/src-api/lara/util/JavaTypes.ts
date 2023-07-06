@@ -147,4 +147,9 @@ export default class JavaTypes {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JavaTypes.getType("org.suikasoft.XStreamPlus.XStreamUtils");
   }
+
+  static get ReplacerHelper(){
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return Java.type("pt.up.fe.specs.lara.util.ReplacerHelper");
+  }
 }
