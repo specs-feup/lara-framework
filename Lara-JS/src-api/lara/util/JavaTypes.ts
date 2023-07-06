@@ -152,4 +152,9 @@ export default class JavaTypes {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return Java.type("pt.up.fe.specs.lara.util.ReplacerHelper");
   }
+
+  static get CsvReader(){
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return Java.type("pt.up.fe.specs.util.csv.CsvReader");
+  }
 }
