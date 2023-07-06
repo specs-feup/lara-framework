@@ -207,6 +207,7 @@ public class LaraDocParser {
 
         switch (extension) {
         case "lara":
+        case "mjs":
         case "js":
             String importPath = LaraDocs.getImportPath(laraFile, baseFolder);
             /*
@@ -231,7 +232,7 @@ public class LaraDocParser {
                 module.setBaseLara(laraFile);
             } else if (extension.equals("lara")) {
                 module.setMainLara(laraFile);
-            } else if (extension.equals("js")) {
+            } else if (extension.equals("js") || extension.equals("mjs")) {
                 module.setMainJs(laraFile);
             } else {
                 throw new CaseNotDefinedException(extension);
