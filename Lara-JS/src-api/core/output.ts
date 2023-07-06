@@ -51,8 +51,7 @@ export function print(message?: string | undefined) {
 }
 
 //Print a message and ends it with a new line
-export function println(message?: string | undefined) {
-
+export  function println(message?: string | undefined) {
     if (arguments.length == 0) {
         outputStream.println();
         return;
@@ -224,7 +223,7 @@ export function getFnName(fn: string) {
 
 //Insert save to file functions (and others) here!
 export function writeFile(path: string, content: string) {
-    var file = new JavaTypes.JavaFile(path.toString());
+    var file= new JavaTypes.JavaFile(path.toString());
     JavaTypes.SpecsIo.write(file, content);
     return file;
 }

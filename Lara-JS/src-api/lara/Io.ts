@@ -10,7 +10,8 @@ import{
 
 import{
 	JSONtoFile,
-	fileToJSON
+	fileToJSON,
+	println
 } from "../core/output.js"
 
 
@@ -33,15 +34,14 @@ export class Io {
 	/**
 	 * @param {String|J#java.io.File} path
 	 */
-	static _newFile(path: string | File) {
+	static _newFile(path: any) {
 	
 		if(Io.isJavaFile(path)) {	
 			path = path.toString();
 		}
 	
-	
-		const File = JavaTypes.JavaFile();
-		return new File(path.toString());
+		const file: any = JavaTypes.JavaFile;
+		return new file(path.toString());
 	}
 
 	/**
@@ -61,7 +61,7 @@ export class Io {
 			base = Io._newFile(base);
 		}
 	
-		const File = JavaTypes.JavaFile();
+		const File = JavaTypes.JavaFile;
 		return new File(base, path);
 	}
 
@@ -435,14 +435,14 @@ Io.getFilesRecursive = function(baseFolder) {
  	* 	The system-dependent path-separator (e.g., : or ;).
  	*/
 	static getPathSeparator() {
-		return JavaTypes.JavaFile().pathSeparator;
+		return JavaTypes.JavaFile.pathSeparator;
 	}
 
 	/**
  	* 	The system-dependent name-separator (e.g., / or \).
  	*/
 	static getSeparator() {
-		return JavaTypes.JavaFile().separator;
+		return JavaTypes.JavaFile.separator;
 	}
 
 	static md5(fileOrBaseFolder: any, optionalFile?: File) {
