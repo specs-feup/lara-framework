@@ -1,4 +1,3 @@
-import { println } from "../core/output.js";
 import JavaTypes from "./util/JavaTypes.js";
 
 /**
@@ -25,12 +24,12 @@ export default class Check {
     }
   }
 
-  isUndefined(value: any): boolean {
+  static isUndefined(value: any): boolean {
     return value === undefined || value === null;
   }
 
-  isDefined(value: any, message: string | undefined) {
-    if (!this.isUndefined(value)) {
+  static isDefined(value: any, message: string | undefined) {
+    if (!Check.isUndefined(value)) {
       return;
     }
     // Undefined, throw exception
@@ -148,7 +147,7 @@ export default class Check {
     if (isOptional && $jp === undefined) {
       return;
     }
-    if (JavaTypes.JoinPoint().isJoinPoint($jp)) {
+    if (JavaTypes.getJavaJoinPoint()().isJoinPoint($jp)) {
       throw (
         "Expected variable to be of type join point, but it is of type '" +
         typeof $jp +
@@ -169,13 +168,13 @@ export default class Check {
   /**
    * Checks if two strings are identical, not considering empty spaces. Throws and exception if strings do not match.
    */
-  strings(currentString: string, expectedString: string) {
+  static strings(currentString: string, expectedString: string) {
     // Normalize both strings
-    currentString = JavaTypes.SpecsStrings().normalizeFileContents(
+    currentString = JavaTypes.getJavaSpecsStrings()().normalizeFileContents(
       currentString.toString(),
       true
     );
-    expectedString = JavaTypes.SpecsStrings().normalizeFileContents(
+    expectedString = JavaTypes.getJavaSpecsStrings()().normalizeFileContents(
       expectedString.toString(),
       true
     );
@@ -183,7 +182,7 @@ export default class Check {
       //throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
       throw (
         "Current result does not match expected result. Diff:\n" +
-        this.diff(expectedString, currentString)
+        Check.diff(expectedString, currentString)
       );
     }
   }
@@ -192,15 +191,18 @@ export default class Check {
    * @param original - The original text
    * @param revised - The revised text
    */
-  diff(original: any, revised: any) {
-    return JavaTypes.JavaDiff().Diff(original.toString(), revised.toString());
+  static diff(original: any, revised: any) {
+    return JavaTypes.getJavaDiff()().Diff(
+      original.toString(),
+      revised.toString()
+    );
   }
 
   /**
    * Checks if the array contains the element. Throws an expression if it doens't.
    * The test is equivalent to array.indexOf(element) != -1.
    */
-  arrayContains(
+  static arrayContains(
     array: Array<any>,
     element: any,
     message: string | undefined,

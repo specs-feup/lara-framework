@@ -1,9 +1,11 @@
 /**
- * Based on this code: https://stackoverflow.com/questions/4343746/is-there-a-data-structure-like-the-java-set-in-javascript
+ * ~Based on this code: https://stackoverflow.com/questions/4343746/is-there-a-data-structure-like-the-java-set-in-javascript
  *
  * Changed the name of functions 'contains' to the name used in ECMAScript 6 ('has').
  * 'remove' has not been changed to 'delete' because in LARA 'delete' is a keyword and cannot be used as a function name
- * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.
+ * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.~
+ *
+ * Implementation changed to use a standard javascript Set instead of a custom implementation.
  *
  * @deprecated Use a standard Set instead
  */

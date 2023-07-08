@@ -1,36 +1,31 @@
-import { 
-    Fix,
-} from "./Fix.js";
-
+import Fix from "./Fix.js";
 
 /**
  * Abstract class created as a model for every result of analyser
- * @class 
  */
 
-export class AnalyserResult {
-    name: string;
-    node: unknown; //do later
-    message: string;
-    fix: Fix|undefined;
+export default class AnalyserResult {
+  name: string;
+  node: unknown; //do later
+  message: string;
+  fix: Fix | undefined;
 
-    constructor(name: string, node: any, message: string, fix: Fix|undefined) {
-        this.name = name;
-        this.node = node;
-        this.message = message;
-        this.fix = fix;
-    }
+  constructor(name: string, node: any, message: string, fix: Fix | undefined) {
+    this.name = name;
+    this.node = node;
+    this.message = message;
+    this.fix = fix;
+  }
 
-    analyse(startNode: any) {
-        // Not implemented
-    }
+  analyse(startNode: any) {
+    throw "Not implemented";
+  }
 
-    getName() {
-        return this.name;
-    }
+  getName() {
+    return this.name;
+  }
 
-    getNode() {
-        return this.node;
-    }
-
+  getNode() {
+    return this.node;
+  }
 }

@@ -1,6 +1,5 @@
-export class Analyser{
-    constructor() {}
-    analyse() {
-        // Not Implemented
-    }
+export default class Analyser {
+  analyse() {
+    throw "Not Implemented";
+  }
 }
