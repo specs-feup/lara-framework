@@ -1,36 +1,29 @@
 import Io from "../Io.js";
 import JavaTypes from "./JavaTypes.js";
+
 /**
  * Replaces strings inside a larger string.
- * @class
  */
+export default class Replacer {
+  javaReplacer: any;
+  constructor(contentsOrFile: any) {
+    // If a file, read the contents
+    if (contentsOrFile instanceof JavaTypes.getJavaFile()) {
+      contentsOrFile = Io.readFile(contentsOrFile);
+    }
+    this.javaReplacer = new (JavaTypes.getJavaReplacerHelper())(contentsOrFile);
+  }
 
-export default class Replacer{
+  static fromFilename(filename: string) {
+    return new Replacer(Io.getPath(filename));
+  }
 
-	javaReplacer: any;
-	constructor(contentsOrFile: any) {
-		
-		let contents = contentsOrFile;
-	
-		// If a file, read the contents
-		if(contentsOrFile instanceof JavaTypes.JavaFile) {
-			contents = Io.readFile(contentsOrFile);
-		}
-	
-		const ReplacerHelper = JavaTypes.ReplacerHelper;
-		this.javaReplacer = new ReplacerHelper(contents);
-	};
+  replaceAll(target: string, replacement: string) {
+    this.javaReplacer.replaceAll(target, replacement);
+    return this;
+  }
 
-	static fromFilename(filename: string) {
-		return new Replacer(Io.getPath(filename));
-	}
-
-	replaceAll(target: string, replacement: string) {
-		this.javaReplacer.replaceAll(target, replacement);
-		return this;
-	}
-
-	getString() {
-		return this.javaReplacer.getString();
-	}
-};	
+  getString(): string {
+    return this.javaReplacer.getString();
+  }
+}

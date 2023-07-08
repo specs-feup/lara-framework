@@ -1,25 +1,20 @@
-import {
-    AnalyserResult,
-} from "./AnalyserResult.js";
+import AnalyserResult from "./AnalyserResult.js";
+import Fix from "./Fix.js";
 
-import {
-    Fix,
-} from "./Fix.js"
+export default class CheckResult {
+  analyserResult: AnalyserResult;
 
-class CheckResult {
-    analyserResult: AnalyserResult;
-    
-    constructor(name: string, node: any, message: string, fix: Fix|undefined) {
-        this.analyserResult= new AnalyserResult(name, node, message, fix);
-    }
+  constructor(name: string, node: any, message: string, fix: Fix | undefined) {
+    this.analyserResult = new AnalyserResult(name, node, message, fix);
+  }
 
-    performFix(){
-        if (this.analyserResult.fix == undefined){
-            return;
-        }
-        this.analyserResult.fix.execute();
+  performFix() {
+    if (this.analyserResult.fix == undefined) {
+      return;
     }
-    getMessage(){
-        return this.analyserResult.message;
-    }
+    this.analyserResult.fix.execute();
+  }
+  getMessage() {
+    return this.analyserResult.message;
+  }
 }

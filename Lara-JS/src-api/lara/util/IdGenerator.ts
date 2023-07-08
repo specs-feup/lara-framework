@@ -1,27 +1,15 @@
-/**
- * @class
- */
-class IdGenerator {
-	idCounter:{[key: string]: number};
+export default class IdGenerator {
+  idCounter = new Map<string, number>();
 
-    constructor(){
-        this.idCounter={};
+  next(key = "") {
+    const currentId = this.idCounter.get(key);
+
+    if (currentId) {
+      this.idCounter.set(key, currentId + 1);
+    } else {
+      this.idCounter.set(key, 1);
     }
 
-    next(key:string|undefined) {
-
-	    if(key === undefined) {
-		    key = "";
-	    }
-
-	    let currentId:number|undefined = this.idCounter[key];
-
-	    if(currentId === undefined) {
-		    currentId = 0;
-	    }
-
-	    this.idCounter[key] = currentId + 1;
-        
-	    return key + currentId;
-    }
+    return `${key}${this.idCounter.get(key) ?? ""}`;
+  }
 }
