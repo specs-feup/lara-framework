@@ -21,7 +21,7 @@ export default class Check {
    * @deprecated Use the javascript '===' operator instead
    */
   static isUndefined<T>(value: T): boolean {
-    LaraCore.isUndefined(value);
+    return LaraCore.isUndefined(value);
   }
 
   /**
