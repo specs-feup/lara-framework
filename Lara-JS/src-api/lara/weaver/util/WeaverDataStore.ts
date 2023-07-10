@@ -1,5 +1,4 @@
 import JavaTypes from "../../util/JavaTypes.js";
-import Weaver from "../../../../src-code/Weaver.js";
 import DataStore from "../../util/DataStore.js";
 import Io from "../../Io.js";
 

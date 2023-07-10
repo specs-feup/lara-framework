@@ -24,7 +24,7 @@ java.asyncOptions = {
   promisify: promisify,
 };
 
-export default class Weaver {
+export class Weaver {
   static #isSetup = false;
   static #javaWeaver: unknown;
 
@@ -159,19 +159,6 @@ export default class Weaver {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
     (Weaver.#javaWeaver as any).close();
   }
-
-  static toJs(javaObject: any) {
-    return Weaver.getWeaverEngine().getScriptEngine().toJs(javaObject);
-  }
-
-  static getWeaverEngine() {
-    return java.import(
-      "org.lara.interpreter.weaver.interf.WeaverEngine"
-    ).getThreadLocalWeaver();
-  }
-
-
-
 }
 
 /////////////////////////
