@@ -2,7 +2,6 @@ import JavaTypes from "./util/JavaTypes.js";
 import {
   checkDefined,
   isArray,
-  isString,
   isJavaClass,
   checkTrue,
 } from "./core/LaraCore.js";
@@ -16,13 +15,12 @@ export default class Io {
   /**
    * @returns true if the given object is a Java file, false otherwise.
    */
-  static isJavaFile(object: any): boolean {
-    const fileClass = "java.io.File";
-    return isJavaClass(object, fileClass);
+  static isJavaFile<T>(object: T): boolean {
+    return isJavaClass(object, "java.io.File");
   }
 
   /**
-   * @param {String|J#java.io.File} path
+   * @param {String|J#java.io.File} path -
    */
   static _newFile(path: any) {
     if (Io.isJavaFile(path)) {
@@ -33,8 +31,8 @@ export default class Io {
   }
 
   /**
-   * @param {String|J#java.io.File} base
-   * @param {String|J#java.io.File} path
+   * @param {String|J#java.io.File} base -
+   * @param {String|J#java.io.File} path -
    *
    */
   static _newFileWithBase(base: any, path: string | File) {
@@ -82,7 +80,7 @@ export default class Io {
   /**
    * Creates a randomly named folder in the OS temporary folder that is deleted when the virtual machine exits.
    *
-   * @return {J#java.io.File}
+   * @returns {J#java.io.File}
    */
   static newRandomFolder() {
     return JavaTypes.getJavaSpecsIo().newRandomFolder();
@@ -119,10 +117,10 @@ export default class Io {
   /**
    * Gets the paths (files and folders) in the given folder, corresponding to the given base folder and argument patterns.
    *
-   * @param {String|J#java.io.File} baseFolder
-   * @param {String...} patterns
+   * @param {String|J#java.io.File} baseFolder -
+   * @param {String...} args - Patterns to match
    */
-  static getPaths(baseFolder: any, ...args: String[]) {
+  static getPaths(baseFolder: any, ...args: string[]) {
     checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 
     const baseFolderFile = Io.getPath(baseFolder);
@@ -136,14 +134,14 @@ export default class Io {
       argsArray.push("*");
     }
 
-    for (let argument of argsArray) {
-      var foundFiles = JavaTypes.getJavaSpecsIo().getPathsWithPattern(
+    for (const argument of argsArray) {
+      const foundFiles = JavaTypes.getJavaSpecsIo().getPathsWithPattern(
         baseFolderFile,
         argument,
         false,
         "FILES_AND_FOLDERS"
       );
-      for (let file of foundFiles) {
+      for (const file of foundFiles) {
         files.push(file);
       }
     }
@@ -154,15 +152,15 @@ export default class Io {
   /**
    * Gets the folders in the given folder, corresponding to the given base folder and argument patterns.
    *
-   * @param {String|J#java.io.File} baseFolder
-   * @param {String...} patterns
+   * @param {String|J#java.io.File} baseFolder -
+   * @param args - Patterns to match
    */
-  static getFolders(baseFolder: any, ...args: String[]) {
-    var paths = Io.getPaths(baseFolder, ...args);
+  static getFolders(baseFolder: any, ...args: string[]) {
+    const paths = Io.getPaths(baseFolder, ...args);
 
-    var folders = [];
+    const folders = [];
 
-    for (var path of paths) {
+    for (const path of paths) {
       if (Io.isFolder(path)) {
         folders.push(path);
       }
@@ -174,35 +172,22 @@ export default class Io {
   /**
    * The files inside the given folder that respects the given pattern.
    *
-   * @param {string|File} baseFolder
-   * @param {string|Object[]} pattern
-   * @param {boolean} isRecursive
+   * @param {string|File} baseFolder -
+   * @param {string|Object[]} pattern -
+   * @param isRecursive -
    */
   static getFiles(
-    baseFolder: string | File,
-    pattern: string | Array<any>,
-    isRecursive: boolean
+    baseFolder: string | File = "./",
+    pattern: string | Array<any> = "*",
+    isRecursive = false
   ) {
-    // Initialize inputs
-    if (baseFolder === undefined) {
-      baseFolder = "./";
-    }
-
-    if (pattern === undefined) {
-      pattern = "*";
-    }
-
-    if (isRecursive === undefined) {
-      isRecursive = false;
-    }
-
     // If pattern is an array, call function recursively
     if (isArray(pattern)) {
       const files: Array<File> = [];
 
-      for (var singlePattern of pattern) {
-        var newFiles = Io.getFiles(baseFolder, singlePattern, isRecursive);
-        for (var newFile of newFiles) {
+      for (const singlePattern of pattern) {
+        const newFiles = Io.getFiles(baseFolder, singlePattern, isRecursive);
+        for (const newFile of newFiles) {
           files.push(newFile);
         }
       }
@@ -218,7 +203,7 @@ export default class Io {
     );
     const files: Array<File> = [];
 
-    for (var file of list) {
+    for (const file of list) {
       files.push(file);
     }
 
@@ -250,7 +235,7 @@ export default class Io {
    * Each argument is a file that will be deleted.
    */
   static deleteFiles(...args: any) {
-    for (let argument of args) {
+    for (const argument of args) {
       Io.deleteFile(argument);
     }
   }
@@ -258,7 +243,7 @@ export default class Io {
   /**
    * Deletes a folder and its contents.
    *
-   * @return true if both the contents and the folder could be deleted
+   * @returns true if both the contents and the folder could be deleted
    */
   static deleteFolder(folderPath: string) {
     const folder = Io.getPath(folderPath);
@@ -274,7 +259,7 @@ export default class Io {
   }
 
   /**
-   * @return true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
+   * @returns true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
    */
   static isFile(path: any) {
     if (typeof path === "string") {
@@ -284,7 +269,7 @@ export default class Io {
   }
 
   /**
-   * @return true if and only if the file denoted by this abstract pathname exists and is a folder; false otherwise
+   * @returns true if and only if the file denoted by this abstract pathname exists and is a folder; false otherwise
    */
   static isFolder(path: any) {
     if (typeof path === "string") {
@@ -314,13 +299,9 @@ export default class Io {
     );
   }
 
-  static copyFolder(filepath: string, destination: string, verbose: any) {
+  static copyFolder(filepath: string, destination: string, verbose = false) {
     checkDefined(filepath, "filepath", "Io.copyFolder");
     checkDefined(destination, "destination", "Io.copyFolder");
-
-    if (verbose === undefined) {
-      verbose = false;
-    }
 
     return JavaTypes.getJavaSpecsIo().copyFolder(
       Io.getPath(filepath),
@@ -332,7 +313,7 @@ export default class Io {
   /**
    * Returns the given path, without extension.
    *
-   * @param {string|#java.io.File} path
+   * @param {string|#java.io.File} path -
    */
   static removeExtension(path: string) {
     return JavaTypes.getJavaSpecsIo().removeExtension(path);
@@ -341,17 +322,17 @@ export default class Io {
   /**
    * Returns the extension of the given path.
    *
-   * @param {string|#java.io.File} path
+   * @param {string|#java.io.File} path - path
    */
   static getExtension(path: string) {
     return JavaTypes.getJavaSpecsIo().getExtension(path);
   }
 
   /**
-   * @param {string} path The path of the file to write.
-   * @param {string} content The contents to write.
+   * @param path - The path of the file to write.
+   * @param content - The contents to write.
    *
-   * @return {J#java.io.File} the file to where the contents where written.
+   * @returns {J#java.io.File} the file to where the contents where written.
    */
   static writeFile(path: string, content: string) {
     const file: File = Io._newFile(path);
@@ -360,9 +341,9 @@ export default class Io {
   }
 
   /**
-   * @param {string} path The path of the file to read.
+   * @param path - The path of the file to read.
    *
-   * @return {string} the contents of the file.
+   * @returns the contents of the file.
    */
   static readFile(path: string) {
     const file = Io._newFile(path);
@@ -421,11 +402,13 @@ export default class Io {
    * If value is a string that ends in .json, assume it is a file to a json object and parses it.
    * If it is a string but does not end in json, assume it is a stringified object.
    * Otherwise, returns the object as it is.
+   *
+   * @deprecated Use JSON.parse() instead or fileToJSON from api/core/output.js
    */
-  static jsonObject(value: any) {
-    if (isString(value)) {
+  static jsonObject<T>(value: T): T | string {
+    if (typeof value === "string") {
       if (value.endsWith(".json")) {
-        return Io.readJson(Io.getPath(value));
+        return this.readJson(value);
       } else {
         return JSON.parse(value);
       }
