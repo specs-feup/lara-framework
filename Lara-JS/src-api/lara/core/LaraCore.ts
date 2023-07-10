@@ -1,4 +1,5 @@
 import JavaTypes from "../util/JavaTypes.js";
+import { println } from "../../core/output.js";
 
 export let LARA_DEBUG = false;
 
@@ -251,4 +252,14 @@ export function arrayFromArgs(args: any, start = 0) {
  */
 function isJavaList<T>(list: T) {
   return list instanceof JavaTypes.getJavaList();
+}
+
+export function info(message: any, origin: any) {
+	var composedMessage = message;
+	
+	if(origin !== undefined) {
+		composedMessage = origin + ": " + composedMessage;
+	}
+	
+	println(composedMessage);
 }
