@@ -1,9 +1,9 @@
-enum Engine {
+export enum Engine {
   GraalVM = "GraalVM",
   NodeJS = "NodeJS",
 }
 
-let engine: Engine = Engine.GraalVM;
+export let engine: Engine = Engine.GraalVM;
 // eslint-disable-next-line prefer-const, @typescript-eslint/no-explicit-any
 let java: any = undefined;
 
