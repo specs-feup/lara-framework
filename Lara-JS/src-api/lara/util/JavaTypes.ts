@@ -204,6 +204,26 @@ namespace JavaTypes {
   export function getJavaJOptionsUtils() {
     return getType("org.suikasoft.jOptions.JOptionsUtils") as JavaJOptionsUtils;
   }
+
+  export function getWeaverEngine(): any{
+    return getType("org.lara.interpreter.weaver.interf.WeaverEngine");  //might need changes
+  }
+
+  export function getVerboseLevel(): any{
+    return getType("org.lara.interpreter.joptions.config.interpreter");
+  }
+
+  export function getLaraiKeys(): any{
+    return getType("org.lara.interpreter.joptions.config.interpreter.LaraiKeys");
+  }
+
+  export function getFileList(): any{
+    return getType("org.lara.interpreter.joptions.keys.FileList");
+  }
+
+  export function getOptionalFile(): any{
+    return getType("org.lara.interpreter.joptions.keys.OptionalFile");
+  }
 }
 
 export default JavaTypes;
