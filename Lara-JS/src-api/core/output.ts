@@ -1,7 +1,16 @@
-import JavaTypes from "../lara/util/JavaTypes.js";
+import JavaTypes, { engine, Engine } from "../lara/util/JavaTypes.js";
 
-export let outputStream = JavaTypes.getJavaSystem().out;
-export let errorStream = JavaTypes.getJavaSystem().err;
+// Node.JS
+export let outputStream: any;
+export let errorStream: any;
+
+if (engine === Engine.NodeJS) {
+  outputStream = process.stderr;
+  errorStream = process.stdout;
+} else if (engine === Engine.GraalVM) {
+  outputStream = JavaTypes.getJavaSystem().out;
+  errorStream = JavaTypes.getJavaSystem().err;
+}
 
 /**
  * This is a core file that is loaded when setting up the LARA environment,
@@ -11,7 +20,7 @@ export let errorStream = JavaTypes.getJavaSystem().err;
  * For instance, this is used when enabling the option to write the output
  * of JS to a file (this option is widely used on the tests on the Java side).
  *
- * @param stream
+ * @param stream -
  *
  */
 export function setPrintStream(stream: any) {
