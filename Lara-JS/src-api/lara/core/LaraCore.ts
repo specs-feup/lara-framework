@@ -120,21 +120,18 @@ export function checkInstance(
   throw message;
 }
 
-export function checkType(
-  value: any,
-  type: string,
-  source?: string | undefined
-) {
-  if (typeof type !== "string") {
-    throw "checkType: parameter type must be a string";
-  }
-
+export function checkType<T>(value: T, type: string, source?: string) {
   if (typeof value === type) {
     return;
   }
 
   // Special case: array
-  if (type === "array" && isArray(value)) {
+  if (type === "array" && value instanceof Array) {
+    return;
+  }
+
+  // Special case: regex
+  if (type === "regex" && value instanceof RegExp) {
     return;
   }
 

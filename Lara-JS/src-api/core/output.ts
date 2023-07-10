@@ -1,4 +1,3 @@
-/* eslint-disable */
 import JavaTypes from "../lara/util/JavaTypes.js";
 
 export let outputStream = JavaTypes.getJavaSystem().out;
@@ -29,15 +28,7 @@ export function printTo(message: string | null | undefined, stream: any) {
   }
 }
 
-export function printToln(message: string | null | undefined, stream: any) {
-  if (message === null) {
-    message = "null";
-  }
-
-  if (message === undefined) {
-    message = "undefined";
-  }
-
+export function printToln(message = "undefined", stream: any) {
   stream.println(message.toString());
 }
 
@@ -90,10 +81,8 @@ export function printlnObject(obj: any, space?: string | undefined) {
 }
 
 //export function object2string(obj, space, ommitFunctions){
-export function object2string(obj: any, space?: string | undefined): string {
-  // ommitFunctions not working, printing more than intended
-
-  if (space === undefined) space = "";
+export function object2string(obj: any, space = ""): string {
+  // TODO: ommitFunctions not working, printing more than intended
 
   /*
 	if(ommitFunctions === undefined) {
@@ -147,12 +136,7 @@ export function object2string(obj: any, space?: string | undefined): string {
   }
 }
 
-export function object2stringSimple(
-  obj: any | null,
-  space?: string | undefined
-) {
-  if (space === undefined) space = "";
-
+export function object2stringSimple(obj: any | null, space = "") {
   if (obj === null)
     //since typeof null is "object"
     return space + "null";
