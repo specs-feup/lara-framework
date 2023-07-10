@@ -1,3 +1,5 @@
+import { checkTrue, toArray } from "../core/LaraCore.js";
+
 /**
  * Counts occurrences of tuples.
  */
@@ -17,11 +19,9 @@ export default class Accumulator {
 
   add(...args: any[]): number {
     let currentAcc: Accumulator = this;
-    const chainArray: Array<any> = this.parseArguments(args)
-    
-    
+
     // Travel chain of values
-    for (const chainElement of chainArray) {
+    for (const chainElement of args) {
       let nextAcc: Accumulator | undefined = currentAcc.accs[chainElement];
 
       // If no accumulator, create
@@ -122,12 +122,12 @@ export default class Accumulator {
    * Receives an array with the arguments of the previous function.
    */
   private parseArguments(...args: any[]) {
+    checkTrue(
+      args.length === 1,
+      "Accumulator._parseArguments: Expected arguments to have length 1"
+    );
 
-    if(!(args.length === 1) ){
-      throw "Accumulator._parseArguments: Expected arguments to have length 1";
-    }
-
-    const functionArguments = args[0];
+    let functionArguments = args[0];
 
     // If one argument and array, return it
     if (
@@ -139,6 +139,6 @@ export default class Accumulator {
     }
 
     // Transform arguments into array
-    return Array.from(functionArguments);
+    return toArray(functionArguments);
   }
 }
