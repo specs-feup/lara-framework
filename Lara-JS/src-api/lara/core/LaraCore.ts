@@ -78,15 +78,23 @@ export function checkDefined<T>(
 export function checkInstance(
   value: any,
   type: any,
-  source: string,
-  userTypeName: string
+  source?: string,
+  userTypeName?: string
 ) {
+  if (isJavaClass(value)) {
+    throw "Should not receive a Java object here";
+  }
+
+  if (typeof type !== "function") {
+    throw "LaraCore.checkInstance: parameter 'type' must be a function";
+  }
+
   if (value instanceof type) {
     return;
   }
 
   // Try to get name from type
-  let typeName = type.class;
+  let typeName = type.name;
 
   // If no name, try to use user type name
   if (typeName === undefined || typeName.length === 0) {
@@ -97,14 +105,12 @@ export function checkInstance(
   if (typeName === undefined) {
     typeName = "<could not determine>";
   }
-
-  let valueName = value.getClass().getName();
+  let valueName = value.constructor.name;
   if (valueName.length === 0) {
     valueName = undefined;
   }
 
   let message = "Expected value to be of type '" + typeName + "'";
-
   if (valueName !== undefined) {
     message += ", but is of type '" + valueName + "'";
   } else {
@@ -112,11 +118,9 @@ export function checkInstance(
       ", but is of another type. The code of the constructor function is:\n" +
       value.constructor;
   }
-
   if (source !== undefined) {
     message = source + ": " + message;
   }
-
   throw message;
 }
 

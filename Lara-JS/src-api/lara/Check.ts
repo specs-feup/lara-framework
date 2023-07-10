@@ -31,49 +31,16 @@ export default class Check {
     LaraCore.checkDefined(value, message);
   }
 
+  /**
+   * @deprecated Use the javascript 'instanceof' operator instead
+   */
   static instance(
     value: any,
     type: any,
-    source: string | undefined,
-    userTypeName: string | undefined
+    source?: string,
+    userTypeName?: string
   ) {
-    if (typeof type !== "function") {
-      throw "Check.instance: parameter type must be a function";
-    }
-
-    if (value instanceof type) {
-      return;
-    }
-
-    // Try to get name from type
-    let typeName = type.name;
-
-    // If no name, try to use user type name
-    if (typeName === undefined || typeName.length === 0) {
-      typeName = userTypeName;
-    }
-
-    // If still undefined, add placeholder
-    if (typeName === undefined) {
-      typeName = "<could not determine>";
-    }
-    let valueName = value.constructor.name;
-    if (valueName.length === 0) {
-      valueName = undefined;
-    }
-
-    let message = "Expected value to be of type '" + typeName + "'";
-    if (valueName !== undefined) {
-      message += ", but is of type '" + valueName + "'";
-    } else {
-      message +=
-        ", but is of another type. The code of the constructor function is:\n" +
-        value.constructor;
-    }
-    if (source !== undefined) {
-      message = source + ": " + message;
-    }
-    throw message;
+    LaraCore.checkInstance(value, type, source, userTypeName);
   }
 
   /**
