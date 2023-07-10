@@ -1,46 +1,44 @@
 import Io from "../Io.js";
 import { checkInstance, info } from "../core/LaraCore.js";
+import JavaTypes from "./JavaTypes.js";
 
 /**
  * Interface with Java class DataStore, used for storing arbitrary information.
  */
 
 export default class DataStore {
-  data: any;
+  javaDataStoreInstance!: any;
   definition: any;
-  checkKeys: any;
+  checkKeys: boolean;
   allowedKeys: any;
   keyAliases: Record<string, string> = {};
 
-  constructor(data: any, definition: any) {
-    if (data === undefined) {
-      data = this.getDataStoreClass().newInstance("DataStore from Lara");
+  constructor(dataStore?: any | string | DataStore, definition?: any) {
+    if (dataStore === undefined) {
+      this.javaDataStoreInstance = this.getDataStoreClass().newInstance(
+        "DataStore from Lara"
+      );
+    } else if (typeof dataStore === "string") {
+      this.javaDataStoreInstance =
+        this.getDataStoreClass().newInstance(dataStore);
+    } else if (dataStore instanceof DataStore) {
+      this.javaDataStoreInstance = dataStore.getData();
     }
-
-    if (typeof data === "string") {
-      data = this.getDataStoreClass().newInstance(data);
-    }
-
-    // Check if Lara DataStore, get Java DataStore
-    if (data instanceof DataStore) {
-      data = data.getData();
-    }
+    this.definition = definition;
 
     checkInstance(
-      data,
+      this.javaDataStoreInstance,
       this.getDataStoreClass(),
       "DataStore::data",
       this.getDataStoreClass()
     ); // Change to instance of
 
-    this.data = data;
-
-    // Determine definition
-    this.definition = definition !== undefined ? definition : undefined;
     // If no definition as argument, try to get one from data
     if (this.definition === undefined) {
-      if (this.data.getStoreDefinitionTry().isPresent()) {
-        this.definition = this.data.getStoreDefinitionTry().get();
+      if (this.javaDataStoreInstance.getStoreDefinitionTry().isPresent()) {
+        this.definition = this.javaDataStoreInstance
+          .getStoreDefinitionTry()
+          .get();
       }
     }
 
@@ -64,7 +62,7 @@ export default class DataStore {
   get(key: string) {
     const processedKey = this.processKey(key, "get");
 
-    const value = this.data.get(processedKey);
+    const value = this.javaDataStoreInstance.get(processedKey);
 
     if (value === null) {
       return undefined;
@@ -78,7 +76,7 @@ export default class DataStore {
    */
   put(key: string, value: any) {
     const processedKey = this.processKey(key, "put");
-    this.data.setRaw(processedKey, value);
+    this.javaDataStoreInstance.setRaw(processedKey, value);
   }
 
   disableKeyChecking() {
@@ -106,7 +104,7 @@ export default class DataStore {
   }
 
   getData() {
-    return this.data;
+    return this.javaDataStoreInstance;
   }
 
   addAlias(key: string, alias: string) {
@@ -143,14 +141,14 @@ export default class DataStore {
    * @returns the Java class of DataStore
    */
   private getDataStoreClass() {
-    return Java.type("org.suikasoft.jOptions.Interfaces.DataStore");
+    return JavaTypes.getJavaDataStore();
   }
 
   /**
    * @returns the Java class with utility methods for DataStore
    */
   private getUtilityClass() {
-    return Java.type("org.suikasoft.jOptions.JOptionsUtils");
+    return JavaTypes.getJavaJOptionsUtils();
   }
 
   /**
@@ -188,7 +186,7 @@ export default class DataStore {
   save(fileOrBaseFolder: any, optionalFile?: any) {
     this.getUtilityClass().saveDataStore(
       Io.getPath(fileOrBaseFolder, optionalFile),
-      this.data
+      this.javaDataStoreInstance
     );
   }
 
@@ -220,7 +218,7 @@ export default class DataStore {
    * @returns true if the data store has a value for the given key, false otherwise
    */
   hasValue(key: string): boolean {
-    return this.data.hasValueRaw(key);
+    return this.javaDataStoreInstance.hasValueRaw(key);
   }
 
   /**
@@ -229,7 +227,9 @@ export default class DataStore {
    *
    */
   getConfigurationFolder() {
-    const currentFolder = this.data.get("joptions_current_folder_path");
+    const currentFolder = this.javaDataStoreInstance.get(
+      "joptions_current_folder_path"
+    );
 
     if (currentFolder.isEmpty()) {
       return undefined;
@@ -244,7 +244,7 @@ export default class DataStore {
    *
    */
   getConfigurationFile() {
-    const configFile = this.data.get("app_config");
+    const configFile = this.javaDataStoreInstance.get("app_config");
 
     if (configFile === undefined) {
       return undefined;

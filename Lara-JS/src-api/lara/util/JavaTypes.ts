@@ -50,7 +50,6 @@ namespace JavaTypes {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface JavaLaraI extends JavaClass {}
-
   export function getJavaLaraI(): JavaLaraI {
     return getType("larai.LaraI") as JavaLaraI;
   }
