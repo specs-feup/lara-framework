@@ -1,6 +1,3 @@
-import { println } from "../../core/output.js";
-import Check from "../Check.js";
-
 /**
  * Filters join points according to the given rules.
  *
