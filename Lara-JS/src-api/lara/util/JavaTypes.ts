@@ -205,24 +205,44 @@ namespace JavaTypes {
     return getType("org.suikasoft.jOptions.JOptionsUtils") as JavaJOptionsUtils;
   }
 
-  export function getWeaverEngine(): any{
-    return getType("org.lara.interpreter.weaver.interf.WeaverEngine");  //might need changes
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaWeaverEngine extends JavaClass {}
+  export function getJavaWeaverEngine() {
+    return getType(
+      "org.lara.interpreter.weaver.interf.WeaverEngine"
+    ) as JavaWeaverEngine; //might need changes
   }
 
-  export function getVerboseLevel(): any{
-    return getType("org.lara.interpreter.joptions.config.interpreter");
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaVerboseLevel extends JavaClass {}
+  export function getJavaVerboseLevel() {
+    return getType(
+      "org.lara.interpreter.joptions.config.interpreter"
+    ) as JavaVerboseLevel;
   }
 
-  export function getLaraiKeys(): any{
-    return getType("org.lara.interpreter.joptions.config.interpreter.LaraiKeys");
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaLaraiKeys extends JavaClass {}
+  export function getJavaLaraiKeys() {
+    return getType(
+      "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
+    ) as JavaLaraiKeys;
   }
 
-  export function getFileList(): any{
-    return getType("org.lara.interpreter.joptions.keys.FileList");
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaFileList extends JavaClass {}
+  export function getJavaFileList() {
+    return getType(
+      "org.lara.interpreter.joptions.keys.FileList"
+    ) as JavaFileList;
   }
 
-  export function getOptionalFile(): any{
-    return getType("org.lara.interpreter.joptions.keys.OptionalFile");
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaOptionalFile extends JavaClass {}
+  export function getJavaOptionalFile() {
+    return getType(
+      "org.lara.interpreter.joptions.keys.OptionalFile"
+    ) as JavaOptionalFile;
   }
 }
 

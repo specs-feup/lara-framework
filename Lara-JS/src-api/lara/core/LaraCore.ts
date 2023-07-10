@@ -254,12 +254,10 @@ function isJavaList<T>(list: T) {
   return list instanceof JavaTypes.getJavaList();
 }
 
-export function info(message: any, origin: any) {
-	var composedMessage = message;
-	
-	if(origin !== undefined) {
-		composedMessage = origin + ": " + composedMessage;
-	}
-	
-	println(composedMessage);
+export function info(message: string, origin?: string): void {
+  if (origin !== undefined) {
+    println(`${origin}: ${message}`);
+    return;
+  }
+  println(message);
 }
