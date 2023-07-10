@@ -102,6 +102,6 @@ export default class WeaverDataStore extends DataStore {
 
   getLogFile() {
     const optionalFile = this.get("log");
-    return optionalFile !== undefined ? optionalFile.getFile() : undefined;
+    return optionalFile ?? optionalFile.getFile();
   }
 }
