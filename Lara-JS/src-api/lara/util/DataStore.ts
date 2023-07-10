@@ -10,7 +10,7 @@ export default class DataStore {
   definition: any;
   checkKeys: any;
   allowedKeys: any;
-  keyAliases: Record<string, string>;
+  keyAliases: Record<string, string> = {};
 
   constructor(data: any, definition: any) {
     if (data === undefined) {
@@ -56,9 +56,6 @@ export default class DataStore {
         this.allowedKeys.add(dataKey.getName());
       }
     }
-
-    // Aliases map
-    this.keyAliases = {};
   }
 
   /**
