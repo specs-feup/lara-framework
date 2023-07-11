@@ -210,7 +210,7 @@ namespace JavaTypes {
   export function getJavaWeaverEngine() {
     return getType(
       "org.lara.interpreter.weaver.interf.WeaverEngine"
-    ) as JavaWeaverEngine; //might need changes
+    ) as JavaWeaverEngine; 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -244,6 +244,28 @@ namespace JavaTypes {
       "org.lara.interpreter.joptions.keys.OptionalFile"
     ) as JavaOptionalFile;
   }
+
+  export interface LaraIUtils extends JavaClass{}
+  export function getLaraIUtils(){
+    return getType(
+      "org.lara.interpreter.utils.LaraIUtils"
+    ) as LaraIUtils;
+  }
+
+  export interface WeaverLauncher extends JavaClass{}
+  export function getWeaverLauncher(){
+    return getType(
+      "pt.up.fe.specs.lara.WeaverLauncher"
+    ) as WeaverLauncher
+  }
+
+  export interface JavaArrayList extends JavaClass{}
+  export function getJavaArrayList(){
+    return getType(
+      "java.util.ArrayList"
+    ) as JavaList
+  }
+
 }
 
 export default JavaTypes;

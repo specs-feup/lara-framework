@@ -1,12 +1,13 @@
-import JavaTypes from "../../util/JavaTypes.js";
-import DataStore from "../../util/DataStore.js";
-import Io from "../../Io.js";
+import JavaTypes from "../../lara/util/JavaTypes.js";
+import DataStore from "../../lara/util/DataStore.js";
+import Io from "../../lara/Io.js";
+import Weaver from "./Weaver.js";
 
 /**
  * DataStore used in LaraI weavers.
  */
 export default class WeaverDataStore extends DataStore {
-  constructor(data: any, definition: any) {
+  constructor(data: any, definition?: any) {
     data = data !== undefined ? data : "LaraI Options";
     definition =
       definition !== undefined
