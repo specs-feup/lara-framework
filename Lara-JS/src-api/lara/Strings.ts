@@ -8,6 +8,8 @@ export class Strings {
    * Taken from here: https://stackoverflow.com/questions/154059/how-do-you-check-for-an-empty-string-in-javascript
    *
    * @returns true if the given string is blank or contains only white-space
+   *
+   * @deprecated Use JS native methods instead. You can check the link above for more information.
    */
   static isEmpty(string: string) {
     const realString: string = string.toString();
@@ -22,6 +24,8 @@ export class Strings {
    * @param newSequence - the new value that will be used instead of the old value
    *
    * @returns the string after the replacement is done
+   *
+   * @deprecated Use the JS 'replace' method instead
    */
   static replacer(
     string: string,
@@ -63,7 +67,7 @@ export class Strings {
     contents: string,
     errorOnUndefined = false
   ): string | undefined {
-    const lines = JavaTypes.getJavaStringLines().newInstance(contents);
+    const lines = new (JavaTypes.getJavaStringLines())(contents);
 
     while (lines.hasNextLine()) {
       const line = lines.nextLine().trim();
@@ -100,6 +104,8 @@ export class Strings {
    * @param value - The value to convert to Json.
    *
    * @returns A string representing the given value in the Json format.
+   *
+   * @deprecated Use the JS 'JSON.stringify' method instead
    */
   static toJson(value: object): string {
     return JSON.stringify(value);

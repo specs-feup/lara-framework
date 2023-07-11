@@ -7,20 +7,22 @@ import JavaTypes from "./JavaTypes.js";
  */
 
 export default class DataStore {
-  javaDataStoreInstance!: any;
+  javaDataStoreInstance!: JavaTypes.JavaDataStore;
   definition: any;
   checkKeys: boolean;
   allowedKeys: any;
   keyAliases: Record<string, string> = {};
 
-  constructor(dataStore?: any | string | DataStore, definition?: any) {
+  constructor(
+    dataStore?: JavaTypes.JavaDataStore | string | DataStore,
+    definition?: any
+  ) {
     if (dataStore === undefined) {
-      this.javaDataStoreInstance = this.getDataStoreClass().newInstance(
+      this.javaDataStoreInstance = new (this.getDataStoreClass())(
         "DataStore from Lara"
       );
     } else if (typeof dataStore === "string") {
-      this.javaDataStoreInstance =
-        this.getDataStoreClass().newInstance(dataStore);
+      this.javaDataStoreInstance = new (this.getDataStoreClass())(dataStore);
     } else if (dataStore instanceof DataStore) {
       this.javaDataStoreInstance = dataStore.getData();
     }
@@ -30,7 +32,7 @@ export default class DataStore {
       this.javaDataStoreInstance,
       this.getDataStoreClass(),
       "DataStore::data",
-      this.getDataStoreClass()
+      this.getDataStoreClass().getClass().getName()
     ); // Change to instance of
 
     // If no definition as argument, try to get one from data
@@ -133,7 +135,7 @@ export default class DataStore {
   /**
    * Wraps a Java DataStore around a Lara DataStore.
    */
-  protected dataStoreWrapper(javaDataStore: any) {
+  protected dataStoreWrapper(javaDataStore: JavaTypes.JavaDataStore) {
     return new DataStore(javaDataStore, this.definition);
   }
 
@@ -223,10 +225,10 @@ export default class DataStore {
 
   /**
    *
-   * @returns {J#java.io.File} The folder of the configuration file, if one was used, or undefined otherwise.
+   * @returns The folder of the configuration file, if one was used, or undefined otherwise.
    *
    */
-  getConfigurationFolder() {
+  getConfigurationFolder(): JavaTypes.JavaFile | undefined {
     const currentFolder = this.javaDataStoreInstance.get(
       "joptions_current_folder_path"
     );
@@ -240,10 +242,10 @@ export default class DataStore {
 
   /**
    *
-   * @returns {J#java.io.File} The configuration file, if one was used, or undefined otherwise.
+   * @returns The configuration file, if one was used, or undefined otherwise.
    *
    */
-  getConfigurationFile() {
+  getConfigurationFile(): JavaTypes.JavaFile | undefined {
     const configFile = this.javaDataStoreInstance.get("app_config");
 
     if (configFile === undefined) {
@@ -259,15 +261,9 @@ export default class DataStore {
    * 1) If a configuration file was used, returns the path of the configuration file;
    * 2) Otherwise, returns the folder from where the weaver was launched.
    *
-   * @returns {J#java.io.File} The folder where the code represented by the AST will be written at the end of execution.
+   * @returns The folder where the code represented by the AST will be written at the end of execution.
    */
-  getContextFolder() {
-    let currentFolder = this.getConfigurationFolder();
-
-    if (currentFolder === undefined) {
-      currentFolder = Io.getWorkingFolder();
-    }
-
-    return currentFolder;
+  getContextFolder(): JavaTypes.JavaFile {
+    return this.getConfigurationFolder() ?? Io.getWorkingFolder();
   }
 }

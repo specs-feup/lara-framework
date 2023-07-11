@@ -209,7 +209,7 @@ namespace JavaTypes {
   export function getJavaWeaverEngine() {
     return getType(
       "org.lara.interpreter.weaver.interf.WeaverEngine"
-    ) as JavaWeaverEngine; 
+    ) as JavaWeaverEngine;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -244,27 +244,23 @@ namespace JavaTypes {
     ) as JavaOptionalFile;
   }
 
-  export interface LaraIUtils extends JavaClass{}
-  export function getLaraIUtils(){
-    return getType(
-      "org.lara.interpreter.utils.LaraIUtils"
-    ) as LaraIUtils;
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaLaraIUtils extends JavaClass {}
+  export function getJavaLaraIUtils() {
+    return getType("org.lara.interpreter.utils.LaraIUtils") as JavaLaraIUtils;
   }
 
-  export interface WeaverLauncher extends JavaClass{}
-  export function getWeaverLauncher(){
-    return getType(
-      "pt.up.fe.specs.lara.WeaverLauncher"
-    ) as WeaverLauncher
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaWeaverLauncher extends JavaClass {}
+  export function getJavaWeaverLauncher() {
+    return getType("pt.up.fe.specs.lara.WeaverLauncher") as JavaWeaverLauncher;
   }
 
-  export interface JavaArrayList extends JavaClass{}
-  export function getJavaArrayList(){
-    return getType(
-      "java.util.ArrayList"
-    ) as JavaList
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface JavaArrayList extends JavaClass {}
+  export function getJavaArrayList() {
+    return getType("java.util.ArrayList") as JavaList;
   }
-
 }
 
 export default JavaTypes;
