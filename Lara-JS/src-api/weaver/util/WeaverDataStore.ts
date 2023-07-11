@@ -7,19 +7,17 @@ import Weaver from "./Weaver.js";
  * DataStore used in LaraI weavers.
  */
 export default class WeaverDataStore extends DataStore {
-  constructor(data: any, definition?: any) {
-    data = data !== undefined ? data : "LaraI Options";
-    definition =
-      definition !== undefined
-        ? definition
-        : JavaTypes.getJavaLaraiKeys().STORE_DEFINITION;
+  constructor(
+    data: any = "LaraI Options",
+    definition: any = JavaTypes.getJavaLaraiKeys().STORE_DEFINITION
+  ) {
     super(data, definition);
   }
 
   /**
    * Wraps a Java DataStore around a Lara DataStore.
    */
-  protected dataStoreWrapper(javaDataStore: any) {
+  protected dataStoreWrapper(javaDataStore: JavaTypes.JavaDataStore) {
     return new WeaverDataStore(javaDataStore, this.definition);
   }
 

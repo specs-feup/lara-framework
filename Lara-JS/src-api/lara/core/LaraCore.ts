@@ -186,7 +186,7 @@ export function checkArray<T>(variable: T, source: string) {
  *
  * @deprecated Use the javascript `instanceof` operator instead
  */
-export function isArray(value: any) {
+export function isArray<T>(value: T) {
   return value instanceof Array;
 }
 

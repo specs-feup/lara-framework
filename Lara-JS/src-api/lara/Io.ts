@@ -19,10 +19,7 @@ export default class Io {
     return isJavaClass(object, "java.io.File");
   }
 
-  /**
-   * @param {String|J#java.io.File} path -
-   */
-  static _newFile(path: any) {
+  private static newFile(path: string | JavaTypes.JavaFile) {
     if (Io.isJavaFile(path)) {
       path = path.toString();
     }
@@ -30,12 +27,10 @@ export default class Io {
     return new (JavaTypes.getJavaFile())(path.toString());
   }
 
-  /**
-   * @param {String|J#java.io.File} base -
-   * @param {String|J#java.io.File} path -
-   *
-   */
-  static _newFileWithBase(base: any, path: string | File) {
+  private static newFileWithBase(
+    base: string | JavaTypes.JavaFile,
+    path: string | JavaTypes.JavaFile
+  ) {
     // If path is a file, convert to String first
     if (Io.isJavaFile(path)) {
       path = path.toString();
@@ -43,7 +38,7 @@ export default class Io {
 
     // If base is not a file, convert to File first
     if (!Io.isJavaFile(base)) {
-      base = Io._newFile(base);
+      base = Io.newFile(base);
     }
 
     return new (JavaTypes.getJavaFile())(base, path);
@@ -52,7 +47,7 @@ export default class Io {
   /**
    * Creates a folder.
    */
-  static mkdir(fileOrBaseFolder: any, optionalFile?: File | undefined) {
+  static mkdir(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     return JavaTypes.getJavaSpecsIo().mkdir(
       Io.getPath(fileOrBaseFolder, optionalFile)
     );
@@ -61,7 +56,7 @@ export default class Io {
   /**
    * Global version of the function.
    */
-  static fmkdir(fileOrBaseFolder: any, optionalFile?: File | undefined) {
+  static fmkdir(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     return Io.mkdir(fileOrBaseFolder, optionalFile);
   }
 
@@ -70,7 +65,7 @@ export default class Io {
    * If defined, creates a new folder inside the system's temporary folder and returns it.
    *
    */
-  static getTempFolder(folderName: string | undefined) {
+  static getTempFolder(folderName?: string) {
     if (folderName === undefined) {
       return JavaTypes.getJavaSpecsIo().getTempFolder();
     }
@@ -79,34 +74,32 @@ export default class Io {
 
   /**
    * Creates a randomly named folder in the OS temporary folder that is deleted when the virtual machine exits.
-   *
-   * @returns {J#java.io.File}
    */
-  static newRandomFolder() {
+  static newRandomFolder(): JavaTypes.JavaFile {
     return JavaTypes.getJavaSpecsIo().newRandomFolder();
   }
 
-  static getPath(fileOrBaseFolder: any, optionalFile?: File) {
+  static getPath(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     if (optionalFile === undefined) {
-      return Io._newFile(fileOrBaseFolder);
+      return Io.newFile(fileOrBaseFolder);
     }
 
     // Test if optionalFile is absolute
-    const optionalFilePath = Io._newFile(optionalFile);
+    const optionalFilePath = Io.newFile(optionalFile);
     if (optionalFilePath.isAbsolute()) {
       return optionalFilePath;
     }
 
-    return Io._newFileWithBase(fileOrBaseFolder, optionalFile);
+    return Io.newFileWithBase(fileOrBaseFolder, optionalFile);
   }
 
   /**
-   * @returns {String} the absolute path of the given file
+   * @returns the absolute path of the given file
    */
   static getAbsolutePath(
     fileOrBaseFolder: any,
-    optionalFile?: File | undefined
-  ) {
+    optionalFile?: JavaTypes.JavaFile
+  ): string {
     return JavaTypes.getJavaSpecsIo().normalizePath(
       JavaTypes.getJavaSpecsIo().getCanonicalPath(
         Io.getPath(fileOrBaseFolder, optionalFile)
@@ -117,10 +110,10 @@ export default class Io {
   /**
    * Gets the paths (files and folders) in the given folder, corresponding to the given base folder and argument patterns.
    *
-   * @param {String|J#java.io.File} baseFolder -
-   * @param {String...} args - Patterns to match
+   * @param baseFolder -
+   * @param args - Patterns to match
    */
-  static getPaths(baseFolder: any, ...args: string[]) {
+  static getPaths(baseFolder: string | JavaTypes.JavaFile, ...args: string[]) {
     checkDefined(baseFolder, "baseFolder", "Io.getPaths");
 
     const baseFolderFile = Io.getPath(baseFolder);
@@ -152,10 +145,13 @@ export default class Io {
   /**
    * Gets the folders in the given folder, corresponding to the given base folder and argument patterns.
    *
-   * @param {String|J#java.io.File} baseFolder -
+   * @param baseFolder -
    * @param args - Patterns to match
    */
-  static getFolders(baseFolder: any, ...args: string[]) {
+  static getFolders(
+    baseFolder: string | JavaTypes.JavaFile,
+    ...args: string[]
+  ) {
     const paths = Io.getPaths(baseFolder, ...args);
 
     const folders = [];
@@ -172,18 +168,18 @@ export default class Io {
   /**
    * The files inside the given folder that respects the given pattern.
    *
-   * @param {string|File} baseFolder -
+   * @param baseFolder -
    * @param {string|Object[]} pattern -
    * @param isRecursive -
    */
   static getFiles(
-    baseFolder: string | File = "./",
+    baseFolder: string | JavaTypes.JavaFile = "./",
     pattern: string | Array<any> = "*",
     isRecursive = false
   ) {
     // If pattern is an array, call function recursively
     if (isArray(pattern)) {
-      const files: Array<File> = [];
+      const files: Array<JavaTypes.JavaFile> = [];
 
       for (const singlePattern of pattern) {
         const newFiles = Io.getFiles(baseFolder, singlePattern, isRecursive);
@@ -201,7 +197,7 @@ export default class Io {
       isRecursive,
       "FILES"
     );
-    const files: Array<File> = [];
+    const files: Array<JavaTypes.JavaFile> = [];
 
     for (const file of list) {
       files.push(file);
@@ -213,7 +209,7 @@ export default class Io {
   /**
    * Returns a List with a string for each line of the given file
    */
-  static readLines(fileOrBaseFolder: any, optionalFile?: any) {
+  static readLines(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     return JavaTypes.getJavaLaraIo().readLines(
       Io.getPath(fileOrBaseFolder, optionalFile)
     );
@@ -222,7 +218,7 @@ export default class Io {
   /**
    * Deletes the given file.
    */
-  static deleteFile(fileOrBaseFolder: any, optionalFile?: any) {
+  static deleteFile(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     const file = Io.getPath(fileOrBaseFolder, optionalFile);
     if (!Io.isFile(file)) {
       return;
@@ -282,7 +278,10 @@ export default class Io {
     return fileToJSON(path);
   }
 
-  static writeJson(path: string, object: any) {
+  /**
+   * @deprecated Use JSONtoFile from api/core/output.js instead
+   */
+  static writeJson<T>(path: string, object: T) {
     JSONtoFile(path, object);
   }
 
@@ -313,18 +312,16 @@ export default class Io {
   /**
    * Returns the given path, without extension.
    *
-   * @param {string|#java.io.File} path -
    */
-  static removeExtension(path: string) {
+  static removeExtension(path: string | JavaTypes.JavaFile) {
     return JavaTypes.getJavaSpecsIo().removeExtension(path);
   }
 
   /**
    * Returns the extension of the given path.
    *
-   * @param {string|#java.io.File} path - path
    */
-  static getExtension(path: string) {
+  static getExtension(path: string | JavaTypes.JavaFile) {
     return JavaTypes.getJavaSpecsIo().getExtension(path);
   }
 
@@ -332,10 +329,10 @@ export default class Io {
    * @param path - The path of the file to write.
    * @param content - The contents to write.
    *
-   * @returns {J#java.io.File} the file to where the contents where written.
+   * @returns The file to where the contents where written.
    */
-  static writeFile(path: string, content: string) {
-    const file: File = Io._newFile(path);
+  static writeFile(path: string, content: string): JavaTypes.JavaFile {
+    const file: JavaTypes.JavaFile = Io.newFile(path);
     JavaTypes.getJavaSpecsIo().write(file, content);
     return file;
   }
@@ -343,16 +340,16 @@ export default class Io {
   /**
    * @param path - The path of the file to read.
    *
-   * @returns the contents of the file.
+   * @returns The contents of the file.
    */
   static readFile(path: string) {
-    const file = Io._newFile(path);
+    const file = Io.newFile(path);
     const content = JavaTypes.getJavaSpecsIo().read(file);
     return content;
   }
 
   static appendFile(path: string, content: any) {
-    const file = Io._newFile(path);
+    const file = Io.newFile(path);
     JavaTypes.getJavaSpecsIo().append(file, content);
   }
 
@@ -361,7 +358,10 @@ export default class Io {
    *
    * If the file does not share a common ancestor with baseFile, returns undefined.
    */
-  static getRelativePath(targetFile: any, baseFile: any) {
+  static getRelativePath(
+    targetFile: string | JavaTypes.JavaFile,
+    baseFile: string | JavaTypes.JavaFile
+  ) {
     const relativePath = JavaTypes.getJavaSpecsIo().getRelativePath(
       Io.getPath(targetFile),
       Io.getPath(baseFile)
@@ -388,7 +388,7 @@ export default class Io {
     return JavaTypes.getJavaFile().separator;
   }
 
-  static md5(fileOrBaseFolder: any, optionalFile?: File) {
+  static md5(fileOrBaseFolder: any, optionalFile?: JavaTypes.JavaFile) {
     return JavaTypes.getJavaSpecsIo().getMd5(
       Io.getPath(fileOrBaseFolder, optionalFile)
     );
