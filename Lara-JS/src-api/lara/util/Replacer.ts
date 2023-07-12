@@ -8,7 +8,7 @@ export default class Replacer {
   javaReplacer: any;
   constructor(contentsOrFile: any) {
     // If a file, read the contents
-    if (contentsOrFile instanceof JavaTypes.File) {
+    if (JavaTypes.instanceOf(contentsOrFile, "java.io.File")) {
       contentsOrFile = Io.readFile(contentsOrFile);
     }
     this.javaReplacer = new JavaTypes.ReplacerHelper(contentsOrFile);

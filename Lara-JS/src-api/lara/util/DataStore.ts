@@ -19,19 +19,23 @@ export default class DataStore {
     definition?: any
   ) {
     if (dataStore === undefined) {
-      this.javaDataStoreInstance = new (this.getDataStoreClass())(
+      this.javaDataStoreInstance = new this.DataStoreClass(
         "DataStore from Lara"
       );
     } else if (typeof dataStore === "string") {
-      this.javaDataStoreInstance = new (this.getDataStoreClass())(dataStore);
+      this.javaDataStoreInstance = new this.DataStoreClass(dataStore);
     } else if (dataStore instanceof DataStore) {
       this.javaDataStoreInstance = dataStore.getData();
-    } else if (dataStore instanceof JavaTypes.getJavaDataStore()){
+    } else if (
+      JavaTypes.instanceOf(
+        dataStore,
+        "org.suikasoft.jOptions.Interfaces.DataStore"
+      )
+    ) {
       this.javaDataStoreInstance = dataStore;
     }
-    
-    this.definition = definition;
 
+    this.definition = definition;
 
     // If no definition as argument, try to get one from data
     if (this.definition === undefined) {
@@ -61,7 +65,6 @@ export default class DataStore {
    */
   get(key: string) {
     const processedKey = this.processKey(key, "get");
-
 
     const value = this.javaDataStoreInstance.get(processedKey);
 
@@ -141,14 +144,14 @@ export default class DataStore {
   /**
    * @returns the Java class of DataStore
    */
-  private getDataStoreClass() {
+  private get DataStoreClass() {
     return JavaTypes.DataStore;
   }
 
   /**
    * @returns the Java class with utility methods for DataStore
    */
-  private getUtilityClass() {
+  private get UtilityClass() {
     return JavaTypes.JOptionsUtils;
   }
 
@@ -185,7 +188,7 @@ export default class DataStore {
   }
 
   save(fileOrBaseFolder: any, optionalFile?: any) {
-    this.getUtilityClass().saveDataStore(
+    this.UtilityClass.saveDataStore(
       Io.getPath(fileOrBaseFolder, optionalFile),
       this.javaDataStoreInstance
     );
@@ -196,7 +199,7 @@ export default class DataStore {
       throw "DataStore.load: current DataStore does not have keys definition, cannot load from file";
     }
 
-    const javaDataStore = this.getUtilityClass().loadDataStore(
+    const javaDataStore = this.UtilityClass.loadDataStore(
       Io.getPath(fileOrBaseFolder, optionalFile),
       this.definition
     );
