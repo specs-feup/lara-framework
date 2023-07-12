@@ -51,7 +51,7 @@ export function print(message?: string) {
 
 //Print a message and ends it with a new line
 export function println(message?: string) {
-  if (!message) {
+  if (message === undefined) {
     outputStream.println();
     return;
   }
@@ -83,7 +83,7 @@ export function printObject(obj: any, space?: string) {
 }
 
 export function printlnObject(obj: any, space?: string) {
-  print(object2string(obj, space));
+  println(object2string(obj, space));
 }
 
 export function object2string(

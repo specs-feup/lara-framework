@@ -30,10 +30,12 @@ if ("Java" in globalThis) {
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-function getType(javaType: string): unknown {
+export function getType(javaType: string): unknown {
   switch (engine) {
     case Engine.GraalVM:
-      return Java.type(javaType);
+      const a = Java.type(javaType);
+      return a;
+
     case Engine.NodeJS:
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       return java?.import(javaType);
