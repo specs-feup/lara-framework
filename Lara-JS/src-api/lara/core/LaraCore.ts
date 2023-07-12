@@ -73,7 +73,7 @@ export function checkDefined<T>(
 
 // TODO: type should be a JP
 /**
- * @deprecated Use the javascript `instanceof` operator instead
+ * @deprecated Use the javascript `instanceof` operator or JavaTypes.instanceOf instead
  */
 export function checkInstance(
   value: any,
@@ -213,12 +213,14 @@ export function isString<T>(variable: T) {
 
 /**
  * @returns true if the given object is an instance of the given Java class name
+ *
+ * @deprecated Use JavaTypes.instanceOf instead
  */
 export function isJavaClass<T>(
   variable: T,
   javaClassname = "java.lang.Object"
 ): boolean {
-  return JavaTypes.SpecsSystem.isInstance(javaClassname, variable);
+  return JavaTypes.instanceOf(variable, javaClassname);
 }
 
 /**
@@ -248,11 +250,8 @@ export function arrayFromArgs(args: any, start = 0) {
   return Array.prototype.slice.call(args, start);
 }
 
-/**
- * @deprecated Use the javascript `instanceof` operator instead
- */
 function isJavaList<T>(list: T) {
-  return list instanceof JavaTypes.List;
+  return JavaTypes.instanceOf(list, "java.util.List");
 }
 
 export function info(message: string, origin?: string): void {

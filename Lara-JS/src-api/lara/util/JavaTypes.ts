@@ -30,7 +30,7 @@ if ("Java" in globalThis) {
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function getType(javaType: string): unknown {
+function getType(javaType: string): any {
   switch (engine) {
     case Engine.GraalVM:
       const a = Java.type(javaType);
@@ -38,7 +38,7 @@ export function getType(javaType: string): unknown {
 
     case Engine.NodeJS:
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return java?.import(javaType);
+      return java.import(javaType);
   }
 }
 
@@ -87,6 +87,21 @@ export namespace JavaClasses {
 }
 
 export default class JavaTypes {
+  static instanceOf(value: any, javaTypeName: string): boolean {
+    switch (engine) {
+      case Engine.GraalVM:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        if (Java.isJavaObject(value)) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          return Java.type(javaTypeName).class.isInstance(value);
+        }
+        return Java.typeName(value) === javaTypeName;
+      case Engine.NodeJS:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        return java.instanceOf(value, javaTypeName) as boolean;
+    }
+  }
+
   static get LaraI() {
     return getType("larai.LaraI") as JavaClasses.LaraI;
   }

@@ -23,15 +23,20 @@ export default class JavaInterop {
   /**
    * @param value - Value to test
    * @param classname - The full qualified name of the Java class of the value
+   *
+   * @deprecated Use JavaTypes.instanceOf instead
    */
   static isInstance<T>(value: T, classname: string) {
-    return value instanceof Java.type(classname);
+    return JavaTypes.instanceOf(value, classname);
   }
 
   isList<T>(value: T) {
-    return JavaInterop.isInstance(value, "java.util.List");
+    return JavaTypes.instanceOf(value, "java.util.List");
   }
 
+  /**
+   * @deprecated Use JavaTypes instead
+   */
   getClass(classname: string) {
     return Java.type(classname).class;
   }
