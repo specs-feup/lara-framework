@@ -123,10 +123,10 @@ export default class Accumulator {
    * Receives an array with the arguments of the previous function.
    */
   private parseArguments(...args: any[]) {
-    checkTrue(
-      args.length === 1,
-      "Accumulator._parseArguments: Expected arguments to have length 1"
-    );
+    
+    if( args.length !== 1){
+      throw "Accumulator._parseArguments: Expected arguments to have length 1"
+    }
 
     let functionArguments = args[0];
 
@@ -140,6 +140,6 @@ export default class Accumulator {
     }
 
     // Transform arguments into array
-    return toArray(functionArguments);
+    return Array.from(functionArguments);
   }
 }
