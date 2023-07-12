@@ -15,14 +15,14 @@ export default class Csv {
       throw "Io.readCsv: path '" + path + "' is not a file";
     }
 
-    return Csv.parse(new (JavaTypes.getJavaCsvReader())(file, ","));
+    return Csv.parse(new JavaTypes.CsvReader(file, ","));
   }
 
   /**
    * @param contents -
    */
   static parse(contents: string, delimiter = ",") {
-    const CsvReader = JavaTypes.getJavaCsvReader();
+    const CsvReader = JavaTypes.CsvReader;
 
     let csvReader = undefined;
 

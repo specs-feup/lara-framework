@@ -20,13 +20,13 @@ export default class Weaver {
    * @returns {J#org.lara.interpreter.weaver.interf.WeaverEngine} the Java instance of the current WeaverEngine
    */
   static getWeaverEngine() {
-    return JavaTypes.getJavaWeaverEngine().getThreadLocalWeaver();
+    return JavaTypes.WeaverEngine.getThreadLocalWeaver();
   }
 
   static getLaraLoc() {
-    return JavaTypes.getJavaLaraIUtils().getLaraLoc(
+    return JavaTypes.LaraIUtils.getLaraLoc(
       Weaver.getWeaverEngine(),
-      JavaTypes.getJavaLaraI().getThreadLocalData()
+      JavaTypes.LaraI.getThreadLocalData()
     );
   }
 
@@ -35,7 +35,7 @@ export default class Weaver {
     return Java.type("org.lara.interpreter.utils.LaraIUtils")
       .getLaraLoc(
         Weaver.getWeaverEngine(),
-        JavaTypes.getJavaLaraI().getThreadLocalData()
+        JavaTypes.LaraI.getThreadLocalData()
       )
       .get(laraLoc.getTotalsKey());
   }
@@ -85,7 +85,7 @@ export default class Weaver {
   static hasAttribute(jp: any, attributeName: string): boolean {
     println("DEPRECATED Weaver.hasAttribute, use $jp.attributes");
 
-    var jpType = JavaTypes.getJavaJoinPoint()().isJoinPoint(jp)
+    var jpType = JavaTypes.JoinPoint().isJoinPoint(jp)
       ? jp.joinPointType
       : jp.toString();
 
@@ -111,7 +111,7 @@ export default class Weaver {
   static serialize($jp: any): string {
     Check.isJoinPoint($jp);
 
-    if (JavaTypes.getJavaSpecsSystem().getJavaVersionNumber() > 16) {
+    if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
       PrintOnce.message(
         "Weaver.serialize: Java version 17 or higher detected, XML serialization of AST might not work"
       );
@@ -128,7 +128,7 @@ export default class Weaver {
    * @returns {$jp} The deserialized join point.
    */
   static deserialize(string: string) {
-    if (JavaTypes.getJavaSpecsSystem().getJavaVersionNumber() > 16) {
+    if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
       PrintOnce.message(
         "Weaver.deserialize: Java version 17 or higher detected, XML serialization of AST might not work"
       );
@@ -195,10 +195,10 @@ export default class Weaver {
 
     // WeaverOptions has a function for this, but imports Weaver
     const weaverData = new WeaverDataStore(
-      JavaTypes.getJavaLaraI().getThreadLocalData()
+      JavaTypes.LaraI.getThreadLocalData()
     );
 
-    const WeaverLauncher = JavaTypes.getJavaWeaverLauncher();
+    const WeaverLauncher = JavaTypes.WeaverLauncher;
     const jsonStrings = WeaverLauncher.executeParallelStatic(
       safeArgsLists,
       threads,

@@ -5,7 +5,7 @@ export default class JavaInterop {
    * Converts a JS array into a java.util.List.
    */
   static arrayToList<T>(array: Array<T>) {
-    const ArrayListClass = JavaTypes.getJavaArrayList();
+    const ArrayListClass = JavaTypes.ArrayList;
     const list = new ArrayListClass();
 
     array.forEach((element) => list.add(element));

@@ -41,226 +41,215 @@ function getType(javaType: string): unknown {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-namespace JavaTypes {
+export namespace JavaClasses {
   export interface JavaClass {
     (...args: unknown[]): any;
     new (...args: unknown[]): any;
     [key: string]: any;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraI extends JavaClass {}
-  export function getJavaLaraI(): JavaLaraI {
-    return getType("larai.LaraI") as JavaLaraI;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraApiTools extends JavaClass {}
-  export function getJavaLaraApiTools() {
-    return getType("pt.up.fe.specs.lara.LaraApiTools") as JavaLaraApiTools;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraSystemTools extends JavaClass {}
-  export function getJavaLaraSystemTools() {
-    return getType(
-      "pt.up.fe.specs.lara.LaraSystemTools"
-    ) as JavaLaraSystemTools;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraCli extends JavaClass {}
-  export function getJavaLaraCli() {
-    return getType("org.lara.interpreter.cli.LaraCli") as JavaLaraCli;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaUuid extends JavaClass {}
-  export function getJavaUuid() {
-    return getType("java.util.UUID") as JavaUuid;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaGprofer extends JavaClass {}
-  export function getJavaGprofer() {
-    return getType("pt.up.fe.specs.gprofer.Gprofer") as JavaGprofer;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaJoinPoint extends JavaClass {}
-  export function getJavaJoinPoint() {
-    return getType(
-      "org.lara.interpreter.weaver.interf.JoinPoint"
-    ) as JavaJoinPoint;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaSpecsStrings extends JavaClass {}
-  export function getJavaSpecsStrings() {
-    return getType("pt.up.fe.specs.util.SpecsStrings") as JavaSpecsStrings;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaSpecsSystem extends JavaClass {}
-  export function getJavaSpecsSystem() {
-    return getType("pt.up.fe.specs.util.SpecsSystem") as JavaSpecsSystem;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaApacheStrings extends JavaClass {}
-  export function getJavaApacheStrings() {
-    return getType("pt.up.fe.specs.lang.ApacheStrings") as JavaApacheStrings;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaStringLines extends JavaClass {}
-  export function getJavaStringLines() {
-    return getType(
-      "pt.up.fe.specs.util.utilities.StringLines"
-    ) as JavaStringLines;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraIo extends JavaClass {}
-  export function getJavaLaraIo() {
-    return getType("org.lara.interpreter.api.LaraIo") as JavaLaraIo;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaSpecsIo extends JavaClass {}
-  export function getJavaSpecsIo() {
-    return getType("pt.up.fe.specs.util.SpecsIo") as JavaSpecsIo;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaSystem extends JavaClass {}
-  export function getJavaSystem() {
-    return getType("java.lang.System") as JavaSystem;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaFile extends JavaClass {}
-  export function getJavaFile() {
-    return getType("java.io.File") as JavaFile;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaList extends JavaClass {}
-  export function getJavaList() {
-    return getType("java.util.List") as JavaList;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaCollections extends JavaClass {}
-  export function getJavaCollections() {
-    return getType("java.util.Collections") as JavaCollections;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaDiff extends JavaClass {}
-  export function getJavaDiff() {
-    return getType("pt.up.fe.specs.lara.util.JavaDiffHelper") as JavaDiff;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaXStreamUtils extends JavaClass {}
-  export function getJavaXStreamUtils() {
-    return getType(
-      "org.suikasoft.XStreamPlus.XStreamUtils"
-    ) as JavaXStreamUtils;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaObject extends JavaClass {}
-  export function getJavaObject() {
-    return getType("java.lang.Object") as JavaObject;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaReplacerHelper extends JavaClass {}
-  export function getJavaReplacerHelper() {
-    return getType(
-      "pt.up.fe.specs.lara.util.ReplacerHelper"
-    ) as JavaReplacerHelper;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaCsvReader extends JavaClass {}
-  export function getJavaCsvReader() {
-    return getType("pt.up.fe.specs.util.csv.CsvReader") as JavaCsvReader;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaDataStore extends JavaClass {}
-  export function getJavaDataStore() {
-    return getType(
-      "org.suikasoft.jOptions.Interfaces.DataStore"
-    ) as JavaDataStore;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaJOptionsUtils extends JavaClass {}
-  export function getJavaJOptionsUtils() {
-    return getType("org.suikasoft.jOptions.JOptionsUtils") as JavaJOptionsUtils;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaWeaverEngine extends JavaClass {}
-  export function getJavaWeaverEngine() {
-    return getType(
-      "org.lara.interpreter.weaver.interf.WeaverEngine"
-    ) as JavaWeaverEngine;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaVerboseLevel extends JavaClass {}
-  export function getJavaVerboseLevel() {
-    return getType(
-      "org.lara.interpreter.joptions.config.interpreter"
-    ) as JavaVerboseLevel;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraiKeys extends JavaClass {}
-  export function getJavaLaraiKeys() {
-    return getType(
-      "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
-    ) as JavaLaraiKeys;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaFileList extends JavaClass {}
-  export function getJavaFileList() {
-    return getType(
-      "org.lara.interpreter.joptions.keys.FileList"
-    ) as JavaFileList;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaOptionalFile extends JavaClass {}
-  export function getJavaOptionalFile() {
-    return getType(
-      "org.lara.interpreter.joptions.keys.OptionalFile"
-    ) as JavaOptionalFile;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaLaraIUtils extends JavaClass {}
-  export function getJavaLaraIUtils() {
-    return getType("org.lara.interpreter.utils.LaraIUtils") as JavaLaraIUtils;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaWeaverLauncher extends JavaClass {}
-  export function getJavaWeaverLauncher() {
-    return getType("pt.up.fe.specs.lara.WeaverLauncher") as JavaWeaverLauncher;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface JavaArrayList extends JavaClass {}
-  export function getJavaArrayList() {
-    return getType("java.util.ArrayList") as JavaList;
-  }
+  /* eslint-disable @typescript-eslint/no-empty-interface */
+  export interface LaraI extends JavaClass {}
+  export interface LaraApiTools extends JavaClass {}
+  export interface LaraSystemTools extends JavaClass {}
+  export interface LaraCli extends JavaClass {}
+  export interface Uuid extends JavaClass {}
+  export interface Gprofer extends JavaClass {}
+  export interface JoinPoint extends JavaClass {}
+  export interface SpecsStrings extends JavaClass {}
+  export interface SpecsSystem extends JavaClass {}
+  export interface ApacheStrings extends JavaClass {}
+  export interface StringLines extends JavaClass {}
+  export interface LaraIo extends JavaClass {}
+  export interface SpecsIo extends JavaClass {}
+  export interface System extends JavaClass {}
+  export interface File extends JavaClass {}
+  export interface List extends JavaClass {}
+  export interface Collections extends JavaClass {}
+  export interface Diff extends JavaClass {}
+  export interface XStreamUtils extends JavaClass {}
+  export interface Object extends JavaClass {}
+  export interface ReplacerHelper extends JavaClass {}
+  export interface CsvReader extends JavaClass {}
+  export interface DataStore extends JavaClass {}
+  export interface JOptionsUtils extends JavaClass {}
+  export interface WeaverEngine extends JavaClass {}
+  export interface VerboseLevel extends JavaClass {}
+  export interface LaraiKeys extends JavaClass {}
+  export interface FileList extends JavaClass {}
+  export interface OptionalFile extends JavaClass {}
+  export interface LaraIUtils extends JavaClass {}
+  export interface WeaverLauncher extends JavaClass {}
+  export interface ArrayList extends JavaClass {}
+  /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
-export default JavaTypes;
+export default class JavaTypes {
+  static get LaraI() {
+    return getType("larai.LaraI") as JavaClasses.LaraI;
+  }
+
+  static get LaraApiTool() {
+    return getType(
+      "pt.up.fe.specs.lara.LaraApiTools"
+    ) as JavaClasses.LaraApiTools;
+  }
+
+  static get LaraSystemTools() {
+    return getType(
+      "pt.up.fe.specs.lara.LaraSystemTools"
+    ) as JavaClasses.LaraSystemTools;
+  }
+
+  static get LaraCli() {
+    return getType("org.lara.interpreter.cli.LaraCli") as JavaClasses.LaraCli;
+  }
+
+  static get Uuid() {
+    return getType("java.util.UUID") as JavaClasses.Uuid;
+  }
+
+  static get Gprofer() {
+    return getType("pt.up.fe.specs.gprofer.Gprofer") as JavaClasses.Gprofer;
+  }
+
+  static get JoinPoint() {
+    return getType(
+      "org.lara.interpreter.weaver.interf.JoinPoint"
+    ) as JavaClasses.JoinPoint;
+  }
+
+  static get SpecsStrings() {
+    return getType(
+      "pt.up.fe.specs.util.SpecsStrings"
+    ) as JavaClasses.SpecsStrings;
+  }
+
+  static get SpecsSystem() {
+    return getType(
+      "pt.up.fe.specs.util.SpecsSystem"
+    ) as JavaClasses.SpecsSystem;
+  }
+
+  static get ApacheStrings() {
+    return getType(
+      "pt.up.fe.specs.lang.ApacheStrings"
+    ) as JavaClasses.ApacheStrings;
+  }
+
+  static get StringLines() {
+    return getType(
+      "pt.up.fe.specs.util.utilities.StringLines"
+    ) as JavaClasses.StringLines;
+  }
+
+  static get LaraIo() {
+    return getType("org.lara.interpreter.api.LaraIo") as JavaClasses.LaraIo;
+  }
+
+  static get SpecsIo() {
+    return getType("pt.up.fe.specs.util.SpecsIo") as JavaClasses.SpecsIo;
+  }
+
+  static get System() {
+    return getType("java.lang.System") as JavaClasses.System;
+  }
+
+  static get File() {
+    return getType("java.io.File") as JavaClasses.File;
+  }
+
+  static get List() {
+    return getType("java.util.List") as JavaClasses.List;
+  }
+
+  static get Collections() {
+    return getType("java.util.Collections") as JavaClasses.Collections;
+  }
+
+  static get Diff() {
+    return getType(
+      "pt.up.fe.specs.lara.util.JavaDiffHelper"
+    ) as JavaClasses.Diff;
+  }
+
+  static get XStreamUtils() {
+    return getType(
+      "org.suikasoft.XStreamPlus.XStreamUtils"
+    ) as JavaClasses.XStreamUtils;
+  }
+
+  static get Object() {
+    return getType("java.lang.Object") as JavaClasses.Object;
+  }
+
+  static get ReplacerHelper() {
+    return getType(
+      "pt.up.fe.specs.lara.util.ReplacerHelper"
+    ) as JavaClasses.ReplacerHelper;
+  }
+
+  static get CsvReader() {
+    return getType(
+      "pt.up.fe.specs.util.csv.CsvReader"
+    ) as JavaClasses.CsvReader;
+  }
+
+  static get DataStore() {
+    return getType(
+      "org.suikasoft.jOptions.Interfaces.DataStore"
+    ) as JavaClasses.DataStore;
+  }
+
+  static get JOptionsUtils() {
+    return getType(
+      "org.suikasoft.jOptions.JOptionsUtils"
+    ) as JavaClasses.JOptionsUtils;
+  }
+
+  static get WeaverEngine() {
+    return getType(
+      "org.lara.interpreter.weaver.interf.WeaverEngine"
+    ) as JavaClasses.WeaverEngine;
+  }
+
+  static get VerboseLevel() {
+    return getType(
+      "org.lara.interpreter.joptions.config.interpreter"
+    ) as JavaClasses.VerboseLevel;
+  }
+
+  static get LaraiKeys() {
+    return getType(
+      "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
+    ) as JavaClasses.LaraiKeys;
+  }
+
+  static get FileList() {
+    return getType(
+      "org.lara.interpreter.joptions.keys.FileList"
+    ) as JavaClasses.FileList;
+  }
+
+  static get OptionalFile() {
+    return getType(
+      "org.lara.interpreter.joptions.keys.OptionalFile"
+    ) as JavaClasses.OptionalFile;
+  }
+
+  static get LaraIUtils() {
+    return getType(
+      "org.lara.interpreter.utils.LaraIUtils"
+    ) as JavaClasses.LaraIUtils;
+  }
+
+  static get WeaverLauncher() {
+    return getType(
+      "pt.up.fe.specs.lara.WeaverLauncher"
+    ) as JavaClasses.WeaverLauncher;
+  }
+
+  static get ArrayList() {
+    return getType("java.util.ArrayList") as JavaClasses.ArrayList;
+  }
+}

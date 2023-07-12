@@ -100,7 +100,7 @@ export default class Check {
     if (isOptional && $jp === undefined) {
       return;
     }
-    if (JavaTypes.getJavaJoinPoint()().isJoinPoint($jp)) {
+    if (JavaTypes.JoinPoint().isJoinPoint($jp)) {
       throw (
         "Expected variable to be of type join point, but it is of type '" +
         typeof $jp +
@@ -123,11 +123,11 @@ export default class Check {
    */
   static strings(currentString: string, expectedString: string) {
     // Normalize both strings
-    currentString = JavaTypes.getJavaSpecsStrings()().normalizeFileContents(
+    currentString = JavaTypes.SpecsStrings().normalizeFileContents(
       currentString.toString(),
       true
     );
-    expectedString = JavaTypes.getJavaSpecsStrings()().normalizeFileContents(
+    expectedString = JavaTypes.SpecsStrings().normalizeFileContents(
       expectedString.toString(),
       true
     );
@@ -145,10 +145,7 @@ export default class Check {
    * @param revised - The revised text
    */
   static diff(original: any, revised: any) {
-    return JavaTypes.getJavaDiff()().Diff(
-      original.toString(),
-      revised.toString()
-    );
+    return JavaTypes.Diff().Diff(original.toString(), revised.toString());
   }
 
   /**

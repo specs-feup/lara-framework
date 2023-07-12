@@ -1,4 +1,4 @@
-import JavaTypes from "../../lara/util/JavaTypes.js";
+import JavaTypes, { JavaClasses } from "../../lara/util/JavaTypes.js";
 import DataStore from "../../lara/util/DataStore.js";
 import Io from "../../lara/Io.js";
 import Weaver from "./Weaver.js";
@@ -9,7 +9,7 @@ import Weaver from "./Weaver.js";
 export default class WeaverDataStore extends DataStore {
   constructor(
     data: any = "LaraI Options",
-    definition: any = JavaTypes.getJavaLaraiKeys().STORE_DEFINITION
+    definition: any = JavaTypes.LaraiKeys.STORE_DEFINITION
   ) {
     super(data, definition);
   }
@@ -17,7 +17,7 @@ export default class WeaverDataStore extends DataStore {
   /**
    * Wraps a Java DataStore around a Lara DataStore.
    */
-  protected dataStoreWrapper(javaDataStore: JavaTypes.JavaDataStore) {
+  protected dataStoreWrapper(javaDataStore: JavaClasses.DataStore) {
     return new WeaverDataStore(javaDataStore, this.definition);
   }
 
@@ -36,7 +36,7 @@ export default class WeaverDataStore extends DataStore {
       throw "WeaverDataStore.setVerboseLevel: expected a number  between 0 and 3";
     }
 
-    this.put("verbose", JavaTypes.getJavaVerboseLevel().values()[verboseLevel]);
+    this.put("verbose", JavaTypes.VerboseLevel.values()[verboseLevel]);
   }
 
   /**
@@ -67,7 +67,7 @@ export default class WeaverDataStore extends DataStore {
    *
    */
   setSourceFolders(sourceFolders: any) {
-    const fileList = JavaTypes.getJavaFileList().newInstance(sourceFolders); // Change to JavaTypes
+    const fileList = JavaTypes.FileList.newInstance(sourceFolders); // Change to JavaTypes
     this.put("workspace", fileList);
   }
 
@@ -84,17 +84,17 @@ export default class WeaverDataStore extends DataStore {
    *
    */
   setIncludeFolders(includeFolders: any) {
-    const fileList = JavaTypes.getJavaFileList().newInstance(includeFolders);
+    const fileList = JavaTypes.FileList.newInstance(includeFolders);
     this.put("include", fileList);
   }
 
   setTools(toolsPath: any) {
-    var toolsFile = JavaTypes.getJavaOptionalFile().newInstance(toolsPath);
+    var toolsFile = JavaTypes.OptionalFile.newInstance(toolsPath);
     this.put("tools", toolsFile);
   }
 
   setLogFile(logPath: any) {
-    var logFile = JavaTypes.getJavaOptionalFile().newInstance(logPath);
+    var logFile = JavaTypes.OptionalFile.newInstance(logPath);
     this.put("log", logFile);
   }
 

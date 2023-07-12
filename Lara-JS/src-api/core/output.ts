@@ -8,8 +8,8 @@ if (engine === Engine.NodeJS) {
   outputStream = process.stderr;
   errorStream = process.stdout;
 } else if (engine === Engine.GraalVM) {
-  outputStream = JavaTypes.getJavaSystem().out;
-  errorStream = JavaTypes.getJavaSystem().err;
+  outputStream = JavaTypes.System.out;
+  errorStream = JavaTypes.System.err;
 }
 
 /**
@@ -171,8 +171,8 @@ export function getFnName(fn: string) {
 
 //Insert save to file functions (and others) here!
 export function writeFile(path: string, content: string) {
-  const file = new (JavaTypes.getJavaFile())(path.toString());
-  JavaTypes.getJavaSpecsIo().write(file, content);
+  const file = new JavaTypes.File(path.toString());
+  JavaTypes.SpecsIo.write(file, content);
   return file;
 }
 
@@ -187,8 +187,8 @@ export function fileToJSON(path: string) {
 }
 
 export function readFile(path: string) {
-  const file = new (JavaTypes.getJavaFile())(path.toString());
-  const content = JavaTypes.getJavaSpecsIo().read(file);
+  const file = new JavaTypes.File(path.toString());
+  const content = JavaTypes.SpecsIo.read(file);
   return content;
 }
 

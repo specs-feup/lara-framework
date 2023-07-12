@@ -45,7 +45,7 @@ export class Strings {
    * @returns String with escaped code
    */
   static escapeHtml(html: string) {
-    return JavaTypes.getJavaApacheStrings().escapeHtml(html);
+    return JavaTypes.ApacheStrings.escapeHtml(html);
   }
 
   /**
@@ -54,7 +54,7 @@ export class Strings {
    * @returns String with escaped code
    */
   static escapeJson(jsonContents: string): string {
-    return JavaTypes.getJavaSpecsStrings().escapeJson(jsonContents);
+    return JavaTypes.SpecsStrings.escapeJson(jsonContents);
   }
 
   /**
@@ -67,7 +67,7 @@ export class Strings {
     contents: string,
     errorOnUndefined = false
   ): string | undefined {
-    const lines = new (JavaTypes.getJavaStringLines())(contents);
+    const lines = new JavaTypes.StringLines(contents);
 
     while (lines.hasNextLine()) {
       const line = lines.nextLine().trim();
@@ -97,7 +97,7 @@ export class Strings {
       return undefined;
     }
 
-    return JavaTypes.getJavaStringLines().getLines(string.toString());
+    return JavaTypes.StringLines.getLines(string.toString());
   }
 
   /**
@@ -115,7 +115,7 @@ export class Strings {
    * Returns a random unique identifier.
    */
   static uuid(): string {
-    let uuid = JavaTypes.getJavaUuid()().randomUUID().toString();
+    let uuid = JavaTypes.Uuid().randomUUID().toString();
 
     // Regular expression and 'g' is needed to replace all occurences
     uuid = Strings.replacer(uuid, /-/g, "_");
@@ -128,10 +128,7 @@ export class Strings {
    * 2) Trims lines and removes empty lines
    */
   static normalize(string: string) {
-    return JavaTypes.getJavaSpecsStrings()().normalizeFileContents(
-      string,
-      true
-    );
+    return JavaTypes.SpecsStrings().normalizeFileContents(string, true);
   }
 
   /**
@@ -142,7 +139,7 @@ export class Strings {
    * @returns The XML representation of the object.
    */
   static toXml(object: object): string {
-    return JavaTypes.getJavaXStreamUtils()().toString(object);
+    return JavaTypes.XStreamUtils().toString(object);
   }
 
   /**
@@ -153,9 +150,6 @@ export class Strings {
    * @returns The deserialized object.
    */
   static fromXml(xmlString: string): object {
-    return JavaTypes.getJavaXStreamUtils()().from(
-      xmlString,
-      JavaTypes.getJavaObject().class
-    );
+    return JavaTypes.XStreamUtils().from(xmlString, JavaTypes.Object.class);
   }
 }

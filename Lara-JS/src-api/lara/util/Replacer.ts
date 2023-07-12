@@ -8,10 +8,10 @@ export default class Replacer {
   javaReplacer: any;
   constructor(contentsOrFile: any) {
     // If a file, read the contents
-    if (contentsOrFile instanceof JavaTypes.getJavaFile()) {
+    if (contentsOrFile instanceof JavaTypes.File) {
       contentsOrFile = Io.readFile(contentsOrFile);
     }
-    this.javaReplacer = new (JavaTypes.getJavaReplacerHelper())(contentsOrFile);
+    this.javaReplacer = new JavaTypes.ReplacerHelper(contentsOrFile);
   }
 
   static fromFilename(filename: string) {
