@@ -29,19 +29,6 @@ if ("Java" in globalThis) {
   })();`);
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-function getType(javaType: string): any {
-  switch (engine) {
-    case Engine.GraalVM:
-      const a = Java.type(javaType);
-      return a;
-
-    case Engine.NodeJS:
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return java.import(javaType);
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JavaClasses {
   export interface JavaClass {
@@ -87,6 +74,22 @@ export namespace JavaClasses {
 }
 
 export default class JavaTypes {
+  /**
+   * @beta Only for very exceptional cases. Should not be used directly, use the static methods instead.
+   *
+   * @param javaType - String with the name of the Java type to be imported into the javascript environment
+   * @returns A Java object
+   */
+  static getType(javaType: string): any {
+    switch (engine) {
+      case Engine.GraalVM:
+        return Java.type(javaType);
+      case Engine.NodeJS:
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        return java.import(javaType);
+    }
+  }
+
   static instanceOf(value: any, javaTypeName: string): boolean {
     switch (engine) {
       case Engine.GraalVM:
