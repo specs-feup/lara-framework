@@ -19,9 +19,10 @@ export default class Accumulator {
 
   add(...args: any[]): number {
     let currentAcc: Accumulator = this;
+    const argsParsed = this.parseArguments(args);
 
     // Travel chain of values
-    for (const chainElement of args) {
+    for (const chainElement of argsParsed) {
       let nextAcc: Accumulator | undefined = currentAcc.accs[chainElement];
 
       // If no accumulator, create

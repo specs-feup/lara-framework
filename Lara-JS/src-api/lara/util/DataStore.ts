@@ -1,3 +1,4 @@
+import { fileToJSON } from "../../core/output.js";
 import Io from "../Io.js";
 import { checkInstance, info } from "../core/LaraCore.js";
 import JavaTypes, { JavaClasses } from "./JavaTypes.js";
@@ -25,15 +26,12 @@ export default class DataStore {
       this.javaDataStoreInstance = new (this.getDataStoreClass())(dataStore);
     } else if (dataStore instanceof DataStore) {
       this.javaDataStoreInstance = dataStore.getData();
+    } else if (dataStore instanceof JavaTypes.getJavaDataStore()){
+      this.javaDataStoreInstance = dataStore;
     }
+    
     this.definition = definition;
 
-    checkInstance(
-      this.javaDataStoreInstance,
-      this.getDataStoreClass(),
-      "DataStore::data",
-      this.getDataStoreClass().getClass().getName()
-    ); // Change to instance of
 
     // If no definition as argument, try to get one from data
     if (this.definition === undefined) {
@@ -63,6 +61,7 @@ export default class DataStore {
    */
   get(key: string) {
     const processedKey = this.processKey(key, "get");
+
 
     const value = this.javaDataStoreInstance.get(processedKey);
 

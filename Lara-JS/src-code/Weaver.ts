@@ -28,7 +28,7 @@ export class Weaver {
   static #isSetup = false;
   static #javaWeaver: unknown;
 
-  static get isSetup() {
+  static isSetup() {
     return Weaver.#isSetup;
   }
 
