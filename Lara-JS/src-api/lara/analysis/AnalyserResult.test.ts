@@ -16,7 +16,7 @@ describe("AnalyserResult", () => {
     it("should return the node of the AnalyserResult", () => {
       const analyserResultTest = new AnalyserResult(
         "test",
-        "test",
+        "correct",
         "test",
         undefined
       );
