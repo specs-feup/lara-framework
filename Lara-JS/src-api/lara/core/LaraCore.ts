@@ -218,7 +218,7 @@ export function isJavaClass<T>(
   variable: T,
   javaClassname = "java.lang.Object"
 ): boolean {
-  return JavaTypes.getJavaSpecsSystem().isInstance(javaClassname, variable);
+  return JavaTypes.SpecsSystem.isInstance(javaClassname, variable);
 }
 
 /**
@@ -252,7 +252,7 @@ export function arrayFromArgs(args: any, start = 0) {
  * @deprecated Use the javascript `instanceof` operator instead
  */
 function isJavaList<T>(list: T) {
-  return list instanceof JavaTypes.getJavaList();
+  return list instanceof JavaTypes.List;
 }
 
 export function info(message: string, origin?: string): void {

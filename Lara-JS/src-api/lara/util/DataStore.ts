@@ -1,20 +1,20 @@
 import Io from "../Io.js";
 import { checkInstance, info } from "../core/LaraCore.js";
-import JavaTypes from "./JavaTypes.js";
+import JavaTypes, { JavaClasses } from "./JavaTypes.js";
 
 /**
  * Interface with Java class DataStore, used for storing arbitrary information.
  */
 
 export default class DataStore {
-  javaDataStoreInstance!: JavaTypes.JavaDataStore;
+  javaDataStoreInstance!: JavaClasses.DataStore;
   definition: any;
   checkKeys: boolean;
   allowedKeys: any;
   keyAliases: Record<string, string> = {};
 
   constructor(
-    dataStore?: JavaTypes.JavaDataStore | string | DataStore,
+    dataStore?: JavaClasses.DataStore | string | DataStore,
     definition?: any
   ) {
     if (dataStore === undefined) {
@@ -135,7 +135,7 @@ export default class DataStore {
   /**
    * Wraps a Java DataStore around a Lara DataStore.
    */
-  protected dataStoreWrapper(javaDataStore: JavaTypes.JavaDataStore) {
+  protected dataStoreWrapper(javaDataStore: JavaClasses.DataStore) {
     return new DataStore(javaDataStore, this.definition);
   }
 
@@ -143,14 +143,14 @@ export default class DataStore {
    * @returns the Java class of DataStore
    */
   private getDataStoreClass() {
-    return JavaTypes.getJavaDataStore();
+    return JavaTypes.DataStore;
   }
 
   /**
    * @returns the Java class with utility methods for DataStore
    */
   private getUtilityClass() {
-    return JavaTypes.getJavaJOptionsUtils();
+    return JavaTypes.JOptionsUtils;
   }
 
   /**
@@ -228,7 +228,7 @@ export default class DataStore {
    * @returns The folder of the configuration file, if one was used, or undefined otherwise.
    *
    */
-  getConfigurationFolder(): JavaTypes.JavaFile | undefined {
+  getConfigurationFolder(): JavaClasses.File | undefined {
     const currentFolder = this.javaDataStoreInstance.get(
       "joptions_current_folder_path"
     );
@@ -245,7 +245,7 @@ export default class DataStore {
    * @returns The configuration file, if one was used, or undefined otherwise.
    *
    */
-  getConfigurationFile(): JavaTypes.JavaFile | undefined {
+  getConfigurationFile(): JavaClasses.File | undefined {
     const configFile = this.javaDataStoreInstance.get("app_config");
 
     if (configFile === undefined) {
@@ -263,7 +263,7 @@ export default class DataStore {
    *
    * @returns The folder where the code represented by the AST will be written at the end of execution.
    */
-  getContextFolder(): JavaTypes.JavaFile {
+  getContextFolder(): JavaClasses.File {
     return this.getConfigurationFolder() ?? Io.getWorkingFolder();
   }
 }
