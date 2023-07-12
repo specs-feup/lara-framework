@@ -27,4 +27,11 @@ describe("Accumulator", () => {
       expect(acc.get("step1")).toBe(3);
     });
   });
+  describe("get", ()=>{
+    it("on empty should be 0", () =>{
+      const acc = new Accumulator;
+      expect(acc.get("step1")).toBe(0);
+    })
+  })
+
 });
