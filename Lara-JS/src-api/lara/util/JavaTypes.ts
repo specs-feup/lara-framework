@@ -217,7 +217,7 @@ export default class JavaTypes {
 
   static get VerboseLevel() {
     return getType(
-      "org.lara.interpreter.joptions.config.interpreter"
+      "org.lara.interpreter.joptions.config.interpreter.VerboseLevel"
     ) as JavaClasses.VerboseLevel;
   }
 
