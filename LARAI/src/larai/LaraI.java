@@ -13,6 +13,7 @@
 package larai;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -785,13 +786,19 @@ public class LaraI {
     // }
 
     private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
-        // return new GraalvmJsEngine();
-        if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory, nodeModulesFolder);
-            // return new NashornEngine(FORBIDDEN_CLASSES);
+
+        OutputStream engineOutputStream = null;
+        if (getOptions().isJavaScriptStream()) {
+            engineOutputStream = this.out.getOutStream();
         }
-        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory, nodeModulesFolder);
-        // return new NashornEngine();
+
+        Collection<Class<?>> engineForbiddenClasses = Collections.emptyList();
+        if (getOptions().isRestricMode()) {
+            engineForbiddenClasses = FORBIDDEN_CLASSES;
+        }
+
+
+        return engineType.newEngine(engineType, engineForbiddenClasses, engineWorkingDirectory, nodeModulesFolder, engineOutputStream);        
     }
 
     public DataStore getWeaverArgs() {
