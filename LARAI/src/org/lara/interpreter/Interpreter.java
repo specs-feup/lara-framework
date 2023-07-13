@@ -121,11 +121,6 @@ public class Interpreter {
             importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
             importProcessor.importAndInitialize();
         }
-
-        if (options.isJavaScriptStream()) { // AFTER it is initialized
-            setprintStream(out.getOutStream());
-        }
-
     }
 
     public JsEngine getEngine() {
@@ -1277,16 +1272,6 @@ public class Interpreter {
 
     public LaraIDataStore getOptions() {
         return options;
-    }
-
-    /**
-     * Change the print stream where the javascript output is going
-     */
-    private void setprintStream(PrintStream printStream) {
-
-        // Get function
-        var streamSetter = engine.eval("setPrintStream");
-        engine.call(streamSetter, printStream);
     }
 
     /**
