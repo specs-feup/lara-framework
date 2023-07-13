@@ -1,10 +1,9 @@
-import { JoinPoints } from "./JoinPointsBase.js";
-import Accumulator from "../../lara/util/Accumulator.js";
-import Weaver from "./Weaver.js";
-import { println } from "../../core/output.js";
-import TransversalType from "../../../src-code/TraversalType.js"
-import TraversalType from "../../../src-code/TraversalType.js";
-import JpFilter from "../../lara/util/JpFilter.js";
+import { JoinPoints } from "./util/JoinPointsBase.js";
+import Accumulator from "../lara/util/Accumulator.js";
+import Weaver from "./util/Weaver.js";
+import { println } from "../core/output.js";
+import TraversalType from "../../src-code/TraversalType.js"
+import JpFilter from "../lara/util/JpFilter.js";
 
 
 /**
@@ -23,7 +22,7 @@ export default class Selector {
     static _COUNTER = "_counter";
     static _STARTING_POINT = "_starting_point";
 
-    constructor($baseJp: any, inclusive: any) {
+    constructor($baseJp: any, inclusive?: any) {
 	    this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
 	    this._lastName = $baseJp === undefined ? undefined : Selector._STARTING_POINT;
         
