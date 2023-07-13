@@ -1,10 +1,10 @@
-import JavaTypes from "../../lara/util/JavaTypes.js";
-import { println } from "../../core/output.js";
-import Check from "../../lara/Check.js";
-import PrintOnce from "../../lara/util/PrintOnce.js";
-import { Strings } from "../../lara/Strings.js";
-import WeaverDataStore from "./WeaverDataStore.js";
-import JavaInterop from "../../lara/JavaInterop.js";
+import JavaTypes from "../lara/util/JavaTypes.js";
+import { println } from "../core/output.js";
+import Check from "../lara/Check.js";
+import PrintOnce from "../lara/util/PrintOnce.js";
+import { Strings } from "../lara/Strings.js";
+import WeaverDataStore from "./util/WeaverDataStore.js";
+import JavaInterop from "../lara/JavaInterop.js";
 
 /**
  * Contains utility methods related to the weaver.

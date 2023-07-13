@@ -1,8 +1,8 @@
-import { JoinPoints } from "./util/JoinPointsBase.js";
+import { JoinPoints } from "./JoinPointsBase.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import Weaver from "./util/Weaver.js";
+import Weaver from "./Weaver.js";
 import { println } from "../core/output.js";
-import TraversalType from "../../src-code/TraversalType.js"
+import TraversalType from "./TraversalType.js";
 import JpFilter from "../lara/util/JpFilter.js";
 
 
@@ -188,7 +188,7 @@ export default class Selector {
 	    }
 	
 	    const isCurrentJpsUndefined = this._$currentJps === undefined;
-	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
+	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root)] : this._$currentJps;
 	    this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
 
 	    // Each $jp is an object with the current chain
