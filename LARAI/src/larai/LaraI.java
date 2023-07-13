@@ -787,7 +787,7 @@ public class LaraI {
 
     private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
 
-        OutputStream engineOutputStream = null;
+        OutputStream engineOutputStream = System.out;
         if (getOptions().isJavaScriptStream()) {
             engineOutputStream = this.out.getOutStream();
         }
