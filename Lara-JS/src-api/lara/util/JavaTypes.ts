@@ -106,170 +106,180 @@ export default class JavaTypes {
   }
 
   static get LaraI() {
-    return getType("larai.LaraI") as JavaClasses.LaraI;
+    return JavaTypes.getType("larai.LaraI") as JavaClasses.LaraI;
   }
 
   static get LaraApiTool() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lara.LaraApiTools"
     ) as JavaClasses.LaraApiTools;
   }
 
   static get LaraSystemTools() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lara.LaraSystemTools"
     ) as JavaClasses.LaraSystemTools;
   }
 
   static get LaraCli() {
-    return getType("org.lara.interpreter.cli.LaraCli") as JavaClasses.LaraCli;
+    return JavaTypes.getType(
+      "org.lara.interpreter.cli.LaraCli"
+    ) as JavaClasses.LaraCli;
   }
 
   static get Uuid() {
-    return getType("java.util.UUID") as JavaClasses.Uuid;
+    return JavaTypes.getType("java.util.UUID") as JavaClasses.Uuid;
   }
 
   static get Gprofer() {
-    return getType("pt.up.fe.specs.gprofer.Gprofer") as JavaClasses.Gprofer;
+    return JavaTypes.getType(
+      "pt.up.fe.specs.gprofer.Gprofer"
+    ) as JavaClasses.Gprofer;
   }
 
   static get JoinPoint() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.weaver.interf.JoinPoint"
     ) as JavaClasses.JoinPoint;
   }
 
   static get SpecsStrings() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.util.SpecsStrings"
     ) as JavaClasses.SpecsStrings;
   }
 
   static get SpecsSystem() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.util.SpecsSystem"
     ) as JavaClasses.SpecsSystem;
   }
 
   static get ApacheStrings() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lang.ApacheStrings"
     ) as JavaClasses.ApacheStrings;
   }
 
   static get StringLines() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.util.utilities.StringLines"
     ) as JavaClasses.StringLines;
   }
 
   static get LaraIo() {
-    return getType("org.lara.interpreter.api.LaraIo") as JavaClasses.LaraIo;
+    return JavaTypes.getType(
+      "org.lara.interpreter.api.LaraIo"
+    ) as JavaClasses.LaraIo;
   }
 
   static get SpecsIo() {
-    return getType("pt.up.fe.specs.util.SpecsIo") as JavaClasses.SpecsIo;
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.SpecsIo"
+    ) as JavaClasses.SpecsIo;
   }
 
   static get System() {
-    return getType("java.lang.System") as JavaClasses.System;
+    return JavaTypes.getType("java.lang.System") as JavaClasses.System;
   }
 
   static get File() {
-    return getType("java.io.File") as JavaClasses.File;
+    return JavaTypes.getType("java.io.File") as JavaClasses.File;
   }
 
   static get List() {
-    return getType("java.util.List") as JavaClasses.List;
+    return JavaTypes.getType("java.util.List") as JavaClasses.List;
   }
 
   static get Collections() {
-    return getType("java.util.Collections") as JavaClasses.Collections;
+    return JavaTypes.getType(
+      "java.util.Collections"
+    ) as JavaClasses.Collections;
   }
 
   static get Diff() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lara.util.JavaDiffHelper"
     ) as JavaClasses.Diff;
   }
 
   static get XStreamUtils() {
-    return getType(
+    return JavaTypes.getType(
       "org.suikasoft.XStreamPlus.XStreamUtils"
     ) as JavaClasses.XStreamUtils;
   }
 
   static get Object() {
-    return getType("java.lang.Object") as JavaClasses.Object;
+    return JavaTypes.getType("java.lang.Object") as JavaClasses.Object;
   }
 
   static get ReplacerHelper() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lara.util.ReplacerHelper"
     ) as JavaClasses.ReplacerHelper;
   }
 
   static get CsvReader() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.util.csv.CsvReader"
     ) as JavaClasses.CsvReader;
   }
 
   static get DataStore() {
-    return getType(
+    return JavaTypes.getType(
       "org.suikasoft.jOptions.Interfaces.DataStore"
     ) as JavaClasses.DataStore;
   }
 
   static get JOptionsUtils() {
-    return getType(
+    return JavaTypes.getType(
       "org.suikasoft.jOptions.JOptionsUtils"
     ) as JavaClasses.JOptionsUtils;
   }
 
   static get WeaverEngine() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.weaver.interf.WeaverEngine"
     ) as JavaClasses.WeaverEngine;
   }
 
   static get VerboseLevel() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.joptions.config.interpreter.VerboseLevel"
     ) as JavaClasses.VerboseLevel;
   }
 
   static get LaraiKeys() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     ) as JavaClasses.LaraiKeys;
   }
 
   static get FileList() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.joptions.keys.FileList"
     ) as JavaClasses.FileList;
   }
 
   static get OptionalFile() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.joptions.keys.OptionalFile"
     ) as JavaClasses.OptionalFile;
   }
 
   static get LaraIUtils() {
-    return getType(
+    return JavaTypes.getType(
       "org.lara.interpreter.utils.LaraIUtils"
     ) as JavaClasses.LaraIUtils;
   }
 
   static get WeaverLauncher() {
-    return getType(
+    return JavaTypes.getType(
       "pt.up.fe.specs.lara.WeaverLauncher"
     ) as JavaClasses.WeaverLauncher;
   }
 
   static get ArrayList() {
-    return getType("java.util.ArrayList") as JavaClasses.ArrayList;
+    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.ArrayList;
   }
 }
