@@ -16,12 +16,7 @@ describe("PrintOnce", () => {
 
       console.log = originalConsoleLog;
 
-
-      console.log("AA")       // Just to test if console.log is back to normal remove it after
-      console.log("bb")
-
-
-      expect(logs).toEqual(["a", "b", "a"]);
+      expect(logs).toEqual(["a", "b"]);
     });
   });
 });
