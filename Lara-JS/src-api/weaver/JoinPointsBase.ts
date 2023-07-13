@@ -1,5 +1,5 @@
+import Check from "../lara/Check.js";
 import Weaver from "./Weaver.js";
-import Check from "../../lara/Check.js";
 
 /**
  * Object which provides low-level join point-related methods.

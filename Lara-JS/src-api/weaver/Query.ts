@@ -1,7 +1,8 @@
 import Selector from "./Selector.js";
 import {
     JoinPoints
- } from "./util/JoinPointsBase.js";
+ } from "./JoinPointsBase.js";
+
 
 
 
