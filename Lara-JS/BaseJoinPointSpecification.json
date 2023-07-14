@@ -1,0 +1,129 @@
+{
+	"root": "BaseJoinPoint",
+	"rootAlias": "BaseJoinPoint",
+	"children": [
+		{
+			"type": "joinpoint",
+			"name": "BaseJoinPoint",
+			"extends": ""		,
+			"children": [
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "actions"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "attributes"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "selects"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String",
+										"name": "dump"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "Object",
+										"name": "node"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "BaseJoinPoint",
+										"name": "self"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "BaseJoinPoint",
+										"name": "super"
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "BaseJoinPoint",
+										"name": "insert"
+									},
+									{
+										"type": "String",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "String",
+										"name": "code",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "BaseJoinPoint",
+										"name": "insert"
+									},
+									{
+										"type": "String",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "BaseJoinPoint",
+										"name": "joinpoint",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Void",
+										"name": "def"
+									},
+									{
+										"type": "String",
+										"name": "attribute",
+										"defaultValue": ""
+									},
+									{
+										"type": "Object",
+										"name": "value",
+										"defaultValue": ""
+									}]
+					}]
+		}]
+}

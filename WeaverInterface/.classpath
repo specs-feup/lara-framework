@@ -9,11 +9,12 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=WeaverInterface&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="src" path="/LanguageSpecification"/>
-	<classpathentry kind="src" path="/jOptions"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LaraUtils"/>
-	<classpathentry kind="src" path="/tdrcLibrary"/>
-	<classpathentry kind="src" path="/SpecsUtils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JsEngine"/>
+	<classpathentry kind="src" path="/SpecsUtils"/>
+	<classpathentry kind="src" path="/tdrcLibrary"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LaraUtils"/>
+	<classpathentry kind="src" path="/jOptions"/>
+	<classpathentry kind="src" path="/LanguageSpecification"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GsonPlus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
