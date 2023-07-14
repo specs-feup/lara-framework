@@ -1,10 +1,10 @@
 {
-	"root": "BaseJoinPoint",
-	"rootAlias": "BaseJoinPoint",
+	"root": "LaraJoinPoint",
+	"rootAlias": "LaraJoinPoint",
 	"children": [
 		{
 			"type": "joinpoint",
-			"name": "BaseJoinPoint",
+			"name": "LaraJoinPoint",
 			"extends": ""		,
 			"children": [
 					{
@@ -59,7 +59,7 @@
 						"type": "attribute",
 						"children": [
 									{
-										"type": "BaseJoinPoint",
+										"type": "LaraJoinPoint",
 										"name": "self"
 									}]
 					},
@@ -67,7 +67,7 @@
 						"type": "attribute",
 						"children": [
 									{
-										"type": "BaseJoinPoint",
+										"type": "LaraJoinPoint",
 										"name": "super"
 									}]
 					},
@@ -75,7 +75,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "BaseJoinPoint",
+										"type": "LaraJoinPoint",
 										"name": "insert"
 									},
 									{
@@ -93,7 +93,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "BaseJoinPoint",
+										"type": "LaraJoinPoint",
 										"name": "insert"
 									},
 									{
@@ -102,7 +102,7 @@
 										"defaultValue": ""
 									},
 									{
-										"type": "BaseJoinPoint",
+										"type": "LaraJoinPoint",
 										"name": "joinpoint",
 										"defaultValue": ""
 									}]

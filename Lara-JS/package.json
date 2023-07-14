@@ -33,7 +33,8 @@
     "docs:code": "typedoc src-code --name code --tsconfig src-code/tsconfig.json --entryPointStrategy Expand --json docs/code.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
     "docs:merge": "typedoc --entryPointStrategy Merge --includeVersion --out docs docs/api.json docs/code.json",
     "docs": "npm run docs:api && npm run docs:code && npm run docs:merge",
-    "java-dist": "node scripts/java-dist.js"
+    "java-dist": "node scripts/java-dist.js",
+    "build-interfaces": "npx lara-build-interfaces --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
   "repository": {
     "type": "git",
