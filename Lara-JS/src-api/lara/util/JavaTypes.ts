@@ -105,6 +105,10 @@ export default class JavaTypes {
     }
   }
 
+  static isJavaObject(value: any): boolean {
+    return JavaTypes.instanceOf(value, "java.lang.Object");
+  }
+
   static get LaraI() {
     return JavaTypes.getType("larai.LaraI") as JavaClasses.LaraI;
   }
