@@ -22,7 +22,7 @@ import java.io.File;
 
 import pt.up.fe.specs.util.SpecsIo;
 
-public class BaseJpJsonGeneratorLauncher {
+public class LaraJoinPointJsonGeneratorLauncher {
 
     public static void main(String[] args) {
         var jp = JoinPoint.JoinPointSpecification;
@@ -34,7 +34,7 @@ public class BaseJpJsonGeneratorLauncher {
         String json = node.toJson();
 
 
-        File jsonOutFile = new File("../Lara-JS/BaseJoinPointSpecification.json");
+        File jsonOutFile = new File("../Lara-JS/LaraJoinPointSpecification.json");
         SpecsIo.write(jsonOutFile, json);
         System.out.println(json);
     }
