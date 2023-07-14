@@ -12,6 +12,8 @@
  */
 package org.lara.interpreter.weaver.interf;
 
+import static java.util.stream.Collectors.joining;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +30,13 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.Parameter;
+import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -38,6 +46,30 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  * Abstract class used by the LARA interpreter to define a join point instance
  */
 public abstract class JoinPoint {
+
+    public static final JoinPointClass JoinPointSpecification = new JoinPointClass("BaseJoinPoint", null);
+
+    static {
+        JoinPointSpecification.add(Attribute.getActionsAttribute());
+        JoinPointSpecification.add(Attribute.getAttributesAttribute());
+        JoinPointSpecification.add(Attribute.getSelectsAttribute());
+        // JoinPointSpecification.add(new Attribute(null, "srcCode"));
+        JoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "dump"));
+        JoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "joinPointType"));
+        JoinPointSpecification.add(new Attribute(PrimitiveClasses.OBJECT, "node"));
+        JoinPointSpecification.add(new Attribute(new JPType(JoinPointSpecification), "self"));
+        JoinPointSpecification.add(new Attribute(new JPType(JoinPointSpecification), "super"));
+
+        JoinPointSpecification.add(new Action(new JPType(JoinPointSpecification), "insert", Arrays.asList(
+                new Parameter(PrimitiveClasses.STRING, "position"),
+                new Parameter(PrimitiveClasses.STRING, "code"))));
+        JoinPointSpecification.add(new Action(new JPType(JoinPointSpecification), "insert", Arrays.asList(
+                new Parameter(PrimitiveClasses.STRING, "position"),
+                new Parameter(new JPType(JoinPointSpecification), "joinpoint"))));
+        JoinPointSpecification.add(new Action(PrimitiveClasses.VOID, "def", Arrays.asList(
+                new Parameter(PrimitiveClasses.STRING, "attribute"),
+                new Parameter(PrimitiveClasses.OBJECT, "value"))));
+    }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
     static {
@@ -191,9 +223,11 @@ public abstract class JoinPoint {
      */
     protected void fillWithActions(List<String> actions) {
         // DEFAULT ACTIONS
-        actions.add("insert(String position, String code [, boolean farthestInsertion])");
-        actions.add("insert(String position, JoinPoint joinPoint [, boolean farthestInsertion])");
-        actions.add("def(String attribute, Object value)");
+        JoinPointSpecification.getActions().forEach(action -> {
+            actions.add(action.getName() + "("
+                    + action.getParameters().stream().map(param -> param.toString()).collect(joining(", ")) + ")");
+        });
+
     }
 
     /**
@@ -212,15 +246,9 @@ public abstract class JoinPoint {
      */
     protected void fillWithAttributes(List<String> attributes) {
         // DEFAULT ATTRIBUTES
-        // attributes.add("srcCode");
-        attributes.add("actions");
-        attributes.add("attributes");
-        attributes.add("dump");
-        attributes.add("joinPointType");
-        attributes.add("node");
-        attributes.add("selects");
-        attributes.add("self");
-        attributes.add("super");
+        JoinPointSpecification.getAttributes().forEach(attribute -> {
+            attributes.add(attribute.getName());
+        });
     }
 
     /**
