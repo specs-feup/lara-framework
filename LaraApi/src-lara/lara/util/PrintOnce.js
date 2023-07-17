@@ -1,10 +1,6 @@
 import { println } from "../../core/output.js";
-import StringSet from "./StringSet.js";
-/**
- * @class
- */
 export default class PrintOnce {
-    static messagesSet = new StringSet();
+    static messagesSet = new Set();
     static message(message) {
         if (message === undefined) {
             return;
