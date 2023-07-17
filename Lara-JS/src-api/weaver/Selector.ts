@@ -188,7 +188,7 @@ export default class Selector {
 	    }
 	
 	    const isCurrentJpsUndefined = this._$currentJps === undefined;
-	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root)] : this._$currentJps;
+	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
 	    this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
 
 	    // Each $jp is an object with the current chain

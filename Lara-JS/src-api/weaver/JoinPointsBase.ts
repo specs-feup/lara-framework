@@ -23,7 +23,7 @@ export class JoinPoints {
 	 * 
 	 * @return {$jp} the current root node of the AST
 	 */
-	static root(): any {
+	root(): any {
 		return Weaver.getWeaverEngine().getRootJp();
 	}
 
@@ -139,7 +139,7 @@ export class JoinPoints {
  	*/
 	_getNodes(searchFunction: Function, $jp: any, jpType: any) {
 		// TODO: This function can be optimized by using streaming
-	
+		
 
 		if (searchFunction === undefined) {
 			throw "Value searchFunction is undefined";
@@ -149,9 +149,14 @@ export class JoinPoints {
 			return [];
 		}
 
-		Check.isJoinPoint($jp);	
+		console.log("before");
+		//Check.isJoinPoint($jp);            Crashing needs fix	
+
+
 
 		const descendants = searchFunction($jp);
+
+		console.log("after");
 	
 		if(jpType === undefined) {
 			return descendants;

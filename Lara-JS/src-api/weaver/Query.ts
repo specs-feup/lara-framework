@@ -22,7 +22,7 @@ export default class Query {
     * @returns {$jp} the root node
     */
     static root() {
-        return JoinPoints.root();
+        return new JoinPoints().root();
     } 
 
     /**
