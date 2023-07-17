@@ -13,6 +13,7 @@
     "src-code",
     ".gitignore",
     "jest.config.json",
+    "LaraJoinPointSpecification.json",
     "LICENSE",
     "package.json",
     "README.md",
@@ -34,7 +35,7 @@
     "docs:merge": "typedoc --entryPointStrategy Merge --includeVersion --out docs docs/api.json docs/code.json",
     "docs": "npm run docs:api && npm run docs:code && npm run docs:merge",
     "java-dist": "node scripts/java-dist.js",
-    "build-interfaces": "npx lara-build-interfaces --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
+    "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
   "repository": {
     "type": "git",

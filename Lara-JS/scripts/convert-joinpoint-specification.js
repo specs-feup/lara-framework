@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-export function convertSpecification(input) {
+export function convertSpecification(input, baseJoinPointSpec = undefined) {
   let typeNameSet = new Set();
   let joinpointNameSet = new Set();
   let unorderedJoinpoints = [];
@@ -27,7 +27,11 @@ export function convertSpecification(input) {
     enums: convertEnums(enums),
   };
 
-  deduplicateJoinpoints(output.joinpoints);
+  if (baseJoinPointSpec !== undefined) {
+    output.joinpoints[0].extends = baseJoinPointSpec.joinpoints[0].name;
+  }
+
+  deduplicateJoinpoints(output.joinpoints, baseJoinPointSpec);
 
   return output;
 }
@@ -110,7 +114,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
     }
   });
 
-  const jpName = capitalizeFirstLetter(jp.name);
+  const jpName = interpretType(jp.name, joinpointNameSet, enumNameSet);
   return {
     name: jpName,
     originalName: jp.name,
@@ -244,7 +248,14 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
   }
 
   if (joinpointNameSet.has(typeString) || enumNameSet.has(typeString)) {
-    return capitalizeFirstLetter(typeString);
+    const jpType = capitalizeFirstLetter(typeString);
+
+    switch (jpType) {
+      case "Function":
+        return "FunctionJp";
+    }
+
+    return jpType;
   }
 
   switch (typeString) {
@@ -262,12 +273,17 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
   }
 }
 
-function deduplicateJoinpoints(joinpoints) {
+function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
   for (const joinpoint of joinpoints) {
     // Find the parent joinpoint
     let parentJoinpoint = joinpoints.find(
       (jp) => jp.name === joinpoint.extends
     );
+    if (parentJoinpoint === undefined && baseJoinPointSpec !== undefined) {
+      parentJoinpoint = baseJoinPointSpec.joinpoints.find(
+        (jp) => jp.name === joinpoint.extends
+      );
+    }
 
     while (parentJoinpoint) {
       for (const attributeIndex in joinpoint.attributes) {
