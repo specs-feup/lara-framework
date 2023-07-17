@@ -60,6 +60,7 @@ public enum LaraApiResource implements LaraResourceProvider {
 
     // Graphs
     GRAPHS("graphs/Graphs.mjs"),
+    GRAPH("graphs/Graph.mjs"),
     GRAPH_NODE("graphs/GraphNode.js"),
     GRAPH_EDGE("graphs/GraphEdge.js"),
     NODE_DATA("graphs/NodeData.js"),
