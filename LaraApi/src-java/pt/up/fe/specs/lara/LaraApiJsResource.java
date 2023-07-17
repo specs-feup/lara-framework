@@ -24,12 +24,37 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum LaraApiJsResource implements LaraResourceProvider {
 
+    LARAJOINPOINT_JS("LaraJoinPoint.js"),
     OUTPUT_JS("core/output.js"),
     CORE_JS("core.js"),
+    CHECK_JS("lara/Check.js"),
+    CSV_JS("lara/Csv.js"),
+    IO_JS("lara/Io.js"),
+    JAVAINTEROP_JS("lara/JavaInterop.js"),
+    STRINGS_JS("lara/Strings.js"),
+    ANALYSER_JS("lara/analysis/Analyser.js"),
+    ANALYSERRESULT_JS("lara/analysis/AnalyserResult.js"),
+    CHECKRESULT_JS("lara/analysis/CheckResult.js"),
+    CHECKER_JS("lara/analysis/Checker.js"),
+    FIX_JS("lara/analysis/Fix.js"),
     LARACORE_JS("lara/core/LaraCore.js"),
+    ABSTRACTCLASSERROR_JS("lara/util/AbstractClassError.js"),
+    ACCUMULATOR_JS("lara/util/Accumulator.js"),
+    DATASTORE_JS("lara/util/DataStore.js"),
+    IDGENERATOR_JS("lara/util/IdGenerator.js"),
     JAVATYPES_JS("lara/util/JavaTypes.js"),
+    JPFILTER_JS("lara/util/JpFilter.js"),
     PRINTONCE_JS("lara/util/PrintOnce.js"),
-    STRINGSET_JS("lara/util/StringSet.js");
+    REPLACER_JS("lara/util/Replacer.js"),
+    STRINGSET_JS("lara/util/StringSet.js"),
+    TIMEUNITS_JS("lara/util/TimeUnits.js"),
+    JOINPOINTSBASE_JS("weaver/JoinPointsBase.js"),
+    QUERY_JS("weaver/Query.js"),
+    SELECTOR_JS("weaver/Selector.js"),
+    TRAVERSALTYPE_JS("weaver/TraversalType.js"),
+    WEAVER_JS("weaver/Weaver.js"),
+    WEAVEROPTIONS_JS("weaver/WeaverOptions.js"),
+    WEAVERDATASTORE_JS("weaver/util/WeaverDataStore.js");
 
     private final String resource;
 
