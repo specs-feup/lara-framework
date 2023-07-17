@@ -100,7 +100,7 @@ export default class Check {
     if (isOptional && $jp === undefined) {
       return;
     }
-    if (JavaTypes.JoinPoint.isJoinPoint($jp)) {
+    if (!JavaTypes.JoinPoint.isJoinPoint($jp)) {
       throw (
         "Expected variable to be of type join point, but it is of type '" +
         typeof $jp +

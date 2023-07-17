@@ -1,4 +1,4 @@
-import { JoinPoints } from "./JoinPointsBase.js";
+import { JoinPointsBase } from "./JoinPointsBase.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import Weaver from "./Weaver.js";
 import { println } from "../core/output.js";
@@ -17,7 +17,6 @@ export default class Selector {
 
     _$currentJps: any;
     _lastName: any;
-    _joinPoints: any;
     _addBaseJp: any;
     static _COUNTER = "_counter";
     static _STARTING_POINT = "_starting_point";
@@ -25,8 +24,6 @@ export default class Selector {
     constructor($baseJp: any, inclusive?: any) {
 	    this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
 	    this._lastName = $baseJp === undefined ? undefined : Selector._STARTING_POINT;
-        
-        this._joinPoints = new JoinPoints();
 	    this._addBaseJp = inclusive === undefined ? false : inclusive;
 };
 
@@ -188,7 +185,7 @@ export default class Selector {
 	    }
 	
 	    const isCurrentJpsUndefined = this._$currentJps === undefined;
-	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(this._joinPoints.root())] : this._$currentJps;
+	    this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(JoinPointsBase.root())] : this._$currentJps;
 	    this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
 
 	    // Each $jp is an object with the current chain
@@ -196,7 +193,7 @@ export default class Selector {
 
 		    const $jp = $jpChain[this._lastName];
 
-		    const $allJps = selectFunction($jp, this._joinPoints, name);
+		    const $allJps = selectFunction($jp, JoinPointsBase, name);
 		
 		    this._addJps($newJps, $allJps, jpFilter, $jpChain, name);
 	    }

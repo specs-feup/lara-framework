@@ -5,25 +5,14 @@ import Weaver from "./Weaver.js";
  * Object which provides low-level join point-related methods.
  * @class
  */
-export class JoinPoints {
+export abstract class JoinPointsBase {
 
- //------ CHANGE ANY FOR JOINPOINT----------
-
-   /*
  
-	JoinPoints._INSTANCE = new JoinPoints();
-
-	JoinPoints.getInstance = function() {
-		return JoinPoints._INSTANCE;
-	}
-
-	*/
-
 	/**
 	 * 
 	 * @return {$jp} the current root node of the AST
 	 */
-	root(): any {
+	static root(): any {
 		return Weaver.getWeaverEngine().getRootJp();
 	}
 
@@ -33,7 +22,7 @@ export class JoinPoints {
  	* @param {node}
  	* @return {$jp} 
  	*/
-	toJoinPoint(node: unknown): any {
+	static toJoinPoint(node: unknown): any {
 		throw "JoinPoints.toJoinPoint: not implemented";
 	}
 
@@ -42,7 +31,7 @@ export class JoinPoints {
 	 * 
 	 * @return {$jp[]} all the children of the given node
 	 */
-	_all_children($jp: unknown): any {
+	static _all_children($jp: unknown): any {
 		throw "JoinPoints._all_children: not implemented";
 	}
 
@@ -51,7 +40,7 @@ export class JoinPoints {
 	 * 
 	 * @return {$jp[]} all the descendants of the given node
 	 */
-	_all_descendants($jp: unknown): any {
+	static _all_descendants($jp: unknown): any {
 		throw "JoinPoints._all_descendants: not implemented";
 	}
 
@@ -60,7 +49,7 @@ export class JoinPoints {
 	 * 
 	 * @return {$jp[]} all the nodes that are inside the scope of a given node
 	 */
-	_all_scope_nodes($jp: unknown): any{
+	static _all_scope_nodes($jp: unknown): any{
 		throw "JoinPoints._all_scope: not implemented";
 	}
 
@@ -69,12 +58,12 @@ export class JoinPoints {
 	 * 
 	 * @return {$jp[]} all the descendants of the given node, in post order
 	 */
-	_all_descendants_postorder($jp: unknown): any{
+	static _all_descendants_postorder($jp: unknown): any{
 		
 		const descendants = [];
 
-		for(const child of this._all_children($jp)) {
-			const result = this._all_descendants_postorder_helper($jp);
+		for(const child of JoinPointsBase._all_children($jp)) {
+			const result = JoinPointsBase._all_descendants_postorder_helper($jp);
 			for(const resultNode of result) {
 				descendants.push(resultNode);
 			}
@@ -84,12 +73,12 @@ export class JoinPoints {
 	}
 
 
-	_all_descendants_postorder_helper($jp: any): any {
+	static _all_descendants_postorder_helper($jp: any): any {
 	
 		const nodes = [];
 	
-		for(const child of this._all_children($jp)) {
-			const postorderDescendants = this._all_descendants_postorder_helper(child);
+		for(const child of JoinPointsBase._all_children($jp)) {
+			const postorderDescendants = JoinPointsBase._all_descendants_postorder_helper(child);
 			for(const result of postorderDescendants) {
 				nodes.push(result);
 			}
@@ -105,39 +94,39 @@ export class JoinPoints {
 	 * @return {$jp[]} the nodes inside the scope of the given node.
 	*/
 
-	scope($jp: any, jpType: any): any {
-		return this._getNodes(this._all_scope_nodes.bind(this), $jp, jpType);
+	static scope($jp: any, jpType: any): any {
+		return JoinPointsBase._getNodes(JoinPointsBase._all_scope_nodes, $jp, jpType);
 	}
 
 	/**
 	 * 
 	 * @return {$jp[]} the children of the given node, according to the AST
 	 */
-	children($jp: any, jpType: any): any {
-		return this._getNodes(this._all_children.bind(this), $jp, jpType);
+	static children($jp: any, jpType: any): any {
+		return JoinPointsBase._getNodes(JoinPointsBase._all_children, $jp, jpType);
 	}
 
 	/**
 	 * 
 	 * @return {$jp[]} the descendants of the given node, according to the AST, preorder traversal
 	 */
-	descendants($jp: any, jpType: any): any {
-		return this._getNodes(this._all_descendants.bind(this), $jp, jpType);
+	static descendants($jp: any, jpType: any): any {
+		return JoinPointsBase._getNodes(JoinPointsBase._all_descendants, $jp, jpType);
 	}
 
 	/**
 	 * 
 	 * @return {$jp[]} the descendants of the given node, according to the AST, postorder traversal
 	 */
-	descendantsPostorder($jp: any, jpType: any) {
-		return this._getNodes(this._all_descendants_postorder.bind(this), $jp, jpType);	
+	static descendantsPostorder($jp: any, jpType: any) {
+		return JoinPointsBase._getNodes(JoinPointsBase._all_descendants_postorder, $jp, jpType);	
 	}
 
 	/**
  	* 
  	* @return {$jp[]} the nodes related with the given node, according to the search function
  	*/
-	_getNodes(searchFunction: Function, $jp: any, jpType: any) {
+	static _getNodes(searchFunction: Function, $jp: any, jpType: any) {
 		// TODO: This function can be optimized by using streaming
 		
 
@@ -149,7 +138,7 @@ export class JoinPoints {
 			return [];
 		}
 
-		//Check.isJoinPoint($jp);            Crashing needs fix	
+		Check.isJoinPoint($jp); 
 
 
 		const descendants = searchFunction($jp);
@@ -158,12 +147,12 @@ export class JoinPoints {
 			return descendants;
 		}	
 
-		return this._filterNodes(descendants, jpType);
+		return JoinPointsBase._filterNodes(descendants, jpType);
 	}
 
 
 
-	_filterNodes($jps: any, jpType: any) {
+	static _filterNodes($jps: any, jpType: any) {
 
 		const filteredJps = [];
 

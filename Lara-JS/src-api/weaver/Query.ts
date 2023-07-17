@@ -1,6 +1,6 @@
 import Selector from "./Selector.js";
 import {
-    JoinPoints
+    JoinPointsBase
  } from "./JoinPointsBase.js";
 
 
@@ -22,7 +22,7 @@ export default class Query {
     * @returns {$jp} the root node
     */
     static root() {
-        return new JoinPoints().root();
+        return JoinPointsBase.root();
     } 
 
     /**
