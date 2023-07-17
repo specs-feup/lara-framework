@@ -25,7 +25,7 @@ import pt.up.fe.specs.util.SpecsIo;
 public class LaraJoinPointJsonGeneratorLauncher {
 
     public static void main(String[] args) {
-        var jp = JoinPoint.JoinPointSpecification;
+        var jp = JoinPoint.LaraJoinPointSpecification;
         var langSpec = new LanguageSpecificationV2(jp, null);
         langSpec.setGlobal(jp);
         jp.setLangSpec(langSpec);

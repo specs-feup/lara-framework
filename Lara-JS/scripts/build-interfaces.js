@@ -1,21 +1,43 @@
 #!/usr/bin/env node
 
-import { readFileSync } from "fs";
+import fs from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import fs from "fs";
-import {
-  convertSpecification,
-  capitalizeFirstLetter,
-} from "./convert-joinpoint-specification.js";
+import { convertSpecification } from "./convert-joinpoint-specification.js";
 
-function buildInterfaces(inputFileName, outputFileName) {
+import { generateJoinpoints, generateEnums } from "./generate-ts-joinpoints.js";
+
+async function buildInterfaces(
+  inputFileName,
+  laraJoinPointSpecificationImportPath,
+  outputFileName
+) {
   console.log("Hello from build-interfaces.js");
   console.log("inputFile:", inputFileName);
+  console.log(
+    "LaraJoinPointSpecificationFile: ",
+    laraJoinPointSpecificationImportPath
+  );
   console.log("outputFile:", outputFileName);
 
-  const jsonSpecification = readFileSync(inputFileName, "utf8");
-  const specification = convertSpecification(JSON.parse(jsonSpecification));
+  const { default: laraJsonSpecification } = await import(
+    laraJoinPointSpecificationImportPath,
+    {
+      assert: {
+        type: "json",
+      },
+    }
+  );
+  const jsonSpecification = fs.readFileSync(inputFileName, "utf8");
+
+  const laraSpecification = convertSpecification(
+    laraJsonSpecification,
+    undefined
+  );
+  const specification = convertSpecification(
+    JSON.parse(jsonSpecification),
+    laraSpecification
+  );
 
   // Create output file if it doesn't exist
   const outputFile = fs.openSync(outputFileName, "w");
@@ -32,7 +54,12 @@ function buildInterfaces(inputFileName, outputFileName) {
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import JavaTypes from "lara-js/api/lara/util/JavaTypes.js";\n\n`
+import {
+  LaraJoinPoint,
+  type JoinpointMapperType,
+  registerJoinpointMapper,
+  wrapJoinPoint,
+} from "lara-js/api/LaraJoinPoint.js";\n\n`
   );
 
   generateJoinpoints(specification.joinpoints, outputFile);
@@ -43,106 +70,8 @@ import JavaTypes from "lara-js/api/lara/util/JavaTypes.js";\n\n`
   fs.closeSync(outputFile);
 }
 
-function generateJoinpoints(joinpoints, outputFile) {
-  for (const jp of joinpoints) {
-    generateJoinpoint(jp, outputFile);
-  }
-}
-
-function generateJoinpoint(jp, outputFile) {
-  fs.writeSync(
-    outputFile,
-    `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
-      jp.extends ? ` extends ${jp.extends}` : ""
-    } {\n`
-  );
-  if (jp.name === "Joinpoint") {
-    fs.writeSync(
-      outputFile,
-      `  _javaObject!: any;
-  constructor(obj: any) {
-    this._javaObject = obj;
-  }\n`
-    );
-  }
-
-  for (const attribute of jp.attributes) {
-    generateJoinpointAttribute(attribute, outputFile);
-  }
-
-  // TODO: remove this set as it is here because I can't deal with method overloading
-  let actionNameSet = new Set();
-  for (const action of jp.actions) {
-    if (!actionNameSet.has(action.name)) {
-      generateJoinpointAction(action, outputFile);
-      actionNameSet.add(action.name);
-    }
-  }
-
-  fs.writeSync(outputFile, `}\n\n`);
-}
-
-function generateDocumentation(tooltip) {
-  if (!tooltip) {
-    return "";
-  }
-  return `  /**\n   * ${tooltip.split("\n").join("\n   * ")}\n   */\n`;
-}
-
-function generateJoinpointAttribute(attribute, outputFile) {
-  fs.writeSync(
-    outputFile,
-    `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
-      attribute.type
-    } { return ${
-      "wrapJoinPoint(this._javaObject.get" +
-      capitalizeFirstLetter(attribute.name)
-    })() }\n`
-  );
-}
-
-function generateJoinpointAction(action, outputFile) {
-  const parameters = action.parameters
-    .map((parameter) => {
-      return `${parameter.name}: ${parameter.type}`;
-    })
-    .join(", ");
-
-  const callParameters = action.parameters
-    .map((parameter) => {
-      return parameter.name;
-    })
-    .join(", ");
-
-  fs.writeSync(
-    outputFile,
-    `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
-      action.returnType
-    } { return wrapJoinPoint(this._javaObject.${
-      action.name
-    }(${callParameters})); }\n`
-  );
-}
-
-function generateEnums(enums, outputFile) {
-  for (const e of enums) {
-    generateEnum(e, outputFile);
-  }
-}
-
-function generateEnum(e, outputFile) {
-  fs.writeSync(outputFile, `export enum ${e.name} {\n`);
-  e.entries.forEach((entry) => {
-    fs.writeSync(outputFile, `  ${entry},\n`);
-  });
-  fs.writeSync(outputFile, `}\n\n`);
-}
-
 function generateJoinpointWrapper(joinpoints, outputFile) {
-  fs.writeSync(
-    outputFile,
-    `const JoinpointMapper: { [key: string]: typeof Joinpoint } = {\n`
-  );
+  fs.writeSync(outputFile, `const JoinpointMapper: JoinpointMapperType = {\n`);
   for (const jp of joinpoints) {
     fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);
   }
@@ -150,48 +79,10 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
 
   fs.writeSync(
     outputFile,
-    `\nexport function wrapJoinPoint(obj: any): any {
-  if (obj === undefined) {
-    return obj;
-  }
-
-  if (obj instanceof Joinpoint) {
-    return obj;
-  }
-
-  if (typeof obj !== "object") {
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(wrapJoinPoint);
-  }
-
-  if (!JavaTypes.isJavaObject(obj)) {
-    console.log("Given Java join point is not a Java class: " + typeof obj);
-    return obj;
-  }
-
-  const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
-  if (!isJavaJoinPoint) {
-    throw new Error(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      \`Given Java join point is a Java class but is not a JoinPoint: \${obj.getClass()}\`
-    );
-  }
-
-  return new JoinpointMapper[obj.getType() as string](obj);
-}\n`
-  );
-
-  fs.writeSync(
-    outputFile,
-    `\nexport function unwrapJoinPoint(obj: any): any {
-  if (obj instanceof Joinpoint) {
-    return obj._javaObject;
-  }
-
-  return obj;
+    `\nlet registered = false;
+if (!registered) {
+  registerJoinpointMapper(JoinpointMapper);
+  registered = true;
 }\n`
   );
 }
@@ -201,6 +92,11 @@ const args = yargs(hideBin(process.argv))
   .option("i", {
     alias: "input",
     describe: "Path to JSON config file",
+    type: "string",
+  })
+  .option("l", {
+    alias: "lara",
+    describe: "Path to JSON config file that describes LaraJoinPoint",
     type: "string",
   })
   .option("o", {
@@ -213,4 +109,4 @@ const args = yargs(hideBin(process.argv))
   .strict()
   .parse();
 
-buildInterfaces(args.input, args.output);
+await buildInterfaces(args.input, args.lara, args.output);

@@ -79,7 +79,7 @@
 										"name": "insert"
 									},
 									{
-										"type": "String",
+										"type": "[before| after| replace]",
 										"name": "position",
 										"defaultValue": ""
 									},
@@ -97,7 +97,7 @@
 										"name": "insert"
 									},
 									{
-										"type": "String",
+										"type": "[before| after| replace]",
 										"name": "position",
 										"defaultValue": ""
 									},
