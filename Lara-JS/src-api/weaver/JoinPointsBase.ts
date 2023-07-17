@@ -149,14 +149,10 @@ export class JoinPoints {
 			return [];
 		}
 
-		console.log("before");
 		//Check.isJoinPoint($jp);            Crashing needs fix	
 
 
-
 		const descendants = searchFunction($jp);
-
-		console.log("after");
 	
 		if(jpType === undefined) {
 			return descendants;
