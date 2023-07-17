@@ -26,7 +26,7 @@ aspectdef CheckpointTest
 	checkedObject.aNumber = 20;
 	
 	// Set a minum interval of 1 second
-	checkpoint.setInterval(1, "SECONDS");
+	checkpoint.setInterval(1, TimerUnit.SECONDS);
 	
 	// Save immediatly, there should be no changes due to the interval
 	checkpoint.save();
