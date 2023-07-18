@@ -9,7 +9,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import JavaTypes from "lara-js/src-api/lara/util/JavaTypes.js";
+import JavaTypes from "./lara/util/JavaTypes.js";
 
 export class LaraJoinPoint {
   _javaObject!: any;
@@ -31,7 +31,7 @@ export class LaraJoinPoint {
 
 export type JoinpointMapperType = { [key: string]: typeof LaraJoinPoint };
 
-let JoinpointMappers: JoinpointMapperType[];
+const JoinpointMappers: JoinpointMapperType[] = [];
 
 export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
   JoinpointMappers.push(mapper);
@@ -73,7 +73,7 @@ export function wrapJoinPoint(obj: any): any {
     }
   }
   throw new Error(
-    "No mapper found for join point type: " + (obj.getType() as string)
+    "No mapper found for join point type: " + (obj.getJoinPointType() as string)
   );
 }
 

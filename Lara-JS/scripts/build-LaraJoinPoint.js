@@ -30,7 +30,7 @@ function buildLaraJoinPoint(inputFileName, outputFileName) {
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import JavaTypes from "lara-js/src-api/lara/util/JavaTypes.js";\n\n`
+import JavaTypes from "./lara/util/JavaTypes.js";\n\n`
   );
 
   generateJoinpoints(specification.joinpoints, outputFile);
@@ -45,7 +45,7 @@ function generateJoinpointWrapper(joinpoints, outputFile) {
   fs.writeSync(
     outputFile,
     `\nexport type JoinpointMapperType = { [key: string]: typeof LaraJoinPoint };\n
-let JoinpointMappers: JoinpointMapperType[];\n`
+const JoinpointMappers: JoinpointMapperType[] = [];\n`
   );
 
   fs.writeSync(
@@ -93,7 +93,7 @@ let JoinpointMappers: JoinpointMapperType[];\n`
     }
   }
   throw new Error(
-    "No mapper found for join point type: " + (obj.getType() as string)
+    "No mapper found for join point type: " + (obj.getJoinPointType() as string)
   );
 }\n`
   );
