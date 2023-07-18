@@ -8,10 +8,10 @@ class Graph {
 
 	/**
 	 * Creates a new instance of the Graph class
-	 * @param {Object} [config = {}] configuration for the graph, according to what Cytoscape accepts as configuration object
+	 * @param graph a Cytoscape graph
 	 */
-	constructor(config) {
-		this.graph = Graphs.newGraph(config);
+	constructor(graph) {
+		this.graph = graph;
 	}
 
 	/**
