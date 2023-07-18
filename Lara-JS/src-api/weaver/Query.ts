@@ -1,6 +1,6 @@
-import Selector, { type SelectorFilter } from "./Selector.js";
-import { JoinPointsBase } from "./JoinPointsBase.js";
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import { JoinPointsBase } from "./JoinPointsBase.js";
+import Selector, { type SelectorFilter } from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 
 /**

@@ -1,5 +1,5 @@
-import Selector from "./Selector.js";
 import { JoinPointsBase } from "./JoinPointsBase.js";
+import Selector from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 /**
  * Class for selection of join points. Provides an API similar to the keyword 'select'.

@@ -1,5 +1,5 @@
-import JavaTypes from "./JavaTypes.js";
 import java from "java";
+import JavaTypes from "./JavaTypes.js";
 
 describe("JavaTypes", () => {
   beforeAll(() => {

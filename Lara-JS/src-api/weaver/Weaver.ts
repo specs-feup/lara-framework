@@ -1,9 +1,9 @@
+import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
+import JavaInterop from "../lara/JavaInterop.js";
+import { Strings } from "../lara/Strings.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
-import { Strings } from "../lara/Strings.js";
 import WeaverDataStore from "./util/WeaverDataStore.js";
-import JavaInterop from "../lara/JavaInterop.js";
-import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
 
 /**
  * Contains utility methods related to the weaver.

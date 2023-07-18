@@ -1,6 +1,6 @@
-import JavaTypes from "./util/JavaTypes.js";
-import * as LaraCore from "./core/LaraCore.js";
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import * as LaraCore from "./core/LaraCore.js";
+import JavaTypes from "./util/JavaTypes.js";
 
 /**
  * Utility methods to check preconditions.

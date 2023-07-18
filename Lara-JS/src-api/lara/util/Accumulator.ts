@@ -1,5 +1,3 @@
-import { checkTrue, toArray } from "../core/LaraCore.js";
-
 /**
  * Counts occurrences of tuples.
  */

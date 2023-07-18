@@ -1,6 +1,6 @@
-import WeaverDataStore from "./util/WeaverDataStore.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import Weaver from "./Weaver.js";
+import WeaverDataStore from "./util/WeaverDataStore.js";
 /**
  * Contains configuration-related methods of the weaver.
  */

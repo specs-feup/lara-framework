@@ -1,8 +1,8 @@
-import { JoinPointsBase } from "./JoinPointsBase.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import Weaver from "./Weaver.js";
-import TraversalType from "./TraversalType.js";
 import JpFilter from "../lara/util/JpFilter.js";
+import { JoinPointsBase } from "./JoinPointsBase.js";
+import TraversalType from "./TraversalType.js";
+import Weaver from "./Weaver.js";
 /**
  * Selects join points according to their type and filter rules.
  *
@@ -89,7 +89,7 @@ export default class Selector {
                     return JoinPointsBase.descendantsPostorder($jp, name);
                 });
             default:
-                throw new Error("Traversal type not implemented: " + traversal);
+                throw new Error(`Traversal type not implemented: ${traversal.toString()}`);
         }
     }
     /**

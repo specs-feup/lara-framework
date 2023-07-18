@@ -1,9 +1,9 @@
-import { JoinPointsBase } from "./JoinPointsBase.js";
-import Accumulator from "../lara/util/Accumulator.js";
-import Weaver from "./Weaver.js";
-import TraversalType from "./TraversalType.js";
-import JpFilter from "../lara/util/JpFilter.js";
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import Accumulator from "../lara/util/Accumulator.js";
+import JpFilter from "../lara/util/JpFilter.js";
+import { JoinPointsBase } from "./JoinPointsBase.js";
+import TraversalType from "./TraversalType.js";
+import Weaver from "./Weaver.js";
 
 interface SelectorChain {
   counter: Accumulator;
@@ -137,7 +137,9 @@ export default class Selector {
           }
         );
       default:
-        throw new Error("Traversal type not implemented: " + traversal);
+        throw new Error(
+          `Traversal type not implemented: ${traversal.toString()}`
+        );
     }
   }
 

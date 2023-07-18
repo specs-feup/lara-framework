@@ -1,6 +1,6 @@
-import JavaTypes from "./util/JavaTypes.js";
-import { checkDefined, isArray, isJavaClass, checkTrue, } from "./core/LaraCore.js";
 import { JSONtoFile, fileToJSON } from "../core/output.js";
+import { checkDefined, checkTrue, isArray, isJavaClass, } from "./core/LaraCore.js";
+import JavaTypes from "./util/JavaTypes.js";
 /**
  * Utility methods related with input/output operations on files.
  */
