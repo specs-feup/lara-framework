@@ -20,12 +20,12 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build": "tsc -b src-api src-code",
-    "build:api": "tsc -b src-api",
-    "build:code": "tsc -b src-code",
+    "build": "npx tsc -b src-api src-code",
+    "build:api": "npx tsc -b src-api",
+    "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --forceExit",
     "test:api": "npm run test -- src-api",
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
