@@ -1,76 +1,49 @@
-import JavaTypes, { engine, Engine } from "../lara/util/JavaTypes.js";
-// Node.JS
-export let outputStream;
-export let errorStream;
-if (engine === Engine.NodeJS) {
-  outputStream = process.stderr;
-  errorStream = process.stdout;
-} else if (engine === Engine.GraalVM) {
-  outputStream = JavaTypes.System.out;
-  errorStream = JavaTypes.System.err;
+import JavaTypes from "../lara/util/JavaTypes.js";
+/**
+ * Prints a message to the standard output.
+ *
+ * @deprecated Use console.log instead
+ */
+export function print(message) {
+  console.log(message);
 }
 /**
- * This is a core file that is loaded when setting up the LARA environment,
- * and this function needs to be available so that LARA can setup the
- * streams if necessary.
+ * Prints a message to the standard output.
  *
- * For instance, this is used when enabling the option to write the output
- * of JS to a file (this option is widely used on the tests on the Java side).
- *
- * @param stream -
- *
+ * @deprecated Use console.log instead
  */
-export function setPrintStream(stream) {
-  // TODO: debug-level message saying that the printstream is being set
-  outputStream = stream;
-  errorStream = stream;
-}
-export function printTo(message, stream) {
-  if (message === null || message === undefined) {
-    stream.print(message);
-  } else {
-    stream.print(message.toString());
-  }
-}
-export function printToln(message = "undefined", stream) {
-  stream.println(message.toString());
-}
-export function print(message) {
-  if (!message) {
-    return;
-  }
-  printTo(message, outputStream);
-}
-//Print a message and ends it with a new line
 export function println(message) {
-  if (message === undefined) {
-    outputStream.println();
-    return;
-  }
-  printToln(message, outputStream);
+  console.log(message);
 }
-//Print an error message
+/**
+ * Prints a message to the standard error.
+ *
+ * @deprecated Use console.error instead
+ */
 export function error(message) {
-  if (!message) {
-    return;
-  }
-  printTo(message, errorStream);
+  console.error(message);
 }
-//Print an error message and ends it with a new line
+/**
+ * Prints a message to the standard error.
+ *
+ * @deprecated Use console.error instead
+ */
 export function errorln(message) {
-  if (!message) {
-    errorStream.println();
-    return;
-  }
-  printToln(message, errorStream);
+  console.error(message);
 }
 export const INDENT_CHAR = "   ";
 export const JAVA_OBJECT_ANNOTATION = "[@Java Object] ";
+/**
+ * @deprecated Use object2string() with console.log() instead
+ */
 export function printObject(obj, space) {
-  print(object2string(obj, space));
+  console.log(object2string(obj, space));
 }
+/**
+ * @deprecated Use object2string() with console.log() instead
+ */
 export function printlnObject(obj, space) {
-  println(object2string(obj, space));
+  console.log(object2string(obj, space));
 }
 export function object2string(obj, space = "", ommitFunctions = false) {
   if (obj === null) {
@@ -81,7 +54,6 @@ export function object2string(obj, space = "", ommitFunctions = false) {
   if (type === "object") {
     // @ts-ignore
     if (Java.isJavaObject(obj)) {
-      //			print(space+obj.toString());
       return space + JAVA_OBJECT_ANNOTATION + obj.toString();
     } else if (Array.isArray(obj)) {
       let ar = space + "[\n";
@@ -125,10 +97,13 @@ export function object2string(obj, space = "", ommitFunctions = false) {
     return space + obj;
   }
 }
+/**
+ * @deprecated Use the regular object2string() instead
+ */
 export function object2stringSimple(obj, space = "") {
   object2string(obj, space, true);
 }
-export function getFnParamNames(fn) {
+function getFnParamNames(fn) {
   const fstr = fn.toString();
   const match = fstr.match(/\(.*?\)/);
   if (match === null) {
@@ -136,7 +111,7 @@ export function getFnParamNames(fn) {
   }
   return match[0].replace(/[()]/gi, "").replace(/\s/gi, "").split(",");
 }
-export function getFnName(fn) {
+function getFnName(fn) {
   const fstr = fn.toString();
   const match = fstr.match(/function (.*)\)/);
   if (match === null) {
@@ -163,56 +138,4 @@ export function readFile(path) {
   const content = JavaTypes.SpecsIo.read(file);
   return content;
 }
-// TODO: In order for console.log() to also log to .txt files this needs to be implemented
-/**
- * Implementation of console.log according to Mozilla: https://developer.mozilla.org/en-US/docs/Web/API/Console/log
- */
-/*
-console.log = function () {
-  lara_console_helper(outputStream, ...arguments);
-};
-
-console.err = function () {
-  lara_console_helper(errorStream, ...arguments);
-};
-*/
-/**
- * Implementation of console.log according to Mozilla: https://developer.mozilla.org/en-US/docs/Web/API/Console/log
- */
-/*
-let lara_console_helper = function (stream : any) {
-  const args = arrayFromArgs(arguments, 1);
-
-  // Return if no args
-  if (args.length === 0) {
-    return;
-  }
-
-  // When there is only one argument
-  var msg = args[0];
-  if (args.length === 1) {
-    printToStream(stream, msg.toString());
-    return;
-  }
-
-  // If first argument is a string, interpret remaining args as substitution strings
-  if (typeof msg === "string" || msg instanceof String) {
-    var subst = [];
-    for (var i = 1; i < args.length; i++) {
-      subst.push(args[i]);
-    }
-
-    printfToStream(stream, msg.toString(), subst);
-
-    return;
-  }
-
-  // Concatenate all arguments
-  for (var i = 1; i < args.length; i++) {
-    msg = msg + args[i].toString();
-  }
-
-  printToStream(stream, msg);
-};
-*/
 //# sourceMappingURL=output.js.map

@@ -8,7 +8,7 @@ import Weaver from "../Weaver.js";
  */
 export default class WeaverDataStore extends DataStore {
   constructor(
-    data: any = "LaraI Options",
+    data: string | DataStore | JavaClasses.DataStore = "LaraI Options",
     definition: any = JavaTypes.LaraiKeys.STORE_DEFINITION
   ) {
     super(data, definition);

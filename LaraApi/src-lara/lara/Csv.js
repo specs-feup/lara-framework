@@ -1,6 +1,5 @@
 import Io from "./Io.js";
 import JavaTypes from "./util/JavaTypes.js";
-import { println } from "../core/output.js";
 /**
  * Methods related with the CSV format.
  */
@@ -45,7 +44,7 @@ export default class Csv {
             const values = csvReader.next();
             // Check line has the same number of elements as headerList
             if (values.length !== csvData.header.length) {
-                println("Csv.parse: number of elements mismatch, header has " +
+                console.log("Csv.parse: number of elements mismatch, header has " +
                     csvData.header.length +
                     "elements, line " +
                     lineCounter +

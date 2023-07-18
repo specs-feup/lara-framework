@@ -1,94 +1,93 @@
 import { JoinPointsBase } from "./JoinPointsBase.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import Weaver from "./Weaver.js";
-import { println } from "../core/output.js";
 import TraversalType from "./TraversalType.js";
 import JpFilter from "../lara/util/JpFilter.js";
 /**
  * Selects join points according to their type and filter rules.
  *
- * @param {$jp} [$baseJp = undefined] - starting join point for the search.
- * @param {boolean} [inclusive = false] - if true, $baseJp is included in the search.
+ * @param $baseJp - starting join point for the search.
+ * @param inclusive - if true, $baseJp is included in the search.
  *
  */
 export default class Selector {
-    _$currentJps;
-    _lastName;
-    _addBaseJp;
-    static _COUNTER = "_counter";
-    static _STARTING_POINT = "_starting_point";
-    constructor($baseJp, inclusive) {
-        this._$currentJps = $baseJp === undefined ? undefined : [Selector._newJpChain($baseJp)];
-        this._lastName = $baseJp === undefined ? undefined : Selector._STARTING_POINT;
-        this._addBaseJp = inclusive === undefined ? false : inclusive;
+    $currentJps;
+    lastName;
+    addBaseJp;
+    static STARTING_POINT = "_starting_point";
+    constructor($baseJp, inclusive = false) {
+        this.$currentJps =
+            $baseJp === undefined ? undefined : [Selector.newJpChain($baseJp)];
+        this.lastName = $baseJp === undefined ? "" : Selector.STARTING_POINT;
+        this.addBaseJp = inclusive;
     }
-    ;
     /// STATIC FUNCTIONS
-    static _copyChain($jpChain) {
+    static copyChain($jpChain) {
         const copy = Object.assign({}, $jpChain);
-        copy[Selector._COUNTER] = copy[Selector._COUNTER].copy();
+        copy.counter = copy.counter.copy();
         return copy;
     }
-    static _newJpChain($startingPoint) {
-        // Add starting point
-        const chain = { _starting_point: $startingPoint };
-        // Add counter
-        chain[Selector._COUNTER] = new Accumulator();
-        return chain;
+    static newJpChain($startingPoint) {
+        return {
+            counter: new Accumulator(),
+            jpAttributes: { _starting_point: $startingPoint },
+        };
     }
-    static _parseFilter(filter, name) {
-        // If undefined, return empty object
-        if (filter === undefined) {
-            return {};
-        }
+    static parseFilter(filter = {}, joinPointTypeName) {
         // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
-        if (typeof filter === "object" || filter instanceof RegExp) {
+        if (typeof filter !== "object" || filter instanceof RegExp) {
             // Get default attribute
-            const defaultAttr = Weaver.getDefaultAttribute(name);
+            const defaultAttr = Weaver.getDefaultAttribute(joinPointTypeName);
             // If no default attribute, return empty filter
             if (defaultAttr === undefined) {
-                println("Selector: cannot use default filter for join point '" + name + "', it does not have a default attribute");
-                return {};
+                console.log("Selector: cannot use default filter for join point '" +
+                    joinPointTypeName +
+                    "', it does not have a default attribute");
+                return new JpFilter({});
             }
-            const defaultFilter = {};
-            defaultFilter[defaultAttr] = filter;
-            return defaultFilter;
+            return new JpFilter({
+                [defaultAttr]: filter,
+            });
         }
-        // Just return the filter
-        return filter;
+        return new JpFilter(filter);
     }
-    /// INSTANCE FUNCTIONS
     /**
      * Generator function, allows Selector to be used in for..of statements.
      *
      * Returns join points iteratively, as if .get() was called.
      */
     *[Symbol.iterator]() {
-        if (this._$currentJps === undefined) {
-            println("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
+        if (this.$currentJps) {
+            for (const $jpChain of this.$currentJps) {
+                yield $jpChain.jpAttributes[this.lastName];
+            }
             yield undefined;
         }
-        for (var $jpChain of this._$currentJps) {
-            yield $jpChain[this._lastName];
+        else {
+            console.log("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
         }
-        this._$currentJps = undefined;
+        this.$currentJps = undefined;
     }
     /**
-    * @param {String} type - type of the join point to search.
-    * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
-    * @param {String} [traversal = TraversalType.PREORDER] - AST traversal type, according to weaver.TraversalType
-    *
-    * @return {weaver.Selector} the results of the search.
-    */
-    search(name, filter, traversal) {
+     * @param type - type of the join point to search.
+     * @param filter - filter rules for the search.
+     * @param traversal - AST traversal type, according to TraversalType
+     *
+     * @returns The results of the search.
+     */
+    search(name, filter = {}, traversal = TraversalType.PREORDER) {
         if (traversal === undefined) {
             traversal = TraversalType.PREORDER;
         }
         switch (traversal) {
             case TraversalType.PREORDER:
-                return this._searchPrivate(name, filter, function ($jp, joinPoints, name) { return joinPoints.descendants($jp, name); });
+                return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+                    return JoinPointsBase.descendants($jp, name);
+                });
             case TraversalType.POSTORDER:
-                return this._searchPrivate(name, filter, function ($jp, joinPoints, name) { return joinPoints.descendantsPostorder($jp, name); });
+                return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+                    return JoinPointsBase.descendantsPostorder($jp, name);
+                });
             default:
                 throw new Error("Traversal type not implemented: " + traversal);
         }
@@ -96,127 +95,131 @@ export default class Selector {
     /**
      * Search in the children of the previously selected nodes.
      *
-     * @param {String} type - type of the join point to search.
-     * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+     * @param type - type of the join point to search.
+     * @param filter - filter rules for the search.
      *
-     * @return {weaver.Selector} the results of the search.
+     * @returns The results of the search.
      */
-    children(type, filter) {
-        return this._searchPrivate(type, filter, function ($jp, joinPoints, name) { return joinPoints.children($jp, name); });
+    children(type, filter = {}) {
+        return this.searchPrivate(type, Selector.parseFilter(filter, type), function ($jp, name) {
+            return JoinPointsBase.children($jp, name);
+        });
     }
     /**
      * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
      *
-     * @param {String} name - type of the join point to search.
-     * @param {Object|String|Function|Regex} [filter = {}] - filter rules for the search.
+     * @param name - type of the join point to search.
+     * @param filter - filter rules for the search.
      *
-     * @returns {weaver.Selector} the results of the search.
+     * @returns The results of the search.
      */
-    scope(name, filter) {
-        return this._searchPrivate(name, filter, function ($jp, joinPoints, name) { return joinPoints.scope($jp, name); });
+    scope(name, filter = {}) {
+        return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+            return JoinPointsBase.scope($jp, name);
+        });
     }
-    _searchPrivate(name, filter, selectFunction) {
+    searchPrivate(name, jpFilter, selectFunction) {
         if (selectFunction === undefined) {
             throw "value is undefined";
         }
         if (name === undefined) {
             name = "joinpoint";
         }
-        filter = Selector._parseFilter(filter, name);
-        const jpFilter = new JpFilter(filter);
         const $newJps = [];
-        const jpCounter = new Accumulator();
         // If add base jp, this._$currentJps must have at most 1 element
-        if (this._addBaseJp && (this._$currentJps !== undefined)) {
-            if (this._$currentJps.length === 0) {
+        if (this.addBaseJp && this.$currentJps !== undefined) {
+            if (this.$currentJps.length === 0) {
                 throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?";
             }
-            if (this._$currentJps.length > 1) {
-                throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('" + this._$currentJps.length + "')";
+            if (this.$currentJps.length > 1) {
+                throw `Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('
+          ${this.$currentJps.length}')`;
             }
-            this._addBaseJp = false;
+            this.addBaseJp = false;
             // Filter does not test if the join point is of the right type
-            const $root = this._$currentJps[0][this._lastName];
-            if ($root.instanceOf(name)) {
-                this._addJps($newJps, [$root], jpFilter, this._$currentJps[0], name);
+            const $root = this.$currentJps[0].jpAttributes[this.lastName];
+            if ($root.joinPointType === name) {
+                this.addJps($newJps, [$root], jpFilter, this.$currentJps[0], name);
             }
         }
-        const isCurrentJpsUndefined = this._$currentJps === undefined;
-        this._$currentJps = isCurrentJpsUndefined ? [Selector._newJpChain(JoinPointsBase.root())] : this._$currentJps;
-        this._lastName = isCurrentJpsUndefined ? Selector._STARTING_POINT : this._lastName;
+        const isCurrentJpsUndefined = this.$currentJps === undefined;
+        this.$currentJps ??= [Selector.newJpChain(JoinPointsBase.root())];
+        this.lastName = isCurrentJpsUndefined
+            ? Selector.STARTING_POINT
+            : this.lastName;
         // Each $jp is an object with the current chain
-        for (const $jpChain of this._$currentJps) {
-            const $jp = $jpChain[this._lastName];
-            const $allJps = selectFunction($jp, JoinPointsBase, name);
-            this._addJps($newJps, $allJps, jpFilter, $jpChain, name);
+        for (const $jpChain of this.$currentJps) {
+            const $jp = $jpChain.jpAttributes[this.lastName];
+            const $allJps = selectFunction($jp, name);
+            this.addJps($newJps, $allJps, jpFilter, $jpChain, name);
         }
         // Update
-        this._$currentJps = $newJps;
-        this._lastName = name;
+        this.$currentJps = $newJps;
+        this.lastName = name;
         return this;
     }
-    _addJps($newJps, $jps, jpFilter, $jpChain, name) {
+    addJps($newJps, $jps, jpFilter, $jpChain, name) {
         for (const $jp of $jps) {
             const $filteredJp = jpFilter.filter([$jp]);
             if ($filteredJp.length === 0) {
                 continue;
             }
             if ($filteredJp.length > 1) {
-                throw "Selector._addJps: Expected $filteredJp to have length 1, has " + $filteredJp.length;
+                throw `Selector._addJps: Expected $filteredJp to have length 1, has 
+          ${$filteredJp.length}`;
             }
             // Copy chain
-            const $updatedChain = Selector._copyChain($jpChain);
+            const $updatedChain = Selector.copyChain($jpChain);
             // Update join point
-            $updatedChain[name] = $jp;
+            $updatedChain.jpAttributes[name] = $jp;
             // Add jp with unique id
-            const id = name + "_" + $updatedChain[Selector._COUNTER].add(name);
-            $updatedChain[id] = $jp;
+            const id = `${name}_${$updatedChain.counter.add(name)}`;
+            $updatedChain.jpAttributes[id] = $jp;
             $newJps.push($updatedChain);
         }
     }
     /**
-     * @return an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
+     * @returns an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
      */
     get() {
-        if (this._$currentJps === undefined) {
-            println("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
+        if (this.$currentJps === undefined) {
+            console.log("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
             return [];
         }
         const returnJps = [];
-        for (const $jpChain of this._$currentJps) {
-            returnJps.push($jpChain[this._lastName]);
+        for (const $jpChain of this.$currentJps) {
+            returnJps.push($jpChain.jpAttributes[this.lastName]);
         }
-        this._$currentJps = undefined;
+        this.$currentJps = undefined;
         return returnJps;
     }
     /**
-     * @return an array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format <joinpoint_name>_<repetition>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
+     * @returns an array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format <joinpoint_name>_<repetition>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
      */
     chain() {
-        if (this._$currentJps === undefined) {
-            println("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
+        if (this.$currentJps === undefined) {
+            console.log("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
             return [];
         }
-        const returnJps = this._$currentJps;
-        this._$currentJps = undefined;
+        const returnJps = this.$currentJps;
+        this.$currentJps = undefined;
         return returnJps;
     }
-    //  * @arg {bool} warnIfMultiple - if true, displays a warning if the search returns more than one result
     /**
      * Same as .first()
      *
-     * @return {$jp} the first selected node
+     * @returns The first selected node
      */
     getFirst() {
         const $jps = this.get();
         if ($jps.length === 0) {
-            println("Selector.getFirst(): no join point found");
+            console.log("Selector.getFirst(): no join point found");
             return undefined;
         }
         return $jps[0];
     }
     /**
-     * @return {$jp} the first selected node
+     * @returns the first selected node
      */
     first() {
         return this.getFirst();

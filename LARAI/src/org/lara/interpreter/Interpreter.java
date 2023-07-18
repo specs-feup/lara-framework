@@ -118,7 +118,7 @@ public class Interpreter {
         }
 
         if (options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
-            importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+            importProcessor.importScriptsAndClasses();
             importProcessor.importAndInitialize();
         }
     }

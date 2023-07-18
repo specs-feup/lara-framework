@@ -1,6 +1,6 @@
 import Io from "./Io.js";
-import JavaTypes from "./util/JavaTypes.js";
-import { println } from "../core/output.js";
+import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+
 /**
  * Methods related with the CSV format.
  */
@@ -8,8 +8,8 @@ export default class Csv {
   /**
    * Reads a CSV file and returns an object with the data inside the file.
    */
-  static read(path: string, delimiter: string | undefined) {
-    const file: any = Io.getPath(path);
+  static read(path: string, delimiter?: string) {
+    const file: JavaClasses.File = Io.getPath(path);
 
     if (!Io.isFile(file)) {
       throw "Io.readCsv: path '" + path + "' is not a file";
@@ -56,7 +56,7 @@ export default class Csv {
 
       // Check line has the same number of elements as headerList
       if (values.length !== csvData.header.length) {
-        println(
+        console.log(
           "Csv.parse: number of elements mismatch, header has " +
             csvData.header.length +
             "elements, line " +
@@ -94,7 +94,7 @@ export default class Csv {
 
     // Colect columns, to build header
     csv = "Name";
-    const columns: Array<any> = [];
+    const columns: any[] = [];
     const seenColumns = new Set<string>();
     Object.entries(data).forEach((benchData: object) => {
       for (const benchKey in benchData) {

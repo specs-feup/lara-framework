@@ -25,6 +25,7 @@ export interface AbstractClassErrorOptions {
  *
  * To use the error correctly, write something like:
  *
+ * @example
  * ```js
  * class AnAbstractClass {
  *   constructor() {

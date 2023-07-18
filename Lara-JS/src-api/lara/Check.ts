@@ -1,5 +1,6 @@
 import JavaTypes from "./util/JavaTypes.js";
 import * as LaraCore from "./core/LaraCore.js";
+import { LaraJoinPoint } from "../LaraJoinPoint.js";
 
 /**
  * Utility methods to check preconditions.
@@ -34,9 +35,9 @@ export default class Check {
   /**
    * @deprecated Use the javascript 'instanceof' operator instead
    */
-  static instance(
-    value: any,
-    type: any,
+  static instance<T>(
+    value: T,
+    type: string,
     source?: string,
     userTypeName?: string
   ) {
@@ -88,26 +89,17 @@ export default class Check {
   /**
    * Checks if the given value is a join point. If a type is given, checks if the join point is an instance of the given type. Otherwise, throws an exception.
    *
-   * @param {$jp} $jp -
+   * @param $jp -
    * @param type -
    * @param isOptional - If true, passes check if value is undefined
+   *
+   * @deprecated Use the javascript `instanceof` operator instead
    */
-  static isJoinPoint(
-    $jp: any,
-    type: string | undefined = undefined,
-    isOptional = false
-  ) {
+  static isJoinPoint($jp: LaraJoinPoint, type?: string, isOptional = false) {
     if (isOptional && $jp === undefined) {
       return;
     }
-    if (!JavaTypes.JoinPoint.isJoinPoint($jp)) {
-      throw (
-        "Expected variable to be of type join point, but it is of type '" +
-        typeof $jp +
-        "'"
-      );
-    }
-    if (type !== undefined && !$jp.instanceOf(type)) {
+    if (type !== undefined && $jp.joinPointType !== type) {
       throw (
         "Expected join point to be an instance of type '" +
         type +
@@ -124,11 +116,11 @@ export default class Check {
   static strings(currentString: string, expectedString: string) {
     // Normalize both strings
     currentString = JavaTypes.SpecsStrings().normalizeFileContents(
-      currentString.toString(),
+      currentString,
       true
     );
     expectedString = JavaTypes.SpecsStrings().normalizeFileContents(
-      expectedString.toString(),
+      expectedString,
       true
     );
     if (currentString !== expectedString) {
@@ -144,8 +136,8 @@ export default class Check {
    * @param original - The original text
    * @param revised - The revised text
    */
-  static diff(original: any, revised: any) {
-    return JavaTypes.Diff().Diff(original.toString(), revised.toString());
+  static diff(original: string, revised: string) {
+    return JavaTypes.Diff().Diff(original, revised);
   }
 
   /**
@@ -153,10 +145,10 @@ export default class Check {
    * The test is equivalent to array.indexOf(element) != -1.
    */
   static arrayContains(
-    array: Array<any>,
+    array: any[],
     element: any,
-    message: string | undefined,
-    source: string | undefined
+    message?: string,
+    source?: string
   ) {
     if (array.indexOf(element) == -1) {
       if (message === undefined) {

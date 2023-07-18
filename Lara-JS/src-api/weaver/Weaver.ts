@@ -1,17 +1,14 @@
 import JavaTypes from "../lara/util/JavaTypes.js";
-import { println } from "../core/output.js";
-import Check from "../lara/Check.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import { Strings } from "../lara/Strings.js";
 import WeaverDataStore from "./util/WeaverDataStore.js";
 import JavaInterop from "../lara/JavaInterop.js";
+import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
 
 /**
  * Contains utility methods related to the weaver.
  */
 export default class Weaver {
-
-  
   /**
    * If defined, sets the default weaver command.
    */
@@ -44,29 +41,19 @@ export default class Weaver {
 
   static writeCode(outputFolder: any) {
     if (outputFolder === undefined) {
-      println("Weaver.writeCode: Output folder not defined");
+      console.log("Weaver.writeCode: Output folder not defined");
       return;
     }
 
     Weaver.getWeaverEngine().writeCode(outputFolder);
   }
 
-  static isJoinPoint($joinpoint: any, type: string) {
-    return Check.isJoinPoint($joinpoint, type);
+  /**
+   * @deprecated Use the javascript `instanceof` operator instead
+   */
+  static isJoinPoint($joinpoint: LaraJoinPoint, type: string) {
+    return $joinpoint.joinPointType === type;
   }
-  /*
-	var isJoinPoint = Java.type("org.lara.interpreter.weaver.interf.JoinPoint").isJoinPoint($joinpoint);
-
-	if(type === undefined) {
-		return isJoinPoint;
-	}
-
-	if(!isJoinPoint) {
-		throw "Weaver.isJoinPoint: Asking if object is of join point '"+type+"', but object is not a join point";
-	}
-	
-	return $joinpoint.instanceOf(type);
-	*/
 
   /**
    * @param joinPointType - The type of the join point
@@ -77,42 +64,33 @@ export default class Weaver {
   }
 
   /**
-   * @param {String|$jp} jp - a join point, or the name of a join point
+   * @param jpTypeName - a join point, or the name of a join point
    * @param attributeName - the name of the attribute to check
    *
    * @returns True, if the given join point or join point name support the attribute with the given name
    *
-   * @deprecated Use $jp.attributes instead
+   * @deprecated The typescript compiler will tell you this
    */
-  static hasAttribute(jp: any, attributeName: string): boolean {
-    println("DEPRECATED Weaver.hasAttribute, use $jp.attributes");
-
-    var jpType = JavaTypes.JoinPoint().isJoinPoint(jp)
-      ? jp.joinPointType
-      : jp.toString();
-
-    var joinPoint = Weaver.getWeaverEngine()
+  static hasAttribute(jpTypeName: string, attributeName: string): boolean {
+    const joinPoint: any = Weaver.getWeaverEngine()
       .getLanguageSpecificationV2()
-      .getJoinPoint(jpType);
+      .getJoinPoint(jpTypeName);
 
     if (joinPoint === null) {
       return false;
     }
 
-    //return joinPoint.getAttribute(attributeName) !== null;
     return !joinPoint.getAttribute(attributeName).isEmpty();
   }
 
   /**
    * Converts a given join point to a string.
    *
-   * @param {Object} object - The join point to serialize.
+   * @param $jp - The join point to serialize.
    *
    * @returns A string representation of the join point.
    */
-  static serialize($jp: any): string {
-    Check.isJoinPoint($jp);
-
+  static serialize($jp: LaraJoinPoint): string {
     if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
       PrintOnce.message(
         "Weaver.serialize: Java version 17 or higher detected, XML serialization of AST might not work"
@@ -127,16 +105,18 @@ export default class Weaver {
    *
    * @param string - The serialized join point.
    *
-   * @returns {$jp} The deserialized join point.
+   * @returns The deserialized join point.
    */
-  static deserialize(string: string) {
+  static deserialize(string: string): LaraJoinPoint {
     if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
       PrintOnce.message(
         "Weaver.deserialize: Java version 17 or higher detected, XML serialization of AST might not work"
       );
     }
 
-    return Weaver.AST_METHODS.toJavaJoinPoint(Strings.fromXml(string));
+    return wrapJoinPoint(
+      Weaver.AST_METHODS.toJavaJoinPoint(Strings.fromXml(string))
+    );
   }
 
   /**

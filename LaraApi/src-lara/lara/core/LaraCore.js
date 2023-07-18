@@ -1,5 +1,4 @@
 import JavaTypes from "../util/JavaTypes.js";
-import { println } from "../../core/output.js";
 export let LARA_DEBUG = false;
 export function setDebug(value = true) {
     LARA_DEBUG = value;
@@ -200,9 +199,9 @@ function isJavaList(list) {
 }
 export function info(message, origin) {
     if (origin !== undefined) {
-        println(`${origin}: ${message}`);
+        console.log(`${origin}: ${message}`);
         return;
     }
-    println(message);
+    console.log(message);
 }
 //# sourceMappingURL=LaraCore.js.map

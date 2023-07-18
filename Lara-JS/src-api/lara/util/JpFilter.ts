@@ -1,16 +1,20 @@
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+
 /**
  * Filters join points according to the given rules.
  *
  * @param rules - Object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
  * The pattern can be a string (exact match), a regex or a function that receives the attribute and returns a boolean.
+ *
+ * @deprecated Use the javascript .filter() method instead.
  */
 export default class JpFilter {
-  rules: {
-    [key: string]: RegExp | ((str: any) => boolean) | string;
+  private rules: {
+    [key: string]: RegExp | ((str: string) => boolean) | string;
   };
 
   constructor(rules: {
-    [key: string]: RegExp | ((str: any) => boolean) | string;
+    [key: string]: RegExp | ((str: string) => boolean) | string;
   }) {
     this.rules = rules;
   }
@@ -20,7 +24,7 @@ export default class JpFilter {
    *
    * @returns an array of the join points that pass the filter
    */
-  filter($jps: any[]) {
+  filter($jps: LaraJoinPoint[]) {
     const $filteredJps = $jps.filter((jp) => {
       const keys = Object.keys(this.rules);
       for (let key of keys) {
@@ -30,7 +34,10 @@ export default class JpFilter {
         }
 
         const pattern = this.rules[key];
-        const attributeValue: string = jp[key];
+        const attributeValue: string = Object.getOwnPropertyDescriptor(
+          jp,
+          key
+        )?.value;
 
         if (
           attributeValue === undefined ||

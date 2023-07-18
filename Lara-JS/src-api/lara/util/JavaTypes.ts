@@ -90,7 +90,7 @@ export default class JavaTypes {
     }
   }
 
-  static instanceOf(value: any, javaTypeName: string): boolean {
+  static instanceOf<T>(value: T, javaTypeName: string): boolean {
     switch (engine) {
       case Engine.GraalVM:
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -105,7 +105,7 @@ export default class JavaTypes {
     }
   }
 
-  static isJavaObject(value: any): boolean {
+  static isJavaObject<T>(value: T): boolean {
     return JavaTypes.instanceOf(value, "java.lang.Object");
   }
 

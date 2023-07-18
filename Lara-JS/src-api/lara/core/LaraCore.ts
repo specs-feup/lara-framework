@@ -1,5 +1,4 @@
 import JavaTypes from "../util/JavaTypes.js";
-import { println } from "../../core/output.js";
 
 export let LARA_DEBUG = false;
 
@@ -256,8 +255,8 @@ function isJavaList<T>(list: T) {
 
 export function info(message: string, origin?: string): void {
   if (origin !== undefined) {
-    println(`${origin}: ${message}`);
+    console.log(`${origin}: ${message}`);
     return;
   }
-  println(message);
+  console.log(message);
 }

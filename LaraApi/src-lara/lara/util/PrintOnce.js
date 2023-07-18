@@ -1,4 +1,3 @@
-import { println } from "../../core/output.js";
 export default class PrintOnce {
     static messagesSet = new Set();
     static message(message) {
@@ -9,7 +8,7 @@ export default class PrintOnce {
             return;
         }
         this.messagesSet.add(message);
-        println(message);
+        console.log(message);
     }
 }
 //# sourceMappingURL=PrintOnce.js.map

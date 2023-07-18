@@ -169,7 +169,7 @@ export default class Io {
    */
   static getFiles(
     baseFolder: string | JavaClasses.File = "./",
-    pattern: string | Array<any> = "*",
+    pattern: string | any[] = "*",
     isRecursive = false
   ) {
     // If pattern is an array, call function recursively
@@ -192,7 +192,7 @@ export default class Io {
       isRecursive,
       "FILES"
     );
-    const files: Array<JavaClasses.File> = [];
+    const files: JavaClasses.File[] = [];
 
     for (const file of list) {
       files.push(file);

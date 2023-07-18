@@ -3,6 +3,8 @@
  *
  * @param rules - Object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
  * The pattern can be a string (exact match), a regex or a function that receives the attribute and returns a boolean.
+ *
+ * @deprecated Use the javascript .filter() method instead.
  */
 export default class JpFilter {
     rules;
@@ -23,7 +25,7 @@ export default class JpFilter {
                     key = key.substring(rxPrefix.length);
                 }
                 const pattern = this.rules[key];
-                const attributeValue = jp[key];
+                const attributeValue = Object.getOwnPropertyDescriptor(jp, key)?.value;
                 if (attributeValue === undefined ||
                     (pattern instanceof RegExp && !pattern.test(attributeValue)) ||
                     (typeof pattern === "function" && !pattern(attributeValue)) ||

@@ -68,20 +68,17 @@ export default class Check {
     /**
      * Checks if the given value is a join point. If a type is given, checks if the join point is an instance of the given type. Otherwise, throws an exception.
      *
-     * @param {$jp} $jp -
+     * @param $jp -
      * @param type -
      * @param isOptional - If true, passes check if value is undefined
+     *
+     * @deprecated Use the javascript `instanceof` operator instead
      */
-    static isJoinPoint($jp, type = undefined, isOptional = false) {
+    static isJoinPoint($jp, type, isOptional = false) {
         if (isOptional && $jp === undefined) {
             return;
         }
-        if (!JavaTypes.JoinPoint.isJoinPoint($jp)) {
-            throw ("Expected variable to be of type join point, but it is of type '" +
-                typeof $jp +
-                "'");
-        }
-        if (type !== undefined && !$jp.instanceOf(type)) {
+        if (type !== undefined && $jp.joinPointType !== type) {
             throw ("Expected join point to be an instance of type '" +
                 type +
                 "' but its type is '" +
@@ -94,8 +91,8 @@ export default class Check {
      */
     static strings(currentString, expectedString) {
         // Normalize both strings
-        currentString = JavaTypes.SpecsStrings().normalizeFileContents(currentString.toString(), true);
-        expectedString = JavaTypes.SpecsStrings().normalizeFileContents(expectedString.toString(), true);
+        currentString = JavaTypes.SpecsStrings().normalizeFileContents(currentString, true);
+        expectedString = JavaTypes.SpecsStrings().normalizeFileContents(expectedString, true);
         if (currentString !== expectedString) {
             //throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
             throw ("Current result does not match expected result. Diff:\n" +
@@ -107,7 +104,7 @@ export default class Check {
      * @param revised - The revised text
      */
     static diff(original, revised) {
-        return JavaTypes.Diff().Diff(original.toString(), revised.toString());
+        return JavaTypes.Diff().Diff(original, revised);
     }
     /**
      * Checks if the array contains the element. Throws an expression if it doens't.

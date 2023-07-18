@@ -7,7 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import JavaTypes from "lara-js/src-api/lara/util/JavaTypes.js";
+import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     _javaObject;
     constructor(obj) {
@@ -24,7 +24,7 @@ export class LaraJoinPoint {
     insert(position, code) { return wrapJoinPoint(this._javaObject.insert(position, code)); }
     def(attribute, value) { return wrapJoinPoint(this._javaObject.def(attribute, value)); }
 }
-let JoinpointMappers;
+const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {
     JoinpointMappers.push(mapper);
 }
@@ -56,7 +56,7 @@ export function wrapJoinPoint(obj) {
             return new mapper[obj.getType()](obj);
         }
     }
-    throw new Error("No mapper found for join point type: " + obj.getType());
+    throw new Error("No mapper found for join point type: " + obj.getJoinPointType());
 }
 export function unwrapJoinPoint(obj) {
     if (obj instanceof LaraJoinPoint) {

@@ -1,5 +1,3 @@
-import { println } from "../../core/output.js";
-
 export default class PrintOnce {
   static messagesSet = new Set<string>();
 
@@ -14,6 +12,6 @@ export default class PrintOnce {
 
     this.messagesSet.add(message);
 
-    println(message);
+    console.log(message);
   }
 }

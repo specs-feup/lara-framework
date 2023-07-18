@@ -51,7 +51,7 @@ export default class Accumulator {
    * Alternatively, can also receive an array with the chain of values
    */
   get(...args: any) {
-    const chainArray: Array<string> = this.parseArguments(arguments);
+    const chainArray: string[] = this.parseArguments(arguments);
 
     let currentAcc: Accumulator = this;
 
@@ -123,9 +123,8 @@ export default class Accumulator {
    * Receives an array with the arguments of the previous function.
    */
   private parseArguments(...args: any[]) {
-    
-    if( args.length !== 1){
-      throw "Accumulator._parseArguments: Expected arguments to have length 1"
+    if (args.length !== 1) {
+      throw "Accumulator._parseArguments: Expected arguments to have length 1";
     }
 
     let functionArguments = args[0];
