@@ -1,6 +1,6 @@
 {
   "preset": "ts-jest/presets/js-with-ts-esm",
-  "testEnvironment": "node",
+  "testEnvironment": "./jest/jestEnvironment.js",
   "notify": true,
   "notifyMode": "always",
   //"verbose": true,
@@ -11,5 +11,7 @@
   "coverageProvider": "v8",
   "moduleNameMapper": {
     "(.+)\\.js": "$1"
-  }
+  },
+  "globalSetup": "./jest/jestGlobalSetup.js",
+  "setupFiles": ["./jest/setupFiles/sharedJavaModule.js"]
 }

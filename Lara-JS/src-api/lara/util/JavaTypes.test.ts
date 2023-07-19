@@ -1,10 +1,6 @@
-import java from "java";
 import JavaTypes from "./JavaTypes.js";
 
 describe("JavaTypes", () => {
-  beforeAll(() => {
-    java.classpath.push("../../ClavaWeaver.jar");
-  });
   describe("getLaraI", () => {
     it("returns a JavaType", () => {
       const javaClass = JavaTypes.LaraI;
@@ -23,7 +19,7 @@ describe("JavaTypes", () => {
       const SpecsStrings = new javaClass();
       expect(SpecsStrings).toBeDefined();
       expect(typeof SpecsStrings).toBe("object");
-      expect((SpecsStrings as any).getClassSync().getNameSync()).toBe(
+      expect((SpecsStrings as any).getClass().getName()).toBe(
         "pt.up.fe.specs.util.SpecsStrings"
       );
     });
