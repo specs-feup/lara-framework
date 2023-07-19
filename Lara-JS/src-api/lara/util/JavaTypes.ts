@@ -1,32 +1,16 @@
+import java from "java";
+
 export enum Engine {
   GraalVM = "GraalVM",
   NodeJS = "NodeJS",
 }
 
 export let engine: Engine = Engine.GraalVM;
-// eslint-disable-next-line prefer-const, @typescript-eslint/no-explicit-any
-let java: any = undefined;
 
 if ("Java" in globalThis) {
   engine = Engine.GraalVM;
 } else {
   engine = Engine.NodeJS;
-  /**
-   * This is a hack to load Java classes in NodeJS.
-   * If the dynamic import is not done inside the eval function, then GraalVM
-   * will try to load the 'java' module and silently fail (even if it shouln't
-   * as this 'else' branch is never executed in a GraalVM environment).
-   *
-   * The anonymous async function is needed to avoid the following error:
-   * SyntaxError: await is only valid in async functions and the top level
-   * bodies of modules
-   *
-   */
-  eval(`(async () => {
-    const { default: javaLocal } = await import("java");
-    java = javaLocal;
-    java.classpath.push("../../ClavaWeaver.jar");
-  })();`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -85,7 +69,6 @@ export default class JavaTypes {
       case Engine.GraalVM:
         return Java.type(javaType);
       case Engine.NodeJS:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         return java.import(javaType);
     }
   }
@@ -100,8 +83,7 @@ export default class JavaTypes {
         }
         return Java.typeName(value) === javaTypeName;
       case Engine.NodeJS:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        return java.instanceOf(value, javaTypeName) as boolean;
+        return java.instanceOf(value, javaTypeName);
     }
   }
 

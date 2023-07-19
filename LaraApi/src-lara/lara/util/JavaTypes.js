@@ -1,3 +1,4 @@
+import java from "java";
 export var Engine;
 (function (Engine) {
     Engine["GraalVM"] = "GraalVM";
@@ -5,7 +6,7 @@ export var Engine;
 })(Engine || (Engine = {}));
 export let engine = Engine.GraalVM;
 // eslint-disable-next-line prefer-const, @typescript-eslint/no-explicit-any
-let java = undefined;
+//let java: any = undefined;
 if ("Java" in globalThis) {
     engine = Engine.GraalVM;
 }
@@ -22,11 +23,10 @@ else {
      * bodies of modules
      *
      */
-    eval(`(async () => {
-    const { default: javaLocal } = await import("java");
-    java = javaLocal;
-    java.classpath.push("../../ClavaWeaver.jar");
-  })();`);
+    /* eval(`(async () => {
+      const { default: javaLocal } = await import("java");
+      java = javaLocal;
+    })();`); */
 }
 export default class JavaTypes {
     /**
