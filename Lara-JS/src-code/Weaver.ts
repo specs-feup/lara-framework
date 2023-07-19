@@ -33,7 +33,7 @@ export class Weaver {
   }
 
   static async awaitSetup() {
-    while (!Weaver.isSetup) {
+    while (!Weaver.isSetup()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
