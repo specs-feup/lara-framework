@@ -1,17 +1,16 @@
 {
-  "preset": "ts-jest/presets/js-with-ts-esm",
-  "testEnvironment": "./jest/jestEnvironment.js",
+  "preset": "ts-jest/presets/default-esm",
+  "testEnvironment": "node",
   "notify": true,
   "notifyMode": "always",
   //"verbose": true,
   "collectCoverage": false,
   "coverageDirectory": "coverage",
   "coverageReporters": ["text", "lcov"],
-  "collectCoverageFrom": ["src/**/*.(t|j)s"],
+  //"collectCoverageFrom": ["src/**/*.(t|j)s"],
   "coverageProvider": "v8",
   "moduleNameMapper": {
     "(.+)\\.js": "$1"
   },
-  "globalSetup": "./jest/jestGlobalSetup.js",
-  "setupFiles": ["./jest/setupFiles/sharedJavaModule.js"]
+  "projects": ["src-api", "src-code"]
 }

@@ -1,0 +1,10 @@
+{
+  "preset": "ts-jest/presets/default-esm",
+  "testEnvironment": "../jest/jestEnvironment.js",
+  "globalSetup": "../jest/jestGlobalSetup.js",
+  "setupFiles": ["../jest/setupFiles/sharedJavaModule.js"],
+  "collectCoverageFrom": ["./**/*.(t|j)s"],
+  "moduleNameMapper": {
+    "(.+)\\.js": "$1"
+  }
+}
