@@ -38,6 +38,11 @@ export class Weaver {
     }
   }
 
+  static async setupJavaEnvironment(jarFilePath: string) {
+    java.classpath.push(jarFilePath);
+    await java.ensureJvm();
+  }
+
   static async setupWeaver(
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
@@ -46,9 +51,7 @@ export class Weaver {
     const debug = Debug(`Weaver:${config.weaverPrettyName}`);
     debug("Initiating weaver setup.");
 
-    // Setup java
-    java.classpath.push(config.jarFilePath);
-    await java.ensureJvm();
+    await this.setupJavaEnvironment(config.jarFilePath);
 
     debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 
