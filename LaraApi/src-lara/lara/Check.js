@@ -109,9 +109,11 @@ export default class Check {
     /**
      * Checks if the array contains the element. Throws an expression if it doens't.
      * The test is equivalent to array.indexOf(element) != -1.
+     *
+     * @deprecated Use the javascript `array.includes(element)` method instead
      */
     static arrayContains(array, element, message, source) {
-        if (array.indexOf(element) == -1) {
+        if (!array.includes(element)) {
             if (message === undefined) {
                 message = "Check.arrayContains failed";
             }
