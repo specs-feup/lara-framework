@@ -253,6 +253,8 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
     switch (jpType) {
       case "Function":
         return "FunctionJp";
+      case "File":
+        return "FileJp";
     }
 
     return jpType;

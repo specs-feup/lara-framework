@@ -59,6 +59,7 @@ import {
   type JoinpointMapperType,
   registerJoinpointMapper,
   wrapJoinPoint,
+  unwrapJoinPoint,
 } from "lara-js/api/LaraJoinPoint.js";\n\n`
   );
 

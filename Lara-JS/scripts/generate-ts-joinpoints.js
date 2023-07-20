@@ -3,11 +3,11 @@ import { capitalizeFirstLetter } from "./convert-joinpoint-specification.js";
 
 export function generateJoinpoints(joinpoints, outputFile) {
   for (const jp of joinpoints) {
-    generateJoinpoint(jp, outputFile);
+    generateJoinpoint(jp, outputFile, joinpoints);
   }
 }
 
-function generateJoinpoint(jp, outputFile) {
+function generateJoinpoint(jp, outputFile, joinpoints) {
   fs.writeSync(
     outputFile,
     `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
@@ -32,7 +32,7 @@ function generateJoinpoint(jp, outputFile) {
   let actionNameSet = new Set();
   for (const action of jp.actions) {
     if (!actionNameSet.has(action.name)) {
-      generateJoinpointAction(action, outputFile);
+      generateJoinpointAction(action, outputFile, joinpoints);
       actionNameSet.add(action.name);
     }
   }
@@ -59,7 +59,7 @@ function generateJoinpointAttribute(attribute, outputFile) {
   );
 }
 
-function generateJoinpointAction(action, outputFile) {
+function generateJoinpointAction(action, outputFile, joinpoints) {
   const parameters = action.parameters
     .map((parameter) => {
       return `${parameter.name}: ${parameter.type}`;
@@ -68,6 +68,12 @@ function generateJoinpointAction(action, outputFile) {
 
   const callParameters = action.parameters
     .map((parameter) => {
+      for (const jp of joinpoints) {
+        if (jp.name === parameter.type) {
+          return `unwrapJoinPoint(${parameter.name})`;
+        }
+      }
+
       return parameter.name;
     })
     .join(", ");
