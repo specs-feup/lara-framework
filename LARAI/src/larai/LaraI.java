@@ -988,10 +988,6 @@ public class LaraI {
         // Prepare includes
         var includes = new LinkedHashSet<File>();
 
-        // Add weaver APIs
-        weaverEngine.getApiManager().getNpmApiFolders().stream()
-                .forEach(includes::add);
-
         // Add working directory
         includes.add(SpecsIo.getWorkingDir());
 
@@ -1006,6 +1002,10 @@ public class LaraI {
 
         // Add user includes
         includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
+
+        // Finally, add weaver APIs (they have the lowest priority)
+        weaverEngine.getApiManager().getNpmApiFolders().stream()
+                .forEach(includes::add);
 
         // Find files to import
         var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes));
