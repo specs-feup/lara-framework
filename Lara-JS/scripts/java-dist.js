@@ -1,52 +1,83 @@
 import fs from "fs";
 import path from "path";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+
+const args = yargs(hideBin(process.argv))
+  .scriptName("java-dist")
+  .option("jsSourceFolder", {
+    describe: "Path to the source folder",
+    type: "string",
+  })
+  .option("jsDestinationFolder", {
+    describe: "Path to the destination folder",
+    type: "string",
+  })
+  .option("javaClassname", {
+    describe: "Name of the output Java class",
+    type: "string",
+  })
+  .option("javaDestinationFolder", {
+    describe: "Path to the java class destination folder",
+    type: "string",
+  })
+  .help()
+  .showHelpOnFail(true)
+  .strict()
+  .parse();
+
+distributeAPIasJavaResources(
+  copyFiles(args.jsSourceFolder, args.jsDestinationFolder, ".js"),
+  args.jsDestinationFolder,
+  args.javaClassname,
+  path.join(args.javaDestinationFolder, args.javaClassname + ".java")
+);
 
 /**
  * Copied files will have .mjs extension.
  *
- * @param {*} sourceDir
- * @param {*} destinationDir
- * @param {*} extension
+ * @param {string} sourceDir
+ * @param {string} destinationDir
+ * @param {string} extension
  * @returns
  */
 function copyFiles(
   sourceDir,
   destinationDir,
   extension,
-  targetExtension = undefined
+  targetExtension = extension
 ) {
-  // Update node to 15+
-  //targetExtension ??= extension;
-  targetExtension = targetExtension !== undefined ? targetExtension : extension;
   const copiedFiles = [];
 
   const files = fs.readdirSync(sourceDir);
 
   for (const file of files) {
-    //console.log("FILE: " + file);
     const sourcePath = path.join(sourceDir, file);
 
     const fileStat = fs.statSync(sourcePath);
 
     if (fileStat.isDirectory()) {
       const newDestinationDir = path.join(destinationDir, file);
+
       fs.mkdirSync(newDestinationDir, { recursive: true });
+
       const subDirectoryCopiedFiles = copyFiles(
         sourcePath,
         newDestinationDir,
         extension,
         targetExtension
       );
+
       copiedFiles.push(...subDirectoryCopiedFiles);
     } else if (file.endsWith(extension)) {
-      const endIndex = file.length - extension.length;
-      const fileWithoutExtension = file.substring(0, endIndex);
-      const destinationPath = path.join(
-        destinationDir,
-        fileWithoutExtension + targetExtension
-      );
+      const targetFileName =
+        file.substring(0, file.length - extension.length) + targetExtension;
+
+      const destinationPath = path.join(destinationDir, targetFileName);
+
       fs.copyFileSync(sourcePath, destinationPath);
       console.log("Copied:", sourcePath, "->", destinationPath);
+
       copiedFiles.push(destinationPath);
     }
   }
@@ -54,91 +85,66 @@ function copyFiles(
   return copiedFiles;
 }
 
-// Copy JS files to Java project folder
+/**
+ * Generate the Java file with the resources
+ *
+ * @param {{[key: string]: string}} copiedFiles - Map from file name to relative path
+ * @param {string} jsDestinationFolder - Path to the destination folder
+ * @param {string} javaClassname - Name of the Java class
+ * @param {string} javaDestinationFile - Path to the destination file
+ */
+function distributeAPIasJavaResources(
+  copiedFiles,
+  jsDestinationFolder,
+  javaClassname,
+  javaDestinationFile
+) {
+  const resources = {};
+  const filesSet = new Set();
+  const enumNames = new Set();
 
-const jsSourceFolder = "api";
-const jsDestinationFolder = "../LaraApi/src-lara/";
+  copiedFiles.forEach((file) => {
+    const fileName = path.basename(file);
 
-const copiedFiles = [];
-copiedFiles.push(
-  ...copyFiles(jsSourceFolder, jsDestinationFolder, ".js", ".js")
-);
-//copiedFiles.push(...copyFiles(jsSourceFolder, jsDestinationFolder, ".mjs"));
+    if (filesSet.has(fileName)) {
+      throw Error(
+        "Found duplicated file '" +
+          fileName +
+          "'. Check, for instance, if 'api' folder is clean"
+      );
+    }
+    filesSet.add(fileName);
 
-/*
-const copiedFiles = [];
+    resources[fileName] = path
+      .relative(jsDestinationFolder, file)
+      .toString()
+      .replace(/\\/g, "/");
+  });
 
-copyFiles(jsSourceFolder, jsDestinationFolder, ".js").then((result) =>
-  copiedFiles.push(...result)
-);
-*/
+  const resourcesCode =
+    Object.entries(resources)
+      .filter(([key, value]) => value !== "index.js")
+      .map(([key, value]) => {
+        const enumName = key.toUpperCase().replace(/\./g, "_");
 
-//console.log(copiedFiles);
+        // Check for repeated enum names
+        if (enumNames.has(enumName)) {
+          console.log(
+            "[PROBLEM] Repeated enum name '" +
+              enumName +
+              "'! Probably files were moved, recommended that 'api' folder is deleted"
+          );
+        } else {
+          enumNames.add(enumName);
+        }
 
-// Generate the Java file with the resources
-const javaClassname = "LaraApiJsResource";
-const javaDestinationFile =
-  "../LaraApi/src-java/pt/up/fe/specs/lara/" + javaClassname + ".java";
+        return `    ${enumName}("${value}")`;
+      })
+      .join(",\n") + ";";
 
-const resources = {};
-const filesSet = {};
+  const currentYear = new Date().getFullYear();
 
-copiedFiles.forEach((file) => {
-  const fileName = path.basename(file);
-
-  if (fileName in filesSet) {
-    throw Error(
-      "Found duplicated file '" +
-        fileName +
-        "'. Check, for instance, if 'api' folder is clean"
-    );
-  }
-  filesSet[fileName] = 0;
-
-  resources[fileName] = path
-    .relative(jsDestinationFolder, file)
-    .toString()
-    .replace(/\\/g, "/");
-});
-
-/*
-const resources = copiedFiles.map((file) =>
-  path.relative(jsDestinationFolder, file).toString().replace(/\\/g, "/")
-);
-*/
-//console.log(resources);
-
-const enumNames = {};
-
-const resourcesCode =
-  Object.entries(resources)
-    .filter(([key, value]) => value !== "index.js")
-    .map(([key, value]) => {
-      const enumName = key.toUpperCase().replace(/\./g, "_");
-
-      // Check for repeated enum names
-      if (enumNames[enumName] !== undefined) {
-        console.log(
-          "[PROBLEM] Repeated enum name '" +
-            enumName +
-            "'! Probably files were moved, recommended that 'api' folder is deleted"
-        );
-      } else {
-        enumNames[enumName] = 0;
-      }
-
-      return `    ${enumName}("${value}")`;
-    })
-    .join(",\n") + ";";
-
-/*
-for (const key in resources) {
-}
-*/
-
-const currentYear = new Date().getFullYear();
-
-const javaCode = `
+  const javaCode = `
 /**
  * Copyright ${currentYear} SPeCS.
  * 
@@ -159,7 +165,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 /**
  * This file has been automatically generated.
  * 
- * @author Joao Bispo
+ * @author Joao Bispo, Luis Sousa
  *
  */
 public enum ${javaClassname} implements LaraResourceProvider {
@@ -186,7 +192,6 @@ ${resourcesCode}
 }
 `;
 
-//console.log(javaCode);
-
-fs.writeFileSync(javaDestinationFile, javaCode);
-console.log("File '" + javaDestinationFile + "' written");
+  fs.writeFileSync(javaDestinationFile, javaCode);
+  console.log("File '" + javaDestinationFile + "' written");
+}

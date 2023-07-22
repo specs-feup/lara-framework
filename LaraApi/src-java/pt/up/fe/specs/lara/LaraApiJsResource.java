@@ -19,7 +19,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 /**
  * This file has been automatically generated.
  * 
- * @author Joao Bispo
+ * @author Joao Bispo, Luis Sousa
  *
  */
 public enum LaraApiJsResource implements LaraResourceProvider {
