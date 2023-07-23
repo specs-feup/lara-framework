@@ -1,3 +1,5 @@
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import { object2string } from "../../core/output.js";
 import JavaTypes from "../util/JavaTypes.js";
 export let LARA_DEBUG = false;
 export function setDebug(value = true) {
@@ -203,5 +205,187 @@ export function info(message, origin) {
         return;
     }
     console.log(message);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @deprecated Use the javascript `instanceof` operator instead
+ */
+export function isJoinPoint($jp, type) {
+    if (!($jp instanceof LaraJoinPoint)) {
+        return false;
+    }
+    if (type) {
+        return $jp.joinPointType === type;
+    }
+    return true;
+}
+/**
+ * @deprecated Use the javascript `instanceof` operator instead
+ */
+export function checkJoinPoint($jp, source) {
+    if (isJoinPoint($jp)) {
+        return;
+    }
+    let message = "Expected variable to be of type join point, but it's of type '" +
+        typeof $jp +
+        "'";
+    if (source !== undefined) {
+        message = source + ": " + message;
+    }
+    throw message;
+}
+/**
+ * @deprecated Use the javascript `instanceof` operator instead
+ */
+export function checkJoinPointType($jp, type, source) {
+    checkJoinPoint($jp, source);
+    if (isJoinPoint($jp, type)) {
+        return;
+    }
+    let message = "Expected variable to be a join point of type '" +
+        type +
+        "', but it's of type '" +
+        $jp.joinPointType +
+        "'";
+    if (source !== undefined) {
+        message = source + ": " + message;
+    }
+    throw message;
+}
+/**
+ * @deprecated Use the javascript `instanceof` operator instead
+ */
+export function isObject(variable) {
+    return typeof variable === "object";
+}
+/**
+ * @deprecated Use the javascript `instanceof` operator instead
+ */
+export function isFunction(variable) {
+    return typeof variable === "function";
+}
+/**
+ * @param message - The message to print. Accepts functions, that are only evaluated if debug information is enabled. Use functions if the debug message can include expensive processing.
+ */
+export function debug(message, origin) {
+    if (LARA_DEBUG) {
+        if (message instanceof Function) {
+            message = message();
+        }
+        info("[DEBUG] " + message, origin);
+    }
+}
+export function debugObject(object, origin) {
+    if (LARA_DEBUG) {
+        const lines = object2string(object).split("\n");
+        info("[DEBUG] " + lines.join("\n[DEBUG] "), origin);
+    }
+}
+/**
+ * Flatten an Arguments array. In this context, it means that if the array only contains one element,
+ * and that element is an Array, it will be returned instead of the outer Array.
+ *
+ * This is implemented for compatibility reasons. As the Lara language used ES5 as its
+ * base, there was no spread operator to pass argument arrays to variadic functions, so there
+ * is calling code expecting to be able to pass a single array as the variadic argument.
+ *
+ * @param args - Arguments array. Must be some array-like object.
+ * @returns Flattened argument array
+ */
+export function flattenArgsArray(args) {
+    checkDefined(args, "args", "LaraCore collapseArgsArray");
+    if (args.length === 1) {
+        const singleArgument = args[0];
+        if (isArray(singleArgument)) {
+            return singleArgument;
+        }
+        if (isJavaList(singleArgument)) {
+            return toArray(singleArgument);
+        }
+    }
+    // use Array.from to ensure it is an array, not some other Array-like variable
+    return Array.from(args);
+}
+/*
+ * Custom getter that is used as a compatibility layer between JS properties and Java methods.
+ *
+ * The name of this functions must be the same as the value of the field org.lara.interpreter.weaver.interf.JoinPoint.LARA_GETTER .
+ */
+export function laraGetter(object, property) {
+    const value = Object.getOwnPropertyDescriptor(object, property)?.value;
+    // If type is function, assume it should be called without arguments
+    if (typeof value === "function") {
+        // Java object
+        if (isJavaClass(object) && !isUndefined(object.class)) {
+            // Special case: property 'class'
+            if (property === "class") {
+                return object.class;
+            }
+            return JavaTypes.SpecsSystem.invokeAsGetter(object, property);
+        }
+        // JS object
+        return value;
+    }
+    return value;
+}
+/**
+ * @returns an array with the keys of an object
+ *
+ * @deprecated Use the javascript built-in methods instead
+ */
+export function getKeys(object) {
+    const keys = [];
+    for (const key in object) {
+        keys.push(key);
+    }
+    return keys;
+}
+/**
+ * @returns an array with the values of an object
+ *
+ * @deprecated Use the javascript built-in methods instead
+ */
+export function getValues(object) {
+    const values = [];
+    for (const key in object) {
+        values.push(object[key]);
+    }
+    return values;
+}
+/**
+ * Acts as a constructor where you can pass the arguments object.
+ *
+ * @returns the constructed object, of the constructor if it could not be built.
+ *
+ * @deprecated Use the javascript built-in methods instead
+ */
+export function newObject(aClass, args) {
+    const obj = Object.create(aClass.prototype);
+    return aClass.apply(obj, args) || obj;
+}
+const _LARA_IMPORT_LOADED = new Set();
+export function laraImport(importName) {
+    // Return if already loaded
+    if (_LARA_IMPORT_LOADED.has(importName)) {
+        debug(() => "laraImport: import " + importName + " already processed, ignoring");
+        return;
+    }
+    // Import
+    _LARA_IMPORT_LOADED.add(importName);
+    debug(() => "laraImport: importing " + importName);
+    // Check if Kleene Start
+    if (importName.endsWith(".*")) {
+        _laraImportKleeneStar(importName.substring(0, importName.length - 2));
+    }
+    // Simple import
+    else {
+        JavaTypes.LaraI.loadLaraImport(importName);
+    }
+}
+function _laraImportKleeneStar(packageName) {
+    const laraImports = JavaTypes.LaraI.getLaraImportInPackage(packageName);
+    for (const singleLaraImport of laraImports) {
+        laraImport(singleLaraImport);
+    }
 }
 //# sourceMappingURL=LaraCore.js.map

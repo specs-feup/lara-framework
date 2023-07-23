@@ -1,5 +1,5 @@
-const prefix = "lara-js/api/core/";
-const coreImports = ["output.js"];
+const prefix = "lara-js/api/";
+const coreImports = ["core/output.js", "lara/core/LaraCore.js"];
 
 for (const coreImport of coreImports) {
   const foo = Object.entries(await import(prefix + coreImport));
