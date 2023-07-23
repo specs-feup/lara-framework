@@ -40,7 +40,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lm-sousa/Lara-JS.git"
+    "url": "git+https://github.com/specs-feup/lara-framework.git",
+    "directory": "Lara-JS"
   },
   "keywords": [
     "C",
@@ -52,9 +53,9 @@
   "author": "L. Sousa",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lm-sousa/Lara-JS/issues"
+    "url": "https://github.com/specs-feup/lara-framework/issues"
   },
-  "homepage": "https://github.com/lm-sousa/Lara-JS#readme",
+  "homepage": "https://github.com/specs-feup/lara-framework#readme",
   "dependencies": {
     "chokidar": "^3.5.3",
     "debug": "^4.3.4",
