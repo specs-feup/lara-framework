@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fs from "fs";
 import path from "path";
 import yargs from "yargs";
@@ -17,8 +19,16 @@ const args = yargs(hideBin(process.argv))
     describe: "Name of the output Java class",
     type: "string",
   })
+  .option("javaPackageName", {
+    describe: "Name of the output Java class' package",
+    type: "string",
+  })
   .option("javaDestinationFolder", {
     describe: "Path to the java class destination folder",
+    type: "string",
+  })
+  .option("javaResourceNamespace", {
+    describe: "Namespace of the resources",
     type: "string",
   })
   .help()
@@ -30,7 +40,9 @@ distributeAPIasJavaResources(
   copyFiles(args.jsSourceFolder, args.jsDestinationFolder, ".js"),
   args.jsDestinationFolder,
   args.javaClassname,
-  path.join(args.javaDestinationFolder, args.javaClassname + ".java")
+  args.javaPackageName,
+  path.join(args.javaDestinationFolder, args.javaClassname + ".java"),
+  args.javaResourceNamespace
 );
 
 /**
@@ -91,13 +103,17 @@ function copyFiles(
  * @param {{[key: string]: string}} copiedFiles - Map from file name to relative path
  * @param {string} jsDestinationFolder - Path to the destination folder
  * @param {string} javaClassname - Name of the Java class
+ * @param {string} javaPackageName - Name of the Java class' package
  * @param {string} javaDestinationFile - Path to the destination file
+ * @param {string} javaResourceNamespace - Namespace of the resources
  */
 function distributeAPIasJavaResources(
   copiedFiles,
   jsDestinationFolder,
   javaClassname,
-  javaDestinationFile
+  javaPackageName,
+  javaDestinationFile,
+  javaResourceNamespace = ""
 ) {
   const resources = {};
   const filesSet = new Set();
@@ -158,7 +174,7 @@ function distributeAPIasJavaResources(
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package pt.up.fe.specs.lara;
+package ${javaPackageName};
 
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
@@ -174,11 +190,15 @@ ${resourcesCode}
 
     private final String resource;
 
+    private static final String WEAVER_PACKAGE = "${javaResourceNamespace}${
+    javaResourceNamespace ? "/" : ""
+  }";
+
     /**
      * @param resource
      */
     private ${javaClassname} (String resource) {
-        this.resource = resource;
+      this.resource = WEAVER_PACKAGE + getSeparatorChar() + resource;
     }
 
     /* (non-Javadoc)

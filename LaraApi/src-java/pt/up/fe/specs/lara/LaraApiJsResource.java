@@ -58,11 +58,13 @@ public enum LaraApiJsResource implements LaraResourceProvider {
 
     private final String resource;
 
+    private static final String WEAVER_PACKAGE = "";
+
     /**
      * @param resource
      */
     private LaraApiJsResource (String resource) {
-        this.resource = resource;
+      this.resource = WEAVER_PACKAGE + getSeparatorChar() + resource;
     }
 
     /* (non-Javadoc)
