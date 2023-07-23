@@ -73,7 +73,8 @@ public class LaraImporter {
     }
 
     /**
-     * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
+     * Loads a LARA import, using the same format as the imports in LARA files (e.g.
+     * weaver.Query).
      * 
      * @param importName
      */
@@ -95,19 +96,14 @@ public class LaraImporter {
 
                 if (importingFile.exists()) {
                     boolean isNpmImport = false;
-                    // Check if inside APIs folder, and if it is an automatically generated resource
-                    // System.out.println(npmImports);
-                    // System.out.println("Is " + importPath + " a NPM import? " + npmImports.contains(importPath));
 
-                    // if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
                     if (npmApiFolders.contains(path) && npmImports.contains(importPath)) {
                         SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
-                        // System.out.println("TESTE: " + importPath);
                         isNpmImport = true;
                     }
 
                     laraImports.add(buildLaraImport(importingFile, isNpmImport));
-                    SpecsLogs.debug(() -> "Adding file '" + importingFile.getAbsolutePath() + "' for import '"
+                    SpecsLogs.debug("Adding file '" + importingFile.getAbsolutePath() + "' for import '"
                             + importName + "'");
                     continue ext;
                 }
@@ -170,19 +166,12 @@ public class LaraImporter {
         return buildLaraImport(code, resource.getFilename());
     }
 
-    // private LaraImportData buildLaraImport(File importingFile) {
-    // return buildLaraImport(importingFile, null);
-    // }
-
     private LaraImportData buildLaraImport(File importingFile, boolean isNpmImport) {
         // NPM imports are always accessed from file
         var code = SpecsIo.read(importingFile);
         var ext = isNpmImport ? "mjs" : null;
-        // SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
-        return buildLaraImport(code, importingFile.getName(), ext, importingFile, isNpmImport);
 
-        // Creating from file, no need to read the code
-        // return buildLaraImport(null, importingFile.getName(), forcedExtension, importingFile);
+        return buildLaraImport(code, importingFile.getName(), ext, importingFile, isNpmImport);
 
     }
 
@@ -201,38 +190,38 @@ public class LaraImporter {
         }
 
         switch (ext) {
-        case "js":
-            var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL, jsFile);
-            // var jsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.NORMAL, jsFile);
-            return jsLaraImport;
-        case "mjs":
-            var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE, jsFile);
-            // var mjsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.MODULE, jsFile);
-            return mjsLaraImport;
-        case "lara":
-            // Compile LARA file
-            var args = new ArrayList<>();
-            args.add(LaraCOptions.getSkipArgs());
-            var lara = new LaraC(args.toArray(new String[0]),
-                    larai.getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
-            lara.setLaraPath(filename);
-            lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
+            case "js":
+                var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL,
+                        jsFile);
+                return jsLaraImport;
+            case "mjs":
+                var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE,
+                        jsFile);
+                return mjsLaraImport;
+            case "lara":
+                // Compile LARA file
+                var args = new ArrayList<>();
+                args.add(LaraCOptions.getSkipArgs());
+                var lara = new LaraC(args.toArray(new String[0]),
+                        larai.getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
+                lara.setLaraPath(filename);
+                lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
 
-            var aspectIr = lara.compile();
+                var aspectIr = lara.compile();
 
-            var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
-            try {
-                var aspectJsCode = processor.toSimpleJs(aspectIr);
-                // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
-                // LARA files need to be transformed, will never use the file to load,
-                // but directly the processed source code
-                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
-            } catch (Exception e) {
-                throw new RuntimeException("Error during LARA compilation", e);
-            }
+                var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
+                try {
+                    var aspectJsCode = processor.toSimpleJs(aspectIr);
+                    // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
+                    // LARA files need to be transformed, will never use the file to load,
+                    // but directly the processed source code
+                    return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error during LARA compilation", e);
+                }
 
-        default:
-            throw new CaseNotDefinedException(ext);
+            default:
+                throw new CaseNotDefinedException(ext);
         }
 
     }
@@ -240,7 +229,8 @@ public class LaraImporter {
     /**
      * Processes JS code that is going to be loaded.
      * 
-     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
+     * Currently adds code to guarantee that the declaring variable of the
+     * laraImport is in the global scope.
      * 
      * @param code
      * @param filename
@@ -266,7 +256,8 @@ public class LaraImporter {
     /**
      * Generates code that needs to be evaluated after import is loaded.
      * 
-     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
+     * Currently adds code to guarantee that the declaring variable of the
+     * laraImport is in the global scope.
      * 
      * @param filename
      * @return

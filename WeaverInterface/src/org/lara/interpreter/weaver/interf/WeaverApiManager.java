@@ -27,7 +27,8 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringLines;
 
 /**
- * Manages a set of resources as files on disk, considering they come from, or will be used by NPM packages.
+ * Manages a set of resources as files on disk, considering they come from, or
+ * will be used by NPM packages.
  */
 public class WeaverApiManager {
 
@@ -60,8 +61,8 @@ public class WeaverApiManager {
 
     /**
      * 
-     * @return a list of folders inside the node_modules folder that correspond to the base folders that laraImport
-     *         should look for APIs
+     * @return a list of folders inside the node_modules folder that correspond to
+     *         the base folders that laraImport should look for APIs
      */
     public List<File> getNpmApiFolders() {
         var nodeModules = getNodeModulesFolder();
@@ -84,8 +85,8 @@ public class WeaverApiManager {
 
     /**
      * 
-     * @return a list of files named core.js inside the node_modules folder that should be executed to enable the core
-     *         LARA environment
+     * @return a list of files named core.js inside the node_modules folder that
+     *         should be executed to enable the core LARA environment
      */
     public List<File> getNpmCoreFiles() {
 
@@ -110,9 +111,6 @@ public class WeaverApiManager {
         // Get weaver id
         var weaverId = engine.getNameAndBuild();
 
-        // Check if this is a unique build, or just a testing build
-        // var isIdUnique = SpecsSystem.getBuildNumber() != null;
-
         // Build temporary folder for this set of APIs
         var baseFoldername = weaverId + "_apis";
         var baseFolder = SpecsIo.getTempFolder(baseFoldername);
@@ -120,9 +118,6 @@ public class WeaverApiManager {
         // Ensure there are two folders inside, npm and core
         prepareNpmFolder(baseFolder, engine);
         prepareCoreFolder(baseFolder, engine);
-
-        // laraApis = Lazy.newInstance(() -> new ResourceCollection(getApiFoldername(APIS_FOLDER_SUFFIX),
-        // SpecsSystem.getBuildNumber() != null, getLaraApis()));
 
         // Get base folder
         SpecsLogs.msgInfo("Weaver API manager: using '" + baseFolder.getAbsolutePath() + "' as base folder");
@@ -135,7 +130,7 @@ public class WeaverApiManager {
 
         // Ensure it has a package.json file
         SpecsIo.write(new File(npmFolder, "package.json"), "{ \"type\" : \"module\" }\n");
-        
+
         File javaFolder = SpecsIo.mkdir(new File(npmFolder, "node_modules/java"));
         SpecsIo.write(new File(javaFolder, "package.json"), "{ \"type\" : \"module\", \"main\": \"index.js\" }\n");
         SpecsIo.write(new File(javaFolder, "index.js"), "export default {};\n");
@@ -213,8 +208,8 @@ public class WeaverApiManager {
             numResources += resources.size();
 
             for (var resource : resources) {
-                // Manually sets destination folder to take into account that LaraResourceProvider
-                // can have extra folders to avoid classpath collision
+                // Manually sets destination folder to take into account that
+                // LaraResourceProvider can have extra folders to avoid classpath collision
                 var destinationFolder = new File(apiFolder, resource.getResourceLocation());
                 SpecsIo.resourceCopy(resource.getResource(), destinationFolder, false);
             }
@@ -231,21 +226,17 @@ public class WeaverApiManager {
 
         // Write checksum file
         var checksumContents = numResources + "\n"
-        // + calculateChecksums(resources).stream().collect(Collectors.joining("\n"));
                 + calculateChecksum(resources);
         SpecsIo.write(new File(destination, CHECKSUM_FILENAME), checksumContents);
-        // SpecsIo.write(new File(destination, CHECKSUM_FILENAME),
-        // "Extracted:\n" + resources.stream().map(r -> r.getResource()).collect(Collectors.joining("\n")));
     }
 
     /**
      * 
      * @param resourcesFolder
-     * @return if true, means that resources need to be extracted to files, false means that folder can be reused as-is
+     * @return if true, means that resources need to be extracted to files, false
+     *         means that folder can be reused as-is
      */
-    // private static boolean isReadyForUse(File resourcesFolder, WeaverEngine engine) {
     private static boolean isReadyForUse(File resourcesFolder, Collection<ResourceProvider> resources) {
-        // System.out.println("CURRENT CHECKSUM: " + calculateChecksum(engine));
         // Check if checksum file exists
         var checksumFile = new File(resourcesFolder, CHECKSUM_FILENAME);
 
@@ -274,18 +265,13 @@ public class WeaverApiManager {
 
         var currentNumberOfResources = resources.size();
 
-        // engine.getApis().values().stream()
-        // .mapToInt(resources -> resources.size())
-        // .count();
-
         // Number of resources changed
         if (numberOfResources != currentNumberOfResources) {
             return false;
         }
 
-        // Calculate checksum of current resources and check if corresponds to the checksum in the file
-        // var savedChecksum = lines.subList(1, lines.size());
-        // var currentChecksum = calculateChecksums(resources);
+        // Calculate checksum of current resources and check if corresponds to the
+        // checksum in the file
         var savedChecksum = lines.get(1);
         var currentChecksum = calculateChecksum(resources);
 
@@ -297,17 +283,7 @@ public class WeaverApiManager {
         return true;
     }
 
-    // private static String calculateChecksum(WeaverEngine engine) {
     private static String calculateChecksum(Collection<ResourceProvider> resources) {
-        // var apis = engine.getApis();
-        //
-        // // Order keys so that checksum is repeatable
-        // var orderedKeys = new ArrayList<>(apis.keySet());
-        // Collections.sort(orderedKeys);
-        //
-        // // Collect the checksum of every resource and concatenate
-        // var concatenatedChecksums = orderedKeys.stream()
-        // .flatMap(key -> apis.get(key).stream())
         var concatenatedChecksums = resources.stream()
                 .map(resource -> SpecsIo.getMd5(SpecsIo.getResource(resource)))
                 .collect(Collectors.joining());

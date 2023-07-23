@@ -110,41 +110,10 @@ public class WeaverLauncher {
         var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
 
         copyAndProcessApiFolder(engine.getApiManager().getCoreFolder(), outputFolder, keepLara);
-
-        // copyAndProcessApiFolder(engine.getApisFolder(), outputFolder, keepLara);
         for (var apiFolder : engine.getApiManager().getNpmApiFolders()) {
             copyAndProcessApiFolder(apiFolder, outputFolder, keepLara);
         }
 
-        /*        
-        // Get APIs
-        var api = new ArrayList<ResourceProvider>();
-        
-        api.addAll(engine.getLaraCore());
-        api.addAll(engine.getLaraApis());
-        
-        // Create LARA compiler
-        // var laraCompiler = new LaraCompiler(engine.getLanguageSpecificationV2());
-        
-        SpecsLogs.info("Extracting APIs to '" + outputFolder.getAbsolutePath() + "'");
-        
-        for (var apiFile : api) {
-            var fileLocation = apiFile.getFileLocation();
-        
-            var destinationFile = new File(outputFolder, fileLocation);
-            var fileContents = SpecsIo.getResource(apiFile);
-        
-            // If LARA file, first convert to JavaScript
-            if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
-                destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
-        
-                fileContents = getLaraCompiler().compile(apiFile.getFilename(), fileContents);
-            }
-        
-            SpecsLogs.info("Writing file " + destinationFile);
-            SpecsIo.write(destinationFile, fileContents);
-        }
-        */
         return true;
     }
 
@@ -197,7 +166,8 @@ public class WeaverLauncher {
     }
 
     /**
-     * Launch Lara Interpreter with the given engine and the input arguments. If no arguments are given a GUI is
+     * Launch Lara Interpreter with the given engine and the input arguments. If no
+     * arguments are given a GUI is
      * launched.
      *
      * <p>
@@ -224,67 +194,7 @@ public class WeaverLauncher {
 
         // No predefined task, just execute as usual
         return LaraI.exec(args, engine);
-
-        /*
-        // If unit testing flag is present, run unit tester
-        Optional<Boolean> unitTesterResult = runUnitTester(args);
-        if (unitTesterResult.isPresent()) {
-            return unitTesterResult.get();
-        }
-        
-        // If doc generator flag is present, run doc generator
-        Optional<Boolean> docGeneratorResult = runDocGenerator(args);
-        if (docGeneratorResult.isPresent()) {
-            return docGeneratorResult.get();
-        }
-        
-        // If server flag is present, run server
-        Optional<Boolean> serverResult = runServer(args);
-        if (serverResult.isPresent()) {
-            return serverResult.get();
-        }
-        
-        return LaraI.exec(args, engine);
-        */
     }
-
-    // /**
-    // * @deprecated
-    // * @param args
-    // * @return
-    // */
-    // @Deprecated
-    // private Optional<Boolean> runUnitTester(String[] args) {
-    // // Look for flag
-    // String unitTestingFlag = "-" + LaraiKeys.getUnitTestFlag();
-    //
-    // int flagIndex = args.length == 0 ? -1 : unitTestingFlag.equals(args[0]) ? 0 : -1;
-    //
-    // // int flagIndex = IntStream.range(0, args.length)
-    // // .filter(index -> unitTestingFlag.equals(args[index]))
-    // // .findFirst()
-    // // .orElse(-1);
-    //
-    // if (flagIndex == -1) {
-    // return Optional.empty();
-    // }
-    //
-    // List<String> laraUnitArgs = new ArrayList<>();
-    // // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
-    // laraUnitArgs.add("--weaver");
-    // laraUnitArgs.add(engine.getClass().getName());
-    //
-    // // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
-    // for (int i = flagIndex + 1; i < args.length; i++) {
-    // laraUnitArgs.add(args[i]);
-    // }
-    //
-    // SpecsLogs.debug("Launching lara-unit with flags '" + laraUnitArgs + "'");
-    //
-    // int unitResults = LaraUnitLauncher.execute(laraUnitArgs.toArray(new String[0]));
-    //
-    // return Optional.of(unitResults == 0);
-    // }
 
     private Boolean executeUnitTester(String[] args) {
 
@@ -308,42 +218,6 @@ public class WeaverLauncher {
         return unitResults == 0;
     }
 
-    // /**
-    // * @deprecated
-    // * @param args
-    // * @return
-    // */
-    // @Deprecated
-    // private Optional<Boolean> runDocGenerator(String[] args) {
-    // // Look for flag
-    // String docGeneratorFlag = "-" + LaraiKeys.getDocGeneratorFlag();
-    //
-    // int flagIndex = args.length == 0 ? -1 : docGeneratorFlag.equals(args[0]) ? 0 : -1;
-    //
-    // // int flagIndex = IntStream.range(0, args.length)
-    // // .filter(index -> docGeneratorFlag.equals(args[index]))
-    // // .findFirst()
-    // // .orElse(-1);
-    //
-    // if (flagIndex == -1) {
-    // return Optional.empty();
-    // }
-    //
-    // List<String> laraDocArgs = new ArrayList<>();
-    // laraDocArgs.add("--weaver");
-    // laraDocArgs.add(engine.getClass().getName());
-    //
-    // for (int i = flagIndex + 1; i < args.length; i++) {
-    // laraDocArgs.add(args[i]);
-    // }
-    //
-    // SpecsLogs.debug("Launching lara-doc with flags '" + laraDocArgs + "'");
-    //
-    // int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
-    //
-    // return Optional.of(docResults != -1);
-    // }
-
     private Boolean executeDocGenerator(String[] args) {
 
         // First index is the task flag
@@ -363,49 +237,6 @@ public class WeaverLauncher {
 
         return docResults != -1;
     }
-
-    // /**
-    // * @deprecated
-    // * @param args
-    // * @return
-    // */
-    // @Deprecated
-    // private Optional<Boolean> runServer(String[] args) {
-    // // Look for flag
-    // String serverFlag = "-" + LaraiKeys.getServerFlag();
-    //
-    // int flagIndex = args.length == 0 ? -1 : serverFlag.equals(args[0]) ? 0 : -1;
-    //
-    // // int flagIndex = IntStream.range(0, args.length)
-    // // .filter(index -> serverFlag.equals(args[index]))
-    // // .findFirst()
-    // // .orElse(-1);
-    //
-    // if (flagIndex == -1) {
-    // return Optional.empty();
-    // }
-    //
-    // SpecsLogs.info("Launching weaver " + engine.getName() + " in server mode");
-    //
-    // LaraI.setServerMode();
-    //
-    // // Remove flag
-    // String[] newArgs = new String[args.length - 1];
-    // int currentIndex = 0;
-    // for (int i = 0; i < args.length; i++) {
-    // if (i == flagIndex) {
-    // continue;
-    // }
-    //
-    // newArgs[currentIndex] = args[i];
-    // currentIndex++;
-    // }
-    //
-    // // Run server
-    // new WeaverServer(engine).execute(newArgs);
-    //
-    // return Optional.of(true);
-    // }
 
     private Boolean executeServer(String[] args) {
 
@@ -444,8 +275,9 @@ public class WeaverLauncher {
      * @param threads
      * @param weaverCommand
      * @param workingDir
-     * @return an array with the same size as the number if args, with strings representing JSON objects that represent
-     *         the outputs of the execution. The order of the results is the same as the args
+     * @return an array with the same size as the number if args, with strings
+     *         representing JSON objects that represent the outputs of the
+     *         execution. The order of the results is the same as the args
      */
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand, String workingDir) {
 
@@ -500,24 +332,8 @@ public class WeaverLauncher {
                 task.get();
             }
 
-            // Arrays.asList(adaptedArgs).stream()
-            // .map(clavaExecutor)
-            // .forEach(null);
-            // .collect(Collectors.toList())
-
-            // customThreadPool.submit(
-
-            // customThreadPool.submit(() -> Arrays.asList(adaptedArgs).parallelStream()
-            // .map(clavaExecutor)
-            // .collect(Collectors.toList())).get();
-
             // Find the file for each execution
             return collectResults(resultFiles);
-
-            // return results.stream()
-            // .filter(result -> result == false)
-            // .findFirst()
-            // .orElse(true);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return collectResults(resultFiles);
@@ -576,27 +392,14 @@ public class WeaverLauncher {
 
     private boolean executeOtherJvm(String[] args, List<String> weaverCommand, File workingDir) {
         try {
-            // DEBUG
-            // if (true) {
-            // return ClavaWeaverLauncher.execute(args);
-            // }
-
             List<String> newArgs = new ArrayList<>();
-            // newArgs.add("java");
-            // newArgs.add("-jar");
-            // newArgs.add("Clava.jar");
-            // newArgs.add("/usr/local/bin/clava");
             newArgs.addAll(weaverCommand);
             newArgs.addAll(Arrays.asList(args));
 
-            // ClavaLog.info(() -> "Launching Clava on another JVM with command: " + newArgs);
-
-            // var result = SpecsSystem.run(newArgs, SpecsIo.getWorkingDir());
             var result = SpecsSystem.run(newArgs, workingDir);
 
             return result == 0;
 
-            // return execute(args);
         } catch (Exception e) {
             SpecsLogs.info("Exception during weaver execution: " + e);
             e.printStackTrace();
