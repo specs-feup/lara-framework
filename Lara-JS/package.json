@@ -4,7 +4,8 @@
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
-    "lara-build-interfaces": "scripts/build-interfaces.js"
+    "lara-build-interfaces": "scripts/build-interfaces.js",
+    "lara-java-dist": "scripts/java-dist.js"
   },
   "files": [
     "api",
