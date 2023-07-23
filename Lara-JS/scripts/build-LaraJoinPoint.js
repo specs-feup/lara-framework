@@ -87,14 +87,13 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
     );
   }
 
+  const jpType: string = obj.getJoinPointType();
   for (const mapper of JoinpointMappers) {
-    if (mapper[obj.getType() as string]) {
-      return new mapper[obj.getType() as string](obj);
+    if (mapper[jpType]) {
+      return new mapper[jpType](obj);
     }
   }
-  throw new Error(
-    "No mapper found for join point type: " + (obj.getJoinPointType() as string)
-  );
+  throw new Error("No mapper found for join point type: " + jpType);
 }\n`
   );
 

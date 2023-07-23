@@ -51,12 +51,13 @@ export function wrapJoinPoint(obj) {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Given Java join point is a Java class but is not a JoinPoint: ${obj.getClass()}`);
     }
+    const jpType = obj.getJoinPointType();
     for (const mapper of JoinpointMappers) {
-        if (mapper[obj.getType()]) {
-            return new mapper[obj.getType()](obj);
+        if (mapper[jpType]) {
+            return new mapper[jpType](obj);
         }
     }
-    throw new Error("No mapper found for join point type: " + obj.getJoinPointType());
+    throw new Error("No mapper found for join point type: " + jpType);
 }
 export function unwrapJoinPoint(obj) {
     if (obj instanceof LaraJoinPoint) {
