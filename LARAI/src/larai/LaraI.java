@@ -986,7 +986,7 @@ public class LaraI {
             SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "')");
+                    laraImport.getFilename() + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")");
         }
 
     }
