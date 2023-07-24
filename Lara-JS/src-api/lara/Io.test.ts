@@ -15,6 +15,7 @@ describe("Io", () => {
 	        const testFile3= Io.writeFile(Io.getPath(testFolder, "test3.doc"), "test3");
             const files: JavaClasses.File[] = Io.getPaths(testFolder, "*.txt");
 	        expect(files.map(file => file.getName()).sort().join()).toBe("test1.txt,test2.txt");	
+            Io.deleteFolder(testFolder);
         
         })
     })
@@ -27,6 +28,7 @@ describe("Io", () => {
 	        const testFile3: JavaClasses.File = Io.writeFile(Io.getPath(testFolder, "test3.doc"), "test3");
             const files: JavaClasses.File[] = Io.getPaths(testFolder);
 	        expect(files.map(file => file.getName()).sort().join()).toBe("test1.txt,test2.txt,test3.doc");	
+            Io.deleteFolder(testFolder);
         })
     })
 });

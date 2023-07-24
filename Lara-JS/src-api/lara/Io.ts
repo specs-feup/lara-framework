@@ -255,7 +255,7 @@ export default class Io {
    * 
    * @returns if the delete operation on the given file was successfull.
    */
-  static deleteFile(fileOrBaseFolder: any, optionalFile?: JavaClasses.File | string) {
+  static deleteFile(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: JavaClasses.File | string) {
     const file = Io.getPath(fileOrBaseFolder, optionalFile);
     return JavaTypes.LaraIo.deleteFile(file) as boolean;
   }
@@ -276,7 +276,7 @@ export default class Io {
    * 
    * @returns true if both the contents and the folder could be deleted
    */
-  static deleteFolder(folderPath: string) {
+  static deleteFolder(folderPath: string | JavaClasses.File) {
     const folder = Io.getPath(folderPath);
     return JavaTypes.SpecsIo.deleteFolder(folder) as boolean;
   }
@@ -288,7 +288,7 @@ export default class Io {
    * 
    * @returns true if the content of the folder could be deleted
    */
-  static deleteFolderContents(folderPath: string) {
+  static deleteFolderContents(folderPath: string | JavaClasses.File) {
     const folder = Io.getPath(folderPath);
     return JavaTypes.SpecsIo.deleteFolderContents(folder) as boolean;
   }
@@ -312,7 +312,7 @@ export default class Io {
    * 
    * @returns true if and only if the file denoted by this abstract pathname exists and is a folder; false otherwise
    */
-  static isFolder(path: any){
+  static isFolder(path: string | JavaClasses.File){
     if (typeof path === "string") {
       path = Io.getPath(path);
     }
@@ -360,7 +360,7 @@ export default class Io {
    * 
    * @returns true if the folder was copied successfully
    */
-  static copyFolder(filepath: string, destination: string, verbose = false) {
+  static copyFolder(filepath: string | JavaClasses.File, destination: string, verbose = false) {
 
     if (filepath === undefined) throw "Value filepath is undefined";
 
@@ -412,7 +412,7 @@ export default class Io {
    *
    * @returns The contents of the file.
    */
-  static readFile(path: string) {
+  static readFile(path: string | JavaClasses.File) {
     const file = Io.newFile(path);
     const content = JavaTypes.SpecsIo.read(file) as string;
     return content;
@@ -426,7 +426,7 @@ export default class Io {
    * @returns true if the content was appended successfully
    */
 
-  static appendFile(path: string, content: any) {
+  static appendFile(path: string | JavaClasses.File, content: any) {
     const file = Io.newFile(path);
     JavaTypes.SpecsIo.append(file, content) as boolean;
   }
@@ -479,7 +479,7 @@ export default class Io {
    * @throws RuntimeException if there are any issues while reading the file or calculating the MD5 checksum
    */
 
-  static md5(fileOrBaseFolder: any, optionalFile?: JavaClasses.File | string): string {
+  static md5(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: string | JavaClasses.File): string {
     return JavaTypes.SpecsIo.getMd5(Io.getPath(fileOrBaseFolder, optionalFile));
   }
 
