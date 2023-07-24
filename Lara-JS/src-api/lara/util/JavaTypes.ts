@@ -88,7 +88,12 @@ export default class JavaTypes {
   }
 
   static isJavaObject<T>(value: T): boolean {
-    return JavaTypes.instanceOf(value, "java.lang.Object");
+    try {
+      (value as any).getClass().getName();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   static get LaraI() {

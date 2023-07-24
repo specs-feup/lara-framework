@@ -52,8 +52,7 @@ export function object2string(obj, space = "", ommitFunctions = false) {
   }
   const type = typeof obj;
   if (type === "object") {
-    // @ts-ignore
-    if (Java.isJavaObject(obj)) {
+    if (JavaTypes.isJavaObject(obj)) {
       return space + JAVA_OBJECT_ANNOTATION + obj.toString();
     } else if (Array.isArray(obj)) {
       let ar = space + "[\n";

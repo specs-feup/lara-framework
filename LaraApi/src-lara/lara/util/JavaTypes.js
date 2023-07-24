@@ -40,7 +40,13 @@ export default class JavaTypes {
         }
     }
     static isJavaObject(value) {
-        return JavaTypes.instanceOf(value, "java.lang.Object");
+        try {
+            value.getClass().getName();
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
     }
     static get LaraI() {
         return JavaTypes.getType("larai.LaraI");
