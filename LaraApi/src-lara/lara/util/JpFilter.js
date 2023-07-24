@@ -47,7 +47,6 @@ export default class JpFilter {
                         break;
                     }
                 }
-                return false;
             }
             return true;
         });
