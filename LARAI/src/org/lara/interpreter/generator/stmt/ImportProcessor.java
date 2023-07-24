@@ -97,18 +97,14 @@ public class ImportProcessor {
 
         // Import all scripts in the new 'core' folder as modules (.mjs)
         var newFilesToImport = engine.getApiManager().getNpmCoreFiles();
-        // System.out.println("NEW CORE FILES: " + newFilesToImport);
         newFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(source -> evaluateImport(SpecsIo.read(source), source.getAbsolutePath(), false,
                         JsFileType.MODULE));
 
         // Import all scripts in the old 'core' folder
         var oldFilesToImport = SpecsIo.getFilesRecursive(engine.getApiManager().getCoreFolder());
-        // System.out.println("OLD CORE FILES: " + oldFilesToImport);
         oldFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(this::importScript);
-
-        // evaluateImport(internalScripts, source.getAbsolutePath(), false, JsFileType.getType(extension));
 
         // List<ResourceProvider> engineScripts = engine.getImportableScripts();
         // engineScripts.forEach(this::importScript);

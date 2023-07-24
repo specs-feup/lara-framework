@@ -142,24 +142,7 @@ public class WeaverStatementProcessor {
         // out.println(select);
         ret.append(LaraIUtils.getSpace(depth) + "//Apply to " + selectLabel + "\n");
 
-        // ret.append(LaraIUtils.getSpace(depth) + "try{\n");
-
         ret.append(getLoopForSelect(selectLabel.toString(), stat.label, select, codeExpr, conditionExpr, depth + 1));
-
-        // ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
-        // ret.append(LaraIUtils.getSpace(depth + 1) + "e = e == undefined?'undefined exception':e;\n");
-        //
-        // ret.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
-        // + ".throwApplyException(e, '" + stat.label + "', '" + selectLabel
-        // + "',this.__currentLine__);\n");
-        // ret.append(LaraIUtils.getSpace(depth) + "}");
-
-        // ret.append(LaraIUtils.getSpace(depth) + "} catch(e){\n");
-
-        // ret.append(LaraIUtils.getSpace(3) + "throw new Error('Execution error in LARA file: " + stat.label + ", "
-        // + selectLabel + ", LARA line ' + this.__currentLine__, { cause: e });\n");
-
-        // ret.append(LaraIUtils.getSpace(depth) + "}");
 
         ret.append(LaraIUtils.getSpace(depth) + "//After: apply to " + selectLabel + "\n");
         ret.append(after);

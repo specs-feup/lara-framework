@@ -527,10 +527,8 @@ function callAspect(aspect) {
 	return aspectObj;
 }
 
-
 let _LARA_IMPORT_LOADED = {};
 
-//async function laraImport(importName) {
 function laraImport(importName) {
 	checkString(importName, "laraImport (LaraCore.js)");
 
@@ -551,20 +549,11 @@ function laraImport(importName) {
 	// Simple import
 	else {
 		LaraI.loadLaraImport(importName);
-		/*
-		const results = LaraI.loadLaraImport(importName);
-		// Await on results
-		for(const result of results) {
-			await result;
-		}
-		*/
-		
 	}
 	
 	
 
 }
-
 
 function _laraImportKleeneStar(packageName) {
 	const laraImports = LaraI.getLaraImportInPackage(packageName);

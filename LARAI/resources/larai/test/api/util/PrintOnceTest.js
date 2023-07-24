@@ -7,12 +7,8 @@ for (const key in globalThis) {
 }
 println("Global this # keys before:" + countBefore);
 */
-globalThis["testing"] = "Test string";
 
 laraImport("lara.util.PrintOnce");
-//await laraImport("lara.util.PrintOnce");
-//LaraI.evalMjs("await laraImport('lara.util.PrintOnce');");
-
 
 /*
 let countAfter = 0;

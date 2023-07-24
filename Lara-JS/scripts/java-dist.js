@@ -121,7 +121,7 @@ const resourcesCode =
         console.log(
           "[PROBLEM] Repeated enum name '" +
             enumName +
-            "'! Probably files where moved, recommended that 'api' folder is deleted"
+            "'! Probably files were moved, recommended that 'api' folder is deleted"
         );
       } else {
         enumNames[enumName] = 0;

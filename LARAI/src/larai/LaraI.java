@@ -962,8 +962,8 @@ public class LaraI {
      * 
      * @param importName
      */
-    public static Object[] loadLaraImport(String importName) {
-        // System.out.println("loadLaraImport '" + importName + "' begin");
+    public static void loadLaraImport(String importName) {
+
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
 
         var laraImporter = getLaraImporter();
@@ -975,21 +975,13 @@ public class LaraI {
         }
 
         // Import JS code
-        List<Object> results = new ArrayList<>();
         for (var laraImport : laraImports) {
             SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
-            // System.out.println("JS CODE:\n" + laraImport.getCode());
-
-            // Modules can return Promises, usually we want to wait on them
-            var result = weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
+            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
-            results.add(result);
-            // weaverEngine.getScriptEngine().await(result);
         }
-        // System.out.println("loadLaraImport '" + importName + "' end");
 
-        return results.toArray();
     }
 
     public static LaraImporter getLaraImporter() {
@@ -1028,9 +1020,4 @@ public class LaraI {
         var laraImporter = getLaraImporter();
         return laraImporter.getImportsFromPackage(packageName);
     }
-
-    // public static Object evalMjs(String code) {
-    // var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-    // return weaverEngine.getScriptEngine().eval(code, JsFileType.MODULE, UUID.randomUUID().toString());
-    // }
 }

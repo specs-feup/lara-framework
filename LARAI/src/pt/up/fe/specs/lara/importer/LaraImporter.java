@@ -273,21 +273,11 @@ public class LaraImporter {
      */
     private String processCode(String filename, File jsFile) {
 
-        var template2 = ""
-                // + "println('JS CODE BEGIN');\n"
-
+        var template2 = "import * as Foo from \"<IMPORT_NAME>\"\n"
                 + "\n"
-                + "//await import('<IMPORT_NAME>');\n"
-                + "//println('After await import');\n"
-                + "import * as Foo from \"<IMPORT_NAME>\"\n"
-                + "\n"
-                // + "async function foo() {"
-
                 + "const foo = Object.entries(Foo);\n"
-                // + "println('Eval for import: <IMPORT_NAME>')\n"
                 + "foo.forEach(([key, value]) => {\n"
                 + "\n"
-                + "//println('Original key: ' + key);\n"
                 + "    if (key === \"default\") {\n"
                 + "        // Get the name of the class from the file path.\n"
                 + "        key = \"<MODULE_NAME>\";\n"
@@ -295,18 +285,8 @@ public class LaraImporter {
                 + "\n"
                 + "    // @ts-ignore\n"
                 + "    globalThis[key] = value;\n"
-                + "//println('Adding to globalThis: ' + key);\n"
-                + "//println('value: ' + value);\n"
                 + "});\n"
-                + "//println('TEST: ' + globalThis['testing'])\n"
-                + "//globalThis.PrintOnce = 0;\n"
-                + "//println('globalThis.PrintOnce: ' + globalThis['PrintOnce'])\n"
-
-                // + "}"
-                // + "await foo();\n"
-
-                // + "println('JS CODE END')"
-                + "\n";
+                + "";
 
         // Find node modules folder
         var filepath = jsFile.getAbsolutePath();
