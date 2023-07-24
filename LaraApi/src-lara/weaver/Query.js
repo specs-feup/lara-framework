@@ -26,7 +26,7 @@ export default class Query {
      * @returns The results of the search.
      */
     static search(type, filter, traversal = TraversalType.PREORDER) {
-        return Query.searchFrom(undefined, type, filter, traversal);
+        return new Selector().search(type, filter, traversal);
     }
     /**
      * In-depth search of nodes of the given type, starting from a base node (exclusive).
@@ -39,7 +39,6 @@ export default class Query {
      * @returns The results of the search.
      */
     static searchFrom($baseJp, type, filter, traversal = TraversalType.PREORDER) {
-        // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
         return new Selector($baseJp).search(type, filter, traversal);
     }
     /**

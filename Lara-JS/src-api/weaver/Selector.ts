@@ -16,7 +16,7 @@ interface SelectorChain {
 export type SelectorFilter =
   | string
   | RegExp
-  | { [key: string]: RegExp | ((str: string) => boolean) | string }
+  | { [key: string]: RegExp | ((str: string) => boolean) | string | boolean }
   | ((str: string) => boolean);
 
 /**
@@ -45,6 +45,7 @@ export default class Selector {
     const copy = Object.assign({}, $jpChain);
 
     copy.counter = copy.counter.copy();
+    copy.jpAttributes = Object.assign({}, copy.jpAttributes);
 
     return copy;
   }
@@ -58,7 +59,7 @@ export default class Selector {
 
   private static parseFilter(
     filter: SelectorFilter = {},
-    joinPointTypeName: string
+    joinPointTypeName = ""
   ): JpFilter {
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
     if (typeof filter !== "object" || filter instanceof RegExp) {
@@ -93,11 +94,11 @@ export default class Selector {
       for (const $jpChain of this.$currentJps) {
         yield $jpChain.jpAttributes[this.lastName];
       }
-      yield undefined;
     } else {
       console.log(
         "Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)"
       );
+      yield undefined;
     }
 
     this.$currentJps = undefined;
@@ -115,16 +116,12 @@ export default class Selector {
     filter: SelectorFilter = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
-    if (traversal === undefined) {
-      traversal = TraversalType.PREORDER;
-    }
-
     switch (traversal) {
       case TraversalType.PREORDER:
         return this.searchPrivate(
           name,
           Selector.parseFilter(filter, name),
-          function ($jp: LaraJoinPoint, name: string) {
+          function ($jp: LaraJoinPoint, name?: string) {
             return JoinPointsBase.descendants($jp, name);
           }
         );
@@ -132,13 +129,14 @@ export default class Selector {
         return this.searchPrivate(
           name,
           Selector.parseFilter(filter, name),
-          function ($jp: LaraJoinPoint, name: string) {
+          function ($jp: LaraJoinPoint, name?: string) {
             return JoinPointsBase.descendantsPostorder($jp, name);
           }
         );
       default:
         throw new Error(
-          `Traversal type not implemented: ${traversal.toString()}`
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `Traversal type not implemented: ${traversal}`
         );
     }
   }
@@ -155,7 +153,7 @@ export default class Selector {
     return this.searchPrivate(
       type,
       Selector.parseFilter(filter, type),
-      function ($jp: LaraJoinPoint, name: string) {
+      function ($jp: LaraJoinPoint, name?: string) {
         return JoinPointsBase.children($jp, name);
       }
     );
@@ -169,29 +167,21 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  scope(name: string, filter: SelectorFilter = {}): Selector {
+  scope(name?: string, filter: SelectorFilter = {}): Selector {
     return this.searchPrivate(
       name,
       Selector.parseFilter(filter, name),
-      function ($jp: LaraJoinPoint, name: string) {
+      function ($jp: LaraJoinPoint, name?: string) {
         return JoinPointsBase.scope($jp, name);
       }
     );
   }
 
   private searchPrivate(
-    name: string,
+    name: string | undefined = undefined,
     jpFilter: JpFilter,
-    selectFunction: (jp: LaraJoinPoint, name: string) => LaraJoinPoint[]
+    selectFunction: (jp: LaraJoinPoint, name?: string) => LaraJoinPoint[]
   ) {
-    if (selectFunction === undefined) {
-      throw "value is undefined";
-    }
-
-    if (name === undefined) {
-      name = "joinpoint";
-    }
-
     const $newJps: SelectorChain[] = [];
 
     // If add base jp, this._$currentJps must have at most 1 element
@@ -226,12 +216,12 @@ export default class Selector {
 
       const $allJps = selectFunction($jp, name);
 
-      this.addJps($newJps, $allJps, jpFilter, $jpChain, name);
+      this.addJps($newJps, $allJps, jpFilter, $jpChain, name ?? "joinpoint");
     }
 
     // Update
     this.$currentJps = $newJps;
-    this.lastName = name;
+    this.lastName = name ?? "joinpoint";
 
     return this;
   }
@@ -252,7 +242,7 @@ export default class Selector {
 
       if ($filteredJp.length > 1) {
         throw `Selector._addJps: Expected $filteredJp to have length 1, has 
-          ${$filteredJp.length}`;
+        ${$filteredJp.length}`;
       }
 
       // Copy chain
@@ -280,7 +270,8 @@ export default class Selector {
       return [];
     }
 
-    const returnJps = [];
+    const returnJps: LaraJoinPoint[] = [];
+
     for (const $jpChain of this.$currentJps) {
       returnJps.push($jpChain.jpAttributes[this.lastName]);
     }
@@ -300,7 +291,7 @@ export default class Selector {
       return [];
     }
 
-    const returnJps = this.$currentJps;
+    const returnJps = this.$currentJps.map((chain) => chain.jpAttributes);
 
     this.$currentJps = undefined;
     return returnJps;

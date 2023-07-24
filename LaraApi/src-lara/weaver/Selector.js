@@ -25,6 +25,7 @@ export default class Selector {
     static copyChain($jpChain) {
         const copy = Object.assign({}, $jpChain);
         copy.counter = copy.counter.copy();
+        copy.jpAttributes = Object.assign({}, copy.jpAttributes);
         return copy;
     }
     static newJpChain($startingPoint) {
@@ -33,7 +34,7 @@ export default class Selector {
             jpAttributes: { _starting_point: $startingPoint },
         };
     }
-    static parseFilter(filter = {}, joinPointTypeName) {
+    static parseFilter(filter = {}, joinPointTypeName = "") {
         // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
         if (typeof filter !== "object" || filter instanceof RegExp) {
             // Get default attribute
@@ -61,10 +62,10 @@ export default class Selector {
             for (const $jpChain of this.$currentJps) {
                 yield $jpChain.jpAttributes[this.lastName];
             }
-            yield undefined;
         }
         else {
             console.log("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
+            yield undefined;
         }
         this.$currentJps = undefined;
     }
@@ -76,9 +77,6 @@ export default class Selector {
      * @returns The results of the search.
      */
     search(name, filter = {}, traversal = TraversalType.PREORDER) {
-        if (traversal === undefined) {
-            traversal = TraversalType.PREORDER;
-        }
         switch (traversal) {
             case TraversalType.PREORDER:
                 return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
@@ -89,7 +87,9 @@ export default class Selector {
                     return JoinPointsBase.descendantsPostorder($jp, name);
                 });
             default:
-                throw new Error(`Traversal type not implemented: ${traversal.toString()}`);
+                throw new Error(
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                `Traversal type not implemented: ${traversal}`);
         }
     }
     /**
@@ -118,13 +118,7 @@ export default class Selector {
             return JoinPointsBase.scope($jp, name);
         });
     }
-    searchPrivate(name, jpFilter, selectFunction) {
-        if (selectFunction === undefined) {
-            throw "value is undefined";
-        }
-        if (name === undefined) {
-            name = "joinpoint";
-        }
+    searchPrivate(name = undefined, jpFilter, selectFunction) {
         const $newJps = [];
         // If add base jp, this._$currentJps must have at most 1 element
         if (this.addBaseJp && this.$currentJps !== undefined) {
@@ -151,11 +145,11 @@ export default class Selector {
         for (const $jpChain of this.$currentJps) {
             const $jp = $jpChain.jpAttributes[this.lastName];
             const $allJps = selectFunction($jp, name);
-            this.addJps($newJps, $allJps, jpFilter, $jpChain, name);
+            this.addJps($newJps, $allJps, jpFilter, $jpChain, name ?? "joinpoint");
         }
         // Update
         this.$currentJps = $newJps;
-        this.lastName = name;
+        this.lastName = name ?? "joinpoint";
         return this;
     }
     addJps($newJps, $jps, jpFilter, $jpChain, name) {
@@ -166,7 +160,7 @@ export default class Selector {
             }
             if ($filteredJp.length > 1) {
                 throw `Selector._addJps: Expected $filteredJp to have length 1, has 
-          ${$filteredJp.length}`;
+        ${$filteredJp.length}`;
             }
             // Copy chain
             const $updatedChain = Selector.copyChain($jpChain);
@@ -201,7 +195,7 @@ export default class Selector {
             console.log("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
             return [];
         }
-        const returnJps = this.$currentJps;
+        const returnJps = this.$currentJps.map((chain) => chain.jpAttributes);
         this.$currentJps = undefined;
         return returnJps;
     }

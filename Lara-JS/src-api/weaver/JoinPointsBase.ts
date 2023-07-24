@@ -81,8 +81,7 @@ export abstract class JoinPointsBase {
    *
    * @returns the nodes inside the scope of the given node.
    */
-
-  static scope($jp: LaraJoinPoint, jpType: string): LaraJoinPoint[] {
+  static scope($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
     return JoinPointsBase._getNodes(
       JoinPointsBase._all_scope_nodes,
       $jp,
@@ -94,7 +93,7 @@ export abstract class JoinPointsBase {
    *
    * @returns the children of the given node, according to the AST
    */
-  static children($jp: LaraJoinPoint, jpType: string): LaraJoinPoint[] {
+  static children($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
     return JoinPointsBase._getNodes(JoinPointsBase._all_children, $jp, jpType);
   }
 
@@ -102,7 +101,7 @@ export abstract class JoinPointsBase {
    *
    * @returns the descendants of the given node, according to the AST, preorder traversal
    */
-  static descendants($jp: LaraJoinPoint, jpType: string): LaraJoinPoint[] {
+  static descendants($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
     return JoinPointsBase._getNodes(
       JoinPointsBase._all_descendants,
       $jp,
@@ -116,7 +115,7 @@ export abstract class JoinPointsBase {
    */
   static descendantsPostorder(
     $jp: LaraJoinPoint,
-    jpType: string
+    jpType?: string
   ): LaraJoinPoint[] {
     return JoinPointsBase._getNodes(
       JoinPointsBase._all_descendants_postorder,
@@ -130,13 +129,13 @@ export abstract class JoinPointsBase {
    * @returns  the nodes related with the given node, according to the search function
    */
   static _getNodes(
-    searchFunction: Function,
+    searchFunction: ($jp: LaraJoinPoint) => LaraJoinPoint[],
     $jp: LaraJoinPoint,
     jpType?: string
   ): LaraJoinPoint[] {
     // TODO: This function can be optimized by using streaming
 
-    const descendants = searchFunction($jp);
+    const descendants: LaraJoinPoint[] = searchFunction($jp);
 
     if (jpType === undefined) {
       return descendants;
