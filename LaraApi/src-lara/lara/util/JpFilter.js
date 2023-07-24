@@ -25,13 +25,29 @@ export default class JpFilter {
                     key = key.substring(rxPrefix.length);
                 }
                 const pattern = this.rules[key];
-                const attributeValue = Object.getOwnPropertyDescriptor(jp, key)?.value;
-                if (attributeValue === undefined ||
-                    (pattern instanceof RegExp && !pattern.test(attributeValue)) ||
-                    (typeof pattern === "function" && !pattern(attributeValue)) ||
-                    (typeof pattern === "string" && attributeValue !== pattern)) {
-                    return false;
+                for (let obj = jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
+                    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+                    if (descriptor !== undefined) {
+                        let attributeValue = undefined;
+                        if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
+                            attributeValue = descriptor.get?.call?.(jp);
+                        }
+                        else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
+                            attributeValue = descriptor.value;
+                        }
+                        else {
+                            continue;
+                        }
+                        if ((pattern instanceof RegExp && !pattern.test(attributeValue)) ||
+                            (typeof pattern === "function" && !pattern(attributeValue)) ||
+                            (typeof pattern === "string" && attributeValue !== pattern) ||
+                            (typeof pattern === "boolean" && attributeValue !== pattern)) {
+                            return false;
+                        }
+                        break;
+                    }
                 }
+                return false;
             }
             return true;
         });

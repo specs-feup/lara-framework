@@ -1,5 +1,9 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
 
+type JpFilterRules = {
+  [key: string]: RegExp | ((str: string) => boolean) | string | boolean;
+};
+
 /**
  * Filters join points according to the given rules.
  *
@@ -9,13 +13,9 @@ import { LaraJoinPoint } from "../../LaraJoinPoint.js";
  * @deprecated Use the javascript .filter() method instead.
  */
 export default class JpFilter {
-  private rules: {
-    [key: string]: RegExp | ((str: string) => boolean) | string;
-  };
+  private rules: JpFilterRules;
 
-  constructor(rules: {
-    [key: string]: RegExp | ((str: string) => boolean) | string;
-  }) {
+  constructor(rules: JpFilterRules) {
     this.rules = rules;
   }
 
@@ -34,19 +34,32 @@ export default class JpFilter {
         }
 
         const pattern = this.rules[key];
-        const attributeValue: string = Object.getOwnPropertyDescriptor(
-          jp,
-          key
-        )?.value;
 
-        if (
-          attributeValue === undefined ||
-          (pattern instanceof RegExp && !pattern.test(attributeValue)) ||
-          (typeof pattern === "function" && !pattern(attributeValue)) ||
-          (typeof pattern === "string" && attributeValue !== pattern)
-        ) {
-          return false;
+        for (let obj = jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
+          const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+          if (descriptor !== undefined) {
+            let attributeValue: any = undefined;
+            if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
+              attributeValue = descriptor.get?.call?.(jp);
+            } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
+              attributeValue = descriptor.value;
+            } else {
+              continue;
+            }
+
+            if (
+              (pattern instanceof RegExp && !pattern.test(attributeValue)) ||
+              (typeof pattern === "function" && !pattern(attributeValue)) ||
+              (typeof pattern === "string" && attributeValue !== pattern) ||
+              (typeof pattern === "boolean" && attributeValue !== pattern)
+            ) {
+              return false;
+            }
+
+            break;
+          }
         }
+        return false;
       }
 
       return true;
