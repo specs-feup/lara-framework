@@ -1,8 +1,10 @@
 /**
  * Enumeration of AST traversal types.
  */
-export default class TraversalType {
-    static PREORDER = "preorder";
-    static POSTORDER = "postorder";
-}
+var TraversalType;
+(function (TraversalType) {
+    TraversalType["PREORDER"] = "preorder";
+    TraversalType["POSTORDER"] = "postorder";
+})(TraversalType || (TraversalType = {}));
+export default TraversalType;
 //# sourceMappingURL=TraversalType.js.map
