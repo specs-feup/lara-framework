@@ -19,7 +19,6 @@ import org.lara.interpreter.generator.js.ExpressionProcessor;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.utils.Coordinates;
-import org.lara.interpreter.utils.ExceptionUtils;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.weaver.MasterWeaver;
@@ -57,7 +56,6 @@ public class AspectClassProcessor {
 
     private AspectClassProcessor(Interpreter interpreter) {
         this.interpreter = interpreter;
-
     }
 
     // public StringBuilder generateJavaScriptDocV1(Aspects asps) {
@@ -103,23 +101,8 @@ public class AspectClassProcessor {
         currentAspect = "";
         interpreter.out().println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Interpreting Aspects"));
         long begin = System.currentTimeMillis();
-        final StringBuilder code;
-        if (asps.aspects.isEmpty()) {
-            interpreter.out().warnln("No aspects to execute!");
-            code = new StringBuilder();
-        } else {
-            // code = generateAspects(asps, true);
-            code = generateAspects(asps, true);
-            // System.out.println("--- LARADOC V1 START ---");
-            // System.out.println(generateJavaScriptDocV1(asps));
-            // System.out.println("--- LARADOC V1 END ---");
-            // System.out.println("--- LARADOC V2 START ---");
-            // System.out.println(generateJavaScriptDoc(asps));
-            // System.out.println("--- LARADOC V2 END ---");
-        }
 
-        code.append(MasterWeaver.WEAVER_NAME);
-        code.append(".close();\n");
+        var code = getMainCallCode(asps, true);
 
         interpreter.getLaraI().appendJs(code);
 
@@ -133,6 +116,21 @@ public class AspectClassProcessor {
         long end = System.currentTimeMillis() - begin;
         interpreter.getLaraI().getWeavingProfile().report(ReportField.LARA_TO_JS_TIME, (int) end);
         interpreter.out().println(MessageConstants.getElapsedTimeMessage(end));
+
+        return code;
+    }
+
+    public StringBuilder getMainCallCode(Aspects asps, boolean evaluate) {
+        final StringBuilder code;
+        if (asps.aspects.isEmpty()) {
+            interpreter.out().warnln("No aspects to execute!");
+            code = new StringBuilder();
+        } else {
+            code = generateAspects(asps, evaluate);
+        }
+
+        code.append(MasterWeaver.WEAVER_NAME);
+        code.append(".close();\n");
 
         return code;
     }
@@ -256,8 +254,7 @@ public class AspectClassProcessor {
                 + "throw new UserException('error: function [aspect()]"
                 + " must be used as constructor!'," + line
                 + ");\n\n");
-        // inputInit.append(LaraIUtils.getSpace(1) + "//with(this){\n");
-        inputInit.append(LaraIUtils.getSpace(1) + "with(this){\n");
+
         final StringBuilder outputInit = new StringBuilder();
         final boolean hasInput = (asp.parameters != null) && (asp.parameters.input != null);
         final boolean hasOutput = (asp.parameters != null) && (asp.parameters.output != null);
@@ -278,8 +275,6 @@ public class AspectClassProcessor {
             }
         }
         if (hasOutput) {
-            // outputInit.append(LaraIUtils.getSpace(1) + "//with(this) {");
-            outputInit.append(LaraIUtils.getSpace(1) + "with(this) {");
             for (final Parameter param : asp.parameters.output.parameters) {
 
                 outputInit.append(LaraIUtils.getSpace(2) + "this." + param.name + " = ");
@@ -291,11 +286,8 @@ public class AspectClassProcessor {
                 outputInit.append(";\n");
 
             }
-            // outputInit.append(LaraIUtils.getSpace(1) + "//}");
-            outputInit.append(LaraIUtils.getSpace(1) + "}");
         }
-        // inputInit.append(LaraIUtils.getSpace(1) + "//}\n");
-        inputInit.append(LaraIUtils.getSpace(1) + "}\n");
+
         final StringBuilder staticFields = new StringBuilder();
         if (asp.staticBlock != null) {
             for (final Statement stat : asp.staticBlock.statements) {
@@ -341,16 +333,14 @@ public class AspectClassProcessor {
         aspectConstructor.append("\n");
         aspectConstructor.append(LaraIUtils.getSpace(1) + "this.checked = undefined;\n");
         aspectConstructor.append(LaraIUtils.getSpace(1) + "this.exception = null;\n");
-        aspectConstructor.append(LaraIUtils.getSpace(1) + "__init_section = false;\n");
+        aspectConstructor.append(LaraIUtils.getSpace(1) + "globalThis.__init_section = false;\n");
 
         // TRIGGER ASPECT BEGIN EVENT
         if (interpreter.hasEvents()) {
 
             EventTriggerGenerator.triggerAspectBegin(asp, aspectConstructor, hasInput, 1);
         }
-        // aspectConstructor.append(LaraIUtils.getSpace(1) + "//with (this){\n");
-        aspectConstructor.append(LaraIUtils.getSpace(1) + "with (this){\n");
-        // generateFilterMethod(aspectConstructor, 2);
+        
         aspectConstructor.append(LaraIUtils.getSpace(2) + "try{\n");
 
         if (asp.initialize != null) {
@@ -358,7 +348,7 @@ public class AspectClassProcessor {
                 aspectConstructor.append(interpreter.getJavascriptString(stat, 3));
             }
         }
-        aspectConstructor.append(LaraIUtils.getSpace(3) + "__init_section = true;\n");
+        aspectConstructor.append(LaraIUtils.getSpace(3) + "globalThis.__init_section = true;\n");
         if (asp.check != null) {
             aspectConstructor.append(LaraIUtils.getSpace(3) + "if(");
             aspectConstructor.append(interpreter.getJavascriptString(asp.check, 0));
@@ -374,56 +364,17 @@ public class AspectClassProcessor {
             aspectConstructor.append(LaraIUtils.getSpace(4) + "this.__currentLine__= " + statLineBegin + ";\n");
             StringBuilder statementString = interpreter.getJavascriptString(stat, 4);
             aspectConstructor.append(statementString);
-            // int naiveCount = StringUtils.naiveCounter(statementString, '\n');
-            // for (int i = 0; i < naiveCount; i++) {
-            // lines.put("" + (startLine + i), statLineBegin);
-            // }
-            // startLine += naiveCount;
+
         }
 
         aspectConstructor.append(LaraIUtils.getSpace(3) + "} else this.checked = false;\n");
-        aspectConstructor.append(LaraIUtils.getSpace(2) + "} catch (e){\n");
-        aspectConstructor.append(LaraIUtils.getSpace(3) + "this.exception = e;\n");
-        aspectConstructor.append(LaraIUtils.getSpace(3) + "e = e == undefined?'undefined exception':e;\n");
-        aspectConstructor.append(LaraIUtils.getSpace(3)
-                + "this.__currentLine__ = this.__currentLine__ == undefined?1:this.__currentLine__;\n");
-        // Gson gson = new Gson();
-        // String json = gson.toJson(lines);
+
+        aspectConstructor.append(LaraIUtils.getSpace(2) + "} catch(e){\n");
+
         String aspectCoords = coord.replace("\\", "\\\\");
-        aspectConstructor.append(LaraIUtils.getSpace(3) + ExceptionUtils.class.getSimpleName()
-                + ".throwAspectException(e, '" + asp.name + "','" + aspectCoords + "',this.__currentLine__);\n");
-        // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw " + ExceptionUtils.class.getSimpleName()
-        // + ".processAspectException(e, '" + asp.name + "','" + aspectCoords
-        // + "',this.__currentLine__).toString();\n");
-
-        // + ".throwAspectException(e, e.rhinoException, '" + asp.name +
-        // "'," + json + ");\n");
-        // aspectConstructor.append(LaraIUtils.getSpace(3) + "var
-        // laraNumber = 0;var jsLineNumber =0;\n");
-        // aspectConstructor.append(LaraIUtils.getSpace(3) +
-        // "println(e);\n");
-        // aspectConstructor.append(LaraIUtils.getSpace(3) + "throw new
-        // " + AspectDefException.class.getSimpleName());
-        // aspectConstructor.append("('" + asp.name +
-        // "',laraNumber,jsLineNumber,new
-        // java.lang.RuntimeException(e));\n");
-        // aspectConstructor.append(LaraIUtils.getSpace(3) +
-        // "println('Exception on call " + asp.name
-        // + " :\\n\\t'+ this.exception);\n");
-        // if (this.options.isDebug()) {
-        // aspectConstructor.append(LaraIUtils.getSpace(3) +
-        // "this.exception.rhinoException.printStackTrace();\n");
-        // // aspectConstructor.append("for(prop in
-        // this.exception.rhinoException) println(prop);\n");
-        // }
-
-        // aspectConstructor.append(LaraIUtils.getSpace(3) + "this.exception =
-        // '';\n");
-        aspectConstructor.append(LaraIUtils.getSpace(2) + "} finally {\n");
-        if (asp.finalize != null) {
-            aspectConstructor.append(LaraIUtils.getSpace(3) + "if (__init_section)");
-            aspectConstructor.append(interpreter.getJavascriptString(asp.finalize, -3));
-        }
+        aspectConstructor
+                .append(LaraIUtils.getSpace(3) + "throw new Error('\\nExecution error in " + aspectCoords
+                        + ", line ' + this.__currentLine__ + ':' + e.message, { cause: e });\n");
 
         // TRIGGER ASPECT END EVENT
         if (interpreter.hasEvents()) {
@@ -433,14 +384,9 @@ public class AspectClassProcessor {
 
         aspectConstructor.append(LaraIUtils.getSpace(2) + "}\n");
 
-        // aspectConstructor.append(LaraIUtils.getSpace(1) + "//}\n");
-        aspectConstructor.append(LaraIUtils.getSpace(1) + "}\n");
-
         aspectConstructor.append("}\n");
 
         if (asp.staticBlock != null) {
-            // aspectConstructor.append("//with(" + asp.name + "){\n");
-            aspectConstructor.append("with(" + asp.name + "){\n");
             for (final Statement stat : asp.staticBlock.statements) {
                 final String sufix = ";\n";
                 if (stat.name.equals("fndecl")) {
@@ -462,8 +408,6 @@ public class AspectClassProcessor {
                     aspectConstructor.append(interpreter.processStatement(stat, asp.name + ".", 1, sufix));
                 }
             }
-            // aspectConstructor.append("//}\n");
-            aspectConstructor.append("}\n");
         }
         // if (this.options.isDebug()) {
         // this.out.println(aspectConstructor.toString());
@@ -485,17 +429,6 @@ public class AspectClassProcessor {
         } else {
             // String aspectArguments = StringUtils.join(this.options.getAspectArgumentsStr(), ", ");
             String aspectArguments = aspectArgumentsStr.trim();
-
-            /*
-            	final List<String> aspectArgumentsList = options.getAspectArg();
-            	String aspectArguments = "";
-            	for (int i = 0; i < aspectArgumentsList.size() - 1; i++) {
-            		final String arg = aspectArgumentsList.get(i);
-            		aspectArguments += arg + ", ";
-            	}
-            	final String arg = aspectArgumentsList.get(aspectArgumentsList.size() - 1);
-            	aspectArguments += arg;
-            */
 
             if (aspectArguments.startsWith("{") && aspectArguments.endsWith("}")) {
                 // Assume that arguments are given in a JSON format
@@ -539,7 +472,6 @@ public class AspectClassProcessor {
                 code.append(outputObjName + "." + param.name + " = " + mainName + "." + param.name);
                 code.append(";\n");
             }
-            // code.append("printObject("+outputObjName+");\n");
 
         }
 
@@ -576,6 +508,10 @@ public class AspectClassProcessor {
     }
 
     public String toSimpleJs(Document aspectIR) throws DOMException, Exception {
+        return toSimpleJs(aspectIR, false);
+    }
+
+    public String toSimpleJs(Document aspectIR, boolean addMain) throws DOMException, Exception {
         StringBuilder jsCode = new StringBuilder();
 
         var docChildren = aspectIR.getChildNodes();
@@ -613,22 +549,12 @@ public class AspectClassProcessor {
             SpecsLogs.info("Element not implemented yet: " + nodeName);
         }
 
-        // // first the aspects declaration
-        // try {
-        // for (final Aspect asp : asps.aspects.values()) {
-        // setCurrentAspect(asp.name);
-        // jsCode.append(getAspectJavascript(asp));
-        // }
-        //
-        // // then the global variables declaration
-        // for (final Statement stmt : asps.declarations) {
-        // jsCode.append(interpreter.getJavascriptString(stmt, 0));
-        // }
-        //
-        // } catch (Exception e) {
-        // throw new LaraIException(SpecsIo.getCanonicalPath(interpreter.getOptions().getLaraFile()),
-        // "generating documentation", e);
-        // }
+        if (addMain) {
+            var asps = new Aspects(aspectIR, "");
+            var mainCode = getMainCallCode(asps, false);
+
+            jsCode.append("\n\n// Main call\n\n" + mainCode);
+        }
 
         return jsCode.toString();
 

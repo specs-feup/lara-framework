@@ -64,6 +64,7 @@ import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
@@ -715,10 +716,13 @@ public class LaraI {
             }
             // If LARA file
             else {
-                compile(weaverEngine.getLanguageSpecificationV2());
-                startAspectIR();
-                final StringBuilder mainCall = interpreter.interpretLara(asps);
-                interpreter.executeMainAspect(mainCall);
+                var laraJsCode = SpecsSystem.executeOnThreadAndWait(() -> {
+                    var laraCompiler = new LaraCompiler(weaverEngine.getLanguageSpecificationV2()).setAddMain(true);
+                    return laraCompiler.compile(options.getLaraFile());
+                });
+                // System.out.println("CODE:\n" + laraJsCode);
+                interpreter.executeMainAspect(laraJsCode, JsFileType.MODULE,
+                        options.getLaraFile().getAbsolutePath() + "->js");
             }
 
             String main = options.getMainAspect();
@@ -976,7 +980,6 @@ public class LaraI {
 
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
-
         }
 
     }
