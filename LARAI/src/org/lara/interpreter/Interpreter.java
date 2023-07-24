@@ -1283,15 +1283,10 @@ public class Interpreter {
      * Change the print stream where the javascript output is going
      */
     private void setprintStream(PrintStream printStream) {
-        // private void setprintStream(OutputStream printStream) {
 
-        put("outputStream", printStream);
-        // engine.getEngine().put("outputStream", printStream);
-        // engine.put(engine.getBindings(), "outputStream", printStream);
-        // engine.getEngine().put("errorStream", printStream);
-        put("errorStream", printStream);
-        // System.out.println("PRINTSTREAM: " + printStream);
-        // System.out.println("BINDINGS AFTER: " + engine.get(engine.getBindings(), "outputStream"));
+        // Get function
+        var streamSetter = engine.eval("setPrintStream");
+        engine.call(streamSetter, printStream);
     }
 
     /**
@@ -1301,9 +1296,16 @@ public class Interpreter {
      * @param value
      */
     public void put(String key, Object value) {
+        // Get function
+        // var setterFunction = engine.eval("setGlobalThis");
+        // var setterFunction = engine.eval("function setGlobalThis(key, value) {\n"
+        // + " globalThis[key] = value;\n"
+        // + "}\n"
+        // + "setGlobalThis;");
+        //
+        // engine.call(setterFunction, key, value);
+        // System.out.println("STREAM: " + value);
         engine.put(key, value);
-        // engine.getEngine().put(key, value);
-        // engine.put(engine.getBindings(), key, value);
 
     }
 

@@ -81,9 +81,21 @@ const javaDestinationFile =
   "../LaraApi/src-java/pt/up/fe/specs/lara/" + javaClassname + ".java";
 
 const resources = {};
+const filesSet = {};
 
 copiedFiles.forEach((file) => {
-  resources[path.basename(file)] = path
+  const fileName = path.basename(file);
+
+  if (fileName in filesSet) {
+    throw Error(
+      "Found duplicated file '" +
+        fileName +
+        "'. Check, for instance, if 'api' folder is clean"
+    );
+  }
+  filesSet[fileName] = 0;
+
+  resources[fileName] = path
     .relative(jsDestinationFolder, file)
     .toString()
     .replace(/\\/g, "/");

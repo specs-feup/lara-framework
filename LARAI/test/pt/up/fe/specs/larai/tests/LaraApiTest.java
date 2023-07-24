@@ -150,7 +150,7 @@ public class LaraApiTest {
     }
 
     @Test
-    public void testLaraCoreJs() {
-        newTester().test("LaraCoreTest.js");
+    public void testJavaTypes() {
+        newTester().test("util/JavaTypesTest.js");
     }
 }

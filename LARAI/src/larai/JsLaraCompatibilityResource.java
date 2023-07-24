@@ -28,7 +28,7 @@ public enum JsLaraCompatibilityResource implements ResourceProvider {
             "LaraObject.js"),
     MERGE("merge.js"),
     NAMED_ARGUMENTS("namedArguments.js"),
-    OUTPUT("output.js"),
+    // OUTPUT("output.js"), // Moved to TS
     SELECT(
             "select.js"),
     TOOL_EXECUTION("toolExecution.js"),

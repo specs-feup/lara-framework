@@ -66,7 +66,7 @@ class Graphs {
    * @returns
    */
   static toDot(graph, dotFormatter) {
-    dotFormatter ?? new DotFormatter();
+    dotFormatter ??= new DotFormatter();
 
     var dot = "digraph test {\n";
 

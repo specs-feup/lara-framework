@@ -184,3 +184,4 @@ export function checkArray(variable: any, source: string) {
 export function isArray(value: any) {
   return value instanceof Array;
 }
+

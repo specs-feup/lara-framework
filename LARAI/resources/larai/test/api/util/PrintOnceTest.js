@@ -13,10 +13,7 @@ laraImport("lara.util.PrintOnce");
 //await laraImport("lara.util.PrintOnce");
 //LaraI.evalMjs("await laraImport('lara.util.PrintOnce');");
 
-println(
-  "PrintOnce existis in globalThis? : " +
-    (globalThis["PrintOnce"] !== undefined)
-);
+
 /*
 let countAfter = 0;
 for (const key in globalThis) {

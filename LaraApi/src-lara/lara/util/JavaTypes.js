@@ -1,30 +1,53 @@
-import { checkString } from "../core/LaraCore.js";
 var Engine;
 (function (Engine) {
     Engine["GraalVM"] = "GraalVM";
     Engine["NodeJS"] = "NodeJS";
 })(Engine || (Engine = {}));
 let engine = Engine.GraalVM;
+// eslint-disable-next-line prefer-const
 let java = undefined;
 if ("Java" in globalThis) {
     engine = Engine.GraalVM;
 }
 else {
-    java = await import("java");
     engine = Engine.NodeJS;
+    /**
+     * This is a hack to load Java classes in NodeJS.
+     * If the dynamic import is not done inside the eval function, then GraalVM
+     * will try to load the 'java' module and silently fail (even if it shouln't
+     * as this 'else' branch is never executed in a GraalVM environment).
+     *
+     * The anonymous async function is needed to avoid the following error:
+     * SyntaxError: await is only valid in async functions and the top level
+     * bodies of modules
+     *
+     */
+    eval(`(async () => {
+    const { default: javaLocal } = await import("java");
+    java = javaLocal;
+  })();`);
 }
 /**
  * Static variables with class names of Java classes used in the API.
  */
 export default class JavaTypes {
     static getType(javaType) {
-        checkString(javaType, "_JavaTypes.getType::javaType");
         switch (engine) {
             case Engine.GraalVM:
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 return Java.type(javaType);
             case Engine.NodeJS:
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 return java?.import(javaType);
+        }
+    }
+    static isJavaObject(obj) {
+        switch (engine) {
+            case Engine.GraalVM:
+                return Java.isJavaObject(obj);
+            case Engine.NodeJS:
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                return java.instanceOf(obj, "java.lang.Object");
         }
     }
     static get LaraI() {
