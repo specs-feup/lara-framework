@@ -720,8 +720,8 @@ public class LaraI {
                     var laraCompiler = new LaraCompiler(weaverEngine.getLanguageSpecificationV2()).setAddMain(true);
                     return laraCompiler.compile(options.getLaraFile());
                 });
-                // System.out.println("CODE:\n" + laraJsCode);
-                interpreter.executeMainAspect(laraJsCode, JsFileType.MODULE,
+//                 System.out.println("CODE:\n" + laraJsCode);
+                interpreter.executeMainAspect(laraJsCode, JsFileType.NORMAL,
                         options.getLaraFile().getAbsolutePath() + "->js");
             }
 
