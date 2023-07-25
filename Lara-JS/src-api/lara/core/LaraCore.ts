@@ -215,12 +215,12 @@ export function isString<T>(variable: T) {
 /**
  * @returns true if the given object is an instance of the given Java class name
  *
- * @deprecated Use JavaTypes.instanceOf instead
+ * @deprecated Use JavaTypes.isJavaObject or JavaTypes.instanceOf instead
  */
-export function isJavaClass<T>(
-  variable: T,
-  javaClassname = "java.lang.Object"
-): boolean {
+export function isJavaClass<T>(variable: T, javaClassname?: string): boolean {
+  if (javaClassname === undefined) {
+    return JavaTypes.isJavaObject(variable);
+  }
   return JavaTypes.instanceOf(variable, javaClassname);
 }
 
@@ -392,25 +392,41 @@ export function flattenArgsArray(args: any[]) {
  * The name of this functions must be the same as the value of the field org.lara.interpreter.weaver.interf.JoinPoint.LARA_GETTER .
  */
 export function laraGetter(object: any, property: string) {
-  const value = Object.getOwnPropertyDescriptor(object, property)?.value;
+  if (isJavaClass(object)) {
+    const value = Object.getOwnPropertyDescriptor(object, property)?.value;
 
-  // If type is function, assume it should be called without arguments
-  if (typeof value === "function") {
-    // Java object
-    if (isJavaClass(object) && !isUndefined(object.class)) {
-      // Special case: property 'class'
-      if (property === "class") {
-        return object.class;
+    // If type is function, assume it should be called without arguments
+    if (typeof value === "function") {
+      // Java object
+      if (isJavaClass(object) && !isUndefined(object.class)) {
+        // Special case: property 'class'
+        if (property === "class") {
+          return object.class;
+        }
+
+        return JavaTypes.SpecsSystem.invokeAsGetter(object, property);
       }
 
-      return JavaTypes.SpecsSystem.invokeAsGetter(object, property);
+      // JS object
+      return value;
     }
 
-    // JS object
     return value;
+  } else {
+    for (let obj = object; obj !== null; obj = Object.getPrototypeOf(obj)) {
+      const descriptor = Object.getOwnPropertyDescriptor(obj, property);
+      if (descriptor !== undefined) {
+        let attributeValue: any = undefined;
+        if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
+          return descriptor.get?.call?.(object);
+        } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
+          return descriptor.value;
+        } else {
+          continue;
+        }
+      }
+    }
   }
-
-  return value;
 }
 
 /**
