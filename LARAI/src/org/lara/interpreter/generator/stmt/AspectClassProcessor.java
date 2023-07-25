@@ -45,7 +45,7 @@ import pt.up.fe.specs.util.SpecsLogs;
  */
 public class AspectClassProcessor {
 	
-	private static final boolean USE_WITH = true;
+	private static final boolean USE_WITH = false;
 
     private static final String MAIN_PREFIX = "_main_";
 
