@@ -27,7 +27,7 @@ export abstract class JoinPointsBase {
    * @returns all the children of the given node
    */
   static _all_children($jp: LaraJoinPoint): LaraJoinPoint[] {
-    throw "JoinPoints._all_children: not implemented";
+    return $jp.children;
   }
 
   /**
@@ -35,7 +35,7 @@ export abstract class JoinPointsBase {
    * @returns all the descendants of the given node
    */
   static _all_descendants($jp: LaraJoinPoint): LaraJoinPoint[] {
-    throw "JoinPoints._all_descendants: not implemented";
+    return $jp.descendants;
   }
 
   /**
@@ -43,7 +43,7 @@ export abstract class JoinPointsBase {
    * @returns all the nodes that are inside the scope of a given node
    */
   static _all_scope_nodes($jp: LaraJoinPoint): LaraJoinPoint[] {
-    throw "JoinPoints._all_scope: not implemented";
+    return $jp.scopeNodes;
   }
 
   /**

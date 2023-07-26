@@ -72,6 +72,30 @@
 									}]
 					},
 					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "children"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "descendants"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "scopeNodes"
+									}]
+					},
+					{
 						"type": "action",
 						"children": [
 									{

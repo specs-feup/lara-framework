@@ -35,6 +35,7 @@ import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
+import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
@@ -60,6 +61,9 @@ public abstract class JoinPoint {
         LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.OBJECT, "node"));
         LaraJoinPointSpecification.add(new Attribute(new JPType(LaraJoinPointSpecification), "self"));
         LaraJoinPointSpecification.add(new Attribute(new JPType(LaraJoinPointSpecification), "super"));
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "children"));
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "descendants"));
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "scopeNodes"));
 
         LaraJoinPointSpecification.add(new Action(new JPType(LaraJoinPointSpecification), "insert", Arrays.asList(
                 new Parameter(new LiteralEnum("Position", Arrays.asList("before", "after", "replace")), "position"),
@@ -566,6 +570,18 @@ public abstract class JoinPoint {
         // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
         return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
         // return Undefined.getUndefined();
+    }
+    
+    public Object getChildren() {
+        throw new NotImplementedException(this);
+    }
+    
+    public Object getDescendants() {
+        throw new NotImplementedException(this);
+    }
+    
+    public Object getScopeNodes() {
+        throw new NotImplementedException(this);
     }
 
     /**

@@ -24,21 +24,21 @@ export class JoinPointsBase {
      * @returns all the children of the given node
      */
     static _all_children($jp) {
-        throw "JoinPoints._all_children: not implemented";
+        return $jp.children;
     }
     /**
      *
      * @returns all the descendants of the given node
      */
     static _all_descendants($jp) {
-        throw "JoinPoints._all_descendants: not implemented";
+        return $jp.descendants;
     }
     /**
      *
      * @returns all the nodes that are inside the scope of a given node
      */
     static _all_scope_nodes($jp) {
-        throw "JoinPoints._all_scope: not implemented";
+        return $jp.scopeNodes;
     }
     /**
      *

@@ -24,6 +24,9 @@ export class LaraJoinPoint {
   get node(): object { return wrapJoinPoint(this._javaObject.getNode()) }
   get self(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSelf()) }
   get super(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSuper()) }
+  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
+  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
+  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
   insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(position, code)); }
   def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(attribute, value)); }
 }
