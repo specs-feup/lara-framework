@@ -44,13 +44,12 @@ import pt.up.fe.specs.util.SpecsLogs;
  *
  */
 public class AspectClassProcessor {
-	
-	private static final boolean USE_WITH = false;
 
     private static final String MAIN_PREFIX = "_main_";
 
     private final Interpreter interpreter;
     private String currentAspect;
+    private final boolean useWith;
 
     public static AspectClassProcessor newInstance(Interpreter interpreter) {
         return new AspectClassProcessor(interpreter);
@@ -58,6 +57,7 @@ public class AspectClassProcessor {
 
     private AspectClassProcessor(Interpreter interpreter) {
         this.interpreter = interpreter;
+        this.useWith = !interpreter.getOptions().disableWithKeywordInLaraJs();
     }
 
     // public StringBuilder generateJavaScriptDocV1(Aspects asps) {
@@ -257,11 +257,10 @@ public class AspectClassProcessor {
                 + " must be used as constructor!'," + line
                 + ");\n\n");
 
-        if(USE_WITH) {
-            inputInit.append(LaraIUtils.getSpace(1) + "with(this){\n");        	
+        if (useWith) {
+            inputInit.append(LaraIUtils.getSpace(1) + "with(this){\n");
         }
 
-        
         final StringBuilder outputInit = new StringBuilder();
         final boolean hasInput = (asp.parameters != null) && (asp.parameters.input != null);
         final boolean hasOutput = (asp.parameters != null) && (asp.parameters.output != null);
@@ -282,8 +281,8 @@ public class AspectClassProcessor {
             }
         }
         if (hasOutput) {
-            if(USE_WITH) {        	
-            	outputInit.append(LaraIUtils.getSpace(1) + "with(this) {");
+            if (useWith) {
+                outputInit.append(LaraIUtils.getSpace(1) + "with(this) {");
             }
             for (final Parameter param : asp.parameters.output.parameters) {
 
@@ -296,18 +295,18 @@ public class AspectClassProcessor {
                 outputInit.append(";\n");
 
             }
-            if(USE_WITH) {
-            	outputInit.append(LaraIUtils.getSpace(1) + "}");
+            if (useWith) {
+                outputInit.append(LaraIUtils.getSpace(1) + "}");
             }
         }
 
-        if(USE_WITH) {
-        	inputInit.append(LaraIUtils.getSpace(1) + "}\n");
+        if (useWith) {
+            inputInit.append(LaraIUtils.getSpace(1) + "}\n");
         }
-        
+
         final StringBuilder staticFields = new StringBuilder();
         if (asp.staticBlock != null) {
-        	
+
             for (final Statement stat : asp.staticBlock.statements) {
                 if (stat.name.equals("fndecl")) {
                     final Expression exp = (Expression) stat.components.get(0);
@@ -358,11 +357,11 @@ public class AspectClassProcessor {
 
             EventTriggerGenerator.triggerAspectBegin(asp, aspectConstructor, hasInput, 1);
         }
-        
-        if(USE_WITH) {
-        	aspectConstructor.append(LaraIUtils.getSpace(1) + "with (this){\n");
+
+        if (useWith) {
+            aspectConstructor.append(LaraIUtils.getSpace(1) + "with (this){\n");
         }
-        
+
         aspectConstructor.append(LaraIUtils.getSpace(2) + "try{\n");
 
         if (asp.initialize != null) {
@@ -406,18 +405,18 @@ public class AspectClassProcessor {
 
         aspectConstructor.append(LaraIUtils.getSpace(2) + "}\n");
 
-        if(USE_WITH) {
-        	aspectConstructor.append(LaraIUtils.getSpace(1) + "}\n");
+        if (useWith) {
+            aspectConstructor.append(LaraIUtils.getSpace(1) + "}\n");
         }
-        
+
         aspectConstructor.append("}\n");
 
         if (asp.staticBlock != null) {
-        	
-            if(USE_WITH) {
-            	aspectConstructor.append("with(" + asp.name + "){\n");
+
+            if (useWith) {
+                aspectConstructor.append("with(" + asp.name + "){\n");
             }
-        	
+
             for (final Statement stat : asp.staticBlock.statements) {
                 final String sufix = ";\n";
                 if (stat.name.equals("fndecl")) {
@@ -439,9 +438,9 @@ public class AspectClassProcessor {
                     aspectConstructor.append(interpreter.processStatement(stat, asp.name + ".", 1, sufix));
                 }
             }
-            
-            if(USE_WITH) {
-            	aspectConstructor.append("}\n");
+
+            if (useWith) {
+                aspectConstructor.append("}\n");
             }
         }
         // if (this.options.isDebug()) {
@@ -590,7 +589,7 @@ public class AspectClassProcessor {
 
             jsCode.append("\n\n// Main call\n\n" + mainCode);
         }
-        //System.out.println("SIMPLE JS:\n" + jsCode);
+        // System.out.println("SIMPLE JS:\n" + jsCode);
         return jsCode.toString();
 
     }

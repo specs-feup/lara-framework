@@ -403,6 +403,10 @@ public class LaraIDataStore implements LaraiKeys {
         return false;
     }
 
+    public boolean disableWithKeywordInLaraJs() {
+        return dataStore.get(LaraiKeys.DISABLE_WITH_KEYWORD_IN_LARA_JS);
+    }
+
     // public List<ResourceProvider> getLaraAPIs() {
     // return laraAPIs;
     // }

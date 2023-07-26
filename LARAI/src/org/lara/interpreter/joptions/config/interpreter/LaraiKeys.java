@@ -132,6 +132,15 @@ public interface LaraiKeys {
     // No GUI, only CLI
     DataKey<Boolean> GENERATE_DOCUMENTATION = KeyFactory.bool("generateDoc").setLabel("Generate Documentation");
 
+    // No GUI or CLI
+    // When generating JS from LARA, disables use of 'with' keyword.
+    // Disabling 'with' breaks LARA files that use the keyword 'output', since output variables do not get automatically
+    // associated with 'this'. For LARA files to work, they need to be changed to add 'this' to each output variable
+    // use.
+    // E.g., 'output var1 end' implies that uses must be something like 'this.var1'.
+    DataKey<Boolean> DISABLE_WITH_KEYWORD_IN_LARA_JS = KeyFactory.bool("disableWithKeywordInLaraJs")
+            .setLabel("Disable 'with' keyword in Lara JS");
+
     // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
 
     /// Keys outside of the definition
