@@ -53,9 +53,8 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
     `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
       attribute.type
     } { return ${
-      "wrapJoinPoint(this._javaObject.get" +
-      capitalizeFirstLetter(attribute.name)
-    }()) }\n`
+      attribute.name === "node" ? "" : "wrapJoinPoint"
+    }(this._javaObject.get${capitalizeFirstLetter(attribute.name)}()) }\n`
   );
 
   const setterActions = joinpointActions.filter(
