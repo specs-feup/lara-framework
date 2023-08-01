@@ -101,6 +101,7 @@ export default class JoinPointsBase {
         return JoinPointsBase._filterNodes(descendants, jpType);
     }
     static _filterNodes($jps, jpType) {
+        // TODO: This check should be done with the JS Classes
         return $jps.filter((jp) => jp.getInstanceOf(jpType));
     }
     /**
