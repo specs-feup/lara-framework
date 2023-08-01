@@ -25,7 +25,7 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   }
 
   for (const attribute of jp.attributes) {
-    generateJoinpointAttribute(attribute, outputFile);
+    generateJoinpointAttribute(attribute, outputFile, jp.actions);
   }
 
   // TODO: remove this set as it is here because I can't deal with method overloading
@@ -47,7 +47,7 @@ function generateDocumentation(tooltip) {
   return `  /**\n   * ${tooltip.split("\n").join("\n   * ")}\n   */\n`;
 }
 
-function generateJoinpointAttribute(attribute, outputFile) {
+function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   fs.writeSync(
     outputFile,
     `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
@@ -57,6 +57,28 @@ function generateJoinpointAttribute(attribute, outputFile) {
       capitalizeFirstLetter(attribute.name)
     }()) }\n`
   );
+
+  const setterActions = joinpointActions.filter(
+    (action) =>
+      action.name === `set${capitalizeFirstLetter(attribute.name)}` &&
+      action.parameters.length === 1 &&
+      action.parameters[0].type === attribute.type
+  );
+  if (setterActions.length === 1) {
+    fs.writeSync(
+      outputFile,
+      `${generateDocumentation(attribute.tooltip)}  set ${
+        attribute.name
+      }(value: ${attribute.type}) { this._javaObject.set${capitalizeFirstLetter(
+        attribute.name
+      )}(unwrapJoinPoint(value)); }\n`
+    );
+  } else if (setterActions.length > 1) {
+    console.error(
+      `Found more than one setter for attribute ${attribute.name} of type ${attribute.type}`
+    );
+  }
+}
 
 /**
  * Handle actions in the joinpoint specification that do not conform to the conventions
