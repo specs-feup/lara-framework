@@ -60,6 +60,13 @@ export function wrapJoinPoint(obj: any): any {
     return obj;
   }
 
+  if (
+    JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
+    !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")
+  ) {
+    return obj;
+  }
+
   const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
   if (!isJavaJoinPoint) {
     throw new Error(
