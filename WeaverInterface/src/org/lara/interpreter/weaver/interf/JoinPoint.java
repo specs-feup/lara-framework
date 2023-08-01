@@ -74,6 +74,7 @@ public abstract class JoinPoint {
         LaraJoinPointSpecification.add(new Action(PrimitiveClasses.VOID, "def", Arrays.asList(
                 new Parameter(PrimitiveClasses.STRING, "attribute"),
                 new Parameter(PrimitiveClasses.OBJECT, "value"))));
+        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.STRING, "toString"));
     }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;

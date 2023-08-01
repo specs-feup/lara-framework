@@ -24,8 +24,7 @@ export class LaraJoinPoint {
     get children() { return wrapJoinPoint(this._javaObject.getChildren()); }
     get descendants() { return wrapJoinPoint(this._javaObject.getDescendants()); }
     get scopeNodes() { return wrapJoinPoint(this._javaObject.getScopeNodes()); }
-    insert(position, code) { return wrapJoinPoint(this._javaObject.insert(position, code)); }
-    def(attribute, value) { return wrapJoinPoint(this._javaObject.def(attribute, value)); }
+    toString() { return wrapJoinPoint(this._javaObject.toString()); }
 }
 const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {

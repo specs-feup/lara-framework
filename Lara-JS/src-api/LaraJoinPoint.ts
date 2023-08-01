@@ -27,8 +27,7 @@ export class LaraJoinPoint {
   get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
   get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
   get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
-  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(position, code)); }
-  def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(attribute, value)); }
+  toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
 }
 
 

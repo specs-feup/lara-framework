@@ -148,6 +148,14 @@
 										"name": "value",
 										"defaultValue": ""
 									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "String",
+										"name": "toString"
+									}]
 					}]
 		}]
 }
