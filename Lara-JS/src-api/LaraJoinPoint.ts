@@ -57,7 +57,6 @@ export function wrapJoinPoint(obj: any): any {
   }
 
   if (!JavaTypes.isJavaObject(obj)) {
-    console.log("Given Java join point is not a Java class: " + typeof obj);
     return obj;
   }
 

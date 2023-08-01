@@ -75,7 +75,6 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
   }
 
   if (!JavaTypes.isJavaObject(obj)) {
-    console.log("Given Java join point is not a Java class: " + typeof obj);
     return obj;
   }
 
