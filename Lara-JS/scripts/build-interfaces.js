@@ -66,12 +66,12 @@ import {
   generateJoinpoints(specification.joinpoints, outputFile);
   generateEnums(specification.enums, outputFile);
 
-  generateJoinpointWrapper(specification.joinpoints, outputFile);
+  generateMappers(specification.joinpoints, specification.enums, outputFile);
 
   fs.closeSync(outputFile);
 }
 
-function generateJoinpointWrapper(joinpoints, outputFile) {
+function generateMappers(joinpoints, enums, outputFile) {
   fs.writeSync(outputFile, `const JoinpointMapper: JoinpointMapperType = {\n`);
   for (const jp of joinpoints) {
     fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);

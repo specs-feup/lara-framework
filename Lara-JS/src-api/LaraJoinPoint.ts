@@ -69,6 +69,10 @@ export function wrapJoinPoint(obj: any): any {
     return obj;
   }
 
+  if (obj.getClass().isEnum()) {
+    return obj.toString();
+  }
+
   const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
   if (!isJavaJoinPoint) {
     throw new Error(

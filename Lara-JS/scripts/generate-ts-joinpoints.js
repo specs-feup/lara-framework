@@ -154,7 +154,7 @@ export function generateEnums(enums, outputFile) {
 function generateEnum(e, outputFile) {
   fs.writeSync(outputFile, `export enum ${e.name} {\n`);
   e.entries.forEach((entry) => {
-    fs.writeSync(outputFile, `  ${entry},\n`);
+    fs.writeSync(outputFile, `  ${entry} = "${entry.toLowerCase()}",\n`);
   });
   fs.writeSync(outputFile, `}\n\n`);
 }

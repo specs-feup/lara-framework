@@ -52,6 +52,9 @@ export function wrapJoinPoint(obj) {
         !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")) {
         return obj;
     }
+    if (obj.getClass().isEnum()) {
+        return obj.toString();
+    }
     const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
     if (!isJavaJoinPoint) {
         throw new Error(
