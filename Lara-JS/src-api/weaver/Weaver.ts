@@ -51,7 +51,14 @@ export default class Weaver {
   /**
    * @deprecated Use the javascript `instanceof` operator instead
    */
-  static isJoinPoint($joinpoint: LaraJoinPoint, type: string) {
+  static isJoinPoint($joinpoint: LaraJoinPoint): boolean;
+  /**
+   * @deprecated Use the javascript `instanceof` operator instead
+   */
+  static isJoinPoint($joinpoint: LaraJoinPoint, type?: string): boolean {
+    if (type === undefined) {
+      return $joinpoint instanceof LaraJoinPoint;
+    }
     return $joinpoint.joinPointType === type;
   }
 

@@ -1,4 +1,4 @@
-import { wrapJoinPoint } from "../LaraJoinPoint.js";
+import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import { Strings } from "../lara/Strings.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
@@ -39,6 +39,9 @@ export default class Weaver {
      * @deprecated Use the javascript `instanceof` operator instead
      */
     static isJoinPoint($joinpoint, type) {
+        if (type === undefined) {
+            return $joinpoint instanceof LaraJoinPoint;
+        }
         return $joinpoint.joinPointType === type;
     }
     /**
