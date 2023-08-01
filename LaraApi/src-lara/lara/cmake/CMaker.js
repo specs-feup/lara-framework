@@ -240,7 +240,7 @@ class CMaker extends Tool {
 
         // Create and populate source folder
         var srcFolder = Io.getPath(currentAstFolder, "src");
-        for (var $file of Clava.getProgram().descendants("file")) {
+        for (var $file of Clava.getProgram().getDescendants("file")) {
             var destFolder = srcFolder;
             //if($file.relativeFolderpath !== undefined) {
             //	destFolder = Io.mkdir(srcFolder, $file.relativeFolderpath);
