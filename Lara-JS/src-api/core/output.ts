@@ -5,7 +5,7 @@ import JavaTypes from "../lara/util/JavaTypes.js";
  *
  * @deprecated Use console.log instead
  */
-export function print(message?: string) {
+export function print(message: string = "") {
   console.log(message);
 }
 
@@ -14,7 +14,7 @@ export function print(message?: string) {
  *
  * @deprecated Use console.log instead
  */
-export function println(message?: string) {
+export function println(message: string = "") {
   console.log(message);
 }
 
@@ -23,7 +23,7 @@ export function println(message?: string) {
  *
  * @deprecated Use console.error instead
  */
-export function error(message?: string) {
+export function error(message: string = "") {
   console.error(message);
 }
 
@@ -32,7 +32,7 @@ export function error(message?: string) {
  *
  * @deprecated Use console.error instead
  */
-export function errorln(message?: string) {
+export function errorln(message: string = "") {
   console.error(message);
 }
 

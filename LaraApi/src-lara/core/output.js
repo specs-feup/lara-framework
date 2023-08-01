@@ -4,7 +4,7 @@ import JavaTypes from "../lara/util/JavaTypes.js";
  *
  * @deprecated Use console.log instead
  */
-export function print(message) {
+export function print(message = "") {
     console.log(message);
 }
 /**
@@ -12,7 +12,7 @@ export function print(message) {
  *
  * @deprecated Use console.log instead
  */
-export function println(message) {
+export function println(message = "") {
     console.log(message);
 }
 /**
@@ -20,7 +20,7 @@ export function println(message) {
  *
  * @deprecated Use console.error instead
  */
-export function error(message) {
+export function error(message = "") {
     console.error(message);
 }
 /**
@@ -28,7 +28,7 @@ export function error(message) {
  *
  * @deprecated Use console.error instead
  */
-export function errorln(message) {
+export function errorln(message = "") {
     console.error(message);
 }
 export const INDENT_CHAR = "   ";
