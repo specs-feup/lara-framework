@@ -62,7 +62,11 @@ function generateJoinpointAttribute(attribute, outputFile) {
 function generateJoinpointAction(action, outputFile, joinpoints) {
   const parameters = action.parameters
     .map((parameter) => {
-      return `${parameter.name}: ${parameter.type}`;
+      let paramStr = `${parameter.name}: ${parameter.type}`;
+      if (parameter.default !== undefined) {
+        paramStr += ` = ${JSON.parse(parameter.default)}`;
+      }
+      return paramStr;
     })
     .join(", ");
 

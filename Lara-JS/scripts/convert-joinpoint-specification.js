@@ -177,10 +177,15 @@ function convertJoinpointActionParameter(
       parameterName = "elseStatement";
   }
 
+  let defaultValue = parameterObject.defaultValue;
+  if (defaultValue === "") {
+    defaultValue = undefined;
+  }
+
   return {
     name: parameterName,
     type: type,
-    default: JSON.stringify(parameterObject.defaultValue),
+    default: JSON.stringify(defaultValue),
   };
 }
 
