@@ -195,8 +195,8 @@ public class WeaverStatementProcessor {
                     + ".equals('" + simpleJPName + "')) {\n");
             ret.append(LaraIUtils.getSpace(depth + 1) + "continue;\n");
             ret.append(LaraIUtils.getSpace(depth) + "}\n");
-            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = " + jpWrapper + "."
-                    + JoinpointUtils.getReferenceProperty() + ";\n");
+            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = wrapJoinPoint(" + jpWrapper + "."
+                    + JoinpointUtils.getReferenceProperty() + ");\n");
             // ret.append(LaraIUtils.getSpace(depth) + "println('current wrapper: '+" + jpWrapper + ");\n");
             // ret.append(LaraIUtils.getSpace(depth) + "println('current ref: '+" + jpWrapper + "."
             // + JoinpointUtils.getReferenceProperty() + ");\n");
@@ -279,9 +279,9 @@ public class WeaverStatementProcessor {
         final StringBuilder ret = new StringBuilder(MasterWeaver.WEAVER_NAME);
         ret.append(".select( ");
         if (userDeclaredVariable != null) {
-
+            ret.append("unwrapJoinPoint(");
             ret.append(userDeclaredVariable);
-            ret.append(", ");
+            ret.append("), ");
         }
         ret.append("'");
         ret.append(stat.label); // Name of the select
