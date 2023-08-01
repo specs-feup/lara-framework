@@ -71,15 +71,7 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
     .join(", ");
 
   const callParameters = action.parameters
-    .map((parameter) => {
-      for (const jp of joinpoints) {
-        if (jp.name === parameter.type) {
-          return `unwrapJoinPoint(${parameter.name})`;
-        }
-      }
-
-      return parameter.name;
-    })
+    .map((parameter) => `unwrapJoinPoint(${parameter.name})`)
     .join(", ");
 
   fs.writeSync(
