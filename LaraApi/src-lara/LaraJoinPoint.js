@@ -18,12 +18,14 @@ export class LaraJoinPoint {
     get selects() { return wrapJoinPoint(this._javaObject.getSelects()); }
     get dump() { return wrapJoinPoint(this._javaObject.getDump()); }
     get joinPointType() { return wrapJoinPoint(this._javaObject.getJoinPointType()); }
-    get node() { return wrapJoinPoint(this._javaObject.getNode()); }
+    get node() { return (this._javaObject.getNode()); }
     get self() { return wrapJoinPoint(this._javaObject.getSelf()); }
     get super() { return wrapJoinPoint(this._javaObject.getSuper()); }
     get children() { return wrapJoinPoint(this._javaObject.getChildren()); }
     get descendants() { return wrapJoinPoint(this._javaObject.getDescendants()); }
     get scopeNodes() { return wrapJoinPoint(this._javaObject.getScopeNodes()); }
+    insert(position, code) { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
+    def(attribute, value) { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
     toString() { return wrapJoinPoint(this._javaObject.toString()); }
 }
 const JoinpointMappers = [];
@@ -44,7 +46,10 @@ export function wrapJoinPoint(obj) {
         return obj.map(wrapJoinPoint);
     }
     if (!JavaTypes.isJavaObject(obj)) {
-        console.log("Given Java join point is not a Java class: " + typeof obj);
+        return obj;
+    }
+    if (JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
+        !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")) {
         return obj;
     }
     const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
@@ -64,6 +69,9 @@ export function wrapJoinPoint(obj) {
 export function unwrapJoinPoint(obj) {
     if (obj instanceof LaraJoinPoint) {
         return obj._javaObject;
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(unwrapJoinPoint);
     }
     return obj;
 }

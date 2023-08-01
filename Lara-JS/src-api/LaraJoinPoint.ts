@@ -21,12 +21,14 @@ export class LaraJoinPoint {
   get selects(): string[] { return wrapJoinPoint(this._javaObject.getSelects()) }
   get dump(): string { return wrapJoinPoint(this._javaObject.getDump()) }
   get joinPointType(): string { return wrapJoinPoint(this._javaObject.getJoinPointType()) }
-  get node(): object { return wrapJoinPoint(this._javaObject.getNode()) }
+  get node(): object { return (this._javaObject.getNode()) }
   get self(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSelf()) }
   get super(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSuper()) }
   get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
   get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
   get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
+  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
+  def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
 }
 
@@ -87,6 +89,10 @@ export function wrapJoinPoint(obj: any): any {
 export function unwrapJoinPoint(obj: any): any {
   if (obj instanceof LaraJoinPoint) {
     return obj._javaObject;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(unwrapJoinPoint);
   }
 
   return obj;
