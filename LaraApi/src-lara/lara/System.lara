@@ -123,7 +123,7 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 	}
 	
 	if(timeunit === undefined) {
-		timeunit = new TimeUnits("SECONDS");
+		timeunit = new TimeUnits(TimerUnit.SECONDS);
 	}
 	
 	var timeoutNanos = null;
