@@ -87,7 +87,7 @@ Logger.prototype.logBefore = function($jp) {
  * @return true if $jp is inside a function, false otherwise
  */
 Logger.prototype._validateJp = function($jp, functionJpName) {
-	var $function = $jp.ancestor(functionJpName);
+	var $function = $jp.getAncestor(functionJpName);
 	
    
     if ($function === undefined) {

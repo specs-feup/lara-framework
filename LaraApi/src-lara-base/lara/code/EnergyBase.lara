@@ -53,7 +53,7 @@ Energy.prototype._measureValidate = function($start, $end, functionJpName) {
         return false;
 	}
 
-    var $function = $start.ancestor(functionJpName);
+    var $function = $start.getAncestor(functionJpName);
 
     if ($function === undefined) {
         println("Energy: tried to measure energy at joinpoit " + $start + ", but it is not inside a function");
@@ -68,7 +68,7 @@ Energy.prototype._measureValidate = function($start, $end, functionJpName) {
 			return false;
 		}
 		
-        var $endFunction = $end.ancestor(functionJpName);
+        var $endFunction = $end.getAncestor(functionJpName);
 
         if ($endFunction === undefined) {
             println("Energy: tried to end measuring energy at joinpoit " + $end + ", but it is not inside a function");
