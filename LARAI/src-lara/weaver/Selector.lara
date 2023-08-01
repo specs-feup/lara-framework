@@ -182,7 +182,7 @@ Selector.prototype._searchPrivate = function(name, filter, selectFunction) {
 		
 		// Filter does not test if the join point is of the right type
 		var $root = this._$currentJps[0][this._lastName];
-		if($root.instanceOf(name)) {
+		if($root.getInstanceOf(name)) {
 			this._addJps($newJps, [$root], jpFilter, this._$currentJps[0], name);		
 		}
 

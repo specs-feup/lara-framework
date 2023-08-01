@@ -160,7 +160,7 @@ JoinPoints.prototype._filterNodes = function($jps, jpType) {
 
 	for(var $jp of $jps) {
 
-		if(!$jp.instanceOf(jpType)) {
+		if(!$jp.getInstanceOf(jpType)) {
 			continue;
 		}
 		
