@@ -57,6 +57,46 @@ function generateJoinpointAttribute(attribute, outputFile) {
       capitalizeFirstLetter(attribute.name)
     }()) }\n`
   );
+
+/**
+ * Handle actions in the joinpoint specification that do not conform to the conventions
+ * @param {string} actionName
+ * @returns
+ */
+function parseExceptions(actionName) {
+  if (!actionName.startsWith("get")) {
+    return actionName;
+  }
+
+  const originalActionName =
+    actionName.slice(3, 4).toLowerCase() + actionName.slice(4);
+  switch (originalActionName) {
+    case "arg":
+    case "ancestor":
+    case "astAncestor":
+    case "child":
+    case "astChild":
+    case "astIsInstance":
+    case "declaration":
+    case "descendants":
+    case "descendantsAndSelf":
+    case "laraDescendants":
+    case "firstJp":
+    case "getValue":
+    case "instanceOf":
+    case "hasClause":
+    case "isClauseLegal":
+    case "reduction":
+    case "destinationFilepath":
+    case "numStatements":
+    case "targetNodes":
+    case "userField":
+    case "getUserField":
+    case "hasNode":
+      return originalActionName;
+    default:
+      return actionName;
+  }
 }
 
 function generateJoinpointAction(action, outputFile, joinpoints) {
@@ -78,9 +118,9 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
     outputFile,
     `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
       action.returnType
-    } { return wrapJoinPoint(this._javaObject.${
+    } { return wrapJoinPoint(this._javaObject.${parseExceptions(
       action.name
-    }(${callParameters})); }\n`
+    )}(${callParameters})); }\n`
   );
 }
 
