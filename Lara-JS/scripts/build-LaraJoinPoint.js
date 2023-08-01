@@ -104,6 +104,10 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
     return obj._javaObject;
   }
 
+  if (Array.isArray(obj)) {
+    return obj.map(unwrapJoinPoint);
+  }
+
   return obj;
 }\n`
   );
