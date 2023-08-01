@@ -342,7 +342,7 @@ Logger.prototype.octal = function(expr) {
 // Private append function
 Logger.prototype._append_private = function(message, type) {
     // If message is a join point, convert to code first
-    if(Weaver.isJoinPoint(message)) {
+    if(message instanceof LaraJoinPoint) {
 		message = JoinPoints.getCode(message);
     }
 
