@@ -118,6 +118,7 @@ function distributeAPIasJavaResources(
   const resources = {};
   const filesSet = new Set();
   const enumNames = new Set();
+  let repeatedEnumNames = 0;
 
   copiedFiles.forEach((file) => {
     const fileName = path.basename(file);
@@ -141,19 +142,19 @@ function distributeAPIasJavaResources(
     Object.entries(resources)
       .filter(([key, value]) => value !== "index.js")
       .map(([key, value]) => {
-        const enumName = key.toUpperCase().replace(/\./g, "_");
+        let enumName = key.toUpperCase().replace(/\./g, "_");
 
         // Check for repeated enum names
         if (enumNames.has(enumName)) {
-          console.log(
+          console.error(
             "[PROBLEM] Repeated enum name '" +
               enumName +
               "'! Probably files were moved, recommended that 'api' folder is deleted"
           );
-        } else {
-          enumNames.add(enumName);
+          enumName = enumName + "_" + ++repeatedEnumNames;
         }
 
+        enumNames.add(enumName);
         return `    ${enumName}("${value}")`;
       })
       .join(",\n") + ";";
