@@ -364,18 +364,17 @@ export function debugObject<T>(object: T, origin: string) {
  * Flatten an Arguments array. In this context, it means that if the array only contains one element,
  * and that element is an Array, it will be returned instead of the outer Array.
  *
- * This is implemented for compatibility reasons. As the Lara language used ES5 as its
- * base, there was no spread operator to pass argument arrays to variadic functions, so there
- * is calling code expecting to be able to pass a single array as the variadic argument.
- *
  * @param args - Arguments array. Must be some array-like object.
  * @returns Flattened argument array
+ *
+ * @deprecated This is implemented for compatibility reasons. As the Lara language used ES5 as its
+ * base, there was no spread operator to pass argument arrays to variadic functions, so there
+ * is calling code expecting to be able to pass a single array as the variadic argument.
  */
 export function flattenArgsArray(args: any[]) {
-  checkDefined(args, "args", "LaraCore collapseArgsArray");
   if (args.length === 1) {
     const singleArgument = args[0];
-    if (isArray(singleArgument)) {
+    if (Array.isArray(singleArgument)) {
       return singleArgument;
     }
     if (isJavaList(singleArgument)) {
