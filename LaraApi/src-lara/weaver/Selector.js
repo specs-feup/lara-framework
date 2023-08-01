@@ -1,6 +1,6 @@
 import Accumulator from "../lara/util/Accumulator.js";
 import JpFilter from "../lara/util/JpFilter.js";
-import { JoinPointsBase } from "./JoinPointsBase.js";
+import JoinPointsBase from "./JoinPointsBase.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
 /**

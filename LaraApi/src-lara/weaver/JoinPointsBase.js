@@ -1,10 +1,9 @@
 import { wrapJoinPoint } from "../LaraJoinPoint.js";
-import Check from "../lara/Check.js";
 import Weaver from "./Weaver.js";
 /**
  * Object which provides low-level join point-related methods.
  */
-export class JoinPointsBase {
+export default class JoinPointsBase {
     /**
      *
      * @returns the current root node of the AST
@@ -102,7 +101,7 @@ export class JoinPointsBase {
         return JoinPointsBase._filterNodes(descendants, jpType);
     }
     static _filterNodes($jps, jpType) {
-        return $jps.filter((jp) => jp.joinPointType === jpType);
+        return $jps.filter((jp) => jp.getInstanceOf(jpType));
     }
     /**
      * Iterates of attributeNames, returns the first value that is not null or undefined.
@@ -110,7 +109,7 @@ export class JoinPointsBase {
      *
      * @deprecated Just don't...
      */
-    getAttribute($jp, attributeNames) {
+    static getAttribute($jp, attributeNames) {
         for (const attribute of attributeNames) {
             const value = Object.getOwnPropertyDescriptor($jp, attribute)?.value;
             if (value !== undefined) {
@@ -124,7 +123,7 @@ export class JoinPointsBase {
      *
      * @deprecated Just don't...
      */
-    getAttributeStrict($jp, attributeNames) {
+    static getAttributeStrict($jp, attributeNames) {
         const value = this.getAttribute($jp, attributeNames);
         if (value === undefined) {
             throw ("Could not find any of the given attributes in " +
@@ -141,13 +140,24 @@ export class JoinPointsBase {
      *
      * @returns a String with the code representation of this join point.
      */
-    getCode($jp) {
-        Check.isJoinPoint($jp);
-        // Check if attribute code is defined
-        if (!$jp.attributes.includes("code")) {
-            throw "JoinPoints.getCode(): expected attribute 'code' to exist";
+    static getCode($jp) {
+        const property = "code";
+        for (let obj = $jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
+            const descriptor = Object.getOwnPropertyDescriptor(obj, property);
+            if (descriptor !== undefined) {
+                let attributeValue = undefined;
+                if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
+                    return descriptor.get?.call?.($jp);
+                }
+                else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
+                    return descriptor.value;
+                }
+                else {
+                    continue;
+                }
+            }
         }
-        return Object.getOwnPropertyDescriptor($jp, "code")?.value;
+        throw "JoinPoints.getCode(): expected attribute 'code' to exist";
     }
 }
 //# sourceMappingURL=JoinPointsBase.js.map

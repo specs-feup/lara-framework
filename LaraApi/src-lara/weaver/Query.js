@@ -1,4 +1,4 @@
-import { JoinPointsBase } from "./JoinPointsBase.js";
+import JoinPointsBase from "./JoinPointsBase.js";
 import Selector from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 /**

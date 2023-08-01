@@ -1,11 +1,10 @@
 import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
-import Check from "../lara/Check.js";
 import Weaver from "./Weaver.js";
 
 /**
  * Object which provides low-level join point-related methods.
  */
-export abstract class JoinPointsBase {
+export default class JoinPointsBase {
   /**
    *
    * @returns the current root node of the AST
@@ -18,7 +17,7 @@ export abstract class JoinPointsBase {
    * Converts an AST node to a JointPoint.
    *
    */
-  static toJoinPoint(node: LaraJoinPoint): LaraJoinPoint {
+  static toJoinPoint(node: any): LaraJoinPoint {
     throw "JoinPoints.toJoinPoint: not implemented";
   }
 
@@ -145,7 +144,8 @@ export abstract class JoinPointsBase {
   }
 
   static _filterNodes($jps: LaraJoinPoint[], jpType: string) {
-    return $jps.filter((jp) => jp.joinPointType === jpType);
+    // TODO: This check should be done with the JS Classes
+    return $jps.filter((jp) => (jp as any).getInstanceOf(jpType));
   }
 
   /**
@@ -154,7 +154,7 @@ export abstract class JoinPointsBase {
    *
    * @deprecated Just don't...
    */
-  getAttribute($jp: LaraJoinPoint, attributeNames: string[]) {
+  static getAttribute($jp: LaraJoinPoint, attributeNames: string[]) {
     for (const attribute of attributeNames) {
       const value = Object.getOwnPropertyDescriptor($jp, attribute)?.value;
       if (value !== undefined) {
@@ -170,7 +170,7 @@ export abstract class JoinPointsBase {
    *
    * @deprecated Just don't...
    */
-  getAttributeStrict($jp: LaraJoinPoint, attributeNames: string[]) {
+  static getAttributeStrict($jp: LaraJoinPoint, attributeNames: string[]) {
     const value = this.getAttribute($jp, attributeNames);
 
     if (value === undefined) {
@@ -192,14 +192,23 @@ export abstract class JoinPointsBase {
    *
    * @returns a String with the code representation of this join point.
    */
-  getCode($jp: LaraJoinPoint): string {
-    Check.isJoinPoint($jp);
+  static getCode($jp: LaraJoinPoint): string {
+    const property = "code";
 
-    // Check if attribute code is defined
-    if (!$jp.attributes.includes("code")) {
-      throw "JoinPoints.getCode(): expected attribute 'code' to exist";
+    for (let obj = $jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
+      const descriptor = Object.getOwnPropertyDescriptor(obj, property);
+      if (descriptor !== undefined) {
+        let attributeValue: any = undefined;
+        if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
+          return descriptor.get?.call?.($jp);
+        } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
+          return descriptor.value;
+        } else {
+          continue;
+        }
+      }
     }
 
-    return Object.getOwnPropertyDescriptor($jp, "code")?.value as string;
+    throw "JoinPoints.getCode(): expected attribute 'code' to exist";
   }
 }
