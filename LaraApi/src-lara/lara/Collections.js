@@ -1,4 +1,4 @@
-laraImport("lara._JavaTypes");
+laraImport("lara.util.JavaTypes");
 laraImport("lara.JavaInterop");
 
 /**
@@ -23,7 +23,7 @@ class Collections {
     // If Java List
     if (JavaInterop.isList(values)) {
       //println("IS LIST");
-      _JavaTypes.getCollections().sort(values);
+      JavaTypes.Collections.sort(values);
       return values;
     }
 

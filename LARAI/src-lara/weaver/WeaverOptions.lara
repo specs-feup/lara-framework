@@ -2,7 +2,7 @@ import lara.Io;
 import lara.util.DataStore;
 import weaver.Weaver;
 import weaver.util.WeaverDataStore;
-import lara._JavaTypes;
+import lara.util.JavaTypes;
 
 /**
  * Contains configuration-related methods of the weaver. 
@@ -21,7 +21,7 @@ WeaverOptions.getData = function() {
  * @return {String} a string with the command-line flags for the current options
  */
 WeaverOptions.toCli = function() {
-	return _JavaTypes.getLaraCli()
+	return JavaTypes.LaraCli
 		.getWeaverOptions(Weaver.getWeaverEngine())
 		.toCli(WeaverOptions.getData().getData());
 }
