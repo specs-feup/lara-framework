@@ -111,24 +111,33 @@ public class ASTPerform extends SimpleNode {
             Action action = possibleActions.get(0);
             organizeWithGivenParams(lara, act, params, newParams, action, map);
         } else {
-            if (params.children == null) {
-                for (Action action : actions) {
-                    if (action.getParameters().isEmpty()) {
-                        final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
-                        act.setArguments(actionParam);
-                        validateReturn(lara, action);
-                        return null;
+            for (Action action : actions) {
+                int length = params.children == null ? 0 : params.children.length;
+                int actionParametersLength = action.getParameters().size();
+
+                int requiredParametersLength = action.getParameters().size();
+                for (var child : action.getParameters()) {
+                    if (child.getDefaultValue() != null) {
+                        requiredParametersLength--;
                     }
                 }
-            } else {
-                for (Action action : actions) {
-                    int length = params.children.length;
-                    if (length == action.getParameters().size()) { // Just accept same size of parameters
+
+                if (length == 0 && actionParametersLength == 0) {
+                    final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
+                    act.setArguments(actionParam);
+                    validateReturn(lara, action);
+                    return null;
+                } else {
+                    if (length >= requiredParametersLength && length <= actionParametersLength) {
                         final Map<String, ActionArgument> actionParam = organizer.createActionParameters(action);
                         int i = 0;
                         for (final ActionArgument arg : actionParam.values()) {
+                            if (i >= length) {
+                                break;
+                            }
                             arg.setValue((SimpleNode) params.jjtGetChild(i++));
                         }
+                        
 
                         organizeWithGivenParams(lara, act, params, newParams, action, actionParam);
                         return null;
