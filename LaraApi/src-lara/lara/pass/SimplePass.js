@@ -74,7 +74,7 @@ class SimplePass extends Pass {
         aggResult.pushResult(result);
       } catch (e) {
         if (e instanceof PassTransformationError) {
-          transformationErrors.push(e);
+          aggResult.pushError(e);
         } else throw e;
       }
     }
