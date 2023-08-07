@@ -19,8 +19,8 @@ class PassTransformationError extends Error {
    */
   #pass;
 
-  constructor({ pass, $joinpoint, description }) {
-    super(`${$joinpoint.location}: ${description}`);
+  constructor(pass, $joinpoint, description) {
+    super(`${pass.name} @ ${$joinpoint.location}: ${description}`);
     this.#description = description;
     this.#joinpoint = $joinpoint;
     this.#pass = pass;
