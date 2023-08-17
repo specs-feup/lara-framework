@@ -260,6 +260,8 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
         return "FunctionJp";
       case "File":
         return "FileJp";
+      case "Record":
+        return "RecordJp";
     }
 
     return jpType;
@@ -273,7 +275,7 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
       return "number";
       break;
     case "Map":
-      return "Map<string, any>";
+      return "Record<string, any>";
     default:
       return typeString.toLowerCase();
       break;
