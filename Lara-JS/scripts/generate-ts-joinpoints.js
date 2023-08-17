@@ -31,11 +31,23 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   // TODO: remove this set as it is here because I can't deal with method overloading
   let actionNameSet = new Set();
   for (const action of jp.actions) {
-    if (!actionNameSet.has(action.name)) {
+    if (actionNameSet.has(action.name)) {
+      console.log(
+        `Skipping duplicate action ${action.name}(${action.parameters
+          .map((p) => `${p.name}: ${p.type}`)
+          .join(", ")})`
+      );
+      continue;
+    } else {
+      console.log(
+        `${action.name}(${action.parameters
+          .map((p) => `${p.name}: ${p.type}`)
+          .join(", ")})`
+      );
+    }
       generateJoinpointAction(action, outputFile, joinpoints);
       actionNameSet.add(action.name);
     }
-  }
 
   fs.writeSync(outputFile, `}\n\n`);
 }
