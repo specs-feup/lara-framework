@@ -24,13 +24,13 @@ public enum LaraApiResource implements LaraResourceProvider {
     // Analysis
     //ANALYSER("analysis/Analyser.lara"),
     //ANALYSER_RESULT("analysis/AnalyserResult.lara"),
-    CHECK_BASED_ANALYSER("analysis/CheckBasedAnalyser.lara"),
+    //CHECK_BASED_ANALYSER("analysis/CheckBasedAnalyser.lara"),
     //CHECKER("analysis/Checker.lara"),
     //CHECK_RESULT("analysis/CheckResult.lara"),
     //FIX("analysis/Fix.lara"),
-    MESSAGE_GENERATOR("analysis/MessageGenerator.lara"),
-    RESULT_FORMAT_MANAGER("analysis/ResultFormatManager.lara"),
-    RESULT_LIST("analysis/ResultList.lara"),
+    //MESSAGE_GENERATOR("analysis/MessageGenerator.lara"),
+    //RESULT_FORMAT_MANAGER("analysis/ResultFormatManager.lara"),
+    //RESULT_LIST("analysis/ResultList.lara"),
 
     // Benchmark
     BENCHMARK_SET("benchmark/BenchmarkSet.lara"),
