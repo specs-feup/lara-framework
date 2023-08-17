@@ -48,7 +48,7 @@ export default class Query {
    */
   static searchFrom(
     $baseJp: LaraJoinPoint,
-    type: string,
+    type?: string,
     filter?: SelectorFilter,
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
@@ -67,7 +67,7 @@ export default class Query {
    */
   static searchFromInclusive(
     $baseJp: LaraJoinPoint,
-    type: string,
+    type?: string,
     filter?: SelectorFilter,
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
@@ -85,7 +85,7 @@ export default class Query {
    */
   static childrenFrom(
     $baseJp: LaraJoinPoint,
-    type: string,
+    type?: string,
     filter?: SelectorFilter
   ): Selector {
     // These rules will be used to create a lara.util.JpFilter instance, please refer to that class for details on what kinds of rules are supported.
@@ -103,7 +103,7 @@ export default class Query {
    */
   static scopeFrom(
     $baseJp: LaraJoinPoint,
-    type: string,
+    type?: string,
     filter?: SelectorFilter
   ): Selector {
     return new Selector($baseJp).scope(type, filter);

@@ -98,9 +98,7 @@ export default class Selector {
       console.log(
         "Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)"
       );
-      yield undefined;
     }
-
     this.$currentJps = undefined;
   }
 
@@ -112,7 +110,7 @@ export default class Selector {
    * @returns The results of the search.
    */
   search(
-    name: string,
+    name?: string,
     filter: SelectorFilter = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
@@ -149,7 +147,7 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  children(type: string, filter: SelectorFilter = {}): Selector {
+  children(type?: string, filter: SelectorFilter = {}): Selector {
     return this.searchPrivate(
       type,
       Selector.parseFilter(filter, type),

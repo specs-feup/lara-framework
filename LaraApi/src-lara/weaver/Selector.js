@@ -65,7 +65,6 @@ export default class Selector {
         }
         else {
             console.log("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
-            yield undefined;
         }
         this.$currentJps = undefined;
     }
