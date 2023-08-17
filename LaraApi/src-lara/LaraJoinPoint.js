@@ -27,6 +27,8 @@ export class LaraJoinPoint {
     insert(position, code) { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
     def(attribute, value) { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
     toString() { return wrapJoinPoint(this._javaObject.toString()); }
+    equals(jp) { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
+    getInstanceOf(name) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
 }
 const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {

@@ -156,6 +156,32 @@
 										"type": "String",
 										"name": "toString"
 									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "equals"
+									},
+									{
+										"type": "LaraJoinPoint",
+										"name": "jp",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "getInstanceOf"
+									},
+									{
+										"type": "String",
+										"name": "name",
+										"defaultValue": ""
+									}]
 					}]
 		}]
 }

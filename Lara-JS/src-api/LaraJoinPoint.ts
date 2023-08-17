@@ -30,6 +30,8 @@ export class LaraJoinPoint {
   insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
   def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
+  equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
+  getInstanceOf(name: string): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
 }
 
 

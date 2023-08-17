@@ -1,3 +1,4 @@
+import { LaraJoinPoint } from "../LaraJoinPoint.js";
 import * as LaraCore from "./core/LaraCore.js";
 import JavaTypes from "./util/JavaTypes.js";
 /**
@@ -74,11 +75,17 @@ export default class Check {
      *
      * @deprecated Use the javascript `instanceof` operator instead
      */
-    static isJoinPoint($jp, type, isOptional = false) {
+    static isJoinPoint($jp, type = LaraJoinPoint, isOptional = false) {
         if (isOptional && $jp === undefined) {
             return;
         }
-        if (type !== undefined && $jp.joinPointType !== type) {
+        if (typeof type !== "string" && $jp instanceof type) {
+            return;
+        }
+        if (typeof type === "string" && $jp.getInstanceOf(type)) {
+            return;
+        }
+        if (typeof type === "string" && $jp.joinPointType !== type) {
             throw ("Expected join point to be an instance of type '" +
                 type +
                 "' but its type is '" +

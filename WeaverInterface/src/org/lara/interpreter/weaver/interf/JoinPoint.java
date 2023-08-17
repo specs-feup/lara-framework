@@ -75,6 +75,10 @@ public abstract class JoinPoint {
                 new Parameter(PrimitiveClasses.STRING, "attribute"),
                 new Parameter(PrimitiveClasses.OBJECT, "value"))));
         LaraJoinPointSpecification.add(new Action(PrimitiveClasses.STRING, "toString"));
+        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "equals", Arrays.asList(
+                new Parameter(new JPType(LaraJoinPointSpecification), "jp"))));
+        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "getInstanceOf", Arrays.asList(
+                new Parameter(PrimitiveClasses.STRING, "name"))));
     }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
@@ -572,15 +576,15 @@ public abstract class JoinPoint {
         return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
         // return Undefined.getUndefined();
     }
-    
+
     public Object getChildren() {
         throw new NotImplementedException(this);
     }
-    
+
     public Object getDescendants() {
         throw new NotImplementedException(this);
     }
-    
+
     public Object getScopeNodes() {
         throw new NotImplementedException(this);
     }

@@ -95,11 +95,23 @@ export default class Check {
    *
    * @deprecated Use the javascript `instanceof` operator instead
    */
-  static isJoinPoint($jp: LaraJoinPoint, type?: string, isOptional = false) {
+  static isJoinPoint(
+    $jp: LaraJoinPoint,
+    type: string | typeof LaraJoinPoint = LaraJoinPoint,
+    isOptional = false
+  ) {
     if (isOptional && $jp === undefined) {
       return;
     }
-    if (type !== undefined && $jp.joinPointType !== type) {
+
+    if (typeof type !== "string" && $jp instanceof type) {
+      return;
+    }
+
+    if (typeof type === "string" && $jp.getInstanceOf(type)) {
+      return;
+    }
+    if (typeof type === "string" && $jp.joinPointType !== type) {
       throw (
         "Expected join point to be an instance of type '" +
         type +
