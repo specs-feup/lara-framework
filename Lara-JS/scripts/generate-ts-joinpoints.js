@@ -123,9 +123,15 @@ function parseExceptions(actionName) {
 function generateJoinpointAction(action, outputFile, joinpoints) {
   const parameters = action.parameters
     .map((parameter) => {
-      let paramStr = `${parameter.name}: ${parameter.type}`;
+      let paramStr = parameter.name;
       if (parameter.default !== undefined) {
-        paramStr += ` = ${JSON.parse(parameter.default)}`;
+        if (parameter.default === '"null"') {
+          paramStr += `?: ${parameter.type}`;
+        } else {
+          paramStr += `: ${parameter.type} = ${JSON.parse(parameter.default)}`;
+        }
+      } else {
+        paramStr += `: ${parameter.type}`;
       }
       return paramStr;
     })
