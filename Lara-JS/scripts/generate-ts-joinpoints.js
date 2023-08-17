@@ -45,9 +45,9 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
           .join(", ")})`
       );
     }
-      generateJoinpointAction(action, outputFile, joinpoints);
-      actionNameSet.add(action.name);
-    }
+    generateJoinpointAction(action, outputFile, joinpoints);
+    actionNameSet.add(action.name);
+  }
 
   fs.writeSync(outputFile, `}\n\n`);
 }
@@ -69,18 +69,29 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
     }(this._javaObject.get${capitalizeFirstLetter(attribute.name)}()) }\n`
   );
 
-  const setterActions = joinpointActions.filter(
+  let setterActions = joinpointActions.filter(
     (action) =>
       action.name === `set${capitalizeFirstLetter(attribute.name)}` &&
-      action.parameters.length === 1 &&
-      action.parameters[0].type === attribute.type
+      action.parameters.length === 1
   );
+
+  if (setterActions.length > 1) {
+    const newFilteredList = setterActions.filter(
+      (action) => action.parameters[0].type === attribute.type
+    );
+    if (newFilteredList.length === 1) {
+      setterActions = newFilteredList;
+    }
+  }
+  
   if (setterActions.length === 1) {
     fs.writeSync(
       outputFile,
       `${generateDocumentation(attribute.tooltip)}  set ${
         attribute.name
-      }(value: ${attribute.type}) { this._javaObject.set${capitalizeFirstLetter(
+      }(value: ${
+        setterActions[0].parameters[0].type
+      }) { this._javaObject.set${capitalizeFirstLetter(
         attribute.name
       )}(unwrapJoinPoint(value)); }\n`
     );
