@@ -28,25 +28,25 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
     generateJoinpointAttribute(attribute, outputFile, jp.actions);
   }
 
-  // TODO: remove this set as it is here because I can't deal with method overloading
-  let actionNameSet = new Set();
   for (const action of jp.actions) {
-    if (actionNameSet.has(action.name)) {
-      console.log(
-        `Skipping duplicate action ${action.name}(${action.parameters
-          .map((p) => `${p.name}: ${p.type}`)
-          .join(", ")})`
-      );
-      continue;
-    } else {
-      console.log(
-        `${action.name}(${action.parameters
-          .map((p) => `${p.name}: ${p.type}`)
-          .join(", ")})`
-      );
+    if (
+      action.overloads.length > 0
+    ) {
+      // Action with overloads
+      action.overloads.forEach((overload) => {
+        fs.writeSync(
+          outputFile,
+          `${generateDocumentation(overload.tooltip)}  ${
+            overload.name
+          }(${generateJoinpointActionParameters(overload)}): ${
+            overload.returnType
+          };\n`
+        );
+      });
     }
+
+    // Regular action
     generateJoinpointAction(action, outputFile, joinpoints);
-    actionNameSet.add(action.name);
   }
 
   fs.writeSync(outputFile, `}\n\n`);
@@ -83,7 +83,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
       setterActions = newFilteredList;
     }
   }
-  
+
   if (setterActions.length === 1) {
     fs.writeSync(
       outputFile,
@@ -143,8 +143,8 @@ function parseExceptions(actionName) {
   }
 }
 
-function generateJoinpointAction(action, outputFile, joinpoints) {
-  const parameters = action.parameters
+function generateJoinpointActionParameters(action) {
+  return action.parameters
     .map((parameter) => {
       let paramStr = parameter.name;
       if (parameter.default !== undefined) {
@@ -159,6 +159,10 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
       return paramStr;
     })
     .join(", ");
+}
+
+function generateJoinpointAction(action, outputFile, joinpoints) {
+  const parameters = generateJoinpointActionParameters(action);
 
   const callParameters = action.parameters
     .map((parameter) => `unwrapJoinPoint(${parameter.name})`)

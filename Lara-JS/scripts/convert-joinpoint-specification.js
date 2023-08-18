@@ -82,18 +82,19 @@ function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
 function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   let attributes = [];
   let actions = [];
+  const actionNameSet = new Set();
 
   jp.children.forEach((child) => {
     switch (child.type) {
       case "attribute":
         if (child.children.length !== 1) {
-          actions.push(
-            convertJoinpointAction(
-              child,
-              joinpointNameSet,
-              enumNameSet,
-              "get" + capitalizeFirstLetter(child.children[0].name)
-            )
+          convertJoinpointAction(
+            child,
+            joinpointNameSet,
+            enumNameSet,
+            actions,
+            actionNameSet,
+            "get" + capitalizeFirstLetter(child.children[0].name)
           );
         } else {
           attributes.push(
@@ -102,8 +103,12 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
         }
         break;
       case "action":
-        actions.push(
-          convertJoinpointAction(child, joinpointNameSet, enumNameSet)
+        convertJoinpointAction(
+          child,
+          joinpointNameSet,
+          enumNameSet,
+          actions,
+          actionNameSet
         );
         break;
       case "select":
@@ -193,12 +198,14 @@ function convertJoinpointAction(
   actionObject,
   joinpointNameSet,
   enumNameSet,
+  actions,
+  actionNameSet,
   overrideName = null
 ) {
   const action = actionObject.children[0];
   const actionName = overrideName ?? action.name;
 
-  return {
+  const convertedAction = {
     name: actionName,
     tooltip: convertDeprecationNotice(actionObject.tooltip),
     returnType: interpretType(action.type, joinpointNameSet, enumNameSet),
@@ -209,7 +216,65 @@ function convertJoinpointAction(
         enumNameSet
       );
     }),
+    overloads: [],
   };
+
+  if (actionNameSet.has(convertedAction.name)) {
+    for (const action of actions) {
+      if (action.name === convertedAction.name) {
+        if (action.overloads.length === 0) {
+          action.overloads.push(structuredClone(action));
+
+          let paramCounter = 1;
+          action.parameters.forEach((param) => {
+            param.name = `p${paramCounter++}`;
+
+            if (param.default !== undefined) {
+              param.default = '"null"';
+            }
+          });
+        }
+
+        action.returnType += " | " + convertedAction.returnType;
+
+        for (let i = 0; i < convertedAction.parameters.length; i++) {
+          if (i >= action.parameters.length) {
+            action.parameters.push(
+              structuredClone(convertedAction.parameters[i])
+            );
+            action.parameters[i].name = `p${i + 1}`;
+
+            action.parameters[i].default = '"null"';
+
+            continue;
+          }
+
+          const parameter = convertedAction.parameters[i];
+          const existingParameter = action.parameters[i];
+          if (parameter.type !== existingParameter.type) {
+            existingParameter.type += " | " + parameter.type;
+          }
+        }
+
+        if (convertedAction.parameters.length < action.parameters.length) {
+          for (
+            let i = convertedAction.parameters.length;
+            i < action.parameters.length;
+            i++
+          ) {
+            action.parameters[i].default = '"null"';
+          }
+        }
+
+        action.overloads.push(convertedAction);
+        break;
+      }
+    }
+    return;
+  }
+  actionNameSet.add(actionName);
+
+  actions.push(convertedAction);
 }
 
 function convertEnums(enums) {
