@@ -29,9 +29,7 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   }
 
   for (const action of jp.actions) {
-    if (
-      action.overloads.length > 0
-    ) {
+    if (action.overloads.length > 0) {
       // Action with overloads
       action.overloads.forEach((overload) => {
         fs.writeSync(
@@ -70,36 +68,55 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   );
 
   let setterActions = joinpointActions.filter(
-    (action) =>
-      action.name === `set${capitalizeFirstLetter(attribute.name)}` &&
-      action.parameters.length === 1
+    (action) => action.name === `set${capitalizeFirstLetter(attribute.name)}`
   );
 
-  if (setterActions.length > 1) {
-    const newFilteredList = setterActions.filter(
-      (action) => action.parameters[0].type === attribute.type
-    );
-    if (newFilteredList.length === 1) {
-      setterActions = newFilteredList;
-    }
+  if (attribute.name === "userField") {
+    console.log("HERE");
   }
 
-  if (setterActions.length === 1) {
-    fs.writeSync(
-      outputFile,
-      `${generateDocumentation(attribute.tooltip)}  set ${
-        attribute.name
-      }(value: ${
-        setterActions[0].parameters[0].type
-      }) { this._javaObject.set${capitalizeFirstLetter(
-        attribute.name
-      )}(unwrapJoinPoint(value)); }\n`
-    );
-  } else if (setterActions.length > 1) {
-    console.error(
-      `Found more than one setter for attribute ${attribute.name} of type ${attribute.type}`
-    );
+  if (setterActions.length === 0) {
+    return;
   }
+
+
+  if (setterActions[0].overloads.length > 0) {
+    setterActions = setterActions[0].overloads.filter((overload) => {
+      const requiredParameters = overload.parameters.reduce(
+        (acc, parameter) => {
+          if (parameter.defaultValue === undefined) {
+            return acc+1;
+          }
+          return acc;
+        },
+        0
+      );
+
+      return requiredParameters <= 1;
+    });
+  }
+
+  if (setterActions.length === 0) {
+    return;
+  }
+
+  const setterParameterType = setterActions
+    .reduce((type, action) => {
+      if (action.parameters.length) {
+        type.push(action.parameters[0].type);
+      }
+      return type;
+    }, [])
+    .join(" | ");
+
+  fs.writeSync(
+    outputFile,
+    `${generateDocumentation(attribute.tooltip)}  set ${
+      attribute.name
+    }(value: ${setterParameterType}) { this._javaObject.set${capitalizeFirstLetter(
+      attribute.name
+    )}(unwrapJoinPoint(value)); }\n`
+  );
 }
 
 /**
