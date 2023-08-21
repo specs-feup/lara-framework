@@ -48,6 +48,8 @@ public class WeaverStatementProcessor {
 
     private static final String APPLY_PREFIX = "_apply_counter_";
     private static final String CARDINAL = "__CARDINAL__";
+    private static final String WRAP_JOINPOINT = "wrapJoinPoint";
+    private static final String UNWRAP_JOINPOINT = "unwrapJoinPoint";
 
     private final Interpreter interpreter;
     private final Map<String, List<String>> selects;
@@ -195,7 +197,8 @@ public class WeaverStatementProcessor {
                     + ".equals('" + simpleJPName + "')) {\n");
             ret.append(LaraIUtils.getSpace(depth + 1) + "continue;\n");
             ret.append(LaraIUtils.getSpace(depth) + "}\n");
-            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = wrapJoinPoint(" + jpWrapper + "."
+            ret.append(LaraIUtils.getSpace(depth) + "var " + jpAlias + " = "
+                    + WRAP_JOINPOINT + "(" + jpWrapper + "."
                     + JoinpointUtils.getReferenceProperty() + ");\n");
             // ret.append(LaraIUtils.getSpace(depth) + "println('current wrapper: '+" + jpWrapper + ");\n");
             // ret.append(LaraIUtils.getSpace(depth) + "println('current ref: '+" + jpWrapper + "."
@@ -279,9 +282,7 @@ public class WeaverStatementProcessor {
         final StringBuilder ret = new StringBuilder(MasterWeaver.WEAVER_NAME);
         ret.append(".select( ");
         if (userDeclaredVariable != null) {
-            ret.append("unwrapJoinPoint(");
-            ret.append(userDeclaredVariable);
-            ret.append("), ");
+            ret.append(UNWRAP_JOINPOINT + "(" + userDeclaredVariable + "), ");
         }
         ret.append("'");
         ret.append(stat.label); // Name of the select
