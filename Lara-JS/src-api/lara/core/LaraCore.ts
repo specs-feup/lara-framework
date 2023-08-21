@@ -268,8 +268,8 @@ export function info(message: string, origin?: string): void {
 /**
  * @deprecated Use the javascript `instanceof` operator instead
  */
-export function isJoinPoint($jp: LaraJoinPoint, type?: string): boolean {
-  if (!($jp instanceof LaraJoinPoint)) {
+export function isJoinPoint($jp: any, type?: string): boolean {
+  if (!($jp instanceof LaraJoinPoint) && $jp.getClass === undefined ) {
     return false;
   }
   if (type) {
@@ -282,7 +282,7 @@ export function isJoinPoint($jp: LaraJoinPoint, type?: string): boolean {
 /**
  * @deprecated Use the javascript `instanceof` operator instead
  */
-export function checkJoinPoint($jp: LaraJoinPoint, source?: string): void {
+export function checkJoinPoint($jp: any, source?: string): void {
   if (isJoinPoint($jp)) {
     return;
   }
@@ -392,7 +392,7 @@ export function flattenArgsArray(args: any[]) {
  */
 export function laraGetter(object: any, property: string) {
   if (isJavaClass(object)) {
-    const value = Object.getOwnPropertyDescriptor(object, property)?.value;
+    const value = object[property];
 
     // If type is function, assume it should be called without arguments
     if (typeof value === "function") {

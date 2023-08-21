@@ -1,7 +1,10 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import { laraGetter } from "../core/LaraCore.js";
+
+type JpFilterTypes = RegExp | ((str: string) => boolean) | string | boolean | number;
 
 export type JpFilterRules = {
-  [key: string]: RegExp | ((str: string) => boolean) | string | boolean;
+  [key: string]: JpFilterTypes;
 };
 
 /**
@@ -35,29 +38,11 @@ export default class JpFilter {
 
         const pattern = this.rules[key];
 
-        for (let obj = jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
-          const descriptor = Object.getOwnPropertyDescriptor(obj, key);
-          if (descriptor !== undefined) {
-            let attributeValue: any = undefined;
-            if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
-              attributeValue = descriptor.get?.call?.(jp);
-            } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
-              attributeValue = descriptor.value;
-            } else {
-              continue;
-            }
+        // TODO: Revert this change when we ensure that all weavers use the new LaraJoinPoint class
+        const attributeValue = laraGetter(jp, key);
 
-            if (
-              (pattern instanceof RegExp && !pattern.test(attributeValue)) ||
-              (typeof pattern === "function" && !pattern(attributeValue)) ||
-              (typeof pattern === "string" && attributeValue !== pattern) ||
-              (typeof pattern === "boolean" && attributeValue !== pattern)
-            ) {
-              return false;
-            }
-
-            break;
-          }
+        if (!this.match(attributeValue, pattern)) {
+          return false;
         }
       }
 
@@ -65,5 +50,19 @@ export default class JpFilter {
     });
 
     return $filteredJps;
+  }
+
+  private match(value: any, pattern: JpFilterTypes): boolean {
+    if (
+      (pattern instanceof RegExp && pattern.test(value)) ||
+      (typeof pattern === "function" && pattern(value)) ||
+      (typeof pattern === "string" && value === pattern) ||
+      (typeof pattern === "boolean" && value === pattern) ||
+      (typeof pattern === "number" && value === pattern)
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }

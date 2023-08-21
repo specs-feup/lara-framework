@@ -1,3 +1,4 @@
+import { laraGetter } from "../core/LaraCore.js";
 /**
  * Filters join points according to the given rules.
  *
@@ -25,32 +26,25 @@ export default class JpFilter {
                     key = key.substring(rxPrefix.length);
                 }
                 const pattern = this.rules[key];
-                for (let obj = jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
-                    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
-                    if (descriptor !== undefined) {
-                        let attributeValue = undefined;
-                        if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
-                            attributeValue = descriptor.get?.call?.(jp);
-                        }
-                        else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
-                            attributeValue = descriptor.value;
-                        }
-                        else {
-                            continue;
-                        }
-                        if ((pattern instanceof RegExp && !pattern.test(attributeValue)) ||
-                            (typeof pattern === "function" && !pattern(attributeValue)) ||
-                            (typeof pattern === "string" && attributeValue !== pattern) ||
-                            (typeof pattern === "boolean" && attributeValue !== pattern)) {
-                            return false;
-                        }
-                        break;
-                    }
+                // TODO: Revert this change when we ensure that all weavers use the new LaraJoinPoint class
+                const attributeValue = laraGetter(jp, key);
+                if (!this.match(attributeValue, pattern)) {
+                    return false;
                 }
             }
             return true;
         });
         return $filteredJps;
+    }
+    match(value, pattern) {
+        if ((pattern instanceof RegExp && pattern.test(value)) ||
+            (typeof pattern === "function" && pattern(value)) ||
+            (typeof pattern === "string" && value === pattern) ||
+            (typeof pattern === "boolean" && value === pattern) ||
+            (typeof pattern === "number" && value === pattern)) {
+            return true;
+        }
+        return false;
     }
 }
 //# sourceMappingURL=JpFilter.js.map

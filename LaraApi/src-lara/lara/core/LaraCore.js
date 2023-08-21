@@ -214,7 +214,7 @@ export function info(message, origin) {
  * @deprecated Use the javascript `instanceof` operator instead
  */
 export function isJoinPoint($jp, type) {
-    if (!($jp instanceof LaraJoinPoint)) {
+    if (!($jp instanceof LaraJoinPoint) && $jp.getClass === undefined) {
         return false;
     }
     if (type) {
@@ -315,7 +315,7 @@ export function flattenArgsArray(args) {
  */
 export function laraGetter(object, property) {
     if (isJavaClass(object)) {
-        const value = Object.getOwnPropertyDescriptor(object, property)?.value;
+        const value = object[property];
         // If type is function, assume it should be called without arguments
         if (typeof value === "function") {
             // Java object
