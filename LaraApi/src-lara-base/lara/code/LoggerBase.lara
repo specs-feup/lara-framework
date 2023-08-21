@@ -109,9 +109,9 @@ Logger.prototype._insert = function($jp, insertBefore, code) {
 		this.afterJp = $jp;
 	} else {
 		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
-		//if($jp.getInstanceOf("scope") && $jp.parent !== undefined && $jp.parent.getInstanceOf("function"))
+		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
 		//println("PARENT TYPE:" + $jp.parent.joinPointType);
-		//println("JP BODY?:" + $jp.getInstanceOf("body"));
+		//println("JP BODY?:" + $jp.instanceOf("body"));
 		this.afterJp = $jp.insertAfter(code);
 	}
 	
@@ -134,9 +134,9 @@ Logger.prototype._insertCode = function($jp, insertBefore, code) {
 		this.afterJp = $jp;
 	} else {
 		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
-		//if($jp.getInstanceOf("scope") && $jp.parent !== undefined && $jp.parent.getInstanceOf("function"))
+		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
 		//println("PARENT TYPE:" + $jp.parent.joinPointType);
-		//println("JP BODY?:" + $jp.getInstanceOf("body"));
+		//println("JP BODY?:" + $jp.instanceOf("body"));
 		this.afterJp = $jp.insertAfter(code);
 	}
 }

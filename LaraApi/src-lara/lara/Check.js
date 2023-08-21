@@ -82,7 +82,7 @@ export default class Check {
         if (typeof type !== "string" && $jp instanceof type) {
             return;
         }
-        if (typeof type === "string" && $jp.getInstanceOf(type)) {
+        if (typeof type === "string" && $jp.instanceOf(type)) {
             return;
         }
         if (typeof type === "string" && $jp.joinPointType !== type) {

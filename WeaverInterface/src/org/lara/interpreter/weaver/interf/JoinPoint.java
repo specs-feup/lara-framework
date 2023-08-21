@@ -77,7 +77,7 @@ public abstract class JoinPoint {
         LaraJoinPointSpecification.add(new Action(PrimitiveClasses.STRING, "toString"));
         LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "equals", Arrays.asList(
                 new Parameter(new JPType(LaraJoinPointSpecification), "jp"))));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "getInstanceOf", Arrays.asList(
+        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "instanceOf", Arrays.asList(
                 new Parameter(PrimitiveClasses.STRING, "name"))));
     }
 

@@ -131,7 +131,7 @@ export default class Selector {
             this.addBaseJp = false;
             // Filter does not test if the join point is of the right type
             const $root = this.$currentJps[0].jpAttributes[this.lastName];
-            if ($root.joinPointType === name) {
+            if (name && $root.instanceOf(name)) {
                 this.addJps($newJps, [$root], jpFilter, this.$currentJps[0], name);
             }
         }

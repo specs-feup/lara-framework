@@ -218,7 +218,7 @@ export function isJoinPoint($jp, type) {
         return false;
     }
     if (type) {
-        return $jp.joinPointType === type;
+        return $jp.instanceOf(type);
     }
     return true;
 }

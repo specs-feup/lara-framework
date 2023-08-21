@@ -1,6 +1,6 @@
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import JpFilter from "../lara/util/JpFilter.js";
+import JpFilter, {type JpFilterRules} from "../lara/util/JpFilter.js";
 import JoinPointsBase from "./JoinPointsBase.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
@@ -16,8 +16,8 @@ interface SelectorChain {
 export type SelectorFilter =
   | string
   | RegExp
-  | { [key: string]: RegExp | ((str: string) => boolean) | string | boolean }
-  | ((str: string) => boolean);
+  | ((str: string) => boolean)
+  | JpFilterRules;
 
 /**
  * Selects join points according to their type and filter rules.
@@ -197,7 +197,7 @@ export default class Selector {
 
       // Filter does not test if the join point is of the right type
       const $root = this.$currentJps[0].jpAttributes[this.lastName];
-      if ($root.joinPointType === name) {
+      if (name && $root.instanceOf(name)) {
         this.addJps($newJps, [$root], jpFilter, this.$currentJps[0], name);
       }
     }

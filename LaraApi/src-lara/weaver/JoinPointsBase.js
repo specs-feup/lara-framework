@@ -102,7 +102,7 @@ export default class JoinPointsBase {
     }
     static _filterNodes($jps, jpType) {
         // TODO: This check should be done with the JS Classes
-        return $jps.filter((jp) => jp.getInstanceOf(jpType));
+        return $jps.filter((jp) => jp.instanceOf(jpType));
     }
     /**
      * Iterates of attributeNames, returns the first value that is not null or undefined.

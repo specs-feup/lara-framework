@@ -175,7 +175,7 @@
 						"children": [
 									{
 										"type": "Boolean",
-										"name": "getInstanceOf"
+										"name": "instanceOf"
 									},
 									{
 										"type": "String",

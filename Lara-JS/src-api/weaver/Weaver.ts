@@ -59,7 +59,7 @@ export default class Weaver {
     if (type === undefined) {
       return $joinpoint instanceof LaraJoinPoint;
     }
-    return $joinpoint.joinPointType === type;
+    return $joinpoint.instanceOf(type);
   }
 
   /**

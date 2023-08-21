@@ -1,6 +1,6 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
 
-type JpFilterRules = {
+export type JpFilterRules = {
   [key: string]: RegExp | ((str: string) => boolean) | string | boolean;
 };
 

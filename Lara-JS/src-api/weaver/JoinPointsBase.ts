@@ -145,7 +145,7 @@ export default class JoinPointsBase {
 
   static _filterNodes($jps: LaraJoinPoint[], jpType: string) {
     // TODO: This check should be done with the JS Classes
-    return $jps.filter((jp) => (jp as any).getInstanceOf(jpType));
+    return $jps.filter((jp) => (jp as any).instanceOf(jpType));
   }
 
   /**

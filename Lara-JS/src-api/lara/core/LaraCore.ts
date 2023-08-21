@@ -273,7 +273,7 @@ export function isJoinPoint($jp: LaraJoinPoint, type?: string): boolean {
     return false;
   }
   if (type) {
-    return $jp.joinPointType === type;
+    return $jp.instanceOf(type);
   }
 
   return true;
