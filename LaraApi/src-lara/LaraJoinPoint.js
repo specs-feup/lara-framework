@@ -7,6 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     _javaObject;
@@ -24,17 +25,20 @@ export class LaraJoinPoint {
     get children() { return wrapJoinPoint(this._javaObject.getChildren()); }
     get descendants() { return wrapJoinPoint(this._javaObject.getDescendants()); }
     get scopeNodes() { return wrapJoinPoint(this._javaObject.getScopeNodes()); }
-    insert(position, code) { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
+    insert(p1, p2) { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
     def(attribute, value) { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
     toString() { return wrapJoinPoint(this._javaObject.toString()); }
     equals(jp) { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-    getInstanceOf(name) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
+    instanceOf(name) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
 }
 const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {
     JoinpointMappers.push(mapper);
 }
 export function wrapJoinPoint(obj) {
+    if (JoinpointMappers.length === 0) {
+        return obj;
+    }
     if (obj === undefined) {
         return obj;
     }

@@ -8,6 +8,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 
 import JavaTypes from "./lara/util/JavaTypes.js";
 
@@ -27,11 +28,13 @@ export class LaraJoinPoint {
   get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
   get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
   get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
-  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(position), unwrapJoinPoint(code))); }
+  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint;
+  insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint;
+  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint | LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
   def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
   equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-  getInstanceOf(name: string): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
+  instanceOf(name: string): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
 }
 
 
@@ -44,6 +47,10 @@ export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
 }
 
 export function wrapJoinPoint(obj: any): any {
+  if (JoinpointMappers.length === 0) {
+    return obj;
+  }
+
   if (obj === undefined) {
     return obj;
   }

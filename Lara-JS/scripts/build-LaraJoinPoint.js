@@ -59,6 +59,10 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
   fs.writeSync(
     outputFile,
     `\nexport function wrapJoinPoint(obj: any): any {
+  if (JoinpointMappers.length === 0) {
+    return obj;
+  }
+
   if (obj === undefined) {
     return obj;
   }
