@@ -20,8 +20,8 @@ class Code2Vec {
     // return AST path context starting from a leaf
     lst.push("(up)");
     lst.push(node);
-    if (node.astParent != undefined && !lst.includes(node.astParent)) {
-      this.#AST(node.astParent, lst);
+    if (node.parent != undefined && !lst.includes(node.parent)) {
+      this.#AST(node.parent, lst);
     }
     this.#goDown(node, lst);
     lst.pop();

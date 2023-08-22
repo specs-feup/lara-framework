@@ -68,7 +68,7 @@ Timer.prototype._timeValidate = function($start, $end, functionJpName) {
 
     var $function = $start.getAncestor(functionJpName);
 
-    if ($function === undefined) {
+    if ($function == undefined) {
         println("Timer: tried to measure time at join point " + $start.joinPointType + ", but it is not inside a function");
         return false;
     }
@@ -76,7 +76,7 @@ Timer.prototype._timeValidate = function($start, $end, functionJpName) {
     if ($end !== undefined) {
         var $endFunction = $end.getAncestor(functionJpName);
 
-        if ($endFunction === undefined) {
+        if ($endFunction == undefined) {
             println("Timer: tried to end measuring time at joinpoit " + $end + ", but it is not inside a function");
             return false;
         }
