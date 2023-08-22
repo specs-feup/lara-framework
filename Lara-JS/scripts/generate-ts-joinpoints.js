@@ -132,28 +132,7 @@ function parseExceptions(actionName) {
   const originalActionName =
     actionName.slice(3, 4).toLowerCase() + actionName.slice(4);
   switch (originalActionName) {
-    case "arg":
-    case "ancestor":
-    case "astAncestor":
-    case "child":
-    case "astChild":
-    case "astIsInstance":
-    case "declaration":
-    case "descendants":
-    case "descendantsAndSelf":
-    case "laraDescendants":
-    case "firstJp":
-    case "getValue":
     case "instanceOf":
-    case "hasClause":
-    case "isClauseLegal":
-    case "reduction":
-    case "destinationFilepath":
-    case "numStatements":
-    case "targetNodes":
-    case "userField":
-    case "getUserField":
-    case "hasNode":
       return originalActionName;
     default:
       return actionName;
