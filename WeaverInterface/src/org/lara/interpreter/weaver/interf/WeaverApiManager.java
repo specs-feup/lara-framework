@@ -132,6 +132,7 @@ public class WeaverApiManager {
         SpecsIo.write(new File(npmFolder, "package.json"), "{ \"type\" : \"module\" }\n");
 
         File javaFolder = SpecsIo.mkdir(new File(npmFolder, "node_modules/java"));
+        SpecsIo.mkdir(new File(javaFolder, "api"));
         SpecsIo.write(new File(javaFolder, "package.json"), "{ \"type\" : \"module\", \"main\": \"index.js\" }\n");
         SpecsIo.write(new File(javaFolder, "index.js"), "export default {};\n");
 
