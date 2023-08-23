@@ -29,19 +29,6 @@ import org.lara.language.specification.dsl.types.PrimitiveClasses;
  */
 public class Attribute extends BaseNode implements Comparable<Attribute> {
 
-    private static final Attribute ATTRIBUTES;
-    private static final Attribute SELECTS;
-    private static final Attribute ACTIONS;
-
-    static {
-        PrimitiveClasses string = PrimitiveClasses.STRING;
-        ArrayType stringA = new ArrayType(string);
-
-        ATTRIBUTES = new Attribute(stringA, "attributes");
-        SELECTS = new Attribute(stringA, "selects");
-        ACTIONS = new Attribute(stringA, "actions");
-    }
-
     private Declaration declaration;
     private List<Declaration> parameters;
 
@@ -98,18 +85,6 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
 
     public void setDeclaration(Declaration declaration) {
         this.declaration = declaration;
-    }
-
-    public static Attribute getSelectsAttribute() {
-        return SELECTS;
-    }
-
-    public static Attribute getActionsAttribute() {
-        return ACTIONS;
-    }
-
-    public static Attribute getAttributesAttribute() {
-        return ATTRIBUTES;
     }
 
     @Override

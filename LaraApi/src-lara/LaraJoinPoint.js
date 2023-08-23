@@ -14,9 +14,9 @@ export class LaraJoinPoint {
     constructor(obj) {
         this._javaObject = obj;
     }
-    get actions() { return wrapJoinPoint(this._javaObject.getActions()); }
     get attributes() { return wrapJoinPoint(this._javaObject.getAttributes()); }
     get selects() { return wrapJoinPoint(this._javaObject.getSelects()); }
+    get actions() { return wrapJoinPoint(this._javaObject.getActions()); }
     get dump() { return wrapJoinPoint(this._javaObject.getDump()); }
     get joinPointType() { return wrapJoinPoint(this._javaObject.getJoinPointType()); }
     get node() { return (this._javaObject.getNode()); }
@@ -29,7 +29,7 @@ export class LaraJoinPoint {
     def(attribute, value) { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
     toString() { return wrapJoinPoint(this._javaObject.toString()); }
     equals(jp) { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-    instanceOf(name) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
+    instanceOf(p1) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
 }
 const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {

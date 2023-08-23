@@ -392,11 +392,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     public static JoinPointClass globalJoinPoint(LanguageSpecificationV2 langSpec) {
         JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME, langSpec);
-        globalNode.add(Attribute.getAttributesAttribute());
-        globalNode.add(Attribute.getSelectsAttribute());
-        globalNode.add(Attribute.getActionsAttribute());
-        globalNode.add(Action.getInsertAction());
-        globalNode.add(Action.getDefAction());
         return globalNode;
     }
 

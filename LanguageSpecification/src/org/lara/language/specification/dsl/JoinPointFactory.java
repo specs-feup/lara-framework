@@ -120,26 +120,7 @@ public class JoinPointFactory {
             }
         }
 
-        // Add default global attributes (e.g., joinPointType, instanceOf)
-        addDefaultGlobalAttributes(langSpecV2);
-
         return langSpecV2;
-
-    }
-
-    private static void addDefaultGlobalAttributes(LanguageSpecificationV2 langSpec) {
-        /*
-        var joinPointType = new Attribute(PrimitiveClasses.STRING, "joinPointType");
-        joinPointType.setDefault(true);
-        joinPointType.setToolTip("a String with the type of the join point");
-        langSpec.getGlobal().add(joinPointType);
-        */
-        var instanceOf = new Attribute(PrimitiveClasses.BOOLEAN, "instanceOf",
-                Arrays.asList(new Declaration(PrimitiveClasses.STRING, "name")));
-        instanceOf.setDefault(true);
-        instanceOf.setToolTip("true if the current join point is an instance of the given type");
-        langSpec.getGlobal().add(instanceOf);
-
     }
 
     private static List<Action> convertActions(LanguageSpecificationV2 langSpecV2,

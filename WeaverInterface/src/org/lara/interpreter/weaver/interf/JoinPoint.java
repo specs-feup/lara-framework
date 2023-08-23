@@ -52,9 +52,9 @@ public abstract class JoinPoint {
     public static final JoinPointClass LaraJoinPointSpecification = new JoinPointClass("LaraJoinPoint", null);
 
     static {
-        LaraJoinPointSpecification.add(Attribute.getActionsAttribute());
-        LaraJoinPointSpecification.add(Attribute.getAttributesAttribute());
-        LaraJoinPointSpecification.add(Attribute.getSelectsAttribute());
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "attributes"));
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "selects"));
+        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "actions"));
         // JoinPointSpecification.add(new Attribute(null, "srcCode"));
         LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "dump"));
         LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "joinPointType"));
@@ -79,6 +79,8 @@ public abstract class JoinPoint {
                 new Parameter(new JPType(LaraJoinPointSpecification), "jp"))));
         LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "instanceOf", Arrays.asList(
                 new Parameter(PrimitiveClasses.STRING, "name"))));
+        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "instanceOf", Arrays.asList(
+                new Parameter(new ArrayType(PrimitiveClasses.STRING), "names"))));
     }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;

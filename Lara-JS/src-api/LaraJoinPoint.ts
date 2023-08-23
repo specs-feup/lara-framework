@@ -17,9 +17,9 @@ export class LaraJoinPoint {
   constructor(obj: any) {
     this._javaObject = obj;
   }
-  get actions(): string[] { return wrapJoinPoint(this._javaObject.getActions()) }
   get attributes(): string[] { return wrapJoinPoint(this._javaObject.getAttributes()) }
   get selects(): string[] { return wrapJoinPoint(this._javaObject.getSelects()) }
+  get actions(): string[] { return wrapJoinPoint(this._javaObject.getActions()) }
   get dump(): string { return wrapJoinPoint(this._javaObject.getDump()) }
   get joinPointType(): string { return wrapJoinPoint(this._javaObject.getJoinPointType()) }
   get node(): object { return (this._javaObject.getNode()) }
@@ -34,7 +34,9 @@ export class LaraJoinPoint {
   def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
   equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-  instanceOf(name: string): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(name))); }
+  instanceOf(name: string): boolean;
+  instanceOf(names: string[]): boolean;
+  instanceOf(p1: string | string[]): boolean | boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
 }
 
 

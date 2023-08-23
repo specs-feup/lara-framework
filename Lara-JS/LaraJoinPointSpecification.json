@@ -12,14 +12,6 @@
 						"children": [
 									{
 										"type": "String[]",
-										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "String[]",
 										"name": "attributes"
 									}]
 					},
@@ -29,6 +21,14 @@
 									{
 										"type": "String[]",
 										"name": "selects"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "actions"
 									}]
 					},
 					{
@@ -180,6 +180,19 @@
 									{
 										"type": "String",
 										"name": "name",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String[]",
+										"name": "names",
 										"defaultValue": ""
 									}]
 					}]
