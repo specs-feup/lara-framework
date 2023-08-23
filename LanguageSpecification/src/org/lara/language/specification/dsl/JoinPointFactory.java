@@ -247,7 +247,7 @@ public class JoinPointFactory {
         newAttribute.setToolTip(attribute.getTooltip());
         List<org.lara.language.specification.artifactsmodel.schema.Parameter> parameters = attribute.getParameter();
         if (parameters != null && !parameters.isEmpty()) {
-            parameters.forEach(p -> newAttribute.addParameter(langSpec.getType(p.getType()), p.getName()));
+            parameters.forEach(p -> newAttribute.addParameter(langSpec.getType(p.getType()), p.getName(), (p.getDefault() != null ? p.getDefault() : "")));
         }
         return newAttribute;
     }

@@ -90,7 +90,7 @@ Logger.prototype._validateJp = function($jp, functionJpName) {
 	var $function = $jp.getAncestor(functionJpName);
 	
    
-    if ($function == undefined) {
+    if ($function === undefined) {
         println("Logger: tried to insert log around joinpoit " + $jp + ", but is not inside a function");
 		this._clear();
 		return false;

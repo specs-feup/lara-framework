@@ -93,8 +93,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
             joinpointNameSet,
             enumNameSet,
             actions,
-            actionNameSet,
-            "get" + capitalizeFirstLetter(child.children[0].name)
+            actionNameSet
           );
         } else {
           attributes.push(

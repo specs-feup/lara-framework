@@ -65,7 +65,7 @@ export function checkDefined<T>(
   varName = "<unknown>",
   source = "<unknown>"
 ) {
-  if (value != undefined) {
+  if (value !== undefined) {
     return;
   }
 

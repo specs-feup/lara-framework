@@ -47,7 +47,7 @@ export function checkTrue(booleanExpr, message = "checkTrue failed", source = "<
  * @deprecated Use the javascript '===' operator instead
  */
 export function checkDefined(value, varName = "<unknown>", source = "<unknown>") {
-    if (value != undefined) {
+    if (value !== undefined) {
         return;
     }
     throw `${source}: Value ${varName} is undefined`;

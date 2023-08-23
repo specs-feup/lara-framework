@@ -59,8 +59,6 @@ public class LangSpecsXmlParser {
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
             InputStream actionModel, boolean validate) {
 
-        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.read());
-        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.getResource());
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
         var actionSchema = validate ? SchemaResource.ACTION_SCHEMA.toStream() : null;
@@ -116,9 +114,8 @@ public class LangSpecsXmlParser {
                 globalActions.add(actionNode);
                 continue;
             }
-            // System.out.println("CLASS NAMES: " + classNames);
+
             for (String className : classNames.split(",")) {
-                // System.out.println("NAME: " + className);
                 joinPointActions.add(className.strip(), actionNode);
             }
         }
@@ -168,10 +165,6 @@ public class LangSpecsXmlParser {
                     continue;
                 }
 
-                // Get corresponding join point and set default
-                // System.out.println("ARTIFACT CLASS: " + artifact.getAttribute("class"));
-                // System.out.println("JP: " + langSpecV2.getJoinPoint(artifact.getAttribute("class")));
-
                 var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
 
                 if (artifactJp == null) {
@@ -180,17 +173,8 @@ public class LangSpecsXmlParser {
                 }
 
                 artifactJp.setDefaultAttribute(defaultValue);
-                // System.out.println("SETTING DEFAULT '" + defaultValue + "' for JP " +
-                // artifact.getAttribute("class"));
             }
         }
-
-        // Add default global attributes (e.g., joinPointType, instanceOf)
-        addDefaultGlobalAttributes(langSpecV2);
-
-        // System.out.println("JP: " + joinPointModelNode);
-        // System.out.println("ATTR: " + attributeModelNode);
-        // System.out.println("ACTIONS: " + actionModelNode);
 
         return langSpecV2;
 
@@ -221,27 +205,12 @@ public class LangSpecsXmlParser {
     private static void populateGlobal(XmlDocument jpModel, XmlDocument artifacts, XmlDocument actionModel,
             LanguageSpecificationV2 langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
 
-        /*
-        GlobalJoinPoints globalSelects = jpModel.getJoinPointList().getGlobal();
-        if (globalSelects != null) {
-            convertSelects(langSpecV2, globalSelects.getSelect())
-                    .forEach(global::add);
-            // global.setSelects();
-        }
-        */
-
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
             convertAttributes(globalAttributes.getElementsByName("attribute"), langSpecV2)
                     .forEach(global::add);
         }
 
-        // Global actions either do not have 'class' set, or is set to '*'
-        // List<XmlElement> globalActionNodes = actionModel.getElementsByName("action").stream()
-        // .filter(node -> node.getAttribute("class").isBlank() || node.getAttribute("class").equals("*"))
-        // .collect(Collectors.toList());
-
-        // global.getActions().addAll(convertActions(langSpecV2, globalActionNodes));
         convertActions(langSpecV2, globalActionNodes).stream()
                 .forEach(global::add);
     }
@@ -270,7 +239,7 @@ public class LangSpecsXmlParser {
         var parameterNodes = attributeNode.getElementsByName("parameter");
         for (var parameterNode : parameterNodes) {
             newAttribute.addParameter(langSpec.getType(getType(parameterNode)),
-                    parameterNode.getAttribute("name"));
+                    parameterNode.getAttribute("name"), parameterNode.getAttribute("default"));
         }
 
         return newAttribute;
@@ -325,12 +294,6 @@ public class LangSpecsXmlParser {
             selects.add(newSelect);
         }
 
-        // Collections.sort(selects);
-
         return selects;
-    }
-
-    @Deprecated
-    private static void addDefaultGlobalAttributes(LanguageSpecificationV2 langSpec) {
     }
 }
