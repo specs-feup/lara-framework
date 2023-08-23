@@ -79,13 +79,12 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
     return;
   }
 
-
   if (setterActions[0].overloads.length > 0) {
     setterActions = setterActions[0].overloads.filter((overload) => {
       const requiredParameters = overload.parameters.reduce(
         (acc, parameter) => {
           if (parameter.defaultValue === undefined) {
-            return acc+1;
+            return acc + 1;
           }
           return acc;
         },
@@ -119,26 +118,6 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   );
 }
 
-/**
- * Handle actions in the joinpoint specification that do not conform to the conventions
- * @param {string} actionName
- * @returns
- */
-function parseExceptions(actionName) {
-  if (!actionName.startsWith("get")) {
-    return actionName;
-  }
-
-  const originalActionName =
-    actionName.slice(3, 4).toLowerCase() + actionName.slice(4);
-  switch (originalActionName) {
-    case "instanceOf":
-      return originalActionName;
-    default:
-      return actionName;
-  }
-}
-
 function generateJoinpointActionParameters(action) {
   return action.parameters
     .map((parameter) => {
@@ -168,9 +147,9 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
     outputFile,
     `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
       action.returnType
-    } { return wrapJoinPoint(this._javaObject.${parseExceptions(
+    } { return wrapJoinPoint(this._javaObject.${
       action.name
-    )}(${callParameters})); }\n`
+    }(${callParameters})); }\n`
   );
 }
 
