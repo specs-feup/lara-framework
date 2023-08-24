@@ -141,7 +141,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     DEBUG("Debug.lara"),
     //IO("Io.lara"),
     NUMBERS("Numbers.lara"),
-    PLATFORMS("Platforms.lara"),
+    //PLATFORMS("Platforms.lara"),
     //STRINGS("Strings.lara"),
     SYSTEM("System.lara");
     //JAVA_INTEROP("JavaInterop.lara");
