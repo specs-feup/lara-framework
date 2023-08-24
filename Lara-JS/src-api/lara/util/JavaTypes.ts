@@ -54,6 +54,7 @@ export namespace JavaClasses {
   export interface LaraIUtils extends JavaClass {}
   export interface WeaverLauncher extends JavaClass {}
   export interface ArrayList extends JavaClass {}
+  export interface HashMap extends JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -272,5 +273,9 @@ export default class JavaTypes {
 
   static get ArrayList() {
     return JavaTypes.getType("java.util.ArrayList") as JavaClasses.ArrayList;
+  }
+
+  static get HashMap() {
+    return JavaTypes.getType("java.util.HashMap") as JavaClasses.HashMap;
   }
 }

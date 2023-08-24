@@ -144,5 +144,8 @@ export default class JavaTypes {
     static get ArrayList() {
         return JavaTypes.getType("java.util.ArrayList");
     }
+    static get HashMap() {
+        return JavaTypes.getType("java.util.HashMap");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map
