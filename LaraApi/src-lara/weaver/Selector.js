@@ -1,6 +1,6 @@
 import Accumulator from "../lara/util/Accumulator.js";
 import JpFilter from "../lara/util/JpFilter.js";
-import JoinPointsBase from "./JoinPointsBase.js";
+import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
 /**
@@ -79,11 +79,11 @@ export default class Selector {
         switch (traversal) {
             case TraversalType.PREORDER:
                 return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-                    return JoinPointsBase.descendants($jp, name);
+                    return JoinPoints.descendants($jp, name);
                 });
             case TraversalType.POSTORDER:
                 return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-                    return JoinPointsBase.descendantsPostorder($jp, name);
+                    return JoinPoints.descendantsPostorder($jp, name);
                 });
             default:
                 throw new Error(
@@ -101,7 +101,7 @@ export default class Selector {
      */
     children(type, filter = {}) {
         return this.searchPrivate(type, Selector.parseFilter(filter, type), function ($jp, name) {
-            return JoinPointsBase.children($jp, name);
+            return JoinPoints.children($jp, name);
         });
     }
     /**
@@ -114,7 +114,7 @@ export default class Selector {
      */
     scope(name, filter = {}) {
         return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-            return JoinPointsBase.scope($jp, name);
+            return JoinPoints.scope($jp, name);
         });
     }
     searchPrivate(name = undefined, jpFilter, selectFunction) {
@@ -136,7 +136,7 @@ export default class Selector {
             }
         }
         const isCurrentJpsUndefined = this.$currentJps === undefined;
-        this.$currentJps ??= [Selector.newJpChain(JoinPointsBase.root())];
+        this.$currentJps ??= [Selector.newJpChain(JoinPoints.root())];
         this.lastName = isCurrentJpsUndefined
             ? Selector.STARTING_POINT
             : this.lastName;

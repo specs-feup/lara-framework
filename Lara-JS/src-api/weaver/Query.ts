@@ -1,5 +1,5 @@
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
-import JoinPointsBase from "./JoinPointsBase.js";
+import JoinPoints from "./JoinPoints.js";
 import Selector, { type SelectorFilter } from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 
@@ -16,7 +16,7 @@ export default class Query {
    * @returns The root node
    */
   static root(): LaraJoinPoint {
-    return JoinPointsBase.root();
+    return JoinPoints.root();
   }
 
   /**

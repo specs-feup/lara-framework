@@ -3,7 +3,7 @@ import Weaver from "./Weaver.js";
 /**
  * Object which provides low-level join point-related methods.
  */
-export default class JoinPointsBase {
+export default class JoinPoints {
     /**
      *
      * @returns the current root node of the AST
@@ -45,16 +45,16 @@ export default class JoinPointsBase {
      */
     static _all_descendants_postorder($jp) {
         const descendants = [];
-        for (const child of JoinPointsBase._all_children($jp)) {
-            const result = JoinPointsBase._all_descendants_postorder_helper($jp);
+        for (const child of JoinPoints._all_children($jp)) {
+            const result = JoinPoints._all_descendants_postorder_helper($jp);
             descendants.push(...result);
         }
         return descendants;
     }
     static _all_descendants_postorder_helper($jp) {
         const nodes = [];
-        for (const child of JoinPointsBase._all_children($jp)) {
-            const postorderDescendants = JoinPointsBase._all_descendants_postorder_helper(child);
+        for (const child of JoinPoints._all_children($jp)) {
+            const postorderDescendants = JoinPoints._all_descendants_postorder_helper(child);
             nodes.push(...postorderDescendants);
         }
         nodes.push($jp);
@@ -65,28 +65,28 @@ export default class JoinPointsBase {
      * @returns the nodes inside the scope of the given node.
      */
     static scope($jp, jpType) {
-        return JoinPointsBase._getNodes(JoinPointsBase._all_scope_nodes, $jp, jpType);
+        return JoinPoints._getNodes(JoinPoints._all_scope_nodes, $jp, jpType);
     }
     /**
      *
      * @returns the children of the given node, according to the AST
      */
     static children($jp, jpType) {
-        return JoinPointsBase._getNodes(JoinPointsBase._all_children, $jp, jpType);
+        return JoinPoints._getNodes(JoinPoints._all_children, $jp, jpType);
     }
     /**
      *
      * @returns the descendants of the given node, according to the AST, preorder traversal
      */
     static descendants($jp, jpType) {
-        return JoinPointsBase._getNodes(JoinPointsBase._all_descendants, $jp, jpType);
+        return JoinPoints._getNodes(JoinPoints._all_descendants, $jp, jpType);
     }
     /**
      *
      * @returns the descendants of the given node, according to the AST, postorder traversal
      */
     static descendantsPostorder($jp, jpType) {
-        return JoinPointsBase._getNodes(JoinPointsBase._all_descendants_postorder, $jp, jpType);
+        return JoinPoints._getNodes(JoinPoints._all_descendants_postorder, $jp, jpType);
     }
     /**
      *
@@ -98,7 +98,7 @@ export default class JoinPointsBase {
         if (jpType === undefined) {
             return descendants;
         }
-        return JoinPointsBase._filterNodes(descendants, jpType);
+        return JoinPoints._filterNodes(descendants, jpType);
     }
     static _filterNodes($jps, jpType) {
         // TODO: This check should be done with the JS Classes
@@ -161,4 +161,4 @@ export default class JoinPointsBase {
         throw "JoinPoints.getCode(): expected attribute 'code' to exist";
     }
 }
-//# sourceMappingURL=JoinPointsBase.js.map
+//# sourceMappingURL=JoinPoints.js.map

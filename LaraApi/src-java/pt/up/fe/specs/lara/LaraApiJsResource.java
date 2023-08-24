@@ -43,7 +43,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     REPLACER_JS("lara/util/Replacer.js"),
     STRINGSET_JS("lara/util/StringSet.js"),
     TIMEUNITS_JS("lara/util/TimeUnits.js"),
-    JOINPOINTSBASE_JS("weaver/JoinPointsBase.js"),
+    JOINPOINTS_JS("weaver/JoinPoints.js"),
     QUERY_JS("weaver/Query.js"),
     SELECTOR_JS("weaver/Selector.js"),
     TRAVERSALTYPE_JS("weaver/TraversalType.js"),

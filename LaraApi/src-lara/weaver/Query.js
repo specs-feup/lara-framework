@@ -1,4 +1,4 @@
-import JoinPointsBase from "./JoinPointsBase.js";
+import JoinPoints from "./JoinPoints.js";
 import Selector from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 /**
@@ -14,7 +14,7 @@ export default class Query {
      * @returns The root node
      */
     static root() {
-        return JoinPointsBase.root();
+        return JoinPoints.root();
     }
     /**
      * The same as Query.searchFrom(), but uses the root node as $baseJp.
