@@ -1,64 +1,72 @@
+import JavaTypes from "./util/JavaTypes.js";
+
 /**
  * Information about the current platform (e.g., if it is Linux, Windows or Mac)
  *
- * @class
  */
-var Platforms = {};
+export default class Platforms {
+  private static customPlatform: string | undefined = undefined;
+  private static LINUX = "linux";
+  private static UNIX = "unix";
+  private static WINDOWS = "windows";
+  private static MAC = "mac";
 
-Platforms._customPlatform = undefined;
-Platforms._LINUX = "linux";
-Platforms._UNIX = "unix";
-Platforms._WINDOWS = "windows";
-Platforms._MAC = "mac";
+  static isWindows(): boolean {
+    return (
+      Platforms.testCustomPlatform(Platforms.WINDOWS) ??
+      (JavaTypes.SpecsPlatforms.isWindows() as boolean)
+    );
+  }
 
+  static isLinux(): boolean {
+    return (
+      Platforms.testCustomPlatform(Platforms.LINUX) ??
+      (JavaTypes.SpecsPlatforms.isLinux() as boolean)
+    );
+  }
 
-Platforms.isWindows = function() {
-	return defaultValue(Platforms._testCustomPlatform(Platforms._WINDOWS), SpecsPlatforms.isWindows());
-	//return SpecsPlatforms.isWindows();
-}
+  static isUnix(): boolean {
+    return (
+      Platforms.testCustomPlatform(Platforms.UNIX) ??
+      (JavaTypes.SpecsPlatforms.isUnix() as boolean)
+    );
+  }
 
-Platforms.isLinux = function() {
-	return defaultValue(Platforms._testCustomPlatform(Platforms._LINUX), SpecsPlatforms.isLinux());
-	//return SpecsPlatforms.isLinux();
-}
+  static isMac(): boolean {
+    return (
+      Platforms.testCustomPlatform(Platforms.MAC) ??
+      (JavaTypes.SpecsPlatforms.isMac() as boolean)
+    );
+  }
 
-Platforms.isUnix = function() {
-	return defaultValue(Platforms._testCustomPlatform(Platforms._UNIX), SpecsPlatforms.isUnix());
-//	return SpecsPlatforms.isUnix();
-}
+  static getPlatformName(): string {
+    return JavaTypes.SpecsPlatforms.getPlatformName() as string;
+  }
 
-Platforms.isMac = function() {
-	return defaultValue(Platforms._testCustomPlatform(Platforms._MAX), SpecsPlatforms.isMac());
-	//return SpecsPlatforms.isMac();
-}
+  static setLinux() {
+    Platforms.customPlatform = Platforms.LINUX;
+  }
 
-Platforms.getPlatformName = function() {
-	return SpecsPlatforms.getPlatformName();
-}
+  static setWindows() {
+    Platforms.customPlatform = Platforms.WINDOWS;
+  }
 
-Platforms.setLinux = function() {
-	Platforms._customPlatform = Platforms._LINUX;
-}
+  static setMac() {
+    Platforms.customPlatform = Platforms.MAC;
+  }
 
-Platforms.setWindows = function() {
-	Platforms._customPlatform = Platforms._WINDOWS;
-}
+  private static testCustomPlatform(platform?: string) {
+    if (Platforms.customPlatform === undefined) {
+      return undefined;
+    }
 
-Platforms.setMac = function() {
-	Platforms._customPlatform = Platforms._MAC;
-}
+    return Platforms.customPlatform === platform;
+  }
 
-Platforms._testCustomPlatform = function(platform) {
-	if(Platforms._customPlatform === undefined) {
-		return undefined;
-	}
-	
-	return Platforms._customPlatform === platform;
-}
-
-/**
- * If platform has been previously set to a custom one, resets setting. Otherwise, does nothing.
- */
-Platforms.setCurrent = function() {
-	Platforms._customPlatform = undefined;
+  /**
+   * If platform has been previously set to a custom one, resets setting. Otherwise, does nothing.
+   */
+  static setCurrent() {
+    Platforms.customPlatform = undefined;
+  }
 }

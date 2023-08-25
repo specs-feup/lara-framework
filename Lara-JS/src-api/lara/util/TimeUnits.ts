@@ -67,6 +67,14 @@ export default class TimeUnits {
     this.#unit = unit;
   }
 
+  get unit() {
+    return this.#unit;
+  }
+
+  set unit(unit: TimerUnit) {
+    this.#unit = unit;
+  }
+
   getUnitsString() {
     return timerUnitData[this.#unit].unitString;
   }

@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src-java"/>
 	<classpathentry kind="src" path="src-lara"/>
-	<classpathentry kind="src" path="src-lara-base"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>

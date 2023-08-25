@@ -1,84 +1,97 @@
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
 
 /**
  * Class that measures the energy spent when executing a section of code.
  */
-var Energy = function(filename) {
+export default class EnergyBase<T extends LaraJoinPoint> {
+  filename: string;
+  printUnit: boolean = true;
+  print: boolean = true;
+
+  constructor(filename: string) {
     this.filename = filename;
-    this.printUnit = true;
-	this.print = true;
-};
+  }
 
-/**
- * If true, suffixes 'J' to the end of the value.
- *
- * @param printUnit boolean
- */
-Energy.prototype.setPrintUnit = function(printUnit) {
-    checkType(printUnit, 'boolean'); 
-	this.printUnit = printUnit;
+  /**
+   * If true, suffixes 'J' to the end of the value.
+   *
+   */
+  setPrintUnit(printUnit: boolean) {
+    this.printUnit = printUnit;
     return this;
-}
+  }
 
-Energy.prototype.getPrintUnit = function() {
+  getPrintUnit() {
     return "J";
-}
+  }
 
-Energy.prototype.setPrint = function(print) {
-    checkType(print, 'boolean'); 
-	this.print = print;
+  setPrint(print: boolean) {
+    this.print = print;
     return this;
-}
+  }
 
-Energy.prototype._warn = function(message) {
-    println("[EnergyBase Warning] " + message);
-}
+  private warn(message: string) {
+    console.log("[EnergyBase Warning]", message);
+  }
 
-/**
- * Verifies that join point start is not undefined, that it is inside a function.
- * Additionally, if $end is not undefined, checks if it is inside the same function as $start.
- *
- * [Requires] global attribute 'ancestor'. 
- *
- * @return true if $start is a valid join point for the 'measure' function
- */
-Energy.prototype._measureValidate = function($start, $end, functionJpName) {
+  /**
+   * Verifies that join point start is not undefined, that it is inside a function.
+   * Additionally, if $end is not undefined, checks if it is inside the same function as $start.
+   *
+   * [Requires] global attribute 'ancestor'.
+   *
+   * @returns True if $start is a valid join point for the 'measure' function
+   */
+  // TODO: This function should receive LaraJoinPoints but they do not have the getAncestor method
+  protected measureValidate($start?: any, $end?: any, functionJpName: string = "function") {
     if ($start === undefined) {
-        this._warn("Energy: $start join point is undefined");
-        return false;
+      this.warn("Energy: $start join point is undefined");
+      return false;
     }
-	
-	var typeofStart = typeof $start;
-	if(typeofStart !== "object") {
-	    this._warn("Energy: $start should be an object, it is a " + typeofStart + " instead");
-        return false;
-	}
 
-    var $function = $start.getAncestor(functionJpName);
+    if (typeof $start !== "object") {
+      this.warn(
+        "Energy: $start should be an object, it is a " +
+          typeof $start +
+          " instead"
+      );
+      return false;
+    }
+
+    const $function = $start.getAncestor(functionJpName);
 
     if ($function === undefined) {
-        println("Energy: tried to measure energy at joinpoit " + $start + ", but it is not inside a function");
-        return false;
+      console.log(
+        "Energy: tried to measure energy at joinpoit " +
+          $start +
+          ", but it is not inside a function"
+      );
+      return false;
     }
-	
+
     if ($end !== undefined) {
-		
-		var typeofEnd = typeof $end;
-		if(typeofEnd !== "object") {
-			this._warn("Energy: $end should be an object, it is a " + typeofEnd + " instead");
-			return false;
-		}
-		
-        var $endFunction = $end.getAncestor(functionJpName);
+      const typeofEnd = typeof $end;
+      if (typeofEnd !== "object") {
+        this.warn(
+          "Energy: $end should be an object, it is a " + typeofEnd + " instead"
+        );
+        return false;
+      }
 
-        if ($endFunction === undefined) {
-            println("Energy: tried to end measuring energy at joinpoit " + $end + ", but it is not inside a function");
-            return false;
-        }
+      const $endFunction = $end.getAncestor(functionJpName);
 
-        // TODO: Checking if it is the same function not implemented yet, requires attribute '$function.id'
+      if ($endFunction === undefined) {
+        console.log(
+          "Energy: tried to end measuring energy at joinpoit " +
+            $end +
+            ", but it is not inside a function"
+        );
+        return false;
+      }
+
+      // TODO: Checking if it is the same function not implemented yet, requires attribute '$function.id'
     }
 
     return true;
+  }
 }
-
-

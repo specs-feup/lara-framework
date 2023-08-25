@@ -1,48 +1,51 @@
-import weaver.JoinPoints;
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import JoinPoints from "../../weaver/JoinPoints.js";
+import { isJoinPoint } from "../core/LaraCore.js";
+
+type ElementType = { content: string | number; type: number };
 
 /**
  * Logger object, for inserting code that prints/saves information to files.
  *
- * @param {boolean} [isGlobal = false] - Not implemented, please ignore
- * @param {String} [filename = undefined] - If set, instead of printing, will insert code for writing output to this file
+ * @param isGlobal - Not implemented, please ignore
+ * @param filename - If set, instead of printing, will insert code for writing output to this file
  *
  */
-var Logger = function(isGlobal, filename) {
+export default abstract class LoggerBase<T extends LaraJoinPoint> {
+  protected isGlobal: boolean;
+  protected filename: string | undefined;
+  protected currentElements: ElementType[] = [];
+  private functionMap: Record<string, string> = {};
+  protected afterJp: T | undefined = undefined;
 
-    //(new lara$profiling$Energy$EnergyTest()).call();
+  Type: Map<string, number> = new Map();
+
+  constructor(isGlobal = false, filename?: string) {
     if (isGlobal) {
-        println("[Logger-warning] global Logger is not implemented yet, reverting to local Logger");
-        isGlobal = false;
+      console.log(
+        "[Logger-warning] global Logger is not implemented yet, reverting to local Logger"
+      );
+      isGlobal = false;
     }
 
-    this.currentElements = [];
-
-    //this.functionsSetup = new Set();
-    this.functionMap = {};
-
-    this.isGlobal = isGlobal === undefined ? false : isGlobal;
+    this.isGlobal = isGlobal;
     this.filename = filename;
-	this.afterJp = undefined;
 
-};
+    this.Type.set("NORMAL", 1);
+    this.Type.set("INT", 2);
+    this.Type.set("DOUBLE", 3);
+    this.Type.set("STRING", 4);
+    this.Type.set("CHAR", 5);
+    this.Type.set("HEX", 6);
+    this.Type.set("OCTAL", 7);
+    this.Type.set("LITERAL", 8);
+    this.Type.set("LONG", 9);
+  }
 
-// Using enum pattern described here: https://stijndewitt.com/2014/01/26/enums-in-javascript/
-Logger.prototype.Type = {
-    NORMAL: 1,
-    INT: 2,
-    DOUBLE: 3,
-    STRING: 4,
-    CHAR: 5,
-    HEX: 6,
-    OCTAL: 7,
-	LITERAL: 8,
-	LONG: 9
-}
-
-/**
- * Used for both C and Java printf functions
- */
-Logger.prototype.printfFormat = {
+  /**
+   * Used for both C and Java printf functions
+   */
+  printfFormat: Record<number, string | undefined> = {
     1: undefined,
     2: "%d",
     3: "%f",
@@ -50,432 +53,402 @@ Logger.prototype.printfFormat = {
     5: "%c",
     6: "%x",
     7: "%o",
-	8: undefined,
-	9: "%ld"
-}
-Logger.prototype.isGlobalFn = function() {
-    println("Is Global Fn:" + this.isGlobal);
-}
+    8: undefined,
+    9: "%ld",
+  };
 
-/**
- *  The 'last' join point after .log() is called.
- * 
- * @return {$jp} 
- */
-Logger.prototype.getAfterJp = function() {
-	return this.afterJp;
-}
+  isGlobalFn() {
+    console.log("Is Global Fn:", this.isGlobal);
+  }
 
+  /**
+   *  The 'last' join point after .log() is called.
+   *
+   */
+  getAfterJp(): T | undefined {
+    return this.afterJp;
+  }
 
-Logger.prototype._clear = function() {
+  private clear() {
     this.currentElements = [];
-}
+  }
 
-/**
- * Helper method which call 'log' with 'insertBefore' set to true
- *
- */
-Logger.prototype.logBefore = function($jp) {
-	this.log($jp, true);
-}
+  abstract log($jp: T, insertBefore: boolean): void;
 
-/**
- * Verifies that the given $jp is inside a function.
- *
- * Requires global attribute 'ancestor'. 
- *
- * @return true if $jp is inside a function, false otherwise
- */
-Logger.prototype._validateJp = function($jp, functionJpName) {
-	var $function = $jp.getAncestor(functionJpName);
-	
-   
+  /**
+   * Helper method which call 'log' with 'insertBefore' set to true
+   *
+   */
+  logBefore($jp: T) {
+    this.log($jp, true);
+  }
+
+  /**
+   * Verifies that the given $jp is inside a function.
+   *
+   * Requires global attribute 'ancestor'.
+   *
+   * @returns true if $jp is inside a function, false otherwise
+   */
+  // TODO: This function should receive LaraJoinPoints but they do not have the getAncestor method
+  _validateJp($jp: any, functionJpName: string = "function") {
+    const $function = $jp.getAncestor(functionJpName);
+
     if ($function === undefined) {
-        println("Logger: tried to insert log around joinpoit " + $jp + ", but is not inside a function");
-		this._clear();
-		return false;
+      console.log(
+        "Logger: tried to insert log around joinpoint " +
+          $jp.joinPointType +
+          ", but is not inside a function"
+      );
+      this.clear();
+      return false;
     }
-	
-	return true;
-}
 
-Logger.prototype._insert = function($jp, insertBefore, code) {
-	this._insertCode($jp, insertBefore, code);
-/*
-    var insertBeforeString = insertBefore ? "before" : "after";
+    return true;
+  }
 
-	if(insertBefore) {
-	    $jp.insert(insertBeforeString, code);
-		this.afterJp = $jp;
-	} else {
-		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
-		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
-		//println("PARENT TYPE:" + $jp.parent.joinPointType);
-		//println("JP BODY?:" + $jp.instanceOf("body"));
-		this.afterJp = $jp.insertAfter(code);
-	}
-	
-    //$jp.insert(insertBeforeString, code);
-*/
+  _insert($jp: T, insertBefore: boolean, code: string) {
+    this._insertCode($jp, insertBefore, code);
+
     // Clear internal state
-    this._clear();
-}
+    this.clear();
+  }
 
-/**
- * Inserts the given code before/after the given join point.
- *
- * Override this method if you need to specialize the insertion.
- */
-Logger.prototype._insertCode = function($jp, insertBefore, code) {
-    var insertBeforeString = insertBefore ? "before" : "after";
+  /**
+   * Inserts the given code before/after the given join point.
+   *
+   * Override this method if you need to specialize the insertion.
+   */
+  // TODO: This function should receive LaraJoinPoints but they do not have the insertAfter method
+  _insertCode($jp: any, insertBefore: boolean, code: string) {
+    const insertBeforeString = insertBefore ? "before" : "after";
 
-	if(insertBefore) {
-	    $jp.insert(insertBeforeString, code);
-		this.afterJp = $jp;
-	} else {
-		// If $jp is a 'scope' with a 'function' parent, and has 'insertReturn' action, use it
-		//if($jp.instanceOf("scope") && $jp.parent !== undefined && $jp.parent.instanceOf("function"))
-		//println("PARENT TYPE:" + $jp.parent.joinPointType);
-		//println("JP BODY?:" + $jp.instanceOf("body"));
-		this.afterJp = $jp.insertAfter(code);
-	}
-}
+    if (insertBefore) {
+      $jp.insert(insertBeforeString, code);
+      this.afterJp = $jp;
+    } else {
+      this.afterJp = $jp.insertAfter(code);
+    }
+  }
 
-/**
- * Appends the given string to the current buffer.
- *
- * @param {String} text - the text to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.append = function(text) {
-    return this._append_private(text, this.Type.NORMAL);
-}
+  /**
+   * Appends the given string to the current buffer.
+   *
+   * @param text - The text to append
+   * @returns The current logger instance
+   */
+  append(text: string) {
+    return this._append_private(text, this.Type.get("NORMAL"));
+  }
 
-/**
- * The same as 'append'.
- *
- * @param {String} text - the text to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.text = function(text) {
-	return this.append(text);
-}
+  /**
+   * The same as 'append'.
+   *
+   * @param text - the text to append
+   * @returns The current logger instance
+   */
+  text(text: string) {
+    return this.append(text);
+  }
 
-/**
- * The same as 'append', but adds a new line at the end of the buffer.
- *
- * @param {String} text - the text to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.appendln = function(text) {
-	return this.append(text).ln();
-}
+  /**
+   * The same as 'append', but adds a new line at the end of the buffer.
+   *
+   * @param text - the text to append
+   * @returns The current logger instance
+   */
+  appendln(text: string) {
+    return this.append(text).ln();
+  }
 
+  /**
+   * Appends a new line to the buffer.
+   *
+   * @returns The current logger instance
+   */
+  ln() {
+    return this._append_private("\\n", this.Type.get("NORMAL"));
+  }
 
-/**
- * Appends a new line to the buffer.
- *
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.ln = function() {
-    return this._append_private("\\n", this.Type.NORMAL);
-}
-
-/**
- * Appends a tab to the buffer.
- *
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.tab = function() {
+  /**
+   * Appends a tab to the buffer.
+   *
+   * @returns The current logger instance
+   */
+  tab() {
     return this.append("\\t");
-}
+  }
 
-/**
- * Appends an expression that represents a double.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.appendDouble = function(expr) {
-    return this._append_private(expr, this.Type.DOUBLE);
-}
+  /**
+   * Appends an expression that represents a double.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendDouble(expr: T | string) {
+    return this._append_private(expr, this.Type.get("DOUBLE"));
+  }
 
-/**
- * The same as 'appendDouble'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.double = function(expr) {
+  /**
+   * The same as 'appendDouble'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  double(expr: T | string) {
     return this.appendDouble(expr);
-}
+  }
 
-/**
- * Appends an expression that represents a int.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.appendInt = function(expr) {
-    return this._append_private(expr, this.Type.INT);
-}
+  /**
+   * Appends an expression that represents a int.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendInt(expr: T | string) {
+    return this._append_private(expr, this.Type.get("INT"));
+  }
 
-/**
- * The same as 'appendInt'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.int = function(expr) {
+  /**
+   * The same as 'appendInt'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  int(expr: T | string) {
     return this.appendInt(expr);
-}
+  }
 
-/**
- * Appends an expression that represents a long.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.appendLong = function(expr) {
-    return this._append_private(expr, this.Type.LONG);
-}
+  /**
+   * Appends an expression that represents a long.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendLong(expr: T | string) {
+    return this._append_private(expr, this.Type.get("LONG"));
+  }
 
-/**
- * The same as 'appendLong'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.long = function(expr) {
-	return this.appendLong(expr);
-}
+  /**
+   * The same as 'appendLong'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  long(expr: T | string) {
+    return this.appendLong(expr);
+  }
 
-/**
- * Appends an expression that represents a string.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.appendString = function(expr) {
-    return this._append_private(expr, this.Type.STRING);
-}
+  /**
+   * Appends an expression that represents a string.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendString(expr: T | string) {
+    return this._append_private(expr, this.Type.get("STRING"));
+  }
 
-/**
- * The same as 'appendString'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.string = function(expr) {
+  /**
+   * The same as 'appendString'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  string(expr: T | string) {
     return this.appendString(expr);
-}
+  }
 
+  /**
+   * Appends an expression that represents a char.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendChar(expr: T | string) {
+    return this._append_private(expr, this.Type.get("CHAR"));
+  }
 
-/**
- * Appends an expression that represents a char.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.appendChar = function(expr) {
-    return this._append_private(expr, this.Type.CHAR);
-}
-
-
-/**
- * The same as 'appendChar'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.char = function(expr) {
+  /**
+   * The same as 'appendChar'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  char(expr: T | string) {
     return this.appendChar(expr);
-}
+  }
 
+  /**
+   * Appends an expression that represents a hex number.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendHex(expr: T | string) {
+    return this._append_private(expr, this.Type.get("HEX"));
+  }
 
-/**
- * Appends an expression that represents a hex number.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.appendHex = function(expr) {
-    return this._append_private(expr, this.Type.HEX);
-}
-
-/**
- * The same as 'appendHex'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.hex = function(expr) {
+  /**
+   * The same as 'appendHex'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  hex(expr: T | string) {
     return this.appendHex(expr);
-}
+  }
 
-/**
- * Appends an expression that represents an octal.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance
- */
-Logger.prototype.appendOctal = function(expr) {
-    return this._append_private(expr, this.Type.OCTAL);
-}
+  /**
+   * Appends an expression that represents an octal.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  appendOctal(expr: T | string) {
+    return this._append_private(expr, this.Type.get("OCTAL"));
+  }
 
-/**
- * The same as 'appendOctal'.
- *
- * @param {$jp} expr - the expression to append
- * @return {lara.code.Logger} the current logger instance 
- */
-Logger.prototype.octal = function(expr) {
+  /**
+   * The same as 'appendOctal'.
+   *
+   * @param expr - The expression to append
+   * @returns The current logger instance
+   */
+  octal(expr: T | string) {
     return this.appendOctal(expr);
-}
+  }
 
+  /**** PRIVATE METHODS ****/
 
-/**** PRIVATE METHODS ****/
-
-
-
-
-// Private append function
-Logger.prototype._append_private = function(message, type) {
+  protected _append_private(message: T | string, type?: number) {
     // If message is a join point, convert to code first
-    if(message instanceof LaraJoinPoint) {
-		message = JoinPoints.getCode(message);
+    if (isJoinPoint(message) || message instanceof LaraJoinPoint) {
+      message = JoinPoints.getCode(message as LaraJoinPoint);
     }
 
-    
     // Do not push message if empty
-    if (message === "") {
-        return this;
-    }
-
-    // Force type to be defined
-    if (type === undefined) {
-        throw "Logger: type must be defined";
+    if (message === "" || type === undefined) {
+      return this;
     }
 
     this.currentElements.push({ content: message, type: type });
     return this;
-}
+  }
 
-Logger.prototype._warn = function(message) {
-    println("[Logger Warning] " + message);
-}
+  protected _warn(message: string) {
+    console.log("[Logger Warning]", message);
+  }
 
-Logger.prototype._info = function(message) {
-    println("[Logger] " + message);
-}
+  protected _info(message: string) {
+    console.log("[Logger]", message);
+  }
 
-// Receives an element{content, type} and returns the content with or without quotation marks, accordingly
-Logger.prototype._getPrintableContent = function(element) {
-    var enumType = this.Type;
-    var content = element.content;
-	if (element.type === enumType.LITERAL) {
-		return content;
-	}
-	
-    if (element.type === enumType.NORMAL || element.type === enumType.STRING) {
-        return "\"" + content + "\"";
+  // Receives an element{content, type} and returns the content with or without quotation marks, accordingly
+  protected _getPrintableContent(element: ElementType): string {
+    const enumType = this.Type;
+    let content = element.content;
+    if (element.type === enumType.get("LITERAL")) {
+      return String(content);
     }
-	
-	if (element.type === enumType.CHAR) {
-        return "\'" + content + "\'";
+
+    if (
+      element.type === enumType.get("NORMAL") ||
+      element.type === enumType.get("STRING")
+    ) {
+      return '"' + content + '"';
     }
-	
-	// Test if it has a decimal point
-	if (element.type === enumType.DOUBLE) {
-		if((typeof content) !== "number") {
-			return content;
-		}
-		
-		var indexOfDecimal = String(content).indexOf(".");
-		if(indexOfDecimal === -1) {
-			content = content += ".0";
-		}
-	
-		return content;
-	}
-	
-    return content;
-}
 
-/**
- * generates printf like code for c and java, 
- * @param printFunctionName the name of the function to use (printf for C, System.out.println for Java)
- */
-Logger.prototype._printfFormat = function(printFunctionName, prefix, suffix, delimiter) {
-	if(delimiter === undefined) {
-		delimiter = "\"";
-	}
-	
-	if(prefix === undefined) {
-		prefix = "(" + delimiter;
-	}
-	
-	if(suffix === undefined) {
-		suffix = ");";
-	}
+    if (element.type === enumType.get("CHAR")) {
+      return "'" + content + "'";
+    }
 
+    // Test if it has a decimal point
+    if (element.type === enumType.get("DOUBLE")) {
+      if (typeof content !== "number") {
+        return content;
+      }
+
+      const indexOfDecimal = String(content).indexOf(".");
+      if (indexOfDecimal === -1) {
+        content = String(content) + ".0";
+      }
+
+      return String(content);
+    }
+
+    return String(content);
+  }
+
+  /**
+   * Generates printf like code for c and java
+   *
+   * @param printFunctionName - The name of the function to use (printf for C, System.out.println for Java)
+   */
+  protected _printfFormat(
+    printFunctionName: string,
+    prefix: string = "(",
+    suffix: string = ");",
+    delimiter: string = '"'
+  ): string {
     // Create code from elements
-    var code = printFunctionName + prefix +
-        this.currentElements.map(function(element) {
-            var enumType = this.Type;
-            if (element.type === enumType.NORMAL) {
-                return element.content;
-            }
-            //return enumType.printfFormat[element.type];
-            return this.printfFormat[element.type];
-        }, this).join("") + delimiter;
+    let code =
+      printFunctionName +
+      prefix +
+      delimiter +
+      this.currentElements
+        .map((element) => {
+          const enumType = this.Type;
+          if (element.type === enumType.get("NORMAL")) {
+            return element.content;
+          }
 
+          return this.printfFormat[element.type];
+        })
+        .join("") +
+      delimiter;
 
-    var valuesCode = this.currentElements
-        // Filter only non-NORMAL types
-        .filter(function(element) {
-            var enumType = this.Type;
-            return (element.type !== enumType.NORMAL);
-        }, this)
-        .map(function(element) {
-            // Even though _getPrintableContent tests an always unmet condition (type === NORMAL) it represents a reusable piece of code for both C and C++
-            return this._getPrintableContent(element);
-        }, this).join(", ");
+    const valuesCode = this.currentElements
+      // Filter only non-NORMAL types
+      .filter((element) => {
+        const enumType = this.Type;
+        return element.type !== enumType.get("NORMAL");
+      })
+      .map((element) => {
+        // Even though _getPrintableContent tests an always unmet condition (type === NORMAL) it represents a reusable piece of code for both C and C++
+        return this._getPrintableContent(element);
+      })
+      .join(", ");
 
     if (valuesCode.length > 0) {
-        code = code + ", " + valuesCode;
+      code = code + ", " + valuesCode;
     }
-
 
     code = code + suffix;
     return code;
-}
+  }
 
-/**
- *
- *
- * @param $function Function where name will be declared
- * @param nameGenerator function that receives no arguments and generates a new name
- */
-//Logger.prototype._declareName = function($function, nameGenerator) {
-Logger.prototype._declareName = function(functionId, nameGenerator) {
-    // Check if thislogger was already declared in the given function
-    //var declaration = $function.declaration(true);
-    var name = this.functionMap[functionId];
+  /**
+   *
+   *
+   * @param $function - Function where name will be declared
+   * @param nameGenerator - Function that receives no arguments and generates a new name
+   */
+  protected _declareName(functionId: string, nameGenerator: () => string) {
+    let name = this.functionMap[functionId];
+    let alreadyDeclared = false;
 
-	
     if (name !== undefined) {
-		alreadyDeclared = true;
-        //return name;
+      alreadyDeclared = true;
     } else {
-        name = nameGenerator(); 
-        this.functionMap[functionId] = name;
-		alreadyDeclared = false;
+      name = nameGenerator();
+      this.functionMap[functionId] = name;
+      alreadyDeclared = false;
     }
-	
-	return {
-        name: name,
-        alreadyDeclared: alreadyDeclared
-    };
-}
 
+    return {
+      name: name,
+      alreadyDeclared: alreadyDeclared,
+    };
+  }
+}

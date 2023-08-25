@@ -57,6 +57,12 @@ export default class TimeUnits {
     constructor(unit = TimerUnit.MILLISECONDS) {
         this.#unit = unit;
     }
+    get unit() {
+        return this.#unit;
+    }
+    set unit(unit) {
+        this.#unit = unit;
+    }
     getUnitsString() {
         return timerUnitData[this.#unit].unitString;
     }

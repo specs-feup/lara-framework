@@ -55,6 +55,7 @@ export namespace JavaClasses {
   export interface WeaverLauncher extends JavaClass {}
   export interface ArrayList extends JavaClass {}
   export interface HashMap extends JavaClass {}
+  export interface SpecsPlatforms extends JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -277,5 +278,11 @@ export default class JavaTypes {
 
   static get HashMap() {
     return JavaTypes.getType("java.util.HashMap") as JavaClasses.HashMap;
+  }
+
+  static get SpecsPlatforms() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lang.SpecsPlatforms"
+    ) as JavaClasses.SpecsPlatforms;
   }
 }

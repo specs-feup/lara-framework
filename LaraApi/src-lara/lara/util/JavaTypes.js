@@ -147,5 +147,8 @@ export default class JavaTypes {
     static get HashMap() {
         return JavaTypes.getType("java.util.HashMap");
     }
+    static get SpecsPlatforms() {
+        return JavaTypes.getType("pt.up.fe.specs.lang.SpecsPlatforms");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map
