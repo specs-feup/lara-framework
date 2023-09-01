@@ -150,5 +150,11 @@ export default class JavaTypes {
     static get SpecsPlatforms() {
         return JavaTypes.getType("pt.up.fe.specs.lang.SpecsPlatforms");
     }
+    static get Runtime() {
+        return JavaTypes.getType("java.lang.Runtime");
+    }
+    static get LARASystem() {
+        return JavaTypes.getType("Utils.LARASystem");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map

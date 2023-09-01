@@ -33,6 +33,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     JAVAINTEROP_JS("lara/JavaInterop.js"),
     PLATFORMS_JS("lara/Platforms.js"),
     STRINGS_JS("lara/Strings.js"),
+    SYSTEM_JS("lara/System.js"),
     ENERGYBASE_JS("lara/code/EnergyBase.js"),
     LOGGERBASE_JS("lara/code/LoggerBase.js"),
     TIMERBASE_JS("lara/code/TimerBase.js"),

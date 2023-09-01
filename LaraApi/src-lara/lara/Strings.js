@@ -2,7 +2,7 @@ import JavaTypes from "./util/JavaTypes.js";
 /**
  *  Utility methods related to Strings.
  */
-export class Strings {
+export default class Strings {
     /**
      * Taken from here: https://stackoverflow.com/questions/154059/how-do-you-check-for-an-empty-string-in-javascript
      *

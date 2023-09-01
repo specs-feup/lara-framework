@@ -1,186 +1,130 @@
-import lara.util.TimeUnits;
-import lara.util.JavaTypes;
+import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
+import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import Io from "./Io.js";
+import { notImplemented, info } from "./core/LaraCore.js";
+import Platforms from "./Platforms.js";
 
-/**
- * @class
- */
-var System = {};
+export default class System {
+  /**
+   * Returns the name of the platform where this code is executing
+   */
+  static getCurrentPlatform() {
+    notImplemented("getCurrentPlatform");
+  }
 
-/**
- * Returns the name of the platform where this code is executing
- */
-System.getCurrentPlatform = function() {
-	notImplemented("getCurrentPlatform");
-}
+  static prepareExe(executable: string | JavaClasses.File): string {
+    return JavaTypes.LARASystem.prepareExe(executable);
+  }
 
-/**
- * @deprecated
- */
-System.getExecutable = function(foldername) {
-	info("DEPRECATED, function is not reliable", "System.getExecutable");
-	return Java.type('pt.up.fe.specs.clang.Platforms').getExecutable(foldername);
-}
+  static getExecutableFile(
+    executableName: string,
+    executableFolder?: string | JavaClasses.File,
+    isInPath: boolean = false
+  ): string {
+    let exe: string;
+    if (executableFolder === undefined) {
+      exe = executableName;
+    } else {
+      exe = Io.getPath(
+        executableFolder,
+        executableName
+      ).getAbsolutePath() as string;
+    }
 
-System.prepareExe = function(executable) {
-	return LARASystem.prepareExe(executable);
-}
+    // Ensure exe is a string
+    exe = exe.toString();
 
-System.getExecutableFile = function(executableName, executableFolder, isInPath) {
+    if (Platforms.isUnix()) {
+      const addDotSlash =
+        !exe.startsWith("./") && !exe.startsWith("/") && !isInPath;
+      if (addDotSlash) {
+        exe = "./" + exe;
+      }
+    }
 
-	if(isInPath === undefined) {
-		isInPath = false;
-	}
-	
-	var exe = undefined;
-	if(executableFolder === undefined) {
-	  exe = executableName;
-	} else {
-	  exe = Io.getPath(executableFolder, executableName).getAbsolutePath();
-	}
+    if (Platforms.isWindows() && !exe.endsWith(".exe")) {
+      exe = exe + ".exe";
+    }
 
-	// Ensure exe is a string
-	exe = exe.toString();
-	
-	if(Platforms.isUnix()) {
-		var addDotSlash = (!exe.startsWith("./")) && (!exe.startsWith("/")) && !isInPath;
-		if(addDotSlash) {
-			exe = "./" + exe;
-		}
-	}
-	
-	if(Platforms.isWindows() && (!exe.endsWith(".exe"))) {
-		exe = exe + ".exe";
-	}
-	
-	if(executableFolder !== undefined && !Io.isFile(exe)) {
-		throw "System.getExecutableFile: Could not find executable '"+exe+"'";
-	}
-	
-	return exe;
-}
+    if (executableFolder !== undefined && !Io.isFile(exe)) {
+      throw "System.getExecutableFile: Could not find executable '" + exe + "'";
+    }
 
-/**
- * @deprecated
- */
-System.getExecutableName = function(baseName) {
-	info("DEPRECATED, please use System.getExecutableFile", "System.getExecutableName");
-	var exeName = baseName;
-	if(Platforms.isWindows()) {
-		exeName = exeName + ".exe";
-	}
-	else {
-		exeName = "./" + exeName;
-	}
-	
-	return exeName;
-}
+    return exe;
+  }
 
-/**
- * Controls whether by default, if the execution of commands should print the output to the console
- **/
-System.defaultPrintToConsole = true;
+  /**
+   * @deprecated Please use System.getExecutableFile
+   */
+  static getExecutableName(baseName: string): string {
+    info(
+      "DEPRECATED, please use System.getExecutableFile",
+      "System.getExecutableName"
+    );
+    let exeName = baseName;
+    if (Platforms.isWindows()) {
+      exeName = exeName + ".exe";
+    } else {
+      exeName = "./" + exeName;
+    }
 
-/**
- * @output: can be undefined, null or the name of a file. If undefined, prints the output to the console; if null, does not print the output to the console; otherwise should be a string with the name of the file where the output will be written (in this case, no output is printed in the console).
- */
- 
-/**
- *
- **/
-System.execute = function(command, workingDir, printToConsole, outputFile, append, timeout, timeunit) {
-	//println("System.execute is deprecated, use ProcessExecutor instead");
-	
-	/*
-	if(!isString(command) && !isArray(command)) {
-		throw "System.execute: 'command' must be either a String or an array, it is a " + (typeof command);
-	}
-	*/
-	/*
-	var isCommandList = undefined;
-	if(isString(command)) {
-		isCommandList = false;
-	} else if(isArray(command)) {
-		isCommandList = true;
-	} else {
-		throw "System.execute: 'command' must be either a String or an array";
-	}
-	*/
-	
-	if(workingDir === undefined) {
-		workingDir = "./";
-	}
-	
-	if(printToConsole === undefined) {
-		printToConsole = System.defaultPrintToConsole;
-	}
-	
-	if(outputFile === undefined) {
-		outputFile = null;
-	}
-	
-	if(append === undefined) {
-		append = false;
-	}
-	
-	if(timeunit === undefined) {
-		timeunit = new TimeUnits(TimerUnit.SECONDS);
-	}
-	
-	var timeoutNanos = null;
-	if(timeout !== undefined) {
-		timeoutNanos = timeunit.toNanos(timeout);
-	}
+    return exeName;
+  }
 
+  /**
+   * Controls whether by default, if the execution of commands should print the output to the console
+   **/
+  static defaultPrintToConsole: boolean = true;
 
-	var executeOutput = JavaTypes.LaraSystemTools.runCommand(command, workingDir, printToConsole, timeoutNanos)
-	.getOutput();
-	
-	if(executeOutput !== undefined) {
-		checkType(executeOutput, "string");
-	}
-	
-	return executeOutput;
-}
+  /**
+   * @returns Can be undefined, null or the name of a file. If undefined, prints the output to the console; if null, does not print the output to the console; otherwise should be a string with the name of the file where the output will be written (in this case, no output is printed in the console).
+   */
+  static execute(
+    command: string,
+    workingDir: string = "./",
+    printToConsole: boolean = this.defaultPrintToConsole,
+    outputFile?: string | JavaClasses.File,
+    append: boolean = false,
+    timeout?: number,
+    timeunit: TimeUnits = new TimeUnits(TimerUnit.SECONDS)
+  ): string | undefined {
+    let timeoutNanos = null;
+    if (timeout !== undefined) {
+      timeoutNanos = timeunit.toNanos(timeout);
+    }
 
-System.sleep = function(durantionMilis) {
-	SpecsSystem.sleep(durantionMilis);
-}
+    const executeOutput = JavaTypes.LaraSystemTools.runCommand(
+      command,
+      workingDir,
+      printToConsole,
+      timeoutNanos
+    ).getOutput();
 
-/**
- * @return the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
- */
-System.nanos = function() {
-	var system = Java.type("java.lang.System");
-	return system.nanoTime();
-}
+    if (executeOutput !== undefined && typeof executeOutput !== "string") {
+      throw new Error(
+        `Expected output to be a string, but it is ${typeof executeOutput}`
+      );
+    }
 
-System.toc = function(nanoStart, message) {
-	if(message === undefined) {
-		message = "Time";
-	}
-	
-	return SpecsStrings.takeTime(message, nanoStart);
-}
+    return executeOutput;
+  }
 
-System.getNumLogicalCores = function() {
-	var runtimeClass = Java.type("java.lang.Runtime");
-	return runtimeClass.getRuntime().availableProcessors();
-}
+  static sleep(durantionMilis: number): void {
+    JavaTypes.SpecsSystem.sleep(durantionMilis);
+  }
 
-/**
- * Read an environment variable. 
- *
- * @param {string} variable name of the environment variable
- * @return {string} the value for the given environment variable name, or undefined if not present
- */
-System.getEnv = function(variable) {
-	checkString(variable);
+  /**
+   * @returns The current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds
+   */
+  static nanos(): number {
+    return JavaTypes.System.nanoTime();
+  }
 
-	var envValue = JavaTypes.JavaSystem.getenv(variable);
-	
-	if(isUndefined(envValue)) {
-		return undefined;
-	}
-	
-	return envValue;
+  static toc(nanoStart: number, message: string = "Time"): string {
+    return JavaTypes.SpecsStrings.takeTime(message, nanoStart);
+  }
+
+  static getNumLogicalCores(): number {
+    return JavaTypes.Runtime.getRuntime().availableProcessors();
+  }
 }
