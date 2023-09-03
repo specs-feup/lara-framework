@@ -96,8 +96,8 @@ public enum LaraApiResource implements LaraResourceProvider {
     PASSES("pass/composition/Passes.js"),
 
     // Tool
-    TOOL("tool/Tool.js"),
-    TOOL_UTILS("tool/ToolUtils.js"),
+    //TOOL("tool/Tool.js"),
+    //TOOL_UTILS("tool/ToolUtils.js"),
 
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
