@@ -129,9 +129,9 @@ public enum LaraApiResource implements LaraResourceProvider {
     TUPLE_ID("util/TupleId.lara"),
 
     // VitisHLS
-    VITIS_HLS("vitishls/VitisHls.js"),
-    VITIS_HLS_REPORT_PARSER("vitishls/VitisHlsReportParser.js"),
-    VITIS_HLS_UTILS("vitishls/VitisHlsUtils.js"),
+    //VITIS_HLS("vitishls/VitisHls.js"),
+    //VITIS_HLS_REPORT_PARSER("vitishls/VitisHlsReportParser.js"),
+    //VITIS_HLS_UTILS("vitishls/VitisHlsUtils.js"),
 
     // Lara
     //_JAVA_TYPES("_JavaTypes.lara"),
