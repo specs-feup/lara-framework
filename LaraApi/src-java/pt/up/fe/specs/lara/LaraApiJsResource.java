@@ -49,6 +49,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     JAVATYPES_JS("lara/util/JavaTypes.js"),
     JPFILTER_JS("lara/util/JpFilter.js"),
     PRINTONCE_JS("lara/util/PrintOnce.js"),
+    PROCESSEXECUTOR_JS("lara/util/ProcessExecutor.js"),
     REPLACER_JS("lara/util/Replacer.js"),
     STRINGSET_JS("lara/util/StringSet.js"),
     TIMEUNITS_JS("lara/util/TimeUnits.js"),
