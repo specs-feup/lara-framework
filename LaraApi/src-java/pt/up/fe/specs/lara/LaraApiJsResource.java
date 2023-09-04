@@ -40,6 +40,8 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     LOGGERBASE_JS("lara/code/LoggerBase.js"),
     TIMERBASE_JS("lara/code/TimerBase.js"),
     LARACORE_JS("lara/core/LaraCore.js"),
+    TOOL_JS("lara/tool/Tool.js"),
+    TOOLUTILS_JS("lara/tool/ToolUtils.js"),
     ABSTRACTCLASSERROR_JS("lara/util/AbstractClassError.js"),
     ACCUMULATOR_JS("lara/util/Accumulator.js"),
     DATASTORE_JS("lara/util/DataStore.js"),

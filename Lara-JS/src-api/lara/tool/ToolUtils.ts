@@ -1,21 +1,15 @@
-"use strict";
+import { JavaClasses } from "../util/JavaTypes.js";
+import Strings from "../Strings.js";
 
-class ToolUtils {
-    static parsePath = function (path) {
-        //println("ORIGINAL PATH: " + path);
+export default class ToolUtils {
+  static parsePath(path: string | JavaClasses.File): string {
+    // Ensure paths use / instead of \
+    // Using regular expression in order to replace all
+    let parsedPath = path.toString().replace(/\\/g, "/");
 
-        // Ensure paths use / instead of \	
-        // Using regular expression in order to replace all
-        var parsedPath = Strings.replacer(path.toString(), /\\/g, '/');
-        //var parsedPath = Strings.replacer(path.toString(), '\\\\', '/');
+    // Escape characters
+    parsedPath = Strings.escapeJson(parsedPath);
 
-        //println("NO SLASH PATH: " + parsedPath);
-
-        // Escape characters
-        var parsedPath = Strings.escapeJson(parsedPath);
-
-        //println("ESCAPED PATH: " + parsedPath);
-
-        return parsedPath;
-    }
+    return parsedPath;
+  }
 }
