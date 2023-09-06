@@ -126,7 +126,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
     // STRING_SET("util/StringSet.lara"),
     //TIME_UNITS("util/TimeUnits.lara"),
-    TUPLE_ID("util/TupleId.lara"),
+    TUPLE_ID("util/TupleId.lara");
 
     // VitisHLS
     //VITIS_HLS("vitishls/VitisHls.js"),
@@ -136,7 +136,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     // Lara
     //_JAVA_TYPES("_JavaTypes.lara"),
     //CHECK("Check.js"),
-    COLLECTIONS("Collections.js"),;
+    //COLLECTIONS("Collections.js"),
     //CSV("Csv.lara"),
     //DEBUG("Debug.lara"),
     //IO("Io.lara"),
