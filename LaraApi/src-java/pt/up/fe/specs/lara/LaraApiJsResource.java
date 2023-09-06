@@ -28,6 +28,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     OUTPUT_JS("core/output.js"),
     CORE_JS("core.js"),
     CHECK_JS("lara/Check.js"),
+    COLLECTIONS_JS("lara/Collections.js"),
     CSV_JS("lara/Csv.js"),
     DEBUG_JS("lara/Debug.js"),
     IO_JS("lara/Io.js"),
