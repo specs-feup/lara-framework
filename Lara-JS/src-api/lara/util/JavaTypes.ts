@@ -36,7 +36,10 @@ export namespace JavaClasses {
   export interface LaraIo extends JavaClass {}
   export interface SpecsIo extends JavaClass {}
   export interface System extends JavaClass {}
-  export interface File extends JavaClass {}
+  export interface File extends JavaClass {
+    getParentFile(): File;
+    getAbsolutePath(): string;
+  }
   export interface List extends JavaClass {}
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
