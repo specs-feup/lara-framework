@@ -1,7 +1,7 @@
-export default abstract class BenchmarkCompilationEngine {
-    private name: string;
+import Tool from "../tool/Tool.js";
 
-    constructor(name: string) {
-        this.name = name;
+export default abstract class BenchmarkCompilationEngine extends Tool {
+    constructor(name: string, disableWeaving: boolean = false) {
+        super(name, disableWeaving);
     }
 }

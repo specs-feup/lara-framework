@@ -56,7 +56,7 @@ export default abstract class BenchmarkSet {
   getInstances(): BenchmarkInstance[] {
     const instances = this._getInstancesPrivate();
 
-    // If custom CMaker provider, set all instances
+    // If custom BenchmarkCompilationEngine provider, set all instances
     if (this.compilationEngineProvider !== undefined) {
       for (const instance of instances) {
         instance.setCompilationEngine(this.compilationEngineProvider);

@@ -1,4 +1,6 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import Query from "../../weaver/Query.js";
+import Weaver from "../../weaver/Weaver.js";
 import Io from "../Io.js";
 import { JavaClasses } from "../util/JavaTypes.js";
 import ProcessExecutor from "../util/ProcessExecutor.js";
@@ -18,6 +20,9 @@ export default abstract class BenchmarkInstance {
   private currentExecutable: JavaClasses.File | undefined = undefined;
   private compilationEngine = this.compilationEngineProvider(this.getName());
 
+  private _isCachedAst = false;
+  static _CACHE_ENABLE = false;
+
   constructor(name: string) {
     this.name = name;
   }
@@ -29,7 +34,7 @@ export default abstract class BenchmarkInstance {
   setCompilationEngine<T extends BenchmarkCompilationEngine>(
     compilationEngineProvider: new (name: string) => T
   ) {
-    // Update current CMaker
+    // Update current Compilation Engine
     this.compilationEngine = new compilationEngineProvider(this.getName());
   }
 
@@ -38,6 +43,40 @@ export default abstract class BenchmarkInstance {
    */
   getName(): string {
     return this.name;
+  }
+  /**
+   * @param enable - If true, enables caching of parsed files. By default, caching is enabled.
+   */
+  static setCache(enable: boolean) {
+    this._CACHE_ENABLE = enable;
+  }
+
+  /**
+   * @returns Temporary folder for caching ASTs.
+   */
+  protected static getCacheFolder() {
+    return Io.getTempFolder("BenchmarkAsts");
+  }
+
+  /**
+   * Clears compilation cache of all BenchmarkInstances.
+   */
+  static purgeCache() {
+    Io.deleteFolderContents(BenchmarkInstance.getCacheFolder());
+  }
+
+  isCachedAst() {
+    return this._isCachedAst;
+  }
+
+  /**
+   * @returns The File representing the cached program of this BenchmarkInstance. The file might not exist.
+   */
+  private getCachedFile(): JavaClasses.File {
+    return Io.getPath(
+      BenchmarkInstance.getCacheFolder(),
+      this.getName() + ".ast"
+    );
   }
 
   /**
@@ -48,7 +87,7 @@ export default abstract class BenchmarkInstance {
   }
 
   /**
-   * @returns An available CMaker that can be used to run compiled the program (implementations may vary). If used, can be used to configure the compilation.
+   * @returns An available BenchmarkCompilationEngine that can be used to run compiled the program (implementations may vary). If used, can be used to configure the compilation.
    */
   getCompilationEngine() {
     return this.compilationEngine;
@@ -70,8 +109,26 @@ export default abstract class BenchmarkInstance {
       return;
     }
 
-    console.log(`Parsing ${this.getName()}...`);
-    this._loadPrivate();
+    // Check if a chached version of the tree has already been cached
+    const cachedFile = this.getCachedFile();
+    if (Io.isFile(cachedFile)) {
+      // Load cached AST
+      this.loadCached(cachedFile);
+      this._isCachedAst = true;
+    } else {
+      console.log(`Parsing ${this.getName()}...`);
+      this.loadPrivate();
+
+      // If caching enabled, save AST
+      if (BenchmarkInstance._CACHE_ENABLE) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        console.log(`Saving AST to file ${cachedFile.getAbsolutePath()}...`);
+        const serialized = Weaver.serialize(Query.root());
+        Io.writeFile(cachedFile, serialized);
+      }
+
+      this._isCachedAst = false;
+    }
 
     // Mark as loaded
     this.hasLoaded = true;
@@ -88,7 +145,7 @@ export default abstract class BenchmarkInstance {
       return;
     }
 
-    this._closePrivate();
+    this.closePrivate();
 
     this.hasLoaded = false;
     this.hasCompiled = false;
@@ -111,7 +168,7 @@ export default abstract class BenchmarkInstance {
     }
 
     console.log(`Compiling ${this.getName()}...`);
-    const result = this._compilePrivate();
+    const result = this.compilePrivate();
 
     // Mark as loaded
     this.hasCompiled = true;
@@ -138,7 +195,7 @@ export default abstract class BenchmarkInstance {
 
     this.currentExecutor.execute(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      this.currentExecutable.getAbsolutePath() as string
+      this.currentExecutable.getAbsolutePath()
     );
 
     return this.currentExecutor;
@@ -195,11 +252,13 @@ export default abstract class BenchmarkInstance {
 
   /*** FUNCTIONS TO IMPLEMENT ***/
 
-  protected abstract _loadPrivate(): void;
+  protected abstract loadPrivate(): void;
 
-  protected abstract _closePrivate(): void;
+  protected abstract closePrivate(): void;
 
-  protected abstract _compilePrivate(): JavaClasses.File;
+  protected abstract compilePrivate(): JavaClasses.File | undefined;
+
+  protected abstract loadCached(astFile: JavaClasses.File): void ;
 
   /**
    * @returns Point in the code representing the execution of the benchmark kernel, around which metrics should be measured.

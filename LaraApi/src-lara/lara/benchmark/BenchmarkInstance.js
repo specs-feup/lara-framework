@@ -1,3 +1,5 @@
+import Query from "../../weaver/Query.js";
+import Weaver from "../../weaver/Weaver.js";
 import Io from "../Io.js";
 import ProcessExecutor from "../util/ProcessExecutor.js";
 /**
@@ -12,11 +14,13 @@ export default class BenchmarkInstance {
     currentExecutor = new ProcessExecutor();
     currentExecutable = undefined;
     compilationEngine = this.compilationEngineProvider(this.getName());
+    _isCachedAst = false;
+    static _CACHE_ENABLE = false;
     constructor(name) {
         this.name = name;
     }
     setCompilationEngine(compilationEngineProvider) {
-        // Update current CMaker
+        // Update current Compilation Engine
         this.compilationEngine = new compilationEngineProvider(this.getName());
     }
     /**
@@ -26,13 +30,40 @@ export default class BenchmarkInstance {
         return this.name;
     }
     /**
+     * @param enable - If true, enables caching of parsed files. By default, caching is enabled.
+     */
+    static setCache(enable) {
+        this._CACHE_ENABLE = enable;
+    }
+    /**
+     * @returns Temporary folder for caching ASTs.
+     */
+    static getCacheFolder() {
+        return Io.getTempFolder("BenchmarkAsts");
+    }
+    /**
+     * Clears compilation cache of all BenchmarkInstances.
+     */
+    static purgeCache() {
+        Io.deleteFolderContents(BenchmarkInstance.getCacheFolder());
+    }
+    isCachedAst() {
+        return this._isCachedAst;
+    }
+    /**
+     * @returns The File representing the cached program of this BenchmarkInstance. The file might not exist.
+     */
+    getCachedFile() {
+        return Io.getPath(BenchmarkInstance.getCacheFolder(), this.getName() + ".ast");
+    }
+    /**
      * @returns The base folder for all benchmark instances. Currently is a folder 'laraBenchmarks' inside the working directory.
      */
     getBaseFolder() {
         return Io.mkdir("laraBenchmarks");
     }
     /**
-     * @returns An available CMaker that can be used to run compiled the program (implementations may vary). If used, can be used to configure the compilation.
+     * @returns An available BenchmarkCompilationEngine that can be used to run compiled the program (implementations may vary). If used, can be used to configure the compilation.
      */
     getCompilationEngine() {
         return this.compilationEngine;
@@ -51,8 +82,25 @@ export default class BenchmarkInstance {
         if (this.hasLoaded) {
             return;
         }
-        console.log(`Parsing ${this.getName()}...`);
-        this._loadPrivate();
+        // Check if a chached version of the tree has already been cached
+        const cachedFile = this.getCachedFile();
+        if (Io.isFile(cachedFile)) {
+            // Load cached AST
+            this.loadCached(cachedFile);
+            this._isCachedAst = true;
+        }
+        else {
+            console.log(`Parsing ${this.getName()}...`);
+            this.loadPrivate();
+            // If caching enabled, save AST
+            if (BenchmarkInstance._CACHE_ENABLE) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                console.log(`Saving AST to file ${cachedFile.getAbsolutePath()}...`);
+                const serialized = Weaver.serialize(Query.root());
+                Io.writeFile(cachedFile, serialized);
+            }
+            this._isCachedAst = false;
+        }
         // Mark as loaded
         this.hasLoaded = true;
     }
@@ -64,7 +112,7 @@ export default class BenchmarkInstance {
             console.log(`BenchmarkInstance.close(): Benchmark ${this.getName()} has not been loaded yet`);
             return;
         }
-        this._closePrivate();
+        this.closePrivate();
         this.hasLoaded = false;
         this.hasCompiled = false;
         this.currentExecutable = undefined;
@@ -81,7 +129,7 @@ export default class BenchmarkInstance {
             return;
         }
         console.log(`Compiling ${this.getName()}...`);
-        const result = this._compilePrivate();
+        const result = this.compilePrivate();
         // Mark as loaded
         this.hasCompiled = true;
         return result;
