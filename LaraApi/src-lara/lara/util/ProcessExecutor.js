@@ -128,9 +128,9 @@ export default class ProcessExecutor {
             checkType(executeOutput, "string");
         }
         // After previous TODO is done, this can be removed
-        if (this.outputFile !== undefined) {
+        if (this.outputFile !== undefined && executeOutput !== undefined) {
             let outputContents = executeOutput;
-            if (this.outputPrefix !== undefined && executeOutput.length() > 0) {
+            if (this.outputPrefix !== undefined && executeOutput.length > 0) {
                 outputContents = this.outputPrefix + outputContents;
             }
             if (this.append) {

@@ -106,7 +106,7 @@ export default class ProcessExecutor {
    *
    * @param command - The command to be executed. Accepts a command as a sequence of strings, or as an array with strings.
    */
-  execute(...command: string[]) {
+  execute(...command: string[]): string | undefined {
     command = arrayFromArgs(command, 1) as string[];
 
     // If command is an array, make sure all arguments are strings
@@ -155,7 +155,7 @@ export default class ProcessExecutor {
       );
     }
 
-    let executeOutput = undefined;
+    let executeOutput: string | undefined = undefined;
     if (this.logErrorsOnly) {
       executeOutput = this.getStdErr();
     } else {
@@ -167,9 +167,9 @@ export default class ProcessExecutor {
     }
 
     // After previous TODO is done, this can be removed
-    if (this.outputFile !== undefined) {
+    if (this.outputFile !== undefined && executeOutput !== undefined) {
       let outputContents = executeOutput;
-      if (this.outputPrefix !== undefined && executeOutput.length() > 0) {
+      if (this.outputPrefix !== undefined && executeOutput.length > 0) {
         outputContents = this.outputPrefix + outputContents;
       }
 
