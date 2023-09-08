@@ -63,6 +63,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     TRAVERSALTYPE_JS("weaver/TraversalType.js"),
     WEAVER_JS("weaver/Weaver.js"),
     WEAVEROPTIONS_JS("weaver/WeaverOptions.js"),
+    ACTIONAWARECACHE_JS("weaver/util/ActionAwareCache.js"),
     WEAVERDATASTORE_JS("weaver/util/WeaverDataStore.js");
 
     private final String resource;

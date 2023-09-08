@@ -159,5 +159,8 @@ export default class JavaTypes {
     static get ProcessOutputAsString() {
         return JavaTypes.getType("pt.up.fe.specs.util.system.ProcessOutputAsString");
     }
+    static get JsGear() {
+        return JavaTypes.getType("org.lara.interpreter.utils.JsGear");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map
