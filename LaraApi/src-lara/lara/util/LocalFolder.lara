@@ -1,4 +1,5 @@
 import lara.Io;
+import lara.util.JavaTypes;
 
 /**
  * Provides access to files in a specific folder.
@@ -81,8 +82,8 @@ LocalFolder.prototype.getFileList = function(path) {
 		basePath = Io.getPath(basePath, path);
 	}
 	
-	//return SpecsIo.getFilesRecursive(this.baseFolder);
-	return SpecsIo.getFilesRecursive(basePath);
+	//return JavaTypes.SpecsIo.getFilesRecursive(this.baseFolder);
+	return JavaTypes.SpecsIo.getFilesRecursive(basePath);
 	*/
 }
 
@@ -93,5 +94,5 @@ LocalFolder.prototype._getFileListPrivate = function(path) {
 		basePath = Io.getPath(basePath, path);
 	}
 	
-	return SpecsIo.getFilesRecursive(basePath);
+	return JavaTypes.SpecsIo.getFilesRecursive(basePath);
 }

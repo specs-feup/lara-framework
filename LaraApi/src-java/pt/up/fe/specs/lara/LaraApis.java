@@ -13,34 +13,21 @@
 
 package pt.up.fe.specs.lara;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.suikasoft.XStreamPlus.XStreamUtils;
-
-import pt.up.fe.specs.lang.ApacheStrings;
-import pt.up.fe.specs.lang.SpecsPlatforms;
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsStrings;
-import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
-import pt.up.fe.specs.util.system.ProcessOutputAsString;
-import pt.up.fe.specs.util.utilities.StringLines;
 
 public class LaraApis {
 
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResourcesFromEnum(LaraApiResource.class,
             LaraApiJsResource.class, LaraApiLibsResource.class);
 
-    private static final List<Class<?>> LARA_IMPORTABLE_CLASSES = Arrays.asList(SpecsIo.class, SpecsPlatforms.class,
-            ApacheStrings.class, SpecsStrings.class, SpecsSystem.class, ProcessOutputAsString.class,
-            StringLines.class, XStreamUtils.class);
-
     public static List<ResourceProvider> getApis() {
         return LARA_API;
     }
 
     public static List<Class<?>> getImportableClasses() {
-        return LARA_IMPORTABLE_CLASSES;
+        return new ArrayList<>();
     }
 }

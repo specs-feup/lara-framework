@@ -88,7 +88,7 @@ export default class System {
     timeout?: number,
     timeunit: TimeUnits = new TimeUnits(TimerUnit.SECONDS)
   ): string | undefined {
-    let timeoutNanos = null;
+    let timeoutNanos = undefined;
     if (timeout !== undefined) {
       timeoutNanos = timeunit.toNanos(timeout);
     }

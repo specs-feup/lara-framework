@@ -24,7 +24,14 @@ export namespace JavaClasses {
   /* eslint-disable @typescript-eslint/no-empty-interface */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
-  export interface LaraSystemTools extends JavaClass {}
+  export interface LaraSystemTools extends JavaClass {
+    runCommand(
+      command: string | JavaClasses.List,
+      workingDir: string,
+      printToConsole: boolean,
+      timeoutNanos?: number
+    ): JavaClasses.ProcessOutputAsString;
+  }
   export interface LaraCli extends JavaClass {}
   export interface Uuid extends JavaClass {}
   export interface Gprofer extends JavaClass {}
@@ -37,7 +44,7 @@ export namespace JavaClasses {
   export interface SpecsIo extends JavaClass {}
   export interface System extends JavaClass {}
   export interface File extends JavaClass {
-    getParentFile(): File;
+    getParentFile(): JavaClasses.File;
     getAbsolutePath(): string;
   }
   export interface List extends JavaClass {}
@@ -61,6 +68,9 @@ export namespace JavaClasses {
   export interface SpecsPlatforms extends JavaClass {}
   export interface Runtime extends JavaClass {}
   export interface LARASystem extends JavaClass {}
+  export interface ProcessOutputAsString extends JavaClass {
+    getOutput(): string;
+  }
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -297,5 +307,11 @@ export default class JavaTypes {
 
   static get LARASystem() {
     return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
+  }
+
+  static get ProcessOutputAsString() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.system.ProcessOutputAsString"
+    ) as JavaClasses.ProcessOutputAsString;
   }
 }

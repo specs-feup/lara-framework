@@ -59,7 +59,7 @@ export default class System {
      * @returns Can be undefined, null or the name of a file. If undefined, prints the output to the console; if null, does not print the output to the console; otherwise should be a string with the name of the file where the output will be written (in this case, no output is printed in the console).
      */
     static execute(command, workingDir = "./", printToConsole = this.defaultPrintToConsole, outputFile, append = false, timeout, timeunit = new TimeUnits(TimerUnit.SECONDS)) {
-        let timeoutNanos = null;
+        let timeoutNanos = undefined;
         if (timeout !== undefined) {
             timeoutNanos = timeunit.toNanos(timeout);
         }

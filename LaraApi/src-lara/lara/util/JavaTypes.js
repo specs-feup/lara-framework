@@ -156,5 +156,8 @@ export default class JavaTypes {
     static get LARASystem() {
         return JavaTypes.getType("Utils.LARASystem");
     }
+    static get ProcessOutputAsString() {
+        return JavaTypes.getType("pt.up.fe.specs.util.system.ProcessOutputAsString");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map
