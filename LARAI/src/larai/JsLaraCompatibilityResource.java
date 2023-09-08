@@ -24,13 +24,11 @@ public enum JsLaraCompatibilityResource implements ResourceProvider {
     DOT("dot.js"),
     DWARV_UTILS("dwarvUtils.js"),
     INPUT("input.js"),
-    LARA_OBJECT(
-            "LaraObject.js"),
+    LARA_OBJECT("LaraObject.js"),
     MERGE("merge.js"),
     NAMED_ARGUMENTS("namedArguments.js"),
     // OUTPUT("output.js"), // Moved to TS
-    SELECT(
-            "select.js"),
+    SELECT("select.js"),
     TOOL_EXECUTION("toolExecution.js"),
     UTILS("utils.js"),
     XILINX("xilinx.js"),
