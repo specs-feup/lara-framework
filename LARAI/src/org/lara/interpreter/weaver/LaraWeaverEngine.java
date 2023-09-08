@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
@@ -54,7 +53,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         var laraAPIs = new ArrayList<ResourceProvider>();
 
         laraAPIs.addAll(LaraApis.getApis());
-        laraAPIs.addAll(WeaverApis.getApis());
         laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
         // laraAPIs.addAll(getAspectsAPI());
         return laraAPIs;
