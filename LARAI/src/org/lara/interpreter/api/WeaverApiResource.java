@@ -22,7 +22,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 public enum WeaverApiResource implements LaraResourceProvider {
 
     // Weaver utils
-    WEAVER_DATA_STORE("util/WeaverDataStore.lara"),
+    //WEAVER_DATA_STORE("util/WeaverDataStore.lara"),
     ACTION_AWARE_CACHE("util/ActionAwareCache.js"),
 
     // Weaver
