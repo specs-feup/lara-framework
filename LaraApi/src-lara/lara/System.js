@@ -1,15 +1,9 @@
-import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
-import JavaTypes from "./util/JavaTypes.js";
 import Io from "./Io.js";
-import { notImplemented, info } from "./core/LaraCore.js";
 import Platforms from "./Platforms.js";
+import { info } from "./core/LaraCore.js";
+import JavaTypes from "./util/JavaTypes.js";
+import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
 export default class System {
-    /**
-     * Returns the name of the platform where this code is executing
-     */
-    static getCurrentPlatform() {
-        notImplemented("getCurrentPlatform");
-    }
     static prepareExe(executable) {
         return JavaTypes.LARASystem.prepareExe(executable);
     }

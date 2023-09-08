@@ -36,7 +36,9 @@ export namespace JavaClasses {
   export interface Uuid extends JavaClass {}
   export interface Gprofer extends JavaClass {}
   export interface JoinPoint extends JavaClass {}
-  export interface SpecsStrings extends JavaClass {}
+  export interface SpecsStrings extends JavaClass {
+    escapeJson(str: string): string;
+  }
   export interface SpecsSystem extends JavaClass {}
   export interface ApacheStrings extends JavaClass {}
   export interface StringLines extends JavaClass {}
@@ -54,6 +56,8 @@ export namespace JavaClasses {
   export interface Object extends JavaClass {}
   export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
+  export interface CsvWriter extends JavaClasses.JavaClass {}
+  export interface CsvField extends JavaClasses.JavaClass {}
   export interface DataStore extends JavaClass {}
   export interface JOptionsUtils extends JavaClass {}
   export interface WeaverEngine extends JavaClass {}
@@ -75,6 +79,7 @@ export namespace JavaClasses {
     setJsOnAction(onActionCallback: (d: Record<string, any>) => void): boolean;
     onAction(actionEvent: any): void;
   }
+  export interface ProgressCounter extends JavaClasses.JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -237,6 +242,18 @@ export default class JavaTypes {
     ) as JavaClasses.CsvReader;
   }
 
+  static get CsvField() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvField"
+    ) as JavaClasses.CsvField;
+  }
+
+  static get CsvWriter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvWriter"
+    ) as JavaClasses.CsvWriter;
+  }
+
   static get DataStore() {
     return JavaTypes.getType(
       "org.suikasoft.jOptions.Interfaces.DataStore"
@@ -323,5 +340,11 @@ export default class JavaTypes {
     return JavaTypes.getType("org.lara.interpreter.utils.JsGear") as {
       new (...args: any[]): JavaClasses.JsGear;
     };
+  }
+
+  static get ProgressCounter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.ProgressCounter"
+    ) as JavaClasses.ProgressCounter;
   }
 }

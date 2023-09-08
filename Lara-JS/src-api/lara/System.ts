@@ -1,17 +1,10 @@
-import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
-import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 import Io from "./Io.js";
-import { notImplemented, info } from "./core/LaraCore.js";
 import Platforms from "./Platforms.js";
+import { info } from "./core/LaraCore.js";
+import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
 
 export default class System {
-  /**
-   * Returns the name of the platform where this code is executing
-   */
-  static getCurrentPlatform() {
-    notImplemented("getCurrentPlatform");
-  }
-
   static prepareExe(executable: string | JavaClasses.File): string {
     return JavaTypes.LARASystem.prepareExe(executable);
   }
@@ -25,10 +18,7 @@ export default class System {
     if (executableFolder === undefined) {
       exe = executableName;
     } else {
-      exe = Io.getPath(
-        executableFolder,
-        executableName
-      ).getAbsolutePath();
+      exe = Io.getPath(executableFolder, executableName).getAbsolutePath();
     }
 
     // Ensure exe is a string
