@@ -23,7 +23,7 @@ public enum WeaverApiResource implements LaraResourceProvider {
 
     // Weaver utils
     //WEAVER_DATA_STORE("util/WeaverDataStore.lara"),
-    ACTION_AWARE_CACHE("util/ActionAwareCache.js"),
+    //ACTION_AWARE_CACHE("util/ActionAwareCache.js"),
 
     // Weaver
     AST("Ast.lara"),
