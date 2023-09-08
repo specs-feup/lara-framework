@@ -21,7 +21,7 @@ export default abstract class BenchmarkInstance {
   private compilationEngine = this.compilationEngineProvider(this.getName());
 
   private _isCachedAst = false;
-  static _CACHE_ENABLE = false;
+  static CACHE_ENABLE = false;
 
   constructor(name: string) {
     this.name = name;
@@ -48,7 +48,7 @@ export default abstract class BenchmarkInstance {
    * @param enable - If true, enables caching of parsed files. By default, caching is enabled.
    */
   static setCache(enable: boolean) {
-    this._CACHE_ENABLE = enable;
+    this.CACHE_ENABLE = enable;
   }
 
   /**
@@ -120,7 +120,7 @@ export default abstract class BenchmarkInstance {
       this.loadPrivate();
 
       // If caching enabled, save AST
-      if (BenchmarkInstance._CACHE_ENABLE) {
+      if (BenchmarkInstance.CACHE_ENABLE) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         console.log(`Saving AST to file ${cachedFile.getAbsolutePath()}...`);
         const serialized = Weaver.serialize(Query.root());

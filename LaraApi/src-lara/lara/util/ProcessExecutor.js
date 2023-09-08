@@ -87,7 +87,7 @@ export default class ProcessExecutor {
      * @param command - The command to be executed. Accepts a command as a sequence of strings, or as an array with strings.
      */
     execute(...command) {
-        command = arrayFromArgs(command, 1);
+        command = arrayFromArgs(command);
         // If command is an array, make sure all arguments are strings
         if (command instanceof Array) {
             command = command.map((element) => element.toString());
@@ -106,9 +106,7 @@ export default class ProcessExecutor {
         // TODO: Can change LaraApiTools.runCommand to accept a file and append flag, to be able to write to a file in stream mode
         this.lastOutput = JavaTypes.LaraSystemTools.runCommand(javaCommand, this.workingDir.toString(), this.printToConsole, timeoutNanos);
         if (this.getReturnValue() !== 0) {
-            console.log("ProcessExecutor.execute: process returned with value '" +
-                this.getReturnValue() +
-                "', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal.");
+            console.log(`ProcessExecutor.execute: process returned with value '${this.getReturnValue()}', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal.`);
             console.log("Executed command: " + command.join(" "));
         }
         if (this.stopOnError && this.getReturnValue() !== 0) {

@@ -107,7 +107,7 @@ export default class ProcessExecutor {
    * @param command - The command to be executed. Accepts a command as a sequence of strings, or as an array with strings.
    */
   execute(...command: string[]): string | undefined {
-    command = arrayFromArgs(command, 1) as string[];
+    command = arrayFromArgs(command) as string[];
 
     // If command is an array, make sure all arguments are strings
     if (command instanceof Array) {
@@ -139,9 +139,7 @@ export default class ProcessExecutor {
 
     if (this.getReturnValue() !== 0) {
       console.log(
-        "ProcessExecutor.execute: process returned with value '" +
-          this.getReturnValue() +
-          "', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal."
+        `ProcessExecutor.execute: process returned with value '${this.getReturnValue()}', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal.`
       );
       console.log("Executed command: " + command.join(" "));
     }
