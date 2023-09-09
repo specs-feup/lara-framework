@@ -153,10 +153,6 @@ public class ImportProcessor {
      */
     public void importAndInitialize() {
 
-        for (Class<?> importingClass : LaraApis.getImportableClasses()) {
-            importClassWithSimpleName(importingClass);
-        }
-
         for (Class<?> importingClass : CLASSES_TO_IMPORT) {
             importClassWithSimpleName(importingClass);
         }

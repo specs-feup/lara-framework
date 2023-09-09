@@ -13,7 +13,7 @@
 
 package pt.up.fe.specs.lara;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import pt.up.fe.specs.util.providers.ResourceProvider;
@@ -25,9 +25,5 @@ public class LaraApis {
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;
-    }
-
-    public static List<Class<?>> getImportableClasses() {
-        return new ArrayList<>();
     }
 }
