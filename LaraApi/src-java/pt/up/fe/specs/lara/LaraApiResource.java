@@ -68,8 +68,8 @@ public enum LaraApiResource implements LaraResourceProvider {
     DOT_FORMATTER("graphs/DotFormatter.js"),
 
     // Iterators
-    LARA_ITERATOR("iterators/LaraIterator.lara"),
-    LINE_ITERATOR("iterators/LineIterator.lara"),
+    //LARA_ITERATOR("iterators/LaraIterator.lara"),
+    //LINE_ITERATOR("iterators/LineIterator.lara"),
 
     // Metrics
     ENERGY_METRIC("metrics/EnergyMetric.lara"),
@@ -107,26 +107,26 @@ public enum LaraApiResource implements LaraResourceProvider {
     TIME_UNIT("units/TimeUnit.lara"),
     ENERGY_UNIT("units/EnergyUnit.lara"),
     UNIT_MODIFIER("units/UnitModifier.lara"),
-    UNIT_WITH_MODIFIER("units/UnitWithModifier.lara"),
+    UNIT_WITH_MODIFIER("units/UnitWithModifier.lara");
 
     // Util
     // ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
     //ACCUMULATOR_JS("util/Accumulator.js"),
-    CHECKPOINT("util/Checkpoint.lara"),
-    COMBINATION("util/Combinations.lara"),
+    //CHECKPOINT("util/Checkpoint.lara"),
+    //COMBINATION("util/Combinations.lara"),
     //DATA_STORE("util/DataStore.lara"),
     //ID_GENERATOR("util/IdGenerator.lara"),
     //JP_FILTER("util/JpFilter.lara"),
-    LINE_INSERTER("util/LineInserter.lara"),
-    LOCAL_FOLDER("util/LocalFolder.lara"),
-    PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
+    //LINE_INSERTER("util/LineInserter.lara"),
+    //LOCAL_FOLDER("util/LocalFolder.lara"),
+    //PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
     // PRINT_ONCE("util/PrintOnce.lara"),
     //PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     //REPLACER("util/Replacer.lara"),
-    SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
+    //SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
     // STRING_SET("util/StringSet.lara"),
     //TIME_UNITS("util/TimeUnits.lara"),
-    TUPLE_ID("util/TupleId.lara");
+    //TUPLE_ID("util/TupleId.lara"),
 
     // VitisHLS
     //VITIS_HLS("vitishls/VitisHls.js"),
