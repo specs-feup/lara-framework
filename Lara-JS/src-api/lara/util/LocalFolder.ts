@@ -1,98 +1,92 @@
-import lara.Io;
-import lara.util.JavaTypes;
+import { fileToJSON } from "../../core/output.js";
+import Io from "../Io.js";
+import JavaTypes, { JavaClasses } from "./JavaTypes.js";
 
 /**
  * Provides access to files in a specific folder.
  */
-var LocalFolder = function(foldername) {
-	// DESIGN: currently foldername must exist, should create the folder if it does not exist? 
-	this.baseFolder = Io.getPath(foldername);
-	checkTrue(Io.isFolder(this.baseFolder), "given foldername must represent an existing folder", "LocalFolder");
-};
+export default class LocalFolder {
+  baseFolder: JavaClasses.File;
 
-/**
- * @return java.io.File that represents the root of this LocalFolder
- */
-LocalFolder.prototype.getBaseFolder = function() {
-	return this.baseFolder;
-}
+  constructor(foldername: string | JavaClasses.File) {
+    // TODO: DESIGN: currently foldername must exist, should create the folder if it does not exist?
+    this.baseFolder = Io.getPath(foldername);
+    if (!Io.isFolder(this.baseFolder)) {
+      throw `LocalFolder: given foldername must represent an existing folder: ${foldername.toString()}`;
+    }
+  }
 
-/**
- * Returns a file from the path relative to the LocalFolder location.
- *
- * <p>If the path does not exist, or is not a file, throws an exception.
- *
- * @return java.io.File representing the given path relative to this LocalFolder
- */
-LocalFolder.prototype.getFile = function(path) {
-	var file = Io.getPath(this.baseFolder, path);
-	if(!Io.isFile(file)) {
-		throw "Path '" + path + "' is not a file in the folder '" + 
-		Io.getAbsolutePath(this.baseFolder) + "'";
-	}
-	
-	return file;
-}
+  /**
+   * @returns A java File that represents the root of this LocalFolder
+   */
+  getBaseFolder() {
+    return this.baseFolder;
+  }
 
-/**
- * Returns a folder from the path relative to the LocalFolder location.
- *
- * <p>If the path does not exist, or is not a folder, throws an exception.
- *
- * @return java.io.File representing the given path relative to this LocalFolder
- */
-LocalFolder.prototype.getFolder = function(path) {
-	var folder = Io.getPath(this.baseFolder, path);
-	if(!Io.isFolder(folder)) {
-		throw "Path '" + path + "' is not a folder in the folder '" + 
-		Io.getAbsolutePath(this.baseFolder) + "'";
-	}
-	
-	return folder;
-}
+  /**
+   * Returns a file from the path relative to the LocalFolder location.
+   *
+   * <p>If the path does not exist, or is not a file, throws an exception.
+   *
+   * @returns A java File representing the given path relative to this LocalFolder
+   */
+  getFile(path: string | JavaClasses.File): JavaClasses.File {
+    const file = Io.getPath(this.baseFolder, path);
+    if (!Io.isFile(file)) {
+      throw `Path '${path.toString()}' is not a file in the folder '${Io.getAbsolutePath(
+        this.baseFolder
+      )}'`;
+    }
 
+    return file;
+  }
 
-LocalFolder.prototype.hasFolder = function(path) {
-	var folder = Io.getPath(this.baseFolder, path);
-	return Io.isFolder(folder);
-}
+  /**
+   * Returns a folder from the path relative to the LocalFolder location.
+   *
+   * <p>If the path does not exist, or is not a folder, throws an exception.
+   *
+   * @returns A java File representing the given path relative to this LocalFolder
+   */
+  getFolder(path: string | JavaClasses.File): JavaClasses.File {
+    const folder = Io.getPath(this.baseFolder, path);
+    if (!Io.isFolder(folder)) {
+      throw `Path '${path.toString()}' is not a folder in the folder '${Io.getAbsolutePath(
+        this.baseFolder
+      )}'`;
+    }
 
-/**
- * @return {string} string with the contents of the given path
- */
-LocalFolder.prototype.getString = function(path) {
-	return Io.readFile(this.getFile(path));
-}
+    return folder;
+  }
 
-/**
- * @return {object} Decodes the specified file as a JSON file.
- */
-LocalFolder.prototype.getJson = function(path) {
-	return fileToJSON(this.getFile(path));
-}
+  hasFolder(path: string | JavaClasses.File) {
+    return Io.isFolder(Io.getPath(this.baseFolder, path));
+  }
 
-/**
- * @return java.util.List with all the files in this LocalFolder
- */
-LocalFolder.prototype.getFileList = function(path) {
-	return this._getFileListPrivate(path);
-	/*
-	var basePath = this.baseFolder;
-	if(path !== undefined) {
-		basePath = Io.getPath(basePath, path);
-	}
-	
-	//return JavaTypes.SpecsIo.getFilesRecursive(this.baseFolder);
-	return JavaTypes.SpecsIo.getFilesRecursive(basePath);
-	*/
-}
+  /**
+   * @returns String with the contents of the given path
+   */
+  getString(path: string | JavaClasses.File): string {
+    return Io.readFile(this.getFile(path));
+  }
 
+  /**
+   * @returns Decodes the specified file as a JSON file.
+   */
+  getJson(path: string | JavaClasses.File): object {
+    return fileToJSON(this.getFile(path).getAbsolutePath()) as object;
+  }
 
-LocalFolder.prototype._getFileListPrivate = function(path) {
-	var basePath = this.baseFolder;
-	if(path !== undefined) {
-		basePath = Io.getPath(basePath, path);
-	}
-	
-	return JavaTypes.SpecsIo.getFilesRecursive(basePath);
+  /**
+   * @returns A java List with all the files in this LocalFolder
+   */
+  getFileList(path?: string | JavaClasses.File): JavaClasses.List {
+    let basePath = this.baseFolder;
+
+    if (path !== undefined) {
+      basePath = Io.getPath(basePath, path);
+    }
+
+    return JavaTypes.SpecsIo.getFilesRecursive(basePath);
+  }
 }

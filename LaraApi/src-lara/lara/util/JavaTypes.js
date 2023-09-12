@@ -171,5 +171,8 @@ export default class JavaTypes {
     static get ProgressCounter() {
         return JavaTypes.getType("pt.up.fe.specs.util.utilities.ProgressCounter");
     }
+    static get LineStream() {
+        return JavaTypes.getType("pt.up.fe.specs.util.utilities.LineStream");
+    }
 }
 //# sourceMappingURL=JavaTypes.js.map

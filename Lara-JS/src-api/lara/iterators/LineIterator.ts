@@ -1,71 +1,73 @@
-import lara.iterators.LaraIterator;
+import JavaTypes, { JavaClasses } from "../util/JavaTypes.js";
+import LaraIterator from "./LaraIterator.js";
 
 /**
  * Iterates over a sequence of lines.
- * @constructor
  *
- * @param {string|J#java.io.File} contents The contents that will be iterated as lines.
+ * @param contents - The contents that will be iterated as lines.
  */
-var LineIterator = function(contents) {
-    // Parent constructor
-    LaraIterator.call(this);
+export default class LineIterator extends LaraIterator<string> {
+  private contents: string | JavaClasses.File;
+  private lineStream!: JavaClasses.LineStream;
 
-	checkTrue(isString(contents) || isJavaClass(contents, "java.io.File"), "Is neither a string, or a Java File","LineIterator.new::contents");
-	
-	this.contents = contents;
-	this.lineStream = Java.type("pt.up.fe.specs.util.utilities.LineStream").newInstance(this.contents);
-};
-// Inheritance
-LineIterator.prototype = Object.create(LaraIterator.prototype);
+  constructor(contents: string | JavaClasses.File) {
+    super();
 
+    this.contents = contents;
+    this.reset();
+  }
 
-LineIterator.prototype.getType = function() {
-	return "LineIterator";
-}
+  getType() {
+    return "LineIterator";
+  }
 
-/**
- * @returns the next element.
- */
-LineIterator.prototype.next = function() {
-	if(!this.lineStream.hasNextLine()) {
-		return undefined;
-	}
+  /**
+   * @returns the next element.
+   */
+  next(): string | undefined {
+    if (!this.hasNext()) {
+      return undefined;
+    }
 
-	return this.lineStream.nextLine();
-}
+    return this.lineStream.nextLine();
+  }
 
-/**
- * @returns {boolean} true if it has another element to return.
- */
-LineIterator.prototype.hasNext = function() {
-	return this.lineStream.hasNextLine();
-}
+  /**
+   * @returns True if it has another element to return.
+   */
+  hasNext() {
+    return this.lineStream.hasNextLine();
+  }
 
-/**
- * Resets the iterator.
- */
-LineIterator.prototype.reset = function() {
-	this.lineStream.close();
-	this.lineStream = Java.type("pt.up.fe.specs.util.utilities.LineStream").newInstance(this.contents);
-}
+  /**
+   * Resets the iterator.
+   */
+  reset() {
+    if (this.lineStream !== undefined) {
+      this.close();
+    }
 
-/**
- * @returns {number} the total number of elements of the iterator, or undefined if it is not possible to calculate.
- */
-LineIterator.prototype.getNumElements = function() {
-	return undefined;
-}
+    this.lineStream = JavaTypes.LineStream.newInstance(this.contents);
+  }
 
-/**
- * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
- */
-LineIterator.prototype.getNumValuesPerElement = function() {
-	return 1;
-}
+  /**
+   * @returns The total number of elements of the iterator, or undefined if it is not possible to calculate.
+   */
+  getNumElements(): number | undefined {
+    return undefined;
+  }
 
-/**
- * Closes the iterator. For instane, if the iterator is backed-up by a file, it needs to be closed before the file can be deleted.
- */
-LineIterator.prototype.close = function() {
-	this.lineStream.close();
+  /**
+   * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
+   */
+  getNumValuesPerElement() {
+    return 1;
+  }
+
+  /**
+   * Closes the iterator. For instane, if the iterator is backed-up by a file, it needs to be closed before the file can be deleted.
+   */
+  close() {
+    this.lineStream.close();
+  }
 }

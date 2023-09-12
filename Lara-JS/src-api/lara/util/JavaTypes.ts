@@ -44,7 +44,9 @@ export namespace JavaClasses {
   export interface StringLines extends JavaClass {}
   export interface LaraIo extends JavaClass {}
   export interface SpecsIo extends JavaClass {}
-  export interface System extends JavaClass {}
+  export interface System extends JavaClass {
+    nanoTime(): number;
+  }
   export interface File extends JavaClass {
     getParentFile(): JavaClasses.File;
     getAbsolutePath(): string;
@@ -80,6 +82,7 @@ export namespace JavaClasses {
     onAction(actionEvent: any): void;
   }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
+  export interface LineStream extends JavaClasses.JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -346,5 +349,11 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.utilities.ProgressCounter"
     ) as JavaClasses.ProgressCounter;
+  }
+
+  static get LineStream() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.LineStream"
+    ) as JavaClasses.LineStream;
   }
 }

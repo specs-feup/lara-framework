@@ -1,64 +1,61 @@
-import lara.Numbers;
-import lara.util.SequentialCombinations;
+import Numbers from "../Numbers.js";
+import SequentialCombinations from "./SequentialCombinations.js";
 
 /**
  * Generates sequential sequences of combinations, according to the given number of elements.
  */
-var Combinations = function(elements, combinationSize) {
-	checkDefined(elements);
-	
-	this.elements = elements;
-	this.combinationSize = combinationSize;
+export default class Combinations extends SequentialCombinations {
+  elements: number[];
+  combinationSize: number;
+  numCombinations: number;
+  currentCombinations: number = 0;
 
-	// Start at 1, to avoid empty sequence
-	this.currentValue = 1;
-	this.lastValueUsed = undefined;
-	
-	// Number of combinations
-	// n!/(r!(n−r)!)
-	var nFact = Numbers.factorial(elements.length);
-	var rFact = Numbers.factorial(combinationSize);
-	var nrDiff = (elements.length - combinationSize);
-	var nrDiffFact = Numbers.factorial(nrDiff);
+  constructor(elements: number[], combinationSize: number) {
+    super(elements.length);
 
-	this.numCombinations = nFact / (rFact*nrDiffFact);
-	this.currentCombinations = 0;
-	
-	// The number of elements to combine
-	this.generator = new SequentialCombinations(elements.length);
-	
-};
+    this.elements = elements;
+    this.combinationSize = combinationSize;
 
+    // Number of combinations
+    // n!/(r!(n−r)!)
+    const nFact = Numbers.factorial(elements.length);
+    const rFact = Numbers.factorial(combinationSize);
+    const nrDiff = elements.length - combinationSize;
+    const nrDiffFact = Numbers.factorial(nrDiff);
 
-/**
- * @returns {elements[]} the next sequence
- */
-Combinations.prototype.next = function() {
-	// Check if there are combinations left
-	if(!this.hasNext()) {
-		throw "Combinations.next: Reached maximum number of combinations (" + this.numCombinations + ")";
-	}
-	
-	// Get new values, until one with length of combinationSize appear
-	var sequence = [];
-	while(sequence.length !== this.combinationSize) {
-		sequence = this.generator.next();
-	}
+    this.numCombinations = nFact / (rFact * nrDiffFact);
+  }
 
-	// Found sequence, create combination
-	var combination = [];
-	for(var index of sequence) {
-		combination.push(this.elements[index]);
-	}
+  /**
+   * @returns {elements[]} the next sequence
+   */
+  next() {
+    // Check if there are combinations left
+    if (!this.hasNext()) {
+      throw `Combinations.next: Reached maximum number of combinations (${this.numCombinations})`;
+    }
 
-	this.currentCombinations++;
+    // Get new values, until one with length of combinationSize appear
+    let sequence: number[] = [];
+    while (sequence.length !== this.combinationSize) {
+      sequence = super.next();
+    }
 
-	return combination;
-}
+    // Found sequence, create combination
+    const combination = [];
+    for (const index of sequence) {
+      combination.push(this.elements[index]);
+    }
 
-/**
- * @returns {boolean} true if there are stil combinations to generate
- */
-Combinations.prototype.hasNext = function() {
-	return this.currentCombinations < this.numCombinations;
+    this.currentCombinations++;
+
+    return combination;
+  }
+
+  /**
+   * @returns True if there are stil combinations to generate
+   */
+  hasNext(): boolean {
+    return this.currentCombinations < this.numCombinations;
+  }
 }

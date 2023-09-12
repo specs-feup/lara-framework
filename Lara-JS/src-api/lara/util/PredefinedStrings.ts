@@ -1,82 +1,67 @@
-import lara.util.StringSet;
-import lara.Check;
+import { arrayFromArgs } from "../core/LaraCore.js";
 
 /**
  * Represents a set of predefined strings.
  */
-var PredefinedStrings = function(name, strict) {
-	Check.isDefined(name);
-	/*
-	if(strict === undefined) {
-		strict = false;
-	}
-	*/
-	Check.isBoolean(strict);
+export default class PredefinedStrings {
+  private _name: string;
+  private _strict: boolean;
+  private _valuesSet: Set<string> = new Set();
 
-	this._name = name.toString();
-	this._strict = strict;
+  constructor(name: string, strict: boolean, ...values: string[]) {
+    this._name = name;
+    this._strict = strict;
 
+    values = arrayFromArgs(values) as string[];
+    for (const value of values) {
+      this._valuesSet.add(value.toString());
+    }
+  }
 
+  /**
+   * @returns Available values.
+   */
 
-	this._valuesSet = new StringSet();	
+  values(): string[] {
+    return Array.from(this._valuesSet.values());
+  }
 
-	var values = arrayFromArgs(arguments, 2);
-	for(var value of values) {
-		this._valuesSet.add(value.toString());
-	}
-	
-	//println(" Values: " + this._valuesSet.values());
-};
+  /**
+   * @returns True if the given String is a valid value.
+   */
+  isValid(value: string): boolean {
+    return this._valuesSet.has(value);
+  }
 
+  test(value: string): boolean {
+    if (!this.isValid(value)) {
+      const message = `Invalid ${
+        this._name
+      } '${value}'. Available values: ${this.values().join(", ")}`;
+      if (this._strict) {
+        throw message;
+      }
 
+      console.log(message);
+      return false;
+    }
 
+    return true;
+  }
 
-/**
- * @return {String[]} Available values.
- */
- 
-PredefinedStrings.prototype.values = function() {
-	return this._valuesSet.values();
+  parse(...args: string[]): string[] {
+    const argsArray = arrayFromArgs(args) as string[];
+
+    // Clear benchmarks
+    const parsedValues: string[] = [];
+    for (const arg of argsArray) {
+      if (!this.test(arg)) {
+        continue;
+      }
+
+      parsedValues.push(arg);
+    }
+
+    return parsedValues;
+  }
 }
-
-
-/**
- * @return {boolean} true if the given String is a valid value.
- */
-PredefinedStrings.prototype.isValid = function(value) {
-	return this._valuesSet.has(value);
-}
-
-
-PredefinedStrings.prototype.test = function(value) {
-	if(!this.isValid(value)) {
-		var message = "Invalid " + this._name + " '" + value + "'. Available values: " + this.values();
-		if(this._strict) {
-			throw message;
-		} 
-				
-		println(message);
-		return false;
-	}
-	
-	return true;
-}
-
-
-PredefinedStrings.prototype.parse = function() {
-
- 	var argsArray = arrayFromArgs(arguments);
-	
-	// Clear benchmarks
-	parsedValues = [];
-	for(var arg of argsArray) {
-		if(!this.test(arg)) {
-			continue;
-		}
-		
-		parsedValues.push(arg);
-	}
-	
-	return parsedValues;
-}
-
