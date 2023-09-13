@@ -1,103 +1,103 @@
-laraImport("lara.pass.results.PassResult");
+import { LaraJoinPoint } from "../../../LaraJoinPoint.js";
+import Pass from "../Pass.js";
+import PassTransformationError from "../PassTransformationError.js";
+import PassResult from "./PassResult.js";
 
-class AggregatePassResult extends PassResult {
-
+export default class AggregatePassResult extends PassResult {
   /**
    * Intermediate results collected from the pass
-   * @type {PassResult}
+   *
    */
-  _intermediateResults;
+  private _intermediateResults: Readonly<PassResult>[] = [];
 
   /**
    * Errors thrown where the pass transformation failed
-   * @type {PassTransformationError[]}
+   *
    */
-  _transformationErrors;
+  private _transformationErrors: Readonly<PassTransformationError>[] = [];
 
+  private _casesApplied = 0;
 
   /**
-   * @param {Pass} pass Pass which generated this result
-   * @param {JoinPoint} $jp Join point related to this pass result
+   * @param pass - Pass which generated this result
+   * @param $jp - Join point related to this pass result
    */
-  constructor(pass, $jp) {
-    super(pass, $jp, {appliedPass: false, insertedLiteralCode: false});
-    
-    this._casesApplied = 0;
-    this._intermediateResults = [];
-    this._transformationErrors = [];
+  constructor(pass: Pass, $jp: LaraJoinPoint) {
+    super(pass, $jp, { appliedPass: false, insertedLiteralCode: false });
   }
 
   /**
-   * @returns {boolean} True if the pass was applied successfully at least once
+   * @returns True if the pass was applied successfully at least once
    */
-  get appliedPass() {
+  get appliedPass(): boolean {
     return this._casesApplied > 0;
   }
 
   /**
-   * @returns {number} Total number of cases where this pass applied, independently of its success
+   * @returns Total number of cases where this pass applied, independently of its success
    */
-  get casesFound() {
+  get casesFound(): number {
     return this.casesFailed + this._intermediateResults.length;
   }
 
   /**
-   * @returns {number} Number of cases where this pass was successfully applied
+   * @returns Number of cases where this pass was successfully applied
    */
-  get casesApplied() {
+  get casesApplied(): number {
     return this._casesApplied;
   }
 
   /**
-   * @returns {number} Number of cases that resulted in an error
+   * @returns Number of cases that resulted in an error
    */
-  get casesFailed() {
+  get casesFailed(): number {
     return this._transformationErrors.length;
   }
 
   /**
-   * @returns {PassResult[]} List of results registered during the pass
+   * @returns List of results registered during the pass
    */
-  get results() {
+  get results(): Readonly<PassResult>[] {
     return this._intermediateResults;
   }
 
   /**
-   * @returns {PassTransformationError[]} List of errors registered during the pass
+   * @returns List of errors registered during the pass
    */
-  get errors() {
+  get errors(): Readonly<PassTransformationError>[] {
     return this._transformationErrors;
   }
 
-
   /**
    * Register a new error
-   * @param {PassTransformationError} error 
+   *
    */
-  pushError(error) {
+  pushError(error: PassTransformationError) {
     this._transformationErrors.push(Object.freeze(error));
   }
 
   /**
    * Register a new partial result
-   * @param {PassResult} result PassResult from applying a predicate to a joinpoint
+   * @param result - PassResult from applying a predicate to a joinpoint
    */
-  pushResult(result) {
+  pushResult(result: PassResult) {
     this._intermediateResults.push(Object.freeze(result));
     if (result.appliedPass) {
       this._appliedPass = true;
       this._casesApplied += 1;
     }
-    this._insertedLiteralCode = this._insertedLiteralCode || result.insertedLiteralCode;
+    this._insertedLiteralCode =
+      this._insertedLiteralCode || result.insertedLiteralCode;
   }
 
-  toString() {
-    return `PassResult { name: ${this.name}; ` +
+  toString(): string {
+    return (
+      `PassResult { name: ${this.name}; ` +
       `appliedPass: ${this.appliedPass}; ` +
       `insertedLiteralCode: ${this.insertedLiteralCode}; ` +
       `casesFound: ${this.casesFound}; ` +
       `casesApplied: ${this.casesApplied}; ` +
-      `casesFailed: ${this.casesFailed} }`;
+      `casesFailed: ${this.casesFailed} }`
+    );
   }
-
 }

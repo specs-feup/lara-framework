@@ -1,8 +1,8 @@
-laraImport("weaver.TraversalType");
-laraImport("lara.util.AbstractClassError");
-laraImport("lara.pass.results.AggregatePassResult");
-laraImport("lara.pass.PassTransformationError");
-laraImport("lara.pass.Pass");
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import TraversalType from "../../weaver/TraversalType.js";
+import Pass from "./Pass.js";
+import PassTransformationError from "./PassTransformationError.js";
+import AggregatePassResult from "./results/AggregatePassResult.js";
 
 /**
  * Represents a Lara transformation pass.
@@ -11,58 +11,60 @@ laraImport("lara.pass.Pass");
  *  - matchJoinpoint($jp)
  *  - transformJoinpoint($jp)
  */
-class SimplePass extends Pass {
+export default abstract class SimplePass extends Pass {
+  protected _traversalType: TraversalType = TraversalType.PREORDER;
 
   /**
-   * @param {boolean} includeDescendants Apply pass to the join point's descendents  
+   * @param includeDescendants - Apply pass to the join point's descendents
    */
-  constructor(includeDescendants=true) {
+  constructor(includeDescendants: boolean = true) {
     super();
-    this.#includeDescendants = includeDescendants;
+    this.includeDescendants = includeDescendants;
   }
 
   /**
    * Should the Pass be applied to the join point's descendants
-   * @type {boolean}
+   *
    */
-  #includeDescendants;
+  private includeDescendants: boolean;
 
   /**
    * Order in which the join point's descendants should be visited
-   * @type {TraversalType}
+   *
    */
-  get traversalType() {
-    return TraversalType.PREORDER;
+  get traversalType(): TraversalType {
+    return this._traversalType;
   }
 
   /**
    * Selects the join points and its descendants, if needed, according to the traversalType
-   * @param {JoinPoint} $jp The point in the code from which to select
-   * @returns {JoinPoint[]} Array of join points selected
+   * @param $jp - The point in the code from which to select
+   * @returns Array of join points selected
    */
-  _selectedJps($jp) {
-    if (this.#includeDescendants === false) {
+  _selectedJps($jp: LaraJoinPoint): LaraJoinPoint[] {
+    if (this.includeDescendants === false) {
       return [$jp];
     }
 
-    switch (this.traversalType) {
+    switch (this._traversalType) {
       case TraversalType.PREORDER:
         return [$jp, ...$jp.descendants];
       case TraversalType.POSTORDER:
         throw new Error("Postorder descendants not implemented");
       default:
-        throw new Error("Traversal type not implemented: " + traversal);
+        throw new Error(
+          "Traversal type not implemented: " + String(this._traversalType)
+        );
     }
   }
 
   /**
    * Apply tranformation to
-   * @abstract Contains default implementation only if matchJoinPoint and transformJoinpoint are implemented
-   * 
-   * @param {JoinPoint} $jp Joint point on which the pass will be applied
-   * @return {AggregatePassResult} Results of applying this pass to the given joint point
+   *
+   * @param $jp - Joinpoint on which the pass will be applied
+   * @returns Results of applying this pass to the given joinpoint
    */
-  _apply_impl($jp) {
+  _apply_impl($jp: LaraJoinPoint): AggregatePassResult {
     const matchingJps = this._selectedJps($jp).filter(($jp) =>
       this.matchJoinpoint($jp)
     );
@@ -84,32 +86,17 @@ class SimplePass extends Pass {
 
   /**
    * Predicate that informs the pass whether a certain joinpoint should be transformed
-   * @abstract
-   * @param {JoinPoint} $jp Join point to match
-   * @returns {boolean} Returns true if the joint point matches the predicate for this pass
+   *
+   * @param $jp - Join point to match
+   * @returns Returns true if the joinpoint matches the predicate for this pass
    */
-  matchJoinpoint($jp) {
-    throw new AbstractClassError({
-      kind: "abstractMethod",
-      baseClass: SimplePass,
-      derivedClass: this.constructor,
-      method: this.matchJoinpoint,
-    });
-  }
+  abstract matchJoinpoint($jp: LaraJoinPoint): boolean;
 
   /**
    * Transformation to be applied to matching joinpoints
-   * @abstract
-   * @param {JoinPoint} $jp Join point to transform
-   * @throws {PassTransformationError} If the transformation fails
-   * @return {PassTransformationResult} The result of the transformation
+   *
+   * @param $jp - Join point to transform
+   * @returns The result of the transformation
    */
-  transformJoinpoint($jp) {
-    throw new AbstractClassError({
-      kind: "abstractMethod",
-      baseClass: SimplePass,
-      derivedClass: this.constructor,
-      method: this.transformJoinpoint,
-    });
-  }
+  abstract transformJoinpoint($jp: LaraJoinPoint): AggregatePassResult | never;
 }

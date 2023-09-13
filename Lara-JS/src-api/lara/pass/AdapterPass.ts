@@ -1,91 +1,89 @@
-laraImport("weaver.TraversalType");
-laraImport("lara.pass.results.AggregatePassResult");
-laraImport("lara.pass.PassTransformationError");
-
-/**
- *
- * @typedef AdapterPassDefinition
- * @type {object}
- * @property {string} name Name of the pass
- * @property {TraversalType} [traversalType=TraversalType.PREORDER] Order in which the join point's descendants should be visited
- * @property {Function} matchJp Predicate that informs the pass whether a certain joinpoint should be transformed 
- * @property {Function} transformJp Transformation to be applied to matching joinpoints
- */
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import TraversalType from "../../weaver/TraversalType.js";
+import PassTransformationError from "./PassTransformationError.js";
+import SimplePass from "./SimplePass.js";
+import AggregatePassResult from "./results/AggregatePassResult.js";
 
 /**
  * Helper class to wrap existing code into a Lara transformation pass.
  */
 class AdapterPass extends SimplePass {
-
-  #name;
-  #traversalType;
-  #matchFn;
-  #transformFn;
+  protected _name: string;
+  private matchJp: AdapterPass.AdapterPassDefinition["matchJp"];
+  private transformJp: AdapterPass.AdapterPassDefinition["transformJp"];
 
   /**
-   * @param {boolean} includeDescendants Apply pass to the join point's descendents  
-   * @param {AdapterPassDefinition} [definition] Definition for the Pass
+   * @param includeDescendants - Apply pass to the join point's descendents
+   * @param definition - Definition for the Pass
    */
-  constructor(includeDescendants, {name, traversalType = TraversalType.PREORDER, matchJp, transformJp} = {}) {
+  constructor(
+    includeDescendants: boolean = true,
+    definition: AdapterPass.AdapterPassDefinition = {
+      name: "",
+      traversalType: TraversalType.PREORDER,
+      matchJp: () => false,
+      transformJp: (jp: LaraJoinPoint) => {
+        throw new PassTransformationError(
+          this,
+          jp,
+          "Adapter pass not implemented"
+        );
+      },
+    }
+  ) {
     super(includeDescendants);
-
-    if (name === undefined) {
-      throw new Error("PassAdapterDefinition must include a name");
-    }
-
-    if (matchJp === undefined || transformJp === undefined) {
-      throw new Error("PassAdapterDefinition must include both match and transform predicates");
-    }
-
-    this.#name = name;
-    this.#matchFn = matchJp;
-    this.#transformFn = transformJp;
-    this.#traversalType = traversalType;
+    this._name = definition.name;
+    this._traversalType = definition.traversalType;
+    this.matchJp = definition.matchJp;
+    this.transformJp = definition.transformJp;
   }
 
   /**
-   * 
-   * @param {boolean} includeDescendants Apply pass to the join point's descendents
-   */
-  constructor(includeDescendants=true) {
-    super(includeDescendants);
-  }
-
-  /**
-   * @return {string} Name of the pass
+   * @returns Name of the pass
    * @override
    */
-  get name() {
-    return this.#name;
+  get name(): string {
+    return this.name;
   }
-
-  /**
-   * Order in which the join point's descendants should be visited
-   * @type {TraversalType}
-   */
-  get traversalType() {
-    return this.#traversalType;
-  }
-
 
   /**
    * Predicate that informs the pass whether a certain joinpoint should be transformed
    * @override
-   * @param {JoinPoint} $jp Join point to match
-   * @returns {boolean} Returns true if the joint point matches the predicate for this pass
+   * @param $jp - Join point to match
+   * @returns Returns true if the joint point matches the predicate for this pass
    */
-  matchJoinpoint($jp) {
-    return this.#matchFn($jp);
+  matchJoinpoint($jp: LaraJoinPoint): boolean {
+    return this.matchJp($jp);
   }
 
   /**
    * Transformation to be applied to matching joinpoints
    * @override
-   * @param {JoinPoint} $jp Join point to transform
-   * @throws {PassTransformationError} If the transformation fails
-   * @return {PassTransformationResult} The result of the transformation
+   * @param $jp - Join point to transform
+   * @throws A PassTransformationError if the transformation fails
+   * @returns The result of the transformation
    */
-  transformJoinpoint($jp) {
-    return this.#transformFn($jp);
+  transformJoinpoint(
+    $jp: LaraJoinPoint
+  ): ReturnType<AdapterPass["transformJp"]> {
+    return this.transformJp($jp);
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace AdapterPass {
+  /**
+   * @param name - Name of the pass
+   * @param traversalType - Order in which the join point's descendants should be visited
+   * @param matchJp - Predicate that informs the pass whether a certain joinpoint should be transformed
+   * @param transformJp - Transformation to be applied to matching joinpoints
+   */
+  export interface AdapterPassDefinition {
+    name: string;
+    traversalType: TraversalType;
+    matchJp: (jp: LaraJoinPoint) => boolean;
+    transformJp: (jp: LaraJoinPoint) => AggregatePassResult | never;
+  }
+}
+
+export default AdapterPass;

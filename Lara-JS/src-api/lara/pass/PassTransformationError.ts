@@ -1,26 +1,29 @@
-class PassTransformationError extends Error {
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import Pass from "./Pass.js";
+
+export default class PassTransformationError extends Error {
   name = "PassTransformationError";
 
   /**
    * Joinpoint where the transformation was applied and failed.
-   * @type {$joinpoint}
+   * 
    */
-  #joinpoint;
+  #joinpoint: LaraJoinPoint;
 
   /**
    * Message describing the error that occurred.
-   * @type {string}
+   * 
    */
-  #description;
+  #description: string;
 
   /**
    * Pass that was being applied when the error was emitted.
-   * @type {Pass}
+   * 
    */
-  #pass;
+  #pass: Pass;
 
-  constructor(pass, $joinpoint, description) {
-    super(`${pass.name} @ ${$joinpoint.location}: ${description}`);
+  constructor(pass: Pass, $joinpoint: LaraJoinPoint, description: string) {
+    super(`${pass.name} @ ${$joinpoint.joinPointType}: ${description}`);
     this.#description = description;
     this.#joinpoint = $joinpoint;
     this.#pass = pass;

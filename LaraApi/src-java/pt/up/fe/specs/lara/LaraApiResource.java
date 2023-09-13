@@ -83,7 +83,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
     MUTATION("mutation/Mutation.lara"),
     MUTATION_RESULT("mutation/MutationResult.lara"),
-    MUTATOR("mutation/Mutator.lara"),
+    MUTATOR("mutation/Mutator.lara");
 
     // Pass
     //PASS("pass/Pass.js"),
@@ -93,7 +93,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     //PASS_RESULT("pass/results/PassResult.js"),
     //PASS_AGREGGATE_PASS_RESULT("pass/results/AggregatePassResult.js"),
     //PASS_APPLY_ARG("pass/composition/PassApplyArg.js"),
-    //PASSES("pass/composition/Passes.js");
+    //PASSES("pass/composition/Passes.js"),
 
     // Tool
     //TOOL("tool/Tool.js"),
