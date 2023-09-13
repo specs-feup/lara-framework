@@ -93,21 +93,21 @@ public enum LaraApiResource implements LaraResourceProvider {
     PASS_RESULT("pass/results/PassResult.js"),
     PASS_AGREGGATE_PASS_RESULT("pass/results/AggregatePassResult.js"),
     PASS_APPLY_ARG("pass/composition/PassApplyArg.js"),
-    PASSES("pass/composition/Passes.js"),
+    PASSES("pass/composition/Passes.js");
 
     // Tool
     //TOOL("tool/Tool.js"),
     //TOOL_UTILS("tool/ToolUtils.js"),
 
     // Units
-    SI_MODIFIER("units/SiModifier.lara"),
-    SI_UNIT("units/SiUnit.lara"),
-    UNIT("units/Unit.lara"),
-    TIME_MODIFIER("units/TimeModifier.lara"),
-    TIME_UNIT("units/TimeUnit.lara"),
-    ENERGY_UNIT("units/EnergyUnit.lara"),
-    UNIT_MODIFIER("units/UnitModifier.lara"),
-    UNIT_WITH_MODIFIER("units/UnitWithModifier.lara");
+    //SI_MODIFIER("units/SiModifier.lara"),
+    //SI_UNIT("units/SiUnit.lara"),
+    //UNIT("units/Unit.lara"),
+    //TIME_MODIFIER("units/TimeModifier.lara"),
+    //TIME_UNIT("units/TimeUnit.lara"),
+    //ENERGY_UNIT("units/EnergyUnit.lara"),
+    //UNIT_MODIFIER("units/UnitModifier.lara"),
+    //UNIT_WITH_MODIFIER("units/UnitWithModifier.lara"),
 
     // Util
     // ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),

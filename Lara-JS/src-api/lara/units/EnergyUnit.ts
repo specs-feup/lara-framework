@@ -1,48 +1,33 @@
-import lara.units.SiUnit;
-import lara.units.SiModifier;
+import SiUnit from "./SiUnit.js";
+import SiModifier from "./SiModifier.js";
 
 /**
- * @param {lara.units.SiModifier} siModifier
+ * ! If you are ever in need of using this class, please PLEASE refactor it.
+ * ! Just do it. I did not have the time to do it myself and did not want to break compatibility with the old Margot APIs.
  */
-var EnergyUnit = function(siModifier) {
-	if(siModifier === undefined) {
-		siModifier = SiModifier.BASE;
-	}
+export default class EnergyUnit extends SiUnit {
+  constructor(siModifier: string = SiModifier.BASE) {
 
-	// Parent constructor
-    SiUnit.call(this, "J", siModifier);
-};
+    // Parent constructor
+    super("J", siModifier);
+  }
 
-// Inheritance
-EnergyUnit.prototype = Object.create(SiUnit.prototype);
+  static joule() {
+    return new SiUnit("J", SiModifier.BASE);
+  }
 
-//var EnergyUnit = {};
+  static milli() {
+    return new SiUnit("J", SiModifier.MILLI);
+  }
 
-EnergyUnit.joule = function() {
-	return new SiUnit('J', SiModifier.BASE);
-}
+  static micro() {
+    return new SiUnit("J", SiModifier.MICRO);
+  }
 
-EnergyUnit.milli = function() {
-	return new SiUnit('J', SiModifier.MILLI);
-}
-
-EnergyUnit.micro = function() {
-	return new SiUnit('J', SiModifier.MICRO);
-}
-
-/*
-EnergyUnit.new = function(siModifier) {
-	if(siModifier === undefined) {
-		siModifier = SiModifier.BASE;
-	}
-	
-	return new SiUnit('J', siModifier);
-}
-*/
-
-/**
- * Override that discards parameter 'unitHasBaseName' and always requires the suffix 'J'.
- */
-EnergyUnit.prototype.convert = function(value, unit) {
-	return this._convert(value, unit, true);
+  /**
+   * Override that discards parameter 'unitHasBaseName' and always requires the suffix 'J'.
+   */
+  convert(value: number, unit: string): number {
+    return super.convert(value, unit, true);
+  }
 }

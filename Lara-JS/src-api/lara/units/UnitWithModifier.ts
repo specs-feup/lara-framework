@@ -1,76 +1,63 @@
-import lara.units.Unit;
+import Unit from "./Unit.js";
+import UnitModifier from "./UnitModifier.js";
 
 /**
- * 
+ * ! If you are ever in need of using this class, please PLEASE refactor it.
+ * ! Just do it. I did not have the time to do it myself and did not want to break compatibility with the old Margot APIs.
  */
-var UnitWithModifier = function(unitModifier, baseUnit, modifier) {
-	// Parent constructor
-    Unit.call(this);
+export default class UnitWithModifier extends Unit {
+  private _unitModifier;
+  private _baseUnit: string;
+  private _modifier: string;
 
-	//this._unitModifier = SiModifier.getUnitModifier();
-	this._unitModifier = unitModifier;
+  constructor(unitModifier: UnitModifier, baseUnit: string, modifier?: string) {
+    super();
 
-	checkString(baseUnit, "UnitWithModifier::baseUnit");
-	
-	if(arguments.length === 1) {
-		modifier = unitModifier.getBase();
-	}
-	
-	this._unitModifier.checkModifier(modifier, "UnitWithModifier::modifier");
+    this._unitModifier = unitModifier;
 
-	this._baseUnit = baseUnit;
-  	this._modifier = modifier;
-};
+    if (modifier == undefined) {
+      modifier = unitModifier.getBase();
+    }
 
-// Inheritance
-UnitWithModifier.prototype = Object.create(Unit.prototype);
+    this._unitModifier.checkModifier(modifier, "UnitWithModifier::modifier");
 
-UnitWithModifier.prototype.getName = function() {
-	
-	return this._modifier + this._baseUnit;
-}
+    this._baseUnit = baseUnit;
+    this._modifier = modifier;
+  }
 
-/**
- * @param {string} unit - Unit of the value.
- */
-UnitWithModifier.prototype.convert = function(value, unit, unitHasBaseName) {
-	return this._convert(value, unit, unitHasBaseName);
-}
+  getName() {
+    return this._modifier + this._baseUnit;
+  }
 
-UnitWithModifier.prototype._convert = function(value, unit, unitHasBaseName) {
-	
-	if(unitHasBaseName === undefined) {
-		unitHasBaseName = false;
-	}
-		
-    var fromModifier = this._extractModifier(unit, unitHasBaseName);
-    
-    
+  /**
+   * @param unit - Unit of the value.
+   */
+  convert(value: number, unit: string, unitHasBaseName: boolean = false): number {
+    const fromModifier = this._extractModifier(unit, unitHasBaseName);
+
     return this._unitModifier.convert(value, fromModifier, this._modifier);
-}
+  }
 
-UnitWithModifier.prototype._extractModifier = function(unit, unitHasBaseName) {
-	var currentModifier = unit;
-	
+  private _extractModifier(unit: string, unitHasBaseName: boolean) {
+    let currentModifier = unit;
 
-	// Check that unit ends with the baseUnit
-	if(unitHasBaseName) {
-		if(currentModifier.endsWith(this._baseUnit)) {
-			currentModifier = currentModifier.substring(0, currentModifier.length-this._baseUnit.length);
-		}
-	}
+    // Check that unit ends with the baseUnit
+    if (unitHasBaseName) {
+      if (currentModifier.endsWith(this._baseUnit)) {
+        currentModifier = currentModifier.substring(
+          0,
+          currentModifier.length - this._baseUnit.length
+        );
+      }
+    }
 
+    currentModifier = this._unitModifier.normalize(currentModifier);
 
-	currentModifier = this._unitModifier.normalize(currentModifier);
-	/*
-	// Check if unit is specified by name
-	var modifierByName = SiModifier.getModifierByName(currentModifier);
+    this._unitModifier.checkModifier(
+      currentModifier,
+      "UnitWithModifier._extractModifier::unit"
+    );
 
-	if(modifierByName !== undefined) {
-		currentModifier = modifierByName;
-	}
-	*/
-	this._unitModifier.checkModifier(currentModifier, "UnitWithModifier._extractModifier::unit");
-	
-	return currentModifier;
+    return currentModifier;
+  }
 }

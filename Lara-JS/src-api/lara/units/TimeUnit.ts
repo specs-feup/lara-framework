@@ -1,75 +1,64 @@
-import lara.units.UnitWithModifier;
-import lara.units.TimeModifier;
+import SiUnit from "./SiUnit.js";
+import TimeModifier from "./TimeModifier.js";
 
 /**
- * @param {lara.units.TimeModifier} timeModifier
+ * ! If you are ever in need of using this class, please PLEASE refactor it.
+ * ! Just do it. I did not have the time to do it myself and did not want to break compatibility with the old Margot APIs.
  */
-//var TimeUnit = function(baseUnit, modifier) {
-var TimeUnit = function(timeModifier) {
-	// Parent constructor
-    UnitWithModifier.call(this, TimeModifier.getUnitModifier(), 's', timeModifier);
-};
+export default class TimeUnit extends SiUnit {
+  constructor(timeModifier: string) {
+    super("s", timeModifier);
+  }
 
-// Inheritance
-TimeUnit.prototype = Object.create(UnitWithModifier.prototype);
+  /**
+   * Factory methods to create TimeUnits.
+   * */
+  static nano = function () {
+    return new TimeUnit(TimeModifier.NANO);
+  };
 
-/**
- * Factory methods to create TimeUnits.
- * */
-TimeUnit.nano = function() {
-	
-	return new TimeUnit(TimeModifier.NANO);
-}
+  static micro = function () {
+    return new TimeUnit(TimeModifier.MICRO);
+  };
 
-TimeUnit.micro = function() {
-	
-	return new TimeUnit(TimeModifier.MICRO);
-}
+  static milli = function () {
+    return new TimeUnit(TimeModifier.MILLI);
+  };
 
-TimeUnit.milli = function() {
-	
-	return new TimeUnit(TimeModifier.MILLI);
-}
+  static second = function () {
+    return new TimeUnit(TimeModifier.BASE);
+  };
 
-TimeUnit.second = function() {
-	
-	return new TimeUnit(TimeModifier.BASE);
-}
+  static minute = function () {
+    return new TimeUnit(TimeModifier.MINUTE);
+  };
 
-TimeUnit.minute = function() {
-	
-	return new TimeUnit(TimeModifier.MINUTE);
-}
+  static hour = function () {
+    return new TimeUnit(TimeModifier.HOUR);
+  };
 
-TimeUnit.hour = function() {
-	
-	return new TimeUnit(TimeModifier.HOUR);
-}
+  static day = function () {
+    return new TimeUnit(TimeModifier.DAY);
+  };
 
-TimeUnit.day = function() {
-	
-	return new TimeUnit(TimeModifier.DAY);
-}
+  /**
+   * Override that adds support to time-specific units (days, hours, minutes). Discards parameter 'unitHasBaseName'.
+   */
+  convert(value: number, unit: string): number {
+    // Time-specific units
+    if (unit === "minute" || unit === "minutes") {
+      return super.convert(value, "minute", true);
+    }
 
-/**
- * Override that adds support to time-specific units (days, hours, minutes). Discards parameter 'unitHasBaseName'.
- */
-TimeUnit.prototype.convert = function(value, unit) {
+    if (unit === "hour" || unit === "hours") {
+      return super.convert(value, "hour", true);
+    }
 
-	// Time-specific units
-	if(unit === "minute" || unit === "minutes") {
-		return this._convert(value, "minute", true);
-	}
-	
-	if(unit === "hour" || unit === "hours") {
-		return this._convert(value, "hour", true);
-	}
+    if (unit === "day" || unit === "days") {
+      return super.convert(value, "day", true);
+    }
 
-	if(unit === "day" || unit === "days") {
-		return this._convert(value, "day", true);
-	}
-	
-	
-	// For SI modifiers, require base name
-	return this._convert(value, unit, true);
+    // For SI modifiers, require base name
+    return super.convert(value, unit, true);
+  }
 }

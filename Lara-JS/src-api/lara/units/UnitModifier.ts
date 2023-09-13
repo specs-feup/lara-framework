@@ -1,112 +1,101 @@
-import lara.util.StringSet;
-
 /**
- *
+ * ! If you are ever in need of using this class, please PLEASE refactor it.
+ * ! Just do it. I did not have the time to do it myself and did not want to break compatibility with the old Margot APIs.
  */
-var UnitModifier = function(base, baseModifier, newModifier) {
+export default class UnitModifier {
+  private _factorTable: Record<string, number> = {};
+  private _validModifiers: Set<string> = new Set();
+  private _names: Record<string, string> = {};
+  private _namesToModifier: Record<string, string> = {};
+  private _base;
 
-	checkDefined(base);
+  constructor(base: string, baseModifier?: UnitModifier) {
+    this._base = base;
 
-	// Stores the factors for each modifier 
-	this._factorTable = {};
+    if (baseModifier !== undefined) {
+      for (const modifier of baseModifier.values()) {
+        this.newModifier(
+          modifier,
+          baseModifier._names[modifier],
+          baseModifier._factorTable[modifier]
+        );
+      }
+    }
+  }
 
+  getBase(): string {
+    return this._base;
+  }
 
-	//The set of valid modifiers. 
-	this._validModifiers = new StringSet();
+  newModifier(modifier: string, name: string, factor: number) {
+    // Add name
+    this._names[modifier] = name;
+    this._namesToModifier[name] = modifier;
 
-	// The set of modifier names.
-	this._names = {};
-	this._namesToModifier = {};
+    // Add factor
+    this._factorTable[modifier] = factor;
 
-	this._base = base;
-	
-	if(baseModifier !== undefined) {
-		for(var modifier of baseModifier.values()) {
-			
-			if(newModifier !== undefined) {
+    // Add modifier to the set
+    this._validModifiers.add(modifier);
 
-				newModifier[baseModifier._names[modifier].toUpperCase()] = modifier;
-			}
-			
-			this.newModifier(modifier, baseModifier._names[modifier], baseModifier._factorTable[modifier]);
-		}
-	}
-};
+    return modifier;
+  }
 
-
-/**
- * @param {string} modifier - 
- * @param {number} factor - 
- */ 
-UnitModifier.prototype.newModifier = function (modifier, name, factor) {
-	checkString(modifier, "UnitModifier._newModifier::modifier");
-	checkNumber(factor, "UnitModifier._newModifier::factor");
-
-	// Add name
-	this._names[modifier] = name;
-	this._namesToModifier[name] = modifier;
-	
-	// Add factor
-	this._factorTable[modifier] = factor;
-	
-	// Add modifier to the set
-	this._validModifiers.add(modifier);
-	
-	return modifier;
-}
-
-UnitModifier.prototype.convert = function(value, fromModifier, toModifier) {
-    
+  convert(value: number, fromModifier: string, toModifier: string) {
     this.checkModifier(fromModifier, "UnitModifier.convert::fromModifier");
     this.checkModifier(toModifier, "UnitModifier.convert::toModifier");
-    
-    var fromFactor = this._factorTable[fromModifier];
-    // test for undefined
-    
-    var toFactor = this._factorTable[toModifier];
+
+    const fromFactor = this._factorTable[fromModifier];
     // test for undefined
 
-    var conversionFactor = toFactor / fromFactor;
-    
+    const toFactor = this._factorTable[toModifier];
+    // test for undefined
+
+    const conversionFactor = toFactor / fromFactor;
+
     return value / conversionFactor;
+  }
+
+  checkModifier(modifier: string, source: string): void {
+    if (!this.isValid(modifier)) {
+      throw new Error(
+        `${source}: ${modifier} is not a valid modifier. Valid modifiers are: ${this._validModifierString()}`
+      );
+    }
+  }
+
+  private _validModifierString(): string {
+    const stringValues = [];
+    for (const modifier of this._validModifiers.values()) {
+      const currentModifier =
+        this._names[modifier] +
+        (modifier.length === 0 ? "" : "(" + modifier + ")");
+      stringValues.push(currentModifier);
+    }
+
+    return stringValues.join(", ");
+  }
+
+  isValid(modifier: string): boolean {
+    return this._validModifiers.has(modifier);
+  }
+
+  getModifierByName(name: string) {
+    return this._namesToModifier[name];
+  }
+
+  values(): string[] {
+    return Array.from(this._validModifiers.values());
+  }
+
+  normalize(modifier: string): string {
+    // Check if unit is specified by name
+    const modifierByName = this.getModifierByName(modifier);
+
+    if (modifierByName !== undefined) {
+      return modifierByName;
+    }
+
+    return modifier;
+  }
 }
-
-UnitModifier.prototype.checkModifier = function(modifier, source) {
-	checkTrue(this.isValid(modifier), modifier + " is not a valid SI modifier. Valid modifiers are: " + this._validModifierString(), source);
-}
-
-UnitModifier.prototype._validModifierString = function() {	
-	var stringValues = [];
-	for(var modifier of this._validModifiers.values()) {
-		var currentModifier = this._names[modifier] + (modifier.length === 0 ? "" : "("+modifier+")");
-		stringValues.push(currentModifier);
-	}
-	
-	return stringValues.join(", ");
-
-}
-
-UnitModifier.prototype.isValid = function(modifier) {
-	return this._validModifiers.has(modifier);
-}
-
-UnitModifier.prototype.getModifierByName = function(name) {
-	return this._namesToModifier[name];
-}
-
-UnitModifier.prototype.values = function() {
-	return this._validModifiers.values();
-}
-
-UnitModifier.prototype.normalize = function(modifier) {
-	// Check if unit is specified by name
-	//var modifierByName = SiModifier.getModifierByName(modifier);
-	var modifierByName = this.getModifierByName(modifier);
-
-	if(modifierByName !== undefined) {
-		return modifierByName;
-	}
-	
-	return modifier;
-}
-

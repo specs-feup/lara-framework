@@ -13,7 +13,6 @@
 
 package pt.up.fe.specs.lara;
 
-import java.util.Collections;
 import java.util.List;
 
 import pt.up.fe.specs.util.providers.ResourceProvider;

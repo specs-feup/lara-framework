@@ -1,19 +1,12 @@
-import lara.units.UnitModifier;
-import lara.units.SiModifier;
+import SiModifier from "./SiModifier.js";
 
 /**
- * @class
+ * ! If you are ever in need of using this class, please PLEASE refactor it.
+ * ! Just do it. I did not have the time to do it myself and did not want to break compatibility with the old Margot APIs.
  */
-var TimeModifier = {};
-
-TimeModifier._unitModifier = new UnitModifier("s", SiModifier.getUnitModifier(), TimeModifier);
-
-TimeModifier.SECOND = TimeModifier._unitModifier.newModifier("s", "second", 1);
-TimeModifier.MINUTE = TimeModifier._unitModifier.newModifier("min", "minute", 60);
-TimeModifier.HOUR = TimeModifier._unitModifier.newModifier("h", "hour", 60 * 60);
-TimeModifier.DAY = TimeModifier._unitModifier.newModifier("d", "day", 60 * 60 * 24);
-
-
-TimeModifier.getUnitModifier = function() {
-	return TimeModifier._unitModifier;
+export default class TimeModifier extends SiModifier {
+  static SECOND = TimeModifier._unitModifier.newModifier("s", "second", 1);
+  static MINUTE = TimeModifier._unitModifier.newModifier("min", "minute", 60);
+  static HOUR = TimeModifier._unitModifier.newModifier("h", "hour", 60 * 60);
+  static DAY = TimeModifier._unitModifier.newModifier("d", "day", 60 * 60 * 24);
 }
