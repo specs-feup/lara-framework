@@ -51,12 +51,12 @@ public enum LaraApiResource implements LaraResourceProvider {
     // TIMER_BASE("code/TimerBase.lara"),
 
     // DSE
-    DSE_LOOP("dse/DseLoop.lara"),
-    DSE_VALUES("dse/DseValues.lara"),
-    DSE_VALUES_LIST("dse/DseValuesList.lara"),
-    DSE_VALUES_SET("dse/DseValuesSet.lara"),
-    DSE_VARIANT("dse/DseVariant.lara"),
-    VARIABLE_VARIANT("dse/VariableVariant.lara"),
+    DSE_LOOP("dse/DseLoop.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    DSE_VALUES("dse/DseValues.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    DSE_VALUES_LIST("dse/DseValuesList.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    DSE_VALUES_SET("dse/DseValuesSet.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    DSE_VARIANT("dse/DseVariant.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    VARIABLE_VARIANT("dse/VariableVariant.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
 
     // Graphs
     GRAPHS("graphs/Graphs.mjs"),
@@ -86,14 +86,14 @@ public enum LaraApiResource implements LaraResourceProvider {
     MUTATOR("mutation/Mutator.lara"),
 
     // Pass
-    PASS("pass/Pass.js"),
-    SIMPLE_PASS("pass/SimplePass.js"),
-    ADAPTER_PASS("pass/AdapterPass.js"),
-    PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
-    PASS_RESULT("pass/results/PassResult.js"),
-    PASS_AGREGGATE_PASS_RESULT("pass/results/AggregatePassResult.js"),
-    PASS_APPLY_ARG("pass/composition/PassApplyArg.js"),
-    PASSES("pass/composition/Passes.js");
+    //PASS("pass/Pass.js"),
+    //SIMPLE_PASS("pass/SimplePass.js"),
+    //ADAPTER_PASS("pass/AdapterPass.js"),
+    //PASS_PASS_TRANSFORMATION_ERROR("pass/PassTransformationError.js"),
+    //PASS_RESULT("pass/results/PassResult.js"),
+    //PASS_AGREGGATE_PASS_RESULT("pass/results/AggregatePassResult.js"),
+    //PASS_APPLY_ARG("pass/composition/PassApplyArg.js"),
+    //PASSES("pass/composition/Passes.js");
 
     // Tool
     //TOOL("tool/Tool.js"),
