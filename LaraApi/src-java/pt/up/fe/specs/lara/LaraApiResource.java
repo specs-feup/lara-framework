@@ -59,24 +59,24 @@ public enum LaraApiResource implements LaraResourceProvider {
     VARIABLE_VARIANT("dse/VariableVariant.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
 
     // Graphs
-    GRAPHS("graphs/Graphs.mjs"),
-    GRAPH("graphs/Graph.mjs"),
-    GRAPH_NODE("graphs/GraphNode.js"),
-    GRAPH_EDGE("graphs/GraphEdge.js"),
-    NODE_DATA("graphs/NodeData.js"),
-    EDGE_DATA("graphs/EdgeData.js"),
-    DOT_FORMATTER("graphs/DotFormatter.js"),
+    //GRAPHS("graphs/Graphs.mjs"),
+    //GRAPH("graphs/Graph.mjs"),
+    //GRAPH_NODE("graphs/GraphNode.js"),
+    //GRAPH_EDGE("graphs/GraphEdge.js"),
+    //NODE_DATA("graphs/NodeData.js"),
+    //EDGE_DATA("graphs/EdgeData.js"),
+    //DOT_FORMATTER("graphs/DotFormatter.js"),
 
     // Iterators
     //LARA_ITERATOR("iterators/LaraIterator.lara"),
     //LINE_ITERATOR("iterators/LineIterator.lara"),
 
     // Metrics
-    ENERGY_METRIC("metrics/EnergyMetric.lara"),
-    EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"),
-    FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"),
-    METRIC("metrics/Metric.lara"),
-    METRIC_RESULT("metrics/MetricResult.lara"),
+    ENERGY_METRIC("metrics/EnergyMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    METRIC("metrics/Metric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    METRIC_RESULT("metrics/MetricResult.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
 
     // Mutation
     ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),

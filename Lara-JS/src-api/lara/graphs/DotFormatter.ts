@@ -1,71 +1,83 @@
-class DotFormatter {
+import cytoscape from "../../libs/cytoscape-3.26.0.js";
+import NodeData from "./NodeData.js";
+import EdgeData from "./EdgeData.js";
+
+export interface NodeAttribute {
+  attr: string;
+  predicate: (node: cytoscape.NodeSingular) => boolean;
+}
+
+export interface EdgeAttribute {
+  attr: string;
+  predicate: (node: cytoscape.EdgeSingular) => boolean;
+}
+
+export default class DotFormatter {
   // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
-  #nodeAttrs;
+  private nodeAttrs: NodeAttribute[] = [];
 
   // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
-  #edgeAttrs;
+  private edgeAttrs: EdgeAttribute[] = [];
 
   // Function that receives a node and returns the corresponding label. By default, call .toString() over the data
-  #nodeLabelFormatter;
+  private nodeLabelFormatter: (node: cytoscape.NodeSingular) => string = (
+    node
+  ) => (node.data() as NodeData).toString();
 
   // Function that receives an edge and returns the corresponding label. By default, call .toString() over the data
-  #edgeLabelFormatter;
+  private edgeLabelFormatter: (edge: cytoscape.EdgeSingular) => string = (
+    edge
+  ) => (edge.data() as EdgeData).toString();
 
-  constructor() {
-    this.#nodeAttrs = [];
-    this.#edgeAttrs = [];
-
-    this.#nodeLabelFormatter = (node) => node.data().toString();
-    this.#edgeLabelFormatter = (edge) => edge.data().toString();
-  }
-
-  static #sanitizeDotLabel(label) {
+  private static sanitizeDotLabel(label: string) {
     return label.replaceAll("\n", "\\l").replaceAll("\r", "");
   }
 
-  addNodeAttribute(attrString, predicate) {
-    if (predicate === undefined) {
-      predicate = (node) => true;
-    }
-
-    this.#nodeAttrs.push({ attr: attrString, predicate: predicate });
+  addNodeAttribute(
+    attrString: string,
+    predicate: (node: cytoscape.NodeSingular) => boolean = () => true
+  ) {
+    this.nodeAttrs.push({ attr: attrString, predicate: predicate });
   }
 
-  addEdgeAttribute(attrString, predicate) {
-    if (predicate === undefined) {
-      predicate = (edge) => true;
-    }
-
-    this.#edgeAttrs.push({ attr: attrString, predicate: predicate });
+  addEdgeAttribute(
+    attrString: string,
+    predicate: (edge: cytoscape.EdgeSingular) => boolean = () => true
+  ) {
+    this.edgeAttrs.push({ attr: attrString, predicate: predicate });
   }
 
-  setNodeLabelFormatter(nodeLabelFormatter) {
-    this.#nodeLabelFormatter = nodeLabelFormatter;
+  setNodeLabelFormatter(
+    nodeLabelFormatter: (node: cytoscape.NodeSingular) => string
+  ) {
+    this.nodeLabelFormatter = nodeLabelFormatter;
   }
 
-  setEdgeLabelFormatter(edgeLabelFormatter) {
-    this.#edgeLabelFormatter = edgeLabelFormatter;
+  setEdgeLabelFormatter(
+    edgeLabelFormatter: (edge: cytoscape.EdgeSingular) => string
+  ) {
+    this.edgeLabelFormatter = edgeLabelFormatter;
   }
 
-  getNodeAttributes(node) {
-    return this.#nodeAttrs
+  getNodeAttributes(node: cytoscape.NodeSingular) {
+    return this.nodeAttrs
       .filter((obj) => obj.predicate(node))
       .map((obj) => obj.attr)
       .join(" ");
   }
 
-  getEdgeAttributes(edge) {
-    return this.#edgeAttrs
+  getEdgeAttributes(edge: cytoscape.EdgeSingular) {
+    return this.edgeAttrs
       .filter((obj) => obj.predicate(edge))
       .map((obj) => obj.attr)
       .join(" ");
   }
 
-  getNodeLabel(node) {
-    return DotFormatter.#sanitizeDotLabel(this.#nodeLabelFormatter(node));
+  getNodeLabel(node: cytoscape.NodeSingular) {
+    return DotFormatter.sanitizeDotLabel(this.nodeLabelFormatter(node));
   }
 
-  getEdgeLabel(edge) {
-    return DotFormatter.#sanitizeDotLabel(this.#edgeLabelFormatter(edge));
+  getEdgeLabel(edge: cytoscape.EdgeSingular) {
+    return DotFormatter.sanitizeDotLabel(this.edgeLabelFormatter(edge));
   }
 }

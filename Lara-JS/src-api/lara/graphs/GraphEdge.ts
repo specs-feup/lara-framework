@@ -1,14 +1,9 @@
-laraImport("lara.graphs.EdgeData");
+import EdgeData from "./EdgeData.js";
 
 /**
  * Base class for graph edges.
+ *
+ * @deprecated use lara.graphs.EdgeData instead
  */
-class GraphEdge extends EdgeData {
-		
-	constructor(id, source, target) {
-		super(id, source, target);
-		
-		println("!!! Class lara.graphs.GraphEdge is deprecated, please use lara.graphs.EdgeData instead");
-	}	
-	
-}
+type GraphEdge = EdgeData;
+export default GraphEdge;

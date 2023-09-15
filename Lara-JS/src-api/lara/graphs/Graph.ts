@@ -1,44 +1,22 @@
-laraImport("lara.graphs.Graphs");
+import cytoscape from "../../libs/cytoscape-3.26.0.js";
+import DotFormatter from "./DotFormatter.js";
+import Graphs from "./Graphs.js";
 
-class Graph {
-	/**
-	 * A Cytoscape graph
-	 */
-	graph;
+export default class Graph {
+  /**
+   * A Cytoscape graph
+   */
+  graph: cytoscape.Core;
 
-	/**
-	 * Creates a new instance of the Graph class
-	 * @param graph a Cytoscape graph
-	 */
-	constructor(graph) {
-		this.graph = graph;
-	}
+  /**
+   * Creates a new instance of the Graph class
+   * @param graph - A Cytoscape graph
+   */
+  constructor(graph: cytoscape.Core) {
+    this.graph = graph;
+  }
 
-	/**
-	 * Sets the Cytoscape graph
-	 */
-	set graph(graph) {
-		this.graph = graph;
-	}
-
-	/**
-	 * @returns the Cytoscape graph
-	 */
-	get graph() {
-		return this.graph;
-	}
-
-	/**
-	 * @returns the Cytoscape instance
-	 */
-	getCy() {
-		return this.graph.cy();
-	}
-
-	/**
-	 * @param {lara.graphs.DotFormatter} dotFormatter 
-	 */
-	toDot(dotFormatter) {
-		return Graphs.toDot(this.graph, dotFormatter);
-	}
+  toDot(dotFormatter: DotFormatter) {
+    return Graphs.toDot(this.graph, dotFormatter);
+  }
 }

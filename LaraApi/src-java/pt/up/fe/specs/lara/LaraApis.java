@@ -20,7 +20,7 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 public class LaraApis {
 
     private static final List<ResourceProvider> LARA_API = ResourceProvider.getResourcesFromEnum(LaraApiResource.class,
-            LaraApiJsResource.class, LaraApiLibsResource.class);
+            LaraApiJsResource.class);
 
     public static List<ResourceProvider> getApis() {
         return LARA_API;
