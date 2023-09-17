@@ -1,66 +1,53 @@
-import lara.Check;
-import lara.mutation.MutationResult;
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import MutationResult from "./MutationResult.js";
 
 /**
  * Base class that represents a code mutation.
- * 
+ *
  * This should not be instantiated directly, instead it should be extended.
- * 
- * @constructor
  *
- * @param {String} [name="<unnamed mutation>"] - the name of the mutation
+ * @param name - the name of the mutation
  *
  */
-var Mutation = function(name) {
-	Check.isString(name);
-	
-	this.name = name;
-};
+export default abstract class Mutation {
+  name: string;
 
+  constructor(name: string = "<unnamed mutation>") {
+    this.name = name;
+  }
 
-/**
- * @return {String} the name of this mutation
- */
-Mutation.prototype.getName = function() {
-	return this.name;
+  /**
+   * @returns The name of this mutation
+   */
+  getName(): string {
+    return this.name;
+  }
+
+  /**
+   * Generator function for the mutations.
+   *
+   * @param $jp - The point in the code to mutate.
+   *
+   * @returns An iterator that results the results of each mutation on each iteration.
+   */
+  *mutate($jp: LaraJoinPoint): IterableIterator<MutationResult> {
+    const mutants = this.getMutants($jp);
+    for (const $mutant of mutants) {
+      yield $mutant;
+    }
+  }
+
+  /**
+   * @param $jp - A point in the code to test
+   *
+   * @returns True if the given join point is a valid mutation point, false otherwise
+   */
+  abstract isMutationPoint($jp: LaraJoinPoint): boolean;
+
+  /**
+   * @param $jp - The point in the code to mutate
+   *
+   * @returns An array with the results of each mutation, which must be out-of-tree copies of the given join point
+   */
+  abstract getMutants($jp: LaraJoinPoint): MutationResult[];
 }
-
-
-/**
- * Generator function for the mutations.
- *
- * @param {$jp} $jp - The point in the code to mutate.
- *
- * @return {lara.mutation.MutationResult} an iterator that results the results of each mutation on each iteration.
- */
-Mutation.prototype.mutate = function* ($jp) {
-	var mutants = this.mutation.getMutants($jp);
-	for(var $mutant of mutants) {
-		yield $mutant;
-	}
-}
-
-
-/*** TO IMPLEMENT ***/
-
-/**
- * @param {$jp} $jp - A point in the code to test
- * 
- * @return {boolean} true if the given join point is a valid mutation point, false otherwise
- */
-Mutation.prototype.isMutationPoint = function($jp) {
-	notImplemented("Mutation.isMutationPoint");
-}
-
-/**
- * @param {$jp} $jp - The point in the code to mutate
- * 
- * @return {lara.mutation.MutationResult[]} an array with the results of each mutation, which must be out-of-tree copies of the given join point
- */
-Mutation.prototype.getMutants = function($jp) {
-	notImplemented("Mutation.getMutants");
-}
-
-
-
-

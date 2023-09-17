@@ -1,46 +1,23 @@
-import lara.mutation.Mutation;
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import Mutation from "./Mutation.js";
+import MutationResult from "./MutationResult.js";
 
 /**
  * Abstract mutation class that implements .getMutants(), but makes function Mutation.mutate($jp) abstract. Allows more efficient, generator-based Mutation implementations.
- * 
- * This should not be instantiated directly, instead should be extended.
- * 
- * @constructor
- *
- * @param {String} [name="<unnamed mutation>"] - the name of the mutation
- *
  */
-var IterativeMutation = function(name) {
-	// Parent constructor
-    Mutation.call(this, name);
-};
+export default abstract class IterativeMutation extends Mutation {
+  getMutants($jp: LaraJoinPoint): MutationResult[] {
+    const mutations: MutationResult[] = [];
 
-// Inheritance
-IterativeMutation.prototype = Object.create(Mutation.prototype);
+    for (const mutation of this.mutate($jp)) {
+      mutations.push(mutation);
+    }
 
+    return mutations;
+  }
 
-/*** IMPLEMENTATION ***/
-
-IterativeMutation.prototype.getMutants = function($jp) {
-	var mutations = [];
-
-	for(var mutation of this.mutate($jp)) {
-		mutations.push(mutation);	
-	}
-	
-	return mutations;
+  /**
+   * Iterative implementation of the function.
+   */
+  abstract mutate($jp: LaraJoinPoint): IterableIterator<MutationResult>;
 }
-
-
-/*** TO IMPLEMENT ***/
-
-
-/**
- * Iterative implementation of the function.
- */
-IterativeMutation.prototype.mutate = function* ($jp) {
-	notImplemented("IterativeMutation.mutate*");
-}
-
-
-
