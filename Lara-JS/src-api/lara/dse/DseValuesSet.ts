@@ -1,84 +1,85 @@
-import lara.dse.DseValues;
+import { arrayFromArgs } from "../core/LaraCore.js";
+import DseValues from "./DseValues.js";
+
+type T = any;
 
 /**
  * Iterates over the values of a set of DseValues.
  *
- * @class
- *
- * @param {lara.dse.DseValues[]} dseValues - The DseValues that will form the set.
+ * @param dseValues - The DseValues that will form the set.
  */
-var DseValuesSet = function() {
-    // Parent constructor
-    DseValues.call(this);
-	
-	if(arguments.length === 0) {
-		throw "DseValuesSet: needs at least one DseValues as argument";
-	}
-	
-	this.dseValuesArray = arrayFromArgs(arguments);
-	this.numElements = undefined;
-	
-	//for(var dseValues of dseValuesArray) {
-	for(var i=0; i<this.dseValuesArray.length; i++) {
-		var dseValues = this.dseValuesArray[i];
-		
-		// Check it is a DseValues
-		checkInstance(dseValues, DseValues, "DseValuesSet::arg["+i+"]");
-		
-		// Check if all DseValues have the same number of elements
-		if(this.numElements === undefined) {
-			this.numElements = dseValues.getNumElements();
-		}
-		else if(this.numElements !== dseValues.getNumElements()) {
-				throw "Argument " + i + " has " + dseValues.getNumElements() + " elements but previous arguments have " + this.numElements + " elements";
-		}
-		
-	}
-	
-};
-// Inheritance
-DseValuesSet.prototype = Object.create(DseValues.prototype);
+export default class DseValuesSet extends DseValues {
+  dseValuesArray: DseValues[];
+  numElements: number;
 
-DseValuesSet.prototype.getType = function() {
-	return "DseValuesSet";
-}
+  constructor(...dseValues: DseValues[]) {
+    super();
 
-/**
- * @returns the next element.
- */
-DseValuesSet.prototype.next = function() {
-	var values = [];
+    if (dseValues.length === 0) {
+      throw "DseValuesSet: needs at least one DseValues as argument";
+    }
 
-	for(var dseValues of this.dseValuesArray) {
-		values.push(dseValues.next());
-	}
+    this.dseValuesArray = arrayFromArgs(dseValues) as DseValues[];
+    this.numElements = this.dseValuesArray[0].getNumElements();
 
-	return values;
-}
+    for (let i = 0; i < this.dseValuesArray.length; i++) {
+      const dseValues = this.dseValuesArray[i];
 
-/**
- * @returns true if it has another element to return.
- */
-DseValuesSet.prototype.hasNext = function() {
-	return this.dseValuesArray[0].hasNext(); 
-}
+      if (this.numElements !== dseValues.getNumElements()) {
+        throw (
+          "Argument " +
+          i +
+          " has " +
+          dseValues.getNumElements() +
+          " elements but previous arguments have " +
+          this.numElements +
+          " elements"
+        );
+      }
+    }
+  }
 
-/**
- * Resets the iterator.
- */
-DseValuesSet.prototype.reset = function() {
-	for(var dseValues of this.dseValuesArray) {
-		dseValues.reset();
-	}
-}
+  getType(): string {
+    return "DseValuesSet";
+  }
 
-DseValuesSet.prototype.getNumElements = function() {
-	return this.numElements;
-}
+  /**
+   * @returns the next element.
+   */
+  next(): T[] {
+    const values: T[] = [];
 
-/**
- * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
- */
-DseValuesSet.prototype.getNumValuesPerElement = function() {
-	return this.dseValuesArray.length;
+    for (const dseValues of this.dseValuesArray) {
+      values.push(dseValues.next());
+    }
+
+    return values;
+  }
+
+  /**
+   * @returns true if it has another element to return.
+   */
+  hasNext(): boolean {
+    return this.dseValuesArray[0].hasNext();
+  }
+
+  /**
+   * Resets the iterator.
+   */
+  reset(): void {
+    for (const dseValues of this.dseValuesArray) {
+      dseValues.reset();
+    }
+  }
+
+  getNumElements(): number {
+    return this.numElements;
+  }
+
+  /**
+   * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
+   */
+  getNumValuesPerElement(): number {
+    return this.dseValuesArray.length;
+  }
 }

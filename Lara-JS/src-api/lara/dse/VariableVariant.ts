@@ -1,41 +1,47 @@
-import lara.dse.DseVariant;
+import { arrayFromArgs } from "../core/LaraCore.js";
+import DseValues from "./DseValues.js";
+import DseValuesList from "./DseValuesList.js";
+import DseVariant from "./DseVariant.js";
+
+type T = any;
 
 /**
  * Associates a variable name to a DseValues.
- * @constructor
  */
-var VariableVariant = function(variableNames, dseValues) {
-    // Parent constructor
-    DseVariant.call(this);
-	
-	if(arguments.length < 2) {
-		throw "VariableVariant: needs at least two arguments, a dseValues and variable names";
-	}
-	
-	this.dseValues = dseValues instanceof DseValues ? dseValues : new DseValuesList(arrayFromArgs(arguments, 1));
-	//this.dseValues = dseValues;
-		
-	this.variableNames = isArray(variableNames) ? variableNames : [variableNames];
-	//this.variableNames = arrayFromArgs(arguments, 1);
+export default class VariableVariant extends DseVariant {
+  protected variableNames: string[];
+  protected dseValues: DseValues;
 
-	// Verify that the number of variables is the same as the number of values per element
-	checkTrue(this.dseValues.getNumValuesPerElement() === this.variableNames.length);
-	
-};
-// Inheritance
-VariableVariant.prototype = Object.create(DseVariant.prototype);
+  constructor(variableNames: string | string[], dseValues: DseValues) {
+    super();
 
+    if (arguments.length < 2) {
+      throw "VariableVariant: needs at least two arguments, a dseValues and variable names";
+    }
 
-VariableVariant.prototype.getType = function() {
-	return "VariableVariant";
-}
+    this.dseValues =
+      dseValues instanceof DseValues
+        ? dseValues
+        : new DseValuesList(arrayFromArgs(dseValues) as T[]);
 
+    this.variableNames =
+      variableNames instanceof Array ? variableNames : [variableNames];
 
-VariableVariant.prototype.getNames = function() {
-	return this.variableNames;
-}
+    // Verify that the number of variables is the same as the number of values per element
+    if (this.dseValues.getNumValuesPerElement() !== this.variableNames.length) {
+      throw "VariableVariant: the number of variables is not the same as the number of values per element";
+    }
+  }
 
+  getType(): string {
+    return "VariableVariant";
+  }
 
-VariableVariant.prototype.getDseValues = function() {
-	return this.dseValues;
+  getNames(): string[] {
+    return this.variableNames;
+  }
+
+  getDseValues(): DseValues {
+    return this.dseValues;
+  }
 }

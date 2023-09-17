@@ -1,29 +1,21 @@
+import DseValues from "./DseValues.js";
+
 /**
  * Represents a variant of the DSE.
- *
- * @class
  */
-var DseVariant = function() {
+export default abstract class DseVariant {
+  /**
+   * @returns the type of this DseVariant.
+   */
+  abstract getType(): string;
 
-};
+  /**
+   * @returns the names associated to this DseVariant.
+   */
+  abstract getNames(): string[];
 
-/**
- * @returns the type of this DseVariant.
- */
-DseVariant.prototype.getType = function() {
-	notImplemented("DseVariant.getType");
-}
-
-/**
- * @returns the names associated to this DseVariant.
- */
-DseVariant.prototype.getNames = function() {
-	notImplemented("DseVariant.getNames");
-}
-
-/**
- * @returns the DseValues associated to this DseVariant.
- */
-DseVariant.prototype.getDseValues = function() {
-	notImplemented("DseVariant.getDseValues");
+  /**
+   * @returns the DseValues associated to this DseVariant.
+   */
+  abstract getDseValues(): DseValues;
 }

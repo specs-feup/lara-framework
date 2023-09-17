@@ -1,11 +1,18 @@
+import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import Metric from "../metrics/Metric.js";
+import DseVariant from "./DseVariant.js";
+
 /**
  * Performs Design-Space Exploration.
  *
- * @class
  */
-var DseLoop = function() {
-};
- 
-DseLoop.prototype.execute = function($scope, $measure, dseVariants, metrics, outputFolder, numExec) {
-	notImplemented("DseLoop.execute");
-};
+export default abstract class DseLoop {
+  abstract execute(
+    $scope: LaraJoinPoint,
+    $measure: LaraJoinPoint,
+    dseVariants: DseVariant,
+    metrics: Metric[],
+    outputFolder: string,
+    numExec: number
+  ): void;
+}

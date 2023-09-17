@@ -1,58 +1,61 @@
-import lara.dse.DseValues;
+import { arrayFromArgs } from "../core/LaraCore.js";
+import DseValues from "./DseValues.js";
+
+type T = any;
 
 /**
  * Iterates over a list of values.
- * @constructor
  */
-var DseValuesList = function() {
-    // Parent constructor
-    DseValues.call(this);
-	
-	if(arguments.length === 0) {
-		throw "DseValuesList: needs at least one value as argument";
-	}
-	
-	this.values = arrayFromArgs(arguments);
-	this.currentIndex = 0;
-};
-// Inheritance
-DseValuesList.prototype = Object.create(DseValues.prototype);
+export default class DseValuesList extends DseValues {
+  currentIndex = 0;
+  values: T[];
 
-DseValuesList.prototype.getType = function() {
-	return "DseValuesList";
-}
+  constructor(...values: T[]) {
+    super();
 
-/**
- * @returns the next element.
- */
-DseValuesList.prototype.next = function() {
-	var value = this.values[this.currentIndex];
-	this.currentIndex++;
-	
-	return value;
-}
+    if (values.length === 0) {
+      throw "DseValuesList: needs at least one value as argument";
+    }
 
-/**
- * @returns true if it has another element to return.
- */
-DseValuesList.prototype.hasNext = function() {
-	return this.currentIndex < this.values.length;
-}
+    this.values = arrayFromArgs(values) as T[];
+  }
 
-/**
- * Resets the iterator.
- */
-DseValuesList.prototype.reset = function() {
-	this.currentIndex = 0;
-}
+  getType(): string {
+    return "DseValuesList";
+  }
 
-DseValuesList.prototype.getNumElements = function() {
-	return this.values.length; 
-}
+  /**
+   * @returns the next element.
+   */
+  next(): T {
+    const value = this.values[this.currentIndex];
+    this.currentIndex++;
 
-/**
- * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
- */
-DseValuesList.prototype.getNumValuesPerElement = function() {
-	return 1;
+    return value;
+  }
+
+  /**
+   * @returns true if it has another element to return.
+   */
+  hasNext(): boolean {
+    return this.currentIndex < this.values.length;
+  }
+
+  /**
+   * Resets the iterator.
+   */
+  reset(): void {
+    this.currentIndex = 0;
+  }
+
+  getNumElements(): number {
+    return this.values.length;
+  }
+
+  /**
+   * @returns The number of values returned by a call to next(). A value of one means one value, a value greater than one means an array with that amount of values.
+   */
+  getNumValuesPerElement(): number {
+    return 1;
+  }
 }
