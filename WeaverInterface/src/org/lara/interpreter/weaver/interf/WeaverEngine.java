@@ -473,9 +473,7 @@ public abstract class WeaverEngine {
      */
     public List<String> getPredefinedExternalDependencies() {
         return Arrays.asList("Experimental - SourceAction",
-                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction",
-                "Experimental - Mutation",
-                "https://github.com/specs-feup/lara-framework.git?folder=experimental/Mutation");
+                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction");
     }
 
     /**
