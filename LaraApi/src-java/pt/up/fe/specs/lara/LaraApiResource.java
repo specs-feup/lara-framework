@@ -76,14 +76,14 @@ public enum LaraApiResource implements LaraResourceProvider {
     EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
     FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
     METRIC("metrics/Metric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    METRIC_RESULT("metrics/MetricResult.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    METRIC_RESULT("metrics/MetricResult.lara"); // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
 
     // Mutation
-    ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),
-    ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
-    MUTATION("mutation/Mutation.lara"),
-    MUTATION_RESULT("mutation/MutationResult.lara"),
-    MUTATOR("mutation/Mutator.lara");
+    //ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),
+    //ITERATIVE_MUTATOR("mutation/IterativeMutator.lara"),
+    //MUTATION("mutation/Mutation.lara"),
+    //MUTATION_RESULT("mutation/MutationResult.lara"),
+    //MUTATOR("mutation/Mutator.lara"),
 
     // Pass
     //PASS("pass/Pass.js"),
