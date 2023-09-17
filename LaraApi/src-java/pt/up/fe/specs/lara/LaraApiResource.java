@@ -56,7 +56,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     DSE_VALUES_LIST("dse/DseValuesList.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
     DSE_VALUES_SET("dse/DseValuesSet.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
     DSE_VARIANT("dse/DseVariant.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    VARIABLE_VARIANT("dse/VariableVariant.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    VARIABLE_VARIANT("dse/VariableVariant.lara"); // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
 
     // Graphs
     //GRAPHS("graphs/Graphs.mjs"),
@@ -72,11 +72,11 @@ public enum LaraApiResource implements LaraResourceProvider {
     //LINE_ITERATOR("iterators/LineIterator.lara"),
 
     // Metrics
-    ENERGY_METRIC("metrics/EnergyMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    METRIC("metrics/Metric.lara"), // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
-    METRIC_RESULT("metrics/MetricResult.lara"); // NO NEED TO CONVERT. THIS IS FROM ANTAREX.
+    //ENERGY_METRIC("metrics/EnergyMetric.lara"),
+    //EXECUTION_TIME_METRIC("metrics/ExecutionTimeMetric.lara"),
+    //FILE_SIZE_METRIC("metrics/FileSizeMetric.lara"),
+    //METRIC("metrics/Metric.lara"),
+    //METRIC_RESULT("metrics/MetricResult.lara"),
 
     // Mutation
     //ITERATIVE_MUTATION("mutation/IterativeMutation.lara"),
