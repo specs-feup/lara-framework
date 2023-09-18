@@ -31,7 +31,12 @@ export default class LineInserter {
             // Check if there is a mapping for the current line
             const toInsert = linesToInsert[currentLine];
             if (toInsert !== undefined) {
-                newContents += toInsert + this.newLine;
+                if (Array.isArray(toInsert)) {
+                    newContents += toInsert.join(this.newLine) + this.newLine;
+                }
+                else {
+                    newContents += toInsert + this.newLine;
+                }
             }
             // Insert old content
             newContents += line + this.newLine;

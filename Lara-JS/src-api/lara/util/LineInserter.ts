@@ -27,7 +27,7 @@ export default class LineInserter {
    */
   add(
     contents: string | JavaClasses.File,
-    linesToInsert: Record<number, string>
+    linesToInsert: Record<number, string | string[]>
   ) {
     const lineIterator = new LineIterator(contents);
 
@@ -40,7 +40,11 @@ export default class LineInserter {
       // Check if there is a mapping for the current line
       const toInsert = linesToInsert[currentLine];
       if (toInsert !== undefined) {
-        newContents += toInsert + this.newLine;
+        if (Array.isArray(toInsert)) {
+          newContents += toInsert.join(this.newLine) + this.newLine;
+        } else {
+          newContents += toInsert + this.newLine;
+        }
       }
 
       // Insert old content
