@@ -58,6 +58,16 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
 
   fs.writeSync(
     outputFile,
+    `\n/**
+ * This function is for internal use only. DO NOT USE IT!
+ */
+export function clearJoinpointMappers(): void {
+  JoinpointMappers.length = 0;
+}\n`
+  );
+
+  fs.writeSync(
+    outputFile,
     `\nexport function wrapJoinPoint(obj: any): any {
   if (JoinpointMappers.length === 0) {
     return obj;

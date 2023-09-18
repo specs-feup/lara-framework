@@ -35,6 +35,12 @@ const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {
     JoinpointMappers.push(mapper);
 }
+/**
+ * This function is for internal use only. DO NOT USE IT!
+ */
+export function clearJoinpointMappers() {
+    JoinpointMappers.length = 0;
+}
 export function wrapJoinPoint(obj) {
     if (JoinpointMappers.length === 0) {
         return obj;
