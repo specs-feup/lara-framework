@@ -81,6 +81,10 @@ export function clearJoinpointMappers(): void {
     return obj;
   }
 
+  if (ArrayBuffer.isView(obj)) {
+    return Array.from(obj as any).map(wrapJoinPoint);
+  }
+
   if (typeof obj !== "object") {
     return obj;
   }

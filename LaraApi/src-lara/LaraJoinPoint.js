@@ -51,6 +51,9 @@ export function wrapJoinPoint(obj) {
     if (obj instanceof LaraJoinPoint) {
         return obj;
     }
+    if (ArrayBuffer.isView(obj)) {
+        return Array.from(obj).map(wrapJoinPoint);
+    }
     if (typeof obj !== "object") {
         return obj;
     }
