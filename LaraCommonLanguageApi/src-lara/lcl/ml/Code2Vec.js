@@ -2,9 +2,11 @@ laraImport("lcl.LaraCommonLanguage");
 laraImport("weaver.Query");
 
 class Code2Vec {
+  /**
+   * Collect information
+   */
   printPaths() {
-    // Collect information
-    for (var desc of Query.search("file").search()) {
+    for (const desc of Query.search("file").search()) {
       if (!desc.hasChildren) {
         //for all the leafs of the tree
         this.#AST(desc.parent, [desc]);
@@ -16,11 +18,21 @@ class Code2Vec {
     return node.joinPointType ?? node.toString();
   }
 
+  /**
+   * Returns AST path context starting from a leaf
+   *
+   * @param {*} node
+   * @param {[]} lst
+   */
   #AST(node, lst) {
-    // return AST path context starting from a leaf
     lst.push("(up)");
     lst.push(node);
-    if (node.parent != undefined && !lst.includes(node.parent)) {
+    if (
+      node.parent != undefined &&
+      lst.find((e) => {
+        typeof e != "string" && e.equals(node.parent);
+      })
+    ) {
       this.#AST(node.parent, lst);
     }
     this.#goDown(node, lst);
@@ -28,20 +40,21 @@ class Code2Vec {
     lst.pop();
   }
 
+  /**
+   * Go down in the ast to find the paths to the leafs
+   *
+   * @param {*} parent
+   * @param {[]} node_list
+   * @returns
+   */
   #goDown(parent, node_list) {
-    //go down in the ast to find the paths to the leafs
     if (!parent.hasChildren) {
-      console.log(
-        ...node_list.map((node) => {
-          return `${this.#getNodeInfo(node)} `;
-        })
-      );
-
+      console.log(...node_list.map((node) => this.#getNodeInfo(node)));
       console.log("__________________________________");
       return;
     } else {
-      for (var node of parent.children) {
-        var previousNode = node_list[node_list.length - 3];
+      for (const node of parent.children) {
+        const previousNode = node_list[node_list.length - 3];
         if (!previousNode.equals(node)) {
           node_list.push("(down)");
           node_list.push(node);

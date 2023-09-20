@@ -4,6 +4,16 @@ import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
 /**
+ * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
+ */
+let selectorJoinPointsClass = JoinPoints;
+/**
+ * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
+ */
+export function setSelectorJoinPointsClass(value = JoinPoints) {
+    selectorJoinPointsClass = value;
+}
+/**
  * Selects join points according to their type and filter rules.
  *
  * @param $baseJp - starting join point for the search.
@@ -79,11 +89,11 @@ export default class Selector {
         switch (traversal) {
             case TraversalType.PREORDER:
                 return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-                    return JoinPoints.descendants($jp, name);
+                    return selectorJoinPointsClass.descendants($jp, name);
                 });
             case TraversalType.POSTORDER:
                 return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-                    return JoinPoints.descendantsPostorder($jp, name);
+                    return selectorJoinPointsClass.descendantsPostorder($jp, name);
                 });
             default:
                 throw new Error(
@@ -101,7 +111,7 @@ export default class Selector {
      */
     children(type, filter = {}) {
         return this.searchPrivate(type, Selector.parseFilter(filter, type), function ($jp, name) {
-            return JoinPoints.children($jp, name);
+            return selectorJoinPointsClass.children($jp, name);
         });
     }
     /**
@@ -114,7 +124,7 @@ export default class Selector {
      */
     scope(name, filter = {}) {
         return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
-            return JoinPoints.scope($jp, name);
+            return selectorJoinPointsClass.scope($jp, name);
         });
     }
     searchPrivate(name = undefined, jpFilter, selectFunction) {
@@ -136,7 +146,7 @@ export default class Selector {
             }
         }
         const isCurrentJpsUndefined = this.$currentJps === undefined;
-        this.$currentJps ??= [Selector.newJpChain(JoinPoints.root())];
+        this.$currentJps ??= [Selector.newJpChain(selectorJoinPointsClass.root())];
         this.lastName = isCurrentJpsUndefined
             ? Selector.STARTING_POINT
             : this.lastName;
@@ -187,7 +197,7 @@ export default class Selector {
         return returnJps;
     }
     /**
-     * @returns an array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format <joinpoint_name>_<repetition>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
+     * @returns An array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format \<joinpoint_name\>_\<repetition\>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
      */
     chain() {
         if (this.$currentJps === undefined) {
