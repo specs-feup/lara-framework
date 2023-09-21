@@ -29,6 +29,7 @@ export type SelectorFilter =
   | string
   | RegExp
   | ((str: string) => boolean)
+  | ((jp: LaraJoinPoint) => boolean)
   | JpFilterRules;
 
 /**
