@@ -3,6 +3,7 @@ import TraversalType from "../../weaver/TraversalType.js";
 import Pass from "./Pass.js";
 import PassTransformationError from "./PassTransformationError.js";
 import AggregatePassResult from "./results/AggregatePassResult.js";
+import PassResult from "./results/PassResult.js";
 
 /**
  * Represents a Lara transformation pass.
@@ -98,5 +99,5 @@ export default abstract class SimplePass extends Pass {
    * @param $jp - Join point to transform
    * @returns The result of the transformation
    */
-  abstract transformJoinpoint($jp: LaraJoinPoint): AggregatePassResult | never;
+  abstract transformJoinpoint($jp: LaraJoinPoint): PassResult | never;
 }
