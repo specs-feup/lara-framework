@@ -18,5 +18,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/GuiHelper"/>
 	<classpathentry kind="src" path="/jOptions"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=WeaverGenerator&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
