@@ -107,8 +107,8 @@ public class WeaverApiManager {
     }
 
     public static WeaverApiManager newInstance(WeaverEngine engine) {
-        // Get weaver id
-        var weaverId = engine.getNameAndBuild();
+        // Get weaver id, replace spaces with _
+        var weaverId = engine.getNameAndBuild().replace(' ', '_');
 
         // Check if this is a unique build, or just a testing build
         // var isIdUnique = SpecsSystem.getBuildNumber() != null;
