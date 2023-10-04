@@ -3,7 +3,7 @@ import path from "path";
 import EventEmitter from "events";
 import java from "java";
 import Debug from "debug";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import JavaError from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
@@ -140,7 +140,10 @@ export class Weaver {
       fs.existsSync(args.scriptFile) &&
       isValidFileExtension(path.extname(args.scriptFile))
     ) {
-      await import(path.resolve(args.scriptFile))
+      // import is using a URL converted to string.
+      // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
+      // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
+      await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
         .then(() => {
           debug("Execution completed successfully.");
         })
