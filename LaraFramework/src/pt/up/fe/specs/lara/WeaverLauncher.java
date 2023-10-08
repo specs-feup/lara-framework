@@ -454,7 +454,7 @@ public class WeaverLauncher {
         var customThreadPool = threads > 0 ? new ForkJoinPool(threads) : new ForkJoinPool();
 
         // Choose executor
-        Function<String[], Boolean> clavaExecutor = weaverCommand.isEmpty() ? this::executeSafe
+        Function<String[], Boolean> weaverExecutor = weaverCommand.isEmpty() ? this::executeSafe
                 : weaverArgs -> this.executeOtherJvm(weaverArgs, weaverCommand, workingFolder);
 
         SpecsLogs.info("Launching " + args.length + " instances of weaver " + engine.getName()
@@ -489,7 +489,7 @@ public class WeaverLauncher {
             // Launch tasks
             List<ForkJoinTask<Boolean>> tasks = new ArrayList<>();
             for (var weaverArgs : adaptedArgs) {
-                tasks.add(customThreadPool.submit(() -> clavaExecutor.apply(weaverArgs)));
+                tasks.add(customThreadPool.submit(() -> weaverExecutor.apply(weaverArgs)));
             }
 
             // Stop accepting tasks, allows threads to be reclaimed
@@ -513,7 +513,6 @@ public class WeaverLauncher {
 
             // Find the file for each execution
             return collectResults(resultFiles);
-
             // return results.stream()
             // .filter(result -> result == false)
             // .findFirst()

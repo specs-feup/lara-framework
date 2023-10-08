@@ -27,33 +27,33 @@ public class LaraIException extends BaseException {
     private final String problem;
 
     public LaraIException(String problem) {
-	this("", problem, null);
+        this("", problem, null);
     }
 
     public LaraIException(String problem, Throwable e) {
-	this("", problem, e);
+        this("", problem, e);
     }
 
     public LaraIException(File file, String problem, Throwable e) {
-	this(file.getName(), problem, e);
+        this(file.getName(), problem, e);
     }
 
     public LaraIException(String inputName, String problem, Throwable e) {
-	super(e);
-	this.inputName = inputName;
-	this.problem = problem;
+        super(e);
+        this.inputName = inputName;
+        this.problem = problem;
     }
 
     @Override
     protected String generateMessage() {
-	return "LARAI Exception for" + generateSimpleMessage();
+        return "LARAI Exception for" + generateSimpleMessage();
     }
 
     @Override
     protected String generateSimpleMessage() {
-	String inputMessage = this.inputName.isEmpty() ? "" : "for input '" + this.inputName + "' ";
+        String inputMessage = this.inputName.isEmpty() ? "" : " input '" + this.inputName + "' ";
 
-	return inputMessage + this.problem;
+        return inputMessage + this.problem;
     }
 
 }
