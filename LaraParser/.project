@@ -6,7 +6,7 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>sf.eclipse.javacc.javaccbuilder</name>
+			<name>sf.eclipse.javacc.core.javaccbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -19,7 +19,7 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.apache.ivyde.eclipse.ivynature</nature>
-		<nature>sf.eclipse.javacc.javaccnature</nature>
+		<nature>sf.eclipse.javacc.core.javaccnature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
