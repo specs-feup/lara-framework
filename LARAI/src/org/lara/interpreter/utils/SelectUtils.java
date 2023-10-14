@@ -15,7 +15,6 @@ package org.lara.interpreter.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 
 public class SelectUtils {
@@ -35,13 +34,6 @@ public class SelectUtils {
         }
         String aAlias = aChildren.get(0).getClassAlias();
         String bAlias = bChildren.get(0).getClassAlias();
-
-        if (aAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
-            aAlias = aAlias.substring(0, aAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
-        }
-        if (bAlias.contains(LARACConstantPool.HIDDEN_TAG)) {
-            bAlias = bAlias.substring(0, bAlias.indexOf(LARACConstantPool.HIDDEN_TAG));
-        }
 
         if (aAlias.equals(bAlias)) {
 
@@ -84,12 +76,6 @@ public class SelectUtils {
         do {
             String left = leftChain.get(i);
             String right = rightChain.get(i);
-            if (left.contains(LARACConstantPool.HIDDEN_TAG)) {
-                left = left.substring(0, left.indexOf(LARACConstantPool.HIDDEN_TAG));
-            }
-            if (right.contains(LARACConstantPool.HIDDEN_TAG)) {
-                right = right.substring(0, right.indexOf(LARACConstantPool.HIDDEN_TAG));
-            }
             if (left.equals(right)) {
                 joinChain.add(leftChain.get(i));
             } else {

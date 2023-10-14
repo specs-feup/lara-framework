@@ -42,7 +42,6 @@ import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
 import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.jsengine.JsEngineType;
-import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;

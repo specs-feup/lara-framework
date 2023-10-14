@@ -31,12 +31,9 @@ import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import larai.LaraI;
-import pt.up.fe.specs.lara.doc.LaraDocLauncher;
-import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.utilities.CachedValue;
 
 /**
  * Utility methods what weavers can use to bootstrap execution.
@@ -51,22 +48,14 @@ public class WeaverLauncher {
     private final WeaverEngine engine;
 
     private final Map<String, Function<String[], Boolean>> tasks;
-    private final CachedValue<LaraCompiler> laraCompiler;
 
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
         tasks = buildTaskMap();
-        laraCompiler = new CachedValue<>(() -> new LaraCompiler(this.engine.getLanguageSpecificationV2()));
     }
 
     private Map<String, Function<String[], Boolean>> buildTaskMap() {
         var taskMap = new HashMap<String, Function<String[], Boolean>>();
-
-        // If unit testing flag is present, run unit tester
-        taskMap.put("-" + LaraiKeys.getUnitTestFlag(), args -> executeUnitTester(args));
-
-        // If doc generator flag is present, run doc generator
-        taskMap.put("-" + LaraiKeys.getDocGeneratorFlag(), args -> executeDocGenerator(args));
 
         // If server flag is present, run server
         taskMap.put("-" + LaraiKeys.getServerFlag(), args -> executeServer(args));
@@ -130,21 +119,10 @@ public class WeaverLauncher {
             var destinationFile = new File(outputFolder, fileLocation);
             var fileContents = SpecsIo.read(apiFile);
 
-            // If LARA file, first convert to JavaScript
-            if (!keepLara && SpecsIo.getExtension(fileLocation).equals("lara")) {
-                destinationFile = new File(outputFolder, SpecsIo.removeExtension(fileLocation) + ".js");
-
-                fileContents = getLaraCompiler().compile(apiFile.getPath(), fileContents);
-            }
-
             SpecsLogs.info("Writing file " + destinationFile);
             SpecsIo.write(destinationFile, fileContents);
         }
 
-    }
-
-    private LaraCompiler getLaraCompiler() {
-        return laraCompiler.getValue();
     }
 
     public boolean launchExternal(String[] args) {
@@ -194,48 +172,6 @@ public class WeaverLauncher {
 
         // No predefined task, just execute as usual
         return LaraI.exec(args, engine);
-    }
-
-    private Boolean executeUnitTester(String[] args) {
-
-        // First index is the task flag
-        int flagIndex = 0;
-
-        List<String> laraUnitArgs = new ArrayList<>();
-        // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
-        laraUnitArgs.add("--weaver");
-        laraUnitArgs.add(engine.getClass().getName());
-
-        // laraUnitArgs.add("lara-unit-weaver=" + CxxWeaver.class.getName());
-        for (int i = flagIndex + 1; i < args.length; i++) {
-            laraUnitArgs.add(args[i]);
-        }
-
-        SpecsLogs.debug("Launching lara-unit with flags '" + laraUnitArgs + "'");
-
-        int unitResults = LaraUnitLauncher.execute(laraUnitArgs.toArray(new String[0]));
-
-        return unitResults == 0;
-    }
-
-    private Boolean executeDocGenerator(String[] args) {
-
-        // First index is the task flag
-        int flagIndex = 0;
-
-        List<String> laraDocArgs = new ArrayList<>();
-        laraDocArgs.add("--weaver");
-        laraDocArgs.add(engine.getClass().getName());
-
-        for (int i = flagIndex + 1; i < args.length; i++) {
-            laraDocArgs.add(args[i]);
-        }
-
-        SpecsLogs.debug("Launching lara-doc with flags '" + laraDocArgs + "'");
-
-        int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
-
-        return docResults != -1;
     }
 
     private Boolean executeServer(String[] args) {

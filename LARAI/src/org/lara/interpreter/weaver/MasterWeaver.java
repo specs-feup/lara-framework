@@ -28,7 +28,6 @@ package org.lara.interpreter.weaver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,6 @@ import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.exception.WeaverEngineException;
-import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.utils.SelectUtils;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
@@ -50,7 +48,6 @@ import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
@@ -99,13 +96,8 @@ public class MasterWeaver {
 
         this.larai = larai;
         jpUtils = new JoinpointUtils(engine);
-        // weavers = new HashMap<>();
-        // this.actions = new ArrayList<String>();
-        // Class<?> theWeaver = Class.forName(weaverClass, true,
-        // Thread.currentThread()
-        // .getContextClassLoader());
 
-        this.weaverEngine = weaverEngine;// theWeaver.asSubclass(IWeaver.class);
+        this.weaverEngine = weaverEngine;
         this.sources = sources.getFiles();
     }
 
@@ -142,13 +134,7 @@ public class MasterWeaver {
             setActions(weaverEngine.getActions());
             setRoot(weaverEngine.getRoot());
             weaverEngine.getWeaverProfiler().reset();
-            List<Class<?>> allImportableClasses = weaverEngine.getAllImportableClasses();
-            
-            if(larai.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
-                allImportableClasses
-                    .forEach(larai.getInterpreter().getImportProcessor()::importClassWithSimpleName);
-            }
-            
+
             final List<AGear> gears = weaverEngine.getGears();
             addGears(gears);
 
@@ -156,32 +142,17 @@ public class MasterWeaver {
             if (eventTrigger.hasListeners()) {
 
                 String main = larai.getOptions().getMainAspect();
-                if (main == null) {
 
-                    main = larai.getAsps().main;
-                }
                 larai.getWeavingProfile().reportLaraNumTokens(larai.getNumMainLaraTokens());
                 eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), sources, main,
                         larai.getOptions().getLaraFile().getName());
             }
 
-            // Create CSV with stats, if asked
-            if (larai.getWeaverArgs().get(LaraiKeys.LARA_LOC)) {
-                // Collect LARA files and folders
-                List<String> laraPaths = new ArrayList<>();
-                laraPaths.add(larai.getWeaverArgs().get(LaraiKeys.LARA_FILE).getPath());
-                larai.getWeaverArgs().get(LaraiKeys.INCLUDES_FOLDER).forEach(path -> laraPaths.add(path.getPath()));
-                new LaraLoc(weaverEngine).execute(laraPaths);
-            }
 
             final boolean weaverIsWorking = weaverEngine.begin(sources,
                     larai.getOptions().getOutputDir(), larai.getWeaverArgs());
 
             if (!weaverIsWorking) {
-                // throw new RuntimeException("Application folder '" + sources
-                // + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
-
-                // LoggingUtils.msgInfo
                 larai.out.warnln("Application inputs '" + sources
                         + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
 

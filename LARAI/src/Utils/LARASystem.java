@@ -25,14 +25,12 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.ToolExecutionException;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import larac.objects.Enums.Types;
 import larac.utils.output.ErrorMsg;
 import larac.utils.output.WarningMsg;
 import larai.LaraI;
@@ -119,28 +117,12 @@ public class LARASystem {
 
         String toolExec = toolEl.getAttribute("run");
 
-        // String jarLoc = LaraI.jarPath.substring(0,
-        // LaraI.jarPath.lastIndexOf("/"));
-        final String jarLoc = LaraIUtils.getJarFoldername();
-        toolExec = toolExec.replace(LARASystem.LARAPATH, jarLoc);
 
         final ArrayList<String> commandArgs = new ArrayList<>();
         final ArrayList<String> after = new ArrayList<>();
-        final NodeList extraArgs = toolEl.getElementsByTagName("argument");
-
+        
         commandArgs.add(toolExec);
-        for (int i = 0; i < extraArgs.getLength(); i++) {
-            final Element argument = (Element) extraArgs.item(i);
-            final String extra = argument.getAttribute("value").replace(LARASystem.LARAPATH, jarLoc);
-            if (argument.hasAttribute("position") && argument.getAttribute("position").equals("before")) {
-                commandArgs.add(extra);
-            } else {
-                after.add(extra);
-            }
-        }
-
-        stringifyArgs(arguments, jarLoc, commandArgs);
-
+        
         commandArgs.addAll(after);
 
         executeRun(toolExec, commandArgs, verbose);
@@ -253,27 +235,12 @@ public class LARASystem {
         }
 
         String toolExec = toolEl.getAttribute("run");
-        // String jarLoc = LaraI.jarPath.substring(0,
-        // LaraI.jarPath.lastIndexOf("/"));
-        final String jarLoc = LaraIUtils.getJarFoldername();
-        toolExec = toolExec.replace(LARASystem.LARAPATH, jarLoc);
-
+        
         final ArrayList<String> args = new ArrayList<>();
         final ArrayList<String> after = new ArrayList<>();
-        final NodeList extraArgs = toolEl.getElementsByTagName("argument");
-
+        
         args.add(toolExec);
-        for (int i = 0; i < extraArgs.getLength(); i++) {
-            final Element argument = (Element) extraArgs.item(i);
-            final String extra = argument.getAttribute("value").replace(LARASystem.LARAPATH, jarLoc);
-
-            if (argument.hasAttribute("position") && argument.getAttribute("position").equals("before")) {
-                args.add(extra);
-            } else {
-                after.add(extra);
-            }
-        }
-
+        
         if (!larai.getScriptEngine().isArray(arguments)) {
             ErrorMsg.say("The arguments must be inside an Array");
             return "";
@@ -574,23 +541,6 @@ public class LARASystem {
     @Deprecated
     public static Object[] toJavaArray(Object arr) {
         throw new RuntimeException("Deprecated method, is this necessary?");
-
-        // if (!NashornUtils.isJSArray(arr)) {
-        // return new Object[] { arr };
-        // }
-        //
-        // return NashornUtils.getValues(arr).toArray(new Object[0]);
-    }
-
-    public static String decode(String encoded, String encoder) {
-
-        if (encoder.equals(Types.Base64.toString())) {
-
-            final byte[] decodedDuke = DatatypeConverter.parseBase64Binary(encoded);
-            return new String(decodedDuke);
-        }
-        // else
-        throw new RuntimeException("Decoder not available: " + encoder);
     }
 
     /**

@@ -10,7 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LARAI&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraLoc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GitPlus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>
