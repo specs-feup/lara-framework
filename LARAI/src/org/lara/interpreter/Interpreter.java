@@ -13,18 +13,11 @@
 package org.lara.interpreter;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.EvaluationException;
-import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.profile.ReportField;
-import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.MessageConstants;
-
-import com.google.common.base.Preconditions;
 
 import larac.utils.output.Output;
 import larai.LaraI;
@@ -39,7 +32,6 @@ public class Interpreter {
 
     public static final String JPUTILS_NAME = "__jpUtils";
     private final LaraI laraInterp;
-    private final LaraIDataStore options;
     private Output out = new Output();
     private final JsEngine engine;
 
@@ -55,7 +47,6 @@ public class Interpreter {
      */
     public Interpreter(LaraI laraInt, JsEngine engine) {
         laraInterp = laraInt;
-        options = laraInterp.getOptions();
         out = laraInterp.out;
         this.engine = engine;
     }
@@ -64,30 +55,10 @@ public class Interpreter {
         return engine;
     }
 
-
-    public Object executeMainAspect(final StringBuilder mainCall) {
-        long start = setupStage();
-
-        String code = mainCall.toString();
-        final Object result = evaluate(code, "main_aspect");
-
-        completeStage(start);
-        return result;
-    }
-
     public Object executeMainAspect(File mainFile) {
         long start = setupStage();
 
         final Object result = evaluate(mainFile);
-
-        completeStage(start);
-        return result;
-    }
-
-    public Object executeMainAspect(String code, JsFileType type, String source) {
-        long start = setupStage();
-
-        final Object result = evaluate(code, type, source);
 
         completeStage(start);
         return result;
@@ -103,7 +74,6 @@ public class Interpreter {
     private void completeStage(long begin) {
         long end = LaraI.getCurrentTime() - begin;
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
-        // exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
     }
 
@@ -115,13 +85,8 @@ public class Interpreter {
      * @throws ScriptException
      */
     public Object evaluate(String code, String source) {
-        return evaluate(code, JsFileType.NORMAL, source);
-    }
-
-    public Object evaluate(String code, JsFileType type, String source) {
-
         try {
-            return engine.eval(code, type, source);
+            return engine.eval(code, JsFileType.NORMAL, source);
         } catch (Exception e) {
             throw new EvaluationException(e);
         }
@@ -130,72 +95,5 @@ public class Interpreter {
 
     public Object evaluate(File jsFile) {
         return engine.evalFile(jsFile);
-    }
-
-    public static String extractFileAndLineFromCoords(String coordsStr) {
-        Coordinates coords = new Coordinates(coordsStr);
-        if (!coords.isWellParsed()) {
-            return "unknown";
-        }
-        return coords.fileAndLineString();
-    }
-
-    public static String[] consistentSplit(String string, String pattern) {
-        if (string.isEmpty()) {
-            return new String[0];
-        }
-        if (string.equals(pattern)) {
-            return new String[] { "", "" };
-        }
-
-        String[] splittedString = string.split(pattern);
-
-        // If last character is different than original String, adds empty string to the end
-        if (splittedString.length != 0) {
-            String lastSplit = splittedString[splittedString.length - 1];
-            Preconditions.checkArgument(!lastSplit.isEmpty(),
-                    "Should not be empty last element? " + Arrays.toString(splittedString));
-
-            if (lastSplit.charAt(lastSplit.length() - 1) != string.charAt(string.length() - 1)) {
-                String[] concatenatedString = Arrays.copyOf(splittedString, splittedString.length + 1);
-                concatenatedString[splittedString.length] = "";
-                return concatenatedString;
-            }
-
-        }
-
-        return splittedString;
-    }
-
-
-    public boolean hasEvents() {
-        return laraInterp.getWeaver().eventTrigger().hasListeners();
-    }
-
-    public List<String> getActions() {
-        return laraInterp.getWeaver().getActions();
-    }
-
-    public Output out() {
-        return out;
-    }
-
-    public LaraI getLaraI() {
-        return laraInterp;
-    }
-
-    public LaraIDataStore getOptions() {
-        return options;
-    }
-
-    /**
-     * Sets the specified value with the specified key in the ENGINE_SCOPE Bindings of the protected context field.
-     *
-     * @param key
-     * @param value
-     */
-    public void put(String key, Object value) {
-        // Get function
-        engine.put(key, value);
     }
 }
