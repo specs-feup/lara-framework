@@ -43,7 +43,6 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
-import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 

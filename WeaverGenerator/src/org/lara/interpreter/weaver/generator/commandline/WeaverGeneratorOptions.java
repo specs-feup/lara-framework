@@ -49,7 +49,6 @@ class WeaverGeneratorOptions extends Options {
         W("w", "weaver"),
 
         X("x", "XMLspec"),
-        L("l", "language"),
         O("o", "output"),
         P("p", "package"),
         // A("a", "abstractGetters"), //replaced with -f
@@ -91,9 +90,6 @@ class WeaverGeneratorOptions extends Options {
         final Option xmlDir = newOption("dir", GeneratorOption.X, ArgOption.ONE_ARG,
                 "location of the target language specification (default: " + GenConstants.getDefaultXMLDir() + ")");
 
-        final Option language = newOption("language", GeneratorOption.L, ArgOption.ONE_ARG,
-                "define in which language the code will be generated (default: Java)");
-
         final Option outDir = newOption("dir", GeneratorOption.O, ArgOption.ONE_ARG,
                 "change output directory (default: " + GenConstants.getDefaultOutputDir() + ")");
 
@@ -127,7 +123,6 @@ class WeaverGeneratorOptions extends Options {
         addOption(help);
         addOption(weaver);
         addOption(xmlDir);
-        addOption(language);
         addOption(outDir);
         addOption(packDir);
         // addOption(abstractGetters);
