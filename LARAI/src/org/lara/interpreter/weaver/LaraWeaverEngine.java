@@ -18,37 +18,17 @@ import java.util.List;
 
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
-import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
 
-    private static final String API_NAME = "lara-js";
-
-    private final List<ResourceProvider> laraApis;
     private final List<ResourceProvider> laraCore;
 
     public LaraWeaverEngine() {
-        laraApis = buildLaraApis();
         laraCore = buildLaraCore();
-
-        // Add LARA APIs
-        addApis(API_NAME, laraApis);
 
         // Add weaver-specific APIs
         addWeaverApis();
-    }
-
-    @Override
-    public List<ResourceProvider> getLaraApis() {
-        return laraApis;
-    }
-
-    private List<ResourceProvider> buildLaraApis() {
-        var laraAPIs = new ArrayList<ResourceProvider>();
-
-        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
-        return laraAPIs;
     }
 
     @Override

@@ -20,6 +20,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverInterface"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraCommonLanguage"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
