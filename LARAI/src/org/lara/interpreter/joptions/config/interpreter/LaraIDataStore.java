@@ -15,7 +15,6 @@ package org.lara.interpreter.joptions.config.interpreter;
 import java.io.File;
 import java.util.Optional;
 
-import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.JOptionsUtils;
@@ -33,9 +32,6 @@ import pt.up.fe.specs.util.SpecsLogs;
  *
  */
 public class LaraIDataStore implements LaraiKeys {
-
-    // private static final String GIT_QUERY_FOLDER = "folder";
-    // private static final Set<String> GIT_URL_QUERIES = new HashSet<>(Arrays.asList(GIT_QUERY_FOLDER));
 
     public static final String CONFIG_FILE_NAME = "larai.properties";
     private static final String SYSTEM_OPTIONS_FILENAME = "system_options.xml";
@@ -133,17 +129,10 @@ public class LaraIDataStore implements LaraiKeys {
      * @return
      */
     private void setLaraProperties() {
-        if (!dataStore.hasValue(LaraiKeys.LARA_FILE)) {
-
-            throw new LaraIException(
-                    "The lara aspect file is mandatory! Please define the input lara file (e.g.: aspect.lara)");
-        }
-
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {
             File output = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
             SpecsIo.mkdir(output);
         }
-
     }
 
     /**

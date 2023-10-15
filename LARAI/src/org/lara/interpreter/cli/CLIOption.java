@@ -23,32 +23,11 @@ public enum CLIOption implements WeaverOption {
     version("v", "print version information and exit", null),
     javascript("j", "show the javascript output in the same stream as the application's output",
             LaraiKeys.LOG_JS_OUTPUT),
-    debug("d", "show all process information", LaraiKeys.DEBUG_MODE),
-    stack("s", "show detailed call stack trace instead of LARAI trace", LaraiKeys.TRACE_MODE),
-    argv("av", OptionArguments.ONE_ARG, "arguments",
-            "arguments for the main aspect. Supports passing a .properties file with the arguments",
-            LaraiKeys.ASPECT_ARGS),
-    // argw("aw", OptionArguments.SEVERAL_ARGS, "arguments", "arguments for the weaver", LaraiKeys.WEAVER_ARGS),
-
     output("o", OptionArguments.ONE_ARG, "dir", "change output dir", LaraiKeys.OUTPUT_FOLDER),
-    workspace_extra("pe", OptionArguments.ONE_ARG, "sources", "extra sources", LaraiKeys.WORKSPACE_EXTRA),
-    verbose("b", OptionArguments.ONE_ARG, "level", "verbose level", LaraiKeys.VERBOSE),
-    main("m", OptionArguments.ONE_ARG, "aspect", "select main aspect", LaraiKeys.MAIN_ASPECT),
-    autoimport("ai", OptionArguments.NO_ARGS, LaraiKeys.AUTOMATICALLY_IMPORT_JS),
     dependencies("dep", OptionArguments.ONE_ARG, "urls",
             "external dependencies (URLs, git repos)", LaraiKeys.EXTERNAL_DEPENDENCIES),
-    bundle_tags("bt", OptionArguments.ONE_ARG, "bundle tags",
-            "Bundle tags, in the following format: <TAG1>=<VALUE1>[,<TAG_N>=<VALUE_N>]*",
-            LaraiKeys.BUNDLE_TAGS),
-    restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restrict mode (some Java classes are not allowed)",
-            LaraiKeys.RESTRICT_MODE),
-    call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
     jsengine("js", OptionArguments.ONE_ARG, "engine name",
-            "JS Engine to use. Available: NASHORN, GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE),
-    unit(LaraiKeys.getUnitTestFlag(), "run in unit test mode", LaraiKeys.UNIT_TEST_MODE),
-    doc(LaraiKeys.getDocGeneratorFlag(), "generate documentation mode", LaraiKeys.GENERATE_DOCUMENTATION);
-    // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec
-    // XMLspec("x"),
+            "JS Engine to use. Available: NASHORN, GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE);
 
     private String shortArgument;
     private String description;

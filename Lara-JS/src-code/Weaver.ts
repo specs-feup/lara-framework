@@ -73,9 +73,6 @@ export class Weaver {
     const JavaDataStore = java.import(
       "org.suikasoft.jOptions.Interfaces.DataStore"
     );
-    const LaraiKeys = java.import(
-      "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
-    );
     const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
@@ -94,12 +91,10 @@ export class Weaver {
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
-    const datastore = await new JavaDataStore.newInstanceP(
-      `${javaWeaverClassName}DataStore`
+    const laraIDataStore = new JavaLaraIDataStore(
+      await new JavaDataStore.newInstanceP(`${javaWeaverClassName}DataStore`),
+      javaWeaver
     );
-    datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-
-    const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
     javaWeaver.begin(
       fileList,
       new JavaFile(JavaWeaverClass.getWovenCodeFoldername()),

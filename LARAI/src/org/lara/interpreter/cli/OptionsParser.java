@@ -57,37 +57,19 @@ public class OptionsParser {
         final Option help = OptionsBuilderUtils.newOption(CLIOption.help);
         final Option version = OptionsBuilderUtils.newOption(CLIOption.version);
         final Option javascript = OptionsBuilderUtils.newOption(CLIOption.javascript);
-        final Option debug = OptionsBuilderUtils.newOption(CLIOption.debug);
-        final Option stack = OptionsBuilderUtils.newOption(CLIOption.stack);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
-        final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
-        final Option verbose = OptionsBuilderUtils.newOption(CLIOption.verbose);
-        final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
-        final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
 
         final Option dependencies = OptionsBuilderUtils.newOption(CLIOption.dependencies);
 
-        final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
-        final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
-        final Option call = OptionsBuilderUtils.newOption(CLIOption.call);
         final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
 
         Options options = new Options()
                 .addOption(help)
                 .addOption(version)
-                .addOption(argv)
-                .addOption(main)
-                .addOption(debug)
-                .addOption(stack)
                 .addOption(outDir)
-                .addOption(workDirExtra)
-                .addOption(verbose)
                 .addOption(dependencies)
                 .addOption(javascript)
-                .addOption(bundleTags)
-                .addOption(restrict)
-                .addOption(call)
                 .addOption(jsengine);
 
 
