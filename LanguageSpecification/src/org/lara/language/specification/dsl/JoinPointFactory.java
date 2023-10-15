@@ -14,7 +14,6 @@
 package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import org.lara.language.specification.artifactsmodel.schema.Global;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.GlobalJoinPoints;

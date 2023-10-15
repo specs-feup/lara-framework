@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.config.interpreter.VerboseLevel;
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
@@ -159,16 +157,10 @@ public class GenericWeaverTester {
 
         // Set LaraI configurations
         data.add(LaraiKeys.LARA_FILE, laraFile);
-        // data.add(LaraiKeys.OUTPUT_FOLDER, outputFolder);
-        data.add(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(workFolder));
-
-        // data.add(LaraiKeys.DEBUG_MODE, true);
 
         data.add(LaraiKeys.VERBOSE, VerboseLevel.warnings);
-        // data.add(LaraiKeys.VERBOSE, VerboseLevel.all);
 
         data.add(LaraiKeys.LOG_JS_OUTPUT, Boolean.TRUE);
-        data.add(LaraiKeys.LOG_FILE, OptionalFile.newInstance(getWeaverLog().getAbsolutePath()));
 
         if (useStack) {
             data.add(LaraiKeys.TRACE_MODE, Boolean.TRUE);

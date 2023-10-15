@@ -20,10 +20,7 @@ import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.EvaluationException;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
-import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.Coordinates;
 import org.lara.interpreter.utils.MessageConstants;
 
@@ -33,7 +30,6 @@ import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
 
@@ -73,7 +69,7 @@ public class Interpreter {
         long start = setupStage();
 
         String code = mainCall.toString();
-        final Object result = evaluate(code, "main_aspect");// cx.evaluateString(scope, code, "<js>", 1, null);
+        final Object result = evaluate(code, "main_aspect");
 
         completeStage(start);
         return result;
@@ -112,20 +108,6 @@ public class Interpreter {
     }
 
     /**
-     * Export the weaver metrics to the given file
-     */
-    public void exportMetrics() {
-        OptionalFile reportFile = getOptions().getMetricsFile();
-        if (!reportFile.isUsed()) {
-            return;
-        }
-
-        File file = reportFile.getFile();
-        WeaverProfiler weavingProfile = laraInterp.getWeavingProfile();
-        SpecsIo.write(file, weavingProfile.buildJsonReport());
-    }
-
-    /**
      * Standard method for evaluating a string
      *
      * @param importer
@@ -134,7 +116,6 @@ public class Interpreter {
      */
     public Object evaluate(String code, String source) {
         return evaluate(code, JsFileType.NORMAL, source);
-        // return evaluate(code, JsFileType.MODULE, source);
     }
 
     public Object evaluate(String code, JsFileType type, String source) {

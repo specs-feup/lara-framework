@@ -14,14 +14,10 @@
 package org.lara.interpreter.weaver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
-import pt.up.fe.specs.lara.LaraApiJsResource;
-import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
@@ -51,9 +47,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     private List<ResourceProvider> buildLaraApis() {
         var laraAPIs = new ArrayList<ResourceProvider>();
 
-        laraAPIs.addAll(LaraApis.getApis());
         laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
-        // laraAPIs.addAll(getAspectsAPI());
         return laraAPIs;
     }
 
@@ -64,10 +58,5 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     private List<ResourceProvider> buildLaraCore() {
         return new ArrayList<ResourceProvider>(getImportableScripts());
-    }
-
-    @Override
-    public List<LaraResourceProvider> getNpmResources() {
-        return Arrays.asList(LaraApiJsResource.values());
     }
 }

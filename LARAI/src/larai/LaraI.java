@@ -38,9 +38,7 @@ import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
-import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -60,7 +58,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
 /**
@@ -223,7 +220,6 @@ public class LaraI {
 
             larai.getWeavingProfile().report(ReportField.TOTAL_TIME, (int) end);
             larai.out.println(MessageConstants.getElapsedTimeMessage(end, "LARA total time"));
-            larai.interpreter.exportMetrics();
             larai.out.close();
             return true;
         } catch (Exception e) {
@@ -291,9 +287,6 @@ public class LaraI {
             Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 
             CommandLine cmd = OptionsParser.parse(args, finalOptions);
-            if (LaraIUtils.printHelp(cmd, finalOptions)) {
-                return LaraiResult.newInstance(true, false);
-            }
 
             ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
             DataStore dataStore;
@@ -349,8 +342,6 @@ public class LaraI {
 
         List<File> workspaceSources = new ArrayList<>();
 
-        workspaceSources.addAll(options.getWorkingDir().getFiles());
-
         final FileList folderApplication = FileList.newInstance(workspaceSources);
 
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Loading Weaver"));
@@ -386,8 +377,6 @@ public class LaraI {
 
                 interpreter.executeMainAspect(options.getLaraFile());
 
-                postMainJsExecution();
-
                 // Close weaver
                 weaver.close();
             }
@@ -410,18 +399,6 @@ public class LaraI {
         var init = jsonArgs.isEmpty() ? "{}" : jsonArgs;
 
         interpreter.evaluate("laraArgs = " + init + ";", "LARAI Preamble");
-    }
-
-    private void postMainJsExecution() {
-
-        // If report file enabled, eval writing the outputs using weaver.Script
-        var outputJsonFile = options.getReportFile();
-        if (outputJsonFile.isUsed()) {
-            var template = new Replacer(() -> "org/lara/interpreter/outputResult.js.template");
-            template.replace("<OUTPUT_JSON_PATH>", SpecsIo.normalizePath(outputJsonFile.getFile()));
-            interpreter.evaluate(template.toString(), JsFileType.NORMAL, "LaraI.postMainJsExecution() - output json");
-        }
-
     }
 
     private void finish(JsEngine engine) {
@@ -469,10 +446,6 @@ public class LaraI {
      */
     public StringBuilder getJs() {
         return js;
-    }
-
-    public Tools getTools() {
-        return options.getTools();
     }
 
     /**

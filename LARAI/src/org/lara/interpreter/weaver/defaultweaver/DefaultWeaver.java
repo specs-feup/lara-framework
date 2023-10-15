@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.gears.TestGear;
 import org.lara.interpreter.weaver.defaultweaver.joinpoints.DWorkspace;
@@ -26,6 +25,10 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver. The implementation of the abstract methods is mandatory!
@@ -121,7 +124,7 @@ public class DefaultWeaver extends ADefaultWeaver {
 
     @Override
     public LanguageSpecification getLanguageSpecification() {
-        return LaraIUtils.createDefaultLanguageSpecification();
+        return LanguageSpecification.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS, false);
     }
 
     public void ensureThatContains(File appFolder) {

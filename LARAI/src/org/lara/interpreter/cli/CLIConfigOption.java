@@ -21,7 +21,6 @@ public enum CLIConfigOption {
     config("c", OptionArguments.ONE_ARG, "file", "configuration file with defined options"),
     gui("g", "open in GUI mode");
 
-    public static boolean ALLOW_GUI = true;
     private String shortOpt;
     private String description;
     private OptionArguments args;

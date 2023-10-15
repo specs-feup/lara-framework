@@ -20,12 +20,10 @@ import java.util.Properties;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.config.interpreter.VerboseLevel;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import Utils.LARASystem;
 import pt.up.fe.specs.util.SpecsEnums;
 import pt.up.fe.specs.util.SpecsLogs;
 
@@ -37,21 +35,14 @@ public class JOptionsInterface {
         CONVERSION_MAP = new HashMap<>();
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.main, LaraiKeys.MAIN_ASPECT);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.argv, LaraiKeys.ASPECT_ARGS);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace, LaraiKeys.WORKSPACE_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace_extra, LaraiKeys.WORKSPACE_EXTRA);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.output, LaraiKeys.OUTPUT_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.debug, LaraiKeys.DEBUG_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.stack, LaraiKeys.TRACE_MODE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.log, LaraiKeys.LOG_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.javascript, LaraiKeys.LOG_JS_OUTPUT);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.includes, LaraiKeys.INCLUDES_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.autoimport, LaraiKeys.AUTOMATICALLY_IMPORT_JS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.dependencies, LaraiKeys.EXTERNAL_DEPENDENCIES);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.report, LaraiKeys.REPORT_FILE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.metrics, LaraiKeys.METRICS_FILE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.loc, LaraiKeys.LARA_LOC);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.bundle_tags, LaraiKeys.BUNDLE_TAGS);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.tools, LaraiKeys.TOOLS_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.restrict, LaraiKeys.RESTRICT_MODE);
         // Setting custom decoder because Properties use numbers instead of names for the verbose level
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,

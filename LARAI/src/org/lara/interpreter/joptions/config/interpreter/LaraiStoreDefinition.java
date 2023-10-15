@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.lara.interpreter.cli.JOptionsInterface;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;

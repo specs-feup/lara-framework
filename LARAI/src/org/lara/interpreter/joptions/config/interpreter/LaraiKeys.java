@@ -15,14 +15,9 @@ package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JFileChooser;
-
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -56,26 +51,10 @@ public interface LaraiKeys {
     DataKey<String> ASPECT_ARGS = KeyFactory.string("argv").setLabel("Aspect Arguments")
             .setCustomGetter(LaraIKeyFactory::customGetterLaraArgs);
 
-    // DataKey<DataStore> WEAVER_ARGS = KeyFactory.dataStore("argw", new StoreDefinitionBuilder("Weaver Options"))
-    // .setLabel("Weaver Options");
-
-    // DataKey<File> WORKSPACE_FOLDER = KeyFactory.folder("workspace", false).setLabel("Source Folder");
-    // DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.folderList("workspace").setLabel(
-    DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.fileList("workspace", JFileChooser.FILES_AND_DIRECTORIES,
-            Collections.emptyList())
-            .setLabel("Sources");
-    // .setDefault(() -> new FileList(Collections.emptyList()));
-
-    // DataKey<String> WORKSPACE_EXTRA = KeyFactory.string("workspace_extra")
-    // .setLabel("Additional Sources (separated by ;)");
-
     DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
             .setLabel("Additional Sources (separated by ;)");
 
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
-
-    DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
-            .setLabel("Includes Folder (LARA, JS scripts, JARs)");
 
     DataKey<Boolean> AUTOMATICALLY_IMPORT_JS = KeyFactory.bool("autoimportjs")
             .setLabel("Automatically import JS files in include folders");
@@ -83,20 +62,8 @@ public interface LaraiKeys {
     DataKey<StringList> EXTERNAL_DEPENDENCIES = KeyFactory.stringList("external_dependencies")
             .setLabel("External dependencies (URLs, git repos)");
 
-    DataKey<OptionalFile> TOOLS_FILE = LaraIKeyFactory.optionalFile("tools", true, "xml").setLabel("Tools File");
-
-    DataKey<OptionalFile> REPORT_FILE = LaraIKeyFactory.optionalFile("report", false, "js").setLabel("Report File");
-
-    DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
-
-    DataKey<Boolean> LARA_LOC = KeyFactory.bool("loc").setLabel("LARA CSV with stats (LoC, #aspects, etc)");
-
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
             .setDefault(() -> VerboseLevel.warnings);
-    // .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
-    // string->VerboseLevel.values()[Integer.parseInt(string)]));
-
-    DataKey<OptionalFile> LOG_FILE = LaraIKeyFactory.optionalFile("log", false).setLabel("Use Log File");
 
     DataKey<Boolean> LOG_JS_OUTPUT = KeyFactory.bool("javascript").setLabel("Log JavaScript Output");
     DataKey<Boolean> DEBUG_MODE = KeyFactory.bool("debug").setLabel("Debug Mode");
@@ -115,12 +82,7 @@ public interface LaraiKeys {
             // TODO: Change to GraalVM when transition is done
             // .setDefault(() -> JsEngineType.NASHORN);
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
-    // .setDefault(() -> JsEngineType.GRAALVM);
 
-    DataKey<Boolean> API_AUTOLOAD = KeyFactory.bool("api_autoload")
-            .setLabel("Autoload select APIs into execution environment").setDefault(() -> true);
-
-    // No GUI, only CLI
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
     // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
     // .setLabel("Unit-testing arguments");
@@ -132,42 +94,10 @@ public interface LaraiKeys {
     // No GUI, only CLI
     DataKey<Boolean> GENERATE_DOCUMENTATION = KeyFactory.bool("generateDoc").setLabel("Generate Documentation");
 
-    // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
-
-    /// Keys outside of the definition
-
-    // If DataStore comes from a configuration file, stores the path to the file
-    // DataKey<Optional<File>> CONFIGURATION_FILE = KeyFactory.optional("configurationFile");
-
+    
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
-            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
-                    INCLUDES_FOLDER, AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE,
-                    METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE, API_AUTOLOAD)
+            .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_EXTRA, OUTPUT_FOLDER,
+                    AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, VERBOSE, LOG_JS_OUTPUT,
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE)
             .build();
-
-    // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")
-    // .addKeys(CONFIGURATION_FILE)
-    // .build();
-
-    /**
-     * Backup code
-     */
-    // DataKey<VerboseLevel> VERBOSE = LaraiKeyFactory.radioEnum("b", VerboseLevel.class)
-
-    // DataKey<OptionalFile> INCLUDES_FOLDER = LaraiKeyFactory.optionalFolder("include")
-    // // .setDefault(DEFAULT_DIR)
-    // DataKey<Boolean> LOG_FILE = KeyFactory.bool("l").setLabel("Use log file");
-
-    // .setLabel("Includes Folder");
-    // DataKey<Boolean> SHOW_HELP = KeyFactory.bool("help").setLabel("Show Help");
-
-    // DataKey<ClassProvider> WEAVER_CLASS = LaraiKeyFactory.classProvider("w")
-    // .setDefault(ClassProvider.newInstance(DefaultWeaver.class))
-    // .setLabel("Weaver Class");
-    // DataKey<File> LANGUAGE_SPECIFICATION_FOLDER = KeyFactory.folder("x")
-    // .setDefault(LaraiKeys.DEFAULT_DIR)
-    // .setLabel("Language Specification");
-
-    // DataKey<OptionsParser> CLI_PARSER = KeyFactory.object("cli_parser", OptionsParser.class);
 }

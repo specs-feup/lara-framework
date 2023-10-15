@@ -12,19 +12,7 @@
  */
 package larac.utils.output;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.Optional;
-
-import larac.exceptions.LARACompilerException;
-import pt.up.fe.specs.compress.ZipFormat;
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.logging.MultiOutputStream;
 
 public class Output {
 
@@ -131,51 +119,6 @@ public class Output {
         this.msg = new NormalMsg(stream);
         this.error = new ErrorMsg(stream);
         this.warning = new WarningMsg(stream);
-    }
-
-    public void addFileStream(File outFile) {
-
-        PrintStream fileStream = buildFileStream(outFile);
-        OutputStream multiStream = new MultiOutputStream(Arrays.asList(this.stream, fileStream));
-
-        this.stream = new PrintStream(multiStream);
-        this.msg = new NormalMsg(this.stream);
-        this.error = new ErrorMsg(this.stream);
-        this.warning = new WarningMsg(this.stream);
-    }
-
-    private PrintStream buildFileStream(File outFile) {
-        Optional<ZipFormat> zipFormat = ZipFormat.fromExtension(SpecsIo.getExtension(outFile));
-
-        // Compressed log file
-        if (zipFormat.isPresent()) {
-            // Name of the entry
-            String logFilename = SpecsIo.removeExtension(outFile) + ".txt";
-
-            // Streams must stay open after returning
-            FileOutputStream fileOutputStream;
-            try {
-                fileOutputStream = new FileOutputStream(outFile);
-            } catch (FileNotFoundException e) {
-                throw new LARACompilerException("Could not use file '" + outFile + "' for zipped output: ", e);
-            }
-
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            OutputStream zipStream = zipFormat.get().newFileCompressor(logFilename, bufferedOutputStream);
-            PrintStream zipPrintStream = new PrintStream(zipStream);
-
-            return zipPrintStream;
-
-        }
-
-        // Normal log file
-        try {
-            return new PrintStream(outFile);
-        } catch (FileNotFoundException e) {
-
-            throw new LARACompilerException("Could not create output file: ", e);
-        }
-
     }
 
     public void setLevel(int level) {

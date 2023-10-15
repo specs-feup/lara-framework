@@ -61,21 +61,12 @@ public class OptionsParser {
         final Option stack = OptionsBuilderUtils.newOption(CLIOption.stack);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
-        final Option workDir = OptionsBuilderUtils.newOption(CLIOption.workspace);
         final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
         final Option verbose = OptionsBuilderUtils.newOption(CLIOption.verbose);
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
-        // final Option argw = OptionsBuilderUtils.newOption(CLIOption.argw);
         final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
-        final Option tools = OptionsBuilderUtils.newOption(CLIOption.tools);
-        final Option report = OptionsBuilderUtils.newOption(CLIOption.report);
 
-        final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
-
-        final Option scripts = OptionsBuilderUtils.newOption(CLIOption.includes);
         final Option dependencies = OptionsBuilderUtils.newOption(CLIOption.dependencies);
-
-        final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
 
         final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
@@ -86,32 +77,19 @@ public class OptionsParser {
                 .addOption(help)
                 .addOption(version)
                 .addOption(argv)
-                // .addOption(argw)
                 .addOption(main)
                 .addOption(debug)
                 .addOption(stack)
                 .addOption(outDir)
-                .addOption(workDir)
                 .addOption(workDirExtra)
                 .addOption(verbose)
-                .addOption(tools)
-                .addOption(report)
-                .addOption(scripts)
                 .addOption(dependencies)
                 .addOption(javascript)
-                .addOption(log)
-                .addOption(metrics)
                 .addOption(bundleTags)
                 .addOption(restrict)
                 .addOption(call)
                 .addOption(jsengine);
 
-        // final Option weaver = newOption(CLIOption.weaver, "className", ArgOption.ONE_ARG,
-        // "change the target weaver (default: " + LaraI.DEFAULT_WEAVER + ")");
-        // final Option xml = newOption(CLIOption.XMLspec, "dir", ArgOption.ONE_ARG,
-        // "location of the target language specification");
-        // .addOption(weaver)
-        // .addOption(xml)
 
         ArrayList<Option> arrayList = new ArrayList<>();
         arrayList.addAll(options.getOptions());
@@ -177,11 +155,7 @@ public class OptionsParser {
         }
     }
 
-    /*
-    public void help() {
-    	this.formatter.printHelp("java -jar larai.jar (<larafile>.lara|<aspIR>.xml) [options]", this.opts);
-    }
-    */
+
     public static String getHelp(Options options) {
         return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
     }
@@ -192,9 +166,6 @@ public class OptionsParser {
         StringWriter sw = new StringWriter();
         String usageSyntax = "<aspect.lara> [options] [-c <file>]  | -c <file>";
         PrintWriter pw = new PrintWriter(sw);
-        if (CLIConfigOption.ALLOW_GUI) {
-            usageSyntax += " [-g]";
-        }
         formatter.printHelp(pw, HELP_MAX_WIDTH,
                 usageSyntax,
                 "", options, leftPadding, formatter.getDescPadding(), "", false);
@@ -209,33 +180,14 @@ public class OptionsParser {
 
         return output;
     }
-    /*
-    public static String getHelp() {
-    	return getHelp(buildLaraIOptions());
-    }
-    */
 
     public static Collection<Option> buildConfigOptions() {
-
         List<Option> options = new ArrayList<>();
         options.add(CLIConfigOption.config.buildOption());
-        if (CLIConfigOption.ALLOW_GUI) {
-            options.add(CLIConfigOption.gui.buildOption());
-        }
-        // for (CLIConfigOption option : CLIConfigOption.values()) {
-        //
-        // }
         return options;
     }
 
-    // public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Collection<Option> mainOptions,
-    // Options finalOptions) {
     public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Options finalOptions) {
-        // validateExclusiveOptions(cmd, configOptions, options);
-        // Optional<CLIConfigOption> configOption = Arrays.asList(CLIConfigOption.values()).stream()
-        // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
-        // .findFirst();
-
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
         boolean guiPresent = cmd.hasOption(CLIConfigOption.gui.getShortOpt());
 
@@ -276,7 +228,7 @@ public class OptionsParser {
         }
 
         // A configuration option means config execution
-        return guiPresent && CLIConfigOption.ALLOW_GUI ? ExecutionMode.CONFIG_GUI : ExecutionMode.CONFIG;
+        return ExecutionMode.CONFIG;
     }
 
     public enum ExecutionMode {
@@ -289,27 +241,10 @@ public class OptionsParser {
          * Execute Weaver with the given config file (no overriding options)
          */
         CONFIG,
-
-        /**
-         * GUI mode only (no configuration file)
-         */
-        GUI,
-        /**
-         * Open GUI with the given config file (no overriding options allowed!)
-         */
-        CONFIG_GUI,
         /**
          * Execute Weaver with the given config file and the overriding options
          */
         CONFIG_OPTIONS,
-        /**
-         * Open GUI with the overriding options (means creating a temporary config file)
-         */
-        // OPTIONS_GUI //FUTURE WORK!
-        /**
-         * Unit testing mode
-         */
-        // UNIT_TEST
     }
 
     /**
@@ -358,28 +293,5 @@ public class OptionsParser {
         builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
         StoreDefinition laraiDefinition = builder.build();
         return laraiDefinition;
-        // return getLaraStoreDefinition(engine, false);
     }
-
-    // /**
-    // *
-    // * @param engine
-    // * @return
-    // */
-    // public static StoreDefinition getLaraStoreDefinitionComplete(WeaverEngine engine) {
-    // return getLaraStoreDefinition(engine, true);
-    // }
-    //
-    // private static StoreDefinition getLaraStoreDefinition(WeaverEngine engine, boolean isComplete) {
-    // StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
-    // builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
-    // builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
-    //
-    // if (isComplete) {
-    // builder.addDefinition(LaraiKeys.STORE_DEFINITION_EXTRA);
-    // }
-    //
-    // StoreDefinition laraiDefinition = builder.build();
-    // return laraiDefinition;
-    // }
 }
