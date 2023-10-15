@@ -75,24 +75,10 @@ public class LaraI {
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
 
-    private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
-    private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
-
     // TODO: Put LARASystem.class eventually
     private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
             LaraSystemTools.class, Runtime.class);
 
-    public static boolean isRunningGui() {
-        return RUNNING_GUI.get();
-    }
-
-    public static boolean isServerMode() {
-        return SERVER_MODE.get();
-    }
-
-    public static void setServerMode() {
-        SERVER_MODE.set(true);
-    }
 
     /**
      * Thread-scope DataStore
@@ -270,7 +256,6 @@ public class LaraI {
     public static boolean exec(String[] args, WeaverEngine weaverEngine) {
         // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
         LaraiResult result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
-        RUNNING_GUI.set(result.get(LaraiResult.IS_RUNNING_GUI));
         return result.get(LaraiResult.IS_SUCCESS);
     }
 
@@ -291,28 +276,24 @@ public class LaraI {
             ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
             DataStore dataStore;
             boolean success;
-            boolean isRunningGui;
             switch (mode) {
             case CONFIG: // convert configuration file to data store and run
                 dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
                 success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
                 break;
             case OPTIONS: // convert options to data store and run
                 dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
                 success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
                 break;
             case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
                 dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
                 success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
                 break;
             default:
                 throw new NotImplementedException(mode);
             }
 
-            return LaraiResult.newInstance(success, isRunningGui);
+            return LaraiResult.newInstance(success);
 
         } catch (final Exception e) {
             throw new RuntimeException("Exception while executing LARA script", e);
