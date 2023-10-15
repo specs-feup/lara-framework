@@ -13,11 +13,6 @@
 package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -27,13 +22,8 @@ import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import com.google.common.base.Preconditions;
-
-import larai.LaraI;
-import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.utilities.StringList;
 
 /**
  * TODO: Should deprecate and just use DataStore directly? TODO: Also, the "ifs" in the getters interfere with the
@@ -59,10 +49,8 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private final DataStore dataStore;
-    private final LaraI larai;
 
-    public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
-        larai = lara;
+    public LaraIDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
 
         // Merge system-wise options with local options
         var mergedDataStore = mergeSystemAndLocalOptions(weaverEngine, dataStore);
@@ -151,11 +139,6 @@ public class LaraIDataStore implements LaraiKeys {
                     "The lara aspect file is mandatory! Please define the input lara file (e.g.: aspect.lara)");
         }
 
-        if (dataStore.hasValue(LaraiKeys.VERBOSE)) {
-            int level = dataStore.get(LaraiKeys.VERBOSE).ordinal();
-            larai.out.setLevel(level);
-        }
-
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {
             File output = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
             SpecsIo.mkdir(output);
@@ -170,118 +153,6 @@ public class LaraIDataStore implements LaraiKeys {
      */
     public DataStore getWeaverArgs() {
         return dataStore;
-    }
-
-    public File getLaraFile() {
-        return dataStore.get(LaraiKeys.LARA_FILE);
-    }
-
-    public String getMainAspect() {
-        if (dataStore.hasValue(LaraiKeys.MAIN_ASPECT)) {
-            return dataStore.get(LaraiKeys.MAIN_ASPECT);
-        }
-        return "";
-    }
-
-    public List<File> getExtraSources() {
-        if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
-            return new ArrayList<>(dataStore.get(WORKSPACE_EXTRA).keySet());
-        }
-
-        return Collections.emptyList();
-    }
-
-    public boolean isDebug() {
-        if (dataStore.hasValue(LaraiKeys.DEBUG_MODE)) {
-            return dataStore.get(LaraiKeys.DEBUG_MODE);
-        }
-        return false;
-    }
-
-    public boolean isRestricMode() {
-        return dataStore.get(LaraiKeys.RESTRICT_MODE);
-    }
-
-    public boolean useStackTrace() {
-        if (dataStore.hasValue(LaraiKeys.TRACE_MODE)) {
-            return dataStore.get(LaraiKeys.TRACE_MODE);
-        }
-        return false;
-    }
-
-    public File getOutputDir() {
-        return getTryFolder(LaraiKeys.OUTPUT_FOLDER);
-    }
-
-    private File getTryFolder(DataKey<File> folder) {
-        if (dataStore.hasValue(folder)) {
-            return dataStore.get(folder);
-        }
-        return new File(".");
-    }
-
-    public boolean isAutomaticallyIncludeJs() {
-        return dataStore.get(LaraiKeys.AUTOMATICALLY_IMPORT_JS);
-    }
-
-    public StringList getExternalDependencies() {
-        if (dataStore.hasValue(LaraiKeys.EXTERNAL_DEPENDENCIES)) {
-            return dataStore.get(LaraiKeys.EXTERNAL_DEPENDENCIES);
-        }
-
-        return StringList.newInstance();
-    }
-
-    public String getAspectArgumentsStr() {
-        if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
-            return dataStore.get(LaraiKeys.ASPECT_ARGS);
-        }
-        return "";
-    }
-
-    public boolean isJavaScriptStream() {
-        if (dataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)) {
-            return dataStore.get(LaraiKeys.LOG_JS_OUTPUT);
-        }
-        return false;
-    }
-
-    public Map<String, String> getBundleTags() {
-        if (dataStore.hasValue(LaraiKeys.BUNDLE_TAGS)) {
-            return parseBundleTags(dataStore.get(LaraiKeys.BUNDLE_TAGS));
-        }
-        return Collections.emptyMap();
-    }
-
-    public JsEngineType getJsEngine() {
-        if (dataStore.hasValue(LaraiKeys.JS_ENGINE)) {
-            return dataStore.get(LaraiKeys.JS_ENGINE);
-        }
-        return JS_ENGINE.getDefault().get();
-    }
-
-    private Map<String, String> parseBundleTags(String bundleTagsString) {
-        Map<String, String> bundleTags = new HashMap<>();
-
-        if (bundleTagsString.trim().isEmpty()) {
-            return bundleTags;
-        }
-
-        // Split around the comma
-        String[] tagPairs = bundleTagsString.split(",");
-        for (String tagPair : tagPairs) {
-            int equalIndex = tagPair.indexOf('=');
-            Preconditions.checkArgument(equalIndex != -1,
-                    "Malformed 'Bundle Tags' option, found a tag-value pair without equal sign (=): '"
-                            + bundleTagsString + "'");
-
-            String tag = tagPair.substring(0, equalIndex);
-            String value = tagPair.substring(equalIndex + 1, tagPair.length());
-
-            bundleTags.put(tag, value);
-        }
-
-        return bundleTags;
     }
 
     @Override
