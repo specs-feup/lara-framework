@@ -1,6 +1,6 @@
-import weaver.Weaver;
-import lara.Io;
-import lara.util.DataStore;
+laraImport("weaver.Weaver");
+laraImport("lara.Io");
+laraImport("lara.util.DataStore");
 
 /**
  * DataStore used in LaraI weavers.

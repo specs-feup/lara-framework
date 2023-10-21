@@ -59,7 +59,10 @@ class WeaverGeneratorOptions extends Options {
         // G("g", "graph"),
         N("n", "nodeType"),
         D("d", "defs"),
-        J("j", "json"),;
+        J("j", "json"),
+        C("c", "concrete"),
+        ;
+
         private String option;
         private String longOption;
 
@@ -115,6 +118,9 @@ class WeaverGeneratorOptions extends Options {
                 "Output a json file of the language specification");
         final Option useDefs = newOption(null, GeneratorOption.D, ArgOption.NO_ARGS,
                 "Create methods for def action");
+        final Option concreteClasses = newOption("concreteClasses", GeneratorOption.C, ArgOption.ONE_ARG,
+                "Generate the concrete classes, using a linear hierarchy");
+
         // final Option showGraph = newOption(null, GeneratorOption.G, ArgOption.NO_ARGS,
         // "Show a graph of the join point hierarchy (default: " + GenConstants.getDefaultShowGraph() + ")");
 
@@ -131,6 +137,7 @@ class WeaverGeneratorOptions extends Options {
         addOption(nodeType);
         addOption(toJson);
         addOption(useDefs);
+        addOption(concreteClasses);
         // addOption(showGraph);
     }
 

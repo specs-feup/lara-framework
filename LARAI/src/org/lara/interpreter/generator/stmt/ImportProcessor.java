@@ -100,7 +100,6 @@ public class ImportProcessor {
         newFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(source -> evaluateImport(SpecsIo.read(source), source.getAbsolutePath(), false,
                         JsFileType.MODULE));
-        // evaluateImport(internalScripts, source.getAbsolutePath(), false, JsFileType.getType(extension));
 
         // Import all scripts in the old 'core' folder
         var oldFilesToImport = SpecsIo.getFilesRecursive(engine.getApiManager().getCoreFolder());
