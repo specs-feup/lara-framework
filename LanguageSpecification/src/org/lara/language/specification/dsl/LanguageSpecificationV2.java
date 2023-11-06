@@ -14,6 +14,8 @@
 package org.lara.language.specification.dsl;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -448,5 +450,25 @@ public class LanguageSpecificationV2 {
         dot.append("}\n");
 
         return dot.toString();
+    }
+
+    /**
+     * Get selects in which the given join point is selected
+     * 
+     * @return
+     */
+    public List<Select> getSelectedBy(JoinPointClass jp) {
+        List<Select> selectedBy = new ArrayList<>();
+
+        // Get
+        JoinPointClass global = getGlobal();
+        global.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(jp)).forEach(selectedBy::add);
+
+        Collection<JoinPointClass> allJPs = getJoinPoints().values();
+        for (JoinPointClass joinPointClass : allJPs) {
+            joinPointClass.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(jp))
+                    .forEach(selectedBy::add);
+        }
+        return selectedBy;
     }
 }

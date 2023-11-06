@@ -15,7 +15,6 @@ package pt.up.fe.specs.lara.langspec;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.Declaration;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
@@ -31,7 +29,6 @@ import org.lara.language.specification.dsl.Select;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -69,7 +66,7 @@ public class LangSpecsXmlParser {
 
         // Setup global JoinPointClass
         LanguageSpecificationV2 langSpecV2 = new LanguageSpecificationV2();
-        JoinPointClass global = JoinPointClass.globalJoinPoint(langSpecV2);
+        JoinPointClass global = JoinPointClass.globalJoinPoint();
         langSpecV2.setGlobal(global);
 
         // Initialize types (typedef, enums), to have access to available names
@@ -92,7 +89,7 @@ public class LangSpecsXmlParser {
 
         List<JoinPointClass> jps = new ArrayList<>();
         for (var jpNode : joinPointModelNode.getElementsByName("joinpoint")) {
-            var jp = new JoinPointClass(jpNode.getAttribute("class"), langSpecV2);
+            var jp = new JoinPointClass(jpNode.getAttribute("class"));
             setOptional(jpNode.getAttribute("tooltip"), jp::setToolTip);
             jps.add(jp);
         }

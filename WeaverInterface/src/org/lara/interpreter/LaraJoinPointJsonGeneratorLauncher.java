@@ -28,7 +28,6 @@ public class LaraJoinPointJsonGeneratorLauncher {
         var jp = JoinPoint.getLaraJoinPoint();
         var langSpec = new LanguageSpecificationV2(jp, null);
         langSpec.setGlobal(jp);
-        jp.setLangSpec(langSpec);
 
         LangSpecNode node = NodeFactory.toNode(langSpec);
         String json = node.toJson();

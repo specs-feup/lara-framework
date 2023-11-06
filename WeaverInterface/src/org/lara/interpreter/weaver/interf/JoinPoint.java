@@ -45,7 +45,7 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  */
 public abstract class JoinPoint {
 
-    private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint", null);
+    private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint");
 
     static {
         LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "attributes");
