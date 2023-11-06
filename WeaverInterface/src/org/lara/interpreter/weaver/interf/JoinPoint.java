@@ -61,10 +61,10 @@ public abstract class JoinPoint {
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
         LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
-                new Parameter(new LiteralEnum("Position", Arrays.asList("before", "after", "replace")), "position"),
+                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(PrimitiveClasses.STRING, "code"));
         LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
-                new Parameter(new LiteralEnum("Position", Arrays.asList("before", "after", "replace")), "position"),
+                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
         LARA_JOIN_POINT.addAction(PrimitiveClasses.VOID, "def",
                 new Parameter(PrimitiveClasses.STRING, "attribute"),
