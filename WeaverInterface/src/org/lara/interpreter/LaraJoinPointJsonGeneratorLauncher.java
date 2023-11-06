@@ -13,26 +13,25 @@
 
 package org.lara.interpreter;
 
+import java.io.File;
+
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
-
-import java.io.File;
 
 import pt.up.fe.specs.util.SpecsIo;
 
 public class LaraJoinPointJsonGeneratorLauncher {
 
     public static void main(String[] args) {
-        var jp = JoinPoint.LaraJoinPointSpecification;
+        var jp = JoinPoint.getLaraJoinPoint();
         var langSpec = new LanguageSpecificationV2(jp, null);
         langSpec.setGlobal(jp);
         jp.setLangSpec(langSpec);
 
         LangSpecNode node = NodeFactory.toNode(langSpec);
         String json = node.toJson();
-
 
         File jsonOutFile = new File("../Lara-JS/LaraJoinPointSpecification.json");
         SpecsIo.write(jsonOutFile, json);

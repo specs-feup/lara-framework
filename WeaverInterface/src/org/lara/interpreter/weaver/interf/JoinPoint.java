@@ -30,8 +30,6 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
@@ -49,38 +47,41 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  */
 public abstract class JoinPoint {
 
-    public static final JoinPointClass LaraJoinPointSpecification = new JoinPointClass("LaraJoinPoint", null);
+    private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint", null);
 
     static {
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "attributes"));
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "selects"));
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(PrimitiveClasses.STRING), "actions"));
-        // JoinPointSpecification.add(new Attribute(null, "srcCode"));
-        LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "dump"));
-        LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.STRING, "joinPointType"));
-        LaraJoinPointSpecification.add(new Attribute(PrimitiveClasses.OBJECT, "node"));
-        LaraJoinPointSpecification.add(new Attribute(new JPType(LaraJoinPointSpecification), "self"));
-        LaraJoinPointSpecification.add(new Attribute(new JPType(LaraJoinPointSpecification), "super"));
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "children"));
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "descendants"));
-        LaraJoinPointSpecification.add(new Attribute(new ArrayType(new JPType(LaraJoinPointSpecification)), "scopeNodes"));
-
-        LaraJoinPointSpecification.add(new Action(new JPType(LaraJoinPointSpecification), "insert", Arrays.asList(
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "attributes");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "selects");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "actions");
+        // JoinPointSpecification.addAttribute(null, "srcCode"));
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "dump");
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "joinPointType");
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.OBJECT, "node");
+        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "self");
+        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "super");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "children");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
+        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
                 new Parameter(new LiteralEnum("Position", Arrays.asList("before", "after", "replace")), "position"),
-                new Parameter(PrimitiveClasses.STRING, "code"))));
-        LaraJoinPointSpecification.add(new Action(new JPType(LaraJoinPointSpecification), "insert", Arrays.asList(
+                new Parameter(PrimitiveClasses.STRING, "code"));
+        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
                 new Parameter(new LiteralEnum("Position", Arrays.asList("before", "after", "replace")), "position"),
-                new Parameter(new JPType(LaraJoinPointSpecification), "joinpoint"))));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.VOID, "def", Arrays.asList(
+                new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.VOID, "def",
                 new Parameter(PrimitiveClasses.STRING, "attribute"),
-                new Parameter(PrimitiveClasses.OBJECT, "value"))));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.STRING, "toString"));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "equals", Arrays.asList(
-                new Parameter(new JPType(LaraJoinPointSpecification), "jp"))));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "instanceOf", Arrays.asList(
-                new Parameter(PrimitiveClasses.STRING, "name"))));
-        LaraJoinPointSpecification.add(new Action(PrimitiveClasses.BOOLEAN, "instanceOf", Arrays.asList(
-                new Parameter(new ArrayType(PrimitiveClasses.STRING), "names"))));
+                new Parameter(PrimitiveClasses.OBJECT, "value"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "equals",
+                new Parameter(JPType.of(LARA_JOIN_POINT), "jp"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
+                new Parameter(PrimitiveClasses.STRING, "name"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
+                new Parameter(ArrayType.of(PrimitiveClasses.STRING), "names"));
+    }
+
+    public static JoinPointClass getLaraJoinPoint() {
+        return LARA_JOIN_POINT;
     }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
@@ -235,7 +236,7 @@ public abstract class JoinPoint {
      */
     protected void fillWithActions(List<String> actions) {
         // DEFAULT ACTIONS
-        LaraJoinPointSpecification.getActions().forEach(action -> {
+        LARA_JOIN_POINT.getActions().forEach(action -> {
             actions.add(action.getName() + "("
                     + action.getParameters().stream().map(param -> param.toString()).collect(joining(", ")) + ")");
         });
@@ -258,7 +259,7 @@ public abstract class JoinPoint {
      */
     protected void fillWithAttributes(List<String> attributes) {
         // DEFAULT ATTRIBUTES
-        LaraJoinPointSpecification.getAttributes().forEach(attribute -> {
+        LARA_JOIN_POINT.getAttributes().forEach(attribute -> {
             attributes.add(attribute.getName());
         });
     }
