@@ -14,6 +14,7 @@
 package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.lara.language.specification.dsl.types.IType;
 
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -204,6 +207,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         attributes.add(attribute);
     }
 
+    public void addAttribute(IType type, String name, Parameter... parameters) {
+        attributes.add(new Attribute(type, name, Arrays.asList(parameters)));
+    }
+
     public void add(Select select) {
         selects.add(select);
     }
@@ -212,6 +219,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         // action.addJoinPoint(this);
         actions.add(action);
         // action.setJoinPoint(this);
+    }
+
+    public void addAction(IType returnType, String name, Parameter... parameters) {
+        actions.add(new Action(returnType, name, Arrays.asList(parameters)));
     }
 
     public void setActions(List<Action> actions) {

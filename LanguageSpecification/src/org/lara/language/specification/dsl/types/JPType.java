@@ -20,25 +20,29 @@ public class JPType implements IType {
     private JoinPointClass joinPoint;
 
     public JPType(JoinPointClass jointPoint) {
-	this.setJointPoint(jointPoint);
+        this.setJointPoint(jointPoint);
+    }
+
+    public static JPType of(JoinPointClass jointPoint) {
+        return new JPType(jointPoint);
     }
 
     @Override
     public String getType() {
-	return joinPoint.getName();
+        return joinPoint.getName();
     }
 
     public JoinPointClass getJointPoint() {
-	return joinPoint;
+        return joinPoint;
     }
 
     public void setJointPoint(JoinPointClass jointPoint) {
-	joinPoint = jointPoint;
+        joinPoint = jointPoint;
     }
 
     @Override
     public String toString() {
-	return getType();
+        return getType();
     }
 
 }
