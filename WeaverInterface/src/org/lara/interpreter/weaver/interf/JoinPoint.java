@@ -12,8 +12,6 @@
  */
 package org.lara.interpreter.weaver.interf;
 
-import static java.util.stream.Collectors.joining;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -238,7 +236,8 @@ public abstract class JoinPoint {
         // DEFAULT ACTIONS
         LARA_JOIN_POINT.getActions().forEach(action -> {
             actions.add(action.getName() + "("
-                    + action.getParameters().stream().map(param -> param.toString()).collect(joining(", ")) + ")");
+                    + action.getParameters().stream().map(param -> param.toString()).collect(Collectors.joining(", "))
+                    + ")");
         });
 
     }
