@@ -27,8 +27,7 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringLines;
 
 /**
- * Manages a set of resources as files on disk, considering they come from, or
- * will be used by NPM packages.
+ * Manages a set of resources as files on disk, considering they come from, or will be used by NPM packages.
  */
 public class WeaverApiManager {
 
@@ -61,8 +60,8 @@ public class WeaverApiManager {
 
     /**
      * 
-     * @return a list of folders inside the node_modules folder that correspond to
-     *         the base folders that laraImport should look for APIs
+     * @return a list of folders inside the node_modules folder that correspond to the base folders that laraImport
+     *         should look for APIs
      */
     public List<File> getNpmApiFolders() {
         var nodeModules = getNodeModulesFolder();
@@ -85,8 +84,8 @@ public class WeaverApiManager {
 
     /**
      * 
-     * @return a list of files named core.js inside the node_modules folder that
-     *         should be executed to enable the core LARA environment
+     * @return a list of files named core.js inside the node_modules folder that should be executed to enable the core
+     *         LARA environment
      */
     public List<File> getNpmCoreFiles() {
 
@@ -96,7 +95,7 @@ public class WeaverApiManager {
             var coreFile = new File(apiFolder, "core.js");
 
             if (!coreFile.isFile()) {
-                SpecsLogs.debug("Weaver API manager: did not find 'core.js' inside '"
+                SpecsLogs.debug(() -> "Weaver API manager: did not find 'core.js' inside '"
                         + apiFolder.getAbsolutePath() + "'");
                 continue;
             }
@@ -234,8 +233,7 @@ public class WeaverApiManager {
     /**
      * 
      * @param resourcesFolder
-     * @return if true, means that resources need to be extracted to files, false
-     *         means that folder can be reused as-is
+     * @return if true, means that resources need to be extracted to files, false means that folder can be reused as-is
      */
     private static boolean isReadyForUse(File resourcesFolder, Collection<ResourceProvider> resources) {
         // Check if checksum file exists

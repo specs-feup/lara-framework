@@ -166,8 +166,7 @@ public class WeaverLauncher {
     }
 
     /**
-     * Launch Lara Interpreter with the given engine and the input arguments. If no
-     * arguments are given a GUI is
+     * Launch Lara Interpreter with the given engine and the input arguments. If no arguments are given a GUI is
      * launched.
      *
      * <p>
@@ -211,7 +210,7 @@ public class WeaverLauncher {
             laraUnitArgs.add(args[i]);
         }
 
-        SpecsLogs.debug("Launching lara-unit with flags '" + laraUnitArgs + "'");
+        SpecsLogs.debug(() -> "Launching lara-unit with flags '" + laraUnitArgs + "'");
 
         int unitResults = LaraUnitLauncher.execute(laraUnitArgs.toArray(new String[0]));
 
@@ -231,7 +230,7 @@ public class WeaverLauncher {
             laraDocArgs.add(args[i]);
         }
 
-        SpecsLogs.debug("Launching lara-doc with flags '" + laraDocArgs + "'");
+        SpecsLogs.debug(() -> "Launching lara-doc with flags '" + laraDocArgs + "'");
 
         int docResults = LaraDocLauncher.execute(laraDocArgs.toArray(new String[0]));
 
@@ -275,9 +274,8 @@ public class WeaverLauncher {
      * @param threads
      * @param weaverCommand
      * @param workingDir
-     * @return an array with the same size as the number if args, with strings
-     *         representing JSON objects that represent the outputs of the
-     *         execution. The order of the results is the same as the args
+     * @return an array with the same size as the number if args, with strings representing JSON objects that represent
+     *         the outputs of the execution. The order of the results is the same as the args
      */
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand, String workingDir) {
 

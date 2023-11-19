@@ -73,8 +73,7 @@ public class LaraImporter {
     }
 
     /**
-     * Loads a LARA import, using the same format as the imports in LARA files (e.g.
-     * weaver.Query).
+     * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
      * 
      * @param importName
      */
@@ -98,12 +97,12 @@ public class LaraImporter {
                     boolean isNpmImport = false;
 
                     if (npmApiFolders.contains(path) && npmImports.contains(importPath)) {
-                        SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
+                        SpecsLogs.debug(() -> "Detected import '" + importName + "' as NPM import");
                         isNpmImport = true;
                     }
 
                     laraImports.add(buildLaraImport(importingFile, isNpmImport));
-                    SpecsLogs.debug("Adding file '" + importingFile.getAbsolutePath() + "' for import '"
+                    SpecsLogs.debug(() -> "Adding file '" + importingFile.getAbsolutePath() + "' for import '"
                             + importName + "'");
                     continue ext;
                 }
@@ -190,38 +189,38 @@ public class LaraImporter {
         }
 
         switch (ext) {
-            case "js":
-                var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL,
-                        jsFile);
-                return jsLaraImport;
-            case "mjs":
-                var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE,
-                        jsFile);
-                return mjsLaraImport;
-            case "lara":
-                // Compile LARA file
-                var args = new ArrayList<>();
-                args.add(LaraCOptions.getSkipArgs());
-                var lara = new LaraC(args.toArray(new String[0]),
-                        larai.getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
-                lara.setLaraPath(filename);
-                lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
+        case "js":
+            var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL,
+                    jsFile);
+            return jsLaraImport;
+        case "mjs":
+            var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE,
+                    jsFile);
+            return mjsLaraImport;
+        case "lara":
+            // Compile LARA file
+            var args = new ArrayList<>();
+            args.add(LaraCOptions.getSkipArgs());
+            var lara = new LaraC(args.toArray(new String[0]),
+                    larai.getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
+            lara.setLaraPath(filename);
+            lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
 
-                var aspectIr = lara.compile();
+            var aspectIr = lara.compile();
 
-                var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
-                try {
-                    var aspectJsCode = processor.toSimpleJs(aspectIr);
-                    // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
-                    // LARA files need to be transformed, will never use the file to load,
-                    // but directly the processed source code
-                    return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error during LARA compilation", e);
-                }
+            var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
+            try {
+                var aspectJsCode = processor.toSimpleJs(aspectIr);
+                // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
+                // LARA files need to be transformed, will never use the file to load,
+                // but directly the processed source code
+                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
+            } catch (Exception e) {
+                throw new RuntimeException("Error during LARA compilation", e);
+            }
 
-            default:
-                throw new CaseNotDefinedException(ext);
+        default:
+            throw new CaseNotDefinedException(ext);
         }
 
     }
@@ -229,8 +228,7 @@ public class LaraImporter {
     /**
      * Processes JS code that is going to be loaded.
      * 
-     * Currently adds code to guarantee that the declaring variable of the
-     * laraImport is in the global scope.
+     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
      * 
      * @param code
      * @param filename
@@ -256,8 +254,7 @@ public class LaraImporter {
     /**
      * Generates code that needs to be evaluated after import is loaded.
      * 
-     * Currently adds code to guarantee that the declaring variable of the
-     * laraImport is in the global scope.
+     * Currently adds code to guarantee that the declaring variable of the laraImport is in the global scope.
      * 
      * @param filename
      * @return

@@ -332,7 +332,7 @@ public class LaraI {
     }
 
     public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
-        SpecsLogs.debug("Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
+        SpecsLogs.debug(() -> "Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
 
         // Set weaver (e.g. for help message to access name and build number)
         weaverEngine.setWeaver();
@@ -801,8 +801,8 @@ public class LaraI {
             engineForbiddenClasses = FORBIDDEN_CLASSES;
         }
 
-
-        return engineType.newEngine(engineType, engineForbiddenClasses, engineWorkingDirectory, nodeModulesFolder, engineOutputStream);        
+        return engineType.newEngine(engineType, engineForbiddenClasses, engineWorkingDirectory, nodeModulesFolder,
+                engineOutputStream);
     }
 
     public DataStore getWeaverArgs() {
@@ -983,10 +983,12 @@ public class LaraI {
 
         // Import JS code
         for (var laraImport : laraImports) {
-            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
+            SpecsLogs.debug(
+                    () -> "Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")");
+                    laraImport.getFilename() + " (LARA import '" + importName + "' as "
+                            + laraImport.getFileType().toString() + ")");
         }
 
     }

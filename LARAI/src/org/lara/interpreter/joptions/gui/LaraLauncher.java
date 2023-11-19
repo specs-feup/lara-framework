@@ -160,7 +160,7 @@ public class LaraLauncher {
         // guiFrame.revalidate();
         // guiFrame.repaint();
 
-        SpecsLogs.debug("Lara GUI load time: " + (System.currentTimeMillis() - time));
+        SpecsLogs.debug(() -> "Lara GUI load time: " + (System.currentTimeMillis() - time));
 
         // This code is making the console area to use all window
         // JTabbedPane tabbedPane = SearchUtils.findFirstComponentOfType(guiFrame, JTabbedPane.class);
