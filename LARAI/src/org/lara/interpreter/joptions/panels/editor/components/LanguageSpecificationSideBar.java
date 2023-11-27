@@ -266,7 +266,7 @@ public class LanguageSpecificationSideBar extends JPanel {
         getAttributes(selectedItem).forEach(attributes::addElement);
         getSelects(selectedItem).forEach(selects::addElement);
         getActions(selectedItem).forEach(actions::addElement);
-        selectedItem.getSelectedBy().forEach(selectedBy::addElement);
+        langSpec.getSelectedBy(selectedItem).forEach(selectedBy::addElement);
 
         if (selectedItem.hasExtend()) {
             extendsPanel.setVisible(true);

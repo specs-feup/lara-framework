@@ -1,0 +1,200 @@
+{
+	"root": "LaraJoinPoint",
+	"rootAlias": "LaraJoinPoint",
+	"children": [
+		{
+			"type": "joinpoint",
+			"name": "LaraJoinPoint",
+			"extends": ""		,
+			"children": [
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "attributes"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "selects"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String[]",
+										"name": "actions"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String",
+										"name": "dump"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "String",
+										"name": "joinPointType"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "Object",
+										"name": "node"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint",
+										"name": "self"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint",
+										"name": "super"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "children"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "descendants"
+									}]
+					},
+					{
+						"type": "attribute",
+						"children": [
+									{
+										"type": "LaraJoinPoint[]",
+										"name": "scopeNodes"
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "LaraJoinPoint",
+										"name": "insert"
+									},
+									{
+										"type": "[before| after| replace]",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "String",
+										"name": "code",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "LaraJoinPoint",
+										"name": "insert"
+									},
+									{
+										"type": "[before| after| replace]",
+										"name": "position",
+										"defaultValue": ""
+									},
+									{
+										"type": "LaraJoinPoint",
+										"name": "joinpoint",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Void",
+										"name": "def"
+									},
+									{
+										"type": "String",
+										"name": "attribute",
+										"defaultValue": ""
+									},
+									{
+										"type": "Object",
+										"name": "value",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "String",
+										"name": "toString"
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "equals"
+									},
+									{
+										"type": "LaraJoinPoint",
+										"name": "jp",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String",
+										"name": "name",
+										"defaultValue": ""
+									}]
+					},
+					{
+						"type": "action",
+						"children": [
+									{
+										"type": "Boolean",
+										"name": "instanceOf"
+									},
+									{
+										"type": "String[]",
+										"name": "names",
+										"defaultValue": ""
+									}]
+					}]
+		}]
+}

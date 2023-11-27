@@ -68,7 +68,7 @@ Checkpoint.prototype.setInterval = function(interval, timeUnit) {
 	this.interval = interval;
 	
 	if(timeUnit === undefined) {
-		this.timeUnit = new TimeUnits("SECONDS");
+		this.timeUnit = new TimeUnits(TimerUnit.SECONDS);
 	} else {
 		this.timeUnit = new TimeUnits(timeUnit);
 	}

@@ -22,15 +22,15 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 public enum LaraApiResource implements LaraResourceProvider {
 
     // Analysis
-    ANALYSER("analysis/Analyser.lara"),
-    ANALYSER_RESULT("analysis/AnalyserResult.lara"),
-    CHECK_BASED_ANALYSER("analysis/CheckBasedAnalyser.lara"),
-    CHECKER("analysis/Checker.lara"),
-    CHECK_RESULT("analysis/CheckResult.lara"),
-    FIX("analysis/Fix.lara"),
-    MESSAGE_GENERATOR("analysis/MessageGenerator.lara"),
-    RESULT_FORMAT_MANAGER("analysis/ResultFormatManager.lara"),
-    RESULT_LIST("analysis/ResultList.lara"),
+    //ANALYSER("analysis/Analyser.lara"),
+    //ANALYSER_RESULT("analysis/AnalyserResult.lara"),
+    //CHECK_BASED_ANALYSER("analysis/CheckBasedAnalyser.lara"),
+    //CHECKER("analysis/Checker.lara"),
+    //CHECK_RESULT("analysis/CheckResult.lara"),
+    //FIX("analysis/Fix.lara"),
+    //MESSAGE_GENERATOR("analysis/MessageGenerator.lara"),
+    //RESULT_FORMAT_MANAGER("analysis/ResultFormatManager.lara"),
+    //RESULT_LIST("analysis/ResultList.lara"),
 
     // Benchmark
     BENCHMARK_SET("benchmark/BenchmarkSet.lara"),
@@ -110,23 +110,23 @@ public enum LaraApiResource implements LaraResourceProvider {
     UNIT_WITH_MODIFIER("units/UnitWithModifier.lara"),
 
     // Util
-    ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
-    ACCUMULATOR_JS("util/Accumulator.js"),
+    // ABSTRACT_CLASS_ERROR("util/AbstractClassError.js"),
+    //ACCUMULATOR_JS("util/Accumulator.js"),
     CHECKPOINT("util/Checkpoint.lara"),
     COMBINATION("util/Combinations.lara"),
-    DATA_STORE("util/DataStore.lara"),
-    ID_GENERATOR("util/IdGenerator.lara"),
-    JP_FILTER("util/JpFilter.lara"),
+    //DATA_STORE("util/DataStore.lara"),
+    //ID_GENERATOR("util/IdGenerator.lara"),
+    //JP_FILTER("util/JpFilter.lara"),
     LINE_INSERTER("util/LineInserter.lara"),
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
     // PRINT_ONCE("util/PrintOnce.lara"),
     PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     RANDOM("util/Random.js"),
-    REPLACER("util/Replacer.lara"),
+    //REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
     // STRING_SET("util/StringSet.lara"),
-    TIME_UNITS("util/TimeUnits.lara"),
+    //TIME_UNITS("util/TimeUnits.lara"),
     TUPLE_ID("util/TupleId.lara"),
 
     // VitisHLS
@@ -135,17 +135,17 @@ public enum LaraApiResource implements LaraResourceProvider {
     VITIS_HLS_UTILS("vitishls/VitisHlsUtils.js"),
 
     // Lara
-    _JAVA_TYPES("_JavaTypes.lara"),
-    CHECK("Check.js"),
+    //_JAVA_TYPES("_JavaTypes.lara"),
+    //CHECK("Check.js"),
     COLLECTIONS("Collections.js"),
-    CSV("Csv.lara"),
+    //CSV("Csv.lara"),
     DEBUG("Debug.lara"),
-    IO("Io.lara"),
+    //IO("Io.lara"),
     NUMBERS("Numbers.lara"),
-    PLATFORMS("Platforms.lara"),
-    STRINGS("Strings.lara"),
-    SYSTEM("System.lara"),
-    JAVA_INTEROP("JavaInterop.lara");
+    //PLATFORMS("Platforms.lara"),
+    //STRINGS("Strings.lara"),
+    SYSTEM("System.lara");
+    //JAVA_INTEROP("JavaInterop.lara");
 
     private final String resource;
 

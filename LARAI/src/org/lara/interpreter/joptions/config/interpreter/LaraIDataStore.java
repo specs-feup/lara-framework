@@ -112,9 +112,8 @@ public class LaraIDataStore implements LaraiKeys {
         var storeDef = localArgs.getStoreDefinitionTry().orElse(null);
 
         if (storeDef == null) {
-            SpecsLogs.debug(
-                    "Local data store does not have a store definition, system-wide options in file '"
-                            + systemOptionsFilename + "' not supported");
+            SpecsLogs.debug(() -> "Local data store does not have a store definition, system-wide options in file '"
+                    + systemOptionsFilename + "' not supported");
             return localArgs;
         }
 
@@ -122,7 +121,7 @@ public class LaraIDataStore implements LaraiKeys {
 
         if (persistence == null) {
             SpecsLogs.debug(
-                    "Local data store does not have an instance of AppPersistence set, system-wide options in file '"
+                    () -> "Local data store does not have an instance of AppPersistence set, system-wide options in file '"
                             + systemOptionsFilename + "' not supported");
             return localArgs;
         }

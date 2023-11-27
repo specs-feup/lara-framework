@@ -28,7 +28,13 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.Parameter;
+import org.lara.language.specification.dsl.types.ArrayType;
+import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
+import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -38,6 +44,43 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
  * Abstract class used by the LARA interpreter to define a join point instance
  */
 public abstract class JoinPoint {
+
+    private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint");
+
+    static {
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "attributes");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "selects");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "actions");
+        // JoinPointSpecification.addAttribute(null, "srcCode"));
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "dump");
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "joinPointType");
+        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.OBJECT, "node");
+        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "self");
+        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "super");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "children");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
+        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
+        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
+                new Parameter(PrimitiveClasses.STRING, "code"));
+        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
+                new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.VOID, "def",
+                new Parameter(PrimitiveClasses.STRING, "attribute"),
+                new Parameter(PrimitiveClasses.OBJECT, "value"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "equals",
+                new Parameter(JPType.of(LARA_JOIN_POINT), "jp"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
+                new Parameter(PrimitiveClasses.STRING, "name"));
+        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
+                new Parameter(ArrayType.of(PrimitiveClasses.STRING), "names"));
+    }
+
+    public static JoinPointClass getLaraJoinPoint() {
+        return LARA_JOIN_POINT;
+    }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
     static {
@@ -191,9 +234,12 @@ public abstract class JoinPoint {
      */
     protected void fillWithActions(List<String> actions) {
         // DEFAULT ACTIONS
-        actions.add("insert(String position, String code [, boolean farthestInsertion])");
-        actions.add("insert(String position, JoinPoint joinPoint [, boolean farthestInsertion])");
-        actions.add("def(String attribute, Object value)");
+        LARA_JOIN_POINT.getActions().forEach(action -> {
+            actions.add(action.getName() + "("
+                    + action.getParameters().stream().map(param -> param.toString()).collect(Collectors.joining(", "))
+                    + ")");
+        });
+
     }
 
     /**
@@ -212,15 +258,9 @@ public abstract class JoinPoint {
      */
     protected void fillWithAttributes(List<String> attributes) {
         // DEFAULT ATTRIBUTES
-        // attributes.add("srcCode");
-        attributes.add("actions");
-        attributes.add("attributes");
-        attributes.add("dump");
-        attributes.add("joinPointType");
-        attributes.add("node");
-        attributes.add("selects");
-        attributes.add("self");
-        attributes.add("super");
+        LARA_JOIN_POINT.getAttributes().forEach(attribute -> {
+            attributes.add(attribute.getName());
+        });
     }
 
     /**
@@ -537,6 +577,18 @@ public abstract class JoinPoint {
         // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
         return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
         // return Undefined.getUndefined();
+    }
+
+    public Object getChildren() {
+        throw new NotImplementedException(this);
+    }
+
+    public Object getDescendants() {
+        throw new NotImplementedException(this);
+    }
+
+    public Object getScopeNodes() {
+        throw new NotImplementedException(this);
     }
 
     /**

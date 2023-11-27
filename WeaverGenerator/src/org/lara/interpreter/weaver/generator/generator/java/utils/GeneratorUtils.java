@@ -652,7 +652,6 @@ public class GeneratorUtils {
             type = enumerator.getName();
             jType = JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
         } else {
-
             jType = ConvertUtils.getConvertedType(type, generator);
         }
         return jType;

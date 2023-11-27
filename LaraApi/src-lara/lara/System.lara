@@ -1,5 +1,5 @@
 import lara.util.TimeUnits;
-import lara._JavaTypes;
+import lara.util.JavaTypes;
 
 /**
  * @class
@@ -123,7 +123,7 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 	}
 	
 	if(timeunit === undefined) {
-		timeunit = new TimeUnits("SECONDS");
+		timeunit = new TimeUnits(TimerUnit.SECONDS);
 	}
 	
 	var timeoutNanos = null;
@@ -132,7 +132,7 @@ System.execute = function(command, workingDir, printToConsole, outputFile, appen
 	}
 
 
-	var executeOutput = _JavaTypes.getLaraSystemTools().runCommand(command, workingDir, printToConsole, timeoutNanos)
+	var executeOutput = JavaTypes.LaraSystemTools.runCommand(command, workingDir, printToConsole, timeoutNanos)
 	.getOutput();
 	
 	if(executeOutput !== undefined) {
@@ -176,7 +176,7 @@ System.getNumLogicalCores = function() {
 System.getEnv = function(variable) {
 	checkString(variable);
 
-	var envValue = _JavaTypes.getJavaSystem().getenv(variable);
+	var envValue = JavaTypes.JavaSystem.getenv(variable);
 	
 	if(isUndefined(envValue)) {
 		return undefined;

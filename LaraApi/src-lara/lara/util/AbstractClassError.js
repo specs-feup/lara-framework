@@ -3,6 +3,7 @@
  *
  * To use the error correctly, write something like:
  *
+ * @example
  * ```js
  * class AnAbstractClass {
  *   constructor() {
@@ -30,24 +31,17 @@
  * Formats a message like:
  * "AbstractClassError:
  */
-class AbstractClassError extends Error {
-  /**
-   * @param {} options Options to construct the error
-   * @param {"constructor"|"abstractMethod"} options.kind Whether the error is being thrown by an abstract constructor or method
-   * @param {} options.baseClass The base abstract class
-   * @param {} options.derivedClass The derived class. Only used when building an error for an abstract method.
-   * @param {} options.method The method that is not implemented. Only used when building an error for an abstract method.
-   */
-  constructor(options) {
-    let message;
-    if (options.kind === "constructor") {
-      const { baseClass } = options;
-      message = `Cannot instantiate abstract class ${baseClass.name}.`;
-    } else if (options.kind === "abstractMethod") {
-      const { baseClass, derivedClass, method } = options;
-      message = `Derived class ${derivedClass.name} has not implemented abstract method ${baseClass.name}::${method.name}.`;
+export default class AbstractClassError extends Error {
+    constructor(options) {
+        let message;
+        if (options.kind === "constructor") {
+            message = `Cannot instantiate abstract class ${options.baseClass.name}.`;
+        }
+        else if (options.kind === "abstractMethod") {
+            message = `Derived class ${options.derivedClass.name} has not implemented abstract method ${options.baseClass.name}::${options.method.name}.`;
+        }
+        super(message);
+        this.name = "AbstractClassError";
     }
-    super(message);
-    this.name = "AbstractClassError";
-  }
 }
+//# sourceMappingURL=AbstractClassError.js.map

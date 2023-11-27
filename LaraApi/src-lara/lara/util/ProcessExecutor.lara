@@ -1,5 +1,5 @@
 import lara.System;
-import lara._JavaTypes;
+import lara.util.JavaTypes;
 import lara.JavaInterop;
 
 /**
@@ -11,7 +11,7 @@ var ProcessExecutor = function() {
 	this.printToConsole = true;
 	this.outputFile = undefined;
 	this.append = false;
-	this.timeUnit = new TimeUnits("SECONDS");
+	this.timeUnit = new TimeUnits(TimerUnit.SECONDS);
 	this.timeout = undefined;
 	this.outputPrefix = undefined;
 	this.stopOnError = false;
@@ -168,8 +168,8 @@ ProcessExecutor.prototype.execute = function(command) {
 
 	// TODO: Can change LaraApiTools.runCommand to accept a file and append flag, to be able to write to a file in stream mode
 	//this.lastOutput = Java.type("pt.up.fe.specs.lara.LaraApiTools").runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
-	//this.lastOutput = Java.type(_JavaTypes.LaraSystemTools).runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
-	this.lastOutput = _JavaTypes.getLaraSystemTools().runCommand(javaCommand, this.workingDir.toString(), this.printToConsole, timeoutNanos);
+	//this.lastOutput = JavaTypes.LaraSystemTools.runCommand(command, this.workingDir, this.printToConsole, timeoutNanos);
+	this.lastOutput = JavaTypes.LaraSystemTools.runCommand(javaCommand, this.workingDir.toString(), this.printToConsole, timeoutNanos);
 
 	if(this.getReturnValue() !== 0) {
 		println("ProcessExecutor.execute: process returned with value '"+this.getReturnValue()+"', which might signal a problem. Under these conditions, it is not guaranteed that we can obtain the output of the application. Please run the application directly in the a terminal.");

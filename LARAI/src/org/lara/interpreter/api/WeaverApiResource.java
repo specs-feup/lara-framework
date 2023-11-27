@@ -27,15 +27,15 @@ public enum WeaverApiResource implements LaraResourceProvider {
 
     // Weaver
     AST("Ast.lara"),
-    JOIN_POINTS("JoinPointsBase.lara"),
-    QUERY("Query.js"),
+    //JOIN_POINTS("JoinPointsBase.lara"),
+    //QUERY("Query.js"),
     SCRIPT("Script.js"),
-    SELECTOR("Selector.lara"),
-    TRAVERSAL_TYPE("TraversalType.js"),
-    WEAVER("Weaver.js"),
-    WEAVER_JPS("WeaverJps.lara"),
-    WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara"),
-    WEAVER_OPTIONS("WeaverOptions.lara");
+    //SELECTOR("Selector.lara"),
+    //TRAVERSAL_TYPE("TraversalType.js"),
+    //WEAVER("Weaver.js"),
+    //WEAVER_JPS("WeaverJps.lara"),
+    WEAVER_LAUNCHER_BASE("WeaverLauncherBase.lara");
+    //WEAVER_OPTIONS("WeaverOptions.lara");
 
     private final String resource;
 

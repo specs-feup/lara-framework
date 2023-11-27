@@ -55,6 +55,7 @@
 	<xsd:complexType name="Parameter">
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="type" type="xsd:string" use="required" />
+		<xsd:attribute name="default" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="DefArgType">

@@ -28,14 +28,19 @@ export class Weaver {
   static #isSetup = false;
   static #javaWeaver: unknown;
 
-  static get isSetup() {
+  static isSetup() {
     return Weaver.#isSetup;
   }
 
   static async awaitSetup() {
-    while (!Weaver.isSetup) {
+    while (!Weaver.isSetup()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
+  }
+
+  static async setupJavaEnvironment(jarFilePath: string) {
+    java.classpath.push(jarFilePath);
+    await java.ensureJvm();
   }
 
   static async setupWeaver(
@@ -46,9 +51,7 @@ export class Weaver {
     const debug = Debug(`Weaver:${config.weaverPrettyName}`);
     debug("Initiating weaver setup.");
 
-    // Setup java
-    java.classpath.push(config.jarFilePath);
-    await java.ensureJvm();
+    await this.setupJavaEnvironment(config.jarFilePath);
 
     debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 

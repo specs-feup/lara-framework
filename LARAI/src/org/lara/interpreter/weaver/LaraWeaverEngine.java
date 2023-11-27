@@ -22,7 +22,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import larai.JsLaraCompatibilityResource;
-import pt.up.fe.specs.lara.JsApiResource;
 import pt.up.fe.specs.lara.LaraApiJsResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
@@ -69,7 +68,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     private List<ResourceProvider> buildLaraCore() {
         var coreScripts = new ArrayList<ResourceProvider>();
         coreScripts.addAll(Arrays.asList(JsLaraCompatibilityResource.values()));
-        coreScripts.addAll(Arrays.asList(JsApiResource.values()));
         coreScripts.addAll(getImportableScripts());
 
         return coreScripts;

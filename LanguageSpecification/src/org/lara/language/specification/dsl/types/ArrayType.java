@@ -21,44 +21,47 @@ public class ArrayType implements IType {
     int dimension;
 
     public ArrayType(IType baseType) {
-	this(baseType, 1);
+        this(baseType, 1);
     }
 
     public ArrayType(IType baseType, int dimension) {
-	super();
-	this.baseType = baseType;
-	this.dimension = dimension;
+        this.baseType = baseType;
+        this.dimension = dimension;
+    }
+
+    public static ArrayType of(IType baseType) {
+        return new ArrayType(baseType);
     }
 
     @Override
     public String getType() {
-	return baseType.getType() + StringUtils.repeat("[]", dimension);
+        return baseType.getType() + StringUtils.repeat("[]", dimension);
     }
 
     @Override
     public boolean isArray() {
-	return true;
+        return true;
     }
 
     public IType getBaseType() {
-	return baseType;
+        return baseType;
     }
 
     public void setBaseType(IType baseType) {
-	this.baseType = baseType;
+        this.baseType = baseType;
     }
 
     public int getDimension() {
-	return dimension;
+        return dimension;
     }
 
     public void setDimension(int dimension) {
-	this.dimension = dimension;
+        this.dimension = dimension;
     }
 
     @Override
     public String toString() {
-	return getType();
+        return getType();
     }
 
 }

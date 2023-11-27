@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-export function convertSpecification(input) {
+export function convertSpecification(input, baseJoinPointSpec = undefined) {
   let typeNameSet = new Set();
   let joinpointNameSet = new Set();
   let unorderedJoinpoints = [];
@@ -27,7 +27,11 @@ export function convertSpecification(input) {
     enums: convertEnums(enums),
   };
 
-  deduplicateJoinpoints(output.joinpoints);
+  if (baseJoinPointSpec !== undefined) {
+    output.joinpoints[0].extends = baseJoinPointSpec.joinpoints[0].name;
+  }
+
+  deduplicateJoinpoints(output.joinpoints, baseJoinPointSpec);
 
   return output;
 }
@@ -78,18 +82,18 @@ function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
 function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   let attributes = [];
   let actions = [];
+  const actionNameSet = new Set();
 
   jp.children.forEach((child) => {
     switch (child.type) {
       case "attribute":
         if (child.children.length !== 1) {
-          actions.push(
-            convertJoinpointAction(
-              child,
-              joinpointNameSet,
-              enumNameSet,
-              "get" + capitalizeFirstLetter(child.children[0].name)
-            )
+          convertJoinpointAction(
+            child,
+            joinpointNameSet,
+            enumNameSet,
+            actions,
+            actionNameSet
           );
         } else {
           attributes.push(
@@ -98,8 +102,12 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
         }
         break;
       case "action":
-        actions.push(
-          convertJoinpointAction(child, joinpointNameSet, enumNameSet)
+        convertJoinpointAction(
+          child,
+          joinpointNameSet,
+          enumNameSet,
+          actions,
+          actionNameSet
         );
         break;
       case "select":
@@ -110,7 +118,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
     }
   });
 
-  const jpName = capitalizeFirstLetter(jp.name);
+  const jpName = interpretType(jp.name, joinpointNameSet, enumNameSet);
   return {
     name: jpName,
     originalName: jp.name,
@@ -173,10 +181,15 @@ function convertJoinpointActionParameter(
       parameterName = "elseStatement";
   }
 
+  let defaultValue = parameterObject.defaultValue;
+  if (defaultValue === "") {
+    defaultValue = undefined;
+  }
+
   return {
     name: parameterName,
     type: type,
-    default: JSON.stringify(parameterObject.defaultValue),
+    default: JSON.stringify(defaultValue),
   };
 }
 
@@ -184,12 +197,14 @@ function convertJoinpointAction(
   actionObject,
   joinpointNameSet,
   enumNameSet,
+  actions,
+  actionNameSet,
   overrideName = null
 ) {
   const action = actionObject.children[0];
   const actionName = overrideName ?? action.name;
 
-  return {
+  const convertedAction = {
     name: actionName,
     tooltip: convertDeprecationNotice(actionObject.tooltip),
     returnType: interpretType(action.type, joinpointNameSet, enumNameSet),
@@ -200,7 +215,65 @@ function convertJoinpointAction(
         enumNameSet
       );
     }),
+    overloads: [],
   };
+
+  if (actionNameSet.has(convertedAction.name)) {
+    for (const action of actions) {
+      if (action.name === convertedAction.name) {
+        if (action.overloads.length === 0) {
+          action.overloads.push(structuredClone(action));
+
+          let paramCounter = 1;
+          action.parameters.forEach((param) => {
+            param.name = `p${paramCounter++}`;
+
+            if (param.default !== undefined) {
+              param.default = '"null"';
+            }
+          });
+        }
+
+        action.returnType += " | " + convertedAction.returnType;
+
+        for (let i = 0; i < convertedAction.parameters.length; i++) {
+          if (i >= action.parameters.length) {
+            action.parameters.push(
+              structuredClone(convertedAction.parameters[i])
+            );
+            action.parameters[i].name = `p${i + 1}`;
+
+            action.parameters[i].default = '"null"';
+
+            continue;
+          }
+
+          const parameter = convertedAction.parameters[i];
+          const existingParameter = action.parameters[i];
+          if (parameter.type !== existingParameter.type) {
+            existingParameter.type += " | " + parameter.type;
+          }
+        }
+
+        if (convertedAction.parameters.length < action.parameters.length) {
+          for (
+            let i = convertedAction.parameters.length;
+            i < action.parameters.length;
+            i++
+          ) {
+            action.parameters[i].default = '"null"';
+          }
+        }
+
+        action.overloads.push(convertedAction);
+        break;
+      }
+    }
+    return;
+  }
+  actionNameSet.add(actionName);
+
+  actions.push(convertedAction);
 }
 
 function convertEnums(enums) {
@@ -244,7 +317,18 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
   }
 
   if (joinpointNameSet.has(typeString) || enumNameSet.has(typeString)) {
-    return capitalizeFirstLetter(typeString);
+    const jpType = capitalizeFirstLetter(typeString);
+
+    switch (jpType) {
+      case "Function":
+        return "FunctionJp";
+      case "File":
+        return "FileJp";
+      case "Record":
+        return "RecordJp";
+    }
+
+    return jpType;
   }
 
   switch (typeString) {
@@ -255,19 +339,24 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
       return "number";
       break;
     case "Map":
-      return "Map<string, any>";
+      return "Record<string, any>";
     default:
       return typeString.toLowerCase();
       break;
   }
 }
 
-function deduplicateJoinpoints(joinpoints) {
+function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
   for (const joinpoint of joinpoints) {
     // Find the parent joinpoint
     let parentJoinpoint = joinpoints.find(
       (jp) => jp.name === joinpoint.extends
     );
+    if (parentJoinpoint === undefined && baseJoinPointSpec !== undefined) {
+      parentJoinpoint = baseJoinPointSpec.joinpoints.find(
+        (jp) => jp.name === joinpoint.extends
+      );
+    }
 
     while (parentJoinpoint) {
       for (const attributeIndex in joinpoint.attributes) {

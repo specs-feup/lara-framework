@@ -13,7 +13,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUnit"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraLoc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraExtraApi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraDoc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>

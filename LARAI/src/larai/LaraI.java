@@ -13,6 +13,7 @@
 package larai;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -331,7 +332,7 @@ public class LaraI {
     }
 
     public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
-        SpecsLogs.debug("Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
+        SpecsLogs.debug(() -> "Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
 
         // Set weaver (e.g. for help message to access name and build number)
         weaverEngine.setWeaver();
@@ -800,13 +801,19 @@ public class LaraI {
     // }
 
     private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
-        // return new GraalvmJsEngine();
-        if (getOptions().isRestricMode()) {
-            return engineType.newEngine(engineType, FORBIDDEN_CLASSES, engineWorkingDirectory, nodeModulesFolder);
-            // return new NashornEngine(FORBIDDEN_CLASSES);
+
+        OutputStream engineOutputStream = System.out;
+        if (getOptions().isJavaScriptStream()) {
+            engineOutputStream = this.out.getOutStream();
         }
-        return engineType.newEngine(engineType, Collections.emptyList(), engineWorkingDirectory, nodeModulesFolder);
-        // return new NashornEngine();
+
+        Collection<Class<?>> engineForbiddenClasses = Collections.emptyList();
+        if (getOptions().isRestricMode()) {
+            engineForbiddenClasses = FORBIDDEN_CLASSES;
+        }
+
+        return engineType.newEngine(engineType, engineForbiddenClasses, engineWorkingDirectory, nodeModulesFolder,
+                engineOutputStream);
     }
 
     public DataStore getWeaverArgs() {
@@ -987,10 +994,12 @@ public class LaraI {
 
         // Import JS code
         for (var laraImport : laraImports) {
-            SpecsLogs.debug("Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
+            SpecsLogs.debug(
+                    () -> "Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "')");
+                    laraImport.getFilename() + " (LARA import '" + importName + "' as "
+                            + laraImport.getFileType().toString() + ")");
         }
 
     }
