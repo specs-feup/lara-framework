@@ -56,6 +56,8 @@ export namespace JavaClasses {
   export interface ArrayList extends JavaClass {}
   export interface HashMap extends JavaClass {}
   export interface SpecsPlatforms extends JavaClass {}
+  export interface Runtime extends JavaClass {}
+  export interface LARASystem extends JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -284,5 +286,13 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "pt.up.fe.specs.lang.SpecsPlatforms"
     ) as JavaClasses.SpecsPlatforms;
+  }
+
+  static get Runtime() {
+    return JavaTypes.getType("java.lang.Runtime") as JavaClasses.Runtime;
+  }
+
+  static get LARASystem() {
+    return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
   }
 }

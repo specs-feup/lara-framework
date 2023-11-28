@@ -96,8 +96,8 @@ public enum LaraApiResource implements LaraResourceProvider {
     PASSES("pass/composition/Passes.js"),
 
     // Tool
-    TOOL("tool/Tool.js"),
-    TOOL_UTILS("tool/ToolUtils.js"),
+    //TOOL("tool/Tool.js"),
+    //TOOL_UTILS("tool/ToolUtils.js"),
 
     // Units
     SI_MODIFIER("units/SiModifier.lara"),
@@ -121,7 +121,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     LOCAL_FOLDER("util/LocalFolder.lara"),
     PREDEFINED_STRINGS("util/PredefinedStrings.lara"),
     // PRINT_ONCE("util/PrintOnce.lara"),
-    PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
+    //PROCESS_EXECUTOR("util/ProcessExecutor.lara"),
     RANDOM("util/Random.js"),
     //REPLACER("util/Replacer.lara"),
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
@@ -130,21 +130,21 @@ public enum LaraApiResource implements LaraResourceProvider {
     TUPLE_ID("util/TupleId.lara"),
 
     // VitisHLS
-    VITIS_HLS("vitishls/VitisHls.js"),
-    VITIS_HLS_REPORT_PARSER("vitishls/VitisHlsReportParser.js"),
-    VITIS_HLS_UTILS("vitishls/VitisHlsUtils.js"),
+    //VITIS_HLS("vitishls/VitisHls.js"),
+    //VITIS_HLS_REPORT_PARSER("vitishls/VitisHlsReportParser.js"),
+    //VITIS_HLS_UTILS("vitishls/VitisHlsUtils.js"),
 
     // Lara
     //_JAVA_TYPES("_JavaTypes.lara"),
     //CHECK("Check.js"),
-    COLLECTIONS("Collections.js"),
+    COLLECTIONS("Collections.js"),;
     //CSV("Csv.lara"),
-    DEBUG("Debug.lara"),
+    //DEBUG("Debug.lara"),
     //IO("Io.lara"),
-    NUMBERS("Numbers.lara"),
+    //NUMBERS("Numbers.lara"),
     //PLATFORMS("Platforms.lara"),
     //STRINGS("Strings.lara"),
-    SYSTEM("System.lara");
+    //SYSTEM("System.lara"),
     //JAVA_INTEROP("JavaInterop.lara");
 
     private final String resource;
