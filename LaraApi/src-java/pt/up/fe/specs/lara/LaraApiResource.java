@@ -33,17 +33,17 @@ public enum LaraApiResource implements LaraResourceProvider {
     //RESULT_LIST("analysis/ResultList.lara"),
 
     // Benchmark
-    BENCHMARK_SET("benchmark/BenchmarkSet.lara"),
-    BENCHMARK_INSTANCE("benchmark/BenchmarkInstance.lara"),
+    //BENCHMARK_SET("benchmark/BenchmarkSet.lara"),
+    //BENCHMARK_INSTANCE("benchmark/BenchmarkInstance.lara"),
 
     // CMake
-    CMAKER("cmake/CMaker.js"),
-    CMAKER_SOURCES("cmake/CMakerSources.lara"),
-    CMAKER_UTILS("cmake/CMakerUtils.lara"),
+    //CMAKER("cmake/CMaker.js"),
+    //CMAKER_SOURCES("cmake/CMakerSources.lara"),
+    //CMAKER_UTILS("cmake/CMakerUtils.lara"),
 
     // CMake/Compilers
-    CMAKE_COMPILER("cmake/compilers/CMakeCompiler.lara"),
-    GENERIC_CMAKE_COMPILER("cmake/compilers/GenericCMakeCompiler.lara"),
+    //CMAKE_COMPILER("cmake/compilers/CMakeCompiler.lara"),
+    //GENERIC_CMAKE_COMPILER("cmake/compilers/GenericCMakeCompiler.lara"),
 
     // Code
     // ENERGY_BASE("code/EnergyBase.lara"),
@@ -127,7 +127,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     SEQUENTIAL_COMBINATIONS("util/SequentialCombinations.lara"),
     // STRING_SET("util/StringSet.lara"),
     //TIME_UNITS("util/TimeUnits.lara"),
-    TUPLE_ID("util/TupleId.lara"),
+    TUPLE_ID("util/TupleId.lara");
 
     // VitisHLS
     //VITIS_HLS("vitishls/VitisHls.js"),
@@ -137,7 +137,7 @@ public enum LaraApiResource implements LaraResourceProvider {
     // Lara
     //_JAVA_TYPES("_JavaTypes.lara"),
     //CHECK("Check.js"),
-    COLLECTIONS("Collections.js"),;
+    //COLLECTIONS("Collections.js"),
     //CSV("Csv.lara"),
     //DEBUG("Debug.lara"),
     //IO("Io.lara"),

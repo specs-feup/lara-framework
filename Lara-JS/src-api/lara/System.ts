@@ -28,7 +28,7 @@ export default class System {
       exe = Io.getPath(
         executableFolder,
         executableName
-      ).getAbsolutePath() as string;
+      ).getAbsolutePath();
     }
 
     // Ensure exe is a string

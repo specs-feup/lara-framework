@@ -353,7 +353,7 @@ export function debug(message: string | (() => string), origin?: string) {
   }
 }
 
-export function debugObject<T>(object: T, origin: string) {
+export function debugObject<T>(object: T, origin?: string) {
   if (LARA_DEBUG) {
     const lines = object2string(object).split("\n");
     info("[DEBUG] " + lines.join("\n[DEBUG] "), origin);

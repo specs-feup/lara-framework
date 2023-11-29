@@ -30,14 +30,14 @@ export default class JavaInterop {
     return JavaTypes.instanceOf(value, classname);
   }
 
-  isList<T>(value: T) {
+  static isList<T>(value: T) {
     return JavaTypes.instanceOf(value, "java.util.List");
   }
 
   /**
    * @deprecated Use JavaTypes instead
    */
-  getClass(classname: string) {
+  static getClass(classname: string) {
     return Java.type(classname).class;
   }
 }
