@@ -11,11 +11,20 @@ class Random {
 
     /**
      * 
-     * @param {number} seed 
+     * @param {number|String} seed 
      */
     constructor(seed) {
         const RandomClass = JavaTypes.getType(Random.RANDOM_CLASS);
-        this.#javaRandom = seed !== undefined ? new RandomClass(seed) : new RandomClass(); 
+        this.#javaRandom = seed !== undefined ? new RandomClass(this.#parseSeed(seed)) : new RandomClass(); 
+    }
+
+    #parseSeed(seed) {
+        const seedNumber = Number(seed)
+        if(seedNumber != seedNumber) {
+            throw "Could not parse seed '"+seed+"', returned NaN"; 
+        }
+
+        return seedNumber;
     }
 
     /**
