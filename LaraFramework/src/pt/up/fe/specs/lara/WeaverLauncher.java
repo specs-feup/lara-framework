@@ -533,7 +533,8 @@ public class WeaverLauncher {
 
                     var results = new LinkedHashMap<String, Object>();
                     var lastCause = SpecsSystem.getLastCause(e);
-                    results.put("error", SpecsStrings.escapeJson(lastCause.getMessage()));
+                    var causeMessage = lastCause.getMessage() != null ? lastCause.getMessage() : "<no cause message>";
+                    results.put("error", SpecsStrings.escapeJson(causeMessage));
                     results.put("args", args);
                     results.put("stackTrace", SpecsStrings.escapeJson(stackTrace));
 
