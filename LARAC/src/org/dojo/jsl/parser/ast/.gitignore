@@ -21,3 +21,13 @@
 #/ParseException.java
 #/TokenMgrError.java
 #/ASTYieldStar.java
+/ASTYieldStar.java
+/JJTLARAEcmaScriptState.java
+/JavaCharStream.java
+/LARAEcmaScript.java
+/LARAEcmaScriptConstants.java
+/LARAEcmaScript.jj
+/LARAEcmaScriptTokenManager.java
+/LARAEcmaScriptTreeConstants.java
+/Node.java
+/Token.java

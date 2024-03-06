@@ -339,11 +339,11 @@ public class ASTAspectDef extends SimpleNode {
         if (simpleNode instanceof ASTVariableDeclarationList) {
             for (SimpleNode node : simpleNode.getSimpleNodeChildren()) {
                 ASTVariableDeclaration varDecl = (ASTVariableDeclaration) node;
-                createInputXMLDecl(varDecl, vars.get(varDecl.getId()), doc, parent);
+                createInputXMLDecl(varDecl, vars.get(varDecl.getIdName()), doc, parent);
             }
         } else {
             ASTVariableDeclaration varDecl = (ASTVariableDeclaration) simpleNode;
-            createInputXMLDecl(varDecl, vars.get(varDecl.getId()), doc, parent);
+            createInputXMLDecl(varDecl, vars.get(varDecl.getIdName()), doc, parent);
         }
     }
 
