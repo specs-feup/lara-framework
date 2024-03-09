@@ -67,12 +67,6 @@ export class Weaver {
     // This code is intentionally ignored by eslint
     const JavaArrayList = java.import("java.util.ArrayList");
     const JavaFile = java.import("java.io.File");
-    const JavaLaraIDataStore = java.import(
-      "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
-    );
-    const JavaDataStore = java.import(
-      "org.suikasoft.jOptions.Interfaces.DataStore"
-    );
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
@@ -94,12 +88,36 @@ export class Weaver {
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
-    const datastore = await new JavaDataStore.newInstanceP(
-      `${javaWeaverClassName}DataStore`
-    );
-    datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+    let laraIDataStore;
+    if (args.configClassic !== undefined && args.configClassic !== null) {
+      try {
+        const OptionsParser = java.import(
+          "org.lara.interpreter.cli.OptionsParser"
+        );
 
-    const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
+        const laraiDefinition = OptionsParser.getLaraStoreDefinition(javaWeaver);
+        const appPersistence = OptionsParser.getXmlPersistence(laraiDefinition);
+        laraIDataStore = appPersistence.loadData(new JavaFile(args.configClassic));
+      } catch (error) {
+        throw new Error("Failed to load Clava Classic configuration file.");
+      }
+    } else {
+      const JavaLaraIDataStore = java.import(
+        "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
+      );
+      const JavaDataStore = java.import(
+        "org.suikasoft.jOptions.Interfaces.DataStore"
+      );
+
+      const datastore = await new JavaDataStore.newInstanceP(
+        `${javaWeaverClassName}DataStore`
+      );
+
+      laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
+    }
+
+    laraIDataStore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+
     javaWeaver.begin(
       fileList,
       new JavaFile(JavaWeaverClass.getWovenCodeFoldername()),
