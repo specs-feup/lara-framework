@@ -8,6 +8,7 @@ import JavaError from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
+import assert from "assert";
 
 let directExecution = false;
 
@@ -67,6 +68,9 @@ export class Weaver {
     // This code is intentionally ignored by eslint
     const JavaArrayList = java.import("java.util.ArrayList");
     const JavaFile = java.import("java.io.File");
+    const JavaLaraIDataStore = java.import(
+      "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
+    );
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
@@ -88,35 +92,33 @@ export class Weaver {
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
-    let laraIDataStore;
+    let datastore;
     if (args.configClassic !== undefined && args.configClassic !== null) {
       try {
-        const OptionsParser = java.import(
-          "org.lara.interpreter.cli.OptionsParser"
+        assert(typeof args.configClassic === "string");
+        assert(fs.existsSync(args.configClassic));
+
+        const OptionsConverter = java.import(
+          "org.lara.interpreter.cli.OptionsConverter"
         );
 
-        const laraiDefinition = OptionsParser.getLaraStoreDefinition(javaWeaver);
-        const appPersistence = OptionsParser.getXmlPersistence(laraiDefinition);
-        laraIDataStore = appPersistence.loadData(new JavaFile(args.configClassic));
+        datastore = OptionsConverter.configFile2DataStore(javaWeaver, new JavaFile(path.resolve(args.configClassic)));
+        console.log(datastore);
       } catch (error) {
-        throw new Error("Failed to load Clava Classic configuration file.");
+        throw new Error("Failed to load Clava Classic configuration file:\n" + error);
       }
     } else {
-      const JavaLaraIDataStore = java.import(
-        "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
-      );
       const JavaDataStore = java.import(
         "org.suikasoft.jOptions.Interfaces.DataStore"
       );
 
-      const datastore = await new JavaDataStore.newInstanceP(
+      datastore = await new JavaDataStore.newInstanceP(
         `${javaWeaverClassName}DataStore`
       );
-
-      laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
     }
-
-    laraIDataStore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+    
+    datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+    const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
 
     javaWeaver.begin(
       fileList,
