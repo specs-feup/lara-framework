@@ -715,7 +715,6 @@ public class SimpleNode implements Node {
         el.setAttribute("coord", coordStr);
     }
 
-    @Override
     public int getId() {
         return id;
     }
