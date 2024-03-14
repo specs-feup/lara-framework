@@ -51,47 +51,47 @@ public class TokenMgrError extends Error {
      * Replaces unprintable characters by their escaped (or unicode escaped) equivalents in the given string
      */
     protected static final String addEscapes(String str) {
-	StringBuffer retval = new StringBuffer();
-	char ch;
-	for (int i = 0; i < str.length(); i++) {
-	    switch (str.charAt(i)) {
-	    case 0:
-		continue;
-	    case '\b':
-		retval.append("\\b");
-		continue;
-	    case '\t':
-		retval.append("\\t");
-		continue;
-	    case '\n':
-		retval.append("\\n");
-		continue;
-	    case '\f':
-		retval.append("\\f");
-		continue;
-	    case '\r':
-		retval.append("\\r");
-		continue;
-	    case '\"':
-		retval.append("\\\"");
-		continue;
-	    case '\'':
-		retval.append("\\\'");
-		continue;
-	    case '\\':
-		retval.append("\\\\");
-		continue;
-	    default:
-		if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
-		    String s = "0000" + Integer.toString(ch, 16);
-		    retval.append("\\u" + s.substring(s.length() - 4, s.length()));
-		} else {
-		    retval.append(ch);
-		}
-		continue;
-	    }
-	}
-	return retval.toString();
+        StringBuffer retval = new StringBuffer();
+        char ch;
+        for (int i = 0; i < str.length(); i++) {
+            switch (str.charAt(i)) {
+            case 0:
+                continue;
+            case '\b':
+                retval.append("\\b");
+                continue;
+            case '\t':
+                retval.append("\\t");
+                continue;
+            case '\n':
+                retval.append("\\n");
+                continue;
+            case '\f':
+                retval.append("\\f");
+                continue;
+            case '\r':
+                retval.append("\\r");
+                continue;
+            case '\"':
+                retval.append("\\\"");
+                continue;
+            case '\'':
+                retval.append("\\\'");
+                continue;
+            case '\\':
+                retval.append("\\\\");
+                continue;
+            default:
+                if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
+                    String s = "0000" + Integer.toString(ch, 16);
+                    retval.append("\\u" + s.substring(s.length() - 4, s.length()));
+                } else {
+                    retval.append(ch);
+                }
+                continue;
+            }
+        }
+        return retval.toString();
     }
 
     /**
@@ -102,17 +102,17 @@ public class TokenMgrError extends Error {
      * customize the lexical error message by modifying this method.
      */
     protected static String LexicalError(boolean EOFSeen, int lexState, int errorLine, int errorColumn,
-	    String errorAfter, char curChar) {
-	String lexicalError = generateLexicalError(EOFSeen, errorAfter, curChar);
-	return ("at line " + errorLine + ", column " + errorColumn + ". " + lexicalError);
+            String errorAfter, char curChar) {
+        String lexicalError = generateLexicalError(EOFSeen, errorAfter, curChar);
+        return ("at line " + errorLine + ", column " + errorColumn + ". " + lexicalError);
     }
 
     private static String generateLexicalError(boolean EOFSeen, String errorAfter, char curChar) {
-	String string = "Lexical error:  encountered "
-		+ (EOFSeen ? "<EOF> "
-			: ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ")
-		+ "after : \"" + addEscapes(errorAfter) + "\"";
-	return string;
+        String string = "Lexical error:  encountered "
+                + (EOFSeen ? "<EOF> "
+                        : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ")
+                + "after : \"" + addEscapes(errorAfter) + "\"";
+        return string;
     }
 
     /**
@@ -125,7 +125,7 @@ public class TokenMgrError extends Error {
      */
     @Override
     public String getMessage() {
-	return super.getMessage();
+        return super.getMessage();
     }
 
     /*
@@ -138,34 +138,34 @@ public class TokenMgrError extends Error {
 
     /** Constructor with message and reason. */
     public TokenMgrError(String message, int reason) {
-	super(message);
-	errorCode = reason;
+        super(message);
+        errorCode = reason;
     }
 
     /** Full Constructor. */
-    public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar,
-	    int reason) {
-	this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
-	this.errorLine = errorLine;
-	this.errorColumn = errorColumn;
-	lexicalError = generateLexicalError(EOFSeen, errorAfter, curChar);
+    public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, int curChar,
+            int reason) {
+        this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, (char) curChar), reason);
+        this.errorLine = errorLine;
+        this.errorColumn = errorColumn;
+        lexicalError = generateLexicalError(EOFSeen, errorAfter, (char) curChar);
 
     }
 
     public int getErrorCode() {
-	return errorCode;
+        return errorCode;
     }
 
     public int getErrorLine() {
-	return errorLine;
+        return errorLine;
     }
 
     public int getErrorColumn() {
-	return errorColumn;
+        return errorColumn;
     }
 
     public String getLexicalError() {
-	return lexicalError;
+        return lexicalError;
     }
 }
 /*
