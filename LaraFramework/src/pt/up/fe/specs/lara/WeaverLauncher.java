@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.openjdk.jmh.runner.RunnerException;
 
 import com.google.gson.Gson;
 
@@ -525,7 +524,7 @@ public class WeaverLauncher {
                     var indexOfR = taskArgs.length - 2;
 
                     if (taskArgs[indexOfR] != "-r") {
-                        throw new RunnerException(
+                        throw new RuntimeException(
                                 "Expected second to last argument to be '-r': " + Arrays.toString(taskArgs));
                     }
 

@@ -1,0 +1,14 @@
+rootProject.name = 'LaraDoc'
+
+includeBuild("../../specs-java-libs/CommonsLangPlus")
+includeBuild("../../specs-java-libs/GsonPlus")
+includeBuild("../../specs-java-libs/jOptions")
+includeBuild("../../specs-java-libs/JsEngine")
+includeBuild("../../specs-java-libs/SpecsUtils")
+includeBuild("../../specs-java-libs/tdrcLibrary")
+
+includeBuild("../../lara-framework/LARAC")
+includeBuild("../../lara-framework/LARAI")
+includeBuild("../../lara-framework/LaraUtils")
+includeBuild("../../lara-framework/LanguageSpecification")
+includeBuild("../../lara-framework/WeaverInterface")

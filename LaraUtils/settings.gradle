@@ -1,0 +1,5 @@
+rootProject.name = 'LaraUtils'
+
+includeBuild("../../specs-java-libs/SpecsUtils")
+
+includeBuild("../../specs-java-libs/tdrcLibrary")

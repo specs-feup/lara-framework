@@ -1,0 +1,52 @@
+plugins {
+ 	id 'distribution'
+}
+
+// Java project
+apply plugin: 'java'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+
+// Repositories providers
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	testImplementation "junit:junit:4.11"     
+	
+	implementation ':SpecsUtils'
+	implementation ':CommonsLangPlus'
+	implementation ':Gprofer'
+	implementation ':XStreamPlus'
+	implementation ':LaraUtils'		
+	
+	implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.7'
+	
+
+}
+
+java {
+	withSourcesJar()
+}
+
+
+// Project sources
+sourceSets {
+   main {
+      java {
+         srcDir 'src-java'
+      }
+
+      resources {
+         srcDir 'src-lara'
+         srcDir 'src-lara-base'
+         srcDir 'src-js'		 
+      }
+	  
+   }   
+}
