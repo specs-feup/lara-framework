@@ -36,10 +36,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.Utils.EnumCodec;
 import org.suikasoft.jOptions.gui.panels.option.FilePanel;
 
-import com.google.gson.Gson;
-
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.properties.SpecsProperties;
 
 public class LaraIKeyFactory {
 
@@ -177,28 +174,35 @@ public class LaraIKeyFactory {
                 return file;
             }
 
-            File currentFile = file;
+            File currentFile = JOptionKeys.getContextPath(file, dataStore);
 
+            /*
+            File currentFile = file;
             // System.out.println("CUSTOM GETTER - CURRENT FOLDER:" +
             // dataStore.getTry(JOptionKeys.CURRENT_FOLDER_PATH));
             // System.out.println("CUSTOM GETTER - MAKE RELATIVE:" + dataStore.get(JOptionKeys.USE_RELATIVE_PATHS));
-
+            
+            
+            
+            
             // If it has a working folder set
             Optional<String> workingFolder = dataStore.get(JOptionKeys.CURRENT_FOLDER_PATH);
             if (workingFolder.isPresent()) {
                 // If path is not absolute, create new file with working folder as parent
-
+            
                 if (!currentFile.isAbsolute()) {
                     File parentFolder = new File(workingFolder.get());
                     currentFile = new File(parentFolder, currentFile.getPath());
                 }
-
+            
             }
+            */
             // System.out.println("CUSTOM GET FOLDER:" + dataStore.getTry(JOptionKeys.CURRENT_FOLDER_PATH));
 
             currentFile = processPath(selectionMode != JFileChooser.FILES_ONLY, create, currentFile);
 
             // If relative paths is enabled, make relative path with working folder.
+            Optional<String> workingFolder = dataStore.get(JOptionKeys.CURRENT_FOLDER_PATH);
             if (workingFolder.isPresent() && dataStore.get(JOptionKeys.USE_RELATIVE_PATHS)) {
                 currentFile = new File(SpecsIo.getRelativePath(currentFile, new File(workingFolder.get())));
             }
@@ -291,51 +295,7 @@ public class LaraIKeyFactory {
     }
 
     public static String customGetterLaraArgs(String args, DataStore dataStore) {
-        String finalArgs = args;
-        String trimmedArgs = args.strip();
-
-        if (trimmedArgs.isEmpty()) {
-            return args;
-        }
-
-        // Check if args is an existing JSON or properties file
-        if (!trimmedArgs.startsWith("{")) {
-            var file = new File(trimmedArgs);
-            if (SpecsIo.getExtension(file).equals("json")) {
-                if (!file.isFile()) {
-                    throw new RuntimeException(
-                            "Passed a JSON file '" + file + "' as aspect arguments, but file does not exist.");
-                }
-
-                return SpecsIo.read(file);
-            } else if (SpecsIo.getExtension(file).equals("properties")) {
-                if (!file.isFile()) {
-                    throw new RuntimeException(
-                            "Passed a properties file '" + file + "' as aspect arguments, but file does not exist.");
-                }
-
-                return SpecsProperties.newInstance(file).toJson();
-            }
-        }
-
-        // Fix curly braces
-        if (!trimmedArgs.startsWith("{")) {
-            finalArgs = "{" + finalArgs;
-        }
-
-        if (!trimmedArgs.endsWith("}")) {
-            finalArgs = finalArgs + "}";
-        }
-
-        // Sanitize
-        var gson = new Gson();
-        try {
-            return gson.toJson(gson.fromJson(finalArgs, Object.class));
-        } catch (Exception e) {
-            throw new RuntimeException("Passed invalid JSON as argument: '" + args + "'", e);
-        }
-
-        // return finalArgs;
+        return args.strip();
     }
 
 }

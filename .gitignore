@@ -19,6 +19,9 @@ RemoteSystemsTempFiles/
 # Custom ignores #
 ##################
 
+.gradle/
+build/
+
 tomJava/
 .svn/
 sf.eclipse.javacc.prefs

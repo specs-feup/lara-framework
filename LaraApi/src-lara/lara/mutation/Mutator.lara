@@ -86,6 +86,13 @@ Mutator.prototype.restore = function() {
 	this._restorePrivate();
 }
 
+/**
+ * The number of mutations this mutator will apply
+ */
+Mutator.prototype.getTotalMutantions = function() {
+	return 1;
+}
+
 
 /*** TO IMPLEMENT ***/
 

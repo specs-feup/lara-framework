@@ -9,12 +9,15 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=LaraDoc&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/GsonPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LanguageSpecification"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GsonPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WeaverInterface"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

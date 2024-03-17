@@ -14,11 +14,14 @@
 package org.lara.interpreter.weaver.generator.generator;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
+
+import pt.up.fe.specs.util.SpecsCheck;
 
 public abstract class BaseGenerator {
 
@@ -38,6 +41,7 @@ public abstract class BaseGenerator {
     private boolean generated;
     private boolean json;
     private boolean defs;
+    private String concreteClassesPrefix;
 
     public BaseGenerator() {
 
@@ -95,6 +99,7 @@ public abstract class BaseGenerator {
         setGenerated(false);
         setJson(false);
         setDefs(false);
+        setConcreteClassesPrefix(null);
     }
 
     /**
@@ -103,6 +108,11 @@ public abstract class BaseGenerator {
      * @param baseGenerator
      */
     private void init(BaseGenerator baseGenerator) {
+        if (baseGenerator == null) {
+            init();
+            return;
+        }
+
         setLanguageSpecificationOld(baseGenerator.languageSpecificationOld);
         setOutPackage(baseGenerator.getOutPackage());
         setOutDir(baseGenerator.getOutDir());
@@ -266,7 +276,7 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Get the generic type of the join points
+     * Get the base AST node.
      * 
      * @return
      */
@@ -275,7 +285,21 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Set the generic type of the join points
+     * Get the base AST node name.
+     * 
+     * @return
+     */
+    public String getNodeName() {
+        var nodeNames = nodeType.split("\\.");
+
+        SpecsCheck.checkArgument(nodeNames.length > 0, () -> "Expected node type '" + nodeType
+                + "' to result in one or more names: " + Arrays.asList(nodeNames));
+
+        return nodeNames[nodeNames.length - 1];
+    }
+
+    /**
+     * Set the base AST node.
      * 
      * @param nodeType
      */
@@ -394,4 +418,24 @@ public abstract class BaseGenerator {
     public boolean hasDefs() {
         return defs;
     }
+
+    /**
+     * @return the concreteClassesPrefix
+     */
+    public String getConcreteClassesPrefix() {
+        return concreteClassesPrefix;
+    }
+
+    public boolean isTemplatedGenerator() {
+        return concreteClassesPrefix != null;
+    }
+
+    /**
+     * @param concreteClassesPrefix
+     *            the concreteClassesPrefix to set
+     */
+    public void setConcreteClassesPrefix(String concreteClassesPrefix) {
+        this.concreteClassesPrefix = concreteClassesPrefix;
+    }
+
 }

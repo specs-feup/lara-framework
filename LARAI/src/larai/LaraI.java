@@ -64,6 +64,7 @@ import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
+import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
@@ -367,6 +368,9 @@ public class LaraI {
             DataStore dataStore;
             boolean success;
             boolean isRunningGui;
+
+            SpecsLogs.debug("Launching weaver in mode " + mode);
+
             switch (mode) {
             // case UNIT_TEST:
             // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
@@ -685,15 +689,24 @@ public class LaraI {
             throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
         }
 
-        boolean isWorking = weaver.begin();
+        try {
+            boolean isWorking = weaver.begin();
+            long end = getCurrentTime() - begin;
+            getWeavingProfile().report(ReportField.INIT_TIME, (int) end);
+            out.println(MessageConstants.getElapsedTimeMessage(end));
 
-        long end = getCurrentTime() - begin;
-        getWeavingProfile().report(ReportField.INIT_TIME, (int) end);
-        out.println(MessageConstants.getElapsedTimeMessage(end));
+            if (!isWorking) {
+                finish(engine);
+                return;
+            }
 
-        if (!isWorking) {
+        } catch (Exception e) {
             finish(engine);
-            return;
+            throw new LaraIException(options.getLaraFile().getName(), "Exception while calling weaver begin() method",
+                    e);
+            // SpecsLogs.info("Exception while calling weaver begin(): " + e.getMessage());
+            // finish(engine);
+            // return;
         }
 
         try {
@@ -703,11 +716,10 @@ public class LaraI {
 
             // If JS file
             if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
+
                 // If aspect arguments present, load them to object laraArgs
                 loadAspectArguments();
-
                 interpreter.executeMainAspect(options.getLaraFile());
-
                 postMainJsExecution();
 
                 // Close weaver
@@ -715,10 +727,13 @@ public class LaraI {
             }
             // If LARA file
             else {
-                compile(weaverEngine.getLanguageSpecificationV2());
-                startAspectIR();
-                final StringBuilder mainCall = interpreter.interpretLara(asps);
-                interpreter.executeMainAspect(mainCall);
+                var laraJsCode = SpecsSystem.executeOnThreadAndWait(() -> {
+                    var laraCompiler = new LaraCompiler(weaverEngine.getLanguageSpecificationV2()).setAddMain(true);
+                    return laraCompiler.compile(options.getLaraFile());
+                });
+                // System.out.println("CODE:\n" + laraJsCode);
+                interpreter.executeMainAspect(laraJsCode, JsFileType.NORMAL,
+                        options.getLaraFile().getAbsolutePath() + "->js");
             }
 
             String main = options.getMainAspect();
@@ -976,7 +991,6 @@ public class LaraI {
 
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     laraImport.getFilename() + " (LARA import '" + importName + "')");
-
         }
 
     }

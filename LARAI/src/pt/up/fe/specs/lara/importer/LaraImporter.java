@@ -139,7 +139,7 @@ public class LaraImporter {
      */
     private Set<String> buildNpmImports() {
         return larai.getWeaverEngine().getNpmResources().stream()
-                .map(LaraResourceProvider::getOriginalResource)
+                .map(LaraResourceProvider::getFileLocation)
                 .collect(Collectors.toSet());
     }
 

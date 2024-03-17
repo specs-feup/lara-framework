@@ -1,0 +1,63 @@
+plugins {
+ 	id 'distribution'
+}
+
+// Java project
+apply plugin: 'java'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+
+// Repositories providers
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	implementation "junit:junit:4.11"     
+
+	implementation ':SpecsUtils'
+	implementation ':tdrcLibrary'
+	implementation ':LaraUtils'
+	
+
+	implementation group: 'org.antlr', name: 'antlr4', version: '4.5.2-1'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'	
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.1'	
+	implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
+}
+
+java {
+	withSourcesJar()
+}
+
+// Project sources
+sourceSets {
+   main {
+      java {
+         srcDir 'src'
+         srcDir 'test' // TODO: There is a dependency in WeaverGenerator to classes in this folder		 
+      }
+
+	  resources {
+		srcDir 'resources'
+	  }      
+   }
+	
+   
+   test {
+      java {
+         srcDir 'test'
+      }
+	  
+	  resources {
+		srcDir 'resources'
+	  }
+   }
+   
+}

@@ -85,7 +85,7 @@ public class ASTVariableDeclaration extends SimpleNode {
         @SuppressWarnings("unchecked")
         final HashMap<String, Variable> otherVars = (HashMap<String, Variable>) obj2;
         if (getChildren()[0] instanceof ASTIdentifier) {
-            final String varName = getId();
+            final String varName = getIdName();
             /*
              * if(vars.containsKey(varName)) throw newException("Variable '"
              * +varName+"' is already declared"); /
@@ -129,7 +129,7 @@ public class ASTVariableDeclaration extends SimpleNode {
     @Override
     public void toXML(Document doc, Element parent) {
         final SimpleNode init = jjtGetNumChildren() > 1 ? getChild(1) : null;
-        AspectIRFactory.varDeclExprToXML(doc, parent, getId(), init, type);
+        AspectIRFactory.varDeclExprToXML(doc, parent, getIdName(), init, type);
         //// final Variable var = lookupNoError(id.getName());
         // varDeclToXML(doc, parent, var); // <--replace this invocation!
     }
@@ -145,7 +145,7 @@ public class ASTVariableDeclaration extends SimpleNode {
 
     }
 
-    public String getId() {
+    public String getIdName() {
         ASTIdentifier id = (ASTIdentifier) jjtGetChild(0);
         return id.getName();
     }

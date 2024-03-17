@@ -153,4 +153,9 @@ public class LaraApiTest {
     public void testJavaTypes() {
         newTester().test("util/JavaTypesTest.js");
     }
+
+    @Test
+    public void testRandom() {
+        newTester().test("util/RandomTest.js");
+    }
 }

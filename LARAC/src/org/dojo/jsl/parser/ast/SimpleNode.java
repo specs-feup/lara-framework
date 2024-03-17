@@ -714,6 +714,10 @@ public class SimpleNode implements Node {
                 + ":" + jjtGetLastToken().endColumn;
         el.setAttribute("coord", coordStr);
     }
+
+    public int getId() {
+        return id;
+    }
 }
 
 /*

@@ -40,6 +40,7 @@ import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 
 public class JavaAbstractsGenerator extends BaseGenerator {
     private static final String INTERFACE_NAME = GenConstants.interfaceName();
@@ -73,19 +74,20 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private JavaClass weaverImplClass;
     private JavaClass weaverExceptionClass;
 
+    public JavaAbstractsGenerator(BaseGenerator baseGenerator) {
+        super(baseGenerator);
+
+        enums = new ArrayList<>();
+        abstractJoinPoints = new ArrayList<>();
+    }
+
     /**
      * Create the default JavaGenerator.<br>
      * <b>NOTE:</b> Please define the language specification before using {@link JavaAbstractsGenerator#generate()},
      * otherwise it will not work!
      */
     public JavaAbstractsGenerator() {
-        super();
-        init();
-    }
-
-    private void init() {
-        enums = new ArrayList<>();
-        abstractJoinPoints = new ArrayList<>();
+        this((BaseGenerator) null);
     }
 
     /**
@@ -95,8 +97,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      *            the language specification
      */
     public JavaAbstractsGenerator(LanguageSpecification langSpec) {
-        super();
-        init();
+        this();
         this.languageSpec(langSpec);
     }
 
@@ -107,8 +108,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      *            the folder location of the language specification
      */
     public JavaAbstractsGenerator(File langSpec) {
-        super();
-        init();
+        this();
         this.languageSpec(langSpec);
     }
 
@@ -119,14 +119,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      *            the name of the folder containing the language specification
      */
     public JavaAbstractsGenerator(String langSpec) {
-        super();
-        init();
+        this();
         this.languageSpec(langSpec);
-    }
-
-    public JavaAbstractsGenerator(BaseGenerator baseGenerator) {
-        super(baseGenerator);
-        init();
     }
 
     @Override
@@ -173,6 +167,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
                 }
             }
         }
+
     }
 
     private void setJavaTypes() {
@@ -222,6 +217,9 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      */
     @Override
     public void printCode() {// List<String> definedObjects, JavaClass abstrJPClass, JavaClass userClass,
+        SpecsLogs.info(
+                "Make sure to make this project import the following projects in order to work: jOptions, LanguageSpecification, LaraFramework, LARAI, SpecsUtils and WeaverInterface");
+
         // List<JavaClass> classes, JavaClass weaverAbstractClass, JavaClass weaverImplClass) {
         final File outDir = getOutDir();
 
@@ -240,6 +238,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
             Utils.generateToFile(outDir, javaE, true);
         }
         Utils.generateToFile(outDir, weaverExceptionClass, false);
+
     }
 
     /**

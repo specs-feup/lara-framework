@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringLines;
@@ -107,8 +108,8 @@ public class WeaverApiManager {
     }
 
     public static WeaverApiManager newInstance(WeaverEngine engine) {
-        // Get weaver id
-        var weaverId = engine.getNameAndBuild();
+        // Get weaver id, replace spaces with _
+        var weaverId = SpecsStrings.sanitizePath(engine.getNameAndBuild());
 
         // Check if this is a unique build, or just a testing build
         // var isIdUnique = SpecsSystem.getBuildNumber() != null;

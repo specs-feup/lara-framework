@@ -174,8 +174,7 @@ public class JoinpointUtils {
         // localScope.put(JoinpointUtils.EVAL_NAME, jp);
 
         final StringBuilder sb = new StringBuilder();
-        // final StringBuilder sb = new StringBuilder("with(Object.bindProperties({},_EVAL_)){"); //
-        // Object.bindProperties({},
+
         List<String> toClear = new ArrayList<>();
         toClear.add(JoinpointUtils.EVAL_NAME);
         for (int i = 0; i < filter.length; i++) {

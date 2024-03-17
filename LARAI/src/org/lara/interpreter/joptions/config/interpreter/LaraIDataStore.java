@@ -30,12 +30,14 @@ import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 
 import larai.LaraI;
 import larai.larabundle.LaraBundle;
@@ -46,6 +48,7 @@ import pt.up.fe.specs.lara.aspectir.Argument;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.utilities.StringList;
 
 /**
@@ -370,37 +373,89 @@ public class LaraIDataStore implements LaraiKeys {
         return false;
     }
 
+    /**
+     * Returns a JSON string representing the aspect arguments. If the value represents a json file, reads it before
+     * returning.
+     * 
+     * @return the aspect arguments as a JSON string
+     */
     public String getAspectArgumentsStr() {
         if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
 
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
 
-            // Can return directly, custom getter of ASPECT_ARGS already parses files and sanitizes JSON
-            return aspectArgs;
+            // [Old] Can return directly, custom getter of ASPECT_ARGS already parses files and sanitizes JSON
+            // [New] Disabled this, because if a json file is given as input, this prevents storing again the path
+            // to the JSON file (instead, it stores the contents of the json file itself
+            // return aspectArgs;
+
             // Parse aspect args (e.g., in case it is a file, sanitize)
-            // return parseAspectArgs(aspectArgs);
+            return parseAspectArgs(aspectArgs);
 
         }
         return "";
     }
 
-    // private static String parseAspectArgs(String aspectArgs) {
-    // // TODO: Not sure if this will work, the customGetter of ASPECT_ARGS already does some parsing and introduces
-    // // brackets {}
-    // // If string ends with '.properties', interpret as a path to a properties file
-    // if (aspectArgs.trim().endsWith(".properties")) {
-    // File properties = SpecsIo.existingFile(aspectArgs);
-    // return SpecsProperties.newInstance(properties).toJson();
-    // }
-    //
-    // return aspectArgs;
-    // }
+    private String parseAspectArgs(String aspectArgs) {
+        // Moved logic from customGetter of ASPECT_ARGS to here, to preserve storing the arguments as a JSON file
+
+        // In the end, we want to return a JSON string
+        var jsonString = aspectArgs;
+
+        // Check if an existing file was given as argument
+        var file = JOptionKeys.getContextPath(aspectArgs, dataStore);
+
+        if (file.isFile()) {
+
+            var extension = SpecsIo.getExtension(file).toLowerCase();
+
+            // Check if JSON
+            if (extension.equals("json")) {
+                jsonString = SpecsIo.read(file);
+            }
+
+            // Check if properties
+            else if (extension.equals("properties")) {
+                jsonString = SpecsProperties.newInstance(file).toJson();
+            } else {
+                // Throw exception
+                throw new RuntimeException("Invalid file format (" + aspectArgs
+                        + ") for aspect arguments. Supported formats: .json, .properties");
+            }
+
+        }
+
+        // String json before testing for curly braces
+        jsonString = jsonString.strip();
+
+        // Fix curly braces
+        if (!jsonString.startsWith("{")) {
+            jsonString = "{" + jsonString;
+        }
+
+        if (!jsonString.endsWith("}")) {
+            jsonString = jsonString + "}";
+        }
+
+        // Sanitize
+        var gson = new Gson();
+        try {
+            return gson.toJson(gson.fromJson(jsonString, Object.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Passed invalid JSON as argument: '" + aspectArgs + "'", e);
+        }
+
+    }
 
     public boolean isJavaScriptStream() {
         if (dataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)) {
             return dataStore.get(LaraiKeys.LOG_JS_OUTPUT);
         }
         return false;
+    }
+
+    public boolean disableWithKeywordInLaraJs() {
+        return dataStore.get(LaraiKeys.DISABLE_WITH_KEYWORD_IN_LARA_JS);
     }
 
     // public List<ResourceProvider> getLaraAPIs() {

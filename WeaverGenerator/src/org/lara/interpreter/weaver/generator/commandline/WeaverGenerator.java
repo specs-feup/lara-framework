@@ -19,6 +19,7 @@ import org.lara.interpreter.weaver.generator.commandline.WeaverGeneratorOptions.
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java2cpp.JavaImplGenerator;
+import org.lara.interpreter.weaver.generator.generator.templated.TemplatedGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.ast.LangSpecNode;
@@ -27,6 +28,7 @@ import org.lara.language.specification.ast.NodeFactory;
 import pt.up.fe.specs.util.DotRenderFormat;
 import pt.up.fe.specs.util.SpecsGraphviz;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsSystem;
 
 public class WeaverGenerator {
 
@@ -213,6 +215,7 @@ public class WeaverGenerator {
      */
     /**/
     public static void main(String[] args) {
+        SpecsSystem.programStandardInit();
 
         final WeaverGeneratorOptions opts = new WeaverGeneratorOptions();
 
@@ -231,7 +234,9 @@ public class WeaverGenerator {
         }
         final BaseGenerator generator;
         String optionValue;
-        if (cmdLine.hasOption(GeneratorOption.L.getOption())) {
+        if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
+            generator = new TemplatedGenerator(XMLSpecDir);
+        } else if (cmdLine.hasOption(GeneratorOption.L.getOption())) {
             optionValue = cmdLine.getOptionValue(GeneratorOption.L.getOption());
             if (optionValue.equals("java2cpp")) {
                 generator = new JavaImplGenerator(XMLSpecDir);
@@ -287,13 +292,15 @@ public class WeaverGenerator {
             generator.setDefs(true);
         }
 
+        if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
+            generator.setConcreteClassesPrefix(cmdLine.getOptionValue(GeneratorOption.C.getOption()));
+        }
+
         // if (cmdLine.hasOption(GeneratorOption.G.getOption())) {
         // generator.setShowGraph(true);
         // }
 
-        printReport(generator.getWeaverName(), generator.getOutPackage(), XMLSpecDir, generator.getOutDir(),
-                generator.isAbstractGetters(), generator.hasEvents(), generator.hasImplMode(), generator.getNodeType(),
-                generator.isJson(), generator.isShowGraph());
+        printReport(generator);
 
         // boolean generated = generate(weaverName, XMLSpecDir, outDir,
         // outPackage, abstractGetters, showGraph);
@@ -341,12 +348,12 @@ public class WeaverGenerator {
     private static void printReport(BaseGenerator generator) {
         printReport(generator.getWeaverName(), generator.getOutPackage(), null, generator.getOutDir(),
                 generator.isAbstractGetters(), generator.hasEvents(), generator.hasImplMode(), generator.getNodeType(),
-                generator.isJson(), generator.isShowGraph());
+                generator.isJson(), generator.isShowGraph(), generator.getConcreteClassesPrefix());
     }
 
     private static void printReport(String weaverName, String outPackage, File xMLSpecDir, File outDir,
             boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
-            boolean showGraph) {
+            boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
         report.append("Weaver name:   " + weaverName + "\n");
         report.append("Package:       " + outPackage + "\n");
@@ -359,6 +366,10 @@ public class WeaverGenerator {
         report.append("Abst. Getters: " + abstractGetters + "\n");
         report.append("Node type:     " + (generics == null ? "N/A" : generics) + "\n");
         report.append("Create JSON:   " + json + "\n");
+
+        if (concreteClassesPrefix != null) {
+            report.append("Concrete classes with prefix:   " + concreteClassesPrefix + "\n");
+        }
         // report.append("Show Graph: " + showGraph + "\n");
         System.out.println(report);
     }

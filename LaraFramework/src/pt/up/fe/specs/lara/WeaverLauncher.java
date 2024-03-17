@@ -14,10 +14,13 @@
 package pt.up.fe.specs.lara;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,11 +33,14 @@ import java.util.stream.IntStream;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
+import com.google.gson.Gson;
+
 import larai.LaraI;
 import pt.up.fe.specs.lara.doc.LaraDocLauncher;
 import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.CachedValue;
 
@@ -454,7 +460,7 @@ public class WeaverLauncher {
         var customThreadPool = threads > 0 ? new ForkJoinPool(threads) : new ForkJoinPool();
 
         // Choose executor
-        Function<String[], Boolean> clavaExecutor = weaverCommand.isEmpty() ? this::executeSafe
+        Function<String[], WeaverResult> weaverExecutor = weaverCommand.isEmpty() ? this::executeSafe
                 : weaverArgs -> this.executeOtherJvm(weaverArgs, weaverCommand, workingFolder);
 
         SpecsLogs.info("Launching " + args.length + " instances of weaver " + engine.getName()
@@ -487,9 +493,9 @@ public class WeaverLauncher {
             }
 
             // Launch tasks
-            List<ForkJoinTask<Boolean>> tasks = new ArrayList<>();
+            List<ForkJoinTask<WeaverResult>> tasks = new ArrayList<>();
             for (var weaverArgs : adaptedArgs) {
-                tasks.add(customThreadPool.submit(() -> clavaExecutor.apply(weaverArgs)));
+                tasks.add(customThreadPool.submit(() -> weaverExecutor.apply(weaverArgs)));
             }
 
             // Stop accepting tasks, allows threads to be reclaimed
@@ -497,7 +503,51 @@ public class WeaverLauncher {
 
             // Wait for tasks
             for (var task : tasks) {
-                task.get();
+                var result = task.get();
+
+                var e = result.getException().orElse(null);
+
+                if (e == null) {
+                    continue;
+                }
+
+                // If there is an exception, look for the results file and write an error json
+                try (StringWriter stringWriter = new StringWriter();
+                        PrintWriter printWriter = new PrintWriter(stringWriter)) {
+
+                    e.printStackTrace(printWriter);
+                    var stackTrace = stringWriter.toString();
+
+                    var taskArgs = result.getArgs();
+
+                    // Get JSON results file
+                    var indexOfR = taskArgs.length - 2;
+
+                    if (taskArgs[indexOfR] != "-r") {
+                        throw new RuntimeException(
+                                "Expected second to last argument to be '-r': " + Arrays.toString(taskArgs));
+                    }
+
+                    var resultsFile = taskArgs[indexOfR + 1];
+
+                    var results = new LinkedHashMap<String, Object>();
+                    var lastCause = SpecsSystem.getLastCause(e);
+                    var causeMessage = lastCause.getMessage() != null ? lastCause.getMessage() : "<no cause message>";
+                    results.put("error", SpecsStrings.escapeJson(causeMessage));
+                    results.put("args", args);
+                    results.put("stackTrace", SpecsStrings.escapeJson(stackTrace));
+
+                    // var resultsReturn = new HashMap<>();
+                    // // Must be inside an array
+                    // resultsReturn.put("output", "[" + new Gson().toJson(results) + "]");
+
+                    SpecsIo.write(new File(resultsFile), new Gson().toJson(results));
+
+                    SpecsLogs.info("Exception during weaver execution:\n" + stackTrace);
+                } catch (Exception ex) {
+                    SpecsLogs.info("Exception while retrieving error information: " + e);
+                    ex.printStackTrace();
+                }
             }
 
             // Arrays.asList(adaptedArgs).stream()
@@ -513,7 +563,6 @@ public class WeaverLauncher {
 
             // Find the file for each execution
             return collectResults(resultFiles);
-
             // return results.stream()
             // .filter(result -> result == false)
             // .findFirst()
@@ -539,24 +588,25 @@ public class WeaverLauncher {
                 results.add("{}");
                 continue;
             }
-
+            // System.out.println("CONTENTS:\n" + SpecsIo.read(resultFile));
             results.add(SpecsIo.read(resultFile));
         }
 
         return results.toArray(size -> new String[size]);
     }
 
-    private boolean executeSafe(String[] args) {
+    private WeaverResult executeSafe(String[] args) {
         try {
             // Create new WeaverEngine
             var weaverEngineConstructor = getDefaultConstructor();
-            return new WeaverLauncher(weaverEngineConstructor.newInstance()).launch(args);
+            var weaverLauncher = new WeaverLauncher(weaverEngineConstructor.newInstance());
+            return new WeaverResult(args, weaverLauncher.launch(args));
 
         } catch (Exception e) {
             // throw new RuntimeException("Could not execute", e);
-            SpecsLogs.info("Exception during weaver execution: " + e);
-            e.printStackTrace();
-            return false;
+            // SpecsLogs.info("Exception during weaver execution: " + e);
+            // e.printStackTrace();
+            return new WeaverResult(args, e);
         }
     }
 
@@ -574,7 +624,7 @@ public class WeaverLauncher {
         throw new RuntimeException("Could not find default constructor for WeaverEngine " + engine.getClass());
     }
 
-    private boolean executeOtherJvm(String[] args, List<String> weaverCommand, File workingDir) {
+    private WeaverResult executeOtherJvm(String[] args, List<String> weaverCommand, File workingDir) {
         try {
             // DEBUG
             // if (true) {
@@ -594,13 +644,11 @@ public class WeaverLauncher {
             // var result = SpecsSystem.run(newArgs, SpecsIo.getWorkingDir());
             var result = SpecsSystem.run(newArgs, workingDir);
 
-            return result == 0;
+            return new WeaverResult(args, result == 0);
 
             // return execute(args);
         } catch (Exception e) {
-            SpecsLogs.info("Exception during weaver execution: " + e);
-            e.printStackTrace();
-            return false;
+            return new WeaverResult(args, e);
         }
     }
 
