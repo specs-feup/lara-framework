@@ -28,6 +28,10 @@ Matisse.lara
 # Eclipse settings folder
 **/.settings/**
 
+# Build
+**/.gradle/*
+**/build/*
+
 #output/
 .idea/
 ### Default folder for executing applications
