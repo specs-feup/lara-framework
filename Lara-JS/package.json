@@ -56,6 +56,9 @@
     "url": "https://github.com/specs-feup/lara-framework/issues"
   },
   "homepage": "https://github.com/specs-feup/lara-framework#readme",
+  "engines": {
+    "node": ">=18.0"
+  },
   "dependencies": {
     "chokidar": "^3.5.3",
     "debug": "^4.3.4",

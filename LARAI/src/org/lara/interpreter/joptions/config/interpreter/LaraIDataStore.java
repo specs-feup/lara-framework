@@ -176,14 +176,16 @@ public class LaraIDataStore implements LaraiKeys {
         }
         if (dataStore.hasValue(LaraiKeys.LOG_FILE)) {
             OptionalFile logFile = dataStore.get(LaraiKeys.LOG_FILE);
-            if (logFile.isUsed()) {
+            if (larai != null && logFile.isUsed()) {
                 larai.out.addFileStream(logFile.getFile());
             }
         }
 
         if (dataStore.hasValue(LaraiKeys.VERBOSE)) {
             int level = dataStore.get(LaraiKeys.VERBOSE).ordinal();
-            larai.out.setLevel(level);
+            if (larai != null) {
+                larai.out.setLevel(level);
+            }
         }
 
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {

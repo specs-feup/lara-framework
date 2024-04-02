@@ -85,6 +85,12 @@ export function wrapJoinPoint(obj: any): any {
   }
 
   if (
+    JavaTypes.instanceOf(obj, "pt.up.fe.specs.jsengine.node.UndefinedValue")
+  ) {
+    return undefined;
+  }
+
+  if (
     JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
     !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")
   ) {

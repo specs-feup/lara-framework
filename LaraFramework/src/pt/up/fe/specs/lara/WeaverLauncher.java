@@ -55,6 +55,10 @@ public class WeaverLauncher {
 
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
+
+        // Hack: to avoid issue https://github.com/specs-feup/lara-framework/issues/38
+        engine.getApiManager();
+
         tasks = buildTaskMap();
         laraCompiler = new CachedValue<>(() -> new LaraCompiler(this.engine.getLanguageSpecificationV2()));
     }

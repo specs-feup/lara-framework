@@ -120,6 +120,9 @@ export default class WeaverLauncher {
               type: "array",
               default: [],
               defaultDescription: "none",
+            }).option("config-classic", {
+              describe: "Path to XML config file from Classic weaver",
+              type: "string",
             });
         },
         handler: (argv) => {
