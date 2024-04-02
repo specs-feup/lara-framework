@@ -114,6 +114,12 @@ export default class JavaTypes {
     static get CsvReader() {
         return JavaTypes.getType("pt.up.fe.specs.util.csv.CsvReader");
     }
+    static get CsvField() {
+        return JavaTypes.getType("pt.up.fe.specs.util.csv.CsvField");
+    }
+    static get CsvWriter() {
+        return JavaTypes.getType("pt.up.fe.specs.util.csv.CsvWriter");
+    }
     static get DataStore() {
         return JavaTypes.getType("org.suikasoft.jOptions.Interfaces.DataStore");
     }
@@ -155,6 +161,18 @@ export default class JavaTypes {
     }
     static get LARASystem() {
         return JavaTypes.getType("Utils.LARASystem");
+    }
+    static get ProcessOutputAsString() {
+        return JavaTypes.getType("pt.up.fe.specs.util.system.ProcessOutputAsString");
+    }
+    static get JsGear() {
+        return JavaTypes.getType("org.lara.interpreter.utils.JsGear");
+    }
+    static get ProgressCounter() {
+        return JavaTypes.getType("pt.up.fe.specs.util.utilities.ProgressCounter");
+    }
+    static get LineStream() {
+        return JavaTypes.getType("pt.up.fe.specs.util.utilities.LineStream");
     }
 }
 //# sourceMappingURL=JavaTypes.js.map

@@ -20,7 +20,7 @@ export default class ProcessExecutor {
   logErrorsOnly: boolean = false;
 
   // Private state
-  private lastOutput: any | undefined = undefined;
+  private lastOutput: JavaClasses.ProcessOutputAsString | undefined = undefined;
   private lastCommand: string[] | undefined = undefined;
   private _customReturnValue: number | undefined = undefined;
 
@@ -236,7 +236,7 @@ export default class ProcessExecutor {
       return undefined;
     }
 
-    return this.lastOutput.getOutput() as string;
+    return this.lastOutput.getOutput();
   }
 
   getReturnValue(): number | undefined {
@@ -255,22 +255,22 @@ export default class ProcessExecutor {
     return this.lastOutput.getReturnValue() as number;
   }
 
-  getStdOut() {
+  getStdOut(): string | undefined {
     if (this.lastOutput === undefined) {
       console.log("ProcessExecutor.getStdOut: no execution has been done yet");
       return undefined;
     }
 
-    return this.lastOutput.getStdOut();
+    return this.lastOutput.getStdOut() as string;
   }
 
-  getStdErr() {
+  getStdErr(): string | undefined {
     if (this.lastOutput === undefined) {
       console.log("ProcessExecutor.getStdErr: no execution has been done yet");
       return undefined;
     }
 
-    return this.lastOutput.getStdErr();
+    return this.lastOutput.getStdErr() as string;
   }
 
   // TODO: Implement for printToConsole, outputFile, append, timeUnit

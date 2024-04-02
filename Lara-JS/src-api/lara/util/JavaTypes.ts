@@ -24,20 +24,31 @@ export namespace JavaClasses {
   /* eslint-disable @typescript-eslint/no-empty-interface */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
-  export interface LaraSystemTools extends JavaClass {}
+  export interface LaraSystemTools extends JavaClass {
+    runCommand(
+      command: string | JavaClasses.List,
+      workingDir: string,
+      printToConsole: boolean,
+      timeoutNanos?: number
+    ): JavaClasses.ProcessOutputAsString;
+  }
   export interface LaraCli extends JavaClass {}
   export interface Uuid extends JavaClass {}
   export interface Gprofer extends JavaClass {}
   export interface JoinPoint extends JavaClass {}
-  export interface SpecsStrings extends JavaClass {}
+  export interface SpecsStrings extends JavaClass {
+    escapeJson(str: string): string;
+  }
   export interface SpecsSystem extends JavaClass {}
   export interface ApacheStrings extends JavaClass {}
   export interface StringLines extends JavaClass {}
   export interface LaraIo extends JavaClass {}
   export interface SpecsIo extends JavaClass {}
-  export interface System extends JavaClass {}
+  export interface System extends JavaClass {
+    nanoTime(): number;
+  }
   export interface File extends JavaClass {
-    getParentFile(): File;
+    getParentFile(): JavaClasses.File;
     getAbsolutePath(): string;
   }
   export interface List extends JavaClass {}
@@ -47,6 +58,8 @@ export namespace JavaClasses {
   export interface Object extends JavaClass {}
   export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
+  export interface CsvWriter extends JavaClasses.JavaClass {}
+  export interface CsvField extends JavaClasses.JavaClass {}
   export interface DataStore extends JavaClass {}
   export interface JOptionsUtils extends JavaClass {}
   export interface WeaverEngine extends JavaClass {}
@@ -61,6 +74,15 @@ export namespace JavaClasses {
   export interface SpecsPlatforms extends JavaClass {}
   export interface Runtime extends JavaClass {}
   export interface LARASystem extends JavaClass {}
+  export interface ProcessOutputAsString extends JavaClass {
+    getOutput(): string;
+  }
+  export interface JsGear extends JavaClass {
+    setJsOnAction(onActionCallback: (d: Record<string, any>) => void): boolean;
+    onAction(actionEvent: any): void;
+  }
+  export interface ProgressCounter extends JavaClasses.JavaClass {}
+  export interface LineStream extends JavaClasses.JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
 }
 
@@ -223,6 +245,18 @@ export default class JavaTypes {
     ) as JavaClasses.CsvReader;
   }
 
+  static get CsvField() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvField"
+    ) as JavaClasses.CsvField;
+  }
+
+  static get CsvWriter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvWriter"
+    ) as JavaClasses.CsvWriter;
+  }
+
   static get DataStore() {
     return JavaTypes.getType(
       "org.suikasoft.jOptions.Interfaces.DataStore"
@@ -297,5 +331,29 @@ export default class JavaTypes {
 
   static get LARASystem() {
     return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
+  }
+
+  static get ProcessOutputAsString() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.system.ProcessOutputAsString"
+    ) as JavaClasses.ProcessOutputAsString;
+  }
+
+  static get JsGear() {
+    return JavaTypes.getType("org.lara.interpreter.utils.JsGear") as {
+      new (...args: any[]): JavaClasses.JsGear;
+    };
+  }
+
+  static get ProgressCounter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.ProgressCounter"
+    ) as JavaClasses.ProgressCounter;
+  }
+
+  static get LineStream() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.LineStream"
+    ) as JavaClasses.LineStream;
   }
 }

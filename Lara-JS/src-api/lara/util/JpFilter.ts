@@ -1,7 +1,13 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
 import { laraGetter } from "../core/LaraCore.js";
 
-type JpFilterTypes = RegExp | ((str: string) => boolean) | string | boolean | number;
+type JpFilterTypes =
+  | RegExp
+  | ((str: string) => boolean)
+  | ((jp: LaraJoinPoint) => boolean)
+  | string
+  | boolean
+  | number;
 
 export type JpFilterRules = {
   [key: string]: JpFilterTypes;

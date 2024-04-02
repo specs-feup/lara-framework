@@ -142,7 +142,10 @@ function distributeAPIasJavaResources(
     Object.entries(resources)
       .filter(([key, value]) => value !== "index.js")
       .map(([key, value]) => {
-        let enumName = key.toUpperCase().replace(/\./g, "_");
+        let enumName = key
+          .toUpperCase()
+          .replace(/\./g, "_")
+          .replace(/\-/g, "_");
 
         // Check for repeated enum names
         if (enumNames.has(enumName)) {

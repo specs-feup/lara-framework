@@ -4,11 +4,11 @@ import { LaraJoinPoint } from "../../LaraJoinPoint.js";
  * Class that measures the energy spent when executing a section of code.
  */
 export default class EnergyBase<T extends LaraJoinPoint> {
-  filename: string;
+  filename: string | undefined;
   printUnit: boolean = true;
   print: boolean = true;
 
-  constructor(filename: string) {
+  constructor(filename?: string) {
     this.filename = filename;
   }
 

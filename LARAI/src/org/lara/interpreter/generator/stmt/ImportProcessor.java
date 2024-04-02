@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.api.LaraIo;
-import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.exception.AspectDefException;
 import org.lara.interpreter.exception.JavaImportException;
 import org.lara.interpreter.exception.ScriptImportException;
@@ -153,14 +152,6 @@ public class ImportProcessor {
      *
      */
     public void importAndInitialize() {
-
-        for (Class<?> importingClass : LaraApis.getImportableClasses()) {
-            importClassWithSimpleName(importingClass);
-        }
-
-        for (Class<?> importingClass : WeaverApis.getImportableClasses()) {
-            importClassWithSimpleName(importingClass);
-        }
 
         for (Class<?> importingClass : CLASSES_TO_IMPORT) {
             importClassWithSimpleName(importingClass);

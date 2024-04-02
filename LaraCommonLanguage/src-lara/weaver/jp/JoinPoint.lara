@@ -42,15 +42,14 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'joinPointType', {
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'parent', {
 	configurable: true,
 	get: function () { 
-		return (new JoinPoints()).getParent(this);
+		return LCLJoinPoints.getParent(this);
 	}
 });
 
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, '_children', {
 	configurable: true,
 	get: function () {
-		//return (new JoinPoints()).getChildren(this); 
-		return JoinPoints.getInstance().getChildren(this);
+		return LCLJoinPoints.getChildren(this);
 	}
 });
 
@@ -64,24 +63,7 @@ _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, 'children', {
 _lara_dummy_ = Object.defineProperty(JoinPoint.prototype, '_descendants', {
 	configurable: true,
 	get: function () {
-		return JoinPoints.getInstance().getDescendants(this);
-/*
-		accum = [];
-
-		this._descendantsPrivate(accum);
-*/	
-/*
-	    for(child of this.children){
-	    	accum.push(child);
-			for(var desc of child.descendants) {
-				accum.push(desc);
-			}	    	
-	    	//accum = accum.concat(child.descendants);
-	    }
-*/
-/*	    
-		return accum;
-*/		
+		return LCLJoinPoints.getDescendants(this);	
 	}
 });
 

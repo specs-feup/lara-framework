@@ -37,7 +37,7 @@ public class LaraCommonLang {
         api.add(() -> "weaver/jp/JoinPoint.lara");
         api.add(() -> "weaver/jp/CommonJoinPointsBase.lara");
         api.add(() -> "weaver/jp/JoinPointIndex.lara");
-        api.add(() -> "weaver/jp/JoinPointsCommonPath.lara");
+        api.add(() -> "weaver/jp/JoinPointsCommonPath.js");
         api.addAll(CommonLangGenerator.getGeneratedResources());
 
         return api;

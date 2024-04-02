@@ -5,6 +5,19 @@ import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverDataStore from "./util/WeaverDataStore.js";
 
+
+/**
+ * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
+ */
+let usingLaraCommonLanguage = false;
+
+/**
+ * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
+ */
+export function setUsingLaraCommonLanguage(value: boolean = false) {
+  usingLaraCommonLanguage = value;
+}
+
 /**
  * Contains utility methods related to the weaver.
  */
@@ -67,6 +80,11 @@ export default class Weaver {
    * @returns The name of the default attribute for the given join point type, or undefined if there is no default attribute
    */
   static getDefaultAttribute(joinPointType: string): string {
+    if (usingLaraCommonLanguage === true) {
+      return Java.type(
+        "pt.up.fe.specs.lara.commonlang.LaraCommonLang"
+      ).getDefaultAttribute(joinPointType);
+    }
     return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
   }
 

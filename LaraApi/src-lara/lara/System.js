@@ -1,15 +1,9 @@
-import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
-import JavaTypes from "./util/JavaTypes.js";
 import Io from "./Io.js";
-import { notImplemented, info } from "./core/LaraCore.js";
 import Platforms from "./Platforms.js";
+import { info } from "./core/LaraCore.js";
+import JavaTypes from "./util/JavaTypes.js";
+import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
 export default class System {
-    /**
-     * Returns the name of the platform where this code is executing
-     */
-    static getCurrentPlatform() {
-        notImplemented("getCurrentPlatform");
-    }
     static prepareExe(executable) {
         return JavaTypes.LARASystem.prepareExe(executable);
     }
@@ -59,7 +53,7 @@ export default class System {
      * @returns Can be undefined, null or the name of a file. If undefined, prints the output to the console; if null, does not print the output to the console; otherwise should be a string with the name of the file where the output will be written (in this case, no output is printed in the console).
      */
     static execute(command, workingDir = "./", printToConsole = this.defaultPrintToConsole, outputFile, append = false, timeout, timeunit = new TimeUnits(TimerUnit.SECONDS)) {
-        let timeoutNanos = null;
+        let timeoutNanos = undefined;
         if (timeout !== undefined) {
             timeoutNanos = timeunit.toNanos(timeout);
         }

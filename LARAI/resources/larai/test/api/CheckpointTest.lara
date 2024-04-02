@@ -1,6 +1,7 @@
 import lara.util.Checkpoint;
 import lara.Io;
 import lara.System;
+import lara.util.TimeUnits;
 
 
 aspectdef CheckpointTest
@@ -20,7 +21,7 @@ aspectdef CheckpointTest
 	checkpoint.save();
 	
 	// Check that checkpoint file exists
-	println("checkpoint exists: " + Io.isFile(checkpoint._getCheckpointFile()));
+	println("checkpoint exists: " + Io.isFile(checkpoint.getCheckpointFile()));
 	
 	// Change number
 	checkedObject.aNumber = 20;
@@ -31,7 +32,7 @@ aspectdef CheckpointTest
 	// Save immediatly, there should be no changes due to the interval
 	checkpoint.save();
 	
-	println("Is 10? " + Io.readJson(checkpoint._getCheckpointFile()).aNumber);
+	println("Is 10? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
 	
 	// Sleep for 1 second
 	System.sleep(1000);
@@ -40,10 +41,10 @@ aspectdef CheckpointTest
 	checkpoint.save();
 
 	// Check that number is saved
-	println("Is 20? " + Io.readJson(checkpoint._getCheckpointFile()).aNumber);
+	println("Is 20? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
 	
 	// Print saved object
-	printObject(Io.readJson(checkpoint._getCheckpointFile()));
+	printObject(Io.readJson(checkpoint.getCheckpointFile()));
 	
 	// Stop checkpoint
 	checkpoint.stop();

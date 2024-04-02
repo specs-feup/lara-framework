@@ -1,4 +1,5 @@
 import lara.units.EnergyUnit;
+import lara.units.SiModifier;
 
 aspectdef EnergyUnitTest
 
