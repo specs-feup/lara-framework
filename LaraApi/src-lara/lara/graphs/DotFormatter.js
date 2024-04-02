@@ -1,71 +1,90 @@
 class DotFormatter {
-  // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
-  #nodeAttrs;
+    // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
+    #nodeAttrs;
 
-  // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
-  #edgeAttrs;
+    // Array of objects that contains the properties 'attr' (string) and 'predicate' (function)
+    #edgeAttrs;
 
-  // Function that receives a node and returns the corresponding label. By default, call .toString() over the data
-  #nodeLabelFormatter;
+    // Map with selected layout options
+    #layoutOptions;
 
-  // Function that receives an edge and returns the corresponding label. By default, call .toString() over the data
-  #edgeLabelFormatter;
+    // Function that receives a node and returns the corresponding label. By default, call .toString() over the data
+    #nodeLabelFormatter;
 
-  constructor() {
-    this.#nodeAttrs = [];
-    this.#edgeAttrs = [];
+    // Function that receives an edge and returns the corresponding label. By default, call .toString() over the data
+    #edgeLabelFormatter;
 
-    this.#nodeLabelFormatter = (node) => node.data().toString();
-    this.#edgeLabelFormatter = (edge) => edge.data().toString();
-  }
 
-  static #sanitizeDotLabel(label) {
-    return label.replaceAll("\n", "\\l").replaceAll("\r", "");
-  }
+    constructor() {
+        this.#nodeAttrs = [];
+        this.#edgeAttrs = [];
+        this.#layoutOptions = new Map();
 
-  addNodeAttribute(attrString, predicate) {
-    if (predicate === undefined) {
-      predicate = (node) => true;
+        this.#nodeLabelFormatter = (node) => node.data().toString();
+        this.#edgeLabelFormatter = (edge) => edge.data().toString();
     }
 
-    this.#nodeAttrs.push({ attr: attrString, predicate: predicate });
-  }
-
-  addEdgeAttribute(attrString, predicate) {
-    if (predicate === undefined) {
-      predicate = (edge) => true;
+    static #sanitizeDotLabel(label) {
+        return label.replaceAll("\n", "\\l").replaceAll("\r", "");
     }
 
-    this.#edgeAttrs.push({ attr: attrString, predicate: predicate });
-  }
+    addNodeAttribute(attrString, predicate) {
+        if (predicate === undefined) {
+            predicate = (node) => true;
+        }
 
-  setNodeLabelFormatter(nodeLabelFormatter) {
-    this.#nodeLabelFormatter = nodeLabelFormatter;
-  }
+        this.#nodeAttrs.push({ attr: attrString, predicate: predicate });
+    }
 
-  setEdgeLabelFormatter(edgeLabelFormatter) {
-    this.#edgeLabelFormatter = edgeLabelFormatter;
-  }
+    addEdgeAttribute(attrString, predicate) {
+        if (predicate === undefined) {
+            predicate = (edge) => true;
+        }
 
-  getNodeAttributes(node) {
-    return this.#nodeAttrs
-      .filter((obj) => obj.predicate(node))
-      .map((obj) => obj.attr)
-      .join(" ");
-  }
+        this.#edgeAttrs.push({ attr: attrString, predicate: predicate });
+    }
 
-  getEdgeAttributes(edge) {
-    return this.#edgeAttrs
-      .filter((obj) => obj.predicate(edge))
-      .map((obj) => obj.attr)
-      .join(" ");
-  }
+    setLayoutOption(option, value) {
+        this.#layoutOptions.set(option, value);
+    }
 
-  getNodeLabel(node) {
-    return DotFormatter.#sanitizeDotLabel(this.#nodeLabelFormatter(node));
-  }
+    setNodeLabelFormatter(nodeLabelFormatter) {
+        this.#nodeLabelFormatter = nodeLabelFormatter;
+    }
 
-  getEdgeLabel(edge) {
-    return DotFormatter.#sanitizeDotLabel(this.#edgeLabelFormatter(edge));
-  }
+    setEdgeLabelFormatter(edgeLabelFormatter) {
+        this.#edgeLabelFormatter = edgeLabelFormatter;
+    }
+
+    getNodeAttributes(node) {
+        return this.#nodeAttrs
+            .filter((obj) => obj.predicate(node))
+            .map((obj) => obj.attr)
+            .join(" ");
+    }
+
+    getEdgeAttributes(edge) {
+        return this.#edgeAttrs
+            .filter((obj) => obj.predicate(edge))
+            .map((obj) => obj.attr)
+            .join(" ");
+    }
+
+    getLayoutOptions() {
+        let options = [];
+
+        this.#layoutOptions.forEach((option, val) => {
+            options.push(`${val}="${option}";`);
+        });
+
+        return options.join("\n");
+    }
+
+    getNodeLabel(node) {
+        return DotFormatter.#sanitizeDotLabel(this.#nodeLabelFormatter(node));
+    }
+
+    getEdgeLabel(edge) {
+        return DotFormatter.#sanitizeDotLabel(this.#edgeLabelFormatter(edge));
+    }
 }
