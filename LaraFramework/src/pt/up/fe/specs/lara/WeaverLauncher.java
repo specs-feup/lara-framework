@@ -55,6 +55,10 @@ public class WeaverLauncher {
 
     public WeaverLauncher(WeaverEngine engine) {
         this.engine = engine;
+
+        // Hack: to avoid issue https://github.com/specs-feup/lara-framework/issues/38
+        engine.getApiManager();
+
         tasks = buildTaskMap();
         laraCompiler = new CachedValue<>(() -> new LaraCompiler(this.engine.getLanguageSpecificationV2()));
     }
@@ -166,8 +170,7 @@ public class WeaverLauncher {
     }
 
     /**
-     * Launch Lara Interpreter with the given engine and the input arguments. If no
-     * arguments are given a GUI is
+     * Launch Lara Interpreter with the given engine and the input arguments. If no arguments are given a GUI is
      * launched.
      *
      * <p>
@@ -275,9 +278,8 @@ public class WeaverLauncher {
      * @param threads
      * @param weaverCommand
      * @param workingDir
-     * @return an array with the same size as the number if args, with strings
-     *         representing JSON objects that represent the outputs of the
-     *         execution. The order of the results is the same as the args
+     * @return an array with the same size as the number if args, with strings representing JSON objects that represent
+     *         the outputs of the execution. The order of the results is the same as the args
      */
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand, String workingDir) {
 
