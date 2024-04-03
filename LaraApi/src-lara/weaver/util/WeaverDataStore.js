@@ -73,11 +73,11 @@ export default class WeaverDataStore extends DataStore {
         this.put("include", fileList);
     }
     setTools(toolsPath) {
-        var toolsFile = JavaTypes.OptionalFile.newInstance(toolsPath);
+        const toolsFile = JavaTypes.OptionalFile.newInstance(toolsPath);
         this.put("tools", toolsFile);
     }
     setLogFile(logPath) {
-        var logFile = JavaTypes.OptionalFile.newInstance(logPath);
+        const logFile = JavaTypes.OptionalFile.newInstance(logPath);
         this.put("log", logFile);
     }
     getLogFile() {

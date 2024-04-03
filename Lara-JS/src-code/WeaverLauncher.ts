@@ -19,13 +19,13 @@ listenForTerminationSignals();
 export default class WeaverLauncher {
   debug!: Debug.Debugger;
 
-  #config!: WeaverConfiguration;
+  private config!: WeaverConfiguration;
 
-  #midExecution = false;
+  private midExecution = false;
 
   constructor(config: WeaverConfiguration) {
-    this.#config = config;
-    this.debug = Debug(`WeaverLauncher:${this.#config.weaverPrettyName}:main`);
+    this.config = config;
+    this.debug = Debug(`WeaverLauncher:${this.config.weaverPrettyName}:main`);
   }
 
   async execute(customArgs: string | undefined = undefined): Promise<void> {
@@ -38,7 +38,7 @@ export default class WeaverLauncher {
 
   protected main(args: Arguments): void {
     this.debug(
-      `${this.#config.weaverPrettyName} execution arguments: %O`,
+      `${this.config.weaverPrettyName} execution arguments: %O`,
       args
     );
     void this.executeWeaver(args);
@@ -66,8 +66,8 @@ export default class WeaverLauncher {
   }
 
   protected async executeWeaver(args: Arguments) {
-    if (this.#midExecution) return;
-    this.#midExecution = true;
+    if (this.midExecution) return;
+    this.midExecution = true;
     const activeProcess = Object.values(getActiveChildProcesses())[0];
 
     if (activeProcess?.exitCode === null) {
@@ -88,24 +88,24 @@ export default class WeaverLauncher {
       path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
     );
     child.send({
-      config: this.#config,
+      config: this.config,
       args,
     } as WeaverMessageFromLauncher);
 
     addActiveChildProcess(child);
-    this.#midExecution = false;
+    this.midExecution = false;
   }
 
   protected generateConfig(args: string | undefined = undefined) {
     return yargs(args ?? hideBin(process.argv))
-      .scriptName(this.#config.weaverName)
+      .scriptName(this.config.weaverName)
       .command({
         command: "$0 [script-file]",
-        describe: `Execute a ${this.#config.weaverPrettyName} script`,
+        describe: `Execute a ${this.config.weaverPrettyName} script`,
         builder: (yargs) => {
           return yargs
             .positional("script-file", {
-              describe: `Path to ${this.#config.weaverPrettyName} script file`,
+              describe: `Path to ${this.config.weaverPrettyName} script file`,
               type: "string",
             })
             .option("c", {
@@ -127,7 +127,7 @@ export default class WeaverLauncher {
         },
         handler: (argv) => {
           try {
-            console.log(`Executing ${this.#config.weaverPrettyName} script...`);
+            console.log(`Executing ${this.config.weaverPrettyName} script...`);
             void this.main(argv);
           } catch (error) {
             console.error(error);
@@ -136,17 +136,17 @@ export default class WeaverLauncher {
       })
       .command({
         command: "init",
-        describe: `Initialize a new ${this.#config.weaverPrettyName} project`,
+        describe: `Initialize a new ${this.config.weaverPrettyName} project`,
         handler: () => {
           // TODO: Implement
           console.log(
-            `Initializing new ${this.#config.weaverPrettyName} project...`
+            `Initializing new ${this.config.weaverPrettyName} project...`
           );
         },
       })
       .help()
       .showHelpOnFail(true)
       .strict()
-      .pkgConf(this.#config.weaverName);
+      .pkgConf(this.config.weaverName);
   }
 }

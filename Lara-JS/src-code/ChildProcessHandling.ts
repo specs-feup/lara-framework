@@ -37,14 +37,14 @@ export function handleExit(exitProcess = true): void {
     child.kill();
   }
   Promise.all(closingChildren)
-    .then((codes) => {
+    .then(() => {
       debug("Closed all child processes");
       if (exitProcess) {
         process.exit();
       }
     })
     .catch((err: Error) => {
-      debug(`Error closing child processes: ${err}`);
+      debug(`Error closing child processes: ${err.toString()}`);
     });
 }
 

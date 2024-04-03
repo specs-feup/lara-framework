@@ -7,7 +7,7 @@ import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 export default class Io {
   /**
    * @param object - object to check
-   * 
+   *
    * @returns true if the given object is a Java file, false otherwise.
    */
   static isJavaFile<T>(object: T): boolean {
@@ -15,11 +15,10 @@ export default class Io {
     return JavaTypes.instanceOf(object, "java.io.File");
   }
 
-
   /**
-   * 
+   *
    * @param path - Path for the file creation
-   * 
+   *
    * @returns new File object with path given
    */
   private static newFile(path: string | JavaClasses.File) {
@@ -30,13 +29,12 @@ export default class Io {
     return new JavaTypes.File(path.toString()) as JavaClasses.File;
   }
 
-
   /**
-   * 
+   *
    * @param base - Parent pathname
-   * @param path - Child pathname 
-   * 
-   * @returns a new File object from parent and child pathnames 
+   * @param path - Child pathname
+   *
+   * @returns a new File object from parent and child pathnames
    */
   private static newFileWithBase(
     base: string | JavaClasses.File,
@@ -57,28 +55,30 @@ export default class Io {
 
   /**
    * Creates a folder.
-   * 
+   *
    * @param fileOrBaseFolder - File object or path to the base folder
    * @param optionalFile - Optional child pathname or file, if absolute ignores fileorBaseFolder
-   * 
+   *
    * @returns the created folder
    */
-  static mkdir(fileOrBaseFolder: JavaClasses.File | string, optionalFile?: JavaClasses.File | string) {
+  static mkdir(
+    fileOrBaseFolder: JavaClasses.File | string,
+    optionalFile?: JavaClasses.File | string
+  ) {
     return JavaTypes.SpecsIo.mkdir(
       Io.getPath(fileOrBaseFolder, optionalFile) as string | JavaClasses.File
-      ) as JavaClasses.File;
+    ) as JavaClasses.File;
   }
 
-
   /**
-   * 
+   *
    * If folderName is undefined, returns the OS temporary folder.
    * If defined, creates a new folder inside the system's temporary folder and returns it.
    * @param folderName - Optional name for the temporaray folder
-   * 
+   *
    * @returns the OS temporary folder or the created folder
    */
-  static getTempFolder(folderName?: string): JavaClasses.File{
+  static getTempFolder(folderName?: string): JavaClasses.File {
     if (folderName === undefined) {
       return JavaTypes.SpecsIo.getTempFolder();
     }
@@ -93,17 +93,17 @@ export default class Io {
     return JavaTypes.SpecsIo.newRandomFolder();
   }
 
-
   /**
-  * 
-  * @param fileOrBaseFolder - File object or path to the base folder
-  * @param optionalFile - Optional child pathname or file, if absolute ignores fileorBaseFolder
-  * 
-  * @returns new File object with path given
-  */
-  static getPath(fileOrBaseFolder: string | JavaClasses.File,
-     optionalFile?: JavaClasses.File | string): JavaClasses.File {
-    
+   *
+   * @param fileOrBaseFolder - File object or path to the base folder
+   * @param optionalFile - Optional child pathname or file, if absolute ignores fileorBaseFolder
+   *
+   * @returns new File object with path given
+   */
+  static getPath(
+    fileOrBaseFolder: string | JavaClasses.File,
+    optionalFile?: JavaClasses.File | string
+  ): JavaClasses.File {
     if (optionalFile === undefined) {
       return Io.newFile(fileOrBaseFolder);
     }
@@ -119,7 +119,7 @@ export default class Io {
   /**
    * @param fileOrBaseFolder - File object or path to the base folder
    * @param optionalFile - Optional child pathname or file
-   * 
+   *
    * @returns the absolute path of the given file
    */
   static getAbsolutePath(
@@ -134,15 +134,13 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param baseFolder - File object or path to the base folder
    * @param args - Patterns to match
-   * 
+   *
    * @returns the paths (files and folders) in the given folder, corresponding to the given base folder and argument patterns.
    */
   static getPaths(baseFolder: string | JavaClasses.File, ...args: string[]) {
-    
-
     if (baseFolder === undefined) throw "base Folder is undefined";
 
     const baseFolderFile = Io.getPath(baseFolder);
@@ -163,13 +161,12 @@ export default class Io {
         false,
         "FILES_AND_FOLDERS"
       );
-      
+
       for (const file of foundFiles.toArray()) {
         files.push(file);
       }
-
     }
-    
+
     return files;
   }
 
@@ -177,7 +174,7 @@ export default class Io {
    *
    * @param baseFolder - File object or path to the base folder
    * @param args - Patterns to match
-   * 
+   *
    * @returns the folders in the given folder, corresponding to the given base folder and argument patterns.
    */
   static getFolders(baseFolder: string | JavaClasses.File, ...args: string[]) {
@@ -200,7 +197,7 @@ export default class Io {
    * @param baseFolder - File object or path to the base folder
    * @param pattern - Pattern to match
    * @param isRecursive - If true, search recursively inside the folder
-   * 
+   *
    * @returns the files inside the given folder that respects the given pattern.
    */
   static getFiles(
@@ -240,10 +237,13 @@ export default class Io {
   /**
    * @param fileOrBaseFolder - File object or path to the base folder
    * @param optionalFile - Optional child pathname or file
-   * 
+   *
    * @returns a List with a string for each line of the given file
    */
-  static readLines(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: JavaClasses.File | string) {
+  static readLines(
+    fileOrBaseFolder: string | JavaClasses.File,
+    optionalFile?: JavaClasses.File | string
+  ) {
     return JavaTypes.LaraIo.readLines(
       Io.getPath(fileOrBaseFolder, optionalFile)
     ) as string[];
@@ -252,10 +252,13 @@ export default class Io {
   /**
    * @param fileOrBaseFolder - File object or path to the base folder
    * @param optionalFile - Optional child pathname or file
-   * 
+   *
    * @returns if the delete operation on the given file was successfull.
    */
-  static deleteFile(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: JavaClasses.File | string) {
+  static deleteFile(
+    fileOrBaseFolder: string | JavaClasses.File,
+    optionalFile?: JavaClasses.File | string
+  ) {
     const file = Io.getPath(fileOrBaseFolder, optionalFile);
     return JavaTypes.LaraIo.deleteFile(file) as boolean;
   }
@@ -273,7 +276,7 @@ export default class Io {
    * Deletes a folder and its contents.
    *
    * @param folderPath - File object or path to the folder
-   * 
+   *
    * @returns true if both the contents and the folder could be deleted
    */
   static deleteFolder(folderPath: string | JavaClasses.File) {
@@ -283,9 +286,9 @@ export default class Io {
 
   /**
    * Deletes the contents of a folder.
-   * 
+   *
    * @param folderPath - File object or path to the folder
-   * 
+   *
    * @returns true if the content of the folder could be deleted
    */
   static deleteFolderContents(folderPath: string | JavaClasses.File) {
@@ -294,9 +297,9 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param folderPath - File object or path to the folder
-   * 
+   *
    * @returns true if and only if the file denoted by this abstract pathname exists and is a normal file; false otherwise
    */
   static isFile(path: string | JavaClasses.File) {
@@ -307,12 +310,12 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param folderPath - File object or path to the folder
-   * 
+   *
    * @returns true if and only if the file denoted by this abstract pathname exists and is a folder; false otherwise
    */
-  static isFolder(path: string | JavaClasses.File){
+  static isFolder(path: string | JavaClasses.File) {
     if (typeof path === "string") {
       path = Io.getPath(path);
     }
@@ -330,20 +333,24 @@ export default class Io {
     JSONtoFile(path, object);
   }
 
-
   /**
-   * 
+   *
    * @param filepath - path to the file to be copied
    * @param destination - path to the destination file
-   * 
+   *
    * @returns true if the file was copied successfully
    */
 
-  static copyFile(filepath: string| JavaClasses.File, destination: string | JavaClasses.File) {
+  static copyFile(
+    filepath: string | JavaClasses.File,
+    destination: string | JavaClasses.File
+  ) {
+    if (filepath === undefined) throw new Error("Value filepath is undefined");
 
-    if(typeof filepath === undefined) throw "Value filepath is undefined"
-
-    if(!Io.isFile(filepath)) throw "Io.copyFile: given filepath '" + filepath + "' is not a file"
+    if (!Io.isFile(filepath))
+      throw new Error(
+        `Io.copyFile: given filepath '${filepath}' is not a file`
+      );
 
     return JavaTypes.SpecsIo.copy(
       Io.getPath(filepath),
@@ -351,20 +358,23 @@ export default class Io {
     ) as boolean;
   }
 
-
   /**
-   * 
+   *
    * @param filepath - path to the file to be copied
    * @param destination - path to the destination file
    * @param verbose - enables additional information
-   * 
+   *
    * @returns true if the folder was copied successfully
    */
-  static copyFolder(filepath: string | JavaClasses.File, destination: string, verbose = false) {
+  static copyFolder(
+    filepath: string | JavaClasses.File,
+    destination: string,
+    verbose = false
+  ) {
+    if (filepath === undefined) throw new Error("Value filepath is undefined");
 
-    if (filepath === undefined) throw "Value filepath is undefined";
-
-    if(destination === undefined) throw "Value destination is undefined";
+    if (destination === undefined)
+      throw new Error("Value destination is undefined");
 
     return JavaTypes.SpecsIo.copyFolder(
       Io.getPath(filepath),
@@ -374,9 +384,9 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param path - base path
-   * 
+   *
    * @returns the given path, without extension.
    *
    */
@@ -385,9 +395,9 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param path - base path
-   * 
+   *
    * @returns the extension of the given path.
    *
    */
@@ -401,7 +411,10 @@ export default class Io {
    *
    * @returns The file to where the contents where written.
    */
-  static writeFile(path: string | JavaClasses.File, content: string): JavaClasses.File {
+  static writeFile(
+    path: string | JavaClasses.File,
+    content: string
+  ): JavaClasses.File {
     const file: JavaClasses.File = Io.newFile(path);
     JavaTypes.SpecsIo.write(file, content);
     return file;
@@ -419,10 +432,10 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param path - The path of the file to append
    * @param content - The content to append
-   * 
+   *
    * @returns true if the content was appended successfully
    */
 
@@ -432,17 +445,17 @@ export default class Io {
   }
 
   /**
-   * 
+   *
    * @param targetFile -  The target file for which the relative path is calculated.
    * @param baseFile - The base file against which the relative path is calculated
-   * 
+   *
    * @returns the path of 'targetFile', relative to 'baseFile' or undefined if the file does not share a common ancestor with baseFile.
    */
   static getRelativePath(
     targetFile: string | JavaClasses.File,
     baseFile: string | JavaClasses.File
   ) {
-    const relativePath= JavaTypes.SpecsIo.getRelativePath(
+    const relativePath = JavaTypes.SpecsIo.getRelativePath(
       Io.getPath(targetFile),
       Io.getPath(baseFile)
     ) as string;
@@ -468,26 +481,28 @@ export default class Io {
     return JavaTypes.File.separator;
   }
 
-
   /**
-   * 
+   *
    * @param fileOrBaseFolder - File object or path to the file
    * @param optionalFile - Optional child pathname or file
-   * 
+   *
    * @returns the MD5 checksum of the file represented as a hexadecimal string.
-   * 
+   *
    * @throws RuntimeException if there are any issues while reading the file or calculating the MD5 checksum
    */
 
-  static md5(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: string | JavaClasses.File): string {
+  static md5(
+    fileOrBaseFolder: string | JavaClasses.File,
+    optionalFile?: string | JavaClasses.File
+  ): string {
     return JavaTypes.SpecsIo.getMd5(Io.getPath(fileOrBaseFolder, optionalFile));
   }
 
- /**
-  * 
-  * @returns the current working directory as a File object.
-  */
-  static getWorkingFolder(): JavaClasses.File{
+  /**
+   *
+   * @returns the current working directory as a File object.
+   */
+  static getWorkingFolder(): JavaClasses.File {
     return JavaTypes.SpecsIo.getWorkingDir();
   }
 

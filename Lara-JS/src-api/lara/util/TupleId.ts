@@ -108,7 +108,7 @@ export default class TupleId {
     // If undefined, or not a tuples object, create a new one and add it
     if (
       (tuple[element] as LaraTupleChain | undefined) === undefined ||
-      (tuple[element] as any)["!tuple_id"] === undefined
+      (tuple[element] as LaraTupleChain)["!tuple_id"] === undefined
     ) {
       tuple[element] = this.newTuple();
     }

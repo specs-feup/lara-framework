@@ -27,12 +27,14 @@ export default class Combinations extends SequentialCombinations {
   }
 
   /**
-   * @returns {elements[]} the next sequence
+   * @returns The next sequence
    */
   next() {
     // Check if there are combinations left
     if (!this.hasNext()) {
-      throw `Combinations.next: Reached maximum number of combinations (${this.numCombinations})`;
+      throw new Error(
+        `Combinations.next: Reached maximum number of combinations (${this.numCombinations})`
+      );
     }
 
     // Get new values, until one with length of combinationSize appear

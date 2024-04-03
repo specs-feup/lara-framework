@@ -77,12 +77,12 @@ export default class Io {
         return JavaTypes.SpecsIo.newRandomFolder();
     }
     /**
-    *
-    * @param fileOrBaseFolder - File object or path to the base folder
-    * @param optionalFile - Optional child pathname or file, if absolute ignores fileorBaseFolder
-    *
-    * @returns new File object with path given
-    */
+     *
+     * @param fileOrBaseFolder - File object or path to the base folder
+     * @param optionalFile - Optional child pathname or file, if absolute ignores fileorBaseFolder
+     *
+     * @returns new File object with path given
+     */
     static getPath(fileOrBaseFolder, optionalFile) {
         if (optionalFile === undefined) {
             return Io.newFile(fileOrBaseFolder);
@@ -264,10 +264,10 @@ export default class Io {
      * @returns true if the file was copied successfully
      */
     static copyFile(filepath, destination) {
-        if (typeof filepath === undefined)
-            throw "Value filepath is undefined";
+        if (filepath === undefined)
+            throw new Error("Value filepath is undefined");
         if (!Io.isFile(filepath))
-            throw "Io.copyFile: given filepath '" + filepath + "' is not a file";
+            throw new Error(`Io.copyFile: given filepath '${filepath}' is not a file`);
         return JavaTypes.SpecsIo.copy(Io.getPath(filepath), Io.getPath(destination));
     }
     /**
@@ -280,9 +280,9 @@ export default class Io {
      */
     static copyFolder(filepath, destination, verbose = false) {
         if (filepath === undefined)
-            throw "Value filepath is undefined";
+            throw new Error("Value filepath is undefined");
         if (destination === undefined)
-            throw "Value destination is undefined";
+            throw new Error("Value destination is undefined");
         return JavaTypes.SpecsIo.copyFolder(Io.getPath(filepath), Io.getPath(destination), verbose);
     }
     /**

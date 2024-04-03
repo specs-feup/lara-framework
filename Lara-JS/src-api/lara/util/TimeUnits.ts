@@ -61,34 +61,34 @@ const timerUnitData: Record<TimerUnit, TimerUnitI> = {
 };
 
 export default class TimeUnits {
-  #unit: TimerUnit;
+  private timerUnit: TimerUnit;
 
   constructor(unit: TimerUnit = TimerUnit.MILLISECONDS) {
-    this.#unit = unit;
+    this.timerUnit = unit;
   }
 
   get unit() {
-    return this.#unit;
+    return this.timerUnit;
   }
 
   set unit(unit: TimerUnit) {
-    this.#unit = unit;
+    this.timerUnit = unit;
   }
 
   getUnitsString() {
-    return timerUnitData[this.#unit].unitString;
+    return timerUnitData[this.timerUnit].unitString;
   }
 
   getCppTimeUnit() {
-    return timerUnitData[this.#unit].cppTimeUnit;
+    return timerUnitData[this.timerUnit].cppTimeUnit;
   }
 
   getMagnitudeFactorFromSeconds() {
-    return timerUnitData[this.#unit].magnitudeFactorSeconds;
+    return timerUnitData[this.timerUnit].magnitudeFactorSeconds;
   }
 
   getMagnitudeFactorFromNanoseconds() {
-    return timerUnitData[this.#unit].magnitudeFactorNanoseconds;
+    return timerUnitData[this.timerUnit].magnitudeFactorNanoseconds;
   }
 
   toNanos(duration: number) {

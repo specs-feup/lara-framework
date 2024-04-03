@@ -197,8 +197,8 @@ export function isArray<T>(value: T) {
 export function toArray(objectWithLength: any) {
   //return Array.prototype.slice.call(objectWithLength);
 
-  var newArray = [];
-  for (var index in objectWithLength) {
+  const newArray = [];
+  for (const index in objectWithLength) {
     newArray.push(objectWithLength[index]);
   }
 
@@ -415,7 +415,6 @@ export function laraGetter(object: any, property: string) {
     for (let obj = object; obj !== null; obj = Object.getPrototypeOf(obj)) {
       const descriptor = Object.getOwnPropertyDescriptor(obj, property);
       if (descriptor !== undefined) {
-        let attributeValue: any = undefined;
         if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
           return descriptor.get?.call?.(object);
         } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
