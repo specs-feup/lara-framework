@@ -98,6 +98,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     PREDEFINEDSTRINGS_JS("lara/util/PredefinedStrings.js"),
     PRINTONCE_JS("lara/util/PrintOnce.js"),
     PROCESSEXECUTOR_JS("lara/util/ProcessExecutor.js"),
+    RANDOM_JS("lara/util/Random.js"),
     REPLACER_JS("lara/util/Replacer.js"),
     SEQUENTIALCOMBINATIONS_JS("lara/util/SequentialCombinations.js"),
     STRINGSET_JS("lara/util/StringSet.js"),
