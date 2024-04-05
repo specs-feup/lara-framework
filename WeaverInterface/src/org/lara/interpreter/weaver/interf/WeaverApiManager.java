@@ -128,14 +128,6 @@ public class WeaverApiManager {
         // Ensure there is an npm folder
         var npmFolder = SpecsIo.mkdir(baseFolder, NPM_FOLDERNAME);
 
-        // Ensure it has a package.json file
-        SpecsIo.write(new File(npmFolder, "package.json"), "{ \"type\" : \"module\" }\n");
-
-        File javaFolder = SpecsIo.mkdir(new File(npmFolder, "node_modules/java"));
-        SpecsIo.mkdir(new File(javaFolder, "api"));
-        SpecsIo.write(new File(javaFolder, "package.json"), "{ \"type\" : \"module\", \"main\": \"index.js\" }\n");
-        SpecsIo.write(new File(javaFolder, "index.js"), "export default {};\n");
-
         // Ensure it has a node_modules folder
         var nodeModulesFolder = SpecsIo.mkdir(npmFolder, NODE_MODULES_FOLDERNAME);
 
@@ -150,10 +142,19 @@ public class WeaverApiManager {
                 .collect(Collectors.toList());
 
         // Check if node_modules folder is ready for use, or needs to be prepared
+        // If not ready for use, contents are deleted first
         if (!isReadyForUse(nodeModulesFolder, resources)) {
             extractNpmResources(nodeModulesFolder, engine);
             SpecsLogs.msgInfo("Weaver API manager: extracting APIs");
         }
+
+        // Ensure it has a package.json file
+        SpecsIo.write(new File(npmFolder, "package.json"), "{ \"type\" : \"module\" }\n");
+
+        File javaFolder = SpecsIo.mkdir(new File(npmFolder, "node_modules/java"));
+        SpecsIo.mkdir(new File(javaFolder, "api"));
+        SpecsIo.write(new File(javaFolder, "package.json"), "{ \"type\" : \"module\", \"main\": \"index.js\" }\n");
+        SpecsIo.write(new File(javaFolder, "index.js"), "export default {};\n");
 
         return npmFolder;
     }
@@ -190,7 +191,6 @@ public class WeaverApiManager {
     }
 
     private static void extractNpmResources(File destination, WeaverEngine engine) {
-
         // Clean folder
         SpecsIo.deleteFolderContents(destination, true);
 

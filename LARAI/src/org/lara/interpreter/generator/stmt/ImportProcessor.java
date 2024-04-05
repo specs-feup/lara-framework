@@ -44,7 +44,6 @@ import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import Utils.LARASystem;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
@@ -194,8 +193,8 @@ public class ImportProcessor {
     }
 
     /**
-     * This method returns all classpaths to use in LARA This includes the current
-     * folder and all the jars in this folder
+     * This method returns all classpaths to use in LARA This includes the current folder and all the jars in this
+     * folder
      *
      * @param folder
      * @return
