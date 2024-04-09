@@ -61,6 +61,7 @@ export default function copyFolder(
   const copiedFiles = [];
 
   const files = fs.readdirSync(sourceDir);
+  fs.mkdirSync(destinationDir, { recursive: true });
 
   for (const file of files) {
     const sourcePath = path.join(sourceDir, file);
@@ -80,8 +81,8 @@ export default function copyFolder(
       );
 
       copiedFiles.push(...subDirectoryCopiedFiles);
-    } else if (file.endsWith(extension)) {
-      const targetFileName =
+    } else if (extension === undefined || file.endsWith(extension)) {
+      const targetFileName = extension === undefined ? file :
         file.substring(0, file.length - extension.length) + targetExtension;
 
       const destinationPath = path.join(destinationDir, targetFileName);
