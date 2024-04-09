@@ -67,6 +67,13 @@ function orderJoinpoints(unorderedJoinpoints) {
   return joinpoints;
 }
 
+/**
+ *
+ * @param {*} joinpoints
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @returns {ReturnType<convertJoinpoint>[]}
+ */
 function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
   let convertedJoinpoints = [];
 
@@ -79,6 +86,13 @@ function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
   return convertedJoinpoints;
 }
 
+/**
+ *
+ * @param {*} jp
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @returns { { name: string, originalName: string, tooltip: string, extends: string | undefined, attributes: ReturnType<convertJoinpointAttribute>[], actions: { name: string, tooltip: string, returnType: string, parameters: ReturnType<convertJoinpointActionParameter>[], overloads: never[] }[] }, defaultAttribute: string | undefined }
+ */
 function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   let attributes = [];
   let actions = [];
@@ -128,13 +142,14 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
       : undefined,
     attributes: attributes,
     actions: actions,
+    defaultAttribute: jp.defaultAttr,
   };
 }
 
 /**
  *
  * @param {string} notice
- * @returns
+ * @returns {string}
  */
 function convertDeprecationNotice(notice) {
   if (notice?.includes("DEPRECATED")) {
@@ -148,6 +163,13 @@ function convertDeprecationNotice(notice) {
   return capitalizeFirstLetter(notice)?.trim();
 }
 
+/**
+ *
+ * @param {*} attributeObject
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @returns { { name: string, type: string, default: string } }
+ */
 function convertJoinpointAttribute(
   attributeObject,
   joinpointNameSet,
@@ -162,6 +184,13 @@ function convertJoinpointAttribute(
   };
 }
 
+/**
+ *
+ * @param {*} parameterObject
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @returns { { name: string, type: string, default: string } }
+ */
 function convertJoinpointActionParameter(
   parameterObject,
   joinpointNameSet,
@@ -193,6 +222,16 @@ function convertJoinpointActionParameter(
   };
 }
 
+/**
+ *
+ * @param {Object} actionObject
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @param {Object[]} actions
+ * @param {Set<string>} actionNameSet
+ * @param {string} [overrideName=null]
+ * @returns
+ */
 function convertJoinpointAction(
   actionObject,
   joinpointNameSet,
@@ -276,6 +315,11 @@ function convertJoinpointAction(
   actions.push(convertedAction);
 }
 
+/**
+ *
+ * @param {Object[]} enums
+ * @returns {(ReturnType<convertEnum>)[]}
+ */
 function convertEnums(enums) {
   let convertedEnums = [];
 
@@ -286,6 +330,11 @@ function convertEnums(enums) {
   return convertedEnums;
 }
 
+/**
+ *
+ * @param {Object} e
+ * @returns { {name: string, extends: string, entries: string[]} }
+ */
 function convertEnum(e) {
   return {
     name: e.name,
@@ -296,11 +345,23 @@ function convertEnum(e) {
   };
 }
 
+/**
+ *
+ * @param {string} string
+ * @returns {string}
+ */
 export function capitalizeFirstLetter(string) {
   if (!string) return string;
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/**
+ *
+ * @param {string} typeString
+ * @param {Set<string>} joinpointNameSet
+ * @param {Set<string>} enumNameSet
+ * @returns {string}
+ */
 function interpretType(typeString, joinpointNameSet, enumNameSet) {
   // Detect array types
   if (typeString.endsWith("[]")) {

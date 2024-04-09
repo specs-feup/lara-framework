@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import copyFolder from "./copy-folder.js";
 
 const args = yargs(hideBin(process.argv))
   .scriptName("java-dist")
@@ -37,65 +38,13 @@ const args = yargs(hideBin(process.argv))
   .parse();
 
 distributeAPIasJavaResources(
-  copyFiles(args.jsSourceFolder, args.jsDestinationFolder, ".js"),
+  copyFolder(args.jsSourceFolder, args.jsDestinationFolder, ".js"),
   args.jsDestinationFolder,
   args.javaClassname,
   args.javaPackageName,
   path.join(args.javaDestinationFolder, args.javaClassname + ".java"),
   args.javaResourceNamespace
 );
-
-/**
- * Copied files will have .mjs extension.
- *
- * @param {string} sourceDir
- * @param {string} destinationDir
- * @param {string} extension
- * @returns
- */
-function copyFiles(
-  sourceDir,
-  destinationDir,
-  extension,
-  targetExtension = extension
-) {
-  const copiedFiles = [];
-
-  const files = fs.readdirSync(sourceDir);
-
-  for (const file of files) {
-    const sourcePath = path.join(sourceDir, file);
-
-    const fileStat = fs.statSync(sourcePath);
-
-    if (fileStat.isDirectory()) {
-      const newDestinationDir = path.join(destinationDir, file);
-
-      fs.mkdirSync(newDestinationDir, { recursive: true });
-
-      const subDirectoryCopiedFiles = copyFiles(
-        sourcePath,
-        newDestinationDir,
-        extension,
-        targetExtension
-      );
-
-      copiedFiles.push(...subDirectoryCopiedFiles);
-    } else if (file.endsWith(extension)) {
-      const targetFileName =
-        file.substring(0, file.length - extension.length) + targetExtension;
-
-      const destinationPath = path.join(destinationDir, targetFileName);
-
-      fs.copyFileSync(sourcePath, destinationPath);
-      console.log("Copied:", sourcePath, "->", destinationPath);
-
-      copiedFiles.push(destinationPath);
-    }
-  }
-
-  return copiedFiles;
-}
 
 /**
  * Generate the Java file with the resources
