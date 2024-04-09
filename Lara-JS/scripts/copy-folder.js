@@ -4,10 +4,11 @@ import fs from "fs";
 import path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import { fileURLToPath } from "url";
 
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   // This script is being executed directly
-  yargs(hideBin(process.argv))
+  const args = yargs(hideBin(process.argv))
     .scriptName("java-dist")
     .option("i", {
       alias: "inputFolder",
@@ -32,15 +33,14 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
     .help()
     .showHelpOnFail(true)
     .strict()
-    .parse()
-    .then((args) => {
-      copyFolder(
-        args.inputFolder,
-        args.outputFolder,
-        args.extension,
-        args.newExtension
-      );
-    });
+    .parse();
+
+  copyFolder(
+    args.inputFolder,
+    args.outputFolder,
+    args.extension,
+    args.newExtension
+  );
 }
 
 /**

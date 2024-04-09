@@ -102,10 +102,15 @@ export class Weaver {
           "org.lara.interpreter.cli.OptionsConverter"
         );
 
-        datastore = OptionsConverter.configFile2DataStore(javaWeaver, new JavaFile(path.resolve(args.configClassic)));
+        datastore = OptionsConverter.configFile2DataStore(
+          javaWeaver,
+          new JavaFile(path.resolve(args.configClassic))
+        );
         console.log(datastore);
       } catch (error) {
-        throw new Error("Failed to load Clava Classic configuration file:\n" + error);
+        throw new Error(
+          "Failed to load Clava Classic configuration file:\n" + error
+        );
       }
     } else {
       const JavaDataStore = java.import(
@@ -123,7 +128,7 @@ export class Weaver {
     javaWeaver.begin(
       fileList,
       new JavaFile(JavaWeaverClass.getWovenCodeFoldername()),
-      laraIDataStore.getWeaverArgs()
+      datastore
     );
     /* eslint-enable */
 
