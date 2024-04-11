@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 import larai.LaraI;
 import pt.up.fe.specs.gearman.GearmanUtils;
 import pt.up.fe.specs.gearman.specsworker.GenericSpecsWorker;
-import pt.up.fe.specs.gearman.utils.GearmanSecurityManager;
 
 public class WeaverServer {
 
@@ -46,7 +45,7 @@ public class WeaverServer {
     public void execute(String[] args) {
 
         // Set SecurityManager to catch potential System.exit() call from workers
-        System.setSecurityManager(new GearmanSecurityManager());
+        // System.setSecurityManager(new GearmanSecurityManager());
 
         // Create a new gearman system using 8 threads
         final Gearman gearman = Gearman.createGearman();

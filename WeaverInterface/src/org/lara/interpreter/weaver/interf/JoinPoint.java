@@ -614,6 +614,10 @@ public abstract class JoinPoint {
         return getJpChildrenStream().collect(Collectors.toList());
     }
 
+    public List<JoinPoint> getJpDescendants() {
+        return getJpDescendantsStream().toList();
+    }
+
     public Stream<JoinPoint> getJpDescendantsStream() {
         return getJpChildrenStream().flatMap(c -> c.getJpDescendantsAndSelfStream());
     }

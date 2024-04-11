@@ -41,7 +41,6 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.FilterExpression;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
-import Utils.LARASystem;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
@@ -50,6 +49,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
+import utils.LARASystem;
 
 public class ImportProcessor {
 

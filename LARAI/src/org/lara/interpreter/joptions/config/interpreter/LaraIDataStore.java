@@ -426,6 +426,9 @@ public class LaraIDataStore implements LaraiKeys {
 
         }
 
+        // String json before testing for curly braces
+        jsonString = jsonString.strip();
+
         // Fix curly braces
         if (!jsonString.startsWith("{")) {
             jsonString = "{" + jsonString;

@@ -85,6 +85,13 @@ export default abstract class Mutator {
   }
 
   /**
+   * @returns The number of mutations this mutator will apply
+   */
+  getTotalMutantions(): number {
+    return 1;
+  }
+
+  /**
    * @returns True, if the Mutator still has mutations left to do, false otherwise.
    */
   abstract hasMutations(): boolean;

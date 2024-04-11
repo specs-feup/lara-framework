@@ -73,6 +73,12 @@ export default class Mutator {
         this.restorePrivate();
     }
     /**
+     * @returns The number of mutations this mutator will apply
+     */
+    getTotalMutantions() {
+        return 1;
+    }
+    /**
      * @deprecated use getName() instead
      * @returns The name of this Mutator
      */

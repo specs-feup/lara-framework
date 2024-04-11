@@ -1,0 +1,6 @@
+rootProject.name = 'LaraCommonLanguage'
+
+includeBuild("../../specs-java-libs/jOptions")
+includeBuild("../../specs-java-libs/SpecsUtils")
+
+includeBuild("../../lara-framework/LanguageSpecification")
