@@ -4,7 +4,7 @@ import EventEmitter from "events";
 import java from "java";
 import Debug from "debug";
 import { fileURLToPath, pathToFileURL } from "url";
-import JavaError from "./JavaError.js";
+import { isJavaError } from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
@@ -180,12 +180,16 @@ export class Weaver {
         .then(() => {
           debug("Execution completed successfully.");
         })
-        .catch((error: JavaError) => {
+        .catch((error: unknown) => {
           console.error("Execution failed.");
-
-          if (error.cause !== undefined && error.cause !== null) {
+          if (error instanceof Error) {
+            // JS exception
+            console.error(error.message);
+          } else if (isJavaError(error)) {
             // Java exception
             console.error(error.cause.getMessage());
+          } else {
+            console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
           }
           debug(error);
         });
