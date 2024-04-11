@@ -78,6 +78,12 @@ export class Weaver {
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
     );
+    const JavaSpecsSystem = java.import(
+      "pt.up.fe.specs.util.SpecsSystem"
+    );
+
+    
+
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const fileList = new JavaArrayList();
@@ -124,6 +130,8 @@ export class Weaver {
     
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
     const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
+
+    JavaSpecsSystem.programStandardInit();
 
     javaWeaver.begin(
       fileList,
