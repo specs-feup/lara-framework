@@ -46,6 +46,7 @@ sourceSets {
 
 	  resources {
 		srcDir 'resources'
+		srcDir 'src'		
 	  }      
    }
 	
@@ -57,6 +58,7 @@ sourceSets {
 	  
 	  resources {
 		srcDir 'resources'
+		srcDir 'src'		
 	  }
    }
    
