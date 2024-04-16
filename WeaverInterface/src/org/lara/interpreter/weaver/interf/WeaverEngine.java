@@ -313,7 +313,9 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Return a list of resources that are lara files
+     * Return a list of resources that are lara files. <br>
+     * The preferred way of distributing APIs is now through NPM modules, for that override the method
+     * .getNpmResources().
      *
      * @return
      */

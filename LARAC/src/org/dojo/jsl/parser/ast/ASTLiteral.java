@@ -36,24 +36,24 @@ public class ASTLiteral extends SimpleNode {
     public void setDecimalValue(String image) {
 
         try {
-            value = new Long(image);
+            value = Long.valueOf(image);
         } catch (final NumberFormatException e) {
             // it's a floating point
-            value = new Double(image);
+            value = Double.valueOf(image);
         }
     }
 
     public void setHexValue(String image) {
 
-        value = new Long(Long.parseLong(image.substring(2), 16));
+        value = Long.valueOf(image.substring(2), 16);
     }
 
     public void setFloatingPointValue(String image) {
-        value = new Double(image);
+        value = Double.valueOf(image);
     }
 
     public void setBooleanValue(String image) {
-        value = new Boolean(image);
+        value = Boolean.valueOf((image);
     }
 
     public void setNullValue() {
