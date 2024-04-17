@@ -53,7 +53,7 @@ public class ASTLiteral extends SimpleNode {
     }
 
     public void setBooleanValue(String image) {
-        value = Boolean.valueOf((image);
+        value = Boolean.valueOf(image);
     }
 
     public void setNullValue() {
