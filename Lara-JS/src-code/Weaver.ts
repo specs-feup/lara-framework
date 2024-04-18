@@ -39,8 +39,21 @@ export class Weaver {
     }
   }
 
-  static async setupJavaEnvironment(jarFilePath: string) {
-    java.classpath.push(jarFilePath);
+  static async setupJavaEnvironment(sourceDir: string) {
+    const files = fs.readdirSync(sourceDir, { recursive: true });
+
+    for (const file of files) {
+      if (typeof file === "string") {
+        if (file.endsWith(".jar")) {
+          java.classpath.push(path.join(sourceDir, file));
+        }
+      }
+      else {
+        // TODO: review this Buffer thing and why it exists.
+        throw new Error(`Returned a Buffer instead of a string for path: ${file.toString()}.`);
+      }
+    }
+
     await java.ensureJvm();
   }
 
@@ -52,7 +65,7 @@ export class Weaver {
     const debug = Debug(`Weaver:${config.weaverPrettyName}`);
     debug("Initiating weaver setup.");
 
-    await this.setupJavaEnvironment(config.jarFilePath);
+    await this.setupJavaEnvironment(config.jarPath);
 
     debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 
