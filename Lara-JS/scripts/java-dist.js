@@ -69,7 +69,7 @@ function distributeAPIasJavaResources(
   const enumNames = new Set();
   let repeatedEnumNames = 0;
 
-  copiedFiles.forEach((file) => {
+  copiedFiles.sort().forEach((file) => {
     const fileName = path.basename(file);
 
     if (filesSet.has(fileName)) {
