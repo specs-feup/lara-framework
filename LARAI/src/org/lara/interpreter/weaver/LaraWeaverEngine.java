@@ -40,7 +40,12 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         addApis(API_NAME, laraApis);
 
         // Add weaver-specific APIs
-        addWeaverApis();
+        // addWeaverApis();
+        var weaverApis = new ArrayList<ResourceProvider>();
+        weaverApis.addAll(getAspectsAPI());
+        weaverApis.addAll(getNpmResources());
+
+        addApis(getWeaverApiName(), weaverApis);
     }
 
     @Override
@@ -68,6 +73,23 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     @Override
     public List<LaraResourceProvider> getNpmResources() {
-        return Arrays.asList(LaraApiJsResource.values());
+        var npmResources = new ArrayList<LaraResourceProvider>();
+
+        // LARA standard API
+        npmResources.addAll(Arrays.asList(LaraApiJsResource.values()));
+
+        // Weaver API
+        npmResources.addAll(getCustomNpmResources());
+
+        return npmResources;
+    }
+
+    /**
+     *
+     * @return the APIs specific for this weaver implementation, excluding the standard LARA API. By default returns an
+     *         empty list
+     */
+    protected List<LaraResourceProvider> getCustomNpmResources() {
+        return List.of();
     }
 }

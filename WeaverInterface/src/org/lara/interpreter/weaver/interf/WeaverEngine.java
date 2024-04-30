@@ -87,13 +87,16 @@ public abstract class WeaverEngine {
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
-    /**
-     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
-     */
-    protected void addWeaverApis() {
-        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
-        addApis(getName(), getAspectsAPI());
-    }
+//    /**
+//     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
+//     *
+//     * @deprecated should only use getAspectAPU(), getNpmResources() and getWeaverApiName()
+//     */
+//    @Deprecated
+//    protected void addWeaverApis() {
+//        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
+//        addApis(getName(), getAspectsAPI());
+//    }
 
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
@@ -287,12 +290,12 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * The name of the Weaver.
+     * 
      *
-     * @return
+     * @return the name of the Weaver. By default, returns the simple name of the class
      */
     public String getName() {
-        return "<unnamed weaver>";
+        return getClass().getSimpleName();
     }
 
     /**
@@ -313,9 +316,17 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Return a list of resources that are lara files. <br>
+     * 
+     * @return the base name for the weaver API. By default returns the weaver name.
+     */
+    public String getWeaverApiName() {
+        return getName();
+    }
+
+    /**
+     * Return a list of hand-made resources that point to lara/js resources. <br>
      * The preferred way of distributing APIs is now through NPM modules, for that override the method
-     * .getNpmResources().
+     * .getCustomNpmResources().
      *
      * @return
      */
