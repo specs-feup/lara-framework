@@ -17,6 +17,10 @@ import org.lara.interpreter.weaver.options.OptionArguments;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 
+/**
+ * TODO: These should probably be replaced by calls to WeaverOptionBuilder.
+ * TODO: The name of the enum is supposed to be the long option name...
+ */
 public enum CLIOption implements WeaverOption {
 
     help("h", "print this message", null),
@@ -57,6 +61,11 @@ public enum CLIOption implements WeaverOption {
     call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
     jsengine("js", OptionArguments.ONE_ARG, "engine name",
             "JS Engine to use. Available: NASHORN, GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE),
+
+    jarpaths("jp", OptionArguments.ONE_ARG, "dir1/file1[;dir2/file2]*", "JAR files that will be added to a separate classpath and will be accessible in scripts", LaraiKeys.JAR_PATHS),
+
+
+
     unit(LaraiKeys.getUnitTestFlag(), "run in unit test mode", LaraiKeys.UNIT_TEST_MODE),
     doc(LaraiKeys.getDocGeneratorFlag(), "generate documentation mode", LaraiKeys.GENERATE_DOCUMENTATION);
     // weaver("w"), //I'm forcing these two arguments to be passed as java arguments in LARAI.exec
@@ -65,6 +74,8 @@ public enum CLIOption implements WeaverOption {
     private String shortArgument;
     private String description;
     private OptionArguments hasArgs;
+
+    // TODO: This argName seems to not be actually used, consider removing it. All constructors receive a DataKey, and should use its name
     private String argName;
     private DataKey<?> dataKey;
 

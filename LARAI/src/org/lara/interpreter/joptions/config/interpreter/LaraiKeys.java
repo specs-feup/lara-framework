@@ -14,10 +14,7 @@
 package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.JFileChooser;
 
@@ -116,6 +113,11 @@ public interface LaraiKeys {
             // .setDefault(() -> JsEngineType.NASHORN);
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
     // .setDefault(() -> JsEngineType.GRAALVM);
+
+
+    DataKey<FileList> JAR_PATHS = LaraIKeyFactory.fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
+            .setLabel("Paths to JARs")
+            .setDefault(() -> FileList.newInstance());
 
     DataKey<Boolean> API_AUTOLOAD = KeyFactory.bool("api_autoload")
             .setLabel("Autoload select APIs into execution environment").setDefault(() -> true);

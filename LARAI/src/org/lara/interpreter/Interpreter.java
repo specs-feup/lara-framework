@@ -13,7 +13,6 @@
 package org.lara.interpreter;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
