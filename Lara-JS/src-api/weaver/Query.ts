@@ -1,6 +1,6 @@
 import { LaraJoinPoint } from "../LaraJoinPoint.js";
 import JoinPoints from "./JoinPoints.js";
-import Selector, { type SelectorFilter } from "./Selector.js";
+import Selector, { type JpFilter, type SelectorFilter } from "./Selector.js";
 import TraversalType from "./TraversalType.js";
 
 /**
@@ -28,12 +28,41 @@ export default class Query {
    *
    * @returns The results of the search.
    */
+  static search<T extends LaraJoinPoint>(
+    type: new (obj: unknown) => T,
+    filter?: JpFilter<T> | ((obj: T) => boolean),
+    traversal?: TraversalType
+  ): Selector;
+  /**
+   * The same as Query.searchFrom(), but uses the root node as $baseJp.
+   *
+   * @deprecated Use the new version of this function that receives a class as the first parameter.
+   *
+   * @param type - type of the join point to search.
+   * @param filter - filter rules for the search. If the value is an object, each field of the object represents a rule that will be applied over the attribute that has the same name as the name of the field. If the value is not an object (e.g., String, Regex, Lambda), it is interpreted as a single rule that will be applied over the default attribute of the given type. E.g., if type is 'function', the value is a String 'foo' and the default attribute of function is 'name', this is equivalent as passing as value the object \{'name':'foo'\}. Rules can be a String (i.e., will match the value of the attribute against a string), a Regex (will match the value of the attribute against a regex) or a Function (i.e., function receives the value of the attribute and returns true if there is a match, or false otherwise).
+   * @param traversal - AST traversal type, according to weaver.TraversalType
+   *
+   * @returns The results of the search.
+   */
   static search(
     type: string,
     filter?: SelectorFilter,
+    traversal?: TraversalType
+  ): Selector;
+  static search<T extends LaraJoinPoint>(
+    type: (new (obj: unknown) => T) | string,
+    filter?: (JpFilter<T> | ((obj: T) => boolean)) | SelectorFilter,
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
-    return new Selector().search(type, filter, traversal);
+    if (typeof type === "string") {
+      return new Selector().search(type, filter, traversal);
+    } else {
+      return new Selector().search(
+        type,
+        filter as JpFilter<T> | ((obj: T) => boolean),
+        traversal
+      );
+    }
   }
 
   /**

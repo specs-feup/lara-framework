@@ -56,6 +56,13 @@ export function clearJoinpointMappers(): void {
   JoinpointMappers.length = 0;
 }
 
+/**
+ * This function is for internal use only. DO NOT USE IT!
+ */
+export function getJoinpointMappers(): JoinpointMapperType[] {
+  return JoinpointMappers;
+}
+
 export function wrapJoinPoint(obj: any): any {
   if (JoinpointMappers.length === 0) {
     return obj;

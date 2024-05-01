@@ -57,12 +57,19 @@ const JoinpointMappers: JoinpointMapperType[] = [];\n`
   );
 
   fs.writeSync(
-    outputFile,
-    `\n/**
+      outputFile,
+      `\n/**
  * This function is for internal use only. DO NOT USE IT!
  */
 export function clearJoinpointMappers(): void {
   JoinpointMappers.length = 0;
+}
+
+/**
+ * This function is for internal use only. DO NOT USE IT!
+ */
+export function getJoinpointMappers(): JoinpointMapperType[] {
+  return JoinpointMappers;
 }\n`
   );
 

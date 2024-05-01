@@ -1,5 +1,5 @@
 import Accumulator from "../lara/util/Accumulator.js";
-import JpFilter from "../lara/util/JpFilter.js";
+import JpFilterClass from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
@@ -54,13 +54,13 @@ export default class Selector {
                 console.log("Selector: cannot use default filter for join point '" +
                     joinPointTypeName +
                     "', it does not have a default attribute");
-                return new JpFilter({});
+                return new JpFilterClass({});
             }
-            return new JpFilter({
+            return new JpFilterClass({
                 [defaultAttr]: filter,
             });
         }
-        return new JpFilter(filter);
+        return new JpFilterClass(filter);
     }
     /**
      * Generator function, allows Selector to be used in for..of statements.
@@ -78,28 +78,41 @@ export default class Selector {
         }
         this.$currentJps = undefined;
     }
-    /**
-     * @param type - type of the join point to search.
-     * @param filter - filter rules for the search.
-     * @param traversal - AST traversal type, according to TraversalType
-     *
-     * @returns The results of the search.
-     */
     search(name, filter = {}, traversal = TraversalType.PREORDER) {
+        let jpFilter;
+        if (name !== undefined && typeof name !== "string") {
+            name = new name({}).joinPointType;
+            if (typeof filter === "object") {
+                jpFilter = new JpFilterClass(filter);
+            }
+            else if (typeof filter === "function") {
+                jpFilter = Selector.parseFilter(filter, name);
+            }
+            else {
+                throw new TypeError("Invalid filter type: " + typeof filter);
+            }
+        }
+        else {
+            jpFilter = Selector.parseFilter(filter, name);
+        }
+        let fn;
         switch (traversal) {
             case TraversalType.PREORDER:
-                return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+                fn = function ($jp, name) {
                     return selectorJoinPointsClass.descendants($jp, name);
-                });
+                };
+                break;
             case TraversalType.POSTORDER:
-                return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+                fn = function ($jp, name) {
                     return selectorJoinPointsClass.descendantsPostorder($jp, name);
-                });
+                };
+                break;
             default:
                 throw new Error(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 `Traversal type not implemented: ${traversal}`);
         }
+        return this.searchPrivate(name, jpFilter, fn);
     }
     /**
      * Search in the children of the previously selected nodes.

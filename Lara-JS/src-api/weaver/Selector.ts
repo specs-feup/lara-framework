@@ -1,6 +1,6 @@
-import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import { LaraJoinPoint, getJoinpointMappers } from "../LaraJoinPoint.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import JpFilter, {type JpFilterRules} from "../lara/util/JpFilter.js";
+import JpFilterClass, { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
@@ -13,9 +13,39 @@ let selectorJoinPointsClass: typeof JoinPoints = JoinPoints;
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
  */
-export function setSelectorJoinPointsClass(value: typeof JoinPoints = JoinPoints) {
+export function setSelectorJoinPointsClass(
+  value: typeof JoinPoints = JoinPoints
+) {
   selectorJoinPointsClass = value;
 }
+
+/**
+ * Extracts the return type of a method or the type of a property.
+ */
+export type MemberType<T, key extends keyof T> = T[key] extends (
+  ...args: never
+) => infer R
+  ? R
+  : T[key];
+
+/**
+ * If the type is a string, expands it to a string or a RegExp.
+ */
+type StringExpander<T> = T extends string ? T | RegExp | (() => string) : T;
+
+/**
+ * Expand type to allow for the basic type or a filter function accepting the basic type.
+ */
+type FilterFunctionExpander<T, Class> = T | ((value: T, obj: Class) => boolean);
+
+/**
+ * Filter type for Joinpoints. It can be a string to filter using the default attribute of the Joinpoint, or an object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
+ */
+export type JpFilter<T> = {
+  [key in keyof T]?: StringExpander<
+    FilterFunctionExpander<MemberType<T, key>, T>
+  >;
+};
 
 interface SelectorChain {
   counter: Accumulator;
@@ -73,7 +103,7 @@ export default class Selector {
   private static parseFilter(
     filter: SelectorFilter = {},
     joinPointTypeName = ""
-  ): JpFilter {
+  ): JpFilterClass {
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
     if (typeof filter !== "object" || filter instanceof RegExp) {
       // Get default attribute
@@ -86,15 +116,15 @@ export default class Selector {
             joinPointTypeName +
             "', it does not have a default attribute"
         );
-        return new JpFilter({});
+        return new JpFilterClass({});
       }
 
-      return new JpFilter({
+      return new JpFilterClass({
         [defaultAttr]: filter,
       });
     }
 
-    return new JpFilter(filter);
+    return new JpFilterClass(filter);
   }
 
   /**
@@ -122,34 +152,81 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  search(
+  search<T extends LaraJoinPoint>(
+    type?: new (obj: unknown) => T,
+    filter?: JpFilter<T> | ((obj: T) => boolean),
+    traversal?: TraversalType
+  ): Selector;
+  /**
+   * @deprecated Use the new search function.
+   *
+   * @param name - type of the join point to search.
+   * @param filter - filter rules for the search.
+   * @param traversal - AST traversal type, according to TraversalType
+   *
+   * @returns The results of the search.
+   */
+  search<T extends LaraJoinPoint>(
     name?: string,
-    filter: SelectorFilter = {},
+    filter?: JpFilter<T> | ((obj: T) => boolean) | SelectorFilter,
+    traversal?: TraversalType
+  ): Selector;
+  search<T extends LaraJoinPoint>(
+    name?: (new (obj: unknown) => T) | string,
+    filter: (JpFilter<T> | ((obj: T) => boolean)) | SelectorFilter = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
+    let jpFilter: JpFilterClass;
+
+    if (name !== undefined && typeof name !== "string") {
+      name = Selector.findJoinpointTypeName(name);
+
+      if (typeof filter === "object") {
+        jpFilter = new JpFilterClass(filter as JpFilterRules);
+      } else if (typeof filter === "function") {
+        jpFilter = Selector.parseFilter(filter as SelectorFilter, name);
+      } else {
+        throw new TypeError("Invalid filter type: " + typeof filter);
+      }
+    } else {
+      jpFilter = Selector.parseFilter(filter as SelectorFilter, name);
+    }
+
+    let fn;
     switch (traversal) {
       case TraversalType.PREORDER:
-        return this.searchPrivate(
-          name,
-          Selector.parseFilter(filter, name),
-          function ($jp: LaraJoinPoint, name?: string) {
-            return selectorJoinPointsClass.descendants($jp, name);
-          }
-        );
+        fn = function ($jp: LaraJoinPoint, name?: string) {
+          return selectorJoinPointsClass.descendants($jp, name);
+        };
+        break;
       case TraversalType.POSTORDER:
-        return this.searchPrivate(
-          name,
-          Selector.parseFilter(filter, name),
-          function ($jp: LaraJoinPoint, name?: string) {
-            return selectorJoinPointsClass.descendantsPostorder($jp, name);
-          }
-        );
+        fn = function ($jp: LaraJoinPoint, name?: string) {
+          return selectorJoinPointsClass.descendantsPostorder($jp, name);
+        };
+        break;
       default:
         throw new Error(
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Traversal type not implemented: ${traversal}`
         );
     }
+
+    return this.searchPrivate(name, jpFilter, fn);
+  }
+
+  static findJoinpointTypeName<T extends LaraJoinPoint>(
+    type: new (obj: unknown) => T
+  ): string {
+    const joinpointMappers = getJoinpointMappers();
+    
+    for (const mapper of joinpointMappers) {
+      const match = Object.keys(mapper).find((key) => mapper[key] === type);
+      if (match) {
+        return match;
+      }
+    };
+
+    throw new Error("Joinpoint type not found: " + type.name);
   }
 
   /**
@@ -190,7 +267,7 @@ export default class Selector {
 
   private searchPrivate(
     name: string | undefined = undefined,
-    jpFilter: JpFilter,
+    jpFilter: JpFilterClass,
     selectFunction: (jp: LaraJoinPoint, name?: string) => LaraJoinPoint[]
   ) {
     const $newJps: SelectorChain[] = [];
@@ -240,7 +317,7 @@ export default class Selector {
   private addJps(
     $newJps: SelectorChain[],
     $jps: LaraJoinPoint[],
-    jpFilter: JpFilter,
+    jpFilter: JpFilterClass,
     $jpChain: SelectorChain,
     name: string
   ) {
