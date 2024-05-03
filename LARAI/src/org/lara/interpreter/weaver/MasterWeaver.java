@@ -174,7 +174,7 @@ public class MasterWeaver {
                 new LaraLoc(weaverEngine).execute(laraPaths);
             }
 
-            final boolean weaverIsWorking = weaverEngine.begin(sources,
+            final boolean weaverIsWorking = weaverEngine.run(sources,
                     larai.getOptions().getOutputDir(), larai.getWeaverArgs());
 
             if (!weaverIsWorking) {

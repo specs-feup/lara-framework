@@ -13,16 +13,24 @@
 
 package org.lara.interpreter.weaver;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
+import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.lara.LaraApiJsResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
@@ -49,6 +57,29 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         // System.out.println("Adding to " + getWeaverApiName() + "\n" + weaverApis);
         addApis(getWeaverApiName(), weaverApis);
     }
+
+    @Override
+    public boolean run(List<File> sources, File outputDir, DataStore dataStore) {
+
+
+        return begin(sources, outputDir, dataStore);
+    }
+
+
+
+
+    /**
+     * This method will be called at the end of method run()
+     *
+     * @param sources
+     *            the file/directory with the source code
+     * @param outputDir
+     *            output directory for the generated file(s)
+     * @param dataStore
+     *            the dataStore containing the options for the weaver
+     * @return true if executed without errors
+     */
+    public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
 
     @Override
     public List<ResourceProvider> getLaraApis() {
