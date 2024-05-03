@@ -169,7 +169,7 @@ public abstract class WeaverEngine {
      *            the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
-    public abstract boolean run(List<File> sources, File outputDir, DataStore dataStore);
+    public abstract boolean run(DataStore dataStore);
 
     /**
      * Get the list of available actions in the weaver

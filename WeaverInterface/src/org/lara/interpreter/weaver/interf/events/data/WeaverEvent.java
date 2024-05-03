@@ -16,6 +16,7 @@ package org.lara.interpreter.weaver.interf.events.data;
 import java.io.File;
 import java.util.List;
 
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
@@ -25,10 +26,10 @@ public class WeaverEvent extends BaseEvent {
     private String mainAspect;
     private String aspectFile;
 
-    public WeaverEvent(Stage stage, DataStore args, List<File> sources, String mainAspect, String aspectFile) {
+    public WeaverEvent(Stage stage, DataStore args, String mainAspect, String aspectFile) {
 	super(stage);
 	setArgs(args);
-	setFolder(sources);
+	setFolder(args.get(LaraiKeys.WORKSPACE_FOLDER).getFiles());
 	setMainAspect(mainAspect);
 	setAspectFile(aspectFile);
     }

@@ -82,31 +82,25 @@ public class MasterWeaver {
     private long initialTime;
 
     /**
-     * Cretes a new MasterWeaver depending on the weaver class to use
+     * Creates a new MasterWeaver depending on the weaver class to use
      *
+     * @param larai
+     *           the LARA Interpreter (TODO: Should be replaced by a data object)
      * @param weaverEngine
      *            the weaver class to create by reflection
-     * @param sources
-     *            the location for the application
-     * @param cx
-     *            the current javascript context
-     * @param scope
-     *            the current javascript context
+     * @param engine
+     *            the current JavaScript engine
      */
-    public MasterWeaver(LaraI larai, WeaverEngine weaverEngine, FileList sources, JsEngine engine) {
+    public MasterWeaver(LaraI larai, WeaverEngine weaverEngine, JsEngine engine) {
         eventTrigger = new EventTrigger();
         weaverEngine.setEventTrigger(eventTrigger);
 
         this.larai = larai;
         jpUtils = new JoinpointUtils(engine);
-        // weavers = new HashMap<>();
-        // this.actions = new ArrayList<String>();
-        // Class<?> theWeaver = Class.forName(weaverClass, true,
-        // Thread.currentThread()
-        // .getContextClassLoader());
 
-        this.weaverEngine = weaverEngine;// theWeaver.asSubclass(IWeaver.class);
-        this.sources = sources.getFiles();
+        this.weaverEngine = weaverEngine;
+        //this.sources = sources.getFiles();
+        this.sources = larai.getOptions().getWorkingDir().getFiles();
     }
 
     public static Class<? extends WeaverEngine> getWeaverClass(String className) throws ClassNotFoundException {
@@ -161,7 +155,7 @@ public class MasterWeaver {
                     main = larai.getAsps().main;
                 }
                 larai.getWeavingProfile().reportLaraNumTokens(larai.getNumMainLaraTokens());
-                eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), sources, main,
+                eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), main,
                         larai.getOptions().getLaraFile().getName());
             }
 
@@ -174,15 +168,14 @@ public class MasterWeaver {
                 new LaraLoc(weaverEngine).execute(laraPaths);
             }
 
-            final boolean weaverIsWorking = weaverEngine.run(sources,
-                    larai.getOptions().getOutputDir(), larai.getWeaverArgs());
+            final boolean weaverIsWorking = weaverEngine.run(larai.getWeaverArgs());
 
             if (!weaverIsWorking) {
                 // throw new RuntimeException("Application folder '" + sources
                 // + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
 
                 // LoggingUtils.msgInfo
-                larai.out.warnln("Application inputs '" + sources
+                larai.out.warnln("Application inputs '" + getSources()
                         + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
 
                 return false;
@@ -481,7 +474,7 @@ public class MasterWeaver {
     /**
      * Generate a select for a certain weaver
      *
-     * @param currentJoinPoint
+     * @param current
      *            the weaver to use
      * @param jpChain
      *            the pointcut chain
@@ -645,17 +638,23 @@ public class MasterWeaver {
      * @return the applicationFolder
      */
     public List<File> getSources() {
-        return sources;
+        return larai.getOptions().getWorkingDir().getFiles();
     }
 
     /**
      * @param sources
      *            the applicationFolder to set
      */
-    public void setApplicationFolder(List<File> sources) {
-        this.sources = sources;
-    }
+//    public void setApplicationFolder(List<File> sources) {
+//        this.sources = sources;
+//    }
 
+    /**
+     *
+     * @param joinpointReference
+     * @param method
+     * @param args
+     */
     public void action(Object joinpointReference, String method, Object... args) {
 
     }
@@ -699,7 +698,7 @@ public class MasterWeaver {
     }
 
     /**
-     * @param roots
+     * @param root
      *            the root to set
      */
     public void setRoot(String root) {

@@ -20,6 +20,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -40,9 +41,12 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     private final List<ResourceProvider> laraApis;
     private final List<ResourceProvider> laraCore;
 
+    private LaraWeaverState state;
+
     public LaraWeaverEngine() {
         laraApis = buildLaraApis();
         laraCore = buildLaraCore();
+        state = null;
 
         // Add LARA APIs
         // System.out.println("Adding to " + API_NAME + "\n" + laraApis);
@@ -59,14 +63,21 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     }
 
     @Override
-    public boolean run(List<File> sources, File outputDir, DataStore dataStore) {
-
+    public boolean run(DataStore dataStore) {
+        File outputDir = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
+        List<File> sources = dataStore.get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
 
         return begin(sources, outputDir, dataStore);
     }
 
 
+    public Optional<LaraWeaverState> getLaraWeaverStateTry() {
+        return Optional.ofNullable(state);
+    }
 
+    public LaraWeaverState getLaraWeaverState() {
+        return getLaraWeaverStateTry().orElseThrow(() -> new RuntimeException("No LARA weaver state defined"));
+    }
 
     /**
      * This method will be called at the end of method run()

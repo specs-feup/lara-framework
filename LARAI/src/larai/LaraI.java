@@ -666,12 +666,7 @@ public class LaraI {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
 
-        List<File> workspaceSources = new ArrayList<>();
 
-        workspaceSources.addAll(options.getWorkingDir().getFiles());
-        // workspaceSources.addAll(options.getExtraSources());
-
-        final FileList folderApplication = FileList.newInstance(workspaceSources);
 
         // final FileList folderApplication = options.getWorkingDir();
 
@@ -681,7 +676,7 @@ public class LaraI {
         // }
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Loading Weaver"));
         long begin = getCurrentTime();
-        weaver = new MasterWeaver(this, weaverEngine, folderApplication, engine);
+        weaver = new MasterWeaver(this, weaverEngine, engine);
 
         try {
             // Create interpreter
@@ -743,7 +738,7 @@ public class LaraI {
                 main = asps.main;
             }
 
-            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), folderApplication.getFiles(), main,
+            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(),  main,
                     options.getLaraFile().getPath());
             finish(engine);
         } catch (Exception e) {
@@ -954,8 +949,7 @@ public class LaraI {
         LaraI larai = LaraI.newInstance(laraiConfig, weaver);
 
         // Create MasterWeaver
-        FileList folderApplication = FileList.newInstance();
-        MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, folderApplication, jsEngine);
+        MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, jsEngine);
         larai.setWeaver(masterWeaver);
 
         // Disable API auto-load
