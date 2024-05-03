@@ -52,8 +52,8 @@ import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.utilities.StringList;
 
 /**
- * TODO: Should deprecate and just use DataStore directly? TODO: Also, the "ifs" in the getters interfere with the
- * default values set in the DataKey
+ * TODO: Should deprecate and just use DataStore directly?
+ * TODO: Also, the "ifs" in the getters interfere with the default values set in the DataKey
  * 
  * @author JoaoBispo
  *

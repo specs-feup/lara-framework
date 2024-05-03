@@ -67,6 +67,9 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         File outputDir = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
         List<File> sources = dataStore.get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
 
+        // Initialize state
+        state = new LaraWeaverState(dataStore);
+
         return begin(sources, outputDir, dataStore);
     }
 
