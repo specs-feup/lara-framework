@@ -69,7 +69,10 @@ public interface LaraiKeys {
     DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
             .setLabel("Additional Sources (separated by ;)");
 
-    DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
+    DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false)
+            .setLabel("Output Folder")
+            // According to LaraIDataStore
+            .setDefault(() -> new File("."));
 
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
             .setLabel("Includes Folder (LARA, JS scripts, JARs)");

@@ -22,14 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 
-import org.lara.interpreter.joptions.config.interpreter.LaraIKeyFactory;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -58,12 +52,13 @@ public class FileListPanel extends KeyPanel<FileList> {
     /**
      * 
      * @param key
+     * @param fileKey
      * @param data
-     * @param fileMode
-     *            See {@link JFileChooser#setFileSelectionMode(}
+     * @param fileSelectionMode
+     *            See {@link JFileChooser#setFileSelectionMode(int)}
      * @param extensions
      */
-    public FileListPanel(DataKey<FileList> key, DataStore data, int fileSelectionMode, Collection<String> extensions) {
+    public FileListPanel(DataKey<FileList> key, DataKey<File> fileKey, DataStore data, int fileSelectionMode, Collection<String> extensions) {
         super(key, data);
         // JFileChooser.DIRECTORIES_ONLY, Collections.emptyList());
         // this.foldersOnly = foldersOnly;
@@ -75,8 +70,8 @@ public class FileListPanel extends KeyPanel<FileList> {
         removeButton = new JButton("Remove");
         addButton = new JButton("Add");
 
-        fileKey = LaraIKeyFactory.file("", fileSelectionMode, false, extensions);
-
+        //fileKey = LaraIKeyFactory.file("", fileSelectionMode, false, extensions);
+        this.fileKey = fileKey;
         file = new FilePanel(fileKey, data, fileSelectionMode, extensions);
 
         file.setOnFileOpened(this::onFileOpen);
