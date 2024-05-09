@@ -152,22 +152,6 @@ export class Weaver {
     javaWeaver.run(datastore);
     /* eslint-enable */
 
-    Object.defineProperty(globalThis, config.weaverName, {
-      value: new (class {
-        get rootJp() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return javaWeaver.getRootJp();
-        }
-        get weaver() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return javaWeaver;
-        }
-      })(),
-      enumerable: false,
-      configurable: true,
-      writable: false,
-    });
-
     Weaver._isSetup = true;
     Weaver.javaWeaver = javaWeaver;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
