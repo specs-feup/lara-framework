@@ -53,8 +53,9 @@ export default class DataStore {
     this.allowedKeys = undefined;
     if (this.checkKeys) {
       this.allowedKeys = new Set();
-      for (const dataKey of this.definition.getKeys()) {
-        this.allowedKeys.add(dataKey.getName());
+      const keys = this.definition.getKeys();
+      for (let i = 0; i < keys.size(); i++){
+        this.allowedKeys.add(keys.get(i).getName());
       }
     }
   }
