@@ -159,17 +159,17 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Set a file in the weaver if it is valid file type for the weaver.
+     * Starts execution of the weaver, for the given arguments
      *
-     * @param sourceDir
-     *            the file/directory with the source code
+     * @param sources
+     *            the files/directories with the source code
      * @param outputDir
      *            output directory for the generated file(s)
-     * @oaram dataStore the dataStore containing the options for the weaver
-     * @return true if the file type is valid
+     * @param dataStore
+     *            the dataStore containing the options for the weaver
+     * @return true if executed without errors
      */
-    // public boolean begin(File sourceDir, File outputDir, DataStore dataStore);
-    public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
+    public abstract boolean run(DataStore dataStore);
 
     /**
      * Get the list of available actions in the weaver

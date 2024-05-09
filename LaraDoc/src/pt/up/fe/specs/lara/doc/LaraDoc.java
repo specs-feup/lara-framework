@@ -102,8 +102,7 @@ public class LaraDoc {
         LaraI larai = LaraI.newInstance(data, weaverEngine);
         // JsEngine jsEngine = new NashornEngine();
         JsEngine jsEngine = new GraalvmJsEngine();
-        FileList folderApplication = FileList.newInstance();
-        MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
+        MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, jsEngine);
         larai.setWeaver(masterWeaver);
 
         Interpreter interpreter = new Interpreter(larai, jsEngine);

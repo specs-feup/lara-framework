@@ -299,7 +299,7 @@ public abstract class AGear extends EventReceiverTemplate {
     }
 
     /**
-     * This method will be invoked every time {@link WeaverEngine#begin} is invoked. By default it does nothing.
+     * This method will be invoked every time {@link WeaverEngine#run} is invoked. By default it does nothing.
      */
     public void reset() {
 

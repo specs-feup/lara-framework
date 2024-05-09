@@ -14,10 +14,7 @@
 package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.JFileChooser;
 
@@ -72,7 +69,10 @@ public interface LaraiKeys {
     DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
             .setLabel("Additional Sources (separated by ;)");
 
-    DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false).setLabel("Output Folder");
+    DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false)
+            .setLabel("Output Folder")
+            // According to LaraIDataStore
+            .setDefault(() -> new File("."));
 
     DataKey<FileList> INCLUDES_FOLDER = LaraIKeyFactory.folderList("include")
             .setLabel("Includes Folder (LARA, JS scripts, JARs)");
@@ -117,6 +117,11 @@ public interface LaraiKeys {
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
     // .setDefault(() -> JsEngineType.GRAALVM);
 
+
+    DataKey<FileList> JAR_PATHS = LaraIKeyFactory.fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
+            .setLabel("Paths to JARs")
+            .setDefault(() -> FileList.newInstance());
+
     DataKey<Boolean> API_AUTOLOAD = KeyFactory.bool("api_autoload")
             .setLabel("Autoload select APIs into execution environment").setDefault(() -> true);
 
@@ -152,7 +157,7 @@ public interface LaraiKeys {
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
                     INCLUDES_FOLDER, AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE,
                     METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE, API_AUTOLOAD)
+                    DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE, API_AUTOLOAD, JAR_PATHS)
             .build();
 
     // StoreDefinition STORE_DEFINITION_EXTRA = new StoreDefinitionBuilder("LaraI Options Extra")

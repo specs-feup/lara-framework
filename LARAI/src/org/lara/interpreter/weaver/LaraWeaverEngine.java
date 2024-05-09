@@ -13,16 +13,25 @@
 
 package org.lara.interpreter.weaver;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
+import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.lara.LaraApiJsResource;
 import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
@@ -32,21 +41,59 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     private final List<ResourceProvider> laraApis;
     private final List<ResourceProvider> laraCore;
 
+    private LaraWeaverState state;
+
     public LaraWeaverEngine() {
         laraApis = buildLaraApis();
         laraCore = buildLaraCore();
+        state = null;
 
         // Add LARA APIs
+        // System.out.println("Adding to " + API_NAME + "\n" + laraApis);
         addApis(API_NAME, laraApis);
 
         // Add weaver-specific APIs
         // addWeaverApis();
         var weaverApis = new ArrayList<ResourceProvider>();
         weaverApis.addAll(getAspectsAPI());
-        weaverApis.addAll(getNpmResources());
-
+        // weaverApis.addAll(getNpmResources());
+        weaverApis.addAll(getWeaverNpmResources());
+        // System.out.println("Adding to " + getWeaverApiName() + "\n" + weaverApis);
         addApis(getWeaverApiName(), weaverApis);
     }
+
+    @Override
+    public boolean run(DataStore dataStore) {
+        File outputDir = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
+        List<File> sources = dataStore.get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
+
+        // Initialize state
+        state = new LaraWeaverState(dataStore);
+
+        return begin(sources, outputDir, dataStore);
+    }
+
+
+    public Optional<LaraWeaverState> getLaraWeaverStateTry() {
+        return Optional.ofNullable(state);
+    }
+
+    public LaraWeaverState getLaraWeaverState() {
+        return getLaraWeaverStateTry().orElseThrow(() -> new RuntimeException("No LARA weaver state defined"));
+    }
+
+    /**
+     * This method will be called at the end of method run()
+     *
+     * @param sources
+     *            the file/directory with the source code
+     * @param outputDir
+     *            output directory for the generated file(s)
+     * @param dataStore
+     *            the dataStore containing the options for the weaver
+     * @return true if executed without errors
+     */
+    public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
 
     @Override
     public List<ResourceProvider> getLaraApis() {
@@ -76,12 +123,17 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         var npmResources = new ArrayList<LaraResourceProvider>();
 
         // LARA standard API
-        npmResources.addAll(Arrays.asList(LaraApiJsResource.values()));
+        npmResources.addAll(getLaraNpmResources());
+        // npmResources.addAll(Arrays.asList(LaraApiJsResource.values()));
 
         // Weaver API
-        npmResources.addAll(getCustomNpmResources());
+        npmResources.addAll(getWeaverNpmResources());
 
         return npmResources;
+    }
+
+    public List<LaraResourceProvider> getLaraNpmResources() {
+        return Arrays.asList(LaraApiJsResource.values());
     }
 
     /**
@@ -89,7 +141,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      * @return the APIs specific for this weaver implementation, excluding the standard LARA API. By default returns an
      *         empty list
      */
-    protected List<LaraResourceProvider> getCustomNpmResources() {
+    protected List<LaraResourceProvider> getWeaverNpmResources() {
         return List.of();
     }
 }

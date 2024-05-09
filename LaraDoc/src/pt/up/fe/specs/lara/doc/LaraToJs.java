@@ -80,8 +80,7 @@ public class LaraToJs {
         JsEngine jsEngine = new GraalvmJsEngine();
         larai.getWeaverEngine().setScriptEngine(jsEngine);
 
-        FileList folderApplication = FileList.newInstance();
-        MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, folderApplication, jsEngine);
+        MasterWeaver masterWeaver = new MasterWeaver(larai, weaverEngine, jsEngine);
         larai.setWeaver(masterWeaver);
 
         Interpreter interpreter = new Interpreter(larai, jsEngine);

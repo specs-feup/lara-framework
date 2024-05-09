@@ -67,10 +67,11 @@ public class LaraIKeyFactory {
     public static DataKey<FileList> fileList(String id, int selectionMode, Collection<String> extensions) {
         Optional<Boolean> isFolder = isFolder(selectionMode);
 
+        var fileKey = LaraIKeyFactory.file("", selectionMode, false, extensions);
         DataKey<FileList> fileListKey = KeyFactory.object(id, FileList.class)
                 .setDecoder(FileList::newInstance)
                 .setDefault(() -> FileList.newInstance())
-                .setKeyPanelProvider((key, data) -> new FileListPanel(key, data, selectionMode,
+                .setKeyPanelProvider((key, data) -> new FileListPanel(key, fileKey, data, selectionMode,
                         extensions));
 
         if (isFolder.isPresent()) {
