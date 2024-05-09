@@ -73,6 +73,14 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         return begin(sources, outputDir, dataStore);
     }
 
+    @Override
+    public Optional<DataStore> getData() {
+        if(state == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(state.getData());
+    }
 
     public Optional<LaraWeaverState> getLaraWeaverStateTry() {
         return Optional.ofNullable(state);

@@ -13,13 +13,7 @@
 package org.lara.interpreter.weaver.interf;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.lara.interpreter.profile.BasicWeaverProfiler;
@@ -79,6 +73,11 @@ public abstract class WeaverEngine {
 
         apis = new HashMap<>();
         apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
+    }
+
+
+    public Optional<DataStore> getData() {
+        throw new NotImplementedException(this);
     }
 
     protected void addApis(String key, List<ResourceProvider> resources) {
