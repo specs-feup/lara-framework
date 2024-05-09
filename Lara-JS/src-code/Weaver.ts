@@ -26,11 +26,11 @@ java.asyncOptions = {
 };
 
 export class Weaver {
-  static #isSetup = false;
-  static #javaWeaver: unknown;
+  private static _isSetup = false;
+  private static javaWeaver: unknown;
 
   static isSetup() {
-    return Weaver.#isSetup;
+    return Weaver._isSetup;
   }
 
   static async awaitSetup() {
@@ -95,7 +95,7 @@ export class Weaver {
       "pt.up.fe.specs.util.SpecsSystem"
     );
 
-    
+
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
@@ -140,7 +140,7 @@ export class Weaver {
         `${javaWeaverClassName}DataStore`
       );
     }
-    
+
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
     const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
 
@@ -169,8 +169,8 @@ export class Weaver {
       writable: false,
     });
 
-    Weaver.#isSetup = true;
-    Weaver.#javaWeaver = javaWeaver;
+    Weaver._isSetup = true;
+    Weaver.javaWeaver = javaWeaver;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return debug;
   }
@@ -213,7 +213,7 @@ export class Weaver {
 
   static shutdown() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    (Weaver.#javaWeaver as any).close();
+    (Weaver.javaWeaver as any).close();
   }
 }
 

@@ -37,10 +37,7 @@ export default class WeaverLauncher {
   }
 
   protected main(args: Arguments): void {
-    this.debug(
-      `${this.config.weaverPrettyName} execution arguments: %O`,
-      args
-    );
+    this.debug(`${this.config.weaverPrettyName} execution arguments: %O`, args);
     void this.executeWeaver(args);
 
     if (args.watch) {
@@ -120,7 +117,8 @@ export default class WeaverLauncher {
               type: "array",
               default: [],
               defaultDescription: "none",
-            }).option("config-classic", {
+            })
+            .option("config-classic", {
               describe: "Path to XML config file from Classic weaver",
               type: "string",
             });
