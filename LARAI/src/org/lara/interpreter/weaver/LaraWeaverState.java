@@ -32,6 +32,10 @@ public class LaraWeaverState {
         loadJars();
     }
 
+    public DataStore getData() {
+        return data;
+    }
+
     public URLClassLoader getClassLoader() {
         return classLoader;
     }
