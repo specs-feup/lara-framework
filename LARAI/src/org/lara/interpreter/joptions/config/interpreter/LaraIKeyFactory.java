@@ -76,7 +76,7 @@ public class LaraIKeyFactory {
         if (isFolder.isPresent()) {
             fileListKey = fileListKey.setCustomGetter(customGetterFileList(isFolder.get(), !isFolder.get(), false));
         } else {
-            fileListKey = fileListKey.setCustomGetter(customGetterFileList(false, false, false));
+            fileListKey = fileListKey.setCustomGetter(customGetterFileList(true, true, false));
         }
 
         //
