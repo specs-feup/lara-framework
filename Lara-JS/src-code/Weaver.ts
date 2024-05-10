@@ -180,7 +180,7 @@ export class Weaver {
           console.error("Execution failed.");
           if (error instanceof Error) {
             // JS exception
-            console.error(error.message);
+            console.error(error);
           } else if (isJavaError(error)) {
             // Java exception
             console.error(error.cause.getMessage());
