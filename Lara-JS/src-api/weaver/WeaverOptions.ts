@@ -10,7 +10,8 @@ export default class WeaverOptions {
    * @returns DataStore with the data of the current weaver
    */
   static getData() {
-    return new WeaverDataStore(JavaTypes.LaraI.getThreadLocalData());
+    const weaverEngine = Weaver.getWeaverEngine();
+    return new WeaverDataStore(weaverEngine.getData().get(), weaverEngine.getStoreDefinition());
   }
 
   /**

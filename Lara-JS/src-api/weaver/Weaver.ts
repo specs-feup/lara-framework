@@ -3,6 +3,7 @@ import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
+import WeaverOptions from "./WeaverOptions.js";
 import WeaverDataStore from "./util/WeaverDataStore.js";
 
 
@@ -38,7 +39,7 @@ export default class Weaver {
   static getLaraLoc() {
     return JavaTypes.LaraIUtils.getLaraLoc(
       Weaver.getWeaverEngine(),
-      JavaTypes.LaraI.getThreadLocalData()
+      Weaver.getWeaverEngine().getData().get()
     );
   }
 
@@ -47,7 +48,7 @@ export default class Weaver {
     return Java.type("org.lara.interpreter.utils.LaraIUtils")
       .getLaraLoc(
         Weaver.getWeaverEngine(),
-        JavaTypes.LaraI.getThreadLocalData()
+        Weaver.getWeaverEngine().getData().get()
       )
       .get(laraLoc.getTotalsKey());
   }
@@ -200,10 +201,7 @@ export default class Weaver {
       safeArgsLists.push(argsList.map((value) => value.toString()));
     }
 
-    // WeaverOptions has a function for this, but imports Weaver
-    const weaverData = new WeaverDataStore(
-      JavaTypes.LaraI.getThreadLocalData()
-    );
+    const weaverData = WeaverOptions.getData();
 
     const WeaverLauncher = JavaTypes.WeaverLauncher;
     const jsonStrings = WeaverLauncher.executeParallelStatic(

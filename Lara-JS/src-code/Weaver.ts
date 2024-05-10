@@ -47,10 +47,11 @@ export class Weaver {
         if (file.endsWith(".jar")) {
           java.classpath.push(path.join(sourceDir, file));
         }
-      }
-      else {
+      } else {
         // TODO: review this Buffer thing and why it exists.
-        throw new Error(`Returned a Buffer instead of a string for path: ${file.toString()}.`);
+        throw new Error(
+          `Returned a Buffer instead of a string for path: ${file.toString()}.`
+        );
       }
     }
 
@@ -81,6 +82,9 @@ export class Weaver {
     // This code is intentionally ignored by eslint
     const JavaArrayList = java.import("java.util.ArrayList");
     const JavaFile = java.import("java.io.File");
+    const JavaFileList = java.import(
+      "org.lara.interpreter.joptions.keys.FileList"
+    );
     const JavaLaraIDataStore = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
     );
@@ -91,11 +95,7 @@ export class Weaver {
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
     );
-    const JavaSpecsSystem = java.import(
-      "pt.up.fe.specs.util.SpecsSystem"
-    );
-
-
+    const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
@@ -142,32 +142,15 @@ export class Weaver {
     }
 
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-    const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
+    datastore.set(LaraiKeys.WORKSPACE_FOLDER, JavaFileList.newInstance(fileList));
+
+    // Needed only for side-effects over the datastore
+    new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
 
     JavaSpecsSystem.programStandardInit();
 
-    javaWeaver.begin(
-      fileList,
-      new JavaFile(JavaWeaverClass.getWovenCodeFoldername()),
-      datastore
-    );
+    javaWeaver.run(datastore);
     /* eslint-enable */
-
-    Object.defineProperty(globalThis, config.weaverName, {
-      value: new (class {
-        get rootJp() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return javaWeaver.getRootJp();
-        }
-        get weaver() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return javaWeaver;
-        }
-      })(),
-      enumerable: false,
-      configurable: true,
-      writable: false,
-    });
 
     Weaver._isSetup = true;
     Weaver.javaWeaver = javaWeaver;
