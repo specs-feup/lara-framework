@@ -1,7 +1,7 @@
 export default interface WeaverConfiguration {
   weaverName: string;
   weaverPrettyName: string;
-  weaverFileName: string;
+  weaverFileName?: string;
   jarPath: string;
   javaWeaverQualifiedName: string;
 }
