@@ -10,6 +10,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 
+import JavaInterop from "./lara/JavaInterop.js";
 import JavaTypes from "./lara/util/JavaTypes.js";
 
 export class LaraJoinPoint {
@@ -124,7 +125,7 @@ export function unwrapJoinPoint(obj: any): any {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(unwrapJoinPoint);
+    return JavaInterop.arrayToList(obj.map(unwrapJoinPoint));
   }
 
   return obj;
