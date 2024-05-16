@@ -58,22 +58,27 @@ function generateDocumentation(tooltip) {
 }
 
 function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
-  fs.writeSync(
-    outputFile,
-    `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
-      attribute.type
-    } { return ${
-      attribute.name === "node" ? "" : "wrapJoinPoint"
-    }(this._javaObject.get${capitalizeFirstLetter(attribute.name)}()) }\n`
-  );
+  if (attribute.name === "data") {
+    fs.writeSync(
+      outputFile,
+      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
+        attribute.type
+      } { const data = (this._javaObject.get${capitalizeFirstLetter(attribute.name)}() as string | undefined); return data ? JSON.parse(data) : data; }\n`
+    );
+  } else {
+    fs.writeSync(
+      outputFile,
+      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
+        attribute.type
+      } { return ${
+        attribute.name === "node" ? "" : "wrapJoinPoint"
+      }(this._javaObject.get${capitalizeFirstLetter(attribute.name)}()) }\n`
+    );
+  }
 
   let setterActions = joinpointActions.filter(
     (action) => action.name === `set${capitalizeFirstLetter(attribute.name)}`
   );
-
-  if (attribute.name === "userField") {
-    console.log("HERE");
-  }
 
   if (setterActions.length === 0) {
     return;
@@ -114,7 +119,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
       attribute.name
     }(value: ${setterParameterType}) { this._javaObject.set${capitalizeFirstLetter(
       attribute.name
-    )}(unwrapJoinPoint(value)); }\n`
+    )}(${attribute.name === "data" ? "JSON.stringify" : "unwrapJoinPoint"}(value)); }\n`
   );
 }
 
@@ -140,7 +145,10 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
   const parameters = generateJoinpointActionParameters(action);
 
   const callParameters = action.parameters
-    .map((parameter) => `unwrapJoinPoint(${parameter.name})`)
+    .map(
+      (parameter) =>
+        `${action.name === "setData" ? "JSON.stringify" : "unwrapJoinPoint"}(${parameter.name})`
+    )
     .join(", ");
 
   fs.writeSync(
