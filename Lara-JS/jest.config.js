@@ -7,7 +7,7 @@ const config = {
   collectCoverage: false,
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],
-  collectCoverageFrom: ["**/*.(t|j)s"],
+  collectCoverageFrom: ["**/*[^.d].(t|j)s"],
   coverageProvider: "v8",
   moduleNameMapper: {
     "(.+)\\.js": "$1",
