@@ -82,7 +82,9 @@ export default class WeaverLauncher {
     }
 
     const child = fork(
-      path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
+      this.config.weaverFileName
+        ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
+        : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
     );
     child.send({
       config: this.config,

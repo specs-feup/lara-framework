@@ -26,18 +26,9 @@ java.asyncOptions = {
 };
 
 export class Weaver {
-  private static _isSetup = false;
   private static javaWeaver: unknown;
-
-  static isSetup() {
-    return Weaver._isSetup;
-  }
-
-  static async awaitSetup() {
-    while (!Weaver.isSetup()) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }
+  private static debug: Debug.Debugger;
+  private static datastore: unknown;
 
   static async setupJavaEnvironment(sourceDir: string) {
     const files = fs.readdirSync(sourceDir, { recursive: true });
@@ -63,15 +54,15 @@ export class Weaver {
     config: WeaverMessageFromLauncher["config"]
   ) {
     // Create debug instance
-    const debug = Debug(`Weaver:${config.weaverPrettyName}`);
-    debug("Initiating weaver setup.");
+    Weaver.debug = Debug(`Weaver:${config.weaverPrettyName}`);
+    Weaver.debug("Initiating weaver setup.");
 
     await this.setupJavaEnvironment(config.jarPath);
 
-    debug(`${config.weaverPrettyName} execution arguments: %O`, args);
+    Weaver.debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 
-    const javaWeaverClassName = config.javaWeaverQualifiedName.match(
-      new RegExp("(?<=\\.)\\w+$")
+    const javaWeaverClassName = RegExp(/(?<=\.)\w+$/).exec(
+      config.javaWeaverQualifiedName
     )?.[0];
 
     if (javaWeaverClassName === undefined || javaWeaverClassName === null) {
@@ -142,28 +133,31 @@ export class Weaver {
     }
 
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-    datastore.set(LaraiKeys.WORKSPACE_FOLDER, JavaFileList.newInstance(fileList));
+    datastore.set(
+      LaraiKeys.WORKSPACE_FOLDER,
+      JavaFileList.newInstance(fileList)
+    );
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
 
     JavaSpecsSystem.programStandardInit();
-
-    javaWeaver.run(datastore);
     /* eslint-enable */
 
-    Weaver._isSetup = true;
     Weaver.javaWeaver = javaWeaver;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return debug;
+    Weaver.datastore = datastore;
+  }
+
+  static start() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+    (Weaver.javaWeaver as any).run(Weaver.datastore);
   }
 
   static async executeScript(
     args: WeaverMessageFromLauncher["args"],
-    config: WeaverMessageFromLauncher["config"],
-    debug: Debug.Debugger
+    config: WeaverMessageFromLauncher["config"]
   ) {
-    debug("Executing user script...");
+    Weaver.debug("Executing user script...");
     if (
       typeof args.scriptFile === "string" &&
       fs.existsSync(args.scriptFile) &&
@@ -174,27 +168,28 @@ export class Weaver {
       // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
       await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
         .then(() => {
-          debug("Execution completed successfully.");
+          Weaver.debug("Execution completed successfully.");
         })
         .catch((error: unknown) => {
           console.error("Execution failed.");
           if (error instanceof Error) {
             // JS exception
-            console.error(error.message);
+            console.error(error);
           } else if (isJavaError(error)) {
             // Java exception
             console.error(error.cause.getMessage());
           } else {
             console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
           }
-          debug(error);
+          Weaver.debug(error);
         });
     } else {
-      new Error("Invalid file path or file type.");
+      throw new Error("Invalid file path or file type.");
     }
   }
 
   static shutdown() {
+    Weaver.debug("Exiting...");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
     (Weaver.javaWeaver as any).close();
   }
@@ -250,22 +245,16 @@ export function setupWeaver(message: WeaverMessageFromLauncher) {
  */
 waitForMessage(eventEmitter)
   .then(async (messageFromParent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const debug = await Weaver.setupWeaver(
-      messageFromParent.args,
-      messageFromParent.config
-    );
+    await Weaver.setupWeaver(messageFromParent.args, messageFromParent.config);
 
     if (directExecution) {
+      Weaver.start();
       await Weaver.executeScript(
         messageFromParent.args,
-        messageFromParent.config,
-        debug
+        messageFromParent.config
       );
 
       Weaver.shutdown();
-
-      debug("Exiting...");
       process.exit(0);
     }
   })
