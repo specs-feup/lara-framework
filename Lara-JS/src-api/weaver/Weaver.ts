@@ -1,10 +1,10 @@
 import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
+import DataStore from "../lara/util/DataStore.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
-import WeaverDataStore from "./util/WeaverDataStore.js";
 
 
 /**
@@ -219,5 +219,25 @@ export default class Weaver {
     }
 
     return results;
+  }
+
+  static get laraArgs(): any {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const datastore = new DataStore(Weaver.getWeaverEngine().getData());
+    let jsonString = datastore.get(JavaTypes.LaraiKeys.ASPECT_ARGS as string) as string | undefined;
+
+    jsonString ??= "";
+    jsonString.trim();
+
+    // Fix curly braces
+    if (!jsonString.startsWith("{")) {
+      jsonString = "{" + jsonString;
+    }
+
+    if (!jsonString.endsWith("}")) {
+      jsonString = jsonString + "}";
+    }
+
+    return JSON.parse(jsonString);
   }
 }
