@@ -28,9 +28,9 @@ export default class Query {
    *
    * @returns The results of the search.
    */
-  static search<T extends LaraJoinPoint>(
-    type: new (obj: unknown) => T,
-    filter?: JpFilter<T> | ((obj: T) => boolean),
+  static search<T extends typeof LaraJoinPoint>(
+    type: T,
+    filter?: JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean),
     traversal?: TraversalType
   ): Selector;
   /**
@@ -49,9 +49,11 @@ export default class Query {
     filter?: SelectorFilter,
     traversal?: TraversalType
   ): Selector;
-  static search<T extends LaraJoinPoint>(
-    type: (new (obj: unknown) => T) | string,
-    filter?: (JpFilter<T> | ((obj: T) => boolean)) | SelectorFilter,
+  static search<T extends typeof LaraJoinPoint>(
+    type: T | string,
+    filter?:
+      | (JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean))
+      | SelectorFilter,
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
     if (typeof type === "string") {
@@ -59,7 +61,9 @@ export default class Query {
     } else {
       return new Selector().search(
         type,
-        filter as JpFilter<T> | ((obj: T) => boolean),
+        filter as
+          | JpFilter<InstanceType<T>>
+          | ((obj: InstanceType<T>) => boolean),
         traversal
       );
     }

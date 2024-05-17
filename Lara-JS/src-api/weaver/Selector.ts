@@ -1,4 +1,4 @@
-import { LaraJoinPoint, getJoinpointMappers } from "../LaraJoinPoint.js";
+import { LaraJoinPoint } from "../LaraJoinPoint.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import JpFilterClass, { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
@@ -100,20 +100,30 @@ export default class Selector {
     };
   }
 
+  private static parseFilter<T extends typeof LaraJoinPoint>(
+    filter?: SelectorFilter,
+    joinPointType?: T
+  ): JpFilterClass;
   private static parseFilter(
+    filter?: SelectorFilter,
+    joinPointTypeName?: string
+  ): JpFilterClass;
+  private static parseFilter<T extends typeof LaraJoinPoint>(
     filter: SelectorFilter = {},
-    joinPointTypeName = ""
+    joinPointType: T | string = ""
   ): JpFilterClass {
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
     if (typeof filter !== "object" || filter instanceof RegExp) {
       // Get default attribute
-      const defaultAttr = Weaver.getDefaultAttribute(joinPointTypeName);
+      const defaultAttr = Weaver.getDefaultAttribute(joinPointType);
 
       // If no default attribute, return empty filter
-      if (defaultAttr === undefined) {
+      if (defaultAttr == undefined) {
         console.log(
           "Selector: cannot use default filter for join point '" +
-            joinPointTypeName +
+            (typeof joinPointType === "string"
+              ? joinPointType
+              : joinPointType.name) +
             "', it does not have a default attribute"
         );
         return new JpFilterClass({});
@@ -152,9 +162,9 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  search<T extends LaraJoinPoint>(
-    type?: new (obj: unknown) => T,
-    filter?: JpFilter<T> | ((obj: T) => boolean),
+  search<T extends typeof LaraJoinPoint>(
+    type?: T,
+    filter?: JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean),
     traversal?: TraversalType
   ): Selector;
   /**
@@ -166,30 +176,33 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  search<T extends LaraJoinPoint>(
+  search<T extends typeof LaraJoinPoint>(
     name?: string,
-    filter?: JpFilter<T> | ((obj: T) => boolean) | SelectorFilter,
+    filter?:
+      | JpFilter<InstanceType<T>>
+      | ((obj: InstanceType<T>) => boolean)
+      | SelectorFilter,
     traversal?: TraversalType
   ): Selector;
-  search<T extends LaraJoinPoint>(
-    name?: (new (obj: unknown) => T) | string,
-    filter: (JpFilter<T> | ((obj: T) => boolean)) | SelectorFilter = {},
+  search<T extends typeof LaraJoinPoint>(
+    type?: T | string,
+    filter:
+      | (JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean))
+      | SelectorFilter = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
     let jpFilter: JpFilterClass;
 
-    if (name !== undefined && typeof name !== "string") {
-      name = Selector.findJoinpointTypeName(name);
-
+    if (type !== undefined && typeof type !== "string") {
       if (typeof filter === "object") {
         jpFilter = new JpFilterClass(filter as JpFilterRules);
       } else if (typeof filter === "function") {
-        jpFilter = Selector.parseFilter(filter as SelectorFilter, name);
+        jpFilter = Selector.parseFilter(filter as SelectorFilter, type);
       } else {
         throw new TypeError("Invalid filter type: " + typeof filter);
       }
     } else {
-      jpFilter = Selector.parseFilter(filter as SelectorFilter, name);
+      jpFilter = Selector.parseFilter(filter as SelectorFilter, type);
     }
 
     let fn;
@@ -211,22 +224,11 @@ export default class Selector {
         );
     }
 
-    return this.searchPrivate(name, jpFilter, fn);
-  }
-
-  static findJoinpointTypeName<T extends LaraJoinPoint>(
-    type: new (obj: unknown) => T
-  ): string {
-    const joinpointMappers = getJoinpointMappers();
-    
-    for (const mapper of joinpointMappers) {
-      const match = Object.keys(mapper).find((key) => mapper[key] === type);
-      if (match) {
-        return match;
-      }
-    };
-
-    throw new Error("Joinpoint type not found: " + type.name);
+    if (type && typeof type !== "string") {
+      // TODO: Remove this workarround
+      type = Weaver.findJoinpointTypeName(type);
+    }
+    return this.searchPrivate(type, jpFilter, fn);
   }
 
   /**
