@@ -12,12 +12,13 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
     outputFile,
     `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
       jp.extends ? ` extends ${jp.extends}` : ""
-    } {\n`
+    } {${jp.defaultAttribute ? '\n  static readonly _defaultAttribute: string | null = "' + jp.defaultAttribute + '";' : ""}\n`
   );
   if (jp.name === "LaraJoinPoint") {
     fs.writeSync(
       outputFile,
       `  _javaObject!: any;
+  static readonly _defaultAttribute: string | null = ${jp.defaultAttribute ? `"${jp.defaultAttribute}"` : "null"};
   constructor(obj: any) {
     this._javaObject = obj;
   }\n`

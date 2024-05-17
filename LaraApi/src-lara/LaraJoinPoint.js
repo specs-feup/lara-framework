@@ -11,6 +11,7 @@
 import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     _javaObject;
+    static _defaultAttribute = null;
     constructor(obj) {
         this._javaObject = obj;
     }

@@ -12,19 +12,28 @@ else {
     engine = Engine.NodeJS;
 }
 export default class JavaTypes {
+    static typeMap = new Map();
     /**
      * @beta Only for very exceptional cases. Should not be used directly, use the static methods instead.
      *
-     * @param javaType - String with the name of the Java type to be imported into the javascript environment
+     * @param javaTypeName - String with the name of the Java type to be imported into the javascript environment
      * @returns A Java object
      */
-    static getType(javaType) {
+    static getType(javaTypeName) {
+        if (JavaTypes.typeMap.has(javaTypeName)) {
+            return JavaTypes.typeMap.get(javaTypeName);
+        }
+        let javaType;
         switch (engine) {
             case Engine.GraalVM:
-                return Java.type(javaType);
+                javaType = Java.type(javaTypeName);
+                break;
             case Engine.NodeJS:
-                return java.import(javaType);
+                javaType = java.import(javaTypeName);
+                break;
         }
+        JavaTypes.typeMap.set(javaTypeName, javaType);
+        return javaType;
     }
     static instanceOf(value, javaTypeName) {
         switch (engine) {
