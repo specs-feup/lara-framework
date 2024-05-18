@@ -80,7 +80,9 @@ export default class LocalFolder {
   /**
    * @returns A java List with all the files in this LocalFolder
    */
-  getFileList(path?: string | JavaClasses.File): JavaClasses.List {
+  getFileList(
+    path?: string | JavaClasses.File
+  ): JavaClasses.List<JavaClasses.File> {
     let basePath = this.baseFolder;
 
     if (path !== undefined) {
