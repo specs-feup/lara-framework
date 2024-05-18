@@ -6,7 +6,7 @@ import {
 import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
 import DataStore from "../lara/util/DataStore.js";
-import JavaTypes from "../lara/util/JavaTypes.js";
+import JavaTypes, { JavaClasses } from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
 
@@ -32,10 +32,9 @@ export default class Weaver {
   static DEFAULT_WEAVER_COMMAND = undefined;
 
   /**
-   *
-   * @returns {J#org.lara.interpreter.weaver.interf.WeaverEngine} the Java instance of the current WeaverEngine
+   * @returns The Java instance of the current WeaverEngine
    */
-  static getWeaverEngine() {
+  static getWeaverEngine(): JavaClasses.WeaverEngine {
     return JavaTypes.WeaverEngine.getThreadLocalWeaver();
   }
 

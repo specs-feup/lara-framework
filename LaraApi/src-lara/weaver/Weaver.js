@@ -24,8 +24,7 @@ export default class Weaver {
      */
     static DEFAULT_WEAVER_COMMAND = undefined;
     /**
-     *
-     * @returns {J#org.lara.interpreter.weaver.interf.WeaverEngine} the Java instance of the current WeaverEngine
+     * @returns The Java instance of the current WeaverEngine
      */
     static getWeaverEngine() {
         return JavaTypes.WeaverEngine.getThreadLocalWeaver();
