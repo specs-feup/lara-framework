@@ -44,15 +44,17 @@ export default class Selector {
             jpAttributes: { _starting_point: $startingPoint },
         };
     }
-    static parseFilter(filter = {}, joinPointTypeName = "") {
+    static parseFilter(filter = {}, joinPointType = "") {
         // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
         if (typeof filter !== "object" || filter instanceof RegExp) {
             // Get default attribute
-            const defaultAttr = Weaver.getDefaultAttribute(joinPointTypeName);
+            const defaultAttr = Weaver.getDefaultAttribute(joinPointType);
             // If no default attribute, return empty filter
-            if (defaultAttr === undefined) {
+            if (defaultAttr == undefined) {
                 console.log("Selector: cannot use default filter for join point '" +
-                    joinPointTypeName +
+                    (typeof joinPointType === "string"
+                        ? joinPointType
+                        : joinPointType.name) +
                     "', it does not have a default attribute");
                 return new JpFilterClass({});
             }
@@ -78,22 +80,21 @@ export default class Selector {
         }
         this.$currentJps = undefined;
     }
-    search(name, filter = {}, traversal = TraversalType.PREORDER) {
+    search(type, filter = {}, traversal = TraversalType.PREORDER) {
         let jpFilter;
-        if (name !== undefined && typeof name !== "string") {
-            name = new name({}).joinPointType;
+        if (type !== undefined && typeof type !== "string") {
             if (typeof filter === "object") {
                 jpFilter = new JpFilterClass(filter);
             }
             else if (typeof filter === "function") {
-                jpFilter = Selector.parseFilter(filter, name);
+                jpFilter = Selector.parseFilter(filter, type);
             }
             else {
                 throw new TypeError("Invalid filter type: " + typeof filter);
             }
         }
         else {
-            jpFilter = Selector.parseFilter(filter, name);
+            jpFilter = Selector.parseFilter(filter, type);
         }
         let fn;
         switch (traversal) {
@@ -112,44 +113,60 @@ export default class Selector {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 `Traversal type not implemented: ${traversal}`);
         }
-        return this.searchPrivate(name, jpFilter, fn);
+        return this.searchPrivate(type, jpFilter, fn);
     }
-    /**
-     * Search in the children of the previously selected nodes.
-     *
-     * @param type - type of the join point to search.
-     * @param filter - filter rules for the search.
-     *
-     * @returns The results of the search.
-     */
     children(type, filter = {}) {
-        return this.searchPrivate(type, Selector.parseFilter(filter, type), function ($jp, name) {
+        let jpFilter;
+        if (type !== undefined && typeof type !== "string") {
+            if (typeof filter === "object") {
+                jpFilter = new JpFilterClass(filter);
+            }
+            else if (typeof filter === "function") {
+                jpFilter = Selector.parseFilter(filter, type);
+            }
+            else {
+                throw new TypeError("Invalid filter type: " + typeof filter);
+            }
+        }
+        else {
+            jpFilter = Selector.parseFilter(filter, type);
+        }
+        return this.searchPrivate(type, jpFilter, function ($jp, name) {
             return selectorJoinPointsClass.children($jp, name);
         });
     }
-    /**
-     * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
-     *
-     * @param name - type of the join point to search.
-     * @param filter - filter rules for the search.
-     *
-     * @returns The results of the search.
-     */
-    scope(name, filter = {}) {
-        return this.searchPrivate(name, Selector.parseFilter(filter, name), function ($jp, name) {
+    scope(type, filter = {}) {
+        let jpFilter;
+        if (type !== undefined && typeof type !== "string") {
+            if (typeof filter === "object") {
+                jpFilter = new JpFilterClass(filter);
+            }
+            else if (typeof filter === "function") {
+                jpFilter = Selector.parseFilter(filter, type);
+            }
+            else {
+                throw new TypeError("Invalid filter type: " + typeof filter);
+            }
+        }
+        else {
+            jpFilter = Selector.parseFilter(filter, type);
+        }
+        return this.searchPrivate(type, jpFilter, function ($jp, name) {
             return selectorJoinPointsClass.scope($jp, name);
         });
     }
-    searchPrivate(name = undefined, jpFilter, selectFunction) {
+    searchPrivate(type, jpFilter = new JpFilterClass({}), selectFunction) {
+        const name = typeof type === "undefined" || typeof type === "string"
+            ? type
+            : Weaver.findJoinpointTypeName(type);
         const $newJps = [];
         // If add base jp, this._$currentJps must have at most 1 element
         if (this.addBaseJp && this.$currentJps !== undefined) {
             if (this.$currentJps.length === 0) {
-                throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?";
+                throw new Error("Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?");
             }
             if (this.$currentJps.length > 1) {
-                throw `Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('
-          ${this.$currentJps.length}')`;
+                throw new Error(`Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('${this.$currentJps.length}')`);
             }
             this.addBaseJp = false;
             // Filter does not test if the join point is of the right type

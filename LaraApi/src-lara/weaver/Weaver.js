@@ -1,4 +1,4 @@
-import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
+import { LaraJoinPoint, getJoinpointMappers, wrapJoinPoint, } from "../LaraJoinPoint.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
 import DataStore from "../lara/util/DataStore.js";
@@ -55,15 +55,38 @@ export default class Weaver {
         }
         return $joinpoint.instanceOf(type);
     }
-    /**
-     * @param joinPointType - The type of the join point
-     * @returns The name of the default attribute for the given join point type, or undefined if there is no default attribute
-     */
     static getDefaultAttribute(joinPointType) {
         if (usingLaraCommonLanguage === true) {
-            return Java.type("pt.up.fe.specs.lara.commonlang.LaraCommonLang").getDefaultAttribute(joinPointType);
+            return JavaTypes.getType("pt.up.fe.specs.lara.commonlang.LaraCommonLang").getDefaultAttribute(joinPointType);
         }
-        return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
+        if (typeof joinPointType === "string") {
+            // Search for the default attribute in the joinpoint mappers
+            for (const mapper of getJoinpointMappers()) {
+                if (mapper[joinPointType]) {
+                    return mapper[joinPointType]._defaultAttribute;
+                }
+            }
+            // No wrapper was found, attempt to the collect information from the weaver
+            return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
+        }
+        else {
+            return joinPointType._defaultAttribute;
+        }
+    }
+    /**
+     * Finds the name of the joinpoint class, given the js wrapper class itself
+     * @param type - The joinpoint class to find the name of
+     * @returns The name of the joinpoint class
+     */
+    static findJoinpointTypeName(type) {
+        const joinpointMappers = getJoinpointMappers();
+        for (const mapper of joinpointMappers) {
+            const match = Object.keys(mapper).find((key) => mapper[key] === type);
+            if (match) {
+                return match;
+            }
+        }
+        throw new Error("Joinpoint type not found: " + type.name);
     }
     /**
      * @param jpTypeName - a join point, or the name of a join point

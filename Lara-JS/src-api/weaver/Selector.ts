@@ -55,12 +55,16 @@ interface SelectorChain {
   };
 }
 
-export type SelectorFilter =
+export type Filter_StringVariant =
   | string
   | RegExp
   | ((str: string) => boolean)
   | ((jp: LaraJoinPoint) => boolean)
   | JpFilterRules;
+
+export type Filter_WrapperVariant<T extends typeof LaraJoinPoint> =
+  | JpFilter<InstanceType<T>>
+  | ((obj: InstanceType<T>) => boolean);
 
 /**
  * Selects join points according to their type and filter rules.
@@ -101,15 +105,15 @@ export default class Selector {
   }
 
   private static parseFilter<T extends typeof LaraJoinPoint>(
-    filter?: SelectorFilter,
+    filter?: Filter_StringVariant,
     joinPointType?: T
   ): JpFilterClass;
   private static parseFilter(
-    filter?: SelectorFilter,
+    filter?: Filter_StringVariant,
     joinPointTypeName?: string
   ): JpFilterClass;
   private static parseFilter<T extends typeof LaraJoinPoint>(
-    filter: SelectorFilter = {},
+    filter: Filter_StringVariant = {},
     joinPointType: T | string = ""
   ): JpFilterClass {
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
@@ -164,11 +168,11 @@ export default class Selector {
    */
   search<T extends typeof LaraJoinPoint>(
     type?: T,
-    filter?: JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean),
+    filter?: Filter_WrapperVariant<T>,
     traversal?: TraversalType
   ): Selector;
   /**
-   * @deprecated Use the new search function.
+   * @deprecated Use the new search function variant that accepts a wrapper class.
    *
    * @param name - type of the join point to search.
    * @param filter - filter rules for the search.
@@ -178,17 +182,12 @@ export default class Selector {
    */
   search<T extends typeof LaraJoinPoint>(
     name?: string,
-    filter?:
-      | JpFilter<InstanceType<T>>
-      | ((obj: InstanceType<T>) => boolean)
-      | SelectorFilter,
+    filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
     traversal?: TraversalType
   ): Selector;
   search<T extends typeof LaraJoinPoint>(
     type?: T | string,
-    filter:
-      | (JpFilter<InstanceType<T>> | ((obj: InstanceType<T>) => boolean))
-      | SelectorFilter = {},
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
     let jpFilter: JpFilterClass;
@@ -197,12 +196,12 @@ export default class Selector {
       if (typeof filter === "object") {
         jpFilter = new JpFilterClass(filter as JpFilterRules);
       } else if (typeof filter === "function") {
-        jpFilter = Selector.parseFilter(filter as SelectorFilter, type);
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       } else {
         throw new TypeError("Invalid filter type: " + typeof filter);
       }
     } else {
-      jpFilter = Selector.parseFilter(filter as SelectorFilter, type);
+      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
     }
 
     let fn;
@@ -224,10 +223,6 @@ export default class Selector {
         );
     }
 
-    if (type && typeof type !== "string") {
-      // TODO: Remove this workarround
-      type = Weaver.findJoinpointTypeName(type);
-    }
     return this.searchPrivate(type, jpFilter, fn);
   }
 
@@ -239,10 +234,42 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  children(type?: string, filter: SelectorFilter = {}): Selector {
+  children<T extends typeof LaraJoinPoint>(
+    type?: T,
+    filter?: Filter_WrapperVariant<T>
+  ): Selector;
+  /**
+   * Search in the children of the previously selected nodes.
+   *
+   * @deprecated Use the new children function variant that accepts a wrapper class.
+   *
+   * @param name - type of the join point to search.
+   * @param filter - filter rules for the search.
+   *
+   * @returns The results of the search.
+   */
+  children(name?: string, filter?: Filter_StringVariant): Selector;
+  children<T extends typeof LaraJoinPoint>(
+    type?: string,
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = {}
+  ): Selector {
+    let jpFilter: JpFilterClass;
+
+    if (type !== undefined && typeof type !== "string") {
+      if (typeof filter === "object") {
+        jpFilter = new JpFilterClass(filter as JpFilterRules);
+      } else if (typeof filter === "function") {
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+      } else {
+        throw new TypeError("Invalid filter type: " + typeof filter);
+      }
+    } else {
+      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+    }
+
     return this.searchPrivate(
       type,
-      Selector.parseFilter(filter, type),
+      jpFilter,
       function ($jp: LaraJoinPoint, name?: string) {
         return selectorJoinPointsClass.children($jp, name);
       }
@@ -252,37 +279,77 @@ export default class Selector {
   /**
    * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
    *
+   * @param type - type of the join point to search.
+   * @param filter - filter rules for the search.
+   *
+   * @returns The results of the search.
+   */
+  scope<T extends typeof LaraJoinPoint>(
+    type?: T,
+    filter?: Filter_WrapperVariant<T>
+  ): Selector;
+  /**
+   * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
+   *
+   * @deprecated Use the new scope function variant that accepts a wrapper class.
+   *
    * @param name - type of the join point to search.
    * @param filter - filter rules for the search.
    *
    * @returns The results of the search.
    */
-  scope(name?: string, filter: SelectorFilter = {}): Selector {
+  scope(name?: string, filter?: Filter_StringVariant): Selector;
+  scope<T extends typeof LaraJoinPoint>(
+    type?: T | string,
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = {}
+  ): Selector {
+    let jpFilter: JpFilterClass;
+
+    if (type !== undefined && typeof type !== "string") {
+      if (typeof filter === "object") {
+        jpFilter = new JpFilterClass(filter as JpFilterRules);
+      } else if (typeof filter === "function") {
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+      } else {
+        throw new TypeError("Invalid filter type: " + typeof filter);
+      }
+    } else {
+      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+    }
+
     return this.searchPrivate(
-      name,
-      Selector.parseFilter(filter, name),
+      type,
+      jpFilter,
       function ($jp: LaraJoinPoint, name?: string) {
         return selectorJoinPointsClass.scope($jp, name);
       }
     );
   }
 
-  private searchPrivate(
-    name: string | undefined = undefined,
-    jpFilter: JpFilterClass,
+  private searchPrivate<T extends typeof LaraJoinPoint>(
+    type: T | string | undefined,
+    jpFilter: JpFilterClass = new JpFilterClass({}),
     selectFunction: (jp: LaraJoinPoint, name?: string) => LaraJoinPoint[]
   ) {
+    const name =
+      typeof type === "undefined" || typeof type === "string"
+        ? type
+        : Weaver.findJoinpointTypeName(type);
+
     const $newJps: SelectorChain[] = [];
 
     // If add base jp, this._$currentJps must have at most 1 element
     if (this.addBaseJp && this.$currentJps !== undefined) {
       if (this.$currentJps.length === 0) {
-        throw "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?";
+        throw new Error(
+          "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?"
+        );
       }
 
       if (this.$currentJps.length > 1) {
-        throw `Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('
-          ${this.$currentJps.length}')`;
+        throw new Error(
+          `Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('${this.$currentJps.length}')`
+        );
       }
 
       this.addBaseJp = false;
