@@ -62,14 +62,14 @@ export default class Weaver {
             // Search for the default attribute in the joinpoint mappers
             for (const mapper of getJoinpointMappers()) {
                 if (mapper[joinPointType]) {
-                    return mapper[joinPointType]._defaultAttribute;
+                    return mapper[joinPointType]._defaultAttributeInfo.name;
                 }
             }
             // No wrapper was found, attempt to the collect information from the weaver
             return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
         }
         else {
-            return joinPointType._defaultAttribute;
+            return joinPointType._defaultAttributeInfo.name;
         }
     }
     /**

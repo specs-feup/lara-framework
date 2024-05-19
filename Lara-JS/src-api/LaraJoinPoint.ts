@@ -12,9 +12,41 @@
 
 import JavaTypes from "./lara/util/JavaTypes.js";
 
+/**
+ * Type for type equality assertion. If T is equal to U, return Y, otherwise return N.
+ * Source: https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650
+ * @example
+ * type A = Equals<string, string, "Y", "N">; // "Y"
+ * type B = Equals<string, number, "Y", "N">; // "N"
+ */
+type Equals<T, U, Y = unknown, N = never> =
+  (<G>() => G extends T ? 1 : 2) extends
+  (<G>() => G extends U ? 1 : 2) ? Y : N;
+
+type DefaultAttributeHelper<
+  T extends typeof LaraJoinPoint,
+  DefaultAttributeMap,
+  PrivateMapper,
+> = {
+  [K in keyof DefaultAttributeMap]: K extends keyof PrivateMapper
+    ? Equals<T, PrivateMapper[K], DefaultAttributeMap[K], never>
+    : never;
+}[keyof DefaultAttributeMap];
+
+// Extract the type A from A | undefined
+type ExtractedType<T> = T extends undefined ? never : T;
+
+export type DefaultAttribute<T extends typeof LaraJoinPoint> = DefaultAttributeHelper<
+  T,
+  ExtractedType<T["_defaultAttributeInfo"]["map"]>,
+  ExtractedType<T["_defaultAttributeInfo"]["type"]>
+>;
+
 export class LaraJoinPoint {
+  static readonly _defaultAttributeInfo: {map?: any, name: string | null, type?: any} = {
+    name: null,
+  };
   _javaObject!: any;
-  static readonly _defaultAttribute: string | null = null;
   constructor(obj: any) {
     this._javaObject = obj;
   }

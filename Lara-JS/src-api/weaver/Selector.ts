@@ -1,4 +1,4 @@
-import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import { LaraJoinPoint, type DefaultAttribute } from "../LaraJoinPoint.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import JpFilterClass, { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
@@ -22,11 +22,11 @@ export function setSelectorJoinPointsClass(
 /**
  * Extracts the return type of a method or the type of a property.
  */
-export type MemberType<T, key extends keyof T> = T[key] extends (
-  ...args: never
-) => infer R
-  ? R
-  : T[key];
+export type MemberType<T, key extends keyof T> = key extends never
+  ? never
+  : T[key] extends (...args: never) => infer R
+    ? R
+    : T[key];
 
 /**
  * If the type is a string, expands it to a string or a RegExp.
@@ -36,15 +36,20 @@ type StringExpander<T> = T extends string ? T | RegExp | (() => string) : T;
 /**
  * Expand type to allow for the basic type or a filter function accepting the basic type.
  */
-type FilterFunctionExpander<T, Class> = T | ((value: T, obj: Class) => boolean);
+type FilterFunctionExpander<T, Class> = T extends never
+  ? never
+  : T | ((value: T, obj: Class) => boolean);
 
+type ExpandedRules<T, key extends keyof T> = StringExpander<
+  FilterFunctionExpander<MemberType<T, key>, T>
+>;
 /**
  * Filter type for Joinpoints. It can be a string to filter using the default attribute of the Joinpoint, or an object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
  */
 export type JpFilter<T> = {
-  [key in keyof T]?: StringExpander<
-    FilterFunctionExpander<MemberType<T, key>, T>
-  >;
+  -readonly [key in keyof T as key extends "toString"
+    ? never
+    : key]?: ExpandedRules<T, key>;
 };
 
 interface SelectorChain {
@@ -64,7 +69,8 @@ export type Filter_StringVariant =
 
 export type Filter_WrapperVariant<T extends typeof LaraJoinPoint> =
   | JpFilter<InstanceType<T>>
-  | ((obj: InstanceType<T>) => boolean);
+  | ((obj: InstanceType<T>) => boolean)
+  | ExpandedRules<InstanceType<T>, DefaultAttribute<T>>;
 
 /**
  * Selects join points according to their type and filter rules.

@@ -64,15 +64,21 @@ import {
 } from "lara-js/api/LaraJoinPoint.js";\n\n`
   );
 
+  generateDefaultAttributeMappers(specification.joinpoints, outputFile);
+
   generateJoinpoints(specification.joinpoints, outputFile);
   generateEnums(specification.enums, outputFile);
 
-  generateMappers(specification.joinpoints, specification.enums, outputFile);
+  generateJoinpointMappers(
+    specification.joinpoints,
+    specification.enums,
+    outputFile
+  );
 
   fs.closeSync(outputFile);
 }
 
-function generateMappers(joinpoints, enums, outputFile) {
+function generateJoinpointMappers(joinpoints, enums, outputFile) {
   fs.writeSync(outputFile, `const JoinpointMapper: JoinpointMapperType = {\n`);
   for (const jp of joinpoints) {
     fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);
@@ -85,8 +91,24 @@ function generateMappers(joinpoints, enums, outputFile) {
 if (!registered) {
   registerJoinpointMapper(JoinpointMapper);
   registered = true;
-}\n`
+}\n\n`
   );
+}
+
+function generateDefaultAttributeMappers(joinpoints, outputFile) {
+  fs.writeSync(outputFile, `type PrivateMapper = {\n`);
+  for (const jp of joinpoints) {
+    fs.writeSync(outputFile, `  "${jp.name}": typeof ${jp.name},\n`);
+  }
+  fs.writeSync(outputFile, `};\n\n`);
+
+  fs.writeSync(outputFile, `type DefaultAttributeMap = {\n`);
+  for (const jp of joinpoints) {
+    if (jp.defaultAttribute) {
+      fs.writeSync(outputFile, `  ${jp.name}: "${jp.defaultAttribute}",\n`);
+    }
+  }
+  fs.writeSync(outputFile, `}\n\n`);
 }
 
 const args = yargs(hideBin(process.argv))

@@ -10,8 +10,10 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
+    static _defaultAttributeInfo = {
+        name: null,
+    };
     _javaObject;
-    static _defaultAttribute = null;
     constructor(obj) {
         this._javaObject = obj;
     }
