@@ -63,13 +63,13 @@ export class LaraJoinPoint {
   get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
   insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint;
   insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint;
-  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint | LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
+  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
   def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
   equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
   instanceOf(name: string): boolean;
   instanceOf(names: string[]): boolean;
-  instanceOf(p1: string | string[]): boolean | boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
+  instanceOf(p1: string | string[]): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
 }
 
 
