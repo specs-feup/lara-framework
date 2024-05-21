@@ -28,17 +28,19 @@ export type MemberType<T, key extends keyof T> = key extends never
     ? R
     : T[key];
 
+type FilterFunction<T, Class> = ((value: T, obj: Class) => boolean);
+
 /**
  * If the type is a string, expands it to a string or a RegExp.
  */
-type StringExpander<T> = T extends string ? T | RegExp | (() => string) : T;
+type StringExpander<T> = T extends string ? T | RegExp : T;
 
 /**
  * Expand type to allow for the basic type or a filter function accepting the basic type.
  */
 type FilterFunctionExpander<T, Class> = T extends never
   ? never
-  : T | ((value: T, obj: Class) => boolean);
+  : T | FilterFunction<T, Class>;
 
 type ExpandedRules<T, key extends keyof T> = StringExpander<
   FilterFunctionExpander<MemberType<T, key>, T>
@@ -201,10 +203,8 @@ export default class Selector {
     if (type !== undefined && typeof type !== "string") {
       if (typeof filter === "object") {
         jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else if (typeof filter === "function") {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       } else {
-        throw new TypeError("Invalid filter type: " + typeof filter);
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       }
     } else {
       jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
@@ -264,10 +264,8 @@ export default class Selector {
     if (type !== undefined && typeof type !== "string") {
       if (typeof filter === "object") {
         jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else if (typeof filter === "function") {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       } else {
-        throw new TypeError("Invalid filter type: " + typeof filter);
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       }
     } else {
       jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
@@ -314,10 +312,8 @@ export default class Selector {
     if (type !== undefined && typeof type !== "string") {
       if (typeof filter === "object") {
         jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else if (typeof filter === "function") {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       } else {
-        throw new TypeError("Invalid filter type: " + typeof filter);
+        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
       }
     } else {
       jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);

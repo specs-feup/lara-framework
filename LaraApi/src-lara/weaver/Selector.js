@@ -86,11 +86,8 @@ export default class Selector {
             if (typeof filter === "object") {
                 jpFilter = new JpFilterClass(filter);
             }
-            else if (typeof filter === "function") {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
             else {
-                throw new TypeError("Invalid filter type: " + typeof filter);
+                jpFilter = Selector.parseFilter(filter, type);
             }
         }
         else {
@@ -121,11 +118,8 @@ export default class Selector {
             if (typeof filter === "object") {
                 jpFilter = new JpFilterClass(filter);
             }
-            else if (typeof filter === "function") {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
             else {
-                throw new TypeError("Invalid filter type: " + typeof filter);
+                jpFilter = Selector.parseFilter(filter, type);
             }
         }
         else {
@@ -141,11 +135,8 @@ export default class Selector {
             if (typeof filter === "object") {
                 jpFilter = new JpFilterClass(filter);
             }
-            else if (typeof filter === "function") {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
             else {
-                throw new TypeError("Invalid filter type: " + typeof filter);
+                jpFilter = Selector.parseFilter(filter, type);
             }
         }
         else {

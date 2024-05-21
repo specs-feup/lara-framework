@@ -58,7 +58,7 @@ export default class Query {
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
     if (typeof type === "string") {
-      return new Selector().search(type, filter, traversal);
+      return new Selector().search(type, filter as Filter_StringVariant, traversal);
     } else {
       return new Selector().search(
         type,
@@ -115,7 +115,7 @@ export default class Query {
         traversal
       );
     } else {
-      return new Selector($baseJp).search(type, filter, traversal);
+      return new Selector($baseJp).search(type, filter as Filter_WrapperVariant<T>, traversal);
     }
   }
 
