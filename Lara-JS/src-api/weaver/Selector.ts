@@ -53,6 +53,24 @@ export type JpFilter<T> = {
     ? never
     : key]?: ExpandedRules<T, key>;
 };
+type JpFilterFunction<T extends typeof LaraJoinPoint = typeof LaraJoinPoint> = (
+  jp: InstanceType<T>
+) => boolean;
+
+type AllowedDefaultAttributeTypes = StringExpander<string | number | bigint | boolean>;
+function isAllowedDefaultAttributeType(
+  obj: unknown
+): obj is AllowedDefaultAttributeTypes {
+  if (obj instanceof RegExp) return true;
+
+  const type = typeof obj;
+  return (
+    type === "string" ||
+    type === "number" ||
+    type === "bigint" ||
+    type === "boolean"
+  );
+}
 
 interface SelectorChain {
   counter: Accumulator;
