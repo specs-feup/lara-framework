@@ -4,7 +4,6 @@ import { laraGetter } from "../core/LaraCore.js";
 type JpFilterTypes =
   | RegExp
   | ((str: string, jp?: LaraJoinPoint) => boolean)
-  | ((jp: LaraJoinPoint) => boolean)
   | string
   | boolean
   | number

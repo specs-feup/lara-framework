@@ -1,6 +1,7 @@
 import { LaraJoinPoint, type DefaultAttribute } from "../LaraJoinPoint.js";
+import { laraGetter } from "../lara/core/LaraCore.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import JpFilterClass, { type JpFilterRules } from "../lara/util/JpFilter.js";
+import { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
@@ -25,8 +26,8 @@ export function setSelectorJoinPointsClass(
 type MemberType<T, key extends keyof T> = key extends never
   ? never
   : T[key] extends (...args: never) => infer R
-    ? R
-    : T[key];
+  ? R
+  : T[key];
 
 type FilterFunction<T, Class> = ((value: T, obj: Class) => boolean);
 
@@ -125,18 +126,48 @@ export default class Selector {
     };
   }
 
-  private static parseFilter<T extends typeof LaraJoinPoint>(
-    filter?: Filter_StringVariant,
-    joinPointType?: T
-  ): JpFilterClass;
-  private static parseFilter(
-    filter?: Filter_StringVariant,
-    joinPointTypeName?: string
-  ): JpFilterClass;
-  private static parseFilter<T extends typeof LaraJoinPoint>(
-    filter: Filter_StringVariant = {},
-    joinPointType: T | string = ""
-  ): JpFilterClass {
+  private static parseWrapperFilter<T extends typeof LaraJoinPoint>(
+    joinPointType: T,
+    filter: Filter_WrapperVariant<T> = () => true
+  ): JpFilterFunction<T> {
+
+    if (isAllowedDefaultAttributeType(filter)) {
+      // If filter is a string, RegExp, number, boolean or bigint, return a JpFilter type object that filters by the default attribute
+      const defaultAttribute = Weaver.getDefaultAttribute(joinPointType);
+      if (defaultAttribute == undefined) {
+        throw new Error(
+          `Selector: cannot use default filter for join point "${joinPointType.prototype.toString()}", it does not have a default attribute`
+        );
+      }
+
+      return this.parseWrapperFilter(joinPointType, {
+        [defaultAttribute]: filter,
+      } as JpFilter<InstanceType<T>>);
+    } else if (typeof filter === "function") {
+      // If filter is a function, then it must be a JpFilterFunction type. Return as is.
+      return filter;
+    } else {
+      // Filter must be an object (JpFilter type). Return a function that filters by the given rules.
+      return (jp: InstanceType<T>): boolean => {
+        for (const [k, v] of Object.entries(filter as JpFilter<InstanceType<T>>)) {
+
+          if (v instanceof RegExp) {
+            return v.test(laraGetter(jp, k) as string);
+          } else if (typeof v === "function") {
+            return (v as FilterFunction<unknown, InstanceType<T>>)(laraGetter(jp, k), jp);
+          }
+
+          return laraGetter(jp, k) === v;
+        }
+        return true;
+      };
+    }
+  }
+
+  private static parseStringFilter(
+    joinPointType: string = "",
+    filter: Filter_StringVariant = {}
+  ): JpFilterFunction {
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
     if (typeof filter !== "object" || filter instanceof RegExp) {
       // Get default attribute
@@ -145,21 +176,27 @@ export default class Selector {
       // If no default attribute, return empty filter
       if (defaultAttr == undefined) {
         console.log(
-          "Selector: cannot use default filter for join point '" +
-            (typeof joinPointType === "string"
-              ? joinPointType
-              : joinPointType.name) +
-            "', it does not have a default attribute"
+          `Selector: cannot use default filter for join point "${joinPointType}", it does not have a default attribute`
         );
-        return new JpFilterClass({});
+        return () => true;
       }
 
-      return new JpFilterClass({
+      return this.parseStringFilter(joinPointType, {
         [defaultAttr]: filter,
       });
     }
 
-    return new JpFilterClass(filter);
+    return (jp: LaraJoinPoint): boolean => {
+      for (const [k, v] of Object.entries(filter)) {
+        if (v instanceof RegExp) {
+          return v.test(laraGetter(jp, k) as string);
+        } else if (typeof v === "function") {
+          return (v as FilterFunction<unknown, LaraJoinPoint>)(laraGetter(jp, k), jp);
+        }
+        return laraGetter(jp, k) === v;
+      }
+      return true;
+    };
   }
 
   /**
@@ -201,9 +238,9 @@ export default class Selector {
    *
    * @returns The results of the search.
    */
-  search<T extends typeof LaraJoinPoint>(
+  search(
     name?: string,
-    filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
+    filter?: Filter_StringVariant,
     traversal?: TraversalType
   ): Selector;
   search<T extends typeof LaraJoinPoint>(
@@ -211,16 +248,18 @@ export default class Selector {
     filter: Filter_WrapperVariant<T> | Filter_StringVariant = {},
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector {
-    let jpFilter: JpFilterClass;
+    let jpFilter: JpFilterFunction<T>;
 
-    if (type !== undefined && typeof type !== "string") {
-      if (typeof filter === "object") {
-        jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
-      }
+    if (type === undefined || typeof type === "string") {
+      jpFilter = Selector.parseStringFilter(
+        type,
+        filter as Filter_StringVariant
+      );
     } else {
-      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
     }
 
     let fn;
@@ -269,19 +308,21 @@ export default class Selector {
    */
   children(name?: string, filter?: Filter_StringVariant): Selector;
   children<T extends typeof LaraJoinPoint>(
-    type?: string,
+    type?: T | string,
     filter: Filter_WrapperVariant<T> | Filter_StringVariant = {}
   ): Selector {
-    let jpFilter: JpFilterClass;
+    let jpFilter: JpFilterFunction<T>;
 
-    if (type !== undefined && typeof type !== "string") {
-      if (typeof filter === "object") {
-        jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
-      }
+    if (type === undefined || typeof type === "string") {
+      jpFilter = Selector.parseStringFilter(
+        type,
+        filter as Filter_StringVariant
+      );
     } else {
-      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
     }
 
     return this.searchPrivate(
@@ -320,16 +361,18 @@ export default class Selector {
     type?: T | string,
     filter: Filter_WrapperVariant<T> | Filter_StringVariant = {}
   ): Selector {
-    let jpFilter: JpFilterClass;
+    let jpFilter: JpFilterFunction<T>;
 
-    if (type !== undefined && typeof type !== "string") {
-      if (typeof filter === "object") {
-        jpFilter = new JpFilterClass(filter as JpFilterRules);
-      } else {
-        jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
-      }
+    if (type === undefined || typeof type === "string") {
+      jpFilter = Selector.parseStringFilter(
+        type,
+        filter as Filter_StringVariant
+      );
     } else {
-      jpFilter = Selector.parseFilter(filter as Filter_StringVariant, type);
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
     }
 
     return this.searchPrivate(
@@ -343,7 +386,7 @@ export default class Selector {
 
   private searchPrivate<T extends typeof LaraJoinPoint>(
     type: T | string | undefined,
-    jpFilter: JpFilterClass = new JpFilterClass({}),
+    jpFilter: JpFilterFunction<T> = () => true,
     selectFunction: (jp: LaraJoinPoint, name?: string) => LaraJoinPoint[]
   ) {
     const name =
@@ -401,12 +444,12 @@ export default class Selector {
   private addJps(
     $newJps: SelectorChain[],
     $jps: LaraJoinPoint[],
-    jpFilter: JpFilterClass,
+    jpFilter: JpFilterFunction,
     $jpChain: SelectorChain,
     name: string
   ) {
     for (const $jp of $jps) {
-      const $filteredJp = jpFilter.filter([$jp]);
+      const $filteredJp = [$jp].filter(jpFilter);
 
       if ($filteredJp.length === 0) {
         continue;

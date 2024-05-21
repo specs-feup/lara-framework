@@ -1,5 +1,5 @@
+import { laraGetter } from "../lara/core/LaraCore.js";
 import Accumulator from "../lara/util/Accumulator.js";
-import JpFilterClass from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
@@ -12,6 +12,15 @@ let selectorJoinPointsClass = JoinPoints;
  */
 export function setSelectorJoinPointsClass(value = JoinPoints) {
     selectorJoinPointsClass = value;
+}
+function isAllowedDefaultAttributeType(obj) {
+    if (obj instanceof RegExp)
+        return true;
+    const type = typeof obj;
+    return (type === "string" ||
+        type === "number" ||
+        type === "bigint" ||
+        type === "boolean");
 }
 /**
  * Selects join points according to their type and filter rules.
@@ -44,25 +53,63 @@ export default class Selector {
             jpAttributes: { _starting_point: $startingPoint },
         };
     }
-    static parseFilter(filter = {}, joinPointType = "") {
+    static parseWrapperFilter(joinPointType, filter = () => true) {
+        if (isAllowedDefaultAttributeType(filter)) {
+            // If filter is a string, RegExp, number, boolean or bigint, return a JpFilter type object that filters by the default attribute
+            const defaultAttribute = Weaver.getDefaultAttribute(joinPointType);
+            if (defaultAttribute == undefined) {
+                throw new Error(`Selector: cannot use default filter for join point "${joinPointType.prototype.toString()}", it does not have a default attribute`);
+            }
+            return this.parseWrapperFilter(joinPointType, {
+                [defaultAttribute]: filter,
+            });
+        }
+        else if (typeof filter === "function") {
+            // If filter is a function, then it must be a JpFilterFunction type. Return as is.
+            return filter;
+        }
+        else {
+            // Filter must be an object (JpFilter type). Return a function that filters by the given rules.
+            return (jp) => {
+                for (const [k, v] of Object.entries(filter)) {
+                    if (v instanceof RegExp) {
+                        return v.test(laraGetter(jp, k));
+                    }
+                    else if (typeof v === "function") {
+                        return v(laraGetter(jp, k), jp);
+                    }
+                    return laraGetter(jp, k) === v;
+                }
+                return true;
+            };
+        }
+    }
+    static parseStringFilter(joinPointType = "", filter = {}) {
         // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
         if (typeof filter !== "object" || filter instanceof RegExp) {
             // Get default attribute
             const defaultAttr = Weaver.getDefaultAttribute(joinPointType);
             // If no default attribute, return empty filter
             if (defaultAttr == undefined) {
-                console.log("Selector: cannot use default filter for join point '" +
-                    (typeof joinPointType === "string"
-                        ? joinPointType
-                        : joinPointType.name) +
-                    "', it does not have a default attribute");
-                return new JpFilterClass({});
+                console.log(`Selector: cannot use default filter for join point "${joinPointType}", it does not have a default attribute`);
+                return () => true;
             }
-            return new JpFilterClass({
+            return this.parseStringFilter(joinPointType, {
                 [defaultAttr]: filter,
             });
         }
-        return new JpFilterClass(filter);
+        return (jp) => {
+            for (const [k, v] of Object.entries(filter)) {
+                if (v instanceof RegExp) {
+                    return v.test(laraGetter(jp, k));
+                }
+                else if (typeof v === "function") {
+                    return v(laraGetter(jp, k), jp);
+                }
+                return laraGetter(jp, k) === v;
+            }
+            return true;
+        };
     }
     /**
      * Generator function, allows Selector to be used in for..of statements.
@@ -82,16 +129,11 @@ export default class Selector {
     }
     search(type, filter = {}, traversal = TraversalType.PREORDER) {
         let jpFilter;
-        if (type !== undefined && typeof type !== "string") {
-            if (typeof filter === "object") {
-                jpFilter = new JpFilterClass(filter);
-            }
-            else {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
+        if (type === undefined || typeof type === "string") {
+            jpFilter = Selector.parseStringFilter(type, filter);
         }
         else {
-            jpFilter = Selector.parseFilter(filter, type);
+            jpFilter = Selector.parseWrapperFilter(type, filter);
         }
         let fn;
         switch (traversal) {
@@ -114,16 +156,11 @@ export default class Selector {
     }
     children(type, filter = {}) {
         let jpFilter;
-        if (type !== undefined && typeof type !== "string") {
-            if (typeof filter === "object") {
-                jpFilter = new JpFilterClass(filter);
-            }
-            else {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
+        if (type === undefined || typeof type === "string") {
+            jpFilter = Selector.parseStringFilter(type, filter);
         }
         else {
-            jpFilter = Selector.parseFilter(filter, type);
+            jpFilter = Selector.parseWrapperFilter(type, filter);
         }
         return this.searchPrivate(type, jpFilter, function ($jp, name) {
             return selectorJoinPointsClass.children($jp, name);
@@ -131,22 +168,17 @@ export default class Selector {
     }
     scope(type, filter = {}) {
         let jpFilter;
-        if (type !== undefined && typeof type !== "string") {
-            if (typeof filter === "object") {
-                jpFilter = new JpFilterClass(filter);
-            }
-            else {
-                jpFilter = Selector.parseFilter(filter, type);
-            }
+        if (type === undefined || typeof type === "string") {
+            jpFilter = Selector.parseStringFilter(type, filter);
         }
         else {
-            jpFilter = Selector.parseFilter(filter, type);
+            jpFilter = Selector.parseWrapperFilter(type, filter);
         }
         return this.searchPrivate(type, jpFilter, function ($jp, name) {
             return selectorJoinPointsClass.scope($jp, name);
         });
     }
-    searchPrivate(type, jpFilter = new JpFilterClass({}), selectFunction) {
+    searchPrivate(type, jpFilter = () => true, selectFunction) {
         const name = typeof type === "undefined" || typeof type === "string"
             ? type
             : Weaver.findJoinpointTypeName(type);
@@ -184,7 +216,7 @@ export default class Selector {
     }
     addJps($newJps, $jps, jpFilter, $jpChain, name) {
         for (const $jp of $jps) {
-            const $filteredJp = jpFilter.filter([$jp]);
+            const $filteredJp = [$jp].filter(jpFilter);
             if ($filteredJp.length === 0) {
                 continue;
             }

@@ -84,14 +84,14 @@ export default class Weaver {
    */
   static getDefaultAttribute<T extends typeof LaraJoinPoint>(
     joinPointType: T
-  ): string | null;
+  ): keyof T | null;
   static getDefaultAttribute(joinPointType: string): string | null;
   static getDefaultAttribute<T extends typeof LaraJoinPoint>(
     joinPointType: T | string
-  ): string | null;
+  ): keyof T | string | null;
   static getDefaultAttribute<T extends typeof LaraJoinPoint>(
     joinPointType: T | string
-  ): string | null {
+  ): keyof T | string | null {
     if (usingLaraCommonLanguage === true) {
       return JavaTypes.getType(
         "pt.up.fe.specs.lara.commonlang.LaraCommonLang"
