@@ -29,7 +29,7 @@ type MemberType<T, key extends keyof T> = key extends never
   ? R
   : T[key];
 
-type FilterFunction<T, Class> = ((value: T, obj: Class) => boolean);
+type FilterFunction<T, Class> = (value: T, obj: Class) => boolean;
 
 /**
  * If the type is a string, expands it to a string or a RegExp.
@@ -47,14 +47,18 @@ type FilterFunctionExpander<T, Class> = T extends never
  * Filter type for Joinpoints. It can be a string to filter using the default attribute of the Joinpoint, or an object where each key represents the name of a join point attribute, and the value the pattern that we will use to match against the attribute.
  */
 type JpFilter<T> = {
-  -readonly [key in keyof T]?: StringExpander<FilterFunctionExpander<MemberType<T, key>, T>>;
+  -readonly [key in keyof T]?: StringExpander<
+    FilterFunctionExpander<MemberType<T, key>, T>
+  >;
 };
 
 type JpFilterFunction<T extends typeof LaraJoinPoint = typeof LaraJoinPoint> = (
   jp: InstanceType<T>
 ) => boolean;
 
-type AllowedDefaultAttributeTypes = StringExpander<string | number | bigint | boolean>;
+type AllowedDefaultAttributeTypes = StringExpander<
+  string | number | bigint | boolean
+>;
 function isAllowedDefaultAttributeType(
   obj: unknown
 ): obj is AllowedDefaultAttributeTypes {
@@ -72,7 +76,12 @@ function isAllowedDefaultAttributeType(
 export type Filter_WrapperVariant<T extends typeof LaraJoinPoint> =
   | Omit<JpFilter<InstanceType<T>>, "toString">
   | JpFilterFunction<T>
-  | StringExpander<Extract<MemberType<InstanceType<T>, DefaultAttribute<T>>, AllowedDefaultAttributeTypes>>;
+  | StringExpander<
+      Extract<
+        MemberType<InstanceType<T>, DefaultAttribute<T>>,
+        AllowedDefaultAttributeTypes
+      >
+    >;
 
 export type Filter_StringVariant =
   | string
@@ -111,10 +120,10 @@ export default class Selector {
   /// STATIC FUNCTIONS
 
   private static copyChain($jpChain: SelectorChain) {
-    const copy = Object.assign({}, $jpChain);
+    const copy = { ...$jpChain };
 
     copy.counter = copy.counter.copy();
-    copy.jpAttributes = Object.assign({}, copy.jpAttributes);
+    copy.jpAttributes = { ...copy.jpAttributes };
 
     return copy;
   }
@@ -130,7 +139,6 @@ export default class Selector {
     joinPointType: T,
     filter: Filter_WrapperVariant<T> = () => true
   ): JpFilterFunction<T> {
-
     if (isAllowedDefaultAttributeType(filter)) {
       // If filter is a string, RegExp, number, boolean or bigint, return a JpFilter type object that filters by the default attribute
       const defaultAttribute = Weaver.getDefaultAttribute(joinPointType);
@@ -149,12 +157,16 @@ export default class Selector {
     } else {
       // Filter must be an object (JpFilter type). Return a function that filters by the given rules.
       return (jp: InstanceType<T>): boolean => {
-        for (const [k, v] of Object.entries(filter as JpFilter<InstanceType<T>>)) {
-
+        for (const [k, v] of Object.entries(
+          filter as JpFilter<InstanceType<T>>
+        )) {
           if (v instanceof RegExp) {
             return v.test(laraGetter(jp, k) as string);
           } else if (typeof v === "function") {
-            return (v as FilterFunction<unknown, InstanceType<T>>)(laraGetter(jp, k), jp);
+            return (v as FilterFunction<unknown, InstanceType<T>>)(
+              laraGetter(jp, k),
+              jp
+            );
           }
 
           return laraGetter(jp, k) === v;
@@ -191,7 +203,10 @@ export default class Selector {
         if (v instanceof RegExp) {
           return v.test(laraGetter(jp, k) as string);
         } else if (typeof v === "function") {
-          return (v as FilterFunction<unknown, LaraJoinPoint>)(laraGetter(jp, k), jp);
+          return (v as FilterFunction<unknown, LaraJoinPoint>)(
+            laraGetter(jp, k),
+            jp
+          );
         }
         return laraGetter(jp, k) === v;
       }
@@ -456,8 +471,9 @@ export default class Selector {
       }
 
       if ($filteredJp.length > 1) {
-        throw `Selector._addJps: Expected $filteredJp to have length 1, has 
-        ${$filteredJp.length}`;
+        throw new Error(
+          `Selector._addJps: Expected $filteredJp to have length 1, has ${$filteredJp.length}`
+        );
       }
 
       // Copy chain
@@ -485,11 +501,9 @@ export default class Selector {
       return [];
     }
 
-    const returnJps: LaraJoinPoint[] = [];
-
-    for (const $jpChain of this.$currentJps) {
-      returnJps.push($jpChain.jpAttributes[this.lastName]);
-    }
+    const returnJps = this.$currentJps.map(
+      (chain) => chain.jpAttributes[this.lastName]
+    );
 
     this.$currentJps = undefined;
     return returnJps;
@@ -530,7 +544,7 @@ export default class Selector {
   /**
    * @returns the first selected node
    */
-  first(): LaraJoinPoint | undefined {
+  first() {
     return this.getFirst();
   }
 }
