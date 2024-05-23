@@ -280,12 +280,12 @@ export default class Selector {
     let fn;
     switch (traversal) {
       case TraversalType.PREORDER:
-        fn = function ($jp: LaraJoinPoint, name?: string) {
+        fn = function ($jp: LaraJoinPoint, name?: T) {
           return selectorJoinPointsClass.descendants($jp, name);
         };
         break;
       case TraversalType.POSTORDER:
-        fn = function ($jp: LaraJoinPoint, name?: string) {
+        fn = function ($jp: LaraJoinPoint, name?: T) {
           return selectorJoinPointsClass.descendantsPostorder($jp, name);
         };
         break;
@@ -296,7 +296,7 @@ export default class Selector {
         );
     }
 
-    return this.searchPrivate(type, jpFilter, fn);
+    return this.searchPrivate(type, fn, jpFilter);
   }
 
   /**
@@ -400,15 +400,11 @@ export default class Selector {
   }
 
   private searchPrivate<T extends typeof LaraJoinPoint>(
-    type: T | string | undefined,
-    jpFilter: JpFilterFunction<T> = () => true,
-    selectFunction: (jp: LaraJoinPoint, name?: string) => LaraJoinPoint[]
-  ) {
-    const name =
-      typeof type === "undefined" || typeof type === "string"
-        ? type
-        : Weaver.findJoinpointTypeName(type);
-
+    type: T,
+    selectFunction: (jp: LaraJoinPoint, name?: T) => LaraJoinPoint[],
+    jpFilter: JpFilterFunction<T> = () => true
+  ): Selector<InstanceType<T>, ChU | InstanceType<T>> {
+    const name = Weaver.findJoinpointTypeName(type) ?? "joinpoint";
     const $newJps: SelectorChain[] = [];
 
     // If add base jp, this._$currentJps must have at most 1 element
@@ -429,8 +425,8 @@ export default class Selector {
 
       // Filter does not test if the join point is of the right type
       const $root = this.$currentJps[0].jpAttributes[this.lastName];
-      if (name && $root.instanceOf(name)) {
-        this.addJps($newJps, [$root], jpFilter, this.$currentJps[0], name);
+      if ($root instanceof type) {
+        this.addJps(name, $newJps, [$root], jpFilter, this.$currentJps[0]);
       }
     }
 
@@ -444,9 +440,9 @@ export default class Selector {
     for (const $jpChain of this.$currentJps) {
       const $jp = $jpChain.jpAttributes[this.lastName];
 
-      const $allJps = selectFunction($jp, name);
+      const $allJps = selectFunction($jp, type);
 
-      this.addJps($newJps, $allJps, jpFilter, $jpChain, name ?? "joinpoint");
+      this.addJps(name, $newJps, $allJps, jpFilter, $jpChain);
     }
 
     // Update
@@ -457,11 +453,11 @@ export default class Selector {
   }
 
   private addJps(
+    name: string,
     $newJps: SelectorChain[],
     $jps: LaraJoinPoint[],
     jpFilter: JpFilterFunction,
-    $jpChain: SelectorChain,
-    name: string
+    $jpChain: SelectorChain
   ) {
     for (const $jp of $jps) {
       const $filteredJp = [$jp].filter(jpFilter);

@@ -120,7 +120,7 @@ export default class Weaver {
    */
   static findJoinpointTypeName<T extends typeof LaraJoinPoint>(
     type: T
-  ): string {
+  ): string | undefined {
     const joinpointMappers = getJoinpointMappers();
 
     for (const mapper of joinpointMappers) {
@@ -130,7 +130,19 @@ export default class Weaver {
       }
     }
 
-    throw new Error("Joinpoint type not found: " + type.name);
+    return undefined;
+  }
+
+  static findJoinpointType(name: string): typeof LaraJoinPoint | undefined {
+    const joinpointMappers = getJoinpointMappers();
+
+    for (const mapper of joinpointMappers) {
+      if (mapper[name]) {
+        return mapper[name];
+      }
+    }
+
+    return undefined;
   }
 
   /**

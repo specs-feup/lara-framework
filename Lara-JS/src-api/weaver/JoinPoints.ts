@@ -80,36 +80,45 @@ export default class JoinPoints {
    *
    * @returns the nodes inside the scope of the given node.
    */
-  static scope($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_scope_nodes, $jp, jpType);
+  static scope<T extends typeof LaraJoinPoint>(
+    $jp: LaraJoinPoint,
+    jpType?: T
+  ): LaraJoinPoint[] {
+    return JoinPoints._getNodes(JoinPoints._all_scope_nodes($jp), $jp, jpType);
   }
 
   /**
    *
    * @returns the children of the given node, according to the AST
    */
-  static children($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_children, $jp, jpType);
+  static children<T extends typeof LaraJoinPoint>(
+    $jp: LaraJoinPoint,
+    jpType?: T
+  ): LaraJoinPoint[] {
+    return JoinPoints._getNodes(JoinPoints._all_children($jp), $jp, jpType);
   }
 
   /**
    *
    * @returns the descendants of the given node, according to the AST, preorder traversal
    */
-  static descendants($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_descendants, $jp, jpType);
+  static descendants<T extends typeof LaraJoinPoint>(
+    $jp: LaraJoinPoint,
+    jpType?: T
+  ): LaraJoinPoint[] {
+    return JoinPoints._getNodes(JoinPoints._all_descendants($jp), $jp, jpType);
   }
 
   /**
    *
    * @returns the descendants of the given node, according to the AST, postorder traversal
    */
-  static descendantsPostorder(
+  static descendantsPostorder<T extends typeof LaraJoinPoint>(
     $jp: LaraJoinPoint,
-    jpType?: string
+    jpType?: T
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(
-      JoinPoints._all_descendants_postorder,
+      JoinPoints._all_descendants_postorder($jp),
       $jp,
       jpType
     );
@@ -119,25 +128,24 @@ export default class JoinPoints {
    *
    * @returns  the nodes related with the given node, according to the search function
    */
-  static _getNodes(
-    searchFunction: ($jp: LaraJoinPoint) => LaraJoinPoint[],
+  static _getNodes<T extends typeof LaraJoinPoint>(
+    $allJps: LaraJoinPoint[],
     $jp: LaraJoinPoint,
-    jpType?: string
+    jpType?: T
   ): LaraJoinPoint[] {
     // TODO: This function can be optimized by using streaming
-
-    const descendants: LaraJoinPoint[] = searchFunction($jp);
-
     if (jpType === undefined) {
-      return descendants;
+      return $allJps;
     }
 
-    return JoinPoints._filterNodes(descendants ?? [], jpType);
+    return JoinPoints._filterNodes($allJps, jpType);
   }
 
-  static _filterNodes($jps: LaraJoinPoint[], jpType: string) {
-    // TODO: This check should be done with the JS Classes
-    return $jps.filter((jp) => jp.instanceOf(jpType));
+  static _filterNodes<T extends typeof LaraJoinPoint>(
+    $jps: LaraJoinPoint[],
+    jpType: T
+  ) {
+    return $jps.filter((jp) => jp instanceof jpType);
   }
 
   /**
