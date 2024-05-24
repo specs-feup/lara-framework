@@ -18,7 +18,7 @@ export default class JoinPoints {
    *
    */
   static toJoinPoint(node: any): LaraJoinPoint {
-    throw "JoinPoints.toJoinPoint: not implemented";
+    throw new Error("JoinPoints.toJoinPoint: not implemented");
   }
 
   /**
@@ -49,7 +49,9 @@ export default class JoinPoints {
    *
    * @returns all the descendants of the given node, in post order
    */
-  static _all_descendants_postorder($jp: LaraJoinPoint): LaraJoinPoint[] {
+  private static _all_descendants_postorder(
+    $jp: LaraJoinPoint
+  ): LaraJoinPoint[] {
     const descendants: LaraJoinPoint[] = [];
 
     for (const child of JoinPoints._all_children($jp)) {
@@ -60,7 +62,7 @@ export default class JoinPoints {
     return descendants;
   }
 
-  static _all_descendants_postorder_helper(
+  private static _all_descendants_postorder_helper(
     $jp: LaraJoinPoint
   ): LaraJoinPoint[] {
     const nodes: LaraJoinPoint[] = [];
@@ -84,7 +86,7 @@ export default class JoinPoints {
     $jp: LaraJoinPoint,
     jpType?: T
   ): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_scope_nodes($jp), $jp, jpType);
+    return JoinPoints._getNodes(jpType, JoinPoints._all_scope_nodes($jp));
   }
 
   /**
@@ -95,7 +97,7 @@ export default class JoinPoints {
     $jp: LaraJoinPoint,
     jpType?: T
   ): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_children($jp), $jp, jpType);
+    return JoinPoints._getNodes(jpType, JoinPoints._all_children($jp));
   }
 
   /**
@@ -106,7 +108,7 @@ export default class JoinPoints {
     $jp: LaraJoinPoint,
     jpType?: T
   ): LaraJoinPoint[] {
-    return JoinPoints._getNodes(JoinPoints._all_descendants($jp), $jp, jpType);
+    return JoinPoints._getNodes(jpType, JoinPoints._all_descendants($jp));
   }
 
   /**
@@ -118,9 +120,8 @@ export default class JoinPoints {
     jpType?: T
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(
-      JoinPoints._all_descendants_postorder($jp),
-      $jp,
-      jpType
+      jpType,
+      JoinPoints._all_descendants_postorder($jp)
     );
   }
 
@@ -128,24 +129,16 @@ export default class JoinPoints {
    *
    * @returns  the nodes related with the given node, according to the search function
    */
-  static _getNodes<T extends typeof LaraJoinPoint>(
-    $allJps: LaraJoinPoint[],
-    $jp: LaraJoinPoint,
-    jpType?: T
+  private static _getNodes<T extends typeof LaraJoinPoint>(
+    jpType?: T,
+    $allJps: LaraJoinPoint[] = []
   ): LaraJoinPoint[] {
     // TODO: This function can be optimized by using streaming
     if (jpType === undefined) {
       return $allJps;
     }
 
-    return JoinPoints._filterNodes($allJps, jpType);
-  }
-
-  static _filterNodes<T extends typeof LaraJoinPoint>(
-    $jps: LaraJoinPoint[],
-    jpType: T
-  ) {
-    return $jps.filter((jp) => jp instanceof jpType);
+    return $allJps.filter((jp) => jp instanceof jpType);
   }
 
   /**
