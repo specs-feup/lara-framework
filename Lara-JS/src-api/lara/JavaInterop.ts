@@ -38,6 +38,6 @@ export default class JavaInterop {
    * @deprecated Use JavaTypes instead
    */
   static getClass(classname: string) {
-    return Java.type(classname).class;
+    return JavaTypes.getType(classname).class;
   }
 }

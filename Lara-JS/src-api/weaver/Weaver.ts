@@ -46,8 +46,8 @@ export default class Weaver {
   }
 
   static getLaraLocTotals() {
-    var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
-    return Java.type("org.lara.interpreter.utils.LaraIUtils")
+    var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
+    return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
       .getLaraLoc(
         Weaver.getWeaverEngine(),
         Weaver.getWeaverEngine().getData().get()
