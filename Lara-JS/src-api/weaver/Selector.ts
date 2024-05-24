@@ -26,8 +26,8 @@ export function setSelectorJoinPointsClass(
 type MemberType<T, key extends keyof T> = key extends never
   ? never
   : T[key] extends (...args: never) => infer R
-  ? R
-  : T[key];
+    ? R
+    : T[key];
 
 type FilterFunction<T, Class> = (value: T, obj: Class) => boolean;
 
@@ -108,17 +108,17 @@ export default class Selector<
   JpT extends LaraJoinPoint = LaraJoinPoint,
   ChU extends LaraJoinPoint = JpT,
 > {
-  private $currentJps: SelectorChain[] | undefined;
+  private $currentJps: SelectorChain[] = [];
   private lastName: string = "";
   private $baseJp: JpT | LaraJoinPoint;
   private addBaseJp: boolean;
   private static STARTING_POINT = "_starting_point";
 
   constructor($baseJp?: LaraJoinPoint, inclusive = false) {
-    this.$currentJps =
-      $baseJp === undefined ? undefined : [Selector.newJpChain($baseJp)];
-    this.lastName = $baseJp === undefined ? "" : Selector.STARTING_POINT;
+    this.$baseJp = $baseJp ?? selectorJoinPointsClass.root();
     this.addBaseJp = inclusive;
+    this.lastName = Selector.STARTING_POINT;
+    this.$currentJps.push(Selector.newJpChain(this.$baseJp));
   }
 
   /// STATIC FUNCTIONS
@@ -224,7 +224,7 @@ export default class Selector<
    * Returns join points iteratively, as if .get() was called.
    */
   *[Symbol.iterator]() {
-    if (this.$currentJps) {
+    if (this.$currentJps.length > 0) {
       for (const $jpChain of this.$currentJps) {
         yield $jpChain.jpAttributes[this.lastName];
       }
@@ -233,7 +233,7 @@ export default class Selector<
         "Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)"
       );
     }
-    this.$currentJps = undefined;
+    this.$currentJps = [];
   }
 
   /**
@@ -323,13 +323,7 @@ export default class Selector<
     const $newJps: SelectorChain[] = [];
 
     // If add base jp, this._$currentJps must have at most 1 element
-    if (this.addBaseJp && this.$currentJps !== undefined) {
-      if (this.$currentJps.length === 0) {
-        throw new Error(
-          "Selector._searchPrivate: 'inclusive' is true, but currentJps is empty, can this happen?"
-        );
-      }
-
+    if (this.addBaseJp && this.$currentJps.length > 0) {
       if (this.$currentJps.length > 1) {
         throw new Error(
           `Selector._searchPrivate: 'inclusive' is true, but currentJps is larger than one ('${this.$currentJps.length}')`
@@ -345,12 +339,6 @@ export default class Selector<
       }
     }
 
-    const isCurrentJpsUndefined = this.$currentJps === undefined;
-    this.$currentJps ??= [Selector.newJpChain(selectorJoinPointsClass.root())];
-    this.lastName = isCurrentJpsUndefined
-      ? Selector.STARTING_POINT
-      : this.lastName;
-
     // Each $jp is an object with the current chain
     for (const $jpChain of this.$currentJps) {
       const $jp = $jpChain.jpAttributes[this.lastName];
@@ -362,7 +350,7 @@ export default class Selector<
 
     // Update
     this.$currentJps = $newJps;
-    this.lastName = name ?? "joinpoint";
+    this.lastName = name;
 
     return this as unknown as Selector<InstanceType<T>, ChU | InstanceType<T>>;
   }
@@ -405,7 +393,7 @@ export default class Selector<
    * @returns an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
    */
   get(): JpT[] {
-    if (this.$currentJps === undefined) {
+    if (this.$currentJps.length === 0) {
       console.log(
         "Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)"
       );
@@ -416,7 +404,7 @@ export default class Selector<
       (chain) => chain.jpAttributes[this.lastName]
     );
 
-    this.$currentJps = undefined;
+    this.$currentJps = [];
 
     return returnJps as JpT[];
   }
@@ -425,7 +413,7 @@ export default class Selector<
    * @returns An array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format \<joinpoint_name\>_\<repetition\>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
    */
   chain() {
-    if (this.$currentJps === undefined) {
+    if (this.$currentJps.length === 0) {
       console.log(
         "Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)"
       );
@@ -434,7 +422,7 @@ export default class Selector<
 
     const returnJps = this.$currentJps.map((chain) => chain.jpAttributes);
 
-    this.$currentJps = undefined;
+    this.$currentJps = [];
     return returnJps;
   }
 
