@@ -121,13 +121,13 @@ export default class Selector {
      * Returns join points iteratively, as if .get() was called.
      */
     *[Symbol.iterator]() {
-        if (this.$currentJps.length > 0) {
+        if (this.lastName === Selector.STARTING_POINT) {
+            console.log("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
+        }
+        else {
             for (const $jpChain of this.$currentJps) {
                 yield $jpChain.jpAttributes[this.lastName];
             }
-        }
-        else {
-            console.log("Selector.iterator*: no join points have been searched, have you called a search function? (e.g., search, children)");
         }
         this.$currentJps = [];
     }
@@ -246,7 +246,7 @@ export default class Selector {
      * @returns an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
      */
     get() {
-        if (this.$currentJps.length === 0) {
+        if (this.lastName === Selector.STARTING_POINT) {
             console.log("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
             return [];
         }
@@ -258,7 +258,7 @@ export default class Selector {
      * @returns An array of objects where each object maps the name of the join point to the corresponding join point that was searched, as well as creating mappings of the format \<joinpoint_name\>_\<repetition\>. For instance, if the search chain has the same name multiple times (e.g., search("loop").search("loop")), the chain object will have an attribute "loop" mapped to the last loop of the chain, an attribute "loop_0" mapped to the first loop of the chain and an attribute "loop_1" mapped to the second loop of the chain.
      */
     chain() {
-        if (this.$currentJps.length === 0) {
+        if (this.lastName === Selector.STARTING_POINT) {
             console.log("Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)");
             return [];
         }
