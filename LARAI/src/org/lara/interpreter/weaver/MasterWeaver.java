@@ -198,18 +198,6 @@ public class MasterWeaver {
     private final static String PATH_MODEL_BEGIN = "(path())==('";
     private final static String PATH_MODEL_END = "')";
 
-    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-    // FilterExpression[][] filterChain,
-    // String aspect_name, Bindings localScope, int lineNumber) throws IOException {
-    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    // }
-
-    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-    // FilterExpression[][] filterChain,
-    // String aspect_name, Value localScope, int lineNumber) throws IOException {
-    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    // }
-
     /**
      * Select method that invokes the weaver(s) to get the desired pointcuts
      *

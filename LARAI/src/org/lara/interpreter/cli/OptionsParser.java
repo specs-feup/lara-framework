@@ -121,11 +121,11 @@ public class OptionsParser {
     }
 
     public static CommandLine parse(String[] args, Options options) {
-
+/*
         if (args.length < 1) {
             throw new IllegalArgumentException("LARA aspect file is required.\n" + OptionsParser.getHelp(options));
         }
-
+*/
         try {
 
             final CommandLineParser parser = new DefaultParser();
@@ -179,11 +179,7 @@ public class OptionsParser {
         }
     }
 
-    /*
-    public void help() {
-    	this.formatter.printHelp("java -jar larai.jar (<larafile>.lara|<aspIR>.xml) [options]", this.opts);
-    }
-    */
+
     public static String getHelp(Options options) {
         return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
     }

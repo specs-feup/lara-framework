@@ -96,6 +96,7 @@ public class OptionsConverter {
             List<WeaverOption> weaverOptions) {
         DataStore dataStore = getDataStoreFromArgs(); // This way the data store contains at least the values defined
                                                          // in the properties files
+
         dataStore.add(LaraiKeys.LARA_FILE, new File(laraFileName));
 
         Map<WeaverOption, DataKey<?>> conversionMap = JOptionsInterface.getConversionMap();
@@ -220,7 +221,7 @@ public class OptionsConverter {
     /**
      * Convert the varargs into a DataStore
      *
-     * @param args
+     * @param
      */
     private static DataStore getDataStoreFromArgs() {
     //    private static DataStore getDataStoreFromArgs(CommandLine cmd) {        

@@ -180,7 +180,6 @@ public class WeaverLauncher {
      * Has support for LaraDoc and LaraUnit.
      *
      * @param args
-     * @param engine
      */
     public boolean launch(String[] args) {
 
@@ -201,6 +200,7 @@ public class WeaverLauncher {
         // No predefined task, just execute as usual
         return LaraI.exec(args, engine);
     }
+
 
     private Boolean executeUnitTester(String[] args) {
 
@@ -460,6 +460,33 @@ public class WeaverLauncher {
 
         return new WeaverLauncher(WeaverEngine.getThreadLocalWeaver()).executeParallel(args, threads, weaverCommand,
                 workingDir);
+    }
+
+
+    /**
+     * Setups the weaver when executing in node.js mode.
+     *
+     * @param args
+     * @return
+     */
+    public boolean nodeModeSetup(String[] args) {
+
+        // If no flags, just launch
+        if (args.length == 0) {
+            return LaraI.nodeSetup(args, engine);
+        }
+
+        var firstArg = args[0];
+
+        // Check if first argument activates a predefined task
+        var task = tasks.get(firstArg);
+
+        if (task != null) {
+            return task.apply(args);
+        }
+
+        // No predefined task, just execute as usual
+        return LaraI.nodeSetup(args, engine);
     }
 
 }

@@ -103,6 +103,8 @@ public class LaraI {
     private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
             LaraSystemTools.class, Runtime.class);
 
+    private static final String UNDEFINED_LARA_SCRIPT = "<undefined LARA script>";
+
     public static boolean isRunningGui() {
         return RUNNING_GUI.get();
     }
@@ -131,6 +133,10 @@ public class LaraI {
 
     public static LaraI getThreadLocalLarai() {
         return THREAD_LOCAL_LARAI.get();
+    }
+
+    public static String getUndefinedLaraScript() {
+        return UNDEFINED_LARA_SCRIPT;
     }
 
     private LaraIDataStore options;
@@ -187,23 +193,6 @@ public class LaraI {
         return weaverEngine.getScriptEngine();
     }
 
-    /**
-     * Executes larai with a Weaving engine implementing {@link WeaverEngine}, and the language specification language
-     * specification. The datastore must contain the options available in {@link LaraiKeys}
-     *
-     * @param dataStore
-     * @param weaverEngine
-     * @param langSpec
-     * @return
-     */
-    // public static boolean exec(DataStore dataStore, Class<? extends WeaverEngine> weaverEngine) {
-    // try {
-    // return exec(dataStore, weaverEngine.newInstance());
-    // } catch (Exception e) {
-    // throw new RuntimeException(
-    // "Could not instantiate weaver engine with class '" + weaverEngine.getClass() + "'", e);
-    // }
-    // }
     /**
      * Executes larai with a Weaving engine implementing {@link WeaverEngine}.
      * <p>
@@ -313,9 +302,7 @@ public class LaraI {
 
     }
 
-    // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
-    // return exec(args, weaverEngine.newInstance());
-    // }
+
     /**
      * Executes larai with a Weaving engine implementing {@link WeaverEngine}. The varargs are converted into a
      * DataStore
@@ -337,24 +324,16 @@ public class LaraI {
         // Set weaver (e.g. for help message to access name and build number)
         weaverEngine.setWeaver();
 
-        // Reset global state
-        MessageConstants.order = 1;
-        if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
-
-            LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-            // return true;
-            return LaraiResult.newInstance(true, true);
-        }
-
         try {
-            // Collection<Option> configOptions = OptionsParser.buildConfigOptions();
-            // Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
-            // OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
-            //
-            // Options finalOptions = new Options();
-            //
-            // configOptions.forEach(finalOptions::addOption); // So the config options appear on the top
-            // mainOptions.forEach(finalOptions::addOption);
+
+            // Reset global state
+            MessageConstants.order = 1;
+            if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
+
+                LaraLauncher.launchGUI(weaverEngine, Optional.empty());
+                // return true;
+                return LaraiResult.newInstance(true, true);
+            }
 
             Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 
@@ -364,8 +343,11 @@ public class LaraI {
                 return LaraiResult.newInstance(true, false);
             }
 
-            // ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
-            ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
+            // Take into account that the first argument might not be set
+            var laraScript = args.length > 0 ? args[0] : LaraI.getUndefinedLaraScript();
+
+
+            ExecutionMode mode = OptionsParser.getExecMode(laraScript, cmd, finalOptions);
             DataStore dataStore;
             boolean success;
             boolean isRunningGui;
@@ -391,14 +373,14 @@ public class LaraI {
             case OPTIONS: // convert options to data store and run
                 // SpecsLogs.debug("Received args: " + Arrays.toString(args));
 
-                dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
+                dataStore = OptionsConverter.commandLine2DataStore(laraScript, cmd, weaverEngine.getOptions());
 
                 // return execPrivate(dataStore, weaverEngine);
                 success = execPrivate(dataStore, weaverEngine);
                 isRunningGui = false;
                 break;
             case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
-                dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
+                dataStore = OptionsConverter.configExtraOptions2DataStore(laraScript, cmd, weaverEngine);
                 // return execPrivate(dataStore, weaverEngine);
                 success = execPrivate(dataStore, weaverEngine);
                 isRunningGui = false;
@@ -707,6 +689,11 @@ public class LaraI {
 
         try {
             // Start interpretation
+
+            // Check if LARA script has been defined
+            if(options.getLaraFile().getName().equals(getUndefinedLaraScript())) {
+                throw new RuntimeException("No LARA script defined, it must be the first argument when JavaScript interpretation is enabled");
+            }
 
             final String extension = SpecsIo.getExtension(options.getLaraFile());
 
@@ -1033,5 +1020,69 @@ public class LaraI {
     public static Collection<String> getLaraImportInPackage(String packageName) {
         var laraImporter = getLaraImporter();
         return laraImporter.getImportsFromPackage(packageName);
+    }
+
+
+    /**
+     * Setups the given weaver engine for execution in node.js mode. The array of arguments is converted to a DataStore.
+     *
+     * @param args
+     * @param weaverEngine
+     * @return
+     */
+    public static boolean nodeSetup(String[] args, WeaverEngine weaverEngine) {
+        // Since when in node.js mode the JS execution is responsibility of node,
+        // we no longer execute the weaver, only setup it.
+        //
+        // This prevents spanning parallel executions from Java, that needs to be
+        // done at node level.
+
+        SpecsLogs.debug(() -> "[nodeSetup] Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
+
+        // Set weaver (e.g. for help message to access name and build number)
+        weaverEngine.setWeaver();
+
+        // Reset global state
+        MessageConstants.order = 1;
+
+        try {
+
+            Options finalOptions = LaraCli.getCliOptions(weaverEngine);
+
+            CommandLine cmd = OptionsParser.parse(args, finalOptions);
+            if (LaraIUtils.printHelp(cmd, finalOptions)) {
+                return true;
+            }
+
+            var laraScript = args.length > 0 ? args[0] : LaraI.getUndefinedLaraScript();
+
+            ExecutionMode mode = OptionsParser.getExecMode(laraScript, cmd, finalOptions);
+
+            SpecsLogs.debug("Launching weaver in mode " + mode);
+
+            var dataStore = switch (mode) {
+                // convert configuration file to data store
+                case CONFIG -> OptionsConverter.configFile2DataStore(weaverEngine, cmd);
+                // convert options to data store and run
+                case OPTIONS -> OptionsConverter.commandLine2DataStore(laraScript, cmd, weaverEngine.getOptions());
+                // convert configuration file to data store, override with extra options and run
+                case CONFIG_OPTIONS -> OptionsConverter.configExtraOptions2DataStore(laraScript, cmd, weaverEngine);
+                case GUI -> throw new RuntimeException("Gui not supported in node.js mode");
+                case CONFIG_GUI -> throw new RuntimeException("Config Gui not supported in node.js mode");
+            };
+
+            var success = execPrivate(dataStore, weaverEngine);
+
+            return success;
+
+        } catch (final Exception e) {
+            throw new RuntimeException("Exception while executing LARA script", e);
+            // throw prettyRuntimeException(e);
+        } finally {
+            if (WeaverEngine.isWeaverSet()) {
+                WeaverEngine.removeWeaver();
+            }
+        }
+        // return true;
     }
 }

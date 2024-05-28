@@ -38,6 +38,7 @@ public enum CLIConfigOption {
         this.argName = argName;
     }
 
+
     public String getShortOpt() {
         return shortOpt;
     }
