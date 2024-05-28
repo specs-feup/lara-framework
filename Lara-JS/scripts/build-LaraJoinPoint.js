@@ -61,6 +61,15 @@ export type DefaultAttribute<T extends typeof LaraJoinPoint> = DefaultAttributeH
   T,
   ExtractedType<T["_defaultAttributeInfo"]["map"]>,
   ExtractedType<T["_defaultAttributeInfo"]["type"]>
+>;
+
+type NameFromWrapperClassHelper<T extends typeof LaraJoinPoint, U> = {
+  [K in keyof U]: Equals<T, U[K], K, never>;
+}[keyof U];
+
+export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapperClassHelper<
+  T,
+  ExtractedType<T["_defaultAttributeInfo"]["jpMapper"]>
 >;\n\n`
   );
 

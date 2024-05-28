@@ -1,4 +1,8 @@
-import { LaraJoinPoint, type DefaultAttribute } from "../LaraJoinPoint.js";
+import {
+  LaraJoinPoint,
+  type NameFromWrapperClass,
+  type DefaultAttribute,
+} from "../LaraJoinPoint.js";
 import { laraGetter } from "../lara/core/LaraCore.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import { type JpFilterRules } from "../lara/util/JpFilter.js";
@@ -89,6 +93,13 @@ export type Filter_StringVariant =
   | ((str: string) => boolean)
   | JpFilterRules;
 
+type SelectorChainAttributes<T extends typeof LaraJoinPoint> = {
+  _starting_point: LaraJoinPoint;
+  [key: string]: LaraJoinPoint | undefined;
+} & {
+  [K in T as NameFromWrapperClass<K>]?: InstanceType<K>;
+};
+
 interface SelectorChain {
   counter: Accumulator;
   jpAttributes: {
@@ -105,12 +116,12 @@ interface SelectorChain {
  *
  */
 export default class Selector<
-  JpT extends LaraJoinPoint = LaraJoinPoint,
-  ChU extends LaraJoinPoint = JpT,
+  JpT extends typeof LaraJoinPoint = typeof LaraJoinPoint,
+  ChU extends typeof LaraJoinPoint = JpT,
 > {
   private $currentJps: SelectorChain[] = [];
   private lastName: string = "";
-  private $baseJp: JpT | LaraJoinPoint;
+  private $baseJp: InstanceType<JpT> | LaraJoinPoint;
   private addBaseJp: boolean;
   private static STARTING_POINT = "_starting_point";
 
@@ -191,10 +202,9 @@ export default class Selector<
 
       // If no default attribute, return empty filter
       if (defaultAttr == undefined) {
-        console.log(
+        throw new Error(
           `Selector: cannot use default filter for join point "${joinPointType}", it does not have a default attribute`
         );
-        return () => true;
       }
 
       return this.convertStringFilterToWrapperFilter(joinPointType, {
@@ -226,7 +236,7 @@ export default class Selector<
   *[Symbol.iterator]() {
     if (this.$currentJps.length > 0) {
       for (const $jpChain of this.$currentJps) {
-        yield $jpChain.jpAttributes[this.lastName];
+        yield $jpChain.jpAttributes[this.lastName] as InstanceType<JpT>;
       }
     } else {
       console.log(
@@ -244,11 +254,47 @@ export default class Selector<
    * @returns The results of the search.
    */
   search<T extends typeof LaraJoinPoint>(
-    type: T = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> = () => true,
+    type?: T,
+    filter?: Filter_WrapperVariant<T>,
+    traversal?: TraversalType
+  ): Selector<T, ChU | T>;
+  /**
+   * @deprecated Use the new search function variant that accepts a wrapper class.
+   *
+   * @param name - type of the join point to search.
+   * @param filter - filter rules for the search.
+   * @param traversal - AST traversal type, according to TraversalType
+   *
+   * @returns The results of the search.
+   */
+  search(
+    name?: string,
+    filter?: Filter_StringVariant,
+    traversal?: TraversalType
+  ): Selector;
+  search<T extends typeof LaraJoinPoint>(
+    type: T | string = LaraJoinPoint as T,
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true,
     traversal: TraversalType = TraversalType.PREORDER
-  ): Selector<InstanceType<T>, ChU | InstanceType<T>> {
-    const jpFilter = Selector.parseWrapperFilter(type, filter);
+  ): Selector<T, ChU | T> {
+    let jpFilter: JpFilterFunction<T>;
+
+    if (typeof type === "string") {
+      jpFilter = Selector.convertStringFilterToWrapperFilter(
+        type,
+        filter as Filter_StringVariant
+      );
+      const jpType = Weaver.findJoinpointType(type);
+      if (!jpType) {
+        throw new Error(`Join point type '${type}' not found.`);
+      }
+      return this.search(jpType, jpFilter, traversal);
+    } else {
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
+    }
 
     let fn;
     switch (traversal) {
@@ -281,15 +327,49 @@ export default class Selector<
    * @returns The results of the search.
    */
   children<T extends typeof LaraJoinPoint>(
-    type: T = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> = () => true
-  ): Selector<InstanceType<T>, ChU | InstanceType<T>> {
+    type?: T,
+    filter?: Filter_WrapperVariant<T>
+  ): Selector<T, ChU | T>;
+  /**
+   * Search in the children of the previously selected nodes.
+   *
+   * @deprecated Use the new children function variant that accepts a wrapper class.
+   *
+   * @param name - type of the join point to search.
+   * @param filter - filter rules for the search.
+   *
+   * @returns The results of the search.
+   */
+  children(name?: string, filter?: Filter_StringVariant): Selector;
+  children<T extends typeof LaraJoinPoint>(
+    type: T | string = LaraJoinPoint as T,
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true
+  ): Selector<T, ChU | T> {
+    let jpFilter: JpFilterFunction<T>;
+
+    if (typeof type === "string") {
+      jpFilter = Selector.convertStringFilterToWrapperFilter(
+        type,
+        filter as Filter_StringVariant
+      );
+      const jpType = Weaver.findJoinpointType(type);
+      if (!jpType) {
+        throw new Error(`Join point type '${type}' not found.`);
+      }
+      return this.children(jpType, jpFilter);
+    } else {
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
+    }
+
     return this.searchPrivate(
       type,
       function ($jp: LaraJoinPoint, name?: T) {
         return selectorJoinPointsClass.children($jp, name);
       },
-      Selector.parseWrapperFilter(type, filter)
+      jpFilter
     );
   }
 
@@ -302,15 +382,49 @@ export default class Selector<
    * @returns The results of the search.
    */
   scope<T extends typeof LaraJoinPoint>(
-    type: T = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> = () => true
-  ): Selector<InstanceType<T>, ChU | InstanceType<T>> {
+    type?: T,
+    filter?: Filter_WrapperVariant<T>
+  ): Selector<T, ChU | T>;
+  /**
+   * If previously select nodes have the concept of scope (e.g. if, loop), search the direct children of that scope.
+   *
+   * @deprecated Use the new scope function variant that accepts a wrapper class.
+   *
+   * @param name - type of the join point to search.
+   * @param filter - filter rules for the search.
+   *
+   * @returns The results of the search.
+   */
+  scope(name?: string, filter?: Filter_StringVariant): Selector;
+  scope<T extends typeof LaraJoinPoint>(
+    type: T | string = LaraJoinPoint as T,
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true
+  ): Selector<T, ChU | T> {
+    let jpFilter: JpFilterFunction<T>;
+
+    if (typeof type === "string") {
+      jpFilter = Selector.convertStringFilterToWrapperFilter(
+        type,
+        filter as Filter_StringVariant
+      );
+      const jpType = Weaver.findJoinpointType(type);
+      if (!jpType) {
+        throw new Error(`Join point type '${type}' not found.`);
+      }
+      return this.scope(jpType, jpFilter);
+    } else {
+      jpFilter = Selector.parseWrapperFilter(
+        type,
+        filter as Filter_WrapperVariant<T>
+      );
+    }
+
     return this.searchPrivate(
       type,
       function ($jp: LaraJoinPoint, name?: T) {
         return selectorJoinPointsClass.scope($jp, name);
       },
-      Selector.parseWrapperFilter(type, filter)
+      jpFilter
     );
   }
 
@@ -318,7 +432,7 @@ export default class Selector<
     type: T,
     selectFunction: (jp: LaraJoinPoint, name?: T) => LaraJoinPoint[],
     jpFilter: JpFilterFunction<T> = () => true
-  ): Selector<InstanceType<T>, ChU | InstanceType<T>> {
+  ): Selector<T, ChU | T> {
     const name = Weaver.findJoinpointTypeName(type) ?? "joinpoint";
     const $newJps: SelectorChain[] = [];
 
@@ -352,7 +466,7 @@ export default class Selector<
     this.$currentJps = $newJps;
     this.lastName = name;
 
-    return this as unknown as Selector<InstanceType<T>, ChU | InstanceType<T>>;
+    return this as unknown as Selector<T, ChU | T>;
   }
 
   private addJps(
@@ -392,7 +506,7 @@ export default class Selector<
   /**
    * @returns an array with the join points of the last chain (e.g., search("function").search("call").get() returns an array of $call join points).
    */
-  get(): JpT[] {
+  get(): InstanceType<JpT>[] {
     if (this.$currentJps.length === 0) {
       console.log(
         "Selector.get(): no join points have been searched, have you called a search function? (e.g., search, children)"
@@ -401,12 +515,12 @@ export default class Selector<
     }
 
     const returnJps = this.$currentJps.map(
-      (chain) => chain.jpAttributes[this.lastName]
+      (chain) => chain.jpAttributes[this.lastName] as InstanceType<JpT>
     );
 
     this.$currentJps = [];
 
-    return returnJps as JpT[];
+    return returnJps;
   }
 
   /**
@@ -420,7 +534,9 @@ export default class Selector<
       return [];
     }
 
-    const returnJps = this.$currentJps.map((chain) => chain.jpAttributes);
+    const returnJps = this.$currentJps.map(
+      (chain) => chain.jpAttributes as SelectorChainAttributes<ChU>
+    );
 
     this.$currentJps = [];
     return returnJps;
@@ -431,7 +547,7 @@ export default class Selector<
    *
    * @returns The first selected node
    */
-  getFirst(): JpT | undefined {
+  getFirst(): InstanceType<JpT> | undefined {
     const $jps = this.get();
     if ($jps.length === 0) {
       console.log("Selector.getFirst(): no join point found");

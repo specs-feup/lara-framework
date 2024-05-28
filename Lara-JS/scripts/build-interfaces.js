@@ -79,7 +79,7 @@ import {
 }
 
 function generateJoinpointMappers(joinpoints, enums, outputFile) {
-  fs.writeSync(outputFile, `const JoinpointMapper: JoinpointMapperType = {\n`);
+  fs.writeSync(outputFile, `const JoinpointMapper = {\n`);
   for (const jp of joinpoints) {
     fs.writeSync(outputFile, `  ${jp.originalName}: ${jp.name},\n`);
   }

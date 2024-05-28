@@ -5,7 +5,6 @@ import Selector, {
   type Filter_WrapperVariant,
 } from "./Selector.js";
 import TraversalType from "./TraversalType.js";
-import Weaver from "./Weaver.js";
 
 /**
  * Class for selection of join points. Provides an API similar to the keyword 'select'.
@@ -36,7 +35,7 @@ export default class Query {
     type: T,
     filter?: Filter_WrapperVariant<T>,
     traversal?: TraversalType
-  ): Selector<InstanceType<T>>;
+  ): Selector<T>;
   /**
    * The same as Query.searchFrom(), but uses the root node as $baseJp.
    *
@@ -52,24 +51,20 @@ export default class Query {
     type: string,
     filter?: Filter_StringVariant,
     traversal?: TraversalType
-  ): Selector<LaraJoinPoint>;
+  ): Selector<typeof LaraJoinPoint>;
   static search<T extends typeof LaraJoinPoint = typeof LaraJoinPoint>(
     type: T | string,
     filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
     traversal: TraversalType = TraversalType.PREORDER
-  ): Selector<InstanceType<T>> {
+  ): Selector<T> {
     if (typeof type === "string") {
-      filter = Selector.convertStringFilterToWrapperFilter(
+      return new Selector<typeof LaraJoinPoint>().search(
         type,
-        filter as Filter_StringVariant
+        filter as Filter_StringVariant,
+        traversal
       );
-      const jpType = Weaver.findJoinpointType(type) as T | undefined;
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return new Selector<LaraJoinPoint>().search(jpType, filter, traversal);
     } else {
-      return new Selector<InstanceType<T>>().search(
+      return new Selector<T>().search(
         type,
         filter as Filter_WrapperVariant<T>,
         traversal
@@ -92,7 +87,7 @@ export default class Query {
     type?: T,
     filter?: Filter_WrapperVariant<T>,
     traversal?: TraversalType
-  ): Selector<InstanceType<T>>;
+  ): Selector<T>;
   /**
    * In-depth search of nodes of the given type, starting from a base node (exclusive).
    *
@@ -110,25 +105,21 @@ export default class Query {
     type?: string,
     filter?: Filter_StringVariant,
     traversal?: TraversalType
-  ): Selector<LaraJoinPoint>;
+  ): Selector<typeof LaraJoinPoint>;
   static searchFrom<T extends typeof LaraJoinPoint>(
     $baseJp: LaraJoinPoint,
     type?: T | string,
     filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
     traversal: TraversalType = TraversalType.PREORDER
-  ): Selector<InstanceType<T>> {
+  ): Selector<T> {
     if (typeof type === "string") {
-      filter = Selector.convertStringFilterToWrapperFilter(
+      return new Selector<typeof LaraJoinPoint>($baseJp).search(
         type,
-        filter as Filter_StringVariant
+        filter as Filter_StringVariant,
+        traversal
       );
-      const jpType = Weaver.findJoinpointType(type) as T | undefined;
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return new Selector($baseJp).search(jpType, filter, traversal);
     } else {
-      return new Selector($baseJp).search(
+      return new Selector<T>($baseJp).search(
         type,
         filter as Filter_WrapperVariant<T>,
         traversal
@@ -146,15 +137,12 @@ export default class Query {
    *
    * @returns The results of the search.
    */
-  static searchFromInclusive<
-    T extends typeof LaraJoinPoint,
-    TBase extends LaraJoinPoint,
-  >(
-    $baseJp: TBase,
+  static searchFromInclusive<T extends typeof LaraJoinPoint>(
+    $baseJp: LaraJoinPoint,
     type?: T,
     filter?: Filter_WrapperVariant<T>,
     traversal?: TraversalType
-  ): Selector<InstanceType<T>, InstanceType<T> | TBase>;
+  ): Selector<T>;
   /**
    * The same as Query.searchFrom(), but $baseJp is included in the search.
    *
@@ -172,28 +160,21 @@ export default class Query {
     type?: string,
     filter?: Filter_StringVariant,
     traversal?: TraversalType
-  ): Selector<LaraJoinPoint>;
-  static searchFromInclusive<
-    T extends typeof LaraJoinPoint,
-    TBase extends LaraJoinPoint,
-  >(
-    $baseJp: TBase,
+  ): Selector<typeof LaraJoinPoint>;
+  static searchFromInclusive<T extends typeof LaraJoinPoint>(
+    $baseJp: LaraJoinPoint,
     type?: T | string,
     filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
     traversal: TraversalType = TraversalType.PREORDER
-  ): Selector<InstanceType<T>, InstanceType<T> | TBase> {
+  ): Selector<T> {
     if (typeof type === "string") {
-      filter = Selector.convertStringFilterToWrapperFilter(
+      return new Selector<typeof LaraJoinPoint>($baseJp, true).search(
         type,
-        filter as Filter_StringVariant
+        filter as Filter_StringVariant,
+        traversal
       );
-      const jpType = Weaver.findJoinpointType(type) as T | undefined;
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return new Selector($baseJp, true).search(jpType, filter, traversal);
     } else {
-      return new Selector($baseJp, true).search(
+      return new Selector<T>($baseJp, true).search(
         type,
         filter as Filter_WrapperVariant<T>,
         traversal
@@ -214,7 +195,7 @@ export default class Query {
     $baseJp: LaraJoinPoint,
     type?: T,
     filter?: Filter_WrapperVariant<T>
-  ): Selector<InstanceType<T>>;
+  ): Selector<T>;
   /**
    * Search the direct children of the given $baseJp.
    *
@@ -230,24 +211,19 @@ export default class Query {
     $baseJp: LaraJoinPoint,
     type?: string,
     filter?: Filter_StringVariant
-  ): Selector<LaraJoinPoint>;
+  ): Selector<typeof LaraJoinPoint>;
   static childrenFrom<T extends typeof LaraJoinPoint>(
     $baseJp: LaraJoinPoint,
     type?: T | string,
     filter?: Filter_WrapperVariant<T> | Filter_StringVariant
-  ): Selector<InstanceType<T>> {
+  ): Selector<T> {
     if (typeof type === "string") {
-      filter = Selector.convertStringFilterToWrapperFilter(
+      return new Selector<typeof LaraJoinPoint>($baseJp).children(
         type,
         filter as Filter_StringVariant
       );
-      const jpType = Weaver.findJoinpointType(type) as T | undefined;
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return new Selector($baseJp).children(jpType, filter);
     } else {
-      return new Selector($baseJp).children(
+      return new Selector<T>($baseJp).children(
         type,
         filter as Filter_WrapperVariant<T>
       );
@@ -267,7 +243,7 @@ export default class Query {
     $baseJp: LaraJoinPoint,
     type?: T,
     filter?: Filter_WrapperVariant<T>
-  ): Selector<InstanceType<T>>;
+  ): Selector<T>;
   /**
    * If $baseJp has the concept of scope (e.g. if, loop), search the direct children of that scope.
    *
@@ -283,24 +259,19 @@ export default class Query {
     $baseJp: LaraJoinPoint,
     type?: string,
     filter?: Filter_StringVariant
-  ): Selector<LaraJoinPoint>;
+  ): Selector<typeof LaraJoinPoint>;
   static scopeFrom<T extends typeof LaraJoinPoint>(
     $baseJp: LaraJoinPoint,
     type?: T | string,
     filter?: Filter_WrapperVariant<T> | Filter_StringVariant
-  ): Selector<InstanceType<T>> {
+  ): Selector<T> {
     if (typeof type === "string") {
-      filter = Selector.convertStringFilterToWrapperFilter(
+      return new Selector<typeof LaraJoinPoint>($baseJp).scope(
         type,
         filter as Filter_StringVariant
       );
-      const jpType = Weaver.findJoinpointType(type) as T | undefined;
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return new Selector($baseJp).scope(jpType, filter);
     } else {
-      return new Selector($baseJp).scope(
+      return new Selector<T>($baseJp).scope(
         type,
         filter as Filter_WrapperVariant<T>
       );
