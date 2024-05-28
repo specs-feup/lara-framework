@@ -14,6 +14,7 @@
 package org.lara.interpreter.weaver;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -71,6 +72,13 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         state = new LaraWeaverState(dataStore);
 
         return begin(sources, outputDir, dataStore);
+    }
+
+    /**
+     * TODO: Needs similar treatement as begin()/run()
+     */
+    public void closeTop() {
+        state.close();
     }
 
     @Override
@@ -145,6 +153,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     }
 
     /**
+     * The preferred way of distributing APIs is now through NPM modules, for that override this method.
      *
      * @return the APIs specific for this weaver implementation, excluding the standard LARA API. By default returns an
      *         empty list
@@ -152,4 +161,20 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     protected List<LaraResourceProvider> getWeaverNpmResources() {
         return List.of();
     }
+
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public Class<?> getClass(String name) {
+        try {
+            return  getLaraWeaverState().getClassLoader().loadClass(name);
+            //return classLoader.loadClass(name);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Could not find class", e);
+        }
+    }
+
 }

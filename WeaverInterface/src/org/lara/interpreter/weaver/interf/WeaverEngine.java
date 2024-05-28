@@ -323,10 +323,7 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Return a list of hand-made resources that point to lara/js resources. <br>
-     * The preferred way of distributing APIs is now through NPM modules, for that override the method
-     * .getCustomNpmResources().
-     *
+     * Return a list of hand-made resources that point to lara/js resources.
      * @return
      */
     public List<ResourceProvider> getAspectsAPI() {

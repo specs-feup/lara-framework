@@ -6,6 +6,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -76,4 +77,13 @@ public class LaraWeaverState {
         return jarFiles;
     }
 
+    public void close() {
+        if (classLoader != null) {
+            try {
+                classLoader.close();
+            } catch (IOException e) {
+                throw new RuntimeException("Could not close custom class loader", e);
+            }
+        }
+    }
 }
