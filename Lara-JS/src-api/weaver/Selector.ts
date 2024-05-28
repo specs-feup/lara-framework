@@ -193,8 +193,12 @@ export default class Selector<
 
   public static convertStringFilterToWrapperFilter(
     joinPointType: string = "",
-    filter: Filter_StringVariant = {}
+    filter?: Filter_StringVariant
   ): JpFilterFunction {
+    if (filter == undefined) {
+      return () => true;
+    }
+
     // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
     if (typeof filter !== "object" || filter instanceof RegExp) {
       // Get default attribute
@@ -274,7 +278,7 @@ export default class Selector<
   ): Selector;
   search<T extends typeof LaraJoinPoint>(
     type: T | string = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true,
+    filter?: Filter_WrapperVariant<T> | Filter_StringVariant,
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
@@ -292,7 +296,7 @@ export default class Selector<
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
-        filter as Filter_WrapperVariant<T>
+        (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
     }
 
@@ -343,7 +347,7 @@ export default class Selector<
   children(name?: string, filter?: Filter_StringVariant): Selector;
   children<T extends typeof LaraJoinPoint>(
     type: T | string = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
 
@@ -360,7 +364,7 @@ export default class Selector<
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
-        filter as Filter_WrapperVariant<T>
+        (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
     }
 
@@ -398,7 +402,7 @@ export default class Selector<
   scope(name?: string, filter?: Filter_StringVariant): Selector;
   scope<T extends typeof LaraJoinPoint>(
     type: T | string = LaraJoinPoint as T,
-    filter: Filter_WrapperVariant<T> | Filter_StringVariant = () => true
+    filter: Filter_WrapperVariant<T> | Filter_StringVariant
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
 
@@ -415,7 +419,7 @@ export default class Selector<
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
-        filter as Filter_WrapperVariant<T>
+        (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
     }
 

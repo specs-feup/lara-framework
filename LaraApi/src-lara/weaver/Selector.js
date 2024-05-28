@@ -86,7 +86,10 @@ export default class Selector {
             };
         }
     }
-    static convertStringFilterToWrapperFilter(joinPointType = "", filter = {}) {
+    static convertStringFilterToWrapperFilter(joinPointType = "", filter) {
+        if (filter == undefined) {
+            return () => true;
+        }
         // If filter is not an object, or if it is a regex, build object with default attribute of given jp name
         if (typeof filter !== "object" || filter instanceof RegExp) {
             // Get default attribute
@@ -128,7 +131,7 @@ export default class Selector {
         }
         this.$currentJps = [];
     }
-    search(type = LaraJoinPoint, filter = () => true, traversal = TraversalType.PREORDER) {
+    search(type = LaraJoinPoint, filter, traversal = TraversalType.PREORDER) {
         let jpFilter;
         if (typeof type === "string") {
             jpFilter = Selector.convertStringFilterToWrapperFilter(type, filter);
@@ -139,7 +142,7 @@ export default class Selector {
             return this.search(jpType, jpFilter, traversal);
         }
         else {
-            jpFilter = Selector.parseWrapperFilter(type, filter);
+            jpFilter = Selector.parseWrapperFilter(type, filter ?? (() => true));
         }
         let fn;
         switch (traversal) {
@@ -160,7 +163,7 @@ export default class Selector {
         }
         return this.searchPrivate(type, fn, jpFilter);
     }
-    children(type = LaraJoinPoint, filter = () => true) {
+    children(type = LaraJoinPoint, filter) {
         let jpFilter;
         if (typeof type === "string") {
             jpFilter = Selector.convertStringFilterToWrapperFilter(type, filter);
@@ -171,13 +174,13 @@ export default class Selector {
             return this.children(jpType, jpFilter);
         }
         else {
-            jpFilter = Selector.parseWrapperFilter(type, filter);
+            jpFilter = Selector.parseWrapperFilter(type, filter ?? (() => true));
         }
         return this.searchPrivate(type, function ($jp, name) {
             return selectorJoinPointsClass.children($jp, name);
         }, jpFilter);
     }
-    scope(type = LaraJoinPoint, filter = () => true) {
+    scope(type = LaraJoinPoint, filter) {
         let jpFilter;
         if (typeof type === "string") {
             jpFilter = Selector.convertStringFilterToWrapperFilter(type, filter);
@@ -188,7 +191,7 @@ export default class Selector {
             return this.scope(jpType, jpFilter);
         }
         else {
-            jpFilter = Selector.parseWrapperFilter(type, filter);
+            jpFilter = Selector.parseWrapperFilter(type, filter ?? (() => true));
         }
         return this.searchPrivate(type, function ($jp, name) {
             return selectorJoinPointsClass.scope($jp, name);
