@@ -3,7 +3,7 @@ import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
-import WeaverDataStore from "./util/WeaverDataStore.js";
+import WeaverOptions from "./WeaverOptions.js";
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
  */
@@ -30,12 +30,12 @@ export default class Weaver {
         return JavaTypes.WeaverEngine.getThreadLocalWeaver();
     }
     static getLaraLoc() {
-        return JavaTypes.LaraIUtils.getLaraLoc(Weaver.getWeaverEngine(), JavaTypes.LaraI.getThreadLocalData());
+        return JavaTypes.LaraIUtils.getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get());
     }
     static getLaraLocTotals() {
         var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
         return Java.type("org.lara.interpreter.utils.LaraIUtils")
-            .getLaraLoc(Weaver.getWeaverEngine(), JavaTypes.LaraI.getThreadLocalData())
+            .getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get())
             .get(laraLoc.getTotalsKey());
     }
     static writeCode(outputFolder) {
@@ -152,8 +152,7 @@ export default class Weaver {
         for (const argsList of argsLists) {
             safeArgsLists.push(argsList.map((value) => value.toString()));
         }
-        // WeaverOptions has a function for this, but imports Weaver
-        const weaverData = new WeaverDataStore(JavaTypes.LaraI.getThreadLocalData());
+        const weaverData = WeaverOptions.getData();
         const WeaverLauncher = JavaTypes.WeaverLauncher;
         const jsonStrings = WeaverLauncher.executeParallelStatic(safeArgsLists, threads, JavaInterop.arrayToStringList(weaverCommand), weaverData.getContextFolder().getAbsolutePath());
         // Read each json file into its own object
