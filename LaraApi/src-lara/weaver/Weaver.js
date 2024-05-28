@@ -33,8 +33,8 @@ export default class Weaver {
         return JavaTypes.LaraIUtils.getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get());
     }
     static getLaraLocTotals() {
-        var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
-        return Java.type("org.lara.interpreter.utils.LaraIUtils")
+        var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
+        return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
             .getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get())
             .get(laraLoc.getTotalsKey());
     }
@@ -85,7 +85,16 @@ export default class Weaver {
                 return match;
             }
         }
-        throw new Error("Joinpoint type not found: " + type.name);
+        return undefined;
+    }
+    static findJoinpointType(name) {
+        const joinpointMappers = getJoinpointMappers();
+        for (const mapper of joinpointMappers) {
+            if (mapper[name]) {
+                return mapper[name];
+            }
+        }
+        return undefined;
     }
     /**
      * @param jpTypeName - a join point, or the name of a join point
