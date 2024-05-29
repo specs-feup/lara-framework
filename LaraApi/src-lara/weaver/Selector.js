@@ -206,6 +206,13 @@ export default class Selector {
     searchPrivate(type, selectFunction, jpFilter = () => true) {
         const name = Weaver.findJoinpointTypeName(type) ?? "joinpoint";
         const $newJps = [];
+        /**
+         * Lara Common Language dirty hack. REMOVE ME PLEASE!
+         */
+        if (selectorJoinPointsClass !== JoinPoints && type === LaraJoinPoint) {
+            // We are in LCL mode.
+            throw new Error("In LCL mode you are required to specify a type in a search.");
+        }
         // If add base jp, this._$currentJps must have at most 1 element
         if (this.addBaseJp && this.$currentJps.length > 0) {
             if (this.$currentJps.length > 1) {

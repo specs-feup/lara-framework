@@ -6,7 +6,7 @@ class Code2Vec {
    * Collect information
    */
   printPaths() {
-    for (const desc of Query.search("file").search()) {
+    for (const desc of Query.search("file").search("joinpoint")) {
       if (!desc.hasChildren) {
         //for all the leafs of the tree
         this.#AST(desc.parent, [desc]);
