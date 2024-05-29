@@ -73,16 +73,19 @@ export default class Selector {
         else {
             // Filter must be an object (JpFilter type). Return a function that filters by the given rules.
             return (jp) => {
+                let allCriteriaMatch = true;
                 for (const [k, v] of Object.entries(filter)) {
                     if (v instanceof RegExp) {
-                        return v.test(laraGetter(jp, k));
+                        allCriteriaMatch &&= v.test(laraGetter(jp, k));
                     }
                     else if (typeof v === "function") {
-                        return v(laraGetter(jp, k), jp);
+                        allCriteriaMatch &&= v(laraGetter(jp, k), jp);
                     }
-                    return laraGetter(jp, k) === v;
+                    else {
+                        allCriteriaMatch &&= laraGetter(jp, k) === v;
+                    }
                 }
-                return true;
+                return allCriteriaMatch;
             };
         }
     }
@@ -103,16 +106,19 @@ export default class Selector {
             });
         }
         return (jp) => {
+            let allCriteriaMatch = true;
             for (const [k, v] of Object.entries(filter)) {
                 if (v instanceof RegExp) {
-                    return v.test(laraGetter(jp, k));
+                    allCriteriaMatch &&= v.test(laraGetter(jp, k));
                 }
                 else if (typeof v === "function") {
-                    return v(laraGetter(jp, k), jp);
+                    allCriteriaMatch &&= v(laraGetter(jp, k), jp);
                 }
-                return laraGetter(jp, k) === v;
+                else {
+                    allCriteriaMatch &&= laraGetter(jp, k) === v;
+                }
             }
-            return true;
+            return allCriteriaMatch;
         };
     }
     /**

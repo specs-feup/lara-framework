@@ -172,21 +172,22 @@ export default class Selector<
     } else {
       // Filter must be an object (JpFilter type). Return a function that filters by the given rules.
       return (jp: InstanceType<T>): boolean => {
+        let allCriteriaMatch: boolean = true;
         for (const [k, v] of Object.entries(
           filter as JpFilter<InstanceType<T>>
         )) {
           if (v instanceof RegExp) {
-            return v.test(laraGetter(jp, k) as string);
+            allCriteriaMatch &&= v.test(laraGetter(jp, k) as string);
           } else if (typeof v === "function") {
-            return (v as FilterFunction<unknown, InstanceType<T>>)(
+            allCriteriaMatch &&= (v as FilterFunction<unknown, InstanceType<T>>)(
               laraGetter(jp, k),
               jp
             );
+          } else {
+            allCriteriaMatch &&= laraGetter(jp, k) === v;
           }
-
-          return laraGetter(jp, k) === v;
         }
-        return true;
+        return allCriteriaMatch;
       };
     }
   }
@@ -217,18 +218,20 @@ export default class Selector<
     }
 
     return (jp: LaraJoinPoint): boolean => {
+      let allCriteriaMatch: boolean = true;
       for (const [k, v] of Object.entries(filter)) {
         if (v instanceof RegExp) {
-          return v.test(laraGetter(jp, k) as string);
+          allCriteriaMatch &&= v.test(laraGetter(jp, k) as string);
         } else if (typeof v === "function") {
-          return (v as FilterFunction<unknown, LaraJoinPoint>)(
+          allCriteriaMatch &&= (v as FilterFunction<unknown, LaraJoinPoint>)(
             laraGetter(jp, k),
             jp
           );
+        } else {
+          allCriteriaMatch &&= laraGetter(jp, k) === v;
         }
-        return laraGetter(jp, k) === v;
       }
-      return true;
+      return allCriteriaMatch;
     };
   }
 
