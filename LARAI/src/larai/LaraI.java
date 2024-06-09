@@ -225,6 +225,8 @@ public class LaraI {
         return result == null ? false : result;
     }
 
+
+
     private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
@@ -329,6 +331,38 @@ public class LaraI {
         LaraiResult result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
         RUNNING_GUI.set(result.get(LaraiResult.IS_RUNNING_GUI));
         return result.get(LaraiResult.IS_SUCCESS);
+    }
+
+
+    public static Optional<DataStore> convertArgsToDataStore(String[] args, WeaverEngine weaverEngine) {
+
+        Options finalOptions = LaraCli.getCliOptions(weaverEngine);
+
+        CommandLine cmd = OptionsParser.parse(args, finalOptions);
+
+        ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
+
+        SpecsLogs.debug("Detected launch mode " + mode);
+
+        return switch (mode) {
+            // convert configuration file to data store and run
+            case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
+//                isRunningGui = false;
+            // get the configuration file and execute GUI
+            case CONFIG_GUI ->  Optional.empty();
+//                guiFile = OptionsParser.getConfigFile(cmd);
+//                isRunningGui = true;
+            // convert options to data store and run
+            case OPTIONS ->  Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
+//                isRunningGui = false;
+            // convert configuration file to data store, override with extra options and run
+            case CONFIG_OPTIONS -> Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
+//                isRunningGui = false;
+            // launch GUI
+            case GUI->Optional.empty();
+//                guiFile = null;
+//                isRunningGui = true;
+        };
     }
 
     public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
@@ -1034,4 +1068,5 @@ public class LaraI {
         var laraImporter = getLaraImporter();
         return laraImporter.getImportsFromPackage(packageName);
     }
+
 }
