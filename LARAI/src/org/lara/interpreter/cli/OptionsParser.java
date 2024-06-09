@@ -234,6 +234,11 @@ public class OptionsParser {
         // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
         // .findFirst();
 
+        // If zero args or single arg that is -g, is mode GUI
+        if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(cmd)) {
+            return ExecutionMode.GUI;
+        }
+
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
         boolean guiPresent = cmd.hasOption(CLIConfigOption.gui.getShortOpt());
 
@@ -299,7 +304,7 @@ public class OptionsParser {
         /**
          * Execute Weaver with the given config file and the overriding options
          */
-        CONFIG_OPTIONS,
+        CONFIG_OPTIONS;
         /**
          * Open GUI with the overriding options (means creating a temporary config file)
          */
@@ -319,6 +324,11 @@ public class OptionsParser {
     public static boolean guiMode(String[] args) {
         return args.length == 0 ||
                 (args.length == 1 && args[0].startsWith("-") && CLIConfigOption.gui.sameAs(args[0]));
+    }
+
+    public static boolean guiMode(CommandLine cmd) {
+        return cmd.getArgs().length == 0 ||
+                (cmd.getArgs().length == 1 && cmd.getArgs()[0].startsWith("-") && CLIConfigOption.gui.sameAs(cmd.getArgs()[0]));
     }
 
     /**

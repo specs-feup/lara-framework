@@ -318,7 +318,8 @@ public class LaraI {
         return result.get(LaraiResult.IS_SUCCESS);
     }
 
-    public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
+    private static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
+
         SpecsLogs.debug(() -> "Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
 
         // Set weaver (e.g. for help message to access name and build number)
@@ -328,12 +329,6 @@ public class LaraI {
 
             // Reset global state
             MessageConstants.order = 1;
-            if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
-
-                LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-                // return true;
-                return LaraiResult.newInstance(true, true);
-            }
 
             Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 
@@ -352,7 +347,16 @@ public class LaraI {
             boolean success;
             boolean isRunningGui;
 
-            SpecsLogs.debug("Launching weaver in mode " + mode);
+            SpecsLogs.info("Launching weaver in mode " + mode);
+
+            // If zero args or single arg that is -g, is mode GUI
+//            if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
+//                System.out.println("HELLO");
+//
+//                LaraLauncher.launchGUI(weaverEngine, Optional.empty());
+//                // return true;
+//                return LaraiResult.newInstance(true, true);
+//            }
 
             switch (mode) {
             // case UNIT_TEST:
