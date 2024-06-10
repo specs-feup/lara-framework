@@ -76,6 +76,7 @@ export class Weaver {
     const JavaFileList = java.import(
       "org.lara.interpreter.joptions.keys.FileList"
     );
+    const JavaLaraI = java.import("larai.LaraI");
     const JavaLaraIDataStore = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
     );
@@ -105,21 +106,11 @@ export class Weaver {
     let datastore;
     if (args.configClassic !== undefined && args.configClassic !== null) {
       try {
-        assert(typeof args.configClassic === "string");
-        assert(fs.existsSync(args.configClassic));
-
-        const OptionsConverter = java.import(
-          "org.lara.interpreter.cli.OptionsConverter"
-        );
-
-        datastore = OptionsConverter.configFile2DataStore(
-          javaWeaver,
-          new JavaFile(path.resolve(args.configClassic))
-        );
-        console.log(datastore);
+        assert(args.configClassic instanceof Array);
+        datastore = JavaLaraI.convertArgsToDataStore(args.configClassic, javaWeaver).get();
       } catch (error) {
         throw new Error(
-          "Failed to load Clava Classic configuration file:\n" + error
+          "Failed to parse 'Classic' weaver arguments:\n" + error
         );
       }
     } else {
