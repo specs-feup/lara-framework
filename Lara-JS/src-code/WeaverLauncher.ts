@@ -120,7 +120,7 @@ export default class WeaverLauncher {
               default: [],
               defaultDescription: "none",
             })
-            .option("config-classic", {
+            .option("classicArgs", {
               describe: "All arguments after this option are considered to be of the 'Classic' version of the weaver and will be treated as such (until '--' is found)",
               type: "array",
               nargs: Infinity,
