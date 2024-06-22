@@ -29,6 +29,23 @@ export default class WeaverLauncher {
   }
 
   async execute(customArgs: string | undefined = undefined): Promise<void> {
+    const cliArgs = customArgs ?? hideBin(process.argv);
+
+    if(cliArgs.length > 0 && cliArgs[0] === "classic") {
+      const weaverArgs = cliArgs.slice(1);
+
+      return new Promise<void>(
+        (resolve, reject) => {
+          try {
+            console.log(`Executing ${this.config.weaverPrettyName} script in classic CLI mode...`);
+            void this.main({$0: weaverArgs[0], _:[], scriptFile: weaverArgs[0]} as Arguments);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      );
+    }
+
     await this.generateConfig(customArgs).parse();
   }
 
