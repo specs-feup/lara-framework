@@ -38,7 +38,9 @@ export default class WeaverLauncher {
         (resolve, reject) => {
           try {
             console.log(`Executing ${this.config.weaverPrettyName} script in classic CLI mode...`);
-            void this.main({$0: weaverArgs[0], _:[], scriptFile: weaverArgs[0]} as Arguments);
+            // TODO: Avoid using a third-party data object (i.e., Arguments) in our main interface
+            // TODO: Use instead the argument-handling launcher Java code instead of reimplementing it 
+            void this.main({$0: weaverArgs[0], _:[], scriptFile: weaverArgs[0], configClassic: weaverArgs} as Arguments);
           } catch (error) {
             console.error(error);
           }
@@ -98,11 +100,13 @@ export default class WeaverLauncher {
       }
     }
 
-    const child = fork(
-      this.config.weaverFileName
-        ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
-        : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
-    );
+    const weaverScript = this.config.weaverFileName
+    ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
+    : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js");
+
+    console.debug("Launcher weaver using the script '"+weaverScript+"'");
+
+    const child = fork(weaverScript);
     child.send({
       config: this.config,
       args,
