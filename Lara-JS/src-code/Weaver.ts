@@ -26,9 +26,11 @@ java.asyncOptions = {
 };
 
 export class Weaver {
-  private static javaWeaver: unknown;
   private static debug: Debug.Debugger;
-  private static datastore: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static datastore: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static javaWeaver: any;
 
   static async setupJavaEnvironment(sourceDir: string) {
     const files = fs.readdirSync(sourceDir, { recursive: true });
@@ -136,15 +138,15 @@ export class Weaver {
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
 
     JavaSpecsSystem.programStandardInit();
-    /* eslint-enable */
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;
+    /* eslint-enable */
   }
 
   static start() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-    (Weaver.javaWeaver as any).run(Weaver.datastore);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    Weaver.javaWeaver.run(Weaver.datastore);
   }
 
   static async executeScript(
@@ -188,8 +190,8 @@ export class Weaver {
 
   static shutdown() {
     Weaver.debug("Exiting...");
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    (Weaver.javaWeaver as any).close();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    Weaver.javaWeaver.close();
   }
 }
 
