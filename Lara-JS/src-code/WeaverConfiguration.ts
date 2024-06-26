@@ -4,4 +4,5 @@ export default interface WeaverConfiguration {
   weaverFileName?: string;
   jarPath: string;
   javaWeaverQualifiedName: string;
+  importForSideEffects?: string[];
 }

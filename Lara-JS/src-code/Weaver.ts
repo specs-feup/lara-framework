@@ -148,6 +148,10 @@ export class Weaver {
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
   ) {
+    for (const file of config.importForSideEffects ?? []) {
+      await import(file);
+    }
+
     Weaver.debug("Executing user script...");
     if (
       typeof args.scriptFile === "string" &&

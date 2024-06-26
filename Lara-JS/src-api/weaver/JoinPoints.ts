@@ -140,7 +140,7 @@ export default class JoinPoints {
       return descendants;
     }
 
-    return JoinPoints._filterNodes(descendants, jpType);
+    return JoinPoints._filterNodes(descendants ?? [], jpType);
   }
 
   static _filterNodes($jps: LaraJoinPoint[], jpType: string) {
