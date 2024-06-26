@@ -6,7 +6,6 @@ import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
 
-
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
  */
@@ -224,7 +223,9 @@ export default class Weaver {
   static get laraArgs(): any {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const datastore = new DataStore(Weaver.getWeaverEngine().getData());
-    let jsonString = datastore.get(JavaTypes.LaraiKeys.ASPECT_ARGS as string) as string | undefined;
+    let jsonString = datastore.get(
+      JavaTypes.LaraiKeys.ASPECT_ARGS as string
+    ) as string | undefined;
 
     jsonString ??= "";
     jsonString.trim();

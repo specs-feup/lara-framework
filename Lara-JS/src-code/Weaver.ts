@@ -107,7 +107,10 @@ export class Weaver {
     if (args.configClassic !== undefined && args.configClassic !== null) {
       try {
         assert(args.configClassic instanceof Array);
-        datastore = JavaLaraI.convertArgsToDataStore(args.configClassic, javaWeaver).get();
+        datastore = JavaLaraI.convertArgsToDataStore(
+          args.configClassic,
+          javaWeaver
+        ).get();
       } catch (error) {
         throw new Error(
           "Failed to parse 'Classic' weaver arguments:\n" + error

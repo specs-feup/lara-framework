@@ -81,11 +81,7 @@ export default class JoinPoints {
    * @returns the nodes inside the scope of the given node.
    */
   static scope($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
-    return JoinPoints._getNodes(
-      JoinPoints._all_scope_nodes,
-      $jp,
-      jpType
-    );
+    return JoinPoints._getNodes(JoinPoints._all_scope_nodes, $jp, jpType);
   }
 
   /**
@@ -101,11 +97,7 @@ export default class JoinPoints {
    * @returns the descendants of the given node, according to the AST, preorder traversal
    */
   static descendants($jp: LaraJoinPoint, jpType?: string): LaraJoinPoint[] {
-    return JoinPoints._getNodes(
-      JoinPoints._all_descendants,
-      $jp,
-      jpType
-    );
+    return JoinPoints._getNodes(JoinPoints._all_descendants, $jp, jpType);
   }
 
   /**
