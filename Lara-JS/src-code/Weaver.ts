@@ -184,7 +184,7 @@ export class Weaver {
           Weaver.debug(error);
         });
     } else {
-      throw new Error("Invalid file path or file type.");
+      throw new Error("Invalid file path or file type: " + args.scriptFile);
     }
   }
 
