@@ -106,26 +106,25 @@ export class Weaver {
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
     let datastore;
-    if (args.configClassic !== undefined && args.configClassic !== null) {
-      try {
-        assert(args.configClassic instanceof Array);
-        datastore = JavaLaraI.convertArgsToDataStore(
-          args.configClassic,
-          javaWeaver
-        ).get();
-      } catch (error) {
-        throw new Error(
-          "Failed to parse 'Classic' weaver arguments:\n" + error
-        );
-      }
+    if (args.classicArgs != undefined) {
+        try {
+            datastore = JavaLaraI.convertArgsToDataStore(
+                args.classicArgs,
+                javaWeaver
+            ).get();
+        } catch (error) {
+            throw new Error(
+                "Failed to parse 'Classic' weaver arguments:\n" + error
+            );
+        }
     } else {
-      const JavaDataStore = java.import(
-        "org.suikasoft.jOptions.Interfaces.DataStore"
-      );
+        const JavaDataStore = java.import(
+            "org.suikasoft.jOptions.Interfaces.DataStore"
+        );
 
-      datastore = await new JavaDataStore.newInstanceP(
-        `${javaWeaverClassName}DataStore`
-      );
+        datastore = await new JavaDataStore.newInstanceP(
+            `${javaWeaverClassName}DataStore`
+        );
     }
 
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
