@@ -8,9 +8,11 @@
     <title>AST Visualization</title>
 </head>
 <body>
-    <h1>AST Visualization</h1>
-    <textarea id="ast-textarea" disabled>
-Joinpoint 'program'
+    <section id="ast-code-visualization">
+        <h1>AST Visualization</h1>
+        <article id="ast">
+            <h2>AST</h2>
+            <pre><code>Joinpoint 'program'
     Joinpoint 'file'
         Joinpoint 'include'
         Joinpoint 'include'
@@ -321,10 +323,11 @@ Joinpoint 'program'
                     Joinpoint 'intLiteral'
                 Joinpoint 'exprStmt'
                 Joinpoint 'call'
-                    Joinpoint 'varref'
-    </textarea>
-    <textarea id="code-textarea" disabled>
-#include &lt;stdio.h&gt;
+                    Joinpoint 'varref'</code></pre>
+        </article>
+        <article id="code">
+            <h2>Code</h2>
+            <pre><code>#include &lt;stdio.h&gt;
 #include &lt;math.h&gt;
 #include &lt;stdlib.h&gt;
 /*
@@ -396,7 +399,8 @@ int main() {
    // To make results repeatable
    srand(0);
    test_matrix_mul();
-}
-    </textarea>
+}</code></pre>
+        </article>
+    </section>
 </body>
 </html>
