@@ -10,8 +10,10 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
+    static _defaultAttributeInfo = {
+        name: null,
+    };
     _javaObject;
-    static _defaultAttribute = null;
     constructor(obj) {
         this._javaObject = obj;
     }
@@ -41,6 +43,12 @@ export function registerJoinpointMapper(mapper) {
  */
 export function clearJoinpointMappers() {
     JoinpointMappers.length = 0;
+}
+/**
+ * This function is for internal use only. DO NOT USE IT!
+ */
+export function getJoinpointMappers() {
+    return JoinpointMappers;
 }
 export function wrapJoinPoint(obj) {
     if (JoinpointMappers.length === 0) {

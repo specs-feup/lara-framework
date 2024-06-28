@@ -305,6 +305,14 @@ function convertJoinpointAction(
         }
 
         action.overloads.push(convertedAction);
+        action.returnType = [...new Set(action.returnType.split(" | "))].join(
+          " | "
+        );
+        for (const i in action.parameters) {
+          action.parameters[i].type = [
+            ...new Set(action.parameters[i].type.split(" | ")),
+          ].join(" | ");
+        }
         break;
       }
     }

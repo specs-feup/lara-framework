@@ -12,16 +12,28 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
     outputFile,
     `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
       jp.extends ? ` extends ${jp.extends}` : ""
-    } {${jp.defaultAttribute ? '\n  static readonly _defaultAttribute: string | null = "' + jp.defaultAttribute + '";' : ""}\n`
+    } {\n`
   );
   if (jp.name === "LaraJoinPoint") {
     fs.writeSync(
       outputFile,
+      "  static readonly _defaultAttributeInfo: {readonly map?: any, readonly name: string | null, readonly type?: any, readonly jpMapper?: any} = {\n" +
+        `    name: ${jp.defaultAttribute ? '"' + jp.defaultAttribute + '"' : "null"},\n` +
+        "  };\n"
+    );
+    fs.writeSync(
+      outputFile,
       `  _javaObject!: any;
-  static readonly _defaultAttribute: string | null = ${jp.defaultAttribute ? `"${jp.defaultAttribute}"` : "null"};
   constructor(obj: any) {
     this._javaObject = obj;
   }\n`
+    );
+  } else {
+    fs.writeSync(
+      outputFile,
+      "  static readonly _defaultAttributeInfo: {readonly map?: DefaultAttributeMap, readonly name: string | null, readonly type?: PrivateMapper, readonly jpMapper?: typeof JoinpointMapper} = {\n" +
+        `    name: ${jp.defaultAttribute ? '"' + jp.defaultAttribute + '"' : "null"},\n` +
+        "  };\n"
     );
   }
 

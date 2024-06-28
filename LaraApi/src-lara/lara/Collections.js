@@ -5,11 +5,6 @@ import JavaTypes from "./util/JavaTypes.js";
  *
  */
 export default class Collections {
-    /**
-     * @param values - Values to sort in-place. Must be of type \{Object[]|java.util.List\}
-     *
-     * @returns The sorted collection
-     */
     static sort(values) {
         // If array
         if (values instanceof Array) {

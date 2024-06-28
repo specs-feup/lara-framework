@@ -1,8 +1,12 @@
-import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
+import {
+  LaraJoinPoint,
+  getJoinpointMappers,
+  wrapJoinPoint,
+} from "../LaraJoinPoint.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import Strings from "../lara/Strings.js";
 import DataStore from "../lara/util/DataStore.js";
-import JavaTypes from "../lara/util/JavaTypes.js";
+import JavaTypes, { JavaClasses } from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
 
@@ -28,10 +32,9 @@ export default class Weaver {
   static DEFAULT_WEAVER_COMMAND = undefined;
 
   /**
-   *
-   * @returns {J#org.lara.interpreter.weaver.interf.WeaverEngine} the Java instance of the current WeaverEngine
+   * @returns The Java instance of the current WeaverEngine
    */
-  static getWeaverEngine() {
+  static getWeaverEngine(): JavaClasses.WeaverEngine {
     return JavaTypes.WeaverEngine.getThreadLocalWeaver();
   }
 
@@ -43,8 +46,8 @@ export default class Weaver {
   }
 
   static getLaraLocTotals() {
-    var laraLoc = Java.type("pt.up.fe.specs.lara.loc.LaraLoc");
-    return Java.type("org.lara.interpreter.utils.LaraIUtils")
+    var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
+    return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
       .getLaraLoc(
         Weaver.getWeaverEngine(),
         Weaver.getWeaverEngine().getData().get()
@@ -79,13 +82,67 @@ export default class Weaver {
    * @param joinPointType - The type of the join point
    * @returns The name of the default attribute for the given join point type, or undefined if there is no default attribute
    */
-  static getDefaultAttribute(joinPointType: string): string {
+  static getDefaultAttribute<T extends typeof LaraJoinPoint>(
+    joinPointType: T
+  ): keyof T | null;
+  static getDefaultAttribute(joinPointType: string): string | null;
+  static getDefaultAttribute<T extends typeof LaraJoinPoint>(
+    joinPointType: T | string
+  ): keyof T | string | null;
+  static getDefaultAttribute<T extends typeof LaraJoinPoint>(
+    joinPointType: T | string
+  ): keyof T | string | null {
     if (usingLaraCommonLanguage === true) {
-      return Java.type(
+      return JavaTypes.getType(
         "pt.up.fe.specs.lara.commonlang.LaraCommonLang"
-      ).getDefaultAttribute(joinPointType);
+      ).getDefaultAttribute(joinPointType) as string | null;
     }
-    return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
+
+    if (typeof joinPointType === "string") {
+      // Search for the default attribute in the joinpoint mappers
+      for (const mapper of getJoinpointMappers()) {
+        if (mapper[joinPointType]) {
+          return mapper[joinPointType]._defaultAttributeInfo.name;
+        }
+      }
+
+      // No wrapper was found, attempt to the collect information from the weaver
+      return Weaver.getWeaverEngine().getDefaultAttribute(joinPointType);
+    } else {
+      return joinPointType._defaultAttributeInfo.name;
+    }
+  }
+
+  /**
+   * Finds the name of the joinpoint class, given the js wrapper class itself
+   * @param type - The joinpoint class to find the name of
+   * @returns The name of the joinpoint class
+   */
+  static findJoinpointTypeName<T extends typeof LaraJoinPoint>(
+    type: T
+  ): string | undefined {
+    const joinpointMappers = getJoinpointMappers();
+
+    for (const mapper of joinpointMappers) {
+      const match = Object.keys(mapper).find((key) => mapper[key] === type);
+      if (match) {
+        return match;
+      }
+    }
+
+    return undefined;
+  }
+
+  static findJoinpointType(name: string): typeof LaraJoinPoint | undefined {
+    const joinpointMappers = getJoinpointMappers();
+
+    for (const mapper of joinpointMappers) {
+      if (mapper[name]) {
+        return mapper[name];
+      }
+    }
+
+    return undefined;
   }
 
   /**

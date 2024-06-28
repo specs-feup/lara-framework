@@ -122,7 +122,7 @@ export default class ProcessExecutor {
       timeoutNanos = this.timeUnit.toNanos(this.timeout);
     }
 
-    let javaCommand: string[] | JavaClasses.List = command;
+    let javaCommand: string[] | JavaClasses.List<string> = command;
 
     // If Java command is an array, make sure array list is used
     if (javaCommand instanceof Array) {

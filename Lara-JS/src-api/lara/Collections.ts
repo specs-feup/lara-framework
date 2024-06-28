@@ -1,5 +1,5 @@
 import JavaInterop from "./JavaInterop.js";
-import JavaTypes, {JavaClasses} from "./util/JavaTypes.js";
+import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 
 /**
  *  Utility methods related to Collections.
@@ -11,7 +11,9 @@ export default class Collections {
    *
    * @returns The sorted collection
    */
-  static sort(values: any[] | JavaClasses.List): any[] | JavaClasses.List {
+  static sort<T>(values: T[]): T[];
+  static sort<T>(values: JavaClasses.List<T>): JavaClasses.List<T>;
+  static sort<T>(values: T[] | JavaClasses.List<T>): T[] | JavaClasses.List<T> {
     // If array
     if (values instanceof Array) {
       values.sort();

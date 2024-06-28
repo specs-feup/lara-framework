@@ -1,10 +1,10 @@
-import JavaTypes, {JavaClasses} from "./util/JavaTypes.js";
+import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 
 export default class JavaInterop {
   /**
    * Converts a JS array into a java.util.List.
    */
-  static arrayToList<T>(array: Array<T>): JavaClasses.List {
+  static arrayToList<T>(array: Array<T>): JavaClasses.List<T> {
     const ArrayListClass = JavaTypes.ArrayList;
     const list = new ArrayListClass();
 
@@ -38,6 +38,6 @@ export default class JavaInterop {
    * @deprecated Use JavaTypes instead
    */
   static getClass(classname: string) {
-    return Java.type(classname).class;
+    return JavaTypes.getType(classname).class;
   }
 }

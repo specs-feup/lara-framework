@@ -26,7 +26,7 @@ export namespace JavaClasses {
   export interface LaraApiTools extends JavaClass {}
   export interface LaraSystemTools extends JavaClass {
     runCommand(
-      command: string | JavaClasses.List,
+      command: string | JavaClasses.List<string>,
       workingDir: string,
       printToConsole: boolean,
       timeoutNanos?: number
@@ -51,7 +51,9 @@ export namespace JavaClasses {
     getParentFile(): JavaClasses.File;
     getAbsolutePath(): string;
   }
-  export interface List extends JavaClass {}
+  export interface List<T> extends JavaClass {
+    [Symbol.iterator](): IterableIterator<T>;
+  }
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
   export interface XStreamUtils extends JavaClass {}
@@ -221,7 +223,7 @@ export default class JavaTypes {
   }
 
   static get List() {
-    return JavaTypes.getType("java.util.List") as JavaClasses.List;
+    return JavaTypes.getType("java.util.List") as JavaClasses.List<any>;
   }
 
   static get Collections() {

@@ -16,7 +16,7 @@ export default class JoinPoints {
      *
      */
     static toJoinPoint(node) {
-        throw "JoinPoints.toJoinPoint: not implemented";
+        throw new Error("JoinPoints.toJoinPoint: not implemented");
     }
     /**
      *
@@ -65,44 +65,39 @@ export default class JoinPoints {
      * @returns the nodes inside the scope of the given node.
      */
     static scope($jp, jpType) {
-        return JoinPoints._getNodes(JoinPoints._all_scope_nodes, $jp, jpType);
+        return JoinPoints._getNodes(jpType, JoinPoints._all_scope_nodes($jp));
     }
     /**
      *
      * @returns the children of the given node, according to the AST
      */
     static children($jp, jpType) {
-        return JoinPoints._getNodes(JoinPoints._all_children, $jp, jpType);
+        return JoinPoints._getNodes(jpType, JoinPoints._all_children($jp));
     }
     /**
      *
      * @returns the descendants of the given node, according to the AST, preorder traversal
      */
     static descendants($jp, jpType) {
-        return JoinPoints._getNodes(JoinPoints._all_descendants, $jp, jpType);
+        return JoinPoints._getNodes(jpType, JoinPoints._all_descendants($jp));
     }
     /**
      *
      * @returns the descendants of the given node, according to the AST, postorder traversal
      */
     static descendantsPostorder($jp, jpType) {
-        return JoinPoints._getNodes(JoinPoints._all_descendants_postorder, $jp, jpType);
+        return JoinPoints._getNodes(jpType, JoinPoints._all_descendants_postorder($jp));
     }
     /**
      *
      * @returns  the nodes related with the given node, according to the search function
      */
-    static _getNodes(searchFunction, $jp, jpType) {
+    static _getNodes(jpType, $allJps = []) {
         // TODO: This function can be optimized by using streaming
-        const descendants = searchFunction($jp);
         if (jpType === undefined) {
-            return descendants;
+            return $allJps;
         }
-        return JoinPoints._filterNodes(descendants, jpType);
-    }
-    static _filterNodes($jps, jpType) {
-        // TODO: This check should be done with the JS Classes
-        return $jps.filter((jp) => jp.instanceOf(jpType));
+        return $allJps.filter((jp) => jp instanceof jpType);
     }
     /**
      * Iterates of attributeNames, returns the first value that is not null or undefined.
