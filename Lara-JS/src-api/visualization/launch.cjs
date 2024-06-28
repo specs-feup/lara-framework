@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const WebSocket = require('ws');
 
 const port = 3000;
@@ -9,6 +10,12 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server: server });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+server.listen(port, () => {
+  console.log(`[server]: Server is running at http://${domain}:${port}`);
+});
+
 wss.on('connection', (ws) => {
   console.log('[server]: Client connected');
 
@@ -16,15 +23,7 @@ wss.on('connection', (ws) => {
     console.log(`[server]: Received message => ${message}`);
   });
 
-  ws.send('Hello! Message from server!');
-
   ws.on('close', () => {
     console.log('[server]: Client disconnected');
   });
-});
-
-app.use(express.static(__dirname));
-
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://${domain}:${port}`);
 });
