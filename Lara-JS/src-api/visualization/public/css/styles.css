@@ -1,0 +1,9 @@
+textarea {
+  width: 50em;
+  height: 80em;
+  color: black;
+}
+
+textarea:not(:first-of-type) {
+  margin-left: 5em;
+}
