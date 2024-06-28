@@ -8,7 +8,6 @@ import { isJavaError } from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
-import assert from "assert";
 
 let directExecution = false;
 
@@ -93,23 +92,16 @@ export class Weaver {
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
-    const fileList = new JavaArrayList();
-    //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
-    const clangArgs = args._.slice(1);
-    clangArgs.forEach((arg: string | number) => {
-      fileList.add(new JavaFile(arg));
-    });
-
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
     let datastore;
-    if (args.classicArgs != undefined) {
+    if (args._[0] === "classic") {
         try {
             datastore = JavaLaraI.convertArgsToDataStore(
-                args.classicArgs,
+                args._.slice(1),
                 javaWeaver
             ).get();
         } catch (error) {
@@ -125,13 +117,21 @@ export class Weaver {
         datastore = await new JavaDataStore.newInstanceP(
             `${javaWeaverClassName}DataStore`
         );
+
+        const fileList = new JavaArrayList();
+        //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
+        const clangArgs = args._.slice(1);
+        clangArgs.forEach((arg: string | number) => {
+          fileList.add(new JavaFile(arg));
+        });
+
+        datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+        datastore.set(
+          LaraiKeys.WORKSPACE_FOLDER,
+          JavaFileList.newInstance(fileList)
+        );
     }
 
-    datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-    datastore.set(
-      LaraiKeys.WORKSPACE_FOLDER,
-      JavaFileList.newInstance(fileList)
-    );
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
@@ -152,6 +152,11 @@ export class Weaver {
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
   ) {
+    if (args.scriptFile == undefined) {
+      Weaver.debug("No script file provided.");
+      return;
+    }
+
     for (const file of config.importForSideEffects ?? []) {
       await import(file);
     }

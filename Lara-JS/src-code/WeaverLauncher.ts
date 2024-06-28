@@ -119,11 +119,6 @@ export default class WeaverLauncher {
               type: "array",
               default: [],
               defaultDescription: "none",
-            })
-            .option("classicArgs", {
-              describe: "All arguments after this option are considered to be of the 'Classic' version of the weaver and will be treated as such (until '--' is found)",
-              type: "array",
-              nargs: Infinity,
             });
         },
         handler: (argv) => {
@@ -143,11 +138,24 @@ export default class WeaverLauncher {
           console.log(
             `Initializing new ${this.config.weaverPrettyName} project...`
           );
+          console.log("Did nothing. Not implemented yet.");
         },
+      })
+      .command("classic", `Execute ${this.config.weaverPrettyName} in 'Classic' compatibility mode`, (yargs) => {
+        return yargs
+          .strict(false)
+          .parserConfiguration({ "unknown-options-as-args": true });
+      }, (argv) => {
+        try {
+          console.log(`Executing ${this.config.weaverPrettyName} in 'Classic' mode...`);
+          void this.main(argv);
+        } catch (error) {
+          console.error(error);
+        }
       })
       .help()
       .showHelpOnFail(true)
-      .strict()
+      .strict(true)
       .pkgConf(this.config.weaverName);
   }
 }
