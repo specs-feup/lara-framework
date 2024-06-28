@@ -1,5 +1,10 @@
-const socket = new WebSocket('ws://localhost:3000');
+const astNodes = document.querySelectorAll('.ast-node');
 
-socket.onmessage = (event) => {
-    console.log(`[client]: Received message => ${event.data}`);
+for (const node of astNodes) {
+  node.addEventListener('mouseover', (event) => {
+    event.target.classList.toggle('highlighted');
+  });
+  node.addEventListener('mouseout', (event) => {
+    event.target.classList.remove('highlighted');
+  });
 }
