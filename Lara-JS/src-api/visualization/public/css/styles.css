@@ -1,9 +1,17 @@
-textarea {
-  width: 50em;
-  height: 80em;
-  color: black;
+#ast-code-visualization > article {
+  display: inline-block;
 }
 
-textarea:not(:first-of-type) {
+#ast-code-visualization > article:not(:first-of-type) {
   margin-left: 5em;
+}
+
+pre {
+  width: 50em;
+  height: 80em;
+  overflow: auto;
+  border: 1px solid black;
+  border-radius: 2px;
+  cursor: default;
+  user-select: none;
 }
