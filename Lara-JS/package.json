@@ -58,8 +58,10 @@
   "dependencies": {
     "chokidar": "^3.6.0",
     "debug": "^4.3.5",
+    "express": "^4.19.2",
     "java": "^0.14.0",
     "supports-color": "^9.4.0",
+    "ws": "^8.17.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
