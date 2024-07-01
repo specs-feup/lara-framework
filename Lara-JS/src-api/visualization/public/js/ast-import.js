@@ -324,9 +324,9 @@ const fillAstContainer = (ast) => {
         
         const nodeElement = document.createElement('span');
         nodeElement.classList.add('ast-node');  // TODO: Add joinpoint info
+        nodeElement.style.marginLeft = (indentation.length / 2) + "em";
         nodeElement.textContent = nodeName;
 
-        astContainer.innerHTML += indentation + ' - ';
         astContainer.appendChild(nodeElement);
         astContainer.appendChild(document.createElement('br'));
     }
