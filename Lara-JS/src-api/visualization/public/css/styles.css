@@ -23,3 +23,7 @@ pre * {
 .highlighted {
   background-color: yellow;
 }
+
+.ast-node::before {
+  content: ' - ';
+}
