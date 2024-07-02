@@ -1,16 +1,20 @@
-const express = require('express');
-const http = require('http');
-const path = require('path');
-const WebSocket = require('ws');
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { WebSocketServer } from 'ws';
 
 const port = 3000;
 const domain = 'localhost';
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server: server });
+const wss = new WebSocketServer({ server: server });
 
-app.use(express.static(path.join(__dirname, 'public')));
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+app.use(express.static(path.join(dirname, 'public')));
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://${domain}:${port}`);
