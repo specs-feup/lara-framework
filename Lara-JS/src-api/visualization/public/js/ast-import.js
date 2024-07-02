@@ -60,7 +60,8 @@ const linkCodeToAstNodes = (nodeElements, codeContainer) => {
 		nodeCodeWrapper.dataset.nodeId = nodeElement.dataset.nodeId;
     nodeCodeWrapper.textContent = nodeCode;
 		
-		codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+		codeContainer.innerHTML = codeContainer.innerHTML.replaceAll(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+    // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
 	}
 }
 
