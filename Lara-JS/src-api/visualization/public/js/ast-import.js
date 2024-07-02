@@ -1,4 +1,75 @@
-const sampleAst = `Joinpoint 'program'
+const createAstNodeElements = (ast) => {
+	let id = 0;  // TODO: Refactor identification (e.g. using astId)
+	const nodeElements = [];
+
+	for (const node of ast.split('\n')) {
+		const matches = node.match(/(\s*)Joinpoint '(.+)'/, '');
+		if (matches == null) {
+			console.warn(`Invalid node: "${node}"`);
+			continue;
+		}
+		const [, indentation, nodeName] = matches;
+		
+		const nodeElement = document.createElement('span');
+		nodeElement.classList.add('ast-node');  // TODO: Add joinpoint info
+		nodeElement.dataset.nodeId = id++;
+		nodeElement.style.marginLeft = (indentation.length / 2) + "em";
+		nodeElement.textContent = nodeName;
+
+		nodeElements.push(nodeElement);
+	}
+
+	return nodeElements;
+};
+
+const fillAstContainer = (nodeElements, astContainer) => {
+	for (const nodeElement of nodeElements) {
+		astContainer.appendChild(nodeElement);
+		astContainer.appendChild(document.createElement('br'));
+	}
+}
+
+const linkCodeToAstNodes = (nodeElements, codeContainer) => {
+	for (const nodeElement of nodeElements) {
+		const nodeCode = `void matrix_mult(double const *A, double const *B, double *C, int const N, int const M, int const K) {
+   for(int ii = 0; ii < N; ii++) {
+      for(int jj = 0; jj < K; jj++) {
+         //C[i][j] = 0;
+         C[K * ii + jj] = 0;
+      }
+   }
+   for(int i = 0; i < N; i++) {
+      for(int l = 0; l < M; l++) {
+         for(int j = 0; j < K; j++) {
+            //C[i][j] += A[i][l]*B[l][j];
+            C[K * i + j] += A[M * i + l] * B[K * l + j];
+         }
+      }
+   }
+}`;  // TODO: Use real node code
+    const nodeCodeHtml = escapeHtml(nodeCode);
+
+		const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml);
+		if (nodeCodeStart === -1) {
+			console.warn(`Node code not found in code container: "${nodeCode}"`);
+			continue;
+		}
+
+		const nodeCodeWrapper = document.createElement('span');
+		nodeCodeWrapper.classList.add('node-code');
+		nodeCodeWrapper.dataset.nodeId = nodeElement.dataset.nodeId;
+    nodeCodeWrapper.textContent = nodeCode;
+		
+		codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+	}
+}
+
+
+(function() {
+	const astContainer = document.querySelector('#ast code');
+	const codeContainer = document.querySelector('#code code');
+
+	const sampleAst = `Joinpoint 'program'
     Joinpoint 'file'
         Joinpoint 'include'
         Joinpoint 'include'
@@ -311,25 +382,9 @@ const sampleAst = `Joinpoint 'program'
                 Joinpoint 'call'
                     Joinpoint 'varref'`;  // TODO: Import from Lara
 
-const fillAstContainer = (ast) => {
-    const astContainer = document.querySelector('#ast code');
-
-    for (const node of ast.split('\n')) {
-        const matches = node.match(/(\s*)Joinpoint '(.+)'/, '');
-        if (matches == null) {
-            console.warn(`Invalid node: "${node}"`);
-            continue;
-        }
-        const [, indentation, nodeName] = matches;
-        
-        const nodeElement = document.createElement('span');
-        nodeElement.classList.add('ast-node');  // TODO: Add joinpoint info
-        nodeElement.style.marginLeft = (indentation.length / 2) + "em";
-        nodeElement.textContent = nodeName;
-
-        astContainer.appendChild(nodeElement);
-        astContainer.appendChild(document.createElement('br'));
-    }
-}
-
-fillAstContainer(sampleAst);
+  if (astContainer != null) {
+    const nodeElements = createAstNodeElements(sampleAst);
+    fillAstContainer(nodeElements, astContainer);
+    linkCodeToAstNodes(nodeElements, codeContainer);
+  }
+})();
