@@ -1,5 +1,3 @@
-const codeContainer = document.querySelector('#code code');
-
 const highlightNode = (node) => {
   document.querySelectorAll(`span[data-node-id="${node.dataset.nodeId}"]`)
     .forEach(element => element.classList.add('highlighted'));
@@ -10,13 +8,14 @@ const unhighlightNode = (node) => {
     .forEach(element => element.classList.remove('highlighted'));
 }
 
-const addEventListenersToAstNodes = () => {
-  const astNodes = document.querySelectorAll('.ast-node');
-
-  for (const nodeElement of astNodes) {
+const addEventListenersToAstNodes = (nodes) => {
+  for (const nodeElement of nodes) {
 		nodeElement.addEventListener('mouseover', () => highlightNode(nodeElement));
 		nodeElement.addEventListener('mouseout', () => unhighlightNode(nodeElement));
   }
 };
 
-addEventListenersToAstNodes();
+(function () {
+  const astNodes = document.querySelectorAll('.ast-node');
+  addEventListenersToAstNodes(astNodes);
+})();
