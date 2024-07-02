@@ -104,7 +104,8 @@ export class Weaver {
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
     let datastore;
-    if (args.configClassic !== undefined && args.configClassic !== null) {
+    const isClassicMode = args.configClassic !== undefined && args.configClassic !== null; 
+    if (isClassicMode) {
       try {
         assert(args.configClassic instanceof Array);
         datastore = JavaLaraI.convertArgsToDataStore(args.configClassic, javaWeaver).get();
@@ -124,10 +125,14 @@ export class Weaver {
     }
 
     datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-    datastore.set(
-      LaraiKeys.WORKSPACE_FOLDER,
-      JavaFileList.newInstance(fileList)
-    );
+
+    // Only overwrite workspace if not in classic mode
+    if(!isClassicMode) {  
+      datastore.set(
+        LaraiKeys.WORKSPACE_FOLDER,
+        JavaFileList.newInstance(fileList)
+      );
+    }
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
