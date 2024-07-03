@@ -21,7 +21,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
+    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && node scripts/copy-folder.js -i src-api/visualization/public -o api/visualization/public && npx tsc -b src-api src-code",
     "build:api": "npx tsc -b src-api",
     "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
