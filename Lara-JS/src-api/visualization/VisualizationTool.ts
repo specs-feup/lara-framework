@@ -8,9 +8,9 @@ export default class VisualizationTool {
   host: string;
   port: number;
 
-  constructor(host: string, port: number) {
+  constructor(host: string, port: number | undefined) {
     this.host = host;
-    this.port = port;
+    this.port = port ?? 80;
   }
 
   getDomain(): string {
@@ -46,6 +46,10 @@ export default class VisualizationTool {
         console.log('[server]: Client disconnected');
       });
     });
+  }
+
+  createWebSocketClient(): WebSocket {
+    return new WebSocket(`ws://${this.host}:${this.port}`);
   }
 }
 
