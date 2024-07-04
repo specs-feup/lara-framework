@@ -1,18 +1,22 @@
-const getElementsWithNodeId = (id) => {
+const getElementsWithNodeId = (id: number): NodeListOf<HTMLElement> => {
   return document.querySelectorAll(`span[data-node-id="${id}"]`);
 }
 
-const highlightElements = (elements) => {
+const highlightElements = (elements: NodeListOf<HTMLElement>): void => {
   elements.forEach(element => element.classList.add('highlighted'));
 };
 
-const unhighlightElements = (elements) => {
+const unhighlightElements = (elements: NodeListOf<HTMLElement>): void => {
   elements.forEach(element => element.classList.remove('highlighted'));
 }
 
-const addEventListenersToAstNodes = (nodes) => {
+const addEventListenersToAstNodes = (nodes: NodeListOf<HTMLElement>): void => {
   for (const nodeElement of nodes) {
-    const nodeId = nodeElement.dataset.nodeId;
+    if (!nodeElement.dataset.nodeId) {
+      continue;
+    }
+
+    const nodeId = parseInt(nodeElement.dataset.nodeId!);
     const nodeRelatedElements = getElementsWithNodeId(nodeId);
 
     for (const nodeRelatedElement of nodeRelatedElements) {
@@ -23,6 +27,6 @@ const addEventListenersToAstNodes = (nodes) => {
 };
 
 (function () {
-  const astNodes = document.querySelectorAll('.ast-node');
+  const astNodes = document.querySelectorAll<HTMLElement>('.ast-node');
   addEventListenersToAstNodes(astNodes);
 })();

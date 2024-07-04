@@ -1,5 +1,5 @@
-function escapeHtml(text) {
-  var specialCharMap = {
+function escapeHtml(text: string): string {
+  var specialCharMap: { [char: string]: string } = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -9,3 +9,5 @@ function escapeHtml(text) {
   
   return text.replace(/[&<>"']/g, (match) => specialCharMap[match]);
 }
+
+export { escapeHtml };
