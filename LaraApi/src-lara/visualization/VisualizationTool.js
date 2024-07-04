@@ -2,13 +2,13 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 export default class VisualizationTool {
     host;
     port;
     constructor(host, port) {
         this.host = host;
-        this.port = port;
+        this.port = port ?? 80;
     }
     getDomain() {
         return this.host;
@@ -35,6 +35,9 @@ export default class VisualizationTool {
                 console.log('[server]: Client disconnected');
             });
         });
+    }
+    createWebSocketClient() {
+        return new WebSocket(`ws://${this.host}:${this.port}`);
     }
 }
 new VisualizationTool('localhost', 3000).launch();
