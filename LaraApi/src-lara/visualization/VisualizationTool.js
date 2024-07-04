@@ -3,7 +3,6 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import Query from '../weaver/Query.js';
 export default class VisualizationTool {
     static host;
     static port;
@@ -63,8 +62,12 @@ export default class VisualizationTool {
             });
         });
     }
-    createWebSocketClient() {
-        return new WebSocket(`ws://${this.host}:${this.port}`);
+    static async waitForTool() {
+        if (!this.isLaunched()) {
+            console.warn('Visualization tool is not running'); // TODO: Convert to error
+            return;
+        }
+        await new Promise(() => { });
     }
 }
 //# sourceMappingURL=VisualizationTool.js.map
