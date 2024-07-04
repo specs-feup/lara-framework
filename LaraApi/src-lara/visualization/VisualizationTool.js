@@ -2,21 +2,25 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import WebSocket, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
+import Query from '../weaver/Query.js';
 export default class VisualizationTool {
-    host;
-    port;
-    constructor(host = '127.0.0.1', port) {
-        this.host = host;
-        this.port = port;
+    static host;
+    static port;
+    static isLaunched() {
+        return this.port !== undefined;
     }
-    getHost() {
+    static getHost() {
         return this.host;
     }
-    getPort() {
+    static getPort() {
         return this.port;
     }
-    async launch() {
+    static async launch(host = '127.0.0.1', port) {
+        if (this.isLaunched()) {
+            console.warn('[server]: Visualization tool is already running at http://${this.host}:${this.port}');
+            return;
+        }
         const app = express();
         const server = http.createServer(app);
         const wss = new WebSocketServer({ server: server });
@@ -26,10 +30,10 @@ export default class VisualizationTool {
         wss.on('error', error => {
             switch (error.code) {
                 case 'EADDRINUSE':
-                    console.error(`[server]: Port ${this.port} is already in use`);
+                    console.error(`[server]: Port ${port} is already in use`);
                     break;
                 case 'EACCES':
-                    console.error(`[server]: Permission denied to use port ${this.port}`);
+                    console.error(`[server]: Permission denied to use port ${port}`);
                     break;
                 default:
                     console.error(`[server]: Unknown error occurred: ${error.message}`);
@@ -48,8 +52,9 @@ export default class VisualizationTool {
             });
         });
         return new Promise(res => {
-            server.listen(this.port, this.host, () => {
+            server.listen(port ?? 0, host, () => {
                 const addressInfo = server.address();
+                this.host = addressInfo.address;
                 this.port = addressInfo.port;
                 console.log(`\nVisualization tool is running at http://${this.host}:${this.port}\n`);
                 // child.exec(`xdg-open http://${this.host}:${this.port}`);
