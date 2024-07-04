@@ -3,25 +3,26 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
+import { AddressInfo } from 'net';
 
 export default class VisualizationTool {
-  host: string;
-  port: number;
+  private host: string;
+  private port: number | undefined;
 
-  constructor(host: string, port: number | undefined) {
-    this.host = host;
-    this.port = port ?? 80;
+  constructor(host?: string, port?: number) {
+    this.host = host ?? '127.0.0.1';
+    this.port = port;
   }
 
-  getDomain(): string {
+  public getHost(): string {
     return this.host;
   }
 
-  getPort(): number {
+  public getPort(): number | undefined {
     return this.port;
   }
 
-  launch(): void {
+  public async launch(): Promise<void> {
     const app = express();
     const server = http.createServer(app);
     const wss = new WebSocketServer({ server: server });
@@ -31,8 +32,22 @@ export default class VisualizationTool {
 
     app.use(express.static(path.join(dirname, 'public')));
 
-    server.listen(this.port, () => {
-      console.log(`[server]: Server is running at http://${this.host}:${this.port}`);
+    wss.on('error', error => {
+      switch ((error as any).code) {
+        case 'EADDRINUSE':
+          console.error(`[server]: Port ${this.port} is already in use`);
+          break;
+
+        case 'EACCES':
+          console.error(`[server]: Permission denied to use port ${this.port}`);
+          break;
+        
+        default:
+          console.error(`[server]: Unknown error occurred: ${error.message}`);
+          break;
+      };
+
+      server.close();
     });
 
     wss.on('connection', (ws: WebSocket) => {
@@ -46,11 +61,24 @@ export default class VisualizationTool {
         console.log('[server]: Client disconnected');
       });
     });
+
+    return new Promise(res => {
+      server.listen(this.port, this.host, () => {
+        const addressInfo = server.address() as AddressInfo;
+        this.port = addressInfo.port;
+
+        console.log(`[server]: Server is running at http://${this.host}:${this.port}`);
+        res();
+      });
+    });
   }
 
-  createWebSocketClient(): WebSocket {
+  public createWebSocketClient(): WebSocket {
     return new WebSocket(`ws://${this.host}:${this.port}`);
   }
 }
 
-new VisualizationTool('localhost', 3000).launch();
+(() => {
+  const tool = new VisualizationTool();
+  tool.launch();
+})();

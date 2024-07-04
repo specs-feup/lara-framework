@@ -1,4 +1,4 @@
-function escapeHtml(text) {
+const escapeHtml = (text) => {
     var specialCharMap = {
         '&': '&amp;',
         '<': '&lt;',
@@ -7,6 +7,6 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, (match) => specialCharMap[match]);
-}
+};
 export { escapeHtml };
 //# sourceMappingURL=utils.js.map

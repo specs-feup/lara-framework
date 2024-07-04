@@ -1,4 +1,4 @@
-function escapeHtml(text: string): string {
+const escapeHtml = (text: string): string => {
   var specialCharMap: { [char: string]: string } = {
     '&': '&amp;',
     '<': '&lt;',
