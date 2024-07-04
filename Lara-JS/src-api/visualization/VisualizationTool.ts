@@ -67,7 +67,9 @@ export default class VisualizationTool {
         const addressInfo = server.address() as AddressInfo;
         this.port = addressInfo.port;
 
-        console.log(`[server]: Server is running at http://${this.host}:${this.port}`);
+        console.log(`\nVisualization tool is running at http://${this.host}:${this.port}\n`);
+        // child.exec(`xdg-open http://${this.host}:${this.port}`);
+        // TODO: See if opening automatically is a good idea
         res();
       });
     });
@@ -77,8 +79,3 @@ export default class VisualizationTool {
     return new WebSocket(`ws://${this.host}:${this.port}`);
   }
 }
-
-(() => {
-  const tool = new VisualizationTool('127.0.0.1', 3000);
-  tool.launch();
-})();
