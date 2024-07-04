@@ -67,7 +67,7 @@ export default class VisualizationTool {
             console.warn('Visualization tool is not running'); // TODO: Convert to error
             return;
         }
-        await new Promise(() => { });
+        await new Promise(() => { }); // TODO: Effectively wait for web page to respond
     }
 }
 //# sourceMappingURL=VisualizationTool.js.map
