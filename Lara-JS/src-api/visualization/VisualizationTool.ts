@@ -82,7 +82,11 @@ export default class VisualizationTool {
     });
   }
 
-  public createWebSocketClient(): WebSocket {
-    return new WebSocket(`ws://${this.host}:${this.port}`);
+  public static async waitForTool(): Promise<void> {
+    if (!this.isLaunched()) {
+      console.warn('Visualization tool is not running');  // TODO: Convert to error
+      return;
+    }
+    await new Promise(() => {});  // TODO: Effectively wait for web page to respond
   }
 }
