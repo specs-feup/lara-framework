@@ -20,7 +20,7 @@ const addEventListenersToAstNodes = (nodes) => {
         }
     }
 };
-(function () {
+(() => {
     const astNodes = document.querySelectorAll('.ast-node');
     addEventListenersToAstNodes(astNodes);
 })();

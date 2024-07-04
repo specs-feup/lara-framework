@@ -56,7 +56,7 @@ const linkCodeToAstNodes = (nodeElements, codeContainer) => {
         // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
     }
 };
-(function () {
+(() => {
     const astContainer = document.querySelector('#ast code');
     const codeContainer = document.querySelector('#code code');
     const sampleAst = `Joinpoint 'program'
