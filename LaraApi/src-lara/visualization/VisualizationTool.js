@@ -6,8 +6,8 @@ import WebSocket, { WebSocketServer } from 'ws';
 export default class VisualizationTool {
     host;
     port;
-    constructor(host, port) {
-        this.host = host ?? '127.0.0.1';
+    constructor(host = '127.0.0.1', port) {
+        this.host = host;
         this.port = port;
     }
     getHost() {
@@ -61,7 +61,7 @@ export default class VisualizationTool {
     }
 }
 (() => {
-    const tool = new VisualizationTool();
+    const tool = new VisualizationTool('127.0.0.1', 3000);
     tool.launch();
 })();
 //# sourceMappingURL=VisualizationTool.js.map

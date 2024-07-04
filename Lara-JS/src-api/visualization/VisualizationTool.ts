@@ -9,8 +9,8 @@ export default class VisualizationTool {
   private host: string;
   private port: number | undefined;
 
-  constructor(host?: string, port?: number) {
-    this.host = host ?? '127.0.0.1';
+  constructor(host: string = '127.0.0.1', port?: number) {
+    this.host = host;
     this.port = port;
   }
 
@@ -79,6 +79,6 @@ export default class VisualizationTool {
 }
 
 (() => {
-  const tool = new VisualizationTool();
+  const tool = new VisualizationTool('127.0.0.1', 3000);
   tool.launch();
 })();

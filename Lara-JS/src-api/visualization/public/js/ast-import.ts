@@ -68,7 +68,7 @@ const linkCodeToAstNodes = (nodeElements: HTMLElement[], codeContainer: HTMLElem
 }
 
 
-(function() {
+(() => {
 	const astContainer = document.querySelector<HTMLElement>('#ast code');
 	const codeContainer = document.querySelector<HTMLElement>('#code code');
 
