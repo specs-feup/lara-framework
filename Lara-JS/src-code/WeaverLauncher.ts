@@ -13,7 +13,6 @@ import {
 } from "./ChildProcessHandling.js";
 import WeaverConfiguration from "./WeaverConfiguration.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
-import VisualizationTool from "../api/visualization/VisualizationTool.js";
 
 listenForTerminationSignals();
 
@@ -39,7 +38,6 @@ export default class WeaverLauncher {
 
   protected main(args: Arguments): void {
     this.debug(`${this.config.weaverPrettyName} execution arguments: %O`, args);
-    new VisualizationTool().launch();
     void this.executeWeaver(args);
 
     if (args.watch) {

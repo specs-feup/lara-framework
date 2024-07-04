@@ -3,26 +3,32 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
+import Query from '../weaver/Query.js';
 import { AddressInfo } from 'net';
 
 export default class VisualizationTool {
-  private host: string;
-  private port: number | undefined;
+  private static host: string | undefined;
+  private static port: number | undefined;
 
-  constructor(host: string = '127.0.0.1', port?: number) {
-    this.host = host;
-    this.port = port;
+  public static isLaunched(): boolean {
+    return this.port !== undefined;
   }
 
-  public getHost(): string {
+  public static getHost(): string | undefined {
     return this.host;
   }
 
-  public getPort(): number | undefined {
+  public static getPort(): number | undefined {
     return this.port;
   }
 
-  public async launch(): Promise<void> {
+
+  public static async launch(host: string = '127.0.0.1', port?: number): Promise<void> {
+    if (this.isLaunched()) {
+      console.warn('[server]: Visualization tool is already running at http://${this.host}:${this.port}');
+      return;
+    }
+
     const app = express();
     const server = http.createServer(app);
     const wss = new WebSocketServer({ server: server });
@@ -35,11 +41,11 @@ export default class VisualizationTool {
     wss.on('error', error => {
       switch ((error as any).code) {
         case 'EADDRINUSE':
-          console.error(`[server]: Port ${this.port} is already in use`);
+          console.error(`[server]: Port ${port} is already in use`);
           break;
 
         case 'EACCES':
-          console.error(`[server]: Permission denied to use port ${this.port}`);
+          console.error(`[server]: Permission denied to use port ${port}`);
           break;
         
         default:
@@ -63,8 +69,9 @@ export default class VisualizationTool {
     });
 
     return new Promise(res => {
-      server.listen(this.port, this.host, () => {
+      server.listen(port ?? 0, host, () => {
         const addressInfo = server.address() as AddressInfo;
+        this.host = addressInfo.address;
         this.port = addressInfo.port;
 
         console.log(`\nVisualization tool is running at http://${this.host}:${this.port}\n`);

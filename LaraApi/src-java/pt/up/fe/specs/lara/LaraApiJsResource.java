@@ -106,6 +106,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     TUPLEID_JS("lara/util/TupleId.js"),
     CYTOSCAPE_3_26_0_JS("libs/cytoscape-3.26.0.js"),
     VISUALIZATIONTOOL_JS("visualization/VisualizationTool.js"),
+    VISUALIZATIONTOOLUPDATE_JS("visualization/VisualizationToolUpdate.js"),
     AST_IMPORT_JS("visualization/public/js/ast-import.js"),
     UTILS_JS("visualization/public/js/utils.js"),
     VISUALIZATION_JS("visualization/public/js/visualization.js"),
