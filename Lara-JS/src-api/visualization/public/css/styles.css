@@ -27,3 +27,7 @@ pre * {
 .ast-node::before {
   content: ' - ';
 }
+
+#continue-button {
+  display: block;
+}
