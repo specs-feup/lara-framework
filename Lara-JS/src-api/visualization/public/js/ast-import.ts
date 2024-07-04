@@ -1,4 +1,6 @@
-const createAstNodeElements = (ast) => {
+import { escapeHtml } from './utils.js';
+
+const createAstNodeElements = (ast: any): HTMLElement[] => {
 	let id = 0;  // TODO: Refactor identification (e.g. using astId)
 	const nodeElements = [];
 
@@ -12,7 +14,7 @@ const createAstNodeElements = (ast) => {
 		
 		const nodeElement = document.createElement('span');
 		nodeElement.classList.add('ast-node');  // TODO: Add joinpoint info
-		nodeElement.dataset.nodeId = id++;
+		nodeElement.dataset.nodeId = (id++).toString();
 		nodeElement.style.marginLeft = (indentation.length / 2) + "em";
 		nodeElement.textContent = nodeName;
 
@@ -22,14 +24,14 @@ const createAstNodeElements = (ast) => {
 	return nodeElements;
 };
 
-const fillAstContainer = (nodeElements, astContainer) => {
+const fillAstContainer = (nodeElements: HTMLElement[], astContainer: HTMLElement): void => {
 	for (const nodeElement of nodeElements) {
 		astContainer.appendChild(nodeElement);
 		astContainer.appendChild(document.createElement('br'));
 	}
 }
 
-const linkCodeToAstNodes = (nodeElements, codeContainer) => {
+const linkCodeToAstNodes = (nodeElements: HTMLElement[], codeContainer: HTMLElement): void => {
 	for (const nodeElement of nodeElements) {
 		const nodeCode = `void matrix_mult(double const *A, double const *B, double *C, int const N, int const M, int const K) {
    for(int ii = 0; ii < N; ii++) {
@@ -67,8 +69,8 @@ const linkCodeToAstNodes = (nodeElements, codeContainer) => {
 
 
 (function() {
-	const astContainer = document.querySelector('#ast code');
-	const codeContainer = document.querySelector('#code code');
+	const astContainer = document.querySelector<HTMLElement>('#ast code');
+	const codeContainer = document.querySelector<HTMLElement>('#code code');
 
 	const sampleAst = `Joinpoint 'program'
     Joinpoint 'file'
@@ -383,7 +385,7 @@ const linkCodeToAstNodes = (nodeElements, codeContainer) => {
                 Joinpoint 'call'
                     Joinpoint 'varref'`;  // TODO: Import from Lara
 
-  if (astContainer != null) {
+  if (astContainer != null && codeContainer != null) {
     const nodeElements = createAstNodeElements(sampleAst);
     fillAstContainer(nodeElements, astContainer);
     linkCodeToAstNodes(nodeElements, codeContainer);
