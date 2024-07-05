@@ -4,9 +4,6 @@ const getWebSocket = () => {
 };
 (() => {
     const ws = getWebSocket();
-    ws.addEventListener('message', (message) => {
-        console.log(`[client]: Received message => ${message.data}`);
-    });
     const continueButton = document.querySelector('#continue-button');
     if (!continueButton)
         return;

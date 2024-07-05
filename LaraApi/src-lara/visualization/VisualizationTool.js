@@ -4,21 +4,37 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 export default class VisualizationTool {
-    static host;
+    static hostname;
     static port;
     static wss;
+    static serverClosed = false;
     static isLaunched() {
-        return this.port !== undefined;
+        return this.wss !== undefined && this.serverClosed === false;
     }
-    static getHost() {
-        return this.host;
+    static getHostname() {
+        return this.hostname;
     }
     static getPort() {
         return this.port;
     }
-    static async launch(host = '127.0.0.1', port) {
+    static onWssError(error) {
+        switch (error.code) {
+            case 'EADDRINUSE':
+                console.error(`[server]: Port ${this.port} is already in use`);
+                break;
+            case 'EACCES':
+                console.error(`[server]: Permission denied to use port ${this.port}`);
+                break;
+            default:
+                console.error(`[server]: Unknown error occurred: ${error.message}`);
+                break;
+        }
+        ;
+        this.wss.close();
+    }
+    static async launch(hostname = '127.0.0.1', port) {
         if (this.isLaunched()) {
-            console.warn('[server]: Visualization tool is already running at http://${this.host}:${this.port}');
+            console.warn(`Visualization tool is already running at http://${this.hostname}:${this.port}`);
             return;
         }
         const app = express();
@@ -27,21 +43,6 @@ export default class VisualizationTool {
         const filename = fileURLToPath(import.meta.url);
         const dirname = path.dirname(filename);
         app.use(express.static(path.join(dirname, 'public')));
-        this.wss.on('error', error => {
-            switch (error.code) {
-                case 'EADDRINUSE':
-                    console.error(`[server]: Port ${port} is already in use`);
-                    break;
-                case 'EACCES':
-                    console.error(`[server]: Permission denied to use port ${port}`);
-                    break;
-                default:
-                    console.error(`[server]: Unknown error occurred: ${error.message}`);
-                    break;
-            }
-            ;
-            server.close();
-        });
         this.wss.on('connection', (ws) => {
             console.log('[server]: Client connected');
             ws.on('message', (message) => {
@@ -50,13 +51,18 @@ export default class VisualizationTool {
             ws.addEventListener('close', () => {
                 console.log('[server]: Client disconnected');
             });
+        }); // TODO: Remove this
+        this.wss.on('close', () => {
+            this.serverClosed = true;
         });
+        this.wss.on('error', this.onWssError);
         return new Promise(res => {
-            server.listen(port ?? 0, host, () => {
+            server.listen(port ?? 0, hostname, () => {
                 const addressInfo = server.address();
-                this.host = addressInfo.address;
+                this.hostname = addressInfo.address;
                 this.port = addressInfo.port;
-                console.log(`\nVisualization tool is running at http://${this.host}:${this.port}\n`);
+                this.serverClosed = false;
+                console.log(`\nVisualization tool is running at http://${this.hostname}:${this.port}\n`);
                 // child.exec(`xdg-open http://${this.host}:${this.port}`);
                 // TODO: See if opening automatically is a good idea
                 res();
