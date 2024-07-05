@@ -26,7 +26,4 @@ const addEventListenersToAstNodes = (nodes: NodeListOf<HTMLElement>): void => {
   }
 };
 
-(() => {
-  const astNodes = document.querySelectorAll<HTMLElement>('.ast-node');
-  addEventListenersToAstNodes(astNodes);
-})();
+export { addEventListenersToAstNodes };

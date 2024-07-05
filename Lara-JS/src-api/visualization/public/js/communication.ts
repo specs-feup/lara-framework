@@ -5,22 +5,16 @@ const getWebSocket = (): WebSocket => {
   return new WebSocket(url);
 };
 
-(() => {
-  const ws = getWebSocket();
-  const continueButton = document.querySelector<HTMLButtonElement>('#continue-button');
-  const astContainer = document.querySelector<HTMLElement>('#ast code');
-	const codeContainer = document.querySelector<HTMLElement>('#code code');
+const sendData = (ws: WebSocket, data: any): void => {
+  ws.send(JSON.stringify(data));
+};
 
-  if (!continueButton || !astContainer || !codeContainer)
-    return;
+const parseMessage = (message: MessageEvent): any => {
+  return JSON.parse(message.data);
+};
 
-  continueButton.addEventListener('click', () => {
-    continueButton.disabled = true;
-    ws.send(JSON.stringify({ message: 'continue' }));
-  });
-
-  ws.addEventListener('message', (message: MessageEvent) => {
-    const data = JSON.parse(message.data);
+const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonElement, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+  const data = parseMessage(message);
 
     switch (data.message) {
       case 'update':
@@ -35,5 +29,17 @@ const getWebSocket = (): WebSocket => {
         continueButton.disabled = true;
         break;
     }
-  });
-})();
+};
+
+const continueButtonOnClick = (continueButton: HTMLButtonElement, ws: WebSocket): void => {
+  continueButton.disabled = true;
+  sendData(ws, { message: 'continue' });
+};
+
+export {
+  getWebSocket,
+  sendData,
+  parseMessage,
+  webSocketOnMessage,
+  continueButtonOnClick,
+}

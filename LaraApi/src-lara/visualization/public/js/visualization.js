@@ -20,9 +20,5 @@ const addEventListenersToAstNodes = (nodes) => {
         }
     }
 };
-(() => {
-    const astNodes = document.querySelectorAll('.ast-node');
-    addEventListenersToAstNodes(astNodes);
-})();
-export {};
+export { addEventListenersToAstNodes };
 //# sourceMappingURL=visualization.js.map
