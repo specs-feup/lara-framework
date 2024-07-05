@@ -4,7 +4,7 @@ const createAstNodeElements = (ast) => {
     let id = 0; // TODO: Refactor identification (e.g. using astId)
     const nodeElements = [];
     for (const node of ast.split('\n')) {
-        const matches = node.match(/(\s*)Joinpoint '(.+)'/, '');
+        const matches = node.match(/^(\s*)Joinpoint '(.+)'$/);
         if (matches == null) {
             console.warn(`Invalid node: "${node}"`);
             continue;
@@ -27,22 +27,11 @@ const fillAstContainer = (nodeElements, astContainer) => {
 };
 const linkCodeToAstNodes = (nodeElements, codeContainer) => {
     for (const nodeElement of nodeElements) {
-        const nodeCode = `void matrix_mult(double const *A, double const *B, double *C, int const N, int const M, int const K) {
-   for(int ii = 0; ii < N; ii++) {
-      for(int jj = 0; jj < K; jj++) {
-         //C[i][j] = 0;
-         C[K * ii + jj] = 0;
-      }
-   }
-   for(int i = 0; i < N; i++) {
-      for(int l = 0; l < M; l++) {
-         for(int j = 0; j < K; j++) {
-            //C[i][j] += A[i][l]*B[l][j];
-            C[K * i + j] += A[M * i + l] * B[K * l + j];
-         }
-      }
-   }
-}`; // TODO: Use real node code
+        const nodeCode = nodeElement.textContent; // TODO: Use real node code
+        if (nodeCode == null) {
+            console.warn(`Node with null code: "${nodeCode}"`);
+            continue;
+        }
         const nodeCodeHtml = escapeHtml(nodeCode);
         const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml);
         if (nodeCodeStart === -1) {
@@ -57,11 +46,14 @@ const linkCodeToAstNodes = (nodeElements, codeContainer) => {
         // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
     }
 };
+const importCode = (ast, codeContainer) => {
+    codeContainer.textContent = ast;
+};
 const importAst = (ast, astContainer, codeContainer) => {
     const nodeElements = createAstNodeElements(ast);
     fillAstContainer(nodeElements, astContainer);
     linkCodeToAstNodes(nodeElements, codeContainer);
     addEventListenersToAstNodes(nodeElements);
 };
-export { importAst };
+export { importCode, importAst };
 //# sourceMappingURL=ast-import.js.map

@@ -1,7 +1,6 @@
 import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./communication.js";
 (() => {
     const ws = getWebSocket();
-    console.log(ws);
     const astContainer = document.querySelector('#ast-container');
     const codeContainer = document.querySelector('#code-container');
     const continueButton = document.querySelector('#continue-button');

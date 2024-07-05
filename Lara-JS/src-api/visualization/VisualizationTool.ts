@@ -136,7 +136,7 @@ export default class VisualizationTool {
   }
 
   private static updateClient(ws: WebSocket): void {
-    this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() });
+    this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() });  // TODO: Use real AST
   }
 
   public static update(): void {

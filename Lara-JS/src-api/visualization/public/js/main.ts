@@ -2,7 +2,6 @@ import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./commu
 
 (() => {
   const ws = getWebSocket();
-  console.log(ws);
 
   const astContainer = document.querySelector<HTMLElement>('#ast-container');
   const codeContainer = document.querySelector<HTMLElement>('#code-container');

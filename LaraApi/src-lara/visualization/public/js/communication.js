@@ -1,4 +1,4 @@
-import { importAst } from "./ast-import.js";
+import { importAst, importCode } from "./ast-import.js";
 const getWebSocket = () => {
     const url = `ẁs://${window.location.host}`;
     return new WebSocket(url);
@@ -13,6 +13,8 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
     const data = parseMessage(message);
     switch (data.message) {
         case 'update':
+            console.log(data.ast);
+            importCode(data.ast, codeContainer);
             importAst(data.ast, astContainer, codeContainer);
             break;
         case 'wait':
