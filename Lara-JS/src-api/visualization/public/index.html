@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/styles.css">
-    <script type="module" src="/js/utils.js" defer></script>
-    <script type="module" src="/js/ast-import.js" defer></script>
-    <script type="module" src="/js/visualization.js" defer></script>
-    <script type="module" src="/js/communication.js" defer></script>
+    <script type="module" src="/js/main.js" defer></script>
     <title>AST Visualization</title>
 </head>
 <body>
@@ -16,11 +13,11 @@
         <h1>AST Visualization</h1>
         <article id="ast">
             <h2>AST</h2>
-            <pre><code></code></pre>
+            <pre><code id="ast-container"></code></pre>
         </article>
         <article id="code">
             <h2>Code</h2>
-            <pre><code>#include &lt;stdio.h&gt;
+            <pre><code id="code-container">#include &lt;stdio.h&gt;
 #include &lt;math.h&gt;
 #include &lt;stdlib.h&gt;
 /*
