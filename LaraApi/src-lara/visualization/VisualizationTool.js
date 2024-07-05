@@ -6,6 +6,7 @@ import { WebSocketServer } from 'ws';
 export default class VisualizationTool {
     static host;
     static port;
+    static wss;
     static isLaunched() {
         return this.port !== undefined;
     }
@@ -22,11 +23,11 @@ export default class VisualizationTool {
         }
         const app = express();
         const server = http.createServer(app);
-        const wss = new WebSocketServer({ server: server });
+        this.wss = new WebSocketServer({ server: server });
         const filename = fileURLToPath(import.meta.url);
         const dirname = path.dirname(filename);
         app.use(express.static(path.join(dirname, 'public')));
-        wss.on('error', error => {
+        this.wss.on('error', error => {
             switch (error.code) {
                 case 'EADDRINUSE':
                     console.error(`[server]: Port ${port} is already in use`);
@@ -41,12 +42,12 @@ export default class VisualizationTool {
             ;
             server.close();
         });
-        wss.on('connection', (ws) => {
+        this.wss.on('connection', (ws) => {
             console.log('[server]: Client connected');
             ws.on('message', (message) => {
                 console.log(`[server]: Received message => ${message}`);
             });
-            ws.on('close', () => {
+            ws.addEventListener('close', () => {
                 console.log('[server]: Client disconnected');
             });
         });
@@ -62,12 +63,37 @@ export default class VisualizationTool {
             });
         });
     }
+    static sendToClient(ws, data) {
+        ws.send(JSON.stringify(data));
+    }
+    static sendToAllClients(data) {
+        this.wss.clients.forEach(ws => this.sendToClient(ws, data));
+    }
     static async waitForTool() {
         if (!this.isLaunched()) {
             console.warn('Visualization tool is not running'); // TODO: Convert to error
             return;
         }
-        await new Promise(() => { }); // TODO: Effectively wait for web page to respond
+        return new Promise(res => {
+            let placeClientOnWait;
+            const waitOnMessage = (message) => {
+                const data = JSON.parse(message);
+                if (data.message === 'continue') {
+                    this.wss.clients.forEach(ws => {
+                        this.wss.off('connection', placeClientOnWait);
+                        ws.off('message', waitOnMessage);
+                    });
+                    this.sendToAllClients({ message: 'continue' });
+                    res();
+                }
+            };
+            placeClientOnWait = (ws) => {
+                ws.on('message', waitOnMessage);
+                this.sendToClient(ws, { message: 'wait' });
+            };
+            this.wss.clients.forEach(placeClientOnWait);
+            this.wss.on('connection', placeClientOnWait);
+        }); // TODO: Effectively wait for web page to respond
     }
 }
 //# sourceMappingURL=VisualizationTool.js.map
