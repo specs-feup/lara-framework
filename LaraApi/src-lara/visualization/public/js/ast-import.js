@@ -20,6 +20,7 @@ const createAstNodeElements = (ast) => {
     return nodeElements;
 };
 const fillAstContainer = (nodeElements, astContainer) => {
+    astContainer.innerHTML = '';
     for (const nodeElement of nodeElements) {
         astContainer.appendChild(nodeElement);
         astContainer.appendChild(document.createElement('br'));
