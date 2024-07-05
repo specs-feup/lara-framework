@@ -10,7 +10,7 @@ const unhighlightElements = (elements: NodeListOf<HTMLElement>): void => {
   elements.forEach(element => element.classList.remove('highlighted'));
 }
 
-const addEventListenersToAstNodes = (nodes: NodeListOf<HTMLElement>): void => {
+const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
   for (const nodeElement of nodes) {
     if (!nodeElement.dataset.nodeId) {
       continue;

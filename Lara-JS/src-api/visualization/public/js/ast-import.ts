@@ -1,4 +1,5 @@
 import { escapeHtml } from './utils.js';
+import { addEventListenersToAstNodes } from './visualization.js';
 
 const createAstNodeElements = (ast: any): HTMLElement[] => {
 	let id = 0;  // TODO: Refactor identification (e.g. using astId)
@@ -71,6 +72,7 @@ const importAst = (ast: any, astContainer: HTMLElement, codeContainer: HTMLEleme
   const nodeElements = createAstNodeElements(ast);
   fillAstContainer(nodeElements, astContainer);
   linkCodeToAstNodes(nodeElements, codeContainer);
+  addEventListenersToAstNodes(nodeElements);
 }
 
 export { importAst };
