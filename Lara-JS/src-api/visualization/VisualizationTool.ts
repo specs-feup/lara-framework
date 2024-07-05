@@ -141,6 +141,6 @@ export default class VisualizationTool {
 
   public static update(): void {
     this.verifyToolIsRunning();
-    this.wss!.clients.forEach(this.updateClient);
+    this.wss!.clients.forEach(ws => this.updateClient(ws));
   }
 }

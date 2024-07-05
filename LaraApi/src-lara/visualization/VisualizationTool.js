@@ -106,12 +106,11 @@ export default class VisualizationTool {
         });
     }
     static updateClient(ws) {
-        console.log(JoinPoints.root().self);
         this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() }); // TODO: Use real AST
     }
     static update() {
         this.verifyToolIsRunning();
-        this.wss.clients.forEach(this.updateClient);
+        this.wss.clients.forEach(ws => this.updateClient(ws));
     }
 }
 //# sourceMappingURL=VisualizationTool.js.map
