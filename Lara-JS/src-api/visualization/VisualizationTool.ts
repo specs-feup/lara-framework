@@ -100,8 +100,7 @@ export default class VisualizationTool {
 
   public static async waitForTool(): Promise<void> {
     if (!this.isLaunched()) {
-      console.warn('Visualization tool is not running');  // TODO: Convert to error
-      return;
+      throw Error('Visualization tool is not running');
     }
 
     return new Promise(res => {

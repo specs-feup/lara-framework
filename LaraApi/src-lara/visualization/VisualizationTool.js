@@ -77,8 +77,7 @@ export default class VisualizationTool {
     }
     static async waitForTool() {
         if (!this.isLaunched()) {
-            console.warn('Visualization tool is not running'); // TODO: Convert to error
-            return;
+            throw Error('Visualization tool is not running');
         }
         return new Promise(res => {
             let placeClientOnWait;
