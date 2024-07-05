@@ -3,6 +3,7 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
+import JoinPoints from '../weaver/JoinPoints.js';
 export default class VisualizationTool {
     static hostname;
     static port;
@@ -52,10 +53,11 @@ export default class VisualizationTool {
                 console.log('[server]: Client disconnected');
             });
         }); // TODO: Remove this
+        this.wss.on('connection', ws => this.updateClient(ws));
         this.wss.on('close', () => {
             this.serverClosed = true;
         });
-        this.wss.on('error', this.onWssError);
+        this.wss.on('error', error => this.onWssError(error));
         return new Promise(res => {
             server.listen(port ?? 0, hostname, () => {
                 const addressInfo = server.address();
@@ -75,10 +77,13 @@ export default class VisualizationTool {
     static sendToAllClients(data) {
         this.wss.clients.forEach(ws => this.sendToClient(ws, data));
     }
-    static async waitForTool() {
+    static verifyToolIsRunning() {
         if (!this.isLaunched()) {
             throw Error('Visualization tool is not running');
         }
+    }
+    static async waitForTool() {
+        this.verifyToolIsRunning();
         return new Promise(res => {
             let placeClientOnWait;
             const waitOnMessage = (message) => {
@@ -99,6 +104,13 @@ export default class VisualizationTool {
             this.wss.clients.forEach(placeClientOnWait);
             this.wss.on('connection', placeClientOnWait);
         });
+    }
+    static updateClient(ws) {
+        this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() });
+    }
+    static update() {
+        this.verifyToolIsRunning();
+        this.wss.clients.forEach(this.updateClient);
     }
 }
 //# sourceMappingURL=VisualizationTool.js.map
