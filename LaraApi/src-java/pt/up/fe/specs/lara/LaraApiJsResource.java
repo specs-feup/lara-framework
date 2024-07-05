@@ -108,6 +108,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     VISUALIZATIONTOOL_JS("visualization/VisualizationTool.js"),
     VISUALIZATIONTOOLUPDATE_JS("visualization/VisualizationToolUpdate.js"),
     AST_IMPORT_JS("visualization/public/js/ast-import.js"),
+    COMMUNICATION_JS("visualization/public/js/communication.js"),
     UTILS_JS("visualization/public/js/utils.js"),
     VISUALIZATION_JS("visualization/public/js/visualization.js"),
     AST_JS("weaver/Ast.js"),
