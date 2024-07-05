@@ -1,4 +1,5 @@
-import { importAst } from "./ast-import.js";
+import { LaraJoinPoint } from "../../../LaraJoinPoint.js";
+import { importAst, importCode } from "./ast-import.js";
 
 const getWebSocket = (): WebSocket => {
   const url = `ẁs://${window.location.host}`;
@@ -18,7 +19,8 @@ const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonEle
 
     switch (data.message) {
       case 'update':
-        importAst(data.ast, astContainer, codeContainer);
+        importCode(data.ast as LaraJoinPoint, codeContainer);
+        importAst(data.ast as LaraJoinPoint, astContainer, codeContainer);
         break;
 
       case 'wait':

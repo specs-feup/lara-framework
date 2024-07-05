@@ -106,7 +106,8 @@ export default class VisualizationTool {
         });
     }
     static updateClient(ws) {
-        this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() });
+        console.log(JoinPoints.root().self);
+        this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() }); // TODO: Use real AST
     }
     static update() {
         this.verifyToolIsRunning();
