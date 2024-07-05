@@ -126,6 +126,6 @@ export default class VisualizationTool {
 
       this.wss!.clients.forEach(placeClientOnWait);
       this.wss!.on('connection', placeClientOnWait);
-    });  // TODO: Effectively wait for web page to respond
+    });
   }
 }
