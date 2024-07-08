@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import WebSocket, { WebSocketServer, MessageEvent } from 'ws';
 import JoinPoints from '../weaver/JoinPoints.js';
 import { AddressInfo } from 'net';
-
+import { LaraJoinPoint, wrapJoinPoint } from '../LaraJoinPoint.js';
 export default class VisualizationTool {
   private static hostname: string | undefined;
   private static port: number | undefined;
@@ -135,8 +135,15 @@ export default class VisualizationTool {
     });
   }
 
+  private static parseTree(jp: LaraJoinPoint): Object {
+    return {
+      children: jp.children.map(child => this.parseTree(child)),
+      code: wrapJoinPoint(jp._javaObject.getCode()),
+    };
+  }
+
   private static updateClient(ws: WebSocket): void {
-    this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() });  // TODO: Use real AST
+    this.sendToClient(ws, { message: 'update', ast: this.parseTree(JoinPoints.root()) });  // TODO: Use real AST
   }
 
   public static update(): void {

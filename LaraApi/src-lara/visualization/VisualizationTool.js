@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 import JoinPoints from '../weaver/JoinPoints.js';
+import { wrapJoinPoint } from '../LaraJoinPoint.js';
 export default class VisualizationTool {
     static hostname;
     static port;
@@ -105,8 +106,14 @@ export default class VisualizationTool {
             this.wss.on('connection', placeClientOnWait);
         });
     }
+    static parseTree(jp) {
+        return {
+            children: jp.children.map(child => this.parseTree(child)),
+            code: wrapJoinPoint(jp._javaObject.getCode()),
+        };
+    }
     static updateClient(ws) {
-        this.sendToClient(ws, { message: 'update', ast: JoinPoints.root().dump.trim() }); // TODO: Use real AST
+        this.sendToClient(ws, { message: 'update', ast: this.parseTree(JoinPoints.root()) }); // TODO: Use real AST
     }
     static update() {
         this.verifyToolIsRunning();

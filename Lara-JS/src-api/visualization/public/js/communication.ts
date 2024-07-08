@@ -1,4 +1,3 @@
-import { LaraJoinPoint } from "../../../LaraJoinPoint.js";
 import { importAst, importCode } from "./ast-import.js";
 
 const getWebSocket = (): WebSocket => {
@@ -17,20 +16,21 @@ const parseMessage = (message: MessageEvent): any => {
 const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonElement, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
   const data = parseMessage(message);
 
-    switch (data.message) {
-      case 'update':
-        importCode(data.ast as LaraJoinPoint, codeContainer);
-        importAst(data.ast as LaraJoinPoint, astContainer, codeContainer);
-        break;
+  switch (data.message) {
+    case 'update':
+      console.log(data.ast);
+      importCode(data.ast, codeContainer);
+      importAst(data.ast, astContainer, codeContainer);
+      break;
 
-      case 'wait':
-        continueButton.disabled = false;
-        break;
+    case 'wait':
+      continueButton.disabled = false;
+      break;
 
-      case 'continue':
-        continueButton.disabled = true;
-        break;
-    }
+    case 'continue':
+      continueButton.disabled = true;
+      break;
+  }
 };
 
 const continueButtonOnClick = (continueButton: HTMLButtonElement, ws: WebSocket): void => {
