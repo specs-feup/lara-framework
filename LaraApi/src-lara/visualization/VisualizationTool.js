@@ -107,7 +107,6 @@ export default class VisualizationTool {
         });
     }
     static toToolJpJson(jp) {
-        console.log(jp.toString(), wrapJoinPoint(jp._javaObject.getLocation()));
         return {
             id: wrapJoinPoint(jp._javaObject.getAstId()),
             type: wrapJoinPoint(jp._javaObject.getAstName()),
