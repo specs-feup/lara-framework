@@ -3,8 +3,8 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import JoinPoints from '../weaver/JoinPoints.js';
 import { wrapJoinPoint } from '../LaraJoinPoint.js';
+import JoinPoints from '../weaver/JoinPoints.js';
 export default class VisualizationTool {
     static hostname;
     static port;
@@ -106,14 +106,17 @@ export default class VisualizationTool {
             this.wss.on('connection', placeClientOnWait);
         });
     }
-    static parseTree(jp) {
+    static toToolJpJson(jp) {
+        console.log(jp.toString(), wrapJoinPoint(jp._javaObject.getLocation()));
         return {
-            children: jp.children.map(child => this.parseTree(child)),
+            id: wrapJoinPoint(jp._javaObject.getAstId()),
+            type: wrapJoinPoint(jp._javaObject.getAstName()),
             code: wrapJoinPoint(jp._javaObject.getCode()),
+            children: jp.children.map(child => this.toToolJpJson(child))
         };
     }
     static updateClient(ws) {
-        this.sendToClient(ws, { message: 'update', ast: this.parseTree(JoinPoints.root()) }); // TODO: Use real AST
+        this.sendToClient(ws, { message: 'update', ast: this.toToolJpJson(JoinPoints.root()) });
     }
     static update() {
         this.verifyToolIsRunning();
