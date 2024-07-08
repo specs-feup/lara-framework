@@ -1,4 +1,4 @@
-import { escapeHtml } from './utils.js';
+import { escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 const convertAstNodesToElements = (root, depth = 0) => {
     const rootElement = document.createElement('span');
@@ -43,18 +43,22 @@ const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
         console.warn(`Node code not found in code container: "${nodeCodeHtml}"`);
         return 0;
     }
+    if (root.type == "DeclRefExpr") {
+        console.log(`DeclRefExpr: ${root.code}`);
+        console.log(`DeclRefExpr: ${codeContainer.innerHTML}`);
+    }
     const nodeCodeWrapper = document.createElement('span');
     nodeCodeWrapper.classList.add('node-code');
     nodeCodeWrapper.dataset.nodeId = root.id.toString();
     nodeCodeWrapper.innerHTML = nodeCodeHtml;
-    codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+    codeContainer.innerHTML = replaceAfter(codeContainer.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
     // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
     const nodeCodeContainer = codeContainer.querySelector(`span.node-code[data-node-id="${root.id}"]`);
     let nodeCodeLowerBound = 0;
     for (const child of root.children) {
         nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer, nodeCodeLowerBound);
     }
-    const codeEnd = nodeCodeStart + nodeCodeWrapper.outerHTML.length;
+    const codeEnd = nodeCodeStart + nodeCodeContainer.outerHTML.length;
     return codeEnd;
 };
 const importCode = (astRoot, codeContainer) => {

@@ -1,4 +1,4 @@
-import { escapeHtml } from './utils.js';
+import { escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
 
@@ -59,7 +59,7 @@ const linkCodeToAstNodes = (root: JoinPoint, codeContainer: HTMLElement, codeSta
 	nodeCodeWrapper.classList.add('node-code');
 	nodeCodeWrapper.dataset.nodeId = root.id.toString();
 	nodeCodeWrapper.innerHTML = nodeCodeHtml;
-	codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+	codeContainer.innerHTML = replaceAfter(codeContainer.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
   // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
 
 	const nodeCodeContainer = codeContainer.querySelector<HTMLElement>(`span.node-code[data-node-id="${root.id}"]`);
@@ -68,7 +68,7 @@ const linkCodeToAstNodes = (root: JoinPoint, codeContainer: HTMLElement, codeSta
 		nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer!, nodeCodeLowerBound);
 	}
 
-	const codeEnd = nodeCodeStart + nodeCodeWrapper.outerHTML.length;
+	const codeEnd = nodeCodeStart + nodeCodeContainer!.outerHTML.length;
 	return codeEnd;
 }
 
