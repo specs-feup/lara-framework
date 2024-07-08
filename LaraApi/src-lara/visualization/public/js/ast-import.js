@@ -19,17 +19,17 @@ const fillAstContainer = (nodeElements, astContainer) => {
         astContainer.appendChild(document.createElement('br'));
     }
 };
-// const addIdentation = (code: string, indentation: number): string => {
-// 	return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
-// }
-// const refineAstNodeCode = (root: JoinPoint, indentation: number = 0): void => {
-// 	root.code = addIdentation(root.code.trim(), indentation);
-// 	if (root.type == "l" && root.children.length >= 3 && root.children[2].type == "ExprStmt")
-// 		root.children[2].code = root.children[2].code.trim().slice(0, -1);  // Remove semicolon from increment expression
-// 	for (const child of root.children) {
-// 		refineAstNodeCode(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
-// 	}
-// }
+const addIdentation = (code, indentation) => {
+    return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
+};
+const refineAst = (root, indentation = 0) => {
+    root.code = addIdentation(root.code.trim(), indentation);
+    if (root.type == "ForStmt" && root.children.length >= 3 && root.children[2].type == "ExprStmt")
+        root.children[2].code = root.children[2].code.slice(0, -1); // Remove semicolon from increment expression in for loop
+    for (const child of root.children) {
+        refineAst(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
+    }
+};
 const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
     const nodeElement = document.querySelector(`span.ast-node[data-node-id="${root.id}"]`);
     if (nodeElement == null) {
@@ -61,9 +61,11 @@ const importCode = (astRoot, codeContainer) => {
     codeContainer.innerHTML = escapeHtml(astRoot.code);
 };
 const importAst = (astRoot, astContainer, codeContainer) => {
-    const nodeElements = convertAstNodesToElements(astRoot);
+    const refinedAstRoot = astRoot.clone();
+    refineAst(refinedAstRoot);
+    const nodeElements = convertAstNodesToElements(refinedAstRoot);
     fillAstContainer(nodeElements, astContainer);
-    linkCodeToAstNodes(astRoot, codeContainer);
+    linkCodeToAstNodes(refinedAstRoot, codeContainer);
     addEventListenersToAstNodes(nodeElements);
 };
 export { importCode, importAst };

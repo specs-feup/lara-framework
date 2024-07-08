@@ -15,8 +15,14 @@ const addEventListenersToAstNodes = (nodes) => {
         const nodeId = nodeElement.dataset.nodeId;
         const nodeRelatedElements = getElementsWithNodeId(nodeId);
         for (const nodeRelatedElement of nodeRelatedElements) {
-            nodeRelatedElement.addEventListener('mouseover', () => highlightElements(nodeRelatedElements));
-            nodeRelatedElement.addEventListener('mouseout', () => unhighlightElements(nodeRelatedElements));
+            nodeRelatedElement.addEventListener('mouseover', event => {
+                highlightElements(nodeRelatedElements);
+                event.stopPropagation();
+            });
+            nodeRelatedElement.addEventListener('mouseout', event => {
+                unhighlightElements(nodeRelatedElements);
+                event.stopPropagation();
+            });
         }
     }
 };

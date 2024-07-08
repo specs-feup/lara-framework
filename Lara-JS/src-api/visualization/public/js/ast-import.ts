@@ -26,6 +26,20 @@ const fillAstContainer = (nodeElements: HTMLElement[], astContainer: HTMLElement
 	}
 }
 
+const addIdentation = (code: string, indentation: number): string => {
+	return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
+}
+
+const refineAst = (root: JoinPoint, indentation: number = 0): void => {
+	root.code = addIdentation(root.code.trim(), indentation);
+	if (root.type == "ForStmt" && root.children.length >= 3 && root.children[2].type == "ExprStmt")
+		root.children[2].code = root.children[2].code.slice(0, -1);  // Remove semicolon from increment expression in for loop
+
+	for (const child of root.children) {
+		refineAst(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
+	}
+}
+
 const linkCodeToAstNodes = (root: JoinPoint, codeContainer: HTMLElement, codeStart: number = 0): number => {
 	const nodeElement = document.querySelector<HTMLElement>(`span.ast-node[data-node-id="${root.id}"]`);
 	if (nodeElement == null) {
@@ -63,9 +77,12 @@ const importCode = (astRoot: JoinPoint, codeContainer: HTMLElement): void => {
 }
 
 const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
-  const nodeElements = convertAstNodesToElements(astRoot);
+	const refinedAstRoot = astRoot.clone();
+	refineAst(refinedAstRoot);
+
+  const nodeElements = convertAstNodesToElements(refinedAstRoot);
   fillAstContainer(nodeElements, astContainer);
-  linkCodeToAstNodes(astRoot, codeContainer);
+  linkCodeToAstNodes(refinedAstRoot, codeContainer);
   addEventListenersToAstNodes(nodeElements);
 }
 

@@ -12,6 +12,9 @@ class ToolJoinPoint {
     static fromJSON(json) {
         return new ToolJoinPoint(json.id, json.type, json.code, json.children.map((child) => ToolJoinPoint.fromJSON(child)));
     }
+    clone() {
+        return new ToolJoinPoint(this.id, this.type, this.code, this.children.map(child => child.clone()));
+    }
 }
 ;
 export default ToolJoinPoint;
