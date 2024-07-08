@@ -121,4 +121,10 @@ Check.isJoinPoint = function($jp, type, isOptional) {
 setUsingLaraCommonLanguage(true);
 setSelectorJoinPointsClass(LCLJoinPoints);
 clearJoinpointMappers();
-//registerJoinpointMapper(classesMapping);
+
+let mapper = {};
+for (const key in classesMapping) {
+  mapper[new classesMapping[key]().joinPointType] = classesMapping[key];
+}
+
+registerJoinpointMapper(mapper);

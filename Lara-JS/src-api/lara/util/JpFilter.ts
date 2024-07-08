@@ -3,11 +3,11 @@ import { laraGetter } from "../core/LaraCore.js";
 
 type JpFilterTypes =
   | RegExp
-  | ((str: string) => boolean)
-  | ((jp: LaraJoinPoint) => boolean)
+  | ((str: string, jp?: LaraJoinPoint) => boolean)
   | string
   | boolean
-  | number;
+  | number
+  | undefined;
 
 export type JpFilterRules = {
   [key: string]: JpFilterTypes;
@@ -60,7 +60,7 @@ export default class JpFilter {
 
   private match(value: any, pattern: JpFilterTypes): boolean {
     if (
-      (pattern instanceof RegExp && pattern.test(value)) ||
+      (pattern instanceof RegExp && pattern.test(value as string)) ||
       (typeof pattern === "function" && pattern(value)) ||
       (typeof pattern === "string" && value === pattern) ||
       (typeof pattern === "boolean" && value === pattern) ||

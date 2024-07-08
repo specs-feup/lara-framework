@@ -92,7 +92,7 @@ export default class Strings {
     return undefined;
   }
 
-  static asLines(string?: string): JavaClasses.List | undefined {
+  static asLines(string?: string): JavaClasses.List<string> | undefined {
     if (string === undefined) {
       return undefined;
     }

@@ -136,11 +136,10 @@ public class MasterWeaver {
             setActions(weaverEngine.getActions());
             setRoot(weaverEngine.getRoot());
             weaverEngine.getWeaverProfiler().reset();
-            List<Class<?>> allImportableClasses = weaverEngine.getAllImportableClasses();
-            
-            if(larai.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
-                allImportableClasses
-                    .forEach(larai.getInterpreter().getImportProcessor()::importClassWithSimpleName);
+
+            if (larai.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
+                weaverEngine.getAllImportableClasses()
+                        .forEach(larai.getInterpreter().getImportProcessor()::importClassWithSimpleName);
             }
             
             final List<AGear> gears = weaverEngine.getGears();

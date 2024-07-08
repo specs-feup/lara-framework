@@ -1,7 +1,8 @@
+import Weaver from "./Weaver.js";
 /**
  * Utility methods related to execution of scripts in a LARA environment.
  *
- * @deprecated Nothing uses this and methods reference variables that do not exist
+ * @deprecated Nothing uses this
  */
 export default class Script {
     static #scriptOutput = {};
@@ -27,7 +28,7 @@ export default class Script {
      * @returns An object with the input arguments passed by command line
      */
     static getInput() {
-        return {}; //laraArgs; Comment: laraArgs does not exist anywhere in the codebase
+        return Weaver.laraArgs;
     }
 }
 //# sourceMappingURL=Script.js.map
