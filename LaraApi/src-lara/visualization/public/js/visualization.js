@@ -12,7 +12,7 @@ const addEventListenersToAstNodes = (nodes) => {
         if (!nodeElement.dataset.nodeId) {
             continue;
         }
-        const nodeId = parseInt(nodeElement.dataset.nodeId);
+        const nodeId = nodeElement.dataset.nodeId;
         const nodeRelatedElements = getElementsWithNodeId(nodeId);
         for (const nodeRelatedElement of nodeRelatedElements) {
             nodeRelatedElement.addEventListener('mouseover', () => highlightElements(nodeRelatedElements));

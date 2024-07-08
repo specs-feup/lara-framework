@@ -1,25 +1,17 @@
 import { escapeHtml } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
+import JoinPoint from './ToolJoinPoint.js';
 
-const createAstNodeElements = (ast: any): HTMLElement[] => {
-	let id = 0;  // TODO: Refactor identification (e.g. using astId)
-	const nodeElements = [];
+const convertAstNodesToElements = (root: JoinPoint, depth: number = 0): HTMLElement[] => {
+	const rootElement = document.createElement('span');
+	rootElement.classList.add('ast-node');
+	rootElement.dataset.nodeId = root.id;
+	rootElement.style.marginLeft = (depth * 2) + "em";
+	rootElement.textContent = root.type;
 
-	for (const node of ast.split('\n')) {
-		const matches = node.match(/^(\s*)Joinpoint '(.+)'$/);
-		if (matches == null) {
-			console.warn(`Invalid node: "${node}"`);
-			continue;
-		}
-		const [, indentation, nodeName] = matches;
-		
-		const nodeElement = document.createElement('span');
-		nodeElement.classList.add('ast-node');  // TODO: Add joinpoint info
-		nodeElement.dataset.nodeId = (id++).toString();
-		nodeElement.style.marginLeft = (indentation.length / 2) + "em";
-		nodeElement.textContent = nodeName;
-
-		nodeElements.push(nodeElement);
+	const nodeElements = [rootElement];
+	for (const node of root.children) {
+		nodeElements.push(...convertAstNodesToElements(node, depth + 1));
 	}
 
 	return nodeElements;
@@ -34,39 +26,46 @@ const fillAstContainer = (nodeElements: HTMLElement[], astContainer: HTMLElement
 	}
 }
 
-const linkCodeToAstNodes = (nodeElements: HTMLElement[], codeContainer: HTMLElement): void => {
-	for (const nodeElement of nodeElements) {
-		const nodeCode = nodeElement.textContent;  // TODO: Use real node code
-		if (nodeCode == null) {
-			console.warn(`Node with null code: "${nodeCode}"`);
-			continue;
-		}
-
-    const nodeCodeHtml = escapeHtml(nodeCode);
-		const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml);
-		if (nodeCodeStart === -1) {
-			console.warn(`Node code not found in code container: "${nodeCode}"`);
-			continue;
-		}
-
-		const nodeCodeWrapper = document.createElement('span');
-		nodeCodeWrapper.classList.add('node-code');
-		nodeCodeWrapper.dataset.nodeId = nodeElement.dataset.nodeId;
-    nodeCodeWrapper.textContent = nodeCode;
-		
-		codeContainer.innerHTML = codeContainer.innerHTML.replaceAll(nodeCodeHtml, nodeCodeWrapper.outerHTML);
-    // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
+const linkCodeToAstNodes = (root: JoinPoint, codeContainer: HTMLElement, codeStart: number = 0): number => {
+	const nodeElement = document.querySelector<HTMLElement>(`span.ast-node[data-node-id="${root.id}"]`);
+	if (nodeElement == null) {
+		console.warn(`Node element not found: "${root.id}"`);
+		return 0;
 	}
+
+	const nodeCode = root.code.trim();
+	const nodeCodeHtml = escapeHtml(nodeCode);
+	const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml, codeStart);
+	if (nodeCodeStart === -1) {
+		console.warn(`Node code not found in code container: "${nodeCodeHtml}"`);
+		return 0;
+	}
+
+	const nodeCodeWrapper = document.createElement('span');
+	nodeCodeWrapper.classList.add('node-code');
+	nodeCodeWrapper.dataset.nodeId = root.id.toString();
+	nodeCodeWrapper.innerHTML = nodeCodeHtml;
+	codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+  // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
+
+	const nodeCodeContainer = codeContainer.querySelector<HTMLElement>(`span.node-code[data-node-id="${root.id}"]`);
+	let nodeCodeLowerBound = 0;
+	for (const child of root.children) {
+		nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer!, nodeCodeLowerBound);
+	}
+
+	const codeEnd = nodeCodeStart + nodeCodeWrapper.outerHTML.length;
+	return codeEnd;
 }
 
-const importCode = (ast: any, codeContainer: HTMLElement): void => {
-  codeContainer.textContent = ast;
+const importCode = (astRoot: JoinPoint, codeContainer: HTMLElement): void => {
+  codeContainer.innerHTML = escapeHtml(astRoot.code);
 }
 
-const importAst = (ast: any, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
-  const nodeElements = createAstNodeElements(ast);
+const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+  const nodeElements = convertAstNodesToElements(astRoot);
   fillAstContainer(nodeElements, astContainer);
-  linkCodeToAstNodes(nodeElements, codeContainer);
+  linkCodeToAstNodes(astRoot, codeContainer);
   addEventListenersToAstNodes(nodeElements);
 }
 
