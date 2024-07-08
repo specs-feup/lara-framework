@@ -3,10 +3,8 @@ const escapeHtml = (text) => {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
     };
-    return text.replace(/[&<>"']/g, (match) => specialCharMap[match]);
+    return text.replace(/[&<>]/g, (match) => specialCharMap[match]);
 };
 export { escapeHtml };
 //# sourceMappingURL=utils.js.map

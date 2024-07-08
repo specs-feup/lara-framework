@@ -107,6 +107,7 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     CYTOSCAPE_3_26_0_JS("libs/cytoscape-3.26.0.js"),
     VISUALIZATIONTOOL_JS("visualization/VisualizationTool.js"),
     VISUALIZATIONTOOLUPDATE_JS("visualization/VisualizationToolUpdate.js"),
+    TOOLJOINPOINT_JS("visualization/public/js/ToolJoinPoint.js"),
     AST_IMPORT_JS("visualization/public/js/ast-import.js"),
     COMMUNICATION_JS("visualization/public/js/communication.js"),
     MAIN_JS("visualization/public/js/main.js"),

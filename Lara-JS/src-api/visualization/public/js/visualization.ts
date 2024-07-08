@@ -1,4 +1,4 @@
-const getElementsWithNodeId = (id: number): NodeListOf<HTMLElement> => {
+const getElementsWithNodeId = (id: string): NodeListOf<HTMLElement> => {
   return document.querySelectorAll(`span[data-node-id="${id}"]`);
 }
 
@@ -16,7 +16,7 @@ const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
       continue;
     }
 
-    const nodeId = parseInt(nodeElement.dataset.nodeId!);
+    const nodeId = nodeElement.dataset.nodeId!;
     const nodeRelatedElements = getElementsWithNodeId(nodeId);
 
     for (const nodeRelatedElement of nodeRelatedElements) {

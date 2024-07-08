@@ -3,11 +3,9 @@ const escapeHtml = (text: string): string => {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
   };
   
-  return text.replace(/[&<>"']/g, (match) => specialCharMap[match]);
+  return text.replace(/[&<>]/g, (match) => specialCharMap[match]);
 }
 
 export { escapeHtml };

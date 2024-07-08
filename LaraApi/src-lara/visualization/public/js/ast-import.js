@@ -1,21 +1,14 @@
 import { escapeHtml } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
-const createAstNodeElements = (ast) => {
-    let id = 0; // TODO: Refactor identification (e.g. using astId)
-    const nodeElements = [];
-    for (const node of ast.split('\n')) {
-        const matches = node.match(/^(\s*)Joinpoint '(.+)'$/);
-        if (matches == null) {
-            console.warn(`Invalid node: "${node}"`);
-            continue;
-        }
-        const [, indentation, nodeName] = matches;
-        const nodeElement = document.createElement('span');
-        nodeElement.classList.add('ast-node'); // TODO: Add joinpoint info
-        nodeElement.dataset.nodeId = (id++).toString();
-        nodeElement.style.marginLeft = (indentation.length / 2) + "em";
-        nodeElement.textContent = nodeName;
-        nodeElements.push(nodeElement);
+const convertAstNodesToElements = (root, depth = 0) => {
+    const rootElement = document.createElement('span');
+    rootElement.classList.add('ast-node');
+    rootElement.dataset.nodeId = root.id;
+    rootElement.style.marginLeft = (depth * 2) + "em";
+    rootElement.textContent = root.type;
+    const nodeElements = [rootElement];
+    for (const node of root.children) {
+        nodeElements.push(...convertAstNodesToElements(node, depth + 1));
     }
     return nodeElements;
 };
@@ -26,34 +19,51 @@ const fillAstContainer = (nodeElements, astContainer) => {
         astContainer.appendChild(document.createElement('br'));
     }
 };
-const linkCodeToAstNodes = (nodeElements, codeContainer) => {
-    for (const nodeElement of nodeElements) {
-        const nodeCode = nodeElement.textContent; // TODO: Use real node code
-        if (nodeCode == null) {
-            console.warn(`Node with null code: "${nodeCode}"`);
-            continue;
-        }
-        const nodeCodeHtml = escapeHtml(nodeCode);
-        const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml);
-        if (nodeCodeStart === -1) {
-            console.warn(`Node code not found in code container: "${nodeCode}"`);
-            continue;
-        }
-        const nodeCodeWrapper = document.createElement('span');
-        nodeCodeWrapper.classList.add('node-code');
-        nodeCodeWrapper.dataset.nodeId = nodeElement.dataset.nodeId;
-        nodeCodeWrapper.textContent = nodeCode;
-        codeContainer.innerHTML = codeContainer.innerHTML.replaceAll(nodeCodeHtml, nodeCodeWrapper.outerHTML);
-        // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
+// const addIdentation = (code: string, indentation: number): string => {
+// 	return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
+// }
+// const refineAstNodeCode = (root: JoinPoint, indentation: number = 0): void => {
+// 	root.code = addIdentation(root.code.trim(), indentation);
+// 	if (root.type == "l" && root.children.length >= 3 && root.children[2].type == "ExprStmt")
+// 		root.children[2].code = root.children[2].code.trim().slice(0, -1);  // Remove semicolon from increment expression
+// 	for (const child of root.children) {
+// 		refineAstNodeCode(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
+// 	}
+// }
+const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
+    const nodeElement = document.querySelector(`span.ast-node[data-node-id="${root.id}"]`);
+    if (nodeElement == null) {
+        console.warn(`Node element not found: "${root.id}"`);
+        return 0;
     }
+    const nodeCode = root.code.trim();
+    const nodeCodeHtml = escapeHtml(nodeCode);
+    const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml, codeStart);
+    if (nodeCodeStart === -1) {
+        console.warn(`Node code not found in code container: "${nodeCodeHtml}"`);
+        return 0;
+    }
+    const nodeCodeWrapper = document.createElement('span');
+    nodeCodeWrapper.classList.add('node-code');
+    nodeCodeWrapper.dataset.nodeId = root.id.toString();
+    nodeCodeWrapper.innerHTML = nodeCodeHtml;
+    codeContainer.innerHTML = codeContainer.innerHTML.replace(nodeCodeHtml, nodeCodeWrapper.outerHTML);
+    // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
+    const nodeCodeContainer = codeContainer.querySelector(`span.node-code[data-node-id="${root.id}"]`);
+    let nodeCodeLowerBound = 0;
+    for (const child of root.children) {
+        nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer, nodeCodeLowerBound);
+    }
+    const codeEnd = nodeCodeStart + nodeCodeWrapper.outerHTML.length;
+    return codeEnd;
 };
-const importCode = (ast, codeContainer) => {
-    codeContainer.textContent = ast;
+const importCode = (astRoot, codeContainer) => {
+    codeContainer.innerHTML = escapeHtml(astRoot.code);
 };
-const importAst = (ast, astContainer, codeContainer) => {
-    const nodeElements = createAstNodeElements(ast);
+const importAst = (astRoot, astContainer, codeContainer) => {
+    const nodeElements = convertAstNodesToElements(astRoot);
     fillAstContainer(nodeElements, astContainer);
-    linkCodeToAstNodes(nodeElements, codeContainer);
+    linkCodeToAstNodes(astRoot, codeContainer);
     addEventListenersToAstNodes(nodeElements);
 };
 export { importCode, importAst };
