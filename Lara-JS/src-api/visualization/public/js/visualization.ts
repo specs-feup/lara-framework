@@ -3,16 +3,17 @@ const getElementsWithNodeId = (id: string): NodeListOf<HTMLElement> => {
 }
 
 const highlightElements = (elements: NodeListOf<HTMLElement>): void => {
-  elements.forEach(element => element.classList.add('highlighted'));
+  elements.forEach(element => element.style.backgroundColor = 'yellow');
 };
 
 const unhighlightElements = (elements: NodeListOf<HTMLElement>): void => {
-  elements.forEach(element => element.classList.remove('highlighted'));
+  elements.forEach(element => element.style.backgroundColor = '');
 }
 
 const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
   for (const nodeElement of nodes) {
     if (!nodeElement.dataset.nodeId) {
+      console.warn('Node element does not have a data-node-id attribute');
       continue;
     }
 
