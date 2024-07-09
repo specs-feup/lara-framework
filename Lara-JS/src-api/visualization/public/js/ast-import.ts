@@ -6,7 +6,7 @@ const convertAstNodesToElements = (root: JoinPoint, depth: number = 0): HTMLElem
 	const rootElement = document.createElement('span');
 	rootElement.classList.add('ast-node');
 	rootElement.dataset.nodeId = root.id;
-	rootElement.style.marginLeft = (depth * 2) + "em";
+	rootElement.style.marginLeft = (depth * 2) + 'em';
 	rootElement.textContent = root.type;
 
 	const nodeElements = [rootElement];
@@ -33,12 +33,21 @@ const addIdentation = (code: string, indentation: number): string => {
 const refineAst = (root: JoinPoint, indentation: number = 0): void => {
 	root.code = addIdentation(root.code.trim(), indentation);
 
-	if (root.type == "WhileStmt")
+	if (root.type == 'WhileStmt')
 		root.children[0].code = root.children[0].code.slice(0, -1);  // Remove semicolon from condition in while loop
-	if (root.type == "DoStmt")
+	if (root.type == 'DoStmt')
 		root.children[1].code = root.children[1].code.slice(0, -1);  // Remove semicolon from condition in do-while loop
-	if (root.type == "ForStmt" && root.children.length >= 3 && root.children[2].type == "ExprStmt")
+	if (root.type == 'ForStmt' && root.children.length >= 3 && root.children[2].type == 'ExprStmt')
 		root.children[2].code = root.children[2].code.slice(0, -1);  // Remove semicolon from increment expression in for loop
+
+	if (root.type == 'DeclStmt') {
+		root.children
+			.slice(1)
+			.forEach(child => {
+				child.code = child.code.match(/(?:\S+\s+)(\S.*)/)![1];
+			});  // Remove type from variable declarations
+	}
+
 
 	for (const child of root.children) {
 		refineAst(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
