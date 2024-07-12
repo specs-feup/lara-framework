@@ -107,11 +107,15 @@ export default class VisualizationTool {
         });
     }
     static toToolJpJson(jp) {
+        console.log(wrapJoinPoint(jp._javaObject.getAstName()), '=>', wrapJoinPoint(jp._javaObject.getLocation()));
         return {
             id: wrapJoinPoint(jp._javaObject.getAstId()),
             type: wrapJoinPoint(jp._javaObject.getAstName()),
             code: wrapJoinPoint(jp._javaObject.getCode()),
-            children: jp.children.map(child => this.toToolJpJson(child))
+            children: jp.children
+                .slice()
+                .sort((a, b) => wrapJoinPoint(a._javaObject.getLocation()).localeCompare(wrapJoinPoint(b._javaObject.getLocation()), 'en', { numeric: true }))
+                .map(child => this.toToolJpJson(child))
         };
     }
     static updateClient(ws) {
