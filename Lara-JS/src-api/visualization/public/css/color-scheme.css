@@ -1,0 +1,25 @@
+/* Generic colors */
+
+:root {
+  --white: #fff;
+  --lighter-gray: #e4e4e4;
+  --light-gray: #d4d4d4;
+  --gray: #a2a2a2;
+  --dark-gray: #313131;
+  --black: #000;
+  --light-blue: #19d8ff;
+  --transparent-light-blue: #19d8ff66;
+}
+
+:root {
+  --bg-color: var(--white);
+  --text-color: var(--dark-gray);
+  --header-color: var(--lighter-gray);
+  --divider-color: var(--light-gray);
+  --icon-color: var(--dark-gray);
+  --tab-bg-color: var(--white);
+  --tab-hover-bg-color: var(--lighter-gray);
+  --tab-active-bg-color: var(--light-gray);
+  --highlight-color: var(--light-blue);
+  --secondary-highlight-color: var(--transparent-light-blue);
+}
