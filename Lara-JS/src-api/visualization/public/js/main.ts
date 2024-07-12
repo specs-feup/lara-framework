@@ -1,8 +1,6 @@
 import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./communication.js";
 
 (() => {
-  const ws = getWebSocket();
-
   const astContainer = document.querySelector<HTMLElement>('#ast-container');
   const codeContainer = document.querySelector<HTMLElement>('#code-container');
   const continueButton = document.querySelector<HTMLButtonElement>('#continue-button');
@@ -12,6 +10,13 @@ import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./commu
     return;
   }
 
-  ws.addEventListener('message', event => webSocketOnMessage(event, continueButton, astContainer, codeContainer));
+  let ws: WebSocket;
+  const setupWebSocket = () => {
+    ws = getWebSocket();
+    ws.addEventListener('message', event => webSocketOnMessage(event, continueButton, astContainer, codeContainer));
+    ws.addEventListener('close', () => setupWebSocket());
+  };
+  setupWebSocket();
+
   continueButton.addEventListener('click', () => continueButtonOnClick(continueButton, ws));
 })();
