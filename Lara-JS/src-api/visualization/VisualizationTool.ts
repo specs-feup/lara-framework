@@ -139,7 +139,6 @@ export default class VisualizationTool {
   }
 
   private static toToolJpJson(jp: LaraJoinPoint): any {
-    console.log(wrapJoinPoint(jp._javaObject.getAstName()), '=>', wrapJoinPoint(jp._javaObject.getLocation()));
     return {
       id: wrapJoinPoint(jp._javaObject.getAstId()),
       type: wrapJoinPoint(jp._javaObject.getAstName()),
