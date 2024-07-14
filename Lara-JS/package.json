@@ -31,10 +31,6 @@
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "docs:api": "typedoc src-api --name api --tsconfig src-api/tsconfig.json --entryPointStrategy Expand --json docs/api.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
-    "docs:code": "typedoc src-code --name code --tsconfig src-code/tsconfig.json --entryPointStrategy Expand --json docs/code.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
-    "docs:merge": "typedoc --entryPointStrategy Merge --includeVersion --out docs docs/api.json docs/code.json",
-    "docs": "npm run docs:api && npm run docs:code && npm run docs:merge",
     "java-dist": "node scripts/java-dist.js --jsSourceFolder api --jsDestinationFolder ../LaraApi/src-lara/ --javaClassname LaraApiJsResource --javaPackageName pt.up.fe.specs.lara --javaDestinationFolder ../LaraApi/src-java/pt/up/fe/specs/lara/",
     "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
@@ -61,7 +57,7 @@
   },
   "dependencies": {
     "chokidar": "^3.6.0",
-    "debug": "^4.3.4",
+    "debug": "^4.3.5",
     "java": "^0.14.0",
     "supports-color": "^9.4.0",
     "yargs": "^17.7.2"
@@ -71,20 +67,18 @@
     "@types/debug": "^4.1.12",
     "@types/java": "^0.9.5",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.14.10",
     "@types/yargs": "^17.0.32",
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-jest": "^28.2.0",
+    "eslint-plugin-jest": "^28.6.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "jest": "^29.7.0",
     "node-notifier": "^10.0.1",
-    "ts-jest": "^29.1.2",
-    "typedoc": "^0.25.13",
-    "typedoc-plugin-merge-modules": "^5.1.0",
-    "typescript": "^5.4.5"
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.5.3"
   }
 }
