@@ -11,6 +11,8 @@
   --transparent-light-blue: #19d8ff66;
 }
 
+/* Color Scheme */
+
 :root {
   --bg-color: var(--white);
   --text-color: var(--dark-gray);
