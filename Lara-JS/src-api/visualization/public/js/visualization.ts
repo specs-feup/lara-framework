@@ -1,13 +1,19 @@
-const getElementsWithNodeId = (id: string): NodeListOf<HTMLElement> => {
-  return document.querySelectorAll(`span[data-node-id="${id}"]`);
+const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
+  return Array.from(document.querySelectorAll<HTMLElement>(`[data-node-id="${nodeId}"]`));
 }
 
-const highlightElements = (elements: NodeListOf<HTMLElement>): void => {
-  elements.forEach(element => element.style.backgroundColor = 'yellow');
-};
+const highlightNode = (nodeId: string): void => {
+  const elements = document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
+  for (const element of elements) {
+    element.style.backgroundColor = 'yellow';
+  }
+}
 
-const unhighlightElements = (elements: NodeListOf<HTMLElement>): void => {
-  elements.forEach(element => element.style.backgroundColor = '');
+const unhighlightNode = (nodeId: string): void => {
+  const elements = document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
+  for (const element of elements) {
+    element.style.backgroundColor = '';
+  }
 }
 
 const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
@@ -18,15 +24,15 @@ const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
     }
 
     const nodeId = nodeElement.dataset.nodeId!;
-    const nodeRelatedElements = getElementsWithNodeId(nodeId);
+    const nodeRelatedElements = getNodeRelatedElements(nodeId);
 
     for (const nodeRelatedElement of nodeRelatedElements) {
       nodeRelatedElement.addEventListener('mouseover', event => {
-        highlightElements(nodeRelatedElements);
+        highlightNode(nodeId);
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('mouseout', event => {
-        unhighlightElements(nodeRelatedElements);
+        unhighlightNode(nodeId);
         event.stopPropagation();
       });
     }

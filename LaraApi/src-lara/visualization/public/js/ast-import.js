@@ -1,11 +1,21 @@
-import { escapeHtml, replaceAfter } from './utils.js';
+import { createIcon, escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
+const createAstNodeElement = (nodeId, indentation, text) => {
+    const nodeElement = document.createElement('span');
+    nodeElement.classList.add('ast-node');
+    nodeElement.dataset.nodeId = nodeId;
+    nodeElement.style.marginLeft = (indentation * 2) + 'em';
+    const chevronDownUrl = '/svg/lucide-icons/chevron-down.svg';
+    const chevronIcon = createIcon(chevronDownUrl);
+    const nodeText = document.createElement('span');
+    nodeText.classList.add('ast-node-text');
+    nodeText.textContent = text;
+    nodeElement.appendChild(chevronIcon);
+    nodeElement.appendChild(nodeText);
+    return nodeElement;
+};
 const convertAstNodesToElements = (root, depth = 0) => {
-    const rootElement = document.createElement('span');
-    rootElement.classList.add('ast-node');
-    rootElement.dataset.nodeId = root.id;
-    rootElement.style.marginLeft = (depth * 2) + 'em';
-    rootElement.textContent = root.type;
+    const rootElement = createAstNodeElement(root.id, depth, root.type);
     const nodeElements = [rootElement];
     for (const node of root.children) {
         nodeElements.push(...convertAstNodesToElements(node, depth + 1));
