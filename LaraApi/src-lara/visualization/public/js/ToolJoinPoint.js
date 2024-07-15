@@ -1,4 +1,4 @@
-class ToolJoinPoint {
+export default class ToolJoinPoint {
     id;
     type;
     code;
@@ -17,5 +17,4 @@ class ToolJoinPoint {
     }
 }
 ;
-export default ToolJoinPoint;
 //# sourceMappingURL=ToolJoinPoint.js.map

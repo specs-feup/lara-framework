@@ -1,16 +1,14 @@
-import { createIcon, escapeHtml, replaceAfter } from './utils.js';
+import { createLucideIcon, escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
 
-const createAstNodeElement = (nodeId: string, indentation: number, text: string): HTMLSpanElement => {
+const createAstNodeElement = (nodeId: string, text: string): HTMLSpanElement => {
 	const nodeElement = document.createElement('span');
 	nodeElement.classList.add('ast-node');
 
 	nodeElement.dataset.nodeId = nodeId;
-	nodeElement.style.marginLeft = (indentation * 2) + 'em';
 
-	const chevronDownUrl = '/svg/lucide-icons/chevron-down.svg';
-	const chevronIcon = createIcon(chevronDownUrl);
+	const chevronIcon = createLucideIcon('chevron-down');
 
 	const nodeText = document.createElement('span');
 	nodeText.classList.add('ast-node-text');
@@ -22,25 +20,29 @@ const createAstNodeElement = (nodeId: string, indentation: number, text: string)
 	return nodeElement;
 }
 
-const convertAstNodesToElements = (root: JoinPoint, depth: number = 0): HTMLElement[] => {
-	const rootElement = createAstNodeElement(root.id, depth, root.type);
+const createAstNodeDropdown = (nodeId: string): HTMLDivElement => {
+	const dropdown = document.createElement('div');
+	dropdown.classList.add('ast-node-dropdown');
+	dropdown.dataset.nodeId = nodeId;
 
-	const nodeElements = [rootElement];
-	for (const node of root.children) {
-		nodeElements.push(...convertAstNodesToElements(node, depth + 1));
-	}
-
-	return nodeElements;
-};
-
-const fillAstContainer = (nodeElements: HTMLElement[], astContainer: HTMLElement): void => {
-	astContainer.innerHTML = '';
-
-	for (const nodeElement of nodeElements) {
-		astContainer.appendChild(nodeElement);
-		astContainer.appendChild(document.createElement('br'));
-	}
+	return dropdown;
 }
+
+const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
+	const rootElement = createAstNodeElement(root.id, root.type);
+	const rootDropdown = createAstNodeDropdown(root.id);
+
+	for (const node of root.children) {
+		const descendantNodeElements = convertAstNodeToHtml(node);
+		rootDropdown.appendChild(descendantNodeElements);
+	}
+
+	const fragment = new DocumentFragment();
+	fragment.appendChild(rootElement);
+	fragment.appendChild(rootDropdown);
+
+	return fragment;
+};
 
 const addIdentation = (code: string, indentation: number): string => {
 	return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
@@ -90,7 +92,6 @@ const linkCodeToAstNodes = (root: JoinPoint, codeContainer: HTMLElement, codeSta
 	nodeCodeWrapper.dataset.nodeId = root.id.toString();
 	nodeCodeWrapper.innerHTML = nodeCodeHtml;
 	codeContainer.innerHTML = replaceAfter(codeContainer.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
-  // TODO: Associate only the real match (this associates all code fragments that are identical to the node code)
 
 	const nodeCodeContainer = codeContainer.querySelector<HTMLElement>(`span.node-code[data-node-id="${root.id}"]`);
 	let nodeCodeLowerBound = 0;
@@ -110,10 +111,10 @@ const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer:
 	const refinedAstRoot = astRoot.clone();
 	refineAst(refinedAstRoot);
 
-  const nodeElements = convertAstNodesToElements(refinedAstRoot);
-  fillAstContainer(nodeElements, astContainer);
+  const astFragment = convertAstNodeToHtml(refinedAstRoot);
+  astContainer.appendChild(astFragment);
   linkCodeToAstNodes(refinedAstRoot, codeContainer);
-  addEventListenersToAstNodes(nodeElements);
+  addEventListenersToAstNodes(refinedAstRoot);
 }
 
 export { importCode, importAst };
