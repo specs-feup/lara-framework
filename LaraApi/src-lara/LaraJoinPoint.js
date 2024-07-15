@@ -10,6 +10,9 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 import JavaTypes from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
+    /**
+     * @hidden
+     */
     static _defaultAttributeInfo = {
         name: null,
     };

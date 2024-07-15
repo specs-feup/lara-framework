@@ -52,6 +52,9 @@ export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapp
 >;
 
 export class LaraJoinPoint {
+  /**
+   * @hidden
+   */
   static readonly _defaultAttributeInfo: {readonly map?: any, readonly name: string | null, readonly type?: any, readonly jpMapper?: any} = {
     name: null,
   };
