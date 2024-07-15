@@ -145,7 +145,7 @@ export default class VisualizationTool {
       code: wrapJoinPoint(jp._javaObject.getCode()),
       children: jp.children
         .slice()
-        .sort((a, b) => wrapJoinPoint(a._javaObject.getLocation()).localeCompare(wrapJoinPoint(b._javaObject.getLocation()), 'en', { numeric: true }))
+        .sort((a, b) => wrapJoinPoint(a._javaObject.getLocation()).localeCompare(wrapJoinPoint(b._javaObject.getLocation()), 'en', { numeric: true }))  // TODO: Perform sorting on frontend
         .map(child => this.toToolJpJson(child))
     };
   }

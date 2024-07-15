@@ -1,11 +1,17 @@
-const getElementsWithNodeId = (id) => {
-    return document.querySelectorAll(`span[data-node-id="${id}"]`);
+const getNodeRelatedElements = (nodeId) => {
+    return Array.from(document.querySelectorAll(`[data-node-id="${nodeId}"]`));
 };
-const highlightElements = (elements) => {
-    elements.forEach(element => element.style.backgroundColor = 'yellow');
+const highlightNode = (nodeId) => {
+    const elements = document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
+    for (const element of elements) {
+        element.style.backgroundColor = 'yellow';
+    }
 };
-const unhighlightElements = (elements) => {
-    elements.forEach(element => element.style.backgroundColor = '');
+const unhighlightNode = (nodeId) => {
+    const elements = document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
+    for (const element of elements) {
+        element.style.backgroundColor = '';
+    }
 };
 const addEventListenersToAstNodes = (nodes) => {
     for (const nodeElement of nodes) {
@@ -14,14 +20,14 @@ const addEventListenersToAstNodes = (nodes) => {
             continue;
         }
         const nodeId = nodeElement.dataset.nodeId;
-        const nodeRelatedElements = getElementsWithNodeId(nodeId);
+        const nodeRelatedElements = getNodeRelatedElements(nodeId);
         for (const nodeRelatedElement of nodeRelatedElements) {
             nodeRelatedElement.addEventListener('mouseover', event => {
-                highlightElements(nodeRelatedElements);
+                highlightNode(nodeId);
                 event.stopPropagation();
             });
             nodeRelatedElement.addEventListener('mouseout', event => {
-                unhighlightElements(nodeRelatedElements);
+                unhighlightNode(nodeId);
                 event.stopPropagation();
             });
         }

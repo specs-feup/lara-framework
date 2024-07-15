@@ -13,5 +13,11 @@ const replaceAfter = (text, search, replace, start) => {
     }
     return text.slice(0, index) + replace + text.slice(index + search.length);
 };
-export { escapeHtml, replaceAfter };
+const createIcon = (src) => {
+    const icon = document.createElement('img');
+    icon.classList.add('icon');
+    icon.src = src;
+    return icon;
+};
+export { escapeHtml, replaceAfter, createIcon };
 //# sourceMappingURL=utils.js.map

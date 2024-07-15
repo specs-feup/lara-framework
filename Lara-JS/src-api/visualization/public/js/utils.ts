@@ -16,4 +16,11 @@ const replaceAfter = (text: string, search: string, replace: string, start: numb
   return text.slice(0, index) + replace + text.slice(index + search.length);
 }
 
-export { escapeHtml, replaceAfter };
+const createIcon = (src: string): HTMLImageElement => {
+  const icon = document.createElement('img');
+  icon.classList.add('icon');
+  icon.src = src;
+  return icon;
+}
+
+export { escapeHtml, replaceAfter, createIcon };
