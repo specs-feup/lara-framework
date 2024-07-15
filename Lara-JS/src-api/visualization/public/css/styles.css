@@ -6,7 +6,7 @@ body {
   color: var(--text-color);
 
   display: grid;
-  grid-template-rows: 4em 1fr;
+  grid-template-rows: 4em calc(100vh - 4em);  /* To force the containers to not span beyond the window size */
 }
 
 .icon {
@@ -91,6 +91,9 @@ main {
   margin: 0;
   border: 1px solid var(--border-color);
   border-radius: 2px;
+
+  display: flex;
+  flex-direction: column;
 
   overflow: auto;
   user-select: none;
