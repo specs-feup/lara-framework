@@ -13,11 +13,12 @@ const replaceAfter = (text, search, replace, start) => {
     }
     return text.slice(0, index) + replace + text.slice(index + search.length);
 };
-const createIcon = (src) => {
+const createLucideIcon = (name) => {
     const icon = document.createElement('img');
     icon.classList.add('icon');
-    icon.src = src;
+    icon.src = `/svg/lucide-icons/${name}.svg`;
+    icon.alt = `${name}-icon`;
     return icon;
 };
-export { escapeHtml, replaceAfter, createIcon };
+export { escapeHtml, replaceAfter, createLucideIcon };
 //# sourceMappingURL=utils.js.map

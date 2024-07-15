@@ -16,11 +16,12 @@ const replaceAfter = (text: string, search: string, replace: string, start: numb
   return text.slice(0, index) + replace + text.slice(index + search.length);
 }
 
-const createIcon = (src: string): HTMLImageElement => {
+const createLucideIcon = (name: string): HTMLImageElement => {
   const icon = document.createElement('img');
   icon.classList.add('icon');
-  icon.src = src;
+  icon.src = `/svg/lucide-icons/${name}.svg`;
+  icon.alt = `${name}-icon`;
   return icon;
 }
 
-export { escapeHtml, replaceAfter, createIcon };
+export { escapeHtml, replaceAfter, createLucideIcon };

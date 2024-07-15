@@ -1,4 +1,4 @@
-class ToolJoinPoint {
+export default class ToolJoinPoint {
   id: string;
   type: string;
   code: string;
@@ -24,5 +24,3 @@ class ToolJoinPoint {
     return new ToolJoinPoint(this.id, this.type, this.code, this.children.map(child => child.clone()));
   }
 };
-
-export default ToolJoinPoint;

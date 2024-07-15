@@ -1,5 +1,7 @@
+import JoinPoint from "./ToolJoinPoint.js";
+
 const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
-  return Array.from(document.querySelectorAll<HTMLElement>(`[data-node-id="${nodeId}"]`));
+  return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 }
 
 const highlightNode = (nodeId: string): void => {
@@ -16,27 +18,22 @@ const unhighlightNode = (nodeId: string): void => {
   }
 }
 
-const addEventListenersToAstNodes = (nodes: HTMLElement[]): void => {
-  for (const nodeElement of nodes) {
-    if (!nodeElement.dataset.nodeId) {
-      console.warn('Node element does not have a data-node-id attribute');
-      continue;
-    }
+const addEventListenersToAstNodes = (root: JoinPoint): void => {
+  const nodeId = root.id;
+  const nodeRelatedElements = getNodeRelatedElements(nodeId);
 
-    const nodeId = nodeElement.dataset.nodeId!;
-    const nodeRelatedElements = getNodeRelatedElements(nodeId);
-
-    for (const nodeRelatedElement of nodeRelatedElements) {
-      nodeRelatedElement.addEventListener('mouseover', event => {
-        highlightNode(nodeId);
-        event.stopPropagation();
-      });
-      nodeRelatedElement.addEventListener('mouseout', event => {
-        unhighlightNode(nodeId);
-        event.stopPropagation();
-      });
-    }
+  for (const nodeRelatedElement of nodeRelatedElements) {
+    nodeRelatedElement.addEventListener('mouseover', event => {
+      highlightNode(nodeId);
+      event.stopPropagation();
+    });
+    nodeRelatedElement.addEventListener('mouseout', event => {
+      unhighlightNode(nodeId);
+      event.stopPropagation();
+    });
   }
+
+  root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 
 export { addEventListenersToAstNodes };
