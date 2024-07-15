@@ -1,5 +1,13 @@
 import JoinPoint from "./ToolJoinPoint.js";
 
+const getNodeElement = (nodeId: string): HTMLSpanElement | null => {
+  return document.querySelector<HTMLSpanElement>(`.ast-node[data-node-id="${nodeId}"]`);
+}
+
+const getNodeDropdown = (nodeId: string): HTMLDivElement | null => {
+  return document.querySelector<HTMLDivElement>(`.ast-node-dropdown[data-node-id="${nodeId}"]`);
+}
+
 const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
   return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 }
@@ -20,8 +28,18 @@ const unhighlightNode = (nodeId: string): void => {
 
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeId = root.id;
-  const nodeRelatedElements = getNodeRelatedElements(nodeId);
+  const nodeElement = getNodeElement(nodeId)!;
+  const [nodeChevron, nodeText] = nodeElement.children;
+  
+  const nodeDropdown = getNodeDropdown(nodeId)!;
+  let nodeCollapsed = false;
+  nodeChevron.addEventListener('click', event => {
+    nodeCollapsed = !nodeCollapsed;
+    nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
+    event.stopPropagation();
+  });
 
+  const nodeRelatedElements = getNodeRelatedElements(nodeId);
   for (const nodeRelatedElement of nodeRelatedElements) {
     nodeRelatedElement.addEventListener('mouseover', event => {
       highlightNode(nodeId);
