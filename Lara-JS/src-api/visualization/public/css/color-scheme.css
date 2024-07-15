@@ -17,8 +17,9 @@
   --bg-color: var(--white);
   --text-color: var(--dark-gray);
   --header-color: var(--lighter-gray);
-  --divider-color: var(--light-gray);
+  --divider-color: var(--gray);
   --icon-color: var(--dark-gray);
+  --button-bg-color: var(--white);
   --tab-bg-color: var(--white);
   --tab-hover-bg-color: var(--lighter-gray);
   --tab-active-bg-color: var(--light-gray);
