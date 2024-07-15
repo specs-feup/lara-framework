@@ -1,3 +1,9 @@
+const getNodeElement = (nodeId) => {
+    return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
+};
+const getNodeDropdown = (nodeId) => {
+    return document.querySelector(`.ast-node-dropdown[data-node-id="${nodeId}"]`);
+};
 const getNodeRelatedElements = (nodeId) => {
     return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 };
@@ -15,6 +21,15 @@ const unhighlightNode = (nodeId) => {
 };
 const addEventListenersToAstNodes = (root) => {
     const nodeId = root.id;
+    const nodeElement = getNodeElement(nodeId);
+    const [nodeChevron, nodeText] = nodeElement.children;
+    const nodeDropdown = getNodeDropdown(nodeId);
+    let nodeCollapsed = false;
+    nodeChevron.addEventListener('click', event => {
+        nodeCollapsed = !nodeCollapsed;
+        nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
+        event.stopPropagation();
+    });
     const nodeRelatedElements = getNodeRelatedElements(nodeId);
     for (const nodeRelatedElement of nodeRelatedElements) {
         nodeRelatedElement.addEventListener('mouseover', event => {
