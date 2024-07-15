@@ -1,5 +1,4 @@
 pre {
-  height: 80em;
   overflow: auto;
   border: 1px solid black;
   border-radius: 2px;
@@ -20,10 +19,18 @@ pre * {
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
+  height: 100vh;
   margin: 0;
 
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
+
+  display: grid;
+  grid-template-rows: 4em 1fr;
+}
+
+.icon {
+  color: var(--icon-color);
 }
 
 button {
@@ -38,9 +45,18 @@ button {
   cursor: pointer;
 }
 
+button .icon { 
+  width: 1.25em;
+  height: 1.25em;
+}
+
+pre {
+  height: 100%;
+  margin: 0;
+}
+
 
 header {
-  height: 3em;
   padding: 0.5em;
   background-color: var(--header-color);
   
@@ -60,31 +76,27 @@ header h1 {
 
 
 main {
-  margin: 1em 2em 2em;
+  padding: 1em 2em 2em;
   background-color: var(--bg-color);
 
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: min-content 1fr;
   grid-template-areas: "continue-button code"
                        "ast             code";
-  column-gap: 5em;
+  gap: 1em;
 }
+
 
 #continue-button {
   width: fit-content;
+
+  grid-area: continue-button;
 
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5em;
-
-  grid-area: continue-button;
-}
-
-#continue-button img {
-  width: 1.25em;
-  height: 1.25em;
-  color: var(--icon-color);
 }
 
 #ast {
