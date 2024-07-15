@@ -29,14 +29,17 @@ const unhighlightNode = (nodeId: string): void => {
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeId = root.id;
   const nodeElement = getNodeElement(nodeId)!;
-  const [nodeChevron, nodeText] = nodeElement.children;
+  const nodeDropdownButton = nodeElement.children[0] as HTMLButtonElement;
   
   const nodeDropdown = getNodeDropdown(nodeId)!;
   let nodeCollapsed = false;
-  nodeChevron.addEventListener('click', event => {
+
+  nodeDropdownButton.addEventListener('click', () => {
     nodeCollapsed = !nodeCollapsed;
     nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
-    event.stopPropagation();
+    
+    const chevron = nodeDropdownButton.children[0] as HTMLImageElement;
+    chevron.src = `/svg/lucide-icons/chevron-${nodeCollapsed ? 'right' : 'down'}.svg`;
   });
 
   const nodeRelatedElements = getNodeRelatedElements(nodeId);

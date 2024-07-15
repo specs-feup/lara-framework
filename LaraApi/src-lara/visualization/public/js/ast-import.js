@@ -4,11 +4,12 @@ const createAstNodeElement = (nodeId, text) => {
     const nodeElement = document.createElement('span');
     nodeElement.classList.add('ast-node');
     nodeElement.dataset.nodeId = nodeId;
-    const chevronIcon = createLucideIcon('chevron-down');
+    const chevronDropdownButton = document.createElement('button');
+    chevronDropdownButton.appendChild(createLucideIcon('chevron-down'));
     const nodeText = document.createElement('span');
     nodeText.classList.add('ast-node-text');
     nodeText.textContent = text;
-    nodeElement.appendChild(chevronIcon);
+    nodeElement.appendChild(chevronDropdownButton);
     nodeElement.appendChild(nodeText);
     return nodeElement;
 };
@@ -85,6 +86,7 @@ const importAst = (astRoot, astContainer, codeContainer) => {
     const refinedAstRoot = astRoot.clone();
     refineAst(refinedAstRoot);
     const astFragment = convertAstNodeToHtml(refinedAstRoot);
+    astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
     linkCodeToAstNodes(refinedAstRoot, codeContainer);
     addEventListenersToAstNodes(refinedAstRoot);
