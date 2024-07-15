@@ -22,13 +22,14 @@ const unhighlightNode = (nodeId) => {
 const addEventListenersToAstNodes = (root) => {
     const nodeId = root.id;
     const nodeElement = getNodeElement(nodeId);
-    const [nodeChevron, nodeText] = nodeElement.children;
+    const nodeDropdownButton = nodeElement.children[0];
     const nodeDropdown = getNodeDropdown(nodeId);
     let nodeCollapsed = false;
-    nodeChevron.addEventListener('click', event => {
+    nodeDropdownButton.addEventListener('click', () => {
         nodeCollapsed = !nodeCollapsed;
         nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
-        event.stopPropagation();
+        const chevron = nodeDropdownButton.children[0];
+        chevron.src = `/svg/lucide-icons/chevron-${nodeCollapsed ? 'right' : 'down'}.svg`;
     });
     const nodeRelatedElements = getNodeRelatedElements(nodeId);
     for (const nodeRelatedElement of nodeRelatedElements) {

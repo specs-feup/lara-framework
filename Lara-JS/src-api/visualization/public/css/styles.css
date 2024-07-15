@@ -122,9 +122,16 @@ main {
   gap: 0.25em
 }
 
-.ast-node .icon {
-  width: 1.25em;
+.ast-node button {
   height: 1.25em;
+  padding: 0;
+  background-color: var(--bg-color);
+  border: none;
+  border-radius: 50%;
+}
+
+.ast-node button > .icon {
+  height: 100%;
 }
 
 .ast-node-dropdown {
