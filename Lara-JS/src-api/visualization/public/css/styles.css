@@ -42,16 +42,6 @@ button .icon {
   height: 1.25em;
 }
 
-pre {
-  height: 100%;
-  margin: 0;
-  border: 1px solid var(--border-color);
-  border-radius: 2px;
-
-  overflow: auto;
-  user-select: none;
-}
-
 
 header {
   padding: 0.5em;
@@ -102,4 +92,15 @@ main {
 
 #code {
   grid-area: code;
+}
+
+
+.container {
+  height: 100%;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+
+  overflow: auto;
+  user-select: none;
 }
