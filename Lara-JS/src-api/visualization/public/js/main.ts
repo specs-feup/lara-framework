@@ -2,7 +2,7 @@ import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./commu
 
 (() => {
   const astContainer = document.querySelector<HTMLElement>('#ast-container');
-  const codeContainer = document.querySelector<HTMLElement>('#code-container');
+  const codeContainer = document.querySelector<HTMLElement>('#code-container code');
   const continueButton = document.querySelector<HTMLButtonElement>('#continue-button');
 
   if (!astContainer || !codeContainer || !continueButton) {

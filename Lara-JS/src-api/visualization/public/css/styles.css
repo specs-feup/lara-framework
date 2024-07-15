@@ -82,11 +82,11 @@ main {
   gap: 0.5em;
 }
 
-#ast {
+#ast-container {
   grid-area: ast;
 }
 
-#code {
+#code-container {
   grid-area: code;
 }
 
