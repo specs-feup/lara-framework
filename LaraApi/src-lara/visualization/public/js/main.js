@@ -1,7 +1,7 @@
 import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./communication.js";
 (() => {
     const astContainer = document.querySelector('#ast-container');
-    const codeContainer = document.querySelector('#code-container code');
+    const codeContainer = document.querySelector('#code-container');
     const continueButton = document.querySelector('#continue-button');
     if (!astContainer || !codeContainer || !continueButton) {
         console.error('Required elements not found');

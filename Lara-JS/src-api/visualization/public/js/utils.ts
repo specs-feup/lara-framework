@@ -16,6 +16,15 @@ const replaceAfter = (text: string, search: string, replace: string, start: numb
   return text.slice(0, index) + replace + text.slice(index + search.length);
 }
 
+const countChar = (str: string, char: string): number => {
+  let count = 0;
+  for (const c of str) {
+    if (c === char)
+      count++;
+  }
+  return count;
+}
+
 const createLucideIcon = (name: string): HTMLImageElement => {
   const icon = document.createElement('img');
   icon.classList.add('icon');
@@ -24,4 +33,4 @@ const createLucideIcon = (name: string): HTMLImageElement => {
   return icon;
 }
 
-export { escapeHtml, replaceAfter, createLucideIcon };
+export { escapeHtml, replaceAfter, countChar, createLucideIcon };
