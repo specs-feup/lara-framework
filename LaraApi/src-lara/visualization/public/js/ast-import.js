@@ -84,7 +84,7 @@ const importCode = (astRoot, codeContainer) => {
     codeContainer.querySelector('code').innerHTML = escapeHtml(trimedCode);
     const numLines = countChar(trimedCode, '\n') + 1;
     const codeLines = codeContainer.querySelector('.lines');
-    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+    codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 const importAst = (astRoot, astContainer, codeContainer) => {
     const refinedAstRoot = astRoot.clone();

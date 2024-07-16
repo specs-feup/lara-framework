@@ -147,16 +147,18 @@ main {
 
 
 #code-container {
-  font-family: "JetBrains Mono", monospace;
-  font-optical-sizing: auto;
-
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1em;
 }
 
-#code-container code {
-  font-family: inherit;
+#code-container pre {
+  margin: 0;
+}
+
+#code-container .lines, #code-container code {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
 }
 
 #code-container .lines {

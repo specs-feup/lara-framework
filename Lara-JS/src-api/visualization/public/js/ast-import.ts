@@ -109,8 +109,8 @@ const importCode = (astRoot: JoinPoint, codeContainer: HTMLElement): void => {
   codeContainer.querySelector('code')!.innerHTML = escapeHtml(trimedCode);
 	
 	const numLines = countChar(trimedCode, '\n') + 1;
-	const codeLines = codeContainer.querySelector('.lines')!;
-	codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+	const codeLines = codeContainer.querySelector<HTMLElement>('.lines')!;
+	codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
 
 const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
