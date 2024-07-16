@@ -25,11 +25,26 @@ button {
   font-family: inherit;
 
   cursor: pointer;
+
+  transition: background-color 0.1s linear, color 0.1s linear;
 }
 
-button .icon { 
-  width: 1.25em;
-  height: 1.25em;
+button .icon {
+  color: var(--icon-color);
+}
+
+button:hover {
+  background-color: var(--button-hover-bg-color);
+}
+
+button:disabled {
+  background-color: var(--button-disabled-bg-color);
+  color: var(--button-disabled-text-color);
+  cursor: not-allowed;
+}
+
+button:disabled .icon {
+  color: var(--button-disabled-icon-color);
 }
 
 
@@ -112,7 +127,6 @@ main {
 }
 
 .ast-node {
-  padding-top: 0.25em;
   width: min-content;
 
   font-weight: 500;
@@ -124,15 +138,11 @@ main {
 }
 
 .ast-node button {
-  height: 1.25em;
+  height: 1.5em;
   padding: 0;
   background-color: var(--bg-color);
   border: none;
   border-radius: 50%;
-}
-
-.ast-node button > .icon {
-  height: 100%;
 }
 
 .ast-node-dropdown {

@@ -1,11 +1,11 @@
-import { countChar, createLucideIcon, escapeHtml, replaceAfter } from './utils.js';
+import { countChar, createIcon, escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 const createAstNodeElement = (nodeId, text) => {
     const nodeElement = document.createElement('span');
     nodeElement.classList.add('ast-node');
     nodeElement.dataset.nodeId = nodeId;
     const chevronDropdownButton = document.createElement('button');
-    chevronDropdownButton.appendChild(createLucideIcon('chevron-down'));
+    chevronDropdownButton.appendChild(createIcon('keyboard_arrow_down'));
     const nodeText = document.createElement('span');
     nodeText.classList.add('ast-node-text');
     nodeText.textContent = text;

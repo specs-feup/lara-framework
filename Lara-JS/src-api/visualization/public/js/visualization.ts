@@ -38,8 +38,8 @@ const addEventListenersToAstNodes = (root: JoinPoint): void => {
     nodeCollapsed = !nodeCollapsed;
     nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
     
-    const chevron = nodeDropdownButton.children[0] as HTMLImageElement;
-    chevron.src = `/svg/lucide-icons/chevron-${nodeCollapsed ? 'right' : 'down'}.svg`;
+    const chevron = nodeDropdownButton.children[0] as HTMLElement;
+    chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
   });
 
   const nodeRelatedElements = getNodeRelatedElements(nodeId);
