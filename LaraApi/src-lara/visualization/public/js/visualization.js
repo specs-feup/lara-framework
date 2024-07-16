@@ -8,15 +8,31 @@ const getNodeRelatedElements = (nodeId) => {
     return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 };
 const highlightNode = (nodeId) => {
-    const elements = document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
-    for (const element of elements) {
-        element.style.backgroundColor = 'yellow';
+    const nodeCode = document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
+    if (nodeCode)
+        nodeCode.style.backgroundColor = 'var(--highlight-color)';
+    const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
+    const nodeText = nodeElement.querySelector('.ast-node-text');
+    nodeText.style.backgroundColor = 'var(--highlight-color)';
+    let parentNode = nodeElement.parentElement?.previousSibling;
+    while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
+        const parentNodeText = parentNode.querySelector('.ast-node-text');
+        parentNodeText.style.backgroundColor = 'var(--secondary-highlight-color)';
+        parentNode = parentNode.parentElement?.previousSibling;
     }
 };
 const unhighlightNode = (nodeId) => {
-    const elements = document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`);
-    for (const element of elements) {
-        element.style.backgroundColor = '';
+    const nodeCode = document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
+    if (nodeCode)
+        nodeCode.style.backgroundColor = '';
+    const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
+    const nodeText = nodeElement.querySelector('.ast-node-text');
+    nodeText.style.backgroundColor = '';
+    let parentNode = nodeElement.parentElement?.previousSibling;
+    while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
+        const parentNodeText = parentNode.querySelector('.ast-node-text');
+        parentNodeText.style.backgroundColor = '';
+        parentNode = parentNode.parentElement?.previousSibling;
     }
 };
 const addEventListenersToAstNodes = (root) => {

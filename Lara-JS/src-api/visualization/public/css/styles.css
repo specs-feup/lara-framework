@@ -116,10 +116,6 @@ main {
   -webkit-user-select: none;
 }
 
-.container * {
-  transition: background-color 0.05s linear;
-}
-
 
 #ast-container {
   font-weight: 500;
