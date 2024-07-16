@@ -118,6 +118,7 @@ export default class VisualizationTool {
         };
     }
     static updateClient(ws) {
+        wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());
         this.sendToClient(ws, { message: 'update', ast: this.toToolJpJson(JoinPoints.root()) });
     }
     static update() {
