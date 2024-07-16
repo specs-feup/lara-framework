@@ -29,7 +29,7 @@ const addEventListenersToAstNodes = (root) => {
         nodeCollapsed = !nodeCollapsed;
         nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
         const chevron = nodeDropdownButton.children[0];
-        chevron.src = `/svg/lucide-icons/chevron-${nodeCollapsed ? 'right' : 'down'}.svg`;
+        chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
     });
     const nodeRelatedElements = getNodeRelatedElements(nodeId);
     for (const nodeRelatedElement of nodeRelatedElements) {

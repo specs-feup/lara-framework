@@ -21,12 +21,11 @@ const countChar = (str, char) => {
     }
     return count;
 };
-const createLucideIcon = (name) => {
-    const icon = document.createElement('img');
-    icon.classList.add('icon');
-    icon.src = `/svg/lucide-icons/${name}.svg`;
-    icon.alt = `${name}-icon`;
+const createIcon = (name) => {
+    const icon = document.createElement('span');
+    icon.classList.add('icon', 'material-symbols-outlined');
+    icon.textContent = name;
     return icon;
 };
-export { escapeHtml, replaceAfter, countChar, createLucideIcon };
+export { escapeHtml, replaceAfter, countChar, createIcon };
 //# sourceMappingURL=utils.js.map

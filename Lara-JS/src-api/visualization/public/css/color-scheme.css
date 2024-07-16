@@ -19,7 +19,13 @@
   --header-color: var(--lighter-gray);
   --border-color: var(--gray);
   --icon-color: var(--dark-gray);
+
   --button-bg-color: var(--white);
+  --button-hover-bg-color: var(--lighter-gray);
+  --button-disabled-bg-color: var(--lighter-gray);
+  --button-disabled-text-color: var(--gray);
+  --button-disabled-icon-color: var(--gray);
+
   --tab-bg-color: var(--white);
   --tab-hover-bg-color: var(--lighter-gray);
   --tab-active-bg-color: var(--light-gray);

@@ -25,12 +25,12 @@ const countChar = (str: string, char: string): number => {
   return count;
 }
 
-const createLucideIcon = (name: string): HTMLImageElement => {
-  const icon = document.createElement('img');
-  icon.classList.add('icon');
-  icon.src = `/svg/lucide-icons/${name}.svg`;
-  icon.alt = `${name}-icon`;
+const createIcon = (name: string): HTMLElement => {
+  const icon = document.createElement('span');
+  icon.classList.add('icon', 'material-symbols-outlined');
+  icon.textContent = name;
+  
   return icon;
 }
 
-export { escapeHtml, replaceAfter, countChar, createLucideIcon };
+export { escapeHtml, replaceAfter, countChar, createIcon };
