@@ -88,6 +88,7 @@ main {
 .container {
   box-sizing: border-box;
   height: 100%;
+  padding: 0.25em 0.5em;
   margin: 0;
   border: 1px solid var(--border-color);
   border-radius: 2px;
@@ -106,8 +107,6 @@ main {
 
 
 #ast-container {
-  padding: 0.25em 0.5em;
-
   font-weight: 500;
   line-height: 1.25em;
 }
@@ -138,4 +137,22 @@ main {
 
 .ast-node-dropdown {
   padding-left: 2em;
+}
+
+
+#code-container {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+}
+
+#code-container code {
+  font-family: inherit;
+}
+
+#code-container .lines {
+  color: var(--line-num-color);
 }

@@ -1,4 +1,4 @@
-import { createLucideIcon, escapeHtml, replaceAfter } from './utils.js';
+import { countChar, createLucideIcon, escapeHtml, replaceAfter } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 const createAstNodeElement = (nodeId, text) => {
     const nodeElement = document.createElement('span');
@@ -53,7 +53,7 @@ const refineAst = (root, indentation = 0) => {
         refineAst(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
     }
 };
-const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
+const linkCodeToAstNodes = (root, codeElement, codeStart = 0) => {
     const nodeElement = document.querySelector(`span.ast-node[data-node-id="${root.id}"]`);
     if (nodeElement == null) {
         console.warn(`Node element not found: "${root.id}"`);
@@ -61,17 +61,17 @@ const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
     }
     const nodeCode = root.code.trim();
     const nodeCodeHtml = escapeHtml(nodeCode);
-    const nodeCodeStart = codeContainer.innerHTML.indexOf(nodeCodeHtml, codeStart);
+    const nodeCodeStart = codeElement.innerHTML.indexOf(nodeCodeHtml, codeStart);
     if (nodeCodeStart === -1) {
         console.warn(`Node code not found in code container: "${nodeCodeHtml}"`);
         return 0;
     }
     const nodeCodeWrapper = document.createElement('span');
     nodeCodeWrapper.classList.add('node-code');
-    nodeCodeWrapper.dataset.nodeId = root.id.toString();
+    nodeCodeWrapper.dataset.nodeId = root.id;
     nodeCodeWrapper.innerHTML = nodeCodeHtml;
-    codeContainer.innerHTML = replaceAfter(codeContainer.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
-    const nodeCodeContainer = codeContainer.querySelector(`span.node-code[data-node-id="${root.id}"]`);
+    codeElement.innerHTML = replaceAfter(codeElement.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
+    const nodeCodeContainer = codeElement.querySelector(`span.node-code[data-node-id="${root.id}"]`);
     let nodeCodeLowerBound = 0;
     for (const child of root.children) {
         nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer, nodeCodeLowerBound);
@@ -80,7 +80,11 @@ const linkCodeToAstNodes = (root, codeContainer, codeStart = 0) => {
     return codeEnd;
 };
 const importCode = (astRoot, codeContainer) => {
-    codeContainer.innerHTML = escapeHtml(astRoot.code);
+    const trimedCode = astRoot.code.trim();
+    codeContainer.querySelector('code').innerHTML = escapeHtml(trimedCode);
+    const numLines = countChar(trimedCode, '\n') + 1;
+    const codeLines = codeContainer.querySelector('.lines');
+    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 const importAst = (astRoot, astContainer, codeContainer) => {
     const refinedAstRoot = astRoot.clone();
@@ -88,7 +92,7 @@ const importAst = (astRoot, astContainer, codeContainer) => {
     const astFragment = convertAstNodeToHtml(refinedAstRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
-    linkCodeToAstNodes(refinedAstRoot, codeContainer);
+    linkCodeToAstNodes(refinedAstRoot, codeContainer.querySelector('code'));
     addEventListenersToAstNodes(refinedAstRoot);
 };
 export { importCode, importAst };

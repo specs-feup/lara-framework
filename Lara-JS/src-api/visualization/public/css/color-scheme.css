@@ -23,6 +23,9 @@
   --tab-bg-color: var(--white);
   --tab-hover-bg-color: var(--lighter-gray);
   --tab-active-bg-color: var(--light-gray);
+
   --highlight-color: var(--light-blue);
   --secondary-highlight-color: var(--transparent-light-blue);
+
+  --line-num-color: var(--gray);
 }
