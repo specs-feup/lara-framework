@@ -151,6 +151,7 @@ export default class VisualizationTool {
   }
 
   private static updateClient(ws: WebSocket): void {
+    wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());
     this.sendToClient(ws, { message: 'update', ast: this.toToolJpJson(JoinPoints.root()) });
   }
 
