@@ -37,12 +37,12 @@ const addIdentation = (code, indentation) => {
 const refineAst = (root, indentation = 0) => {
     root.code = addIdentation(root.code.trim(), indentation);
     const children = root.children;
-    if (['WhileStmt', 'DoStmt', 'ForStmt'].includes(root.type)) {
+    if (root.type == 'loop') {
         children
-            .filter(child => child.type === 'ExprStmt')
+            .filter(child => child.type === 'exprStmt')
             .forEach(child => child.code = child.code.slice(0, -1)); // Remove semicolon from expression statements inside loop parentheses
     }
-    if (root.type == 'DeclStmt') {
+    if (root.type == 'declStmt') {
         root.children
             .slice(1)
             .forEach(child => {
@@ -50,7 +50,7 @@ const refineAst = (root, indentation = 0) => {
         }); // Remove type from variable declarations
     }
     for (const child of root.children) {
-        refineAst(child, root.type === 'CompoundStmt' ? indentation + 1 : indentation);
+        refineAst(child, ['body', 'class'].includes(root.type) ? indentation + 1 : indentation);
     }
 };
 const linkCodeToAstNodes = (root, codeElement, codeStart = 0) => {
