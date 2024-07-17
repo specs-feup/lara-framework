@@ -84,6 +84,9 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
+    const CxxWeaverOptions = java.import(
+      "pt.up.fe.specs.clava.weaver.options.CxxWeaverOption"
+    );
     const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
@@ -130,6 +133,7 @@ export class Weaver {
           LaraiKeys.WORKSPACE_FOLDER,
           JavaFileList.newInstance(fileList)
         );
+        datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
     }
 
 
