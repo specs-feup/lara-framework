@@ -109,7 +109,7 @@ export default class VisualizationTool {
     static toToolJpJson(jp) {
         return {
             id: wrapJoinPoint(jp._javaObject.getAstId()),
-            type: wrapJoinPoint(jp._javaObject.getAstName()),
+            type: wrapJoinPoint(jp._javaObject.getJoinPointType()),
             code: wrapJoinPoint(jp._javaObject.getCode()),
             children: jp.children
                 .slice()
