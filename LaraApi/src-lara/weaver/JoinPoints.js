@@ -43,22 +43,15 @@ export default class JoinPoints {
      *
      * @returns all the descendants of the given node, in post order
      */
-    static _all_descendants_postorder($jp) {
-        const descendants = [];
+    static _all_descendants_postorder($jp, includeSelf = false) {
+        const result = [];
         for (const child of JoinPoints._all_children($jp)) {
-            const result = JoinPoints._all_descendants_postorder_helper($jp);
-            descendants.push(...result);
+            result.push(...JoinPoints._all_descendants_postorder(child, true));
         }
-        return descendants;
-    }
-    static _all_descendants_postorder_helper($jp) {
-        const nodes = [];
-        for (const child of JoinPoints._all_children($jp)) {
-            const postorderDescendants = JoinPoints._all_descendants_postorder_helper(child);
-            nodes.push(...postorderDescendants);
+        if (includeSelf) {
+            result.push($jp);
         }
-        nodes.push($jp);
-        return nodes;
+        return result;
     }
     /**
      *

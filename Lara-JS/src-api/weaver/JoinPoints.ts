@@ -50,32 +50,20 @@ export default class JoinPoints {
    * @returns all the descendants of the given node, in post order
    */
   private static _all_descendants_postorder(
-    $jp: LaraJoinPoint
+    $jp: LaraJoinPoint,
+    includeSelf: boolean = false
   ): LaraJoinPoint[] {
-    const descendants: LaraJoinPoint[] = [];
+    const result: LaraJoinPoint[] = [];
 
     for (const child of JoinPoints._all_children($jp)) {
-      const result = JoinPoints._all_descendants_postorder_helper($jp);
-      descendants.push(...result);
+        result.push(...JoinPoints._all_descendants_postorder(child, true));
     }
 
-    return descendants;
-  }
-
-  private static _all_descendants_postorder_helper(
-    $jp: LaraJoinPoint
-  ): LaraJoinPoint[] {
-    const nodes: LaraJoinPoint[] = [];
-
-    for (const child of JoinPoints._all_children($jp)) {
-      const postorderDescendants =
-        JoinPoints._all_descendants_postorder_helper(child);
-      nodes.push(...postorderDescendants);
+    if (includeSelf) {
+      result.push($jp);
     }
 
-    nodes.push($jp);
-
-    return nodes;
+    return result;
   }
 
   /**
