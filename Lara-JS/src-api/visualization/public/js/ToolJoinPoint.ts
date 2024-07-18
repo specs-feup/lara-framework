@@ -1,13 +1,11 @@
 export default class ToolJoinPoint {
   id: string;
   type: string;
-  code: string;
   children: ToolJoinPoint[];
 
-  constructor(id: string, type: string, code: string, children: ToolJoinPoint[]) {
+  constructor(id: string, type: string, children: ToolJoinPoint[]) {
     this.id = id;
     this.type = type;
-    this.code = code;
     this.children = children;
   }
 
@@ -15,7 +13,6 @@ export default class ToolJoinPoint {
     return new ToolJoinPoint(
       json.id,
       json.type,
-      json.code,
       json.children.map((child: any) => ToolJoinPoint.fromJson(child)),
     );
   }
@@ -24,12 +21,11 @@ export default class ToolJoinPoint {
     return {
       id: this.id,
       type: this.type,
-      code: this.code,
       children: this.children.map(child => child.toJson()),
     };
   }
 
   public clone(): ToolJoinPoint {
-    return new ToolJoinPoint(this.id, this.type, this.code, this.children.map(child => child.clone()));
+    return new ToolJoinPoint(this.id, this.type, this.children.map(child => child.clone()));
   }
 };
