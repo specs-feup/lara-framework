@@ -11,13 +11,22 @@ export default class ToolJoinPoint {
     this.children = children;
   }
 
-  public static fromJSON(json: any): ToolJoinPoint {
+  public static fromJson(json: any): ToolJoinPoint {
     return new ToolJoinPoint(
       json.id,
       json.type,
       json.code,
-      json.children.map((child: any) => ToolJoinPoint.fromJSON(child)),
+      json.children.map((child: any) => ToolJoinPoint.fromJson(child)),
     );
+  }
+
+  public toJson(): any {
+    return {
+      id: this.id,
+      type: this.type,
+      code: this.code,
+      children: this.children.map(child => child.toJson()),
+    };
   }
 
   public clone(): ToolJoinPoint {
