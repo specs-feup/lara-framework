@@ -31,28 +31,6 @@ const convertAstNodeToHtml = (root) => {
     fragment.appendChild(rootDropdown);
     return fragment;
 };
-const addIdentation = (code, indentation) => {
-    return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
-};
-const refineAst = (root, indentation = 0) => {
-    root.code = addIdentation(root.code.trim(), indentation);
-    const children = root.children;
-    if (root.type == 'loop') {
-        children
-            .filter(child => child.type === 'exprStmt')
-            .forEach(child => child.code = child.code.slice(0, -1)); // Remove semicolon from expression statements inside loop parentheses
-    }
-    if (root.type == 'declStmt') {
-        root.children
-            .slice(1)
-            .forEach(child => {
-            child.code = child.code.match(/(?:\S+\s+)(\S.*)/)[1];
-        }); // Remove type from variable declarations
-    }
-    for (const child of root.children) {
-        refineAst(child, ['body', 'class'].includes(root.type) ? indentation + 1 : indentation);
-    }
-};
 const linkCodeToAstNodes = (root, codeElement, codeStart = 0) => {
     const nodeElement = document.querySelector(`span.ast-node[data-node-id="${root.id}"]`);
     if (nodeElement == null) {
@@ -87,13 +65,12 @@ const importCode = (astRoot, codeContainer) => {
     codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 const importAst = (astRoot, astContainer, codeContainer) => {
-    const refinedAstRoot = astRoot.clone();
-    refineAst(refinedAstRoot);
-    const astFragment = convertAstNodeToHtml(refinedAstRoot);
+    const astFragment = convertAstNodeToHtml(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
-    linkCodeToAstNodes(refinedAstRoot, codeContainer.querySelector('code'));
-    addEventListenersToAstNodes(refinedAstRoot);
+    
+    linkCodeToAstNodes(astRoot, codeContainer.querySelector('code'));
+    addEventListenersToAstNodes(astRoot);
 };
 export { importCode, importAst };
 //# sourceMappingURL=ast-import.js.map
