@@ -8,9 +8,8 @@ const getNodeRelatedElements = (nodeId) => {
     return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 };
 const highlightNode = (nodeId) => {
-    const nodeCode = document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
-    if (nodeCode)
-        nodeCode.style.backgroundColor = 'var(--highlight-color)';
+    const nodeCode = document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`);
+    nodeCode.forEach(elem => elem.style.backgroundColor = 'var(--highlight-color)');
     const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
     const nodeText = nodeElement.querySelector('.ast-node-text');
     nodeText.style.backgroundColor = 'var(--highlight-color)';
@@ -22,9 +21,8 @@ const highlightNode = (nodeId) => {
     }
 };
 const unhighlightNode = (nodeId) => {
-    const nodeCode = document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
-    if (nodeCode)
-        nodeCode.style.backgroundColor = '';
+    const nodeCode = document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`);
+    nodeCode.forEach(elem => elem.style.backgroundColor = '');
     const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
     const nodeText = nodeElement.querySelector('.ast-node-text');
     nodeText.style.backgroundColor = '';
