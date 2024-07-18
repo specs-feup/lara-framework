@@ -1,4 +1,4 @@
-import { countChar, createIcon, escapeHtml, replaceAfter } from './utils.js';
+import { countChar, createIcon, } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
 
@@ -45,42 +45,10 @@ const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 	return fragment;
 };
 
-const linkCodeToAstNodes = (root: JoinPoint, codeElement: HTMLElement, codeStart: number = 0): number => {
-	const nodeElement = document.querySelector<HTMLElement>(`span.ast-node[data-node-id="${root.id}"]`);
-	if (nodeElement == null) {
-		console.warn(`Node element not found: "${root.id}"`);
-		return 0;
-	}
-
-	const nodeCode = root.code.trim();
-	const nodeCodeHtml = escapeHtml(nodeCode);
-	const nodeCodeStart = codeElement.innerHTML.indexOf(nodeCodeHtml, codeStart);
-	if (nodeCodeStart === -1) {
-		console.warn(`Node code not found in code container: "${nodeCodeHtml}"`);
-		return 0;
-	}
-
-	const nodeCodeWrapper = document.createElement('span');
-	nodeCodeWrapper.classList.add('node-code');
-	nodeCodeWrapper.dataset.nodeId = root.id;
-	nodeCodeWrapper.innerHTML = nodeCodeHtml;
-	codeElement.innerHTML = replaceAfter(codeElement.innerHTML, nodeCodeHtml, nodeCodeWrapper.outerHTML, codeStart);
-
-	const nodeCodeContainer = codeElement.querySelector<HTMLElement>(`span.node-code[data-node-id="${root.id}"]`);
-	let nodeCodeLowerBound = 0;
-	for (const child of root.children) {
-		nodeCodeLowerBound = linkCodeToAstNodes(child, nodeCodeContainer!, nodeCodeLowerBound);
-	}
-
-	const codeEnd = nodeCodeStart + nodeCodeContainer!.outerHTML.length;
-	return codeEnd;
-}
-
-const importCode = (astRoot: JoinPoint, codeContainer: HTMLElement): void => {
-	const trimedCode = astRoot.code.trim();
-  codeContainer.querySelector('code')!.innerHTML = escapeHtml(trimedCode);
+const importCode = (code: string, codeContainer: HTMLElement): void => {
+  codeContainer.querySelector('code')!.innerHTML = code;
 	
-	const numLines = countChar(trimedCode, '\n') + 1;
+	const numLines = countChar(code, '\n') + 1;
 	const codeLines = codeContainer.querySelector<HTMLElement>('.lines')!;
 	codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
@@ -90,7 +58,6 @@ const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer:
 	astContainer.innerHTML = '';
   astContainer.appendChild(astFragment);
 
-  linkCodeToAstNodes(astRoot, codeContainer.querySelector('code')!);
   addEventListenersToAstNodes(astRoot);
 }
 
