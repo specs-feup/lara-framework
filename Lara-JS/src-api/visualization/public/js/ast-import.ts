@@ -45,34 +45,6 @@ const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 	return fragment;
 };
 
-const addIdentation = (code: string, indentation: number): string => {
-	return code.split('\n').map((line, i) => i > 0 ? '   '.repeat(indentation) + line : line).join('\n');
-}
-
-const refineAst = (root: JoinPoint, indentation: number = 0): void => {
-	root.code = addIdentation(root.code.trim(), indentation);
-
-	const children = root.children;
-	if (root.type == 'loop') {
-		children
-			.filter(child => child.type === 'exprStmt')
-			.forEach(child => child.code = child.code.slice(0, -1));	// Remove semicolon from expression statements inside loop parentheses
-	}
-
-	if (root.type == 'declStmt') {
-		root.children
-			.slice(1)
-			.forEach(child => {
-				child.code = child.code.match(/(?:\S+\s+)(\S.*)/)![1];
-			});  // Remove type from variable declarations
-	}
-
-
-	for (const child of root.children) {
-		refineAst(child, ['body', 'class'].includes(root.type) ? indentation + 1 : indentation);
-	}
-}
-
 const linkCodeToAstNodes = (root: JoinPoint, codeElement: HTMLElement, codeStart: number = 0): number => {
 	const nodeElement = document.querySelector<HTMLElement>(`span.ast-node[data-node-id="${root.id}"]`);
 	if (nodeElement == null) {
@@ -114,15 +86,12 @@ const importCode = (astRoot: JoinPoint, codeContainer: HTMLElement): void => {
 }
 
 const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
-	const refinedAstRoot = astRoot.clone();
-	refineAst(refinedAstRoot);
-
-  const astFragment = convertAstNodeToHtml(refinedAstRoot);
+  const astFragment = convertAstNodeToHtml(astRoot);
 	astContainer.innerHTML = '';
   astContainer.appendChild(astFragment);
 
-  linkCodeToAstNodes(refinedAstRoot, codeContainer.querySelector('code')!);
-  addEventListenersToAstNodes(refinedAstRoot);
+  linkCodeToAstNodes(astRoot, codeContainer.querySelector('code')!);
+  addEventListenersToAstNodes(astRoot);
 }
 
 export { importCode, importAst };
