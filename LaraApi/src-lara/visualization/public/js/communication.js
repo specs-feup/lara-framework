@@ -14,7 +14,7 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
     const data = parseMessage(message);
     switch (data.message) {
         case 'update':
-            const ast = JoinPoint.fromJSON(data.ast);
+            const ast = JoinPoint.fromJson(data.ast);
             importCode(ast, codeContainer);
             importAst(ast, astContainer, codeContainer);
             break;

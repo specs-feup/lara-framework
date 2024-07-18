@@ -2,32 +2,33 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import WebSocket, { WebSocketServer, MessageEvent } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import { AddressInfo } from 'net';
 
-import { LaraJoinPoint, wrapJoinPoint } from '../LaraJoinPoint.js';
+import { wrapJoinPoint } from '../LaraJoinPoint.js';
 import JoinPoints from '../weaver/JoinPoints.js';
+import GenericAstConverter from './GenericAstConverter.js';
 
 
-export default class VisualizationTool {
-  private static hostname: string | undefined;
-  private static port: number | undefined;
-  private static wss: WebSocketServer | undefined;
-  private static serverClosed: boolean = false;
+export default abstract class GenericVisualizationTool {
+  private hostname: string | undefined;
+  private port: number | undefined;
+  private wss: WebSocketServer | undefined;
+  private serverClosed: boolean = false;
 
-  public static isLaunched(): boolean {
+  public isLaunched(): boolean {
     return this.wss !== undefined && this.serverClosed === false;
   }
 
-  public static getHostname(): string | undefined {
+  public getHostname(): string | undefined {
     return this.hostname;
   }
 
-  public static getPort(): number | undefined {
+  public getPort(): number | undefined {
     return this.port;
   }
 
-  private static onWssError(error: NodeJS.ErrnoException): void {
+  private onWssError(error: NodeJS.ErrnoException): void {
     switch (error.code) {
       case 'EADDRINUSE':
         console.error(`[server]: Port ${this.port} is already in use`);
@@ -45,7 +46,7 @@ export default class VisualizationTool {
     this.wss!.close();
   }
 
-  public static async launch(hostname: string = '127.0.0.1', port?: number): Promise<void> {
+  public async launch(hostname: string = '127.0.0.1', port?: number): Promise<void> {
     if (this.isLaunched()) {
       console.warn(`Visualization tool is already running at http://${this.hostname}:${this.port}`);
       return;
@@ -95,21 +96,21 @@ export default class VisualizationTool {
     });
   }
 
-  private static sendToClient(ws: WebSocket, data: any): void {
+  private sendToClient(ws: WebSocket, data: any): void {
     ws.send(JSON.stringify(data));
   }
 
-  private static sendToAllClients(data: any): void {
+  private sendToAllClients(data: any): void {
     this.wss!.clients.forEach(ws => this.sendToClient(ws, data));
   }
 
-  private static verifyToolIsRunning(): void {
+  private verifyToolIsRunning(): void {
     if (!this.isLaunched()) {
       throw Error('Visualization tool is not running');
     }
   }
 
-  public static async waitForTool(): Promise<void> {
+  public async waitForTool(): Promise<void> {
     this.verifyToolIsRunning();
 
     return new Promise(res => {
@@ -138,25 +139,22 @@ export default class VisualizationTool {
     });
   }
 
-  private static toToolJpJson(jp: LaraJoinPoint): any {
-    return {
-      id: wrapJoinPoint(jp._javaObject.getAstId()),
-      type: wrapJoinPoint(jp._javaObject.getJoinPointType()),
-      code: wrapJoinPoint(jp._javaObject.getCode()),
-      children: jp.children
-        .slice()
-        .sort((a, b) => wrapJoinPoint(a._javaObject.getLocation()).localeCompare(wrapJoinPoint(b._javaObject.getLocation()), 'en', { numeric: true }))  // TODO: Perform sorting on frontend
-        .map(child => this.toToolJpJson(child))
-    };
-  }
-
-  private static updateClient(ws: WebSocket): void {
+  private updateClient(ws: WebSocket): void {
     wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());
-    this.sendToClient(ws, { message: 'update', ast: this.toToolJpJson(JoinPoints.root()) });
+    this.sendToClient(ws, {
+      message: 'update',
+      ast: this.getAstConverter()
+        .getToolAst(JoinPoints.root())
+        .toJson(),
+      code: this.getAstConverter()
+        .getPrettyHtmlCode(JoinPoints.root())
+    });
   }
 
-  public static update(): void {
+  public update(): void {
     this.verifyToolIsRunning();
     this.wss!.clients.forEach(ws => this.updateClient(ws));
   }
+
+  protected abstract getAstConverter(): GenericAstConverter;
 }
