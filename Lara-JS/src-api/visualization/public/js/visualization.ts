@@ -57,9 +57,8 @@ const addHighlighingEvents = (() => {
       });
       nodeRelatedElement.addEventListener('mouseout', event => {
         unhighlightNode(nodeId);
-        if (selectedNodeId !== null) {
+        if (selectedNodeId !== null)
           highlightNode(selectedNodeId);
-        }
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('click', event => {
@@ -69,6 +68,10 @@ const addHighlighingEvents = (() => {
         
         selectedNodeId = nodeId;
         highlightNode(nodeId);
+        for (const nodeRelatedElement of nodeRelatedElements.slice(0, 2)) {
+          nodeRelatedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         event.stopPropagation();
       });
     }
@@ -83,12 +86,14 @@ const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeDropdown = getNodeDropdown(nodeId)!;
   let nodeCollapsed = false;
 
-  nodeDropdownButton.addEventListener('click', () => {
+  nodeDropdownButton.addEventListener('click', event => {
     nodeCollapsed = !nodeCollapsed;
     nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
     
     const chevron = nodeDropdownButton.children[0] as HTMLElement;
     chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
+
+    event.stopPropagation();
   });
 
   addHighlighingEvents(nodeId);
