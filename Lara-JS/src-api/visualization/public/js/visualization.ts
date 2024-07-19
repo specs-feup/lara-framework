@@ -12,13 +12,13 @@ const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
   return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 };
 
-const highlightNode = (nodeId: string): void => {
+const highlightNode = (nodeId: string, strong: boolean): void => {
   const nodeCode = document.querySelectorAll<HTMLElement>(`.node-code[data-node-id="${nodeId}"]`)!;
-  nodeCode.forEach(elem => elem.style.backgroundColor = 'var(--highlight-color)');
+  nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
 
   const nodeElement = document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`)!;
   const nodeText = nodeElement.querySelector<HTMLElement>('.ast-node-text')!;
-  nodeText.style.backgroundColor = 'var(--highlight-color)';
+  nodeText.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)';
 
   let parentNode = nodeElement.parentElement?.previousSibling;
   while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
@@ -52,13 +52,13 @@ const addHighlighingEvents = (() => {
     const nodeRelatedElements = getNodeRelatedElements(nodeId);
     for (const nodeRelatedElement of nodeRelatedElements) {
       nodeRelatedElement.addEventListener('mouseover', event => {
-        highlightNode(nodeId);
+        highlightNode(nodeId, false);
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('mouseout', event => {
         unhighlightNode(nodeId);
         if (selectedNodeId !== null)
-          highlightNode(selectedNodeId);
+          highlightNode(selectedNodeId, true);
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('click', event => {
@@ -67,7 +67,7 @@ const addHighlighingEvents = (() => {
         }
         
         selectedNodeId = nodeId;
-        highlightNode(nodeId);
+        highlightNode(nodeId, true);
         for (const nodeRelatedElement of nodeRelatedElements.slice(0, 2)) {
           nodeRelatedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
