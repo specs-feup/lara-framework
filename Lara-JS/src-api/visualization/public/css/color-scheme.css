@@ -5,7 +5,8 @@
   --lighter-gray: #e4e4e4;
   --light-gray: #d4d4d4;
   --gray: #a2a2a2;
-  --dark-gray: #313131;
+  --dark-gray: #747474;
+  --darker-gray: #313131;
   --black: #000;
   --light-blue: #19d8ff;
   --transparent-light-blue: #19d8ff66;
@@ -15,16 +16,16 @@
 
 :root {
   --bg-color: var(--white);
-  --text-color: var(--dark-gray);
+  --text-color: var(--darker-gray);
   --header-color: var(--lighter-gray);
   --border-color: var(--gray);
-  --icon-color: var(--dark-gray);
+  --icon-color: var(--darker-gray);
 
   --button-bg-color: var(--white);
   --button-hover-bg-color: var(--lighter-gray);
   --button-disabled-bg-color: var(--lighter-gray);
-  --button-disabled-text-color: var(--gray);
-  --button-disabled-icon-color: var(--gray);
+  --button-disabled-text-color: var(--darker-gray);
+  --button-disabled-icon-color: var(--darker-gray);
 
   --tab-bg-color: var(--white);
   --tab-hover-bg-color: var(--lighter-gray);
@@ -33,5 +34,5 @@
   --highlight-color: var(--light-blue);
   --secondary-highlight-color: var(--transparent-light-blue);
 
-  --line-num-color: var(--gray);
+  --line-num-color: var(--dark-gray);
 }
