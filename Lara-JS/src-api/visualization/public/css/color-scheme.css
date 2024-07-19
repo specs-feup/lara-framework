@@ -21,12 +21,11 @@
   --header-color: var(--lighter-gray);
   --border-color: var(--gray);
   --icon-color: var(--darker-gray);
+  --disabled-icon-color: var(--gray);
 
   --button-bg-color: var(--white);
   --button-hover-bg-color: var(--lighter-gray);
   --button-disabled-bg-color: var(--lighter-gray);
-  --button-disabled-text-color: var(--darker-gray);
-  --button-disabled-icon-color: var(--darker-gray);
 
   --tab-bg-color: var(--white);
   --tab-hover-bg-color: var(--lighter-gray);

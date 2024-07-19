@@ -49,7 +49,6 @@ const convertAstNodeToHtml = (root) => {
         fragment.appendChild(rootDropdown);
     }
     else {
-        dropdownButton.style.visibility = 'hidden';
         dropdownButton.disabled = true;
         fragment.appendChild(rootElement);
     }

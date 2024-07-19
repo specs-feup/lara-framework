@@ -67,7 +67,6 @@ const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 		fragment.appendChild(rootElement);
 		fragment.appendChild(rootDropdown);
 	} else {
-		dropdownButton.style.visibility = 'hidden';
 		dropdownButton.disabled = true;
 
 		fragment.appendChild(rootElement);
