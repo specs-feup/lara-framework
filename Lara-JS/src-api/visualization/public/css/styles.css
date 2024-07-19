@@ -39,12 +39,7 @@ button:hover {
 
 button:disabled {
   background-color: var(--button-disabled-bg-color);
-  color: var(--button-disabled-text-color);
   cursor: not-allowed;
-}
-
-button:disabled .icon {
-  color: var(--button-disabled-icon-color);
 }
 
 
@@ -139,6 +134,12 @@ main {
   background-color: var(--bg-color);
   border: none;
   border-radius: 50%;
+
+  cursor: default;
+}
+
+.ast-node button:disabled .icon {
+  color: var(--disabled-icon-color);
 }
 
 .ast-node-dropdown {
