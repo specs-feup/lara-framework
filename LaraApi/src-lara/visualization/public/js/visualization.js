@@ -7,12 +7,12 @@ const getNodeDropdown = (nodeId) => {
 const getNodeRelatedElements = (nodeId) => {
     return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
 };
-const highlightNode = (nodeId) => {
+const highlightNode = (nodeId, strong) => {
     const nodeCode = document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`);
-    nodeCode.forEach(elem => elem.style.backgroundColor = 'var(--highlight-color)');
+    nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
     const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
     const nodeText = nodeElement.querySelector('.ast-node-text');
-    nodeText.style.backgroundColor = 'var(--highlight-color)';
+    nodeText.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)';
     let parentNode = nodeElement.parentElement?.previousSibling;
     while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
         const parentNodeText = parentNode.querySelector('.ast-node-text');
@@ -39,13 +39,13 @@ const addHighlighingEvents = (() => {
         const nodeRelatedElements = getNodeRelatedElements(nodeId);
         for (const nodeRelatedElement of nodeRelatedElements) {
             nodeRelatedElement.addEventListener('mouseover', event => {
-                highlightNode(nodeId);
+                highlightNode(nodeId, false);
                 event.stopPropagation();
             });
             nodeRelatedElement.addEventListener('mouseout', event => {
                 unhighlightNode(nodeId);
                 if (selectedNodeId !== null)
-                    highlightNode(selectedNodeId);
+                    highlightNode(selectedNodeId, true);
                 event.stopPropagation();
             });
             nodeRelatedElement.addEventListener('click', event => {
@@ -53,7 +53,7 @@ const addHighlighingEvents = (() => {
                     unhighlightNode(selectedNodeId);
                 }
                 selectedNodeId = nodeId;
-                highlightNode(nodeId);
+                highlightNode(nodeId, true);
                 for (const nodeRelatedElement of nodeRelatedElements.slice(0, 2)) {
                     nodeRelatedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
