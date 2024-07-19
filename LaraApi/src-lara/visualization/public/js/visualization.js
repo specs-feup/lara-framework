@@ -48,6 +48,8 @@ const addHighlighingEvents = (() => {
                     highlightNode(selectedNodeId, true);
                 event.stopPropagation();
             });
+            nodeRelatedElement.tabIndex = 0;
+            nodeRelatedElement.role = "button";
             nodeRelatedElement.addEventListener('click', event => {
                 if (selectedNodeId !== null) {
                     unhighlightNode(selectedNodeId);
