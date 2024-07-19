@@ -37,7 +37,7 @@ const importCode = (code, codeContainer) => {
     const codeLines = codeContainer.querySelector('.lines');
     codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
-const importAst = (astRoot, astContainer, codeContainer) => {
+const importAst = (astRoot, astContainer) => {
     const astFragment = convertAstNodeToHtml(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);

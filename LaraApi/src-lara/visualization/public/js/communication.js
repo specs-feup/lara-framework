@@ -14,8 +14,11 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
     switch (data.message) {
         case 'update':
             const { code, ast } = data;
+            const buttonDisabled = continueButton.disabled;
+            continueButton.disabled = true;
             importCode(code, codeContainer);
-            importAst(ast, astContainer, codeContainer);
+            importAst(ast, astContainer);
+            continueButton.disabled = buttonDisabled;
             break;
         case 'wait':
             continueButton.disabled = false;

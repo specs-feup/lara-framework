@@ -53,7 +53,7 @@ const importCode = (code: string, codeContainer: HTMLElement): void => {
 	codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
 
-const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+const importAst = (astRoot: JoinPoint, astContainer: HTMLElement): void => {
   const astFragment = convertAstNodeToHtml(astRoot);
 	astContainer.innerHTML = '';
   astContainer.appendChild(astFragment);

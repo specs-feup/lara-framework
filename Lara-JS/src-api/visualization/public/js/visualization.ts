@@ -2,15 +2,15 @@ import JoinPoint from "./ToolJoinPoint.js";
 
 const getNodeElement = (nodeId: string): HTMLSpanElement | null => {
   return document.querySelector<HTMLSpanElement>(`.ast-node[data-node-id="${nodeId}"]`);
-}
+};
 
 const getNodeDropdown = (nodeId: string): HTMLDivElement | null => {
   return document.querySelector<HTMLDivElement>(`.ast-node-dropdown[data-node-id="${nodeId}"]`);
-}
+};
 
 const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
   return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
-}
+};
 
 const highlightNode = (nodeId: string): void => {
   const nodeCode = document.querySelectorAll<HTMLElement>(`.node-code[data-node-id="${nodeId}"]`)!;
@@ -27,7 +27,7 @@ const highlightNode = (nodeId: string): void => {
 
     parentNode = parentNode.parentElement?.previousSibling;
   }
-}
+};
 
 const unhighlightNode = (nodeId: string): void => {
   const nodeCode = document.querySelectorAll<HTMLElement>(`.node-code[data-node-id="${nodeId}"]`)!;
@@ -44,7 +44,36 @@ const unhighlightNode = (nodeId: string): void => {
     
     parentNode = parentNode.parentElement?.previousSibling as HTMLElement | null | undefined;
   }
-}
+};
+
+const addHighlighingEvents = (() => {
+  let selectedNodeId: string | null = null;
+  return (nodeId: string): void => {
+    const nodeRelatedElements = getNodeRelatedElements(nodeId);
+    for (const nodeRelatedElement of nodeRelatedElements) {
+      nodeRelatedElement.addEventListener('mouseover', event => {
+        highlightNode(nodeId);
+        event.stopPropagation();
+      });
+      nodeRelatedElement.addEventListener('mouseout', event => {
+        unhighlightNode(nodeId);
+        if (selectedNodeId !== null) {
+          highlightNode(selectedNodeId);
+        }
+        event.stopPropagation();
+      });
+      nodeRelatedElement.addEventListener('click', event => {
+        if (selectedNodeId !== null) {
+          unhighlightNode(selectedNodeId);
+        }
+        
+        selectedNodeId = nodeId;
+        highlightNode(nodeId);
+        event.stopPropagation();
+      });
+    }
+  };
+})();
 
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeId = root.id;
@@ -62,18 +91,7 @@ const addEventListenersToAstNodes = (root: JoinPoint): void => {
     chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
   });
 
-  const nodeRelatedElements = getNodeRelatedElements(nodeId);
-  for (const nodeRelatedElement of nodeRelatedElements) {
-    nodeRelatedElement.addEventListener('mouseover', event => {
-      highlightNode(nodeId);
-      event.stopPropagation();
-    });
-    nodeRelatedElement.addEventListener('mouseout', event => {
-      unhighlightNode(nodeId);
-      event.stopPropagation();
-    });
-  }
-
+  addHighlighingEvents(nodeId);
   root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 

@@ -33,6 +33,33 @@ const unhighlightNode = (nodeId) => {
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
+const addHighlighingEvents = (() => {
+    let selectedNodeId = null;
+    return (nodeId) => {
+        const nodeRelatedElements = getNodeRelatedElements(nodeId);
+        for (const nodeRelatedElement of nodeRelatedElements) {
+            nodeRelatedElement.addEventListener('mouseover', event => {
+                highlightNode(nodeId);
+                event.stopPropagation();
+            });
+            nodeRelatedElement.addEventListener('mouseout', event => {
+                unhighlightNode(nodeId);
+                if (selectedNodeId !== null) {
+                    highlightNode(selectedNodeId);
+                }
+                event.stopPropagation();
+            });
+            nodeRelatedElement.addEventListener('click', event => {
+                if (selectedNodeId !== null) {
+                    unhighlightNode(selectedNodeId);
+                }
+                selectedNodeId = nodeId;
+                highlightNode(nodeId);
+                event.stopPropagation();
+            });
+        }
+    };
+})();
 const addEventListenersToAstNodes = (root) => {
     const nodeId = root.id;
     const nodeElement = getNodeElement(nodeId);
@@ -45,17 +72,7 @@ const addEventListenersToAstNodes = (root) => {
         const chevron = nodeDropdownButton.children[0];
         chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
     });
-    const nodeRelatedElements = getNodeRelatedElements(nodeId);
-    for (const nodeRelatedElement of nodeRelatedElements) {
-        nodeRelatedElement.addEventListener('mouseover', event => {
-            highlightNode(nodeId);
-            event.stopPropagation();
-        });
-        nodeRelatedElement.addEventListener('mouseout', event => {
-            unhighlightNode(nodeId);
-            event.stopPropagation();
-        });
-    }
+    addHighlighingEvents(nodeId);
     root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 export { addEventListenersToAstNodes };

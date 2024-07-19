@@ -1,5 +1,4 @@
 import { importAst, importCode } from "./ast-import.js";
-import JoinPoint from "./ToolJoinPoint.js";
 
 const getWebSocket = (): WebSocket => {
   const url = `ẁs://${window.location.host}`;
@@ -20,8 +19,13 @@ const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonEle
   switch (data.message) {
     case 'update':
       const { code, ast } = data;
+      const buttonDisabled = continueButton.disabled;
+
+      continueButton.disabled = true;
       importCode(code, codeContainer);
-      importAst(ast, astContainer, codeContainer);
+      importAst(ast, astContainer);
+      continueButton.disabled = buttonDisabled;
+
       break;
 
     case 'wait':
