@@ -158,7 +158,6 @@ main {
 
 #code-container .lines, #code-container code {
   font-family: "JetBrains Mono", monospace;
-  font-optical-sizing: auto;
 }
 
 #code-container .lines {
