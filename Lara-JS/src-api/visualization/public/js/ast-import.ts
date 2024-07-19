@@ -2,20 +2,40 @@ import { countChar, createIcon, } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
 
-const createAstNodeElement = (nodeId: string, text: string): HTMLSpanElement => {
+const createAstNodeDropdownButton = (nodeId: string): HTMLButtonElement => {
+	const dropdownButton = document.createElement('button');
+
+  const chevronIcon = createIcon("keyboard_arrow_down");
+  dropdownButton.appendChild(chevronIcon);
+
+	return dropdownButton;
+};
+
+const createDropdownButtonOnClick = (dropdown: HTMLElement) => {
+	let nodeCollapsed = false;
+	return (event: Event): void => {
+		nodeCollapsed = !nodeCollapsed;
+		dropdown.style.display = nodeCollapsed ? "none" : "block";
+
+		const dropdownButton = event.currentTarget as HTMLElement;
+		const chevronIcon = dropdownButton.children[0] as HTMLElement;
+		chevronIcon.textContent = nodeCollapsed ? "keyboard_arrow_right" : "keyboard_arrow_down";
+
+		event.stopPropagation();
+	};
+};
+
+const createAstNodeElement = (nodeId: string, text: string, dropdownButton: HTMLElement): HTMLSpanElement => {
 	const nodeElement = document.createElement('span');
 	nodeElement.classList.add('ast-node');
 
 	nodeElement.dataset.nodeId = nodeId;
 
-	const chevronDropdownButton = document.createElement('button');
-	chevronDropdownButton.appendChild(createIcon('keyboard_arrow_down'));
-
 	const nodeText = document.createElement('span');
 	nodeText.classList.add('ast-node-text');
 	nodeText.textContent = text;
 
-	nodeElement.appendChild(chevronDropdownButton);
+	nodeElement.appendChild(dropdownButton);
 	nodeElement.appendChild(nodeText);
 
 	return nodeElement;
@@ -30,17 +50,28 @@ const createAstNodeDropdown = (nodeId: string): HTMLDivElement => {
 }
 
 const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
-	const rootElement = createAstNodeElement(root.id, root.type);
-	const rootDropdown = createAstNodeDropdown(root.id);
-
-	for (const node of root.children) {
-		const descendantNodeElements = convertAstNodeToHtml(node);
-		rootDropdown.appendChild(descendantNodeElements);
-	}
-
 	const fragment = new DocumentFragment();
-	fragment.appendChild(rootElement);
-	fragment.appendChild(rootDropdown);
+	const dropdownButton = createAstNodeDropdownButton(root.id);
+	const rootElement = createAstNodeElement(root.id, root.type, dropdownButton);
+
+	if (root.children.length > 0) {
+		const rootDropdown = createAstNodeDropdown(root.id);
+
+		for (const node of root.children) {
+			const descendantNodeElements = convertAstNodeToHtml(node);
+			rootDropdown.appendChild(descendantNodeElements);
+		}
+
+    dropdownButton.addEventListener('click', createDropdownButtonOnClick(rootDropdown));
+
+		fragment.appendChild(rootElement);
+		fragment.appendChild(rootDropdown);
+	} else {
+		dropdownButton.style.visibility = 'hidden';
+		dropdownButton.disabled = true;
+
+		fragment.appendChild(rootElement);
+	}
 
 	return fragment;
 };
