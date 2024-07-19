@@ -1,15 +1,11 @@
 import JoinPoint from "./ToolJoinPoint.js";
 
-const getNodeElement = (nodeId: string): HTMLSpanElement | null => {
-  return document.querySelector<HTMLSpanElement>(`.ast-node[data-node-id="${nodeId}"]`);
-};
-
-const getNodeDropdown = (nodeId: string): HTMLDivElement | null => {
-  return document.querySelector<HTMLDivElement>(`.ast-node-dropdown[data-node-id="${nodeId}"]`);
-};
+const getNodeElement = (nodeId: string): HTMLElement | null => {
+  return document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`);
+}
 
 const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
-  return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"], .node-code[data-node-id="${nodeId}"]`));
+  return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`));
 };
 
 const highlightNode = (nodeId: string, strong: boolean): void => {
@@ -23,7 +19,7 @@ const highlightNode = (nodeId: string, strong: boolean): void => {
   let parentNode = nodeElement.parentElement?.previousSibling;
   while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
     const parentNodeText = parentNode.querySelector<HTMLElement>('.ast-node-text')!;
-    parentNodeText.style.backgroundColor = 'var(--secondary-highlight-color)';
+    parentNodeText.style.backgroundColor = strong ? 'var(--secondary-highlight-color)' : 'var(--tertiary-highlight-color)';
 
     parentNode = parentNode.parentElement?.previousSibling;
   }
@@ -53,6 +49,8 @@ const addHighlighingEvents = (() => {
     for (const nodeRelatedElement of nodeRelatedElements) {
       nodeRelatedElement.addEventListener('mouseover', event => {
         highlightNode(nodeId, false);
+        if (selectedNodeId !== null)
+          highlightNode(selectedNodeId, true);
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('mouseout', event => {
@@ -63,41 +61,38 @@ const addHighlighingEvents = (() => {
       });
 
       nodeRelatedElement.tabIndex = 0;
-      nodeRelatedElement.role = "button";
       nodeRelatedElement.addEventListener('click', event => {
+        event.stopPropagation();
+
         if (selectedNodeId !== null) {
           unhighlightNode(selectedNodeId);
-        }
-        
-        selectedNodeId = nodeId;
-        highlightNode(nodeId, true);
-        for (const nodeRelatedElement of nodeRelatedElements.slice(0, 2)) {
-          nodeRelatedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (selectedNodeId === nodeId) {
+            selectedNodeId = null;
+            return;
+          }
         }
 
-        event.stopPropagation();
+        selectedNodeId = nodeId;
+        highlightNode(nodeId, true);
+
+        const nodeElement = getNodeElement(nodeId)!;
+        const firstNodeCodeBlock = document.querySelector<HTMLElement>('.node-code[data-node-id]')!;
+        for (const element of [nodeElement, firstNodeCodeBlock]) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       });
+      nodeRelatedElement.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          nodeRelatedElement.click();
+        }
+        event.stopPropagation();
+      })
     }
   };
 })();
 
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeId = root.id;
-  const nodeElement = getNodeElement(nodeId)!;
-  const nodeDropdownButton = nodeElement.children[0] as HTMLButtonElement;
-  
-  const nodeDropdown = getNodeDropdown(nodeId)!;
-  let nodeCollapsed = false;
-
-  nodeDropdownButton.addEventListener('click', event => {
-    nodeCollapsed = !nodeCollapsed;
-    nodeDropdown.style.display = nodeCollapsed ? 'none' : 'block';
-    
-    const chevron = nodeDropdownButton.children[0] as HTMLElement;
-    chevron.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
-
-    event.stopPropagation();
-  });
 
   addHighlighingEvents(nodeId);
   root.children.forEach(child => addEventListenersToAstNodes(child));

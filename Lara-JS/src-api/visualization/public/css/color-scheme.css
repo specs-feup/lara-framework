@@ -9,7 +9,8 @@
   --darker-gray: #313131;
   --black: #000;
   --light-blue: #19d8ff;
-  --transparent-light-blue: #19d8ff66;
+  --strong-translucid-light-blue: #19d8ff66;
+  --weak-translucid-light-blue: #19d8ff33;
 }
 
 /* Color Scheme */
@@ -32,7 +33,8 @@
   --tab-active-bg-color: var(--light-gray);
 
   --highlight-color: var(--light-blue);
-  --secondary-highlight-color: var(--transparent-light-blue);
+  --secondary-highlight-color: var(--strong-translucid-light-blue);
+  --tertiary-highlight-color: var(--weak-translucid-light-blue);
 
   --line-num-color: var(--dark-gray);
 }
