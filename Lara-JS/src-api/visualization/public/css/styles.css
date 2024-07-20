@@ -1,6 +1,7 @@
 body {
   height: 100vh;
   margin: 0;
+  position: relative;
 
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
@@ -163,4 +164,13 @@ main {
 
 #code-container .lines {
   color: var(--line-num-color);
+}
+
+
+#node-info-container {
+  position: absolute;
+  right: 3em;
+  bottom: 3em;
+
+  display: none;
 }
