@@ -30,19 +30,38 @@ const unhighlightNode = (nodeId) => {
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
+const showNodeInfo = (nodeInfo) => {
+    const nodeInfoContainer = document.querySelector('#node-info-container');
+    nodeInfoContainer.style.display = 'block';
+    nodeInfoContainer.innerHTML = '';
+    for (const [name, value] of Object.entries(nodeInfo)) {
+        const attributeName = document.createElement('span');
+        attributeName.textContent = name;
+        const attributeValue = document.createElement('span');
+        attributeValue.textContent = value;
+        const line = document.createElement('p');
+        line.append(attributeName, attributeValue);
+        nodeInfoContainer.appendChild(line);
+    }
+};
+const hideNodeInfo = () => {
+    const nodeInfoContainer = document.querySelector('#node-info-container');
+    nodeInfoContainer.style.display = 'none';
+    nodeInfoContainer.innerHTML = '';
+};
 const addHighlighingEvents = (() => {
     let selectedNodeId = null;
-    return (nodeId) => {
-        const nodeRelatedElements = getNodeRelatedElements(nodeId);
+    return (node) => {
+        const nodeRelatedElements = getNodeRelatedElements(node.id);
         for (const nodeRelatedElement of nodeRelatedElements) {
             nodeRelatedElement.addEventListener('mouseover', event => {
-                highlightNode(nodeId, false);
+                highlightNode(node.id, false);
                 if (selectedNodeId !== null)
                     highlightNode(selectedNodeId, true);
                 event.stopPropagation();
             });
             nodeRelatedElement.addEventListener('mouseout', event => {
-                unhighlightNode(nodeId);
+                unhighlightNode(node.id);
                 if (selectedNodeId !== null)
                     highlightNode(selectedNodeId, true);
                 event.stopPropagation();
@@ -52,19 +71,22 @@ const addHighlighingEvents = (() => {
                 event.stopPropagation();
                 if (selectedNodeId !== null) {
                     unhighlightNode(selectedNodeId);
-                    if (selectedNodeId === nodeId) {
+                    if (selectedNodeId === node.id) {
                         selectedNodeId = null;
+                        hideNodeInfo();
                         return;
                     }
                 }
-                selectedNodeId = nodeId;
-                highlightNode(nodeId, true);
-                const nodeElement = getNodeElement(nodeId);
+                selectedNodeId = node.id;
+                highlightNode(node.id, true);
+                const nodeElement = getNodeElement(node.id);
                 const firstNodeCodeBlock = document.querySelector('.node-code[data-node-id]');
                 for (const element of [nodeElement, firstNodeCodeBlock]) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
+                showNodeInfo(node.info);
             });
+            // For keyboard accessibility
             nodeRelatedElement.addEventListener('keydown', event => {
                 if (event.key === 'Enter') {
                     nodeRelatedElement.click();
@@ -76,7 +98,7 @@ const addHighlighingEvents = (() => {
 })();
 const addEventListenersToAstNodes = (root) => {
     const nodeId = root.id;
-    addHighlighingEvents(nodeId);
+    addHighlighingEvents(root);
     root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 export { addEventListenersToAstNodes };

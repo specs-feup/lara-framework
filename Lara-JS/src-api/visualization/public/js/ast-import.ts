@@ -80,7 +80,7 @@ const importCode = (code: string, codeContainer: HTMLElement): void => {
 	
 	const numLines = countChar(code, '\n') + 1;
 	const codeLines = codeContainer.querySelector<HTMLElement>('.lines')!;
-	codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+	codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
 
 const importAst = (astRoot: JoinPoint, astContainer: HTMLElement): void => {
