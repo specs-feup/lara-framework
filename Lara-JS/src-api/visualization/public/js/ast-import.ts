@@ -2,7 +2,7 @@ import { countChar, createIcon, } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
 
-const createAstNodeDropdownButton = (nodeId: string): HTMLButtonElement => {
+const createAstNodeDropdownButton = (): HTMLButtonElement => {
 	const dropdownButton = document.createElement('button');
 
   const chevronIcon = createIcon("keyboard_arrow_down");
@@ -51,7 +51,7 @@ const createAstNodeDropdown = (nodeId: string): HTMLDivElement => {
 
 const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 	const fragment = new DocumentFragment();
-	const dropdownButton = createAstNodeDropdownButton(root.id);
+	const dropdownButton = createAstNodeDropdownButton();
 	const rootElement = createAstNodeElement(root.id, root.type, dropdownButton);
 
 	if (root.children.length > 0) {

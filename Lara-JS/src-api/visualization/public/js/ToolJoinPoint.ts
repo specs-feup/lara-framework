@@ -1,11 +1,15 @@
+export type JoinPointInfo = { [attribute: string]: string };
+
 export default class ToolJoinPoint {
   #id: string;
   #type: string;
+  #info: JoinPointInfo;
   #children: ToolJoinPoint[];
 
-  constructor(id: string, type: string, children: ToolJoinPoint[]) {
+  constructor(id: string, type: string, info: JoinPointInfo, children: ToolJoinPoint[]) {
     this.#id = id;
     this.#type = type;
+    this.#info = info;
     this.#children = children;
   }
 
@@ -17,6 +21,10 @@ export default class ToolJoinPoint {
     return this.#type;
   }
 
+  get info(): Object {
+    return this.#info;
+  }
+
   get children(): ToolJoinPoint[] {
     return this.#children
   }
@@ -25,6 +33,7 @@ export default class ToolJoinPoint {
     return new ToolJoinPoint(
       json.id,
       json.type,
+      json.info,
       json.children.map((child: any) => ToolJoinPoint.fromJson(child))
     );
   }
@@ -33,6 +42,7 @@ export default class ToolJoinPoint {
     return {
       id: this.#id,
       type: this.#type,
+      info: this.#info,
       children: this.#children.map((child) => child.toJson()),
     };
   }
@@ -41,6 +51,7 @@ export default class ToolJoinPoint {
     return new ToolJoinPoint(
       this.#id,
       this.#type,
+      this.#info,
       this.#children.map((child) => child.clone())
     );
   }
