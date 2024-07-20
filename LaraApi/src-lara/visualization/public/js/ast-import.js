@@ -58,7 +58,7 @@ const importCode = (code, codeContainer) => {
     codeContainer.querySelector('code').innerHTML = code;
     const numLines = countChar(code, '\n') + 1;
     const codeLines = codeContainer.querySelector('.lines');
-    codeLines.innerText = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 const importAst = (astRoot, astContainer) => {
     const astFragment = convertAstNodeToHtml(astRoot);

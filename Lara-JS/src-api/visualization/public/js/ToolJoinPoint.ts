@@ -21,7 +21,7 @@ export default class ToolJoinPoint {
     return this.#type;
   }
 
-  get info(): Object {
+  get info(): JoinPointInfo {
     return this.#info;
   }
 

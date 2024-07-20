@@ -1,4 +1,4 @@
-import JoinPoint from "./ToolJoinPoint.js";
+import JoinPoint, { JoinPointInfo } from "./ToolJoinPoint.js";
 
 const getNodeElement = (nodeId: string): HTMLElement | null => {
   return document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`);
@@ -42,19 +42,43 @@ const unhighlightNode = (nodeId: string): void => {
   }
 };
 
+const showNodeInfo = (nodeInfo: JoinPointInfo): void => {
+  const nodeInfoContainer = document.querySelector<HTMLElement>('#node-info-container')!;
+  nodeInfoContainer.style.display = 'block';
+  nodeInfoContainer.innerHTML = ''
+
+  for (const [name, value] of Object.entries(nodeInfo)) {
+    const attributeName = document.createElement('span');
+    attributeName.textContent = name;
+
+    const attributeValue = document.createElement('span');
+    attributeValue.textContent = value;
+
+    const line = document.createElement('p');
+    line.append(attributeName, attributeValue);
+    nodeInfoContainer.appendChild(line);
+  }
+}
+
+const hideNodeInfo = (): void => {
+  const nodeInfoContainer = document.querySelector<HTMLElement>('#node-info-container')!;
+  nodeInfoContainer.style.display = 'none';
+  nodeInfoContainer.innerHTML = '';
+}
+
 const addHighlighingEvents = (() => {
   let selectedNodeId: string | null = null;
-  return (nodeId: string): void => {
-    const nodeRelatedElements = getNodeRelatedElements(nodeId);
+  return (node: JoinPoint): void => {
+    const nodeRelatedElements = getNodeRelatedElements(node.id);
     for (const nodeRelatedElement of nodeRelatedElements) {
       nodeRelatedElement.addEventListener('mouseover', event => {
-        highlightNode(nodeId, false);
+        highlightNode(node.id, false);
         if (selectedNodeId !== null)
           highlightNode(selectedNodeId, true);
         event.stopPropagation();
       });
       nodeRelatedElement.addEventListener('mouseout', event => {
-        unhighlightNode(nodeId);
+        unhighlightNode(node.id);
         if (selectedNodeId !== null)
           highlightNode(selectedNodeId, true);
         event.stopPropagation();
@@ -66,27 +90,32 @@ const addHighlighingEvents = (() => {
 
         if (selectedNodeId !== null) {
           unhighlightNode(selectedNodeId);
-          if (selectedNodeId === nodeId) {
+          if (selectedNodeId === node.id) {
             selectedNodeId = null;
+            hideNodeInfo();
             return;
           }
         }
 
-        selectedNodeId = nodeId;
-        highlightNode(nodeId, true);
+        selectedNodeId = node.id;
+        highlightNode(node.id, true);
 
-        const nodeElement = getNodeElement(nodeId)!;
+        const nodeElement = getNodeElement(node.id)!;
         const firstNodeCodeBlock = document.querySelector<HTMLElement>('.node-code[data-node-id]')!;
         for (const element of [nodeElement, firstNodeCodeBlock]) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
+        showNodeInfo(node.info);
       });
+
+      // For keyboard accessibility
       nodeRelatedElement.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           nodeRelatedElement.click();
         }
         event.stopPropagation();
-      })
+      }); 
     }
   };
 })();
@@ -94,7 +123,7 @@ const addHighlighingEvents = (() => {
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
   const nodeId = root.id;
 
-  addHighlighingEvents(nodeId);
+  addHighlighingEvents(root);
   root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 

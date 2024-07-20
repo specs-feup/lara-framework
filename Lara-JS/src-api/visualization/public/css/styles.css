@@ -135,7 +135,9 @@ main {
   background-color: var(--bg-color);
   border: none;
   border-radius: 50%;
+}
 
+.ast-node button:disabled {
   cursor: default;
 }
 
@@ -164,13 +166,32 @@ main {
 
 #code-container .lines {
   color: var(--line-num-color);
+
+  white-space: pre;
 }
 
 
 #node-info-container {
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.5em;
+  background-color: var(--bg-color);
+
   position: absolute;
-  right: 3em;
-  bottom: 3em;
+  right: 2.5em;
+  bottom: 2.5em;
 
   display: none;
+}
+
+#node-info-container p {
+  margin: 0;
+}
+
+#node-info-container p > span:first-of-type {
+  font-weight: bold;
+}
+
+#node-info-container p > span:first-of-type::after {
+  content: ': ';
 }
