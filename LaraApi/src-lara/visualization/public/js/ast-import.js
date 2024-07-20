@@ -1,6 +1,6 @@
 import { countChar, createIcon, } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
-const createAstNodeDropdownButton = (nodeId) => {
+const createAstNodeDropdownButton = () => {
     const dropdownButton = document.createElement('button');
     const chevronIcon = createIcon("keyboard_arrow_down");
     dropdownButton.appendChild(chevronIcon);
@@ -36,7 +36,7 @@ const createAstNodeDropdown = (nodeId) => {
 };
 const convertAstNodeToHtml = (root) => {
     const fragment = new DocumentFragment();
-    const dropdownButton = createAstNodeDropdownButton(root.id);
+    const dropdownButton = createAstNodeDropdownButton();
     const rootElement = createAstNodeElement(root.id, root.type, dropdownButton);
     if (root.children.length > 0) {
         const rootDropdown = createAstNodeDropdown(root.id);
