@@ -107,7 +107,7 @@ export default class GenericVisualizationTool {
         });
     }
     updateClient(ws) {
-        wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());
+        wrapJoinPoint(JoinPoints.root()._javaObject.rebuild()); // TODO: Perform rebuild on AstConverter
         this.sendToClient(ws, {
             message: 'update',
             ast: this.getAstConverter()
