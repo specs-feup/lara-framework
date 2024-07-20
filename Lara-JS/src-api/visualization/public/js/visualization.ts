@@ -101,9 +101,9 @@ const addHighlighingEvents = (() => {
         highlightNode(node.id, true);
 
         const nodeElement = getNodeElement(node.id)!;
-        const firstNodeCodeBlock = document.querySelector<HTMLElement>('.node-code[data-node-id]')!;
+        const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
         for (const element of [nodeElement, firstNodeCodeBlock]) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         showNodeInfo(node.info);
