@@ -76,10 +76,19 @@ const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 };
 
 const importCode = (code: string, codeContainer: HTMLElement): void => {
-  codeContainer.querySelector('code')!.innerHTML = code;
+  codeContainer.innerHTML = '';
+
+	const codeLines = document.createElement('pre');
+	codeLines.classList.add('lines');
+	codeContainer.appendChild(codeLines);
+
+	const codeWrapper = document.createElement('pre');
+	const codeElement = document.createElement('code');
+	codeElement.innerHTML = code;
+	codeWrapper.appendChild(codeElement);
+	codeContainer.appendChild(codeWrapper);
 	
 	const numLines = countChar(code, '\n') + 1;
-	const codeLines = codeContainer.querySelector<HTMLElement>('.lines')!;
 	codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
 
