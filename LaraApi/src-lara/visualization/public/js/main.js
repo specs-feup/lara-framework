@@ -1,12 +1,15 @@
 import { continueButtonOnClick, getWebSocket, webSocketOnMessage } from "./communication.js";
+import { addDividerEventListeners } from "./visualization.js";
 (() => {
     const astContainer = document.querySelector('#ast-container');
     const codeContainer = document.querySelector('#code-container');
     const continueButton = document.querySelector('#continue-button');
-    if (!astContainer || !codeContainer || !continueButton) {
+    const resizer = document.querySelector('#resizer');
+    if (!astContainer || !codeContainer || !continueButton || !resizer) {
         console.error('Required elements not found');
         return;
     }
+    addDividerEventListeners(resizer, astContainer, codeContainer, continueButton);
     let ws;
     const setupWebSocket = () => {
         ws = getWebSocket();
