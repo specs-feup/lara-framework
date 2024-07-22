@@ -19,7 +19,7 @@ button {
   padding: 0 1.25em;
   background-color: var(--button-bg-color);
   border: 1px solid var(--border-color);
-  border-radius: 2px;
+  border-radius: 4px;
 
   font-size: 1em;
   font-weight: 500;
@@ -102,20 +102,21 @@ main {
   padding: 0.25em 0.5em;
   margin: 0;
   border: 1px solid var(--border-color);
-  border-radius: 2px;
+  border-radius: 4px;
 
   display: flex;
   flex-direction: column;
 
   overflow: auto;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 
 #ast-container {
   font-weight: 500;
   line-height: 1.25em;
+
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .ast-node {
@@ -154,6 +155,9 @@ main {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1em;
+
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #code-container pre {

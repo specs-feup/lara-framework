@@ -60,11 +60,11 @@ const importCode = (code, codeContainer) => {
     const codeLines = codeContainer.querySelector('.lines');
     codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
-const importAst = (astRoot, astContainer) => {
+const importAst = (astRoot, astContainer, codeContainer) => {
     const astFragment = convertAstNodeToHtml(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
-    addEventListenersToAstNodes(astRoot);
+    addEventListenersToAstNodes(astRoot, astContainer, codeContainer);
 };
 export { importCode, importAst };
 //# sourceMappingURL=ast-import.js.map

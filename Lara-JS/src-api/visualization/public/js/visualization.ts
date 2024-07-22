@@ -66,9 +66,21 @@ const hideNodeInfo = (): void => {
   nodeInfoContainer.innerHTML = '';
 }
 
+const scrollIntoViewIfNeeded = (element: HTMLElement, parent: HTMLElement): void => {
+  const rect = element.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  console.log(rect, parentRect);
+  if (rect.bottom < parentRect.top || rect.top > parentRect.bottom) {
+    const scrollPos = rect.height <= parentRect.height
+        ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
+        : rect.top - parentRect.top;
+    parent.scrollBy({ top: scrollPos, left: rect.left, behavior: 'smooth' });
+  }
+};
+
 let selectedNodeId: string | null = null;
 
-const addHighlighingEvents = (node: JoinPoint): void => {
+const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
   const nodeRelatedElements = getNodeRelatedElements(node.id);
   for (const nodeRelatedElement of nodeRelatedElements) {
     nodeRelatedElement.addEventListener('mouseover', event => {
@@ -101,10 +113,10 @@ const addHighlighingEvents = (node: JoinPoint): void => {
       highlightNode(node.id, true);
 
       const nodeElement = getNodeElement(node.id)!;
+      scrollIntoViewIfNeeded(nodeElement, astContainer);
       const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
-      for (const element of [nodeElement, firstNodeCodeBlock]) {
-        element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
+      if (firstNodeCodeBlock)
+        scrollIntoViewIfNeeded(firstNodeCodeBlock!, codeContainer);
 
       showNodeInfo(node.info);
     });
@@ -119,11 +131,11 @@ const addHighlighingEvents = (node: JoinPoint): void => {
   }
 };
 
-const addEventListenersToAstNodes = (root: JoinPoint): void => {
+const addEventListenersToAstNodes = (root: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
   selectedNodeId = null;  // To prevent invalid references
 
-  addHighlighingEvents(root);
-  root.children.forEach(child => addEventListenersToAstNodes(child));
+  addHighlighingEvents(root, astContainer, codeContainer);
+  root.children.forEach(child => addEventListenersToAstNodes(child, astContainer, codeContainer));
 };
 
 export { addEventListenersToAstNodes };
