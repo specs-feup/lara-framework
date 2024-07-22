@@ -66,62 +66,61 @@ const hideNodeInfo = (): void => {
   nodeInfoContainer.innerHTML = '';
 }
 
-const addHighlighingEvents = (() => {
-  let selectedNodeId: string | null = null;
-  return (node: JoinPoint): void => {
-    const nodeRelatedElements = getNodeRelatedElements(node.id);
-    for (const nodeRelatedElement of nodeRelatedElements) {
-      nodeRelatedElement.addEventListener('mouseover', event => {
-        highlightNode(node.id, false);
-        if (selectedNodeId !== null)
-          highlightNode(selectedNodeId, true);
-        event.stopPropagation();
-      });
-      nodeRelatedElement.addEventListener('mouseout', event => {
-        unhighlightNode(node.id);
-        if (selectedNodeId !== null)
-          highlightNode(selectedNodeId, true);
-        event.stopPropagation();
-      });
+let selectedNodeId: string | null = null;
 
-      nodeRelatedElement.tabIndex = 0;
-      nodeRelatedElement.addEventListener('click', event => {
-        event.stopPropagation();
+const addHighlighingEvents = (node: JoinPoint): void => {
+  const nodeRelatedElements = getNodeRelatedElements(node.id);
+  for (const nodeRelatedElement of nodeRelatedElements) {
+    nodeRelatedElement.addEventListener('mouseover', event => {
+      highlightNode(node.id, false);
+      if (selectedNodeId !== null)
+        highlightNode(selectedNodeId, true);
+      event.stopPropagation();
+    });
+    nodeRelatedElement.addEventListener('mouseout', event => {
+      unhighlightNode(node.id);
+      if (selectedNodeId !== null)
+        highlightNode(selectedNodeId, true);
+      event.stopPropagation();
+    });
 
-        if (selectedNodeId !== null) {
-          unhighlightNode(selectedNodeId);
-          if (selectedNodeId === node.id) {
-            selectedNodeId = null;
-            hideNodeInfo();
-            return;
-          }
+    nodeRelatedElement.tabIndex = 0;
+    nodeRelatedElement.addEventListener('click', event => {
+      event.stopPropagation();
+
+      if (selectedNodeId !== null) {
+        unhighlightNode(selectedNodeId);
+        if (selectedNodeId === node.id) {
+          selectedNodeId = null;
+          hideNodeInfo();
+          return;
         }
+      }
 
-        selectedNodeId = node.id;
-        highlightNode(node.id, true);
+      selectedNodeId = node.id;
+      highlightNode(node.id, true);
 
-        const nodeElement = getNodeElement(node.id)!;
-        const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
-        for (const element of [nodeElement, firstNodeCodeBlock]) {
-          element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+      const nodeElement = getNodeElement(node.id)!;
+      const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
+      for (const element of [nodeElement, firstNodeCodeBlock]) {
+        element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
 
-        showNodeInfo(node.info);
-      });
+      showNodeInfo(node.info);
+    });
 
-      // For keyboard accessibility
-      nodeRelatedElement.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          nodeRelatedElement.click();
-        }
-        event.stopPropagation();
-      }); 
-    }
-  };
-})();
+    // For keyboard accessibility
+    nodeRelatedElement.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        nodeRelatedElement.click();
+      }
+      event.stopPropagation();
+    }); 
+  }
+};
 
 const addEventListenersToAstNodes = (root: JoinPoint): void => {
-  const nodeId = root.id;
+  selectedNodeId = null;  // To prevent invalid references
 
   addHighlighingEvents(root);
   root.children.forEach(child => addEventListenersToAstNodes(child));
