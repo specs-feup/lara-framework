@@ -10,6 +10,7 @@ export default class GenericVisualizationTool {
     port;
     wss;
     serverClosed = false;
+    astRoot;
     isLaunched() {
         return this.wss !== undefined && this.serverClosed === false;
     }
@@ -34,11 +35,12 @@ export default class GenericVisualizationTool {
         ;
         this.wss.close();
     }
-    async launch(hostname = '127.0.0.1', port) {
+    async launch(hostname = '127.0.0.1', port, astRoot = JoinPoints.root()) {
         if (this.isLaunched()) {
             console.warn(`Visualization tool is already running at http://${this.hostname}:${this.port}`);
             return;
         }
+        this.astRoot = astRoot;
         const app = express();
         const server = http.createServer(app);
         this.wss = new WebSocketServer({ server: server });
@@ -111,14 +113,15 @@ export default class GenericVisualizationTool {
         this.sendToClient(ws, {
             message: 'update',
             ast: this.getAstConverter()
-                .getToolAst(JoinPoints.root())
+                .getToolAst(this.astRoot)
                 .toJson(),
             code: this.getAstConverter()
-                .getPrettyHtmlCode(JoinPoints.root())
+                .getPrettyHtmlCode(this.astRoot),
         });
     }
-    update() {
+    update(astRoot = JoinPoints.root()) {
         this.verifyToolIsRunning();
+        this.astRoot = astRoot;
         this.wss.clients.forEach(ws => this.updateClient(ws));
     }
 }

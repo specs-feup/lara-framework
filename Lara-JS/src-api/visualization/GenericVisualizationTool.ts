@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
 import { AddressInfo } from 'net';
 
-import { wrapJoinPoint } from '../LaraJoinPoint.js';
+import { LaraJoinPoint, wrapJoinPoint } from '../LaraJoinPoint.js';
 import JoinPoints from '../weaver/JoinPoints.js';
 import GenericAstConverter from './GenericAstConverter.js';
 
@@ -15,6 +15,7 @@ export default abstract class GenericVisualizationTool {
   private port: number | undefined;
   private wss: WebSocketServer | undefined;
   private serverClosed: boolean = false;
+  private astRoot: LaraJoinPoint | undefined;
 
   public isLaunched(): boolean {
     return this.wss !== undefined && this.serverClosed === false;
@@ -46,11 +47,13 @@ export default abstract class GenericVisualizationTool {
     this.wss!.close();
   }
 
-  public async launch(hostname: string = '127.0.0.1', port?: number): Promise<void> {
+  public async launch(hostname: string = '127.0.0.1', port?: number, astRoot: LaraJoinPoint = JoinPoints.root()): Promise<void> {
     if (this.isLaunched()) {
       console.warn(`Visualization tool is already running at http://${this.hostname}:${this.port}`);
       return;
     }
+
+    this.astRoot = astRoot;
 
     const app = express();
     const server = http.createServer(app);
@@ -141,18 +144,21 @@ export default abstract class GenericVisualizationTool {
 
   private updateClient(ws: WebSocket): void {
     wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());  // TODO: Perform rebuild on AstConverter
+
     this.sendToClient(ws, {
       message: 'update',
       ast: this.getAstConverter()
-        .getToolAst(JoinPoints.root())
+        .getToolAst(this.astRoot!)
         .toJson(),
       code: this.getAstConverter()
-        .getPrettyHtmlCode(JoinPoints.root())
+        .getPrettyHtmlCode(this.astRoot!),
     });
   }
 
-  public update(): void {
+  public update(astRoot: LaraJoinPoint = JoinPoints.root()): void {
     this.verifyToolIsRunning();
+
+    this.astRoot = astRoot;
     this.wss!.clients.forEach(ws => this.updateClient(ws));
   }
 
