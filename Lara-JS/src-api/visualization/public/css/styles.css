@@ -68,11 +68,11 @@ main {
   background-color: var(--bg-color);
 
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: 2fr 1em 3fr;
   grid-template-rows: min-content 1fr;
-  grid-template-areas: "continue-button code"
-                       "ast             code";
-  gap: 1em;
+  grid-template-areas: "continue-button .       code"
+                       "ast             divider code";
+  row-gap: 1em;
 }
 
 
@@ -194,6 +194,17 @@ main {
 
 #node-info-container p > span:first-of-type::after {
   content: ': ';
+}
+
+
+.divider {
+  width: 0.2em;
+  height: 1.2em;
+  border-inline: 2px solid var(--border-color);
+
+  grid-area: divider;
+  justify-self: center;
+  align-self: center;
 }
 
 
