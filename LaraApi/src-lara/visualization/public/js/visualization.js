@@ -49,8 +49,19 @@ const hideNodeInfo = () => {
     nodeInfoContainer.style.display = 'none';
     nodeInfoContainer.innerHTML = '';
 };
+const scrollIntoViewIfNeeded = (element, parent) => {
+    const rect = element.getBoundingClientRect();
+    const parentRect = parent.getBoundingClientRect();
+    console.log(rect, parentRect);
+    if (rect.bottom < parentRect.top || rect.top > parentRect.bottom) {
+        const scrollPos = rect.height <= parentRect.height
+            ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
+            : rect.top - parentRect.top;
+        parent.scrollBy({ top: scrollPos, left: rect.left, behavior: 'smooth' });
+    }
+};
 let selectedNodeId = null;
-const addHighlighingEvents = (node) => {
+const addHighlighingEvents = (node, astContainer, codeContainer) => {
     const nodeRelatedElements = getNodeRelatedElements(node.id);
     for (const nodeRelatedElement of nodeRelatedElements) {
         nodeRelatedElement.addEventListener('mouseover', event => {
@@ -79,10 +90,10 @@ const addHighlighingEvents = (node) => {
             selectedNodeId = node.id;
             highlightNode(node.id, true);
             const nodeElement = getNodeElement(node.id);
+            scrollIntoViewIfNeeded(nodeElement, astContainer);
             const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
-            for (const element of [nodeElement, firstNodeCodeBlock]) {
-                element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            if (firstNodeCodeBlock)
+                scrollIntoViewIfNeeded(firstNodeCodeBlock, codeContainer);
             showNodeInfo(node.info);
         });
         // For keyboard accessibility
@@ -94,10 +105,10 @@ const addHighlighingEvents = (node) => {
         });
     }
 };
-const addEventListenersToAstNodes = (root) => {
+const addEventListenersToAstNodes = (root, astContainer, codeContainer) => {
     selectedNodeId = null; // To prevent invalid references
-    addHighlighingEvents(root);
-    root.children.forEach(child => addEventListenersToAstNodes(child));
+    addHighlighingEvents(root, astContainer, codeContainer);
+    root.children.forEach(child => addEventListenersToAstNodes(child, astContainer, codeContainer));
 };
 export { addEventListenersToAstNodes };
 //# sourceMappingURL=visualization.js.map

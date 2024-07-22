@@ -83,12 +83,12 @@ const importCode = (code: string, codeContainer: HTMLElement): void => {
 	codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 }
 
-const importAst = (astRoot: JoinPoint, astContainer: HTMLElement): void => {
+const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
   const astFragment = convertAstNodeToHtml(astRoot);
 	astContainer.innerHTML = '';
   astContainer.appendChild(astFragment);
 
-  addEventListenersToAstNodes(astRoot);
+  addEventListenersToAstNodes(astRoot, astContainer, codeContainer);
 }
 
 export { importCode, importAst };

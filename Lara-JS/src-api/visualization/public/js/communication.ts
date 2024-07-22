@@ -23,7 +23,7 @@ const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonEle
 
       continueButton.disabled = true;
       importCode(code, codeContainer);
-      importAst(ast, astContainer);
+      importAst(ast, astContainer, codeContainer);
       continueButton.disabled = buttonDisabled;
 
       break;
