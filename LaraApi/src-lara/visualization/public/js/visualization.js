@@ -49,55 +49,53 @@ const hideNodeInfo = () => {
     nodeInfoContainer.style.display = 'none';
     nodeInfoContainer.innerHTML = '';
 };
-const addHighlighingEvents = (() => {
-    let selectedNodeId = null;
-    return (node) => {
-        const nodeRelatedElements = getNodeRelatedElements(node.id);
-        for (const nodeRelatedElement of nodeRelatedElements) {
-            nodeRelatedElement.addEventListener('mouseover', event => {
-                highlightNode(node.id, false);
-                if (selectedNodeId !== null)
-                    highlightNode(selectedNodeId, true);
-                event.stopPropagation();
-            });
-            nodeRelatedElement.addEventListener('mouseout', event => {
-                unhighlightNode(node.id);
-                if (selectedNodeId !== null)
-                    highlightNode(selectedNodeId, true);
-                event.stopPropagation();
-            });
-            nodeRelatedElement.tabIndex = 0;
-            nodeRelatedElement.addEventListener('click', event => {
-                event.stopPropagation();
-                if (selectedNodeId !== null) {
-                    unhighlightNode(selectedNodeId);
-                    if (selectedNodeId === node.id) {
-                        selectedNodeId = null;
-                        hideNodeInfo();
-                        return;
-                    }
+let selectedNodeId = null;
+const addHighlighingEvents = (node) => {
+    const nodeRelatedElements = getNodeRelatedElements(node.id);
+    for (const nodeRelatedElement of nodeRelatedElements) {
+        nodeRelatedElement.addEventListener('mouseover', event => {
+            highlightNode(node.id, false);
+            if (selectedNodeId !== null)
+                highlightNode(selectedNodeId, true);
+            event.stopPropagation();
+        });
+        nodeRelatedElement.addEventListener('mouseout', event => {
+            unhighlightNode(node.id);
+            if (selectedNodeId !== null)
+                highlightNode(selectedNodeId, true);
+            event.stopPropagation();
+        });
+        nodeRelatedElement.tabIndex = 0;
+        nodeRelatedElement.addEventListener('click', event => {
+            event.stopPropagation();
+            if (selectedNodeId !== null) {
+                unhighlightNode(selectedNodeId);
+                if (selectedNodeId === node.id) {
+                    selectedNodeId = null;
+                    hideNodeInfo();
+                    return;
                 }
-                selectedNodeId = node.id;
-                highlightNode(node.id, true);
-                const nodeElement = getNodeElement(node.id);
-                const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
-                for (const element of [nodeElement, firstNodeCodeBlock]) {
-                    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                showNodeInfo(node.info);
-            });
-            // For keyboard accessibility
-            nodeRelatedElement.addEventListener('keydown', event => {
-                if (event.key === 'Enter') {
-                    nodeRelatedElement.click();
-                }
-                event.stopPropagation();
-            });
-        }
-    };
-})();
+            }
+            selectedNodeId = node.id;
+            highlightNode(node.id, true);
+            const nodeElement = getNodeElement(node.id);
+            const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
+            for (const element of [nodeElement, firstNodeCodeBlock]) {
+                element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            showNodeInfo(node.info);
+        });
+        // For keyboard accessibility
+        nodeRelatedElement.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                nodeRelatedElement.click();
+            }
+            event.stopPropagation();
+        });
+    }
+};
 const addEventListenersToAstNodes = (root) => {
-    const nodeId = root.id;
+    selectedNodeId = null; // To prevent invalid references
     addHighlighingEvents(root);
     root.children.forEach(child => addEventListenersToAstNodes(child));
 };
