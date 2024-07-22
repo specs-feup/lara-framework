@@ -122,8 +122,6 @@ main {
 .ast-node {
   width: min-content;
 
-  font-weight: 500;
-
   display: flex;
   justify-content: left;
   align-items: center;
@@ -170,8 +168,6 @@ main {
 
 #code-container .lines {
   color: var(--line-num-color);
-
-  white-space: pre;
 }
 
 
@@ -198,4 +194,33 @@ main {
 
 #node-info-container p > span:first-of-type::after {
   content: ': ';
+}
+
+
+.loading {
+  color: var(--text-color);
+  margin: auto;
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5em;
+  font-weight: 500;
+
+  display: block;
+
+  animation: loading-animation 1.5s ease-in-out infinite;
+}
+#code-container > .loading {
+  grid-column-end: span 2;
+}
+
+@keyframes loading-animation {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }

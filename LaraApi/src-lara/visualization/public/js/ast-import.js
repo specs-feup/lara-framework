@@ -55,9 +55,16 @@ const convertAstNodeToHtml = (root) => {
     return fragment;
 };
 const importCode = (code, codeContainer) => {
-    codeContainer.querySelector('code').innerHTML = code;
+    codeContainer.innerHTML = '';
+    const codeLines = document.createElement('pre');
+    codeLines.classList.add('lines');
+    codeContainer.appendChild(codeLines);
+    const codeWrapper = document.createElement('pre');
+    const codeElement = document.createElement('code');
+    codeElement.innerHTML = code;
+    codeWrapper.appendChild(codeElement);
+    codeContainer.appendChild(codeWrapper);
     const numLines = countChar(code, '\n') + 1;
-    const codeLines = codeContainer.querySelector('.lines');
     codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 const importAst = (astRoot, astContainer, codeContainer) => {
