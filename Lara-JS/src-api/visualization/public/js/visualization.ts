@@ -69,7 +69,7 @@ const hideNodeInfo = (): void => {
 const scrollIntoViewIfNeeded = (element: HTMLElement, parent: HTMLElement): void => {
   const rect = element.getBoundingClientRect();
   const parentRect = parent.getBoundingClientRect();
-  console.log(rect, parentRect);
+
   if (rect.bottom < parentRect.top || rect.top > parentRect.bottom) {
     const scrollPos = rect.height <= parentRect.height
         ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
@@ -138,4 +138,33 @@ const addEventListenersToAstNodes = (root: JoinPoint, astContainer: HTMLElement,
   root.children.forEach(child => addEventListenersToAstNodes(child, astContainer, codeContainer));
 };
 
-export { addEventListenersToAstNodes };
+const addDividerEventListeners = (resizer: HTMLElement, astContainer: HTMLElement, codeContainer: HTMLElement, continueButton: HTMLElement): void => {
+  let drag = false;
+  let width = astContainer.offsetWidth;
+
+  const rootStyle = document.documentElement.style;
+
+  const astLeft = astContainer.getBoundingClientRect().left;
+  const maxWidth = codeContainer.getBoundingClientRect().right - astLeft - 160;
+
+  resizer.addEventListener('mousedown', () => {
+    drag = true;
+  });
+
+  document.addEventListener('mouseup', () => {
+    drag = false;
+  });
+
+  document.addEventListener('mousemove', event => {
+    if (drag) {
+      width = event.x - astLeft;
+      if (width < continueButton.offsetWidth)
+        width = continueButton.offsetWidth;
+      else if (width > maxWidth)
+        width = maxWidth;
+      rootStyle.setProperty('--ast-container-width', `${width}px`);
+    }
+  });
+};
+
+export { addEventListenersToAstNodes, addDividerEventListeners };

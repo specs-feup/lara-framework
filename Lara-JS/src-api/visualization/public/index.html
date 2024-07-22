@@ -10,6 +10,7 @@
     <title>LARA Visualization Tool</title>
 </head>
 <body>
+    <script>0</script>  <!-- To prevent FOUC (Flash Of Unstyled Content) -->
     <header>
         <img class="specs-logo" src="/img/specs-logo.png" alt="SPeCS Logo">
         <h1>LARA Visualization Tool</h1>
@@ -19,13 +20,12 @@
             <span class="icon material-symbols-outlined">resume</span>
             Continue
         </button>
-        <div class="divider"></div>
+        <div id="resizer"></div>
         <div id="ast-container" class="container">
             <div class="loading">Loading...</div>
         </div>
         <div id="code-container" class="container">
             <div class="loading">Loading...</div>
-            </code></pre>
         </div>
         <div id="node-info-container" class="container"></div>
     </main>

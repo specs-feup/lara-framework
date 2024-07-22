@@ -1,3 +1,7 @@
+:root {
+  --ast-container-width: 0.5fr;
+}
+
 body {
   height: 100vh;
   margin: 0;
@@ -68,10 +72,10 @@ main {
   background-color: var(--bg-color);
 
   display: grid;
-  grid-template-columns: 2fr 1em 3fr;
+  grid-template-columns: var(--ast-container-width) 1em 1fr;
   grid-template-rows: min-content 1fr;
   grid-template-areas: "continue-button .       code"
-                       "ast             divider code";
+                       "ast             resizer code";
   row-gap: 1em;
 }
 
@@ -197,12 +201,12 @@ main {
 }
 
 
-.divider {
+#resizer {
   width: 0.2em;
   height: 1.2em;
   border-inline: 2px solid var(--border-color);
 
-  grid-area: divider;
+  grid-area: resizer;
   justify-self: center;
   align-self: center;
 }
