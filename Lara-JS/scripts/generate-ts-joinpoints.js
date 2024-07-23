@@ -166,13 +166,28 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
     )
     .join(", ");
 
+  const eventParameters = action.parameters
+    .map((parameter) => parameter.name.split(":")[0])
+    .join(", ");
+
   fs.writeSync(
     outputFile,
     `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
       action.returnType
-    } { return wrapJoinPoint(this._javaObject.${
+    } { 
+    eventListener.emit("ACTION", new Event(EventTime.BEFORE, "${
       action.name
-    }(${callParameters})); }\n`
+    }", this, undefined${
+      eventParameters.length > 0 ? `, ${eventParameters}` : ""
+    })); 
+    const res = wrapJoinPoint(this._javaObject.${
+      action.name
+    }(${callParameters})); 
+    eventListener.emit("ACTION", new Event(EventTime.AFTER, "${
+      action.name
+    }", this, res${eventParameters.length > 0 ? `, ${eventParameters}` : ""}));
+    return res;
+  }\n`
   );
 }
 
