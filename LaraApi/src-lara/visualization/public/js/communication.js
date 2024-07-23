@@ -16,7 +16,7 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
             const { code, ast } = data;
             const buttonDisabled = continueButton.disabled;
             continueButton.disabled = true;
-            importCode(code, codeContainer);
+            importCode(code[""], codeContainer);
             importAst(ast, astContainer, codeContainer);
             continueButton.disabled = buttonDisabled;
             break;
