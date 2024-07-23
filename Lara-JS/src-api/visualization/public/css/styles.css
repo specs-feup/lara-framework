@@ -256,7 +256,7 @@ main {
 
 .file-tab {
   height: 2.25em;
-  padding-inline: 0.75em;
+  padding-inline: 1em;
   border-radius: 2px;
   background-color: var(--tab-bg-color);
 

@@ -1,5 +1,40 @@
 import { countChar, createIcon, } from './utils.js';
 import { addEventListenersToAstNodes } from './visualization.js';
+const [getSelectedFilename, selectFile] = (() => {
+    let selectedFilename = null;
+    const getSelectedFilename = () => selectedFilename;
+    const selectFile = (filename, code, codeContainer, astRoot, astContainer) => {
+        if (filename !== selectedFilename) {
+            importCode(code, codeContainer);
+            importAst(astRoot, astContainer, astContainer);
+            console.log(filename);
+            document.querySelectorAll('.file-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.file-tab[data-filename="${filename}"]`).classList.add('active');
+        }
+    };
+    return [getSelectedFilename, selectFile];
+})();
+const createFileTab = (filename, code, codeContainer, astRoot, astContainer) => {
+    const fileTab = document.createElement('div');
+    fileTab.classList.add('file-tab');
+    fileTab.dataset.filename = filename;
+    fileTab.textContent = filename;
+    fileTab.addEventListener('click', () => selectFile(filename, code, codeContainer, astRoot, astContainer));
+    return fileTab;
+};
+const importCode = (code, codeContainer) => {
+    codeContainer.innerHTML = '';
+    const codeLines = document.createElement('pre');
+    codeLines.classList.add('lines');
+    codeContainer.appendChild(codeLines);
+    const codeWrapper = document.createElement('pre');
+    const codeElement = document.createElement('code');
+    codeElement.innerHTML = code;
+    codeWrapper.appendChild(codeElement);
+    codeContainer.appendChild(codeWrapper);
+    const numLines = countChar(code, '\n') + 1;
+    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+};
 const createAstNodeDropdownButton = () => {
     const dropdownButton = document.createElement('button');
     const chevronIcon = createIcon("keyboard_arrow_down");
@@ -54,24 +89,11 @@ const convertAstNodeToHtml = (root) => {
     }
     return fragment;
 };
-const importCode = (code, codeContainer) => {
-    codeContainer.innerHTML = '';
-    const codeLines = document.createElement('pre');
-    codeLines.classList.add('lines');
-    codeContainer.appendChild(codeLines);
-    const codeWrapper = document.createElement('pre');
-    const codeElement = document.createElement('code');
-    codeElement.innerHTML = code;
-    codeWrapper.appendChild(codeElement);
-    codeContainer.appendChild(codeWrapper);
-    const numLines = countChar(code, '\n') + 1;
-    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
-};
 const importAst = (astRoot, astContainer, codeContainer) => {
     const astFragment = convertAstNodeToHtml(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
     addEventListenersToAstNodes(astRoot, astContainer, codeContainer);
 };
-export { importCode, importAst };
+export { getSelectedFilename, createFileTab, importAst };
 //# sourceMappingURL=ast-import.js.map
