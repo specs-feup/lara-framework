@@ -179,6 +179,14 @@ main {
   color: var(--line-num-color);
 }
 
+#code-container code {
+  display: none;
+}
+
+#code-container code.active {
+  display: block;
+}
+
 
 #node-info-container {
   width: fit-content;

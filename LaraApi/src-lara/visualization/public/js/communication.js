@@ -1,4 +1,5 @@
-import { createFileTab, importAst } from "./ast-import.js";
+import { importAst, initCodeContainer } from "./ast-import.js";
+import { addFile, selectFile } from "./files.js";
 const getWebSocket = () => {
     const url = `ẁs://${window.location.host}`;
     return new WebSocket(url);
@@ -16,13 +17,11 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
             const { code, ast } = data;
             const buttonDisabled = continueButton.disabled;
             continueButton.disabled = true;
+            initCodeContainer(codeContainer);
+            for (const [filename, filecode] of Object.entries(code))
+                addFile(filename, filecode);
             importAst(ast, astContainer, codeContainer);
-            const fileTabArray = Object
-                .entries(code)
-                .map(([filename, filecode]) => createFileTab(filename, filecode, codeContainer, ast, astContainer));
-            fileTabs.innerHTML = '';
-            fileTabs.append(...fileTabArray);
-            fileTabArray[0].click();
+            selectFile(Object.keys(code)[0]);
             continueButton.disabled = buttonDisabled;
             break;
         case 'wait':
