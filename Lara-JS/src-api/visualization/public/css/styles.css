@@ -5,7 +5,8 @@
 body {
   height: 100vh;
   margin: 0;
-  position: relative;
+
+  z-index: 0;
 
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
@@ -73,10 +74,9 @@ main {
 
   display: grid;
   grid-template-columns: var(--ast-container-width) 1em 1fr;
-  grid-template-rows: min-content 1fr;
-  grid-template-areas: "continue-button .       code"
+  grid-template-rows: 3.5em 1fr;
+  grid-template-areas: "continue-button .       file-tabs"
                        "ast             resizer code";
-  row-gap: 1em;
 }
 
 
@@ -107,6 +107,7 @@ main {
   margin: 0;
   border: 1px solid var(--border-color);
   border-radius: 4px;
+  background-color: var(--bg-color);
 
   display: flex;
   flex-direction: column;
@@ -154,6 +155,8 @@ main {
 
 
 #code-container {
+  z-index: 1;
+
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1em;
@@ -179,11 +182,11 @@ main {
   width: fit-content;
   height: fit-content;
   padding-inline: 0.5em;
-  background-color: var(--bg-color);
 
   position: absolute;
   right: 2.5em;
   bottom: 2.5em;
+  z-index: 2;
 
   display: none;
 }
@@ -209,6 +212,22 @@ main {
   grid-area: resizer;
   justify-self: center;
   align-self: center;
+}
+
+
+#file-tabs {
+  height: 3em;
+  width: fit-content;
+  grid-area: file-tabs;
+  position: relative;
+  bottom: -1em;
+}
+
+#file-tabs:has(*) {
+  border-width: 1px 1px 0;
+  border-style: solid;
+  border-color: var(--border-color);
+  border-radius: 4px 4px 0 0;
 }
 
 
