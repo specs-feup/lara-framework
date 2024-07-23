@@ -113,8 +113,6 @@ const addDividerEventListeners = (resizer, astContainer, codeContainer, continue
     let drag = false;
     let width = astContainer.offsetWidth;
     const rootStyle = document.documentElement.style;
-    const astLeft = astContainer.getBoundingClientRect().left;
-    const maxWidth = codeContainer.getBoundingClientRect().right - astLeft - 160;
     resizer.addEventListener('mousedown', () => {
         drag = true;
     });
@@ -123,6 +121,8 @@ const addDividerEventListeners = (resizer, astContainer, codeContainer, continue
     });
     document.addEventListener('mousemove', event => {
         if (drag) {
+            const astLeft = astContainer.getBoundingClientRect().left;
+            const maxWidth = codeContainer.getBoundingClientRect().right - astLeft - 160;
             width = event.x - astLeft;
             if (width < continueButton.offsetWidth)
                 width = continueButton.offsetWidth;
