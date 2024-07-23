@@ -1,12 +1,10 @@
 :root {
-  --ast-container-width: 0.5fr;
+  --ast-container-width: 0.6fr;
 }
 
 body {
   height: 100vh;
   margin: 0;
-
-  z-index: 0;
 
   font-family: 'Roboto', sans-serif;
   color: var(--text-color);
@@ -102,15 +100,11 @@ main {
 
 .container {
   box-sizing: border-box;
-  height: 100%;
   padding: 0.25em 0.5em;
   margin: 0;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   background-color: var(--bg-color);
-
-  display: flex;
-  flex-direction: column;
 
   overflow: auto;
 }
@@ -119,6 +113,9 @@ main {
 #ast-container {
   font-weight: 500;
   line-height: 1.25em;
+
+  display: flex;
+  flex-direction: column;
 
   user-select: none;
   -webkit-user-select: none;
