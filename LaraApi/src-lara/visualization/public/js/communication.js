@@ -1,4 +1,4 @@
-import { importAst, importCode } from "./ast-import.js";
+import { createFileTab, importAst } from "./ast-import.js";
 const getWebSocket = () => {
     const url = `ẁs://${window.location.host}`;
     return new WebSocket(url);
@@ -9,15 +9,20 @@ const sendData = (ws, data) => {
 const parseMessage = (message) => {
     return JSON.parse(message.data);
 };
-const webSocketOnMessage = (message, continueButton, astContainer, codeContainer) => {
+const webSocketOnMessage = (message, continueButton, astContainer, codeContainer, fileTabs) => {
     const data = parseMessage(message);
     switch (data.message) {
         case 'update':
             const { code, ast } = data;
             const buttonDisabled = continueButton.disabled;
             continueButton.disabled = true;
-            importCode(code[""], codeContainer);
             importAst(ast, astContainer, codeContainer);
+            const fileTabArray = Object
+                .entries(code)
+                .map(([filename, filecode]) => createFileTab(filename, filecode, codeContainer, ast, astContainer));
+            fileTabs.innerHTML = '';
+            fileTabs.append(...fileTabArray);
+            fileTabArray[0].click();
             continueButton.disabled = buttonDisabled;
             break;
         case 'wait':
