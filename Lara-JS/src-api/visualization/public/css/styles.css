@@ -1,5 +1,5 @@
 :root {
-  --ast-container-width: 0.6fr;
+  --ast-container-width: 35vw;
 }
 
 body {
@@ -7,6 +7,7 @@ body {
   margin: 0;
 
   font-family: 'Roboto', sans-serif;
+  font-weight: 500;
   color: var(--text-color);
 
   display: grid;
@@ -67,11 +68,15 @@ header h1 {
 
 
 main {
+  --code-container-width: calc(100% - var(--ast-container-width) - 1em);
+
+  width: 100vw;
+  box-sizing: border-box;
   padding: 1em 2em 2em;
   background-color: var(--bg-color);
 
   display: grid;
-  grid-template-columns: var(--ast-container-width) 1em 1fr;
+  grid-template-columns: var(--ast-container-width) 1em var(--code-container-width);
   grid-template-rows: 3.5em 1fr;
   grid-template-areas: "continue-button .       file-tabs"
                        "ast             resizer code";
@@ -111,7 +116,6 @@ main {
 
 
 #ast-container {
-  font-weight: 500;
   line-height: 1.25em;
 
   display: flex;
@@ -162,12 +166,13 @@ main {
   -webkit-user-select: none;
 }
 
-#code-container pre {
-  margin: 0;
+#code-container .lines, #code-container pre code {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 400;
 }
 
-#code-container .lines, #code-container code {
-  font-family: "JetBrains Mono", monospace;
+#code-container pre {
+  margin: 0;
 }
 
 #code-container .lines {
@@ -179,6 +184,8 @@ main {
   width: fit-content;
   height: fit-content;
   padding-inline: 0.5em;
+
+  font-weight: 400;
 
   position: absolute;
   right: 2.5em;
@@ -200,31 +207,77 @@ main {
   content: ': ';
 }
 
-
 #resizer {
-  width: 0.2em;
+  width: 1em;
   height: 1.2em;
-  border-inline: 2px solid var(--border-color);
 
   grid-area: resizer;
   justify-self: center;
   align-self: center;
+
+  display: flex;
+  justify-content: center;
+}
+
+#resizer > div {
+  width: 0.2em;
+  border-inline: 2px solid var(--border-color);
 }
 
 
 #file-tabs {
-  height: 3em;
+  box-sizing: border-box;
+  height: 3.5em;
   width: fit-content;
-  grid-area: file-tabs;
-  position: relative;
-  bottom: -1em;
-}
+  max-width: 100%;
+  padding: 0.125em;
 
-#file-tabs:has(*) {
   border-width: 1px 1px 0;
   border-style: solid;
   border-color: var(--border-color);
   border-radius: 4px 4px 0 0;
+
+  grid-area: file-tabs;
+  position: relative;
+  bottom: calc(-1em + 1px);
+
+  display: flex;
+  align-items: start;
+  justify-content: left;
+  gap: 0.125em;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#file-tabs:not(:has(*)) {
+  display: none;
+}
+
+.file-tab {
+  height: 2.25em;
+  padding-inline: 0.75em;
+  border-radius: 2px;
+  background-color: var(--tab-bg-color);
+
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  transition: background-color 0.1s linear;
+}
+
+.file-tab:hover {
+  background-color: var(--tab-hover-bg-color);
+}
+
+.file-tab.active {
+  background-color: var(--tab-active-bg-color);
 }
 
 
@@ -234,12 +287,12 @@ main {
 
   font-family: 'Roboto', sans-serif;
   font-size: 1.5em;
-  font-weight: 500;
 
   display: block;
 
   animation: loading-animation 1.5s ease-in-out infinite;
 }
+
 #code-container > .loading {
   grid-column-end: span 2;
 }
