@@ -13,6 +13,7 @@ const clearFiles = () => {
     fileTabs.innerHTML = '';
     const codeContainer = getCodeContainer();
     codeContainer.querySelector('pre').innerHTML = '';
+    selectedFilename = null;
 };
 const selectFile = (filename) => {
     const fileTabs = getFileTabs();
