@@ -19,6 +19,8 @@ const clearFiles = (): void => {
 
   const codeContainer = getCodeContainer();
   codeContainer.querySelector('pre')!.innerHTML = '';
+
+  selectedFilename = null;
 }
 
 

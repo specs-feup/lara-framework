@@ -85,7 +85,6 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
   const nodeRelatedElements = getNodeRelatedElements(node.id);
   for (const nodeRelatedElement of nodeRelatedElements) {
     nodeRelatedElement.addEventListener('mouseover', event => {
-      console.log(node.id);
       highlightNode(node.id, false);
       if (selectedNodeId !== null)
         highlightNode(selectedNodeId, true);
