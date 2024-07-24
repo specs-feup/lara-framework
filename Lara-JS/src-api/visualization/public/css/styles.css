@@ -190,7 +190,9 @@ main {
 
 #node-info-container {
   width: fit-content;
+  max-width: 50vw;
   height: fit-content;
+  max-height: 50vh;
   padding-inline: 0.5em;
 
   font-weight: 400;
@@ -201,6 +203,8 @@ main {
   z-index: 2;
 
   display: none;
+
+  overflow: auto;
 }
 
 #node-info-container p {

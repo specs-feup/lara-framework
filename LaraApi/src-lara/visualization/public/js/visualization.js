@@ -57,7 +57,7 @@ const scrollIntoViewIfNeeded = (element, parent) => {
         const scrollPos = rect.height <= parentRect.height
             ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
             : rect.top - parentRect.top;
-        parent.scrollBy({ top: scrollPos, left: rect.left, behavior: 'smooth' });
+        parent.scrollBy({ top: scrollPos, left: 0, behavior: 'smooth' });
     }
 };
 let selectedNodeId = null;
