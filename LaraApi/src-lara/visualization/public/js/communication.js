@@ -1,5 +1,5 @@
 import { importAst, initCodeContainer } from "./ast-import.js";
-import { addFile, selectFile } from "./files.js";
+import { addFile, clearFiles, selectFile } from "./files.js";
 const getWebSocket = () => {
     const url = `ẁs://${window.location.host}`;
     return new WebSocket(url);
@@ -18,6 +18,7 @@ const webSocketOnMessage = (message, continueButton, astContainer, codeContainer
             const buttonDisabled = continueButton.disabled;
             continueButton.disabled = true;
             initCodeContainer(codeContainer);
+            clearFiles();
             for (const [filename, filecode] of Object.entries(code))
                 addFile(filename, filecode);
             importAst(ast, astContainer, codeContainer);

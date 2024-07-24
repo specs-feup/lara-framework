@@ -1,3 +1,4 @@
+import { selectFile } from "./files.js";
 const getNodeElement = (nodeId) => {
     return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
 };
@@ -5,7 +6,7 @@ const getNodeRelatedElements = (nodeId) => {
     return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`));
 };
 const highlightNode = (nodeId, strong) => {
-    const nodeCode = document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`);
+    const nodeCode = document.querySelectorAll(` .node-code[data-node-id="${nodeId}"]`);
     nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
     const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
     const nodeText = nodeElement.querySelector('.ast-node-text');
@@ -64,6 +65,7 @@ const addHighlighingEvents = (node, astContainer, codeContainer) => {
     const nodeRelatedElements = getNodeRelatedElements(node.id);
     for (const nodeRelatedElement of nodeRelatedElements) {
         nodeRelatedElement.addEventListener('mouseover', event => {
+            console.log(node.id);
             highlightNode(node.id, false);
             if (selectedNodeId !== null)
                 highlightNode(selectedNodeId, true);
@@ -88,6 +90,8 @@ const addHighlighingEvents = (node, astContainer, codeContainer) => {
             }
             selectedNodeId = node.id;
             highlightNode(node.id, true);
+            if (node.filename)
+                selectFile(node.filename);
             const nodeElement = getNodeElement(node.id);
             scrollIntoViewIfNeeded(nodeElement, astContainer);
             const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
