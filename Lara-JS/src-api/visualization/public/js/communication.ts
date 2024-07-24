@@ -1,5 +1,5 @@
 import { importAst, initCodeContainer } from "./ast-import.js";
-import { addFile, selectFile } from "./files.js";
+import { addFile, clearFiles, selectFile } from "./files.js";
 
 const getWebSocket = (): WebSocket => {
   const url = `ẁs://${window.location.host}`;
@@ -28,6 +28,7 @@ const webSocketOnMessage = (message: MessageEvent, continueButton: HTMLButtonEle
 
       initCodeContainer(codeContainer);
 
+      clearFiles();
       for (const [filename, filecode] of Object.entries(code))
         addFile(filename, filecode as string);
       

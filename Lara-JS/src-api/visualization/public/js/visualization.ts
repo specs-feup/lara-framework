@@ -1,3 +1,4 @@
+import { selectFile } from "./files.js";
 import JoinPoint, { JoinPointInfo } from "./ToolJoinPoint.js";
 
 const getNodeElement = (nodeId: string): HTMLElement | null => {
@@ -9,7 +10,7 @@ const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
 };
 
 const highlightNode = (nodeId: string, strong: boolean): void => {
-  const nodeCode = document.querySelectorAll<HTMLElement>(`.node-code[data-node-id="${nodeId}"]`)!;
+  const nodeCode = document.querySelectorAll<HTMLElement>(` .node-code[data-node-id="${nodeId}"]`)!;
   nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
 
   const nodeElement = document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`)!;
@@ -84,6 +85,7 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
   const nodeRelatedElements = getNodeRelatedElements(node.id);
   for (const nodeRelatedElement of nodeRelatedElements) {
     nodeRelatedElement.addEventListener('mouseover', event => {
+      console.log(node.id);
       highlightNode(node.id, false);
       if (selectedNodeId !== null)
         highlightNode(selectedNodeId, true);
@@ -111,6 +113,8 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
 
       selectedNodeId = node.id;
       highlightNode(node.id, true);
+      if (node.filename)
+        selectFile(node.filename);
 
       const nodeElement = getNodeElement(node.id)!;
       scrollIntoViewIfNeeded(nodeElement, astContainer);
