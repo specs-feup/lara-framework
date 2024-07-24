@@ -11,9 +11,11 @@
   --light-blue: #19d8ff;
   --strong-translucid-light-blue: #19d8ff66;
   --weak-translucid-light-blue: #19d8ff33;
+  --blue: blue;
+  --purple: purple;
 }
 
-/* Color Scheme */
+/* Color scheme */
 
 :root {
   --bg-color: var(--white);
