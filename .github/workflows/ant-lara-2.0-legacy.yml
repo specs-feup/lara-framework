@@ -9,9 +9,9 @@ on:
   pull_request:
     branches: [ lara-2.0-legacy ]
     
-  # Weekly on Monday at midnight
+  # Daily at midnight
   schedule:
-    - cron: '0 0 * * 1'
+    - cron: '0 0 * * *'
 jobs:
   build:
 
