@@ -1,3 +1,4 @@
+import { getAstContainer, getCodeContainer, getContinueButton, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
 const getNodeElement = (nodeId) => {
     return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
@@ -77,7 +78,7 @@ const scrollIntoViewIfNeeded = (element, parent) => {
     }
 };
 let selectedNodeId = null;
-const addHighlighingEvents = (node, astContainer, codeContainer) => {
+const addHighlighingEvents = (node) => {
     const nodeRelatedElements = getNodeRelatedElements(node.id);
     for (const nodeRelatedElement of nodeRelatedElements) {
         nodeRelatedElement.addEventListener('mouseover', event => {
@@ -108,10 +109,13 @@ const addHighlighingEvents = (node, astContainer, codeContainer) => {
             if (node.filepath)
                 selectFile(node.filepath);
             const nodeElement = getNodeElement(node.id);
+            const astContainer = getAstContainer();
             scrollIntoViewIfNeeded(nodeElement, astContainer);
             const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
-            if (firstNodeCodeBlock)
+            if (firstNodeCodeBlock) {
+                const codeContainer = getCodeContainer();
                 scrollIntoViewIfNeeded(firstNodeCodeBlock, codeContainer);
+            }
             showNodeInfo(node);
         });
         // For keyboard accessibility
@@ -123,12 +127,16 @@ const addHighlighingEvents = (node, astContainer, codeContainer) => {
         });
     }
 };
-const addEventListenersToAstNodes = (root, astContainer, codeContainer) => {
+const addEventListenersToAstNodes = (root) => {
     selectedNodeId = null; // To prevent invalid references
-    addHighlighingEvents(root, astContainer, codeContainer);
-    root.children.forEach(child => addEventListenersToAstNodes(child, astContainer, codeContainer));
+    addHighlighingEvents(root);
+    root.children.forEach(child => addEventListenersToAstNodes(child));
 };
-const addDividerEventListeners = (resizer, astContainer, codeContainer, continueButton) => {
+const addDividerEventListeners = () => {
+    const resizer = getResizer();
+    const astContainer = getAstContainer();
+    const codeContainer = getCodeContainer();
+    const continueButton = getContinueButton();
     let drag = false;
     let width = astContainer.offsetWidth;
     const rootStyle = document.documentElement.style;

@@ -1,6 +1,5 @@
 import { countChar, createIcon, } from './utils.js';
-import { addEventListenersToAstNodes } from './visualization.js';
-import { getCodeContainer } from './components.js';
+import { getAstContainer, getCodeContainer } from './components.js';
 const updateLines = () => {
     const codeContainer = getCodeContainer();
     const codeLines = codeContainer.querySelector('.lines');
@@ -8,7 +7,8 @@ const updateLines = () => {
     const numLines = countChar(code, '\n') + 1;
     codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
-const initCodeContainer = (codeContainer) => {
+const initCodeContainer = () => {
+    const codeContainer = getCodeContainer();
     codeContainer.innerHTML = '';
     const codePre = document.createElement('pre');
     codePre.classList.add('lines');
@@ -78,11 +78,11 @@ const convertAstNodeToHtml = (root) => {
     }
     return fragment;
 };
-const importAst = (astRoot, astContainer, codeContainer) => {
+const importAst = (astRoot) => {
+    const astContainer = getAstContainer();
     const astFragment = convertAstNodeToHtml(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
-    addEventListenersToAstNodes(astRoot, astContainer, codeContainer);
 };
 export { importAst, initCodeContainer, addCode, updateLines };
 //# sourceMappingURL=ast-import.js.map
