@@ -3,7 +3,6 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import { wrapJoinPoint } from '../LaraJoinPoint.js';
 import JoinPoints from '../weaver/JoinPoints.js';
 export default class GenericVisualizationTool {
     hostname;
@@ -109,14 +108,12 @@ export default class GenericVisualizationTool {
         });
     }
     updateClient(ws) {
-        wrapJoinPoint(JoinPoints.root()._javaObject.rebuild()); // TODO: Perform rebuild on AstConverter
+        const astConverter = this.getAstConverter();
+        astConverter.updateAst();
         this.sendToClient(ws, {
             message: 'update',
-            ast: this.getAstConverter()
-                .getToolAst(this.astRoot)
-                .toJson(),
-            code: this.getAstConverter()
-                .getPrettyHtmlCode(this.astRoot),
+            ast: astConverter.getToolAst(this.astRoot).toJson(),
+            code: astConverter.getPrettyHtmlCode(this.astRoot),
         });
     }
     update(astRoot = JoinPoints.root()) {

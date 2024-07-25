@@ -6,6 +6,7 @@ export type FilesCode = {
 };
 
 export default interface GenericAstConverter {
+  updateAst(): void;
   getToolAst(root: LaraJoinPoint): ToolJoinPoint; 
   getPrettyHtmlCode(root: LaraJoinPoint): FilesCode;
 }
