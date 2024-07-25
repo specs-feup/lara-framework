@@ -11,6 +11,11 @@ import JoinPoints from '../weaver/JoinPoints.js';
 import GenericAstConverter, { FilesCode } from './GenericAstConverter.js';
 import ToolJoinPoint from './public/js/ToolJoinPoint.js';
 
+type VisualizationOptions = {
+  astRoot: LaraJoinPoint;
+  hostname: string;
+  port: number;
+}
 
 export default abstract class GenericVisualizationTool {
   #hostname: string | undefined;
@@ -20,7 +25,7 @@ export default abstract class GenericVisualizationTool {
   #toolAst: ToolJoinPoint | undefined;
   #prettyHtmlCode: FilesCode | undefined;
 
-  public isLaunched(): boolean {
+  get isLaunched(): boolean {
     return this.#wss !== undefined && this.#serverClosed === false;
   }
 
@@ -34,6 +39,14 @@ export default abstract class GenericVisualizationTool {
 
   get url(): string | undefined {
     return this.#hostname && this.#port ? `http://${this.#hostname}:${this.#port}` : undefined;
+  }
+
+  private updateAstAndCode(astRoot: LaraJoinPoint): void {
+    const astConverter = this.getAstConverter();
+    astConverter.updateAst();
+    
+    this.#toolAst = astConverter.getToolAst(astRoot);
+    this.#prettyHtmlCode = astConverter.getPrettyHtmlCode(astRoot);
   }
 
   private onWssError(error: NodeJS.ErrnoException): void {
@@ -54,49 +67,25 @@ export default abstract class GenericVisualizationTool {
     this.#wss!.close();
   }
 
-  private updateAstAndCode(astRoot: LaraJoinPoint): void {
-    const astConverter = this.getAstConverter();
-    astConverter.updateAst();
-    
-    this.#toolAst = astConverter.getToolAst(astRoot);
-    this.#prettyHtmlCode = astConverter.getPrettyHtmlCode(astRoot);
-  }
-
-  private openBrowser(url: string): void {
-    const command = process.platform == 'darwin' ? 'open' : process.platform == 'win32'? 'start' : 'xdg-open';
-    child.exec(`${command} ${url}`);
-  }
-
-  public async launch(hostname: string = '127.0.0.1', port?: number, astRoot: LaraJoinPoint = JoinPoints.root()): Promise<void> {
-    if (this.isLaunched()) {
-      console.warn(`Visualization tool is already running at ${this.url}`);
-      return;
-    }
-
+  private async launch({ hostname, port }: VisualizationOptions): Promise<void> {
     const app = express();
     const server = http.createServer(app);
     this.#wss = new WebSocketServer({ server: server });
 
     const filename = fileURLToPath(import.meta.url);
     const dirname = path.dirname(filename);
-
     app.use(express.static(path.join(dirname, 'public')));
     
-    this.updateAstAndCode(astRoot);
     this.#wss.on('connection', ws => this.updateClient(ws));
-
     this.#wss.on('close', () => { this.#serverClosed = true; });
     this.#wss.on('error', error => this.onWssError(error));
 
     return new Promise(res => {
-      server.listen(port ?? 0, hostname, () => {
+      server.listen(port, hostname, () => {
         const addressInfo = server.address() as AddressInfo;
         this.#hostname = addressInfo.address;
         this.#port = addressInfo.port;
         this.#serverClosed = false;
-
-        console.log(`\nVisualization tool is running at ${this.url}\n`);
-        this.openBrowser(this.url!);
         
         res();
       });
@@ -111,16 +100,10 @@ export default abstract class GenericVisualizationTool {
     this.#wss!.clients.forEach(ws => this.sendToClient(ws, data));
   }
 
-  private verifyToolIsRunning(): void {
-    if (!this.isLaunched()) {
-      throw Error('Visualization tool is not running');
-    }
-  }
-
   private updateClient(ws: WebSocket): void {
     this.sendToClient(ws, {
       message: 'update',
-      ast: this.#toolAst!,
+      ast: this.#toolAst!.toJson(),
       code: this.#prettyHtmlCode!,
     });
   }
@@ -152,16 +135,16 @@ export default abstract class GenericVisualizationTool {
     });
   }
 
-  public async visualize(astRoot: LaraJoinPoint = JoinPoints.root()): Promise<void> {
-    this.verifyToolIsRunning();
+  public async visualize(astRoot: LaraJoinPoint = JoinPoints.root(), port: number = 3000, hostname: string = '127.0.0.1'): Promise<void> {
+    this.updateAstAndCode(astRoot!);
 
-    const astConverter = this.getAstConverter();
-    astConverter.updateAst();
-    
-    this.updateAstAndCode(astRoot);
-    this.#wss!.clients.forEach(ws => this.updateClient(ws));
+    if (!this.isLaunched) {
+      await this.launch({astRoot, hostname, port});
+    } else {
+      this.#wss!.clients.forEach(ws => this.updateClient(ws));
+    }
 
-    console.log(`\nVisualization tool is still running at${this.url}\n`);
+    console.log(`\nVisualization tool is running at ${this.url}\n`);
     await this.waitForTool();
   }
 

@@ -3,7 +3,6 @@ import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import child from 'child_process';
 import JoinPoints from '../weaver/JoinPoints.js';
 export default class GenericVisualizationTool {
     #hostname;
@@ -12,7 +11,7 @@ export default class GenericVisualizationTool {
     #serverClosed = false;
     #toolAst;
     #prettyHtmlCode;
-    isLaunched() {
+    get isLaunched() {
         return this.#wss !== undefined && this.#serverClosed === false;
     }
     get hostname() {
@@ -23,6 +22,12 @@ export default class GenericVisualizationTool {
     }
     get url() {
         return this.#hostname && this.#port ? `http://${this.#hostname}:${this.#port}` : undefined;
+    }
+    updateAstAndCode(astRoot) {
+        const astConverter = this.getAstConverter();
+        astConverter.updateAst();
+        this.#toolAst = astConverter.getToolAst(astRoot);
+        this.#prettyHtmlCode = astConverter.getPrettyHtmlCode(astRoot);
     }
     onWssError(error) {
         switch (error.code) {
@@ -39,39 +44,22 @@ export default class GenericVisualizationTool {
         ;
         this.#wss.close();
     }
-    updateAstAndCode(astRoot) {
-        const astConverter = this.getAstConverter();
-        astConverter.updateAst();
-        this.#toolAst = astConverter.getToolAst(astRoot);
-        this.#prettyHtmlCode = astConverter.getPrettyHtmlCode(astRoot);
-    }
-    openBrowser(url) {
-        const command = process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open';
-        child.exec(`${command} ${url}`);
-    }
-    async launch(hostname = '127.0.0.1', port, astRoot = JoinPoints.root()) {
-        if (this.isLaunched()) {
-            console.warn(`Visualization tool is already running at ${this.url}`);
-            return;
-        }
+    async launch({ hostname, port }) {
         const app = express();
         const server = http.createServer(app);
         this.#wss = new WebSocketServer({ server: server });
         const filename = fileURLToPath(import.meta.url);
         const dirname = path.dirname(filename);
         app.use(express.static(path.join(dirname, 'public')));
-        this.updateAstAndCode(astRoot);
         this.#wss.on('connection', ws => this.updateClient(ws));
         this.#wss.on('close', () => { this.#serverClosed = true; });
         this.#wss.on('error', error => this.onWssError(error));
         return new Promise(res => {
-            server.listen(port ?? 0, hostname, () => {
+            server.listen(port, hostname, () => {
                 const addressInfo = server.address();
                 this.#hostname = addressInfo.address;
                 this.#port = addressInfo.port;
                 this.#serverClosed = false;
-                console.log(`\nVisualization tool is running at ${this.url}\n`);
-                this.openBrowser(this.url);
                 res();
             });
         });
@@ -82,15 +70,10 @@ export default class GenericVisualizationTool {
     sendToAllClients(data) {
         this.#wss.clients.forEach(ws => this.sendToClient(ws, data));
     }
-    verifyToolIsRunning() {
-        if (!this.isLaunched()) {
-            throw Error('Visualization tool is not running');
-        }
-    }
     updateClient(ws) {
         this.sendToClient(ws, {
             message: 'update',
-            ast: this.#toolAst,
+            ast: this.#toolAst.toJson(),
             code: this.#prettyHtmlCode,
         });
     }
@@ -116,13 +99,15 @@ export default class GenericVisualizationTool {
             this.#wss.on('connection', placeClientOnWait);
         });
     }
-    async visualize(astRoot = JoinPoints.root()) {
-        this.verifyToolIsRunning();
-        const astConverter = this.getAstConverter();
-        astConverter.updateAst();
+    async visualize(astRoot = JoinPoints.root(), port = 3000, hostname = '127.0.0.1') {
         this.updateAstAndCode(astRoot);
-        this.#wss.clients.forEach(ws => this.updateClient(ws));
-        console.log(`\nVisualization tool is still running at${this.url}\n`);
+        if (!this.isLaunched) {
+            await this.launch({ astRoot, hostname, port });
+        }
+        else {
+            this.#wss.clients.forEach(ws => this.updateClient(ws));
+        }
+        console.log(`\nVisualization tool is running at ${this.url}\n`);
         await this.waitForTool();
     }
 }
