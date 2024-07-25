@@ -131,8 +131,8 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
 
       selectedNodeId = node.id;
       highlightNode(node.id, true);
-      if (node.filename)
-        selectFile(node.filename);
+      if (node.filepath)
+        selectFile(node.filepath);
 
       const nodeElement = getNodeElement(node.id)!;
       scrollIntoViewIfNeeded(nodeElement, astContainer);
