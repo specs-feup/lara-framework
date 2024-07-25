@@ -10,7 +10,7 @@ const setupEventListeners = (ws) => {
     let ws;
     const setupWebSocket = () => {
         ws = getWebSocket();
-        ws.addEventListener('close', () => setTimeout(setupWebSocket));
+        ws.addEventListener('close', () => setTimeout(setupWebSocket, 1000));
     };
     setupWebSocket();
     setupEventListeners(ws);
