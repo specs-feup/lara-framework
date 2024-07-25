@@ -62,13 +62,22 @@ const getHighlightableElements = (nodeId) => {
     return [nodeText, ...nodeCodeElements];
 };
 const getMainCodeWrapper = () => {
-    return getCodeContainer().querySelector('pre.code-wrapper');
+    return getCodeContainer().querySelector('.code-wrapper');
 };
 const getCodeLines = () => {
-    return getCodeContainer().querySelector('pre.lines');
+    return getCodeContainer().querySelector('.lines');
 };
 const getActiveCodeElement = () => {
     return getMainCodeWrapper()?.querySelector('code.active') ?? null;
+};
+const getFileCodeElement = (filename) => {
+    return getCodeContainer().querySelector(`code[data-filepath="${filename}"]`);
+};
+const getFileTab = (filepath) => {
+    return getFileTabs().querySelector(`.file-tab[data-filepath="${filepath}"]`);
+};
+const getActiveFileTab = () => {
+    return getFileTabs().querySelector('.file-tab.active');
 };
 const createNodeDropdown = (nodeId) => {
     const dropdown = document.createElement('div');
@@ -149,5 +158,5 @@ const createFileTab = (filepath) => {
     fileTab.textContent = filepath !== '' ? filepath.slice(filepath.lastIndexOf('/') + 1) : '<no file>';
     return fileTab;
 };
-export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
+export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, getFileCodeElement, getFileTab, getActiveFileTab, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
 //# sourceMappingURL=components.js.map

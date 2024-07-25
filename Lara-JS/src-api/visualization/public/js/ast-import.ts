@@ -1,4 +1,4 @@
-import { countChar, createIcon, } from './utils.js';
+import { countChar } from './utils.js';
 import JoinPoint from './ToolJoinPoint.js';
 import { createCodeElement, createCodeLines, createCodeWrapper, createNodeDropdown, createNodeDropdownButton, createNodeElement, getActiveCodeElement, getAstContainer, getCodeContainer, getCodeLines, getMainCodeWrapper } from './components.js';
 

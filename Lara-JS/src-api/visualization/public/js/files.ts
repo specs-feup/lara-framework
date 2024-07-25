@@ -1,5 +1,5 @@
 import { addCode, updateLines } from "./ast-import.js";
-import { createFileTab, getCodeContainer, getFileTabs } from "./components.js";
+import { createFileTab, getActiveCodeElement, getActiveFileTab, getFileCodeElement, getFileTab, getFileTabs, getMainCodeWrapper } from "./components.js";
 
 let selectedFilepath: string | null = null;
 
@@ -11,41 +11,42 @@ const addFile = (path: string, code: string): void => {
 
   const fileTabs = getFileTabs();
   fileTabs.appendChild(fileTab);
-}
+};
 
 const clearFiles = (): void => {
+  const codeWrapper = getMainCodeWrapper();
+  if (!codeWrapper)
+    throw new Error('Code container not initialized');
+
   const fileTabs = getFileTabs();
   fileTabs.innerHTML = '';
-
-  const codeContainer = getCodeContainer();
-  codeContainer.querySelector('pre')!.innerHTML = '';
+  codeWrapper.innerHTML = '';
 
   selectedFilepath = null;
-}
+};
 
 
 const selectFile = (filepath: string): void => {
-  const fileTabs = getFileTabs();
+  const fileTab = getFileTab(filepath);
+  if (!fileTab)
+    throw new Error(`File "${filepath}" not found`);
 
   if (filepath !== selectedFilepath) {
-    const codeContainer = getCodeContainer();
+    const activeFileTab = getActiveFileTab();
+    if (activeFileTab)
+      activeFileTab.classList.remove('active');
+    fileTab.classList.add('active');
 
-    const selectedTab = fileTabs.querySelector(`.file-tab[data-filepath="${filepath}"]`)!;
-    if (selectedTab === null)
-      throw Error(`File "${filepath}" not found`);
-
-    fileTabs.querySelector('.file-tab.active')?.classList.remove('active');
-    selectedTab.classList.add('active');
-
-    const fileCode = codeContainer.querySelector(`code[data-filepath="${filepath}"]`)!;
-    const activeCode = codeContainer.querySelector('code.active');
+    const activeCode = getActiveCodeElement();
     if (activeCode)
       activeCode.classList.remove('active');
-    fileCode.classList.add('active');
+
+    const fileCodeElement = getFileCodeElement(filepath)!;
+    fileCodeElement.classList.add('active');
     updateLines();
 
     selectedFilepath = filepath;
   }
-}
+};
 
 export { addFile, clearFiles, selectFile };
