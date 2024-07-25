@@ -65,13 +65,13 @@ const showNodeInfo = (node: JoinPoint): void => {
       nodeInfoContainer.appendChild(alert);
     }
   }
-}
+};
 
 const hideNodeInfo = (): void => {
   const nodeInfoContainer = getNodeInfoContainer();
   nodeInfoContainer.style.display = 'none';
   nodeInfoContainer.innerHTML = '';
-}
+};
 
 const scrollIntoViewIfNeeded = (element: HTMLElement, parent: HTMLElement): void => {
   const rect = element.getBoundingClientRect();
@@ -137,7 +137,7 @@ const highlightableOnClick = (node: JoinPoint, event: Event): void => {
 const addHighlighingEventListeners = (root: JoinPoint): void => {
   const addListeners = (node: JoinPoint) => {
     const highlightableElements = getHighlightableElements(node.id);
-    console.log(highlightableElements);
+
     for (const element of highlightableElements) {
       element.addEventListener('mouseover', event => highlightableOnMouseOver(node, event));
       element.addEventListener('mouseout', event => highlightableOnMouseOut(node, event));

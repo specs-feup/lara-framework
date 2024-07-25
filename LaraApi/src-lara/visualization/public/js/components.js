@@ -1,3 +1,4 @@
+import { createIcon } from "./utils.js";
 const getAstContainer = (() => {
     const astContainer = document.querySelector('#ast-container');
     if (!astContainer) {
@@ -60,13 +61,70 @@ const getHighlightableElements = (nodeId) => {
     const nodeCodeElements = getNodeCodeElements(nodeId);
     return [nodeText, ...nodeCodeElements];
 };
+const getMainCodeWrapper = () => {
+    return getCodeContainer().querySelector('pre.code-wrapper');
+};
+const getCodeLines = () => {
+    return getCodeContainer().querySelector('pre.lines');
+};
+const getActiveCodeElement = () => {
+    return getMainCodeWrapper()?.querySelector('code.active') ?? null;
+};
+const createNodeDropdown = (nodeId) => {
+    const dropdown = document.createElement('div');
+    dropdown.classList.add('ast-node-dropdown');
+    dropdown.dataset.nodeId = nodeId;
+    return dropdown;
+};
+const createDropdownButtonOnClick = (dropdown) => {
+    let nodeCollapsed = false;
+    return (event) => {
+        nodeCollapsed = !nodeCollapsed;
+        dropdown.style.display = nodeCollapsed ? 'none' : 'block';
+        const dropdownButton = event.currentTarget;
+        const chevronIcon = dropdownButton.children[0];
+        chevronIcon.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
+        event.stopPropagation();
+    };
+};
+const createNodeDropdownButton = (dropdown) => {
+    const dropdownButton = document.createElement('button');
+    const arrowIcon = createIcon('keyboard_arrow_down');
+    dropdownButton.appendChild(arrowIcon);
+    if (dropdown) {
+        dropdownButton.addEventListener('click', createDropdownButtonOnClick(dropdown));
+    }
+    else {
+        dropdownButton.disabled = true;
+    }
+    return dropdownButton;
+};
+const createNodeElement = (nodeId, text, dropdownButton) => {
+    const nodeElement = document.createElement('span'); // TODO: Convert to div
+    nodeElement.classList.add('ast-node');
+    nodeElement.dataset.nodeId = nodeId;
+    const nodeText = document.createElement('span');
+    nodeText.classList.add('node-text');
+    nodeText.textContent = text;
+    nodeElement.appendChild(dropdownButton);
+    nodeElement.appendChild(nodeText);
+    return nodeElement;
+};
 const createCodeElement = (code = '') => {
     const codeElement = document.createElement('code');
-    codeElement.textContent = code;
+    codeElement.innerHTML = code;
     return codeElement;
 };
+const createCodeLines = (numLines) => {
+    const codeLines = document.createElement('pre');
+    codeLines.classList.add('lines');
+    codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+    return codeLines;
+};
 const createCodeWrapper = () => {
-    return document.createElement('pre');
+    const codeWrapper = document.createElement('pre');
+    codeWrapper.classList.add('code-wrapper');
+    return codeWrapper;
 };
 const createNodeInfoLine = (name, value) => {
     const attributeName = document.createElement('span');
@@ -91,5 +149,5 @@ const createFileTab = (filepath) => {
     fileTab.textContent = filepath !== '' ? filepath.slice(filepath.lastIndexOf('/') + 1) : '<no file>';
     return fileTab;
 };
-export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, createNodeInfoLine, createNodeInfoAlert, createCodeElement, createCodeWrapper, createFileTab, };
+export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
 //# sourceMappingURL=components.js.map
