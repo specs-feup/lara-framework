@@ -7,15 +7,19 @@
   --gray: #a2a2a2;
   --dark-gray: #747474;
   --darker-gray: #313131;
-  --black: #000;
+  --black: #161616;
   --light-blue: #19d8ff;
   --strong-translucid-light-blue: #19d8ff66;
   --weak-translucid-light-blue: #19d8ff33;
-  --blue: blue;
-  --purple: purple;
+  --gray-blue: #005cb3;
+  --strong-translucid-gray-blue: #005cb3aa;
+  --weak-translucid-gray-blue: #005cb355;
+  --blue: #0000ff;
+  --violet: #c58bff;
+  --purple: #8c00c4;
 }
 
-/* Color scheme */
+/* Light color scheme */
 
 :root {
   --bg-color: var(--white);
@@ -39,4 +43,32 @@
 
   --line-num-color: var(--dark-gray);
   --secondary-code-bg-color: var(--lighter-gray);
+}
+
+/* Dark color scheme */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: var(--darker-gray);
+    --text-color: var(--white);
+    --header-color: var(--black);
+    --border-color: var(--lighter-gray);
+    --icon-color: var(--white);
+    --disabled-icon-color: var(--gray);
+
+    --button-bg-color: var(--darker-gray);
+    --button-hover-bg-color: var(--dark-gray);
+    --button-disabled-bg-color: var(--dark-gray);
+
+    --tab-bg-color: var(--darker-gray);
+    --tab-hover-bg-color: var(--dark-gray);
+    --tab-active-bg-color: var(--dark-gray);
+
+    --highlight-color: var(--gray-blue);
+    --secondary-highlight-color: var(--strong-translucid-gray-blue);
+    --tertiary-highlight-color: var(--weak-translucid-gray-blue);
+
+    --line-num-color: var(--gray);
+    --secondary-code-bg-color: var(--dark-gray);
+  }
 }
