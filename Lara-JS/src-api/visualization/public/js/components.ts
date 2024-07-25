@@ -14,6 +14,14 @@ const getCodeContainer = (() => {
   return (): HTMLDivElement => codeContainer;
 })();
 
+const getNodeInfoContainer = (() => {
+  const nodeInfoContainer = document.querySelector<HTMLDivElement>('#node-info-container');
+  if (!nodeInfoContainer) {
+    throw new Error('Could not find node info container')
+  }
+  return (): HTMLDivElement => nodeInfoContainer;
+})();
+
 const getContinueButton = (() => {
   const continueButton = document.querySelector<HTMLButtonElement>('#continue-button');
   if (!continueButton) {
@@ -38,6 +46,63 @@ const getFileTabs = (() => {
   return (): HTMLDivElement => fileTabs;
 })();
 
+
+const getNodeElement = (nodeId: string): HTMLSpanElement | null => {
+  return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
+}
+
+const getNodeText = (nodeId: string): HTMLSpanElement | null => {
+  const nodeElement = getNodeElement(nodeId);
+  return nodeElement?.querySelector('.node-text') ?? null;
+};
+
+const getFirstNodeCodeElement = (nodeId: string): HTMLSpanElement | null => {
+  return document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
+}
+
+const getNodeCodeElements = (nodeId: string): HTMLSpanElement[] => {
+  return Array.from(document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`));
+};
+
+const getHighlightableElements = (nodeId: string): HTMLElement[] => {
+  const nodeText = getNodeText(nodeId);
+  if (!nodeText)
+    return [];
+
+  const nodeCodeElements = getNodeCodeElements(nodeId);
+  return [nodeText, ...nodeCodeElements];
+};
+
+
+const createCodeElement = (code: string = ''): HTMLElement => {
+  const codeElement = document.createElement('code');
+  codeElement.textContent = code;
+  return codeElement;
+}
+
+const createCodeWrapper = (): HTMLPreElement => {
+  return document.createElement('pre');
+}
+
+const createNodeInfoLine = (name: string, value: string): HTMLParagraphElement => {
+  const attributeName = document.createElement('span');
+  attributeName.textContent = name + ': ';
+
+  const attributeValue = document.createElement('span');
+  attributeValue.textContent = value;
+
+  const line = document.createElement('p');
+  line.append(attributeName, attributeValue);
+  return line;
+}
+
+const createNodeInfoAlert = (alert: string): HTMLParagraphElement => {
+  const codeAlert = document.createElement('p');
+  codeAlert.classList.add('alert');
+  codeAlert.textContent = alert;
+  return codeAlert;
+}
+
 const createFileTab = (filepath: string): HTMLButtonElement => {
 	const fileTab = document.createElement('button');
 	fileTab.classList.add('file-tab');
@@ -52,8 +117,18 @@ const createFileTab = (filepath: string): HTMLButtonElement => {
 export {
   getAstContainer,
   getCodeContainer,
+  getNodeInfoContainer,
   getContinueButton,
   getResizer,
   getFileTabs,
+  getNodeElement,
+  getNodeText,
+  getFirstNodeCodeElement,
+  getNodeCodeElements,
+  getHighlightableElements,
+  createNodeInfoLine,
+  createNodeInfoAlert,
+  createCodeElement,
+  createCodeWrapper,
   createFileTab,
 };
