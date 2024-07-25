@@ -6,7 +6,7 @@ let selectedFilename: string | null = null;
 const addFile = (name: string, code: string): void => {
   addCode(code, name);
   
-  const fileTab = createFileTab(name, code);
+  const fileTab = createFileTab(name);
   fileTab.addEventListener('click', () => selectFile(name));
 
   const fileTabs = getFileTabs();

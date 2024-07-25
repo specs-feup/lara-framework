@@ -33,11 +33,11 @@ const getFileTabs = (() => {
     }
     return () => fileTabs;
 })();
-const createFileTab = (filename, code) => {
+const createFileTab = (filename) => {
     const fileTab = document.createElement('div');
     fileTab.classList.add('file-tab');
     fileTab.dataset.filename = filename;
-    fileTab.textContent = filename;
+    fileTab.textContent = filename ?? '<no file>';
     return fileTab;
 };
 export { getAstContainer, getCodeContainer, getContinueButton, getResizer, getFileTabs, createFileTab, };

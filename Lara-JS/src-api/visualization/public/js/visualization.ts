@@ -43,12 +43,12 @@ const unhighlightNode = (nodeId: string): void => {
   }
 };
 
-const showNodeInfo = (nodeInfo: JoinPointInfo): void => {
+const showNodeInfo = (node: JoinPoint): void => {
   const nodeInfoContainer = document.querySelector<HTMLElement>('#node-info-container')!;
   nodeInfoContainer.style.display = 'block';
   nodeInfoContainer.innerHTML = ''
 
-  for (const [name, value] of Object.entries(nodeInfo)) {
+  for (const [name, value] of Object.entries(node.info)) {
     const attributeName = document.createElement('span');
     attributeName.textContent = name;
 
@@ -58,6 +58,19 @@ const showNodeInfo = (nodeInfo: JoinPointInfo): void => {
     const line = document.createElement('p');
     line.append(attributeName, attributeValue);
     nodeInfoContainer.appendChild(line);
+  }
+
+  if (!document.querySelector(`.node-code[data-node-id="${node.id}"]`)) {
+    const codeAlert = document.createElement('p');
+    codeAlert.classList.add('alert');
+    codeAlert.textContent = 'Node code not found';
+
+    const codeWrapper = document.createElement('pre');
+    const code = document.createElement('code');
+    code.textContent = node.code;
+    codeWrapper.appendChild(code)
+
+    nodeInfoContainer.append(codeAlert, codeWrapper);
   }
 }
 
@@ -121,7 +134,7 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
       if (firstNodeCodeBlock)
         scrollIntoViewIfNeeded(firstNodeCodeBlock!, codeContainer);
 
-      showNodeInfo(node.info);
+      showNodeInfo(node);
     });
 
     // For keyboard accessibility
