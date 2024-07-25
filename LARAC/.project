@@ -18,8 +18,8 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.apache.ivyde.eclipse.ivynature</nature>
 		<nature>sf.eclipse.javacc.core.javaccnature</nature>
+		<nature>org.apache.ivyde.eclipse.ivynature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
