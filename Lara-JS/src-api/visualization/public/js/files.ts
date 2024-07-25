@@ -1,13 +1,13 @@
 import { addCode, updateLines } from "./ast-import.js";
 import { createFileTab, getCodeContainer, getFileTabs } from "./components.js";
 
-let selectedFilename: string | null = null;
+let selectedFilepath: string | null = null;
 
-const addFile = (name: string, code: string): void => {
-  addCode(code, name);
+const addFile = (path: string, code: string): void => {
+  addCode(code, path);
   
-  const fileTab = createFileTab(name);
-  fileTab.addEventListener('click', () => selectFile(name));
+  const fileTab = createFileTab(path);
+  fileTab.addEventListener('click', () => selectFile(path));
 
   const fileTabs = getFileTabs();
   fileTabs.appendChild(fileTab);
@@ -20,28 +20,28 @@ const clearFiles = (): void => {
   const codeContainer = getCodeContainer();
   codeContainer.querySelector('pre')!.innerHTML = '';
 
-  selectedFilename = null;
+  selectedFilepath = null;
 }
 
 
-const selectFile = (filename: string): void => {
+const selectFile = (filepath: string): void => {
   const fileTabs = getFileTabs();
 
-  if (filename !== selectedFilename) {
+  if (filepath !== selectedFilepath) {
     const codeContainer = getCodeContainer();
 
-    const selectedTab = fileTabs.querySelector(`.file-tab[data-filename="${filename}"]`)!;
+    const selectedTab = fileTabs.querySelector(`.file-tab[data-filepath="${filepath}"]`)!;
     fileTabs.querySelector('.file-tab.active')?.classList.remove('active');
     selectedTab.classList.add('active');
 
-    const fileCode = codeContainer.querySelector(`code[data-filename="${filename}"]`)!;
+    const fileCode = codeContainer.querySelector(`code[data-filepath="${filepath}"]`)!;
     const activeCode = codeContainer.querySelector('code.active');
     if (activeCode)
       activeCode.classList.remove('active');
     fileCode.classList.add('active');
     updateLines();
 
-    selectedFilename = filename;
+    selectedFilepath = filepath;
   }
 }
 
