@@ -1,7 +1,6 @@
 import { countChar, createIcon, } from './utils.js';
-import { addEventListenersToAstNodes } from './visualization.js';
 import JoinPoint from './ToolJoinPoint.js';
-import { getCodeContainer } from './components.js';
+import { getAstContainer, getCodeContainer } from './components.js';
 
 const updateLines = (): void => {
 	const codeContainer = getCodeContainer();
@@ -12,7 +11,8 @@ const updateLines = (): void => {
 	codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
 };
 
-const initCodeContainer = (codeContainer: HTMLElement): void => {
+const initCodeContainer = (): void => {
+  const codeContainer = getCodeContainer();
 	codeContainer.innerHTML = '';
 
 	const codePre = document.createElement('pre');
@@ -107,12 +107,12 @@ const convertAstNodeToHtml = (root: JoinPoint): DocumentFragment => {
 	return fragment;
 };
 
-const importAst = (astRoot: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+const importAst = (astRoot: JoinPoint): void => {
+  const astContainer = getAstContainer();
+
   const astFragment = convertAstNodeToHtml(astRoot);
 	astContainer.innerHTML = '';
   astContainer.appendChild(astFragment);
-
-  addEventListenersToAstNodes(astRoot, astContainer, codeContainer);
 }
 
 export { importAst, initCodeContainer, addCode, updateLines };

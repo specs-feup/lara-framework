@@ -1,5 +1,6 @@
+import { getAstContainer, getCodeContainer, getContinueButton, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
-import JoinPoint, { JoinPointInfo } from "./ToolJoinPoint.js";
+import JoinPoint from "./ToolJoinPoint.js";
 
 const getNodeElement = (nodeId: string): HTMLElement | null => {
   return document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`);
@@ -100,7 +101,7 @@ const scrollIntoViewIfNeeded = (element: HTMLElement, parent: HTMLElement): void
 
 let selectedNodeId: string | null = null;
 
-const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+const addHighlighingEvents = (node: JoinPoint): void => {
   const nodeRelatedElements = getNodeRelatedElements(node.id);
   for (const nodeRelatedElement of nodeRelatedElements) {
     nodeRelatedElement.addEventListener('mouseover', event => {
@@ -134,11 +135,15 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
       if (node.filepath)
         selectFile(node.filepath);
 
+
       const nodeElement = getNodeElement(node.id)!;
+      const astContainer = getAstContainer();
       scrollIntoViewIfNeeded(nodeElement, astContainer);
       const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
-      if (firstNodeCodeBlock)
+      if (firstNodeCodeBlock) {
+        const codeContainer = getCodeContainer();
         scrollIntoViewIfNeeded(firstNodeCodeBlock!, codeContainer);
+      }
 
       showNodeInfo(node);
     });
@@ -153,14 +158,19 @@ const addHighlighingEvents = (node: JoinPoint, astContainer: HTMLElement, codeCo
   }
 };
 
-const addEventListenersToAstNodes = (root: JoinPoint, astContainer: HTMLElement, codeContainer: HTMLElement): void => {
+const addEventListenersToAstNodes = (root: JoinPoint): void => {
   selectedNodeId = null;  // To prevent invalid references
 
-  addHighlighingEvents(root, astContainer, codeContainer);
-  root.children.forEach(child => addEventListenersToAstNodes(child, astContainer, codeContainer));
+  addHighlighingEvents(root);
+  root.children.forEach(child => addEventListenersToAstNodes(child));
 };
 
-const addDividerEventListeners = (resizer: HTMLElement, astContainer: HTMLElement, codeContainer: HTMLElement, continueButton: HTMLElement): void => {
+const addDividerEventListeners = (): void => {
+  const resizer = getResizer();
+  const astContainer = getAstContainer();
+  const codeContainer = getCodeContainer();
+  const continueButton = getContinueButton();
+
   let drag = false;
   let width = astContainer.offsetWidth;
 
