@@ -8,6 +8,16 @@
   --literal: var(--blue);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --comment: var(--gray);
+    --keyword: var(--violet);
+    --type: var(--violet);
+    --string: var(--light-blue);
+    --literal: var(--light-blue);
+  }
+}
+
 /* Syntax highlighting classes */
 
 .comment { color: var(--comment); }
