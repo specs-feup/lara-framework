@@ -50,7 +50,7 @@ const showNodeInfo = (node: JoinPoint): void => {
 
   for (const [name, value] of Object.entries(node.info)) {
     const attributeName = document.createElement('span');
-    attributeName.textContent = name;
+    attributeName.textContent = name + ': ';
 
     const attributeValue = document.createElement('span');
     attributeValue.textContent = value;
@@ -63,14 +63,20 @@ const showNodeInfo = (node: JoinPoint): void => {
   if (!document.querySelector(`.node-code[data-node-id="${node.id}"]`)) {
     const codeAlert = document.createElement('p');
     codeAlert.classList.add('alert');
-    codeAlert.textContent = 'Node code not found';
 
-    const codeWrapper = document.createElement('pre');
-    const code = document.createElement('code');
-    code.textContent = node.code;
-    codeWrapper.appendChild(code)
+    if (node.code !== undefined) {
+      codeAlert.textContent = 'Node code not found:';
 
-    nodeInfoContainer.append(codeAlert, codeWrapper);
+      const codeWrapper = document.createElement('pre');
+      const code = document.createElement('code');
+      code.textContent = node.code;
+      codeWrapper.appendChild(code)
+
+      nodeInfoContainer.append(codeAlert, codeWrapper);
+    } else {
+      codeAlert.textContent = 'Node does not have code!'
+      nodeInfoContainer.appendChild(codeAlert);
+    }
   }
 }
 

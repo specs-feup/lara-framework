@@ -3,12 +3,12 @@ export type JoinPointInfo = { [attribute: string]: string };
 export default class ToolJoinPoint {
   #id: string;
   #type: string;
-  #code: string;
+  #code: string | undefined;
   #filename: string | undefined;
   #info: JoinPointInfo;
   #children: ToolJoinPoint[];
 
-  constructor(id: string, type: string, code: string, filename: string | undefined, info: JoinPointInfo, children: ToolJoinPoint[]) {
+  constructor(id: string, type: string, code: string | undefined, filename: string | undefined, info: JoinPointInfo, children: ToolJoinPoint[]) {
     this.#id = id;
     this.#type = type;
     this.#filename = filename;
@@ -25,7 +25,7 @@ export default class ToolJoinPoint {
     return this.#type;
   }
 
-  get code(): string {
+  get code(): string | undefined {
     return this.#code;
   }
 

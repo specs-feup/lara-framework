@@ -191,9 +191,9 @@ main {
 
 #node-info-container {
   width: fit-content;
-  max-width: 50vw;
+  max-width: 40vw;
   height: fit-content;
-  max-height: 50vh;
+  max-height: 40vh;
   padding-inline: 0.5em;
 
   font-weight: 400;
@@ -214,10 +214,6 @@ main {
 
 #node-info-container p > span:first-of-type, #node-info-container .alert {
   font-weight: bold;
-}
-
-#node-info-container p > span:first-of-type::after, #node-info-container .alert::after {
-  content: ': ';
 }
 
 #node-info-container pre {
