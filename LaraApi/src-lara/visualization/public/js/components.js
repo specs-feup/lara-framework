@@ -34,7 +34,7 @@ const getFileTabs = (() => {
     return () => fileTabs;
 })();
 const createFileTab = (filepath) => {
-    const fileTab = document.createElement('div');
+    const fileTab = document.createElement('button');
     fileTab.classList.add('file-tab');
     fileTab.dataset.filepath = filepath;
     fileTab.title = filepath;

@@ -272,6 +272,7 @@ main {
   box-sizing: border-box;
   height: 2.25em;
   padding: 0.625em 1em;
+  border: none;
   border-radius: 2px;
   background-color: var(--tab-bg-color);
 
