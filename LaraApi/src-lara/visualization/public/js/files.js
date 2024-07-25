@@ -3,7 +3,7 @@ import { createFileTab, getCodeContainer, getFileTabs } from "./components.js";
 let selectedFilename = null;
 const addFile = (name, code) => {
     addCode(code, name);
-    const fileTab = createFileTab(name, code);
+    const fileTab = createFileTab(name);
     fileTab.addEventListener('click', () => selectFile(name));
     const fileTabs = getFileTabs();
     fileTabs.appendChild(fileTab);

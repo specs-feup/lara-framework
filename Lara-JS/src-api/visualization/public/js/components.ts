@@ -38,11 +38,11 @@ const getFileTabs = (() => {
   return (): HTMLDivElement => fileTabs;
 })();
 
-const createFileTab = (filename: string, code: string) => {
+const createFileTab = (filename: string) => {
 	const fileTab = document.createElement('div');
 	fileTab.classList.add('file-tab');
 	fileTab.dataset.filename = filename;
-	fileTab.textContent = filename;
+	fileTab.textContent = filename ?? '<no file>';
 
 	return fileTab;
 };

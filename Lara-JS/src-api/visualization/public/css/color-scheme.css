@@ -38,4 +38,5 @@
   --tertiary-highlight-color: var(--weak-translucid-light-blue);
 
   --line-num-color: var(--dark-gray);
+  --secondary-code-bg-color: var(--lighter-gray);
 }

@@ -211,12 +211,17 @@ main {
   margin: 0;
 }
 
-#node-info-container p > span:first-of-type {
+#node-info-container p > span:first-of-type, #node-info-container .alert {
   font-weight: bold;
 }
 
-#node-info-container p > span:first-of-type::after {
+#node-info-container p > span:first-of-type::after, #node-info-container .alert::after {
   content: ': ';
+}
+
+#node-info-container pre {
+  border-radius: 4px;
+  background-color: var(--secondary-code-bg-color);
 }
 
 #resizer {
