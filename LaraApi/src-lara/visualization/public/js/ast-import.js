@@ -1,4 +1,4 @@
-import { countChar, } from './utils.js';
+import { countChar } from './utils.js';
 import { createCodeElement, createCodeLines, createCodeWrapper, createNodeDropdown, createNodeDropdownButton, createNodeElement, getActiveCodeElement, getAstContainer, getCodeContainer, getCodeLines, getMainCodeWrapper } from './components.js';
 const updateLines = () => {
     const codeLines = getCodeLines();
