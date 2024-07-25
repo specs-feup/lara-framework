@@ -37,7 +37,8 @@ const createFileTab = (filepath) => {
     const fileTab = document.createElement('div');
     fileTab.classList.add('file-tab');
     fileTab.dataset.filepath = filepath;
-    fileTab.textContent = filepath ?? '<no file>';
+    fileTab.title = filepath;
+    fileTab.textContent = filepath !== '' ? filepath.slice(filepath.lastIndexOf('/') + 1) : '<no file>';
     return fileTab;
 };
 export { getAstContainer, getCodeContainer, getContinueButton, getResizer, getFileTabs, createFileTab, };

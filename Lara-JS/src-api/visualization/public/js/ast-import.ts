@@ -24,9 +24,9 @@ const initCodeContainer = (codeContainer: HTMLElement): void => {
 	codeContainer.append(codePre, codeLines)
 }
 
-const addCode = (code: string, filename: string): void => {
+const addCode = (code: string, filepath: string): void => {
 	const codeElement = document.createElement('code');
-  codeElement.dataset.filename = filename;
+  codeElement.dataset.filepath = filepath;
   codeElement.innerHTML = code;
 
 	const codeContainer = getCodeContainer();

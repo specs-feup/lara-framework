@@ -20,9 +20,11 @@ const selectFile = (filepath) => {
     if (filepath !== selectedFilepath) {
         const codeContainer = getCodeContainer();
         const selectedTab = fileTabs.querySelector(`.file-tab[data-filepath="${filepath}"]`);
+        if (selectedTab === null)
+            throw Error(`File "${filepath}" not found`);
         fileTabs.querySelector('.file-tab.active')?.classList.remove('active');
         selectedTab.classList.add('active');
-        const fileCode = codeContainer.querySelector(`code[data-filename="${filepath}"]`);
+        const fileCode = codeContainer.querySelector(`code[data-filepath="${filepath}"]`);
         const activeCode = codeContainer.querySelector('code.active');
         if (activeCode)
             activeCode.classList.remove('active');
