@@ -49,19 +49,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-color: var(--darker-gray);
+    --bg-color: var(--black);
     --text-color: var(--white);
-    --header-color: var(--black);
+    --header-color: var(--darker-gray);
     --border-color: var(--lighter-gray);
     --icon-color: var(--white);
     --disabled-icon-color: var(--gray);
 
-    --button-bg-color: var(--darker-gray);
-    --button-hover-bg-color: var(--dark-gray);
+    --button-bg-color: var(--black);
+    --button-hover-bg-color: var(--darker-gray);
     --button-disabled-bg-color: var(--dark-gray);
 
-    --tab-bg-color: var(--darker-gray);
-    --tab-hover-bg-color: var(--dark-gray);
+    --tab-bg-color: var(--black);
+    --tab-hover-bg-color: var(--darker-gray);
     --tab-active-bg-color: var(--dark-gray);
 
     --highlight-color: var(--gray-blue);
@@ -69,6 +69,6 @@
     --tertiary-highlight-color: var(--weak-translucid-gray-blue);
 
     --line-num-color: var(--gray);
-    --secondary-code-bg-color: var(--dark-gray);
+    --secondary-code-bg-color: var(--darker-gray);
   }
 }
