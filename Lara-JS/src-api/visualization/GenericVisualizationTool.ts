@@ -143,15 +143,13 @@ export default abstract class GenericVisualizationTool {
   }
 
   private updateClient(ws: WebSocket): void {
-    wrapJoinPoint(JoinPoints.root()._javaObject.rebuild());  // TODO: Perform rebuild on AstConverter
+    const astConverter = this.getAstConverter();
 
+    astConverter.updateAst();
     this.sendToClient(ws, {
       message: 'update',
-      ast: this.getAstConverter()
-        .getToolAst(this.astRoot!)
-        .toJson(),
-      code: this.getAstConverter()
-        .getPrettyHtmlCode(this.astRoot!),
+      ast: astConverter.getToolAst(this.astRoot!).toJson(),
+      code: astConverter.getPrettyHtmlCode(this.astRoot!),
     });
   }
 
