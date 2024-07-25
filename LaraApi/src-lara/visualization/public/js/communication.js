@@ -1,7 +1,7 @@
 import { importAst, initCodeContainer } from "./ast-import.js";
 import { getContinueButton } from "./components.js";
 import { addFile, clearFiles, selectFile } from "./files.js";
-import { addEventListenersToAstNodes } from "./visualization.js";
+import { addHighlighingEventListeners } from "./visualization.js";
 const webSocketOnMessage = (message) => {
     const continueButton = getContinueButton();
     const data = parseMessage(message);
@@ -15,7 +15,7 @@ const webSocketOnMessage = (message) => {
             for (const [filename, filecode] of Object.entries(code))
                 addFile(filename, filecode);
             importAst(ast);
-            addEventListenersToAstNodes(ast);
+            addHighlighingEventListeners(ast);
             selectFile(Object.keys(code)[0]);
             continueButton.disabled = buttonDisabled;
             break;

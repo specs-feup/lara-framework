@@ -1,26 +1,21 @@
-import { getAstContainer, getCodeContainer, getContinueButton, getResizer } from "./components.js";
+import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
 import JoinPoint from "./ToolJoinPoint.js";
 
-const getNodeElement = (nodeId: string): HTMLElement | null => {
-  return document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`);
-}
-
-const getNodeRelatedElements = (nodeId: string): HTMLElement[] => {
-  return Array.from(document.querySelectorAll<HTMLElement>(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`));
-};
-
 const highlightNode = (nodeId: string, strong: boolean): void => {
-  const nodeCode = document.querySelectorAll<HTMLElement>(` .node-code[data-node-id="${nodeId}"]`)!;
-  nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
+  const nodeElement = getNodeElement(nodeId);
+  if (!nodeElement) {
+    console.warn(`There is no node with id ${nodeId}`);
+    return;
+  }
 
-  const nodeElement = document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`)!;
-  const nodeText = nodeElement.querySelector<HTMLElement>('.ast-node-text')!;
-  nodeText.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)';
+  const highlightableElements = getHighlightableElements(nodeId);
+  highlightableElements.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
 
   let parentNode = nodeElement.parentElement?.previousSibling;
   while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
-    const parentNodeText = parentNode.querySelector<HTMLElement>('.ast-node-text')!;
+    const parentNodeId = parentNode.dataset.nodeId!
+    const parentNodeText = getNodeText(parentNodeId)!;
     parentNodeText.style.backgroundColor = strong ? 'var(--secondary-highlight-color)' : 'var(--tertiary-highlight-color)';
 
     parentNode = parentNode.parentElement?.previousSibling;
@@ -28,61 +23,52 @@ const highlightNode = (nodeId: string, strong: boolean): void => {
 };
 
 const unhighlightNode = (nodeId: string): void => {
-  const nodeCode = document.querySelectorAll<HTMLElement>(`.node-code[data-node-id="${nodeId}"]`)!;
-  nodeCode.forEach(elem => elem.style.backgroundColor = '');
+  const nodeElement = getNodeElement(nodeId);
+  if (!nodeElement) {
+    console.warn(`There is no node with id ${nodeId}`);
+    return;
+  }
 
-  const nodeElement = document.querySelector<HTMLElement>(`.ast-node[data-node-id="${nodeId}"]`)!;
-  const nodeText = nodeElement.querySelector<HTMLElement>('.ast-node-text')!;
-  nodeText.style.backgroundColor = '';
+  const highlightableElements = getHighlightableElements(nodeId)!;
+  highlightableElements.forEach(elem => elem.style.backgroundColor = '');
 
-  let parentNode = nodeElement.parentElement?.previousSibling as HTMLElement | null | undefined;
+  let parentNode = nodeElement.parentElement?.previousSibling;
   while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
-    const parentNodeText = parentNode.querySelector<HTMLElement>('.ast-node-text')!;
+    const parentNodeId = parentNode.dataset.nodeId!
+    const parentNodeText = getNodeText(parentNodeId)!;
     parentNodeText.style.backgroundColor = '';
     
-    parentNode = parentNode.parentElement?.previousSibling as HTMLElement | null | undefined;
+    parentNode = parentNode.parentElement?.previousSibling;
   }
 };
 
 const showNodeInfo = (node: JoinPoint): void => {
-  const nodeInfoContainer = document.querySelector<HTMLElement>('#node-info-container')!;
+  const nodeInfoContainer = getNodeInfoContainer();
   nodeInfoContainer.style.display = 'block';
   nodeInfoContainer.innerHTML = ''
 
   for (const [name, value] of Object.entries(node.info)) {
-    const attributeName = document.createElement('span');
-    attributeName.textContent = name + ': ';
-
-    const attributeValue = document.createElement('span');
-    attributeValue.textContent = value;
-
-    const line = document.createElement('p');
-    line.append(attributeName, attributeValue);
+    const line = createNodeInfoLine(name, value);
     nodeInfoContainer.appendChild(line);
   }
 
-  if (!document.querySelector(`.node-code[data-node-id="${node.id}"]`)) {
-    const codeAlert = document.createElement('p');
-    codeAlert.classList.add('alert');
-
-    if (node.code !== undefined) {
-      codeAlert.textContent = 'Node code not found:';
-
-      const codeWrapper = document.createElement('pre');
-      const code = document.createElement('code');
-      code.textContent = node.code;
-      codeWrapper.appendChild(code)
-
-      nodeInfoContainer.append(codeAlert, codeWrapper);
+  const hasCode = getFirstNodeCodeElement(node.id) !== null;
+  if (!hasCode) {
+    if (node.code) {
+      const alert = createNodeInfoAlert('Node code not found:');
+      const codeElement = createCodeElement(node.code);
+      const codeWrapper = createCodeWrapper();
+      codeWrapper.appendChild(codeElement);
+      nodeInfoContainer.append(alert, codeWrapper);
     } else {
-      codeAlert.textContent = 'Node does not have code!'
-      nodeInfoContainer.appendChild(codeAlert);
+      const alert = createNodeInfoAlert('Node does not have code!');
+      nodeInfoContainer.appendChild(alert);
     }
   }
 }
 
 const hideNodeInfo = (): void => {
-  const nodeInfoContainer = document.querySelector<HTMLElement>('#node-info-container')!;
+  const nodeInfoContainer = getNodeInfoContainer();
   nodeInfoContainer.style.display = 'none';
   nodeInfoContainer.innerHTML = '';
 }
@@ -93,77 +79,88 @@ const scrollIntoViewIfNeeded = (element: HTMLElement, parent: HTMLElement): void
 
   if (rect.bottom < parentRect.top || rect.top > parentRect.bottom) {
     const scrollPos = rect.height <= parentRect.height
-        ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
-        : rect.top - parentRect.top;
+      ? (rect.top + rect.bottom - parentRect.top - parentRect.bottom) / 2
+      : rect.top - parentRect.top;
+    
     parent.scrollBy({ top: scrollPos, left: 0, behavior: 'smooth' });
   }
 };
 
+
 let selectedNodeId: string | null = null;
 
-const addHighlighingEvents = (node: JoinPoint): void => {
-  const nodeRelatedElements = getNodeRelatedElements(node.id);
-  for (const nodeRelatedElement of nodeRelatedElements) {
-    nodeRelatedElement.addEventListener('mouseover', event => {
-      highlightNode(node.id, false);
-      if (selectedNodeId !== null)
-        highlightNode(selectedNodeId, true);
-      event.stopPropagation();
-    });
-    nodeRelatedElement.addEventListener('mouseout', event => {
-      unhighlightNode(node.id);
-      if (selectedNodeId !== null)
-        highlightNode(selectedNodeId, true);
-      event.stopPropagation();
-    });
+const highlightableOnMouseOver = (node: JoinPoint, event: Event): void => {
+  highlightNode(node.id, false);
+  if (selectedNodeId !== null)
+    highlightNode(selectedNodeId, true);
+  event.stopPropagation();
+};
 
-    nodeRelatedElement.tabIndex = 0;
-    nodeRelatedElement.addEventListener('click', event => {
-      event.stopPropagation();
+const highlightableOnMouseOut = (node: JoinPoint, event: Event): void => {
+  unhighlightNode(node.id);
+  if (selectedNodeId !== null)
+    highlightNode(selectedNodeId, true);
+  event.stopPropagation();
+};
 
-      if (selectedNodeId !== null) {
-        unhighlightNode(selectedNodeId);
-        if (selectedNodeId === node.id) {
-          selectedNodeId = null;
-          hideNodeInfo();
-          return;
-        }
-      }
+const highlightableOnClick = (node: JoinPoint, event: Event): void => {
+  event.stopPropagation();
 
-      selectedNodeId = node.id;
-      highlightNode(node.id, true);
-      if (node.filepath)
-        selectFile(node.filepath);
-
-
-      const nodeElement = getNodeElement(node.id)!;
-      const astContainer = getAstContainer();
-      scrollIntoViewIfNeeded(nodeElement, astContainer);
-      const firstNodeCodeBlock = document.querySelector<HTMLElement>(`.node-code[data-node-id="${node.id}"]`);
-      if (firstNodeCodeBlock) {
-        const codeContainer = getCodeContainer();
-        scrollIntoViewIfNeeded(firstNodeCodeBlock!, codeContainer);
-      }
-
-      showNodeInfo(node);
-    });
-
-    // For keyboard accessibility
-    nodeRelatedElement.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        nodeRelatedElement.click();
-      }
-      event.stopPropagation();
-    }); 
+  if (selectedNodeId !== null) {
+    unhighlightNode(selectedNodeId);
+    if (selectedNodeId === node.id) {
+      selectedNodeId = null;
+      hideNodeInfo();
+      return;
+    }
   }
+
+  selectedNodeId = node.id;
+  highlightNode(node.id, true);
+  if (node.filepath)
+    selectFile(node.filepath);
+
+
+  const nodeElement = getNodeElement(node.id)!;
+  const astContainer = getAstContainer();
+  scrollIntoViewIfNeeded(nodeElement, astContainer);
+
+  const firstNodeCodeBlock = getFirstNodeCodeElement(node.id);
+  if (firstNodeCodeBlock) {
+    const codeContainer = getCodeContainer();
+    scrollIntoViewIfNeeded(firstNodeCodeBlock!, codeContainer);
+  }
+
+  showNodeInfo(node);
 };
 
-const addEventListenersToAstNodes = (root: JoinPoint): void => {
+const addHighlighingEventListeners = (root: JoinPoint): void => {
+  const addListeners = (node: JoinPoint) => {
+    const highlightableElements = getHighlightableElements(node.id);
+    console.log(highlightableElements);
+    for (const element of highlightableElements) {
+      element.addEventListener('mouseover', event => highlightableOnMouseOver(node, event));
+      element.addEventListener('mouseout', event => highlightableOnMouseOut(node, event));
+
+      element.tabIndex = 0;
+      element.addEventListener('click', event => highlightableOnClick(node, event));
+
+      // For keyboard accessibility
+      element.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          element.click();
+        }
+        event.stopPropagation();
+      }); 
+    }
+
+    node.children.forEach(child => addListeners(child));
+  }
+
   selectedNodeId = null;  // To prevent invalid references
-
-  addHighlighingEvents(root);
-  root.children.forEach(child => addEventListenersToAstNodes(child));
+  addListeners(root);
 };
+
 
 const addDividerEventListeners = (): void => {
   const resizer = getResizer();
@@ -187,11 +184,12 @@ const addDividerEventListeners = (): void => {
   document.addEventListener('mousemove', event => {
     if (drag) {
       const astLeft = astContainer.getBoundingClientRect().left;
+      const minWidth = continueButton.offsetWidth;
       const maxWidth = codeContainer.getBoundingClientRect().right - astLeft - 160;
 
       width = event.x - astLeft;
-      if (width < continueButton.offsetWidth)
-        width = continueButton.offsetWidth;
+      if (width < minWidth)
+        width = minWidth;
       else if (width > maxWidth)
         width = maxWidth;
       rootStyle.setProperty('--ast-container-width', `${width}px`);
@@ -199,4 +197,4 @@ const addDividerEventListeners = (): void => {
   });
 };
 
-export { addEventListenersToAstNodes, addDividerEventListeners };
+export { addHighlighingEventListeners, addDividerEventListeners };

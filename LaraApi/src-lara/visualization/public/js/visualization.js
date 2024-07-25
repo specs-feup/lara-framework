@@ -1,69 +1,62 @@
-import { getAstContainer, getCodeContainer, getContinueButton, getResizer } from "./components.js";
+import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
-const getNodeElement = (nodeId) => {
-    return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
-};
-const getNodeRelatedElements = (nodeId) => {
-    return Array.from(document.querySelectorAll(`.ast-node[data-node-id="${nodeId}"] .ast-node-text, .node-code[data-node-id="${nodeId}"]`));
-};
 const highlightNode = (nodeId, strong) => {
-    const nodeCode = document.querySelectorAll(` .node-code[data-node-id="${nodeId}"]`);
-    nodeCode.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
-    const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
-    const nodeText = nodeElement.querySelector('.ast-node-text');
-    nodeText.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)';
+    const nodeElement = getNodeElement(nodeId);
+    if (!nodeElement) {
+        console.warn(`There is no node with id ${nodeId}`);
+        return;
+    }
+    const highlightableElements = getHighlightableElements(nodeId);
+    highlightableElements.forEach(elem => elem.style.backgroundColor = strong ? 'var(--highlight-color)' : 'var(--secondary-highlight-color)');
     let parentNode = nodeElement.parentElement?.previousSibling;
     while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
-        const parentNodeText = parentNode.querySelector('.ast-node-text');
+        const parentNodeId = parentNode.dataset.nodeId;
+        const parentNodeText = getNodeText(parentNodeId);
         parentNodeText.style.backgroundColor = strong ? 'var(--secondary-highlight-color)' : 'var(--tertiary-highlight-color)';
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
 const unhighlightNode = (nodeId) => {
-    const nodeCode = document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`);
-    nodeCode.forEach(elem => elem.style.backgroundColor = '');
-    const nodeElement = document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
-    const nodeText = nodeElement.querySelector('.ast-node-text');
-    nodeText.style.backgroundColor = '';
+    const nodeElement = getNodeElement(nodeId);
+    if (!nodeElement) {
+        console.warn(`There is no node with id ${nodeId}`);
+        return;
+    }
+    const highlightableElements = getHighlightableElements(nodeId);
+    highlightableElements.forEach(elem => elem.style.backgroundColor = '');
     let parentNode = nodeElement.parentElement?.previousSibling;
     while (parentNode instanceof HTMLElement && parentNode.classList.contains('ast-node')) {
-        const parentNodeText = parentNode.querySelector('.ast-node-text');
+        const parentNodeId = parentNode.dataset.nodeId;
+        const parentNodeText = getNodeText(parentNodeId);
         parentNodeText.style.backgroundColor = '';
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
 const showNodeInfo = (node) => {
-    const nodeInfoContainer = document.querySelector('#node-info-container');
+    const nodeInfoContainer = getNodeInfoContainer();
     nodeInfoContainer.style.display = 'block';
     nodeInfoContainer.innerHTML = '';
     for (const [name, value] of Object.entries(node.info)) {
-        const attributeName = document.createElement('span');
-        attributeName.textContent = name + ': ';
-        const attributeValue = document.createElement('span');
-        attributeValue.textContent = value;
-        const line = document.createElement('p');
-        line.append(attributeName, attributeValue);
+        const line = createNodeInfoLine(name, value);
         nodeInfoContainer.appendChild(line);
     }
-    if (!document.querySelector(`.node-code[data-node-id="${node.id}"]`)) {
-        const codeAlert = document.createElement('p');
-        codeAlert.classList.add('alert');
-        if (node.code !== undefined) {
-            codeAlert.textContent = 'Node code not found:';
-            const codeWrapper = document.createElement('pre');
-            const code = document.createElement('code');
-            code.textContent = node.code;
-            codeWrapper.appendChild(code);
-            nodeInfoContainer.append(codeAlert, codeWrapper);
+    const hasCode = getFirstNodeCodeElement(node.id) !== null;
+    if (!hasCode) {
+        if (node.code) {
+            const alert = createNodeInfoAlert('Node code not found:');
+            const codeElement = createCodeElement(node.code);
+            const codeWrapper = createCodeWrapper();
+            codeWrapper.appendChild(codeElement);
+            nodeInfoContainer.append(alert, codeWrapper);
         }
         else {
-            codeAlert.textContent = 'Node does not have code!';
-            nodeInfoContainer.appendChild(codeAlert);
+            const alert = createNodeInfoAlert('Node does not have code!');
+            nodeInfoContainer.appendChild(alert);
         }
     }
 };
 const hideNodeInfo = () => {
-    const nodeInfoContainer = document.querySelector('#node-info-container');
+    const nodeInfoContainer = getNodeInfoContainer();
     nodeInfoContainer.style.display = 'none';
     nodeInfoContainer.innerHTML = '';
 };
@@ -78,59 +71,63 @@ const scrollIntoViewIfNeeded = (element, parent) => {
     }
 };
 let selectedNodeId = null;
-const addHighlighingEvents = (node) => {
-    const nodeRelatedElements = getNodeRelatedElements(node.id);
-    for (const nodeRelatedElement of nodeRelatedElements) {
-        nodeRelatedElement.addEventListener('mouseover', event => {
-            highlightNode(node.id, false);
-            if (selectedNodeId !== null)
-                highlightNode(selectedNodeId, true);
-            event.stopPropagation();
-        });
-        nodeRelatedElement.addEventListener('mouseout', event => {
-            unhighlightNode(node.id);
-            if (selectedNodeId !== null)
-                highlightNode(selectedNodeId, true);
-            event.stopPropagation();
-        });
-        nodeRelatedElement.tabIndex = 0;
-        nodeRelatedElement.addEventListener('click', event => {
-            event.stopPropagation();
-            if (selectedNodeId !== null) {
-                unhighlightNode(selectedNodeId);
-                if (selectedNodeId === node.id) {
-                    selectedNodeId = null;
-                    hideNodeInfo();
-                    return;
-                }
-            }
-            selectedNodeId = node.id;
-            highlightNode(node.id, true);
-            if (node.filepath)
-                selectFile(node.filepath);
-            const nodeElement = getNodeElement(node.id);
-            const astContainer = getAstContainer();
-            scrollIntoViewIfNeeded(nodeElement, astContainer);
-            const firstNodeCodeBlock = document.querySelector(`.node-code[data-node-id="${node.id}"]`);
-            if (firstNodeCodeBlock) {
-                const codeContainer = getCodeContainer();
-                scrollIntoViewIfNeeded(firstNodeCodeBlock, codeContainer);
-            }
-            showNodeInfo(node);
-        });
-        // For keyboard accessibility
-        nodeRelatedElement.addEventListener('keydown', event => {
-            if (event.key === 'Enter') {
-                nodeRelatedElement.click();
-            }
-            event.stopPropagation();
-        });
-    }
+const highlightableOnMouseOver = (node, event) => {
+    highlightNode(node.id, false);
+    if (selectedNodeId !== null)
+        highlightNode(selectedNodeId, true);
+    event.stopPropagation();
 };
-const addEventListenersToAstNodes = (root) => {
+const highlightableOnMouseOut = (node, event) => {
+    unhighlightNode(node.id);
+    if (selectedNodeId !== null)
+        highlightNode(selectedNodeId, true);
+    event.stopPropagation();
+};
+const highlightableOnClick = (node, event) => {
+    event.stopPropagation();
+    if (selectedNodeId !== null) {
+        unhighlightNode(selectedNodeId);
+        if (selectedNodeId === node.id) {
+            selectedNodeId = null;
+            hideNodeInfo();
+            return;
+        }
+    }
+    selectedNodeId = node.id;
+    highlightNode(node.id, true);
+    if (node.filepath)
+        selectFile(node.filepath);
+    const nodeElement = getNodeElement(node.id);
+    const astContainer = getAstContainer();
+    scrollIntoViewIfNeeded(nodeElement, astContainer);
+    const firstNodeCodeBlock = getFirstNodeCodeElement(node.id);
+    if (firstNodeCodeBlock) {
+        const codeContainer = getCodeContainer();
+        scrollIntoViewIfNeeded(firstNodeCodeBlock, codeContainer);
+    }
+    showNodeInfo(node);
+};
+const addHighlighingEventListeners = (root) => {
+    const addListeners = (node) => {
+        const highlightableElements = getHighlightableElements(node.id);
+        console.log(highlightableElements);
+        for (const element of highlightableElements) {
+            element.addEventListener('mouseover', event => highlightableOnMouseOver(node, event));
+            element.addEventListener('mouseout', event => highlightableOnMouseOut(node, event));
+            element.tabIndex = 0;
+            element.addEventListener('click', event => highlightableOnClick(node, event));
+            // For keyboard accessibility
+            element.addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    element.click();
+                }
+                event.stopPropagation();
+            });
+        }
+        node.children.forEach(child => addListeners(child));
+    };
     selectedNodeId = null; // To prevent invalid references
-    addHighlighingEvents(root);
-    root.children.forEach(child => addEventListenersToAstNodes(child));
+    addListeners(root);
 };
 const addDividerEventListeners = () => {
     const resizer = getResizer();
@@ -149,15 +146,16 @@ const addDividerEventListeners = () => {
     document.addEventListener('mousemove', event => {
         if (drag) {
             const astLeft = astContainer.getBoundingClientRect().left;
+            const minWidth = continueButton.offsetWidth;
             const maxWidth = codeContainer.getBoundingClientRect().right - astLeft - 160;
             width = event.x - astLeft;
-            if (width < continueButton.offsetWidth)
-                width = continueButton.offsetWidth;
+            if (width < minWidth)
+                width = minWidth;
             else if (width > maxWidth)
                 width = maxWidth;
             rootStyle.setProperty('--ast-container-width', `${width}px`);
         }
     });
 };
-export { addEventListenersToAstNodes, addDividerEventListeners };
+export { addHighlighingEventListeners, addDividerEventListeners };
 //# sourceMappingURL=visualization.js.map

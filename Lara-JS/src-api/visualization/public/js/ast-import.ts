@@ -58,13 +58,13 @@ const createDropdownButtonOnClick = (dropdown: HTMLElement) => {
 };
 
 const createAstNodeElement = (nodeId: string, text: string, dropdownButton: HTMLElement): HTMLSpanElement => {
-	const nodeElement = document.createElement('span');
+	const nodeElement = document.createElement('span');  // TODO: Convert to div
 	nodeElement.classList.add('ast-node');
 
 	nodeElement.dataset.nodeId = nodeId;
 
 	const nodeText = document.createElement('span');
-	nodeText.classList.add('ast-node-text');
+	nodeText.classList.add('node-text');
 	nodeText.textContent = text;
 
 	nodeElement.appendChild(dropdownButton);
