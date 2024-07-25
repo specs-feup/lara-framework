@@ -75,16 +75,30 @@ const getHighlightableElements = (nodeId: string): HTMLElement[] => {
   return [nodeText, ...nodeCodeElements];
 };
 
+
 const getMainCodeWrapper = (): HTMLPreElement | null => {
-  return getCodeContainer().querySelector('pre.code-wrapper');
+  return getCodeContainer().querySelector('.code-wrapper');
 };
 
 const getCodeLines = (): HTMLPreElement | null => {
-  return getCodeContainer().querySelector('pre.lines');
+  return getCodeContainer().querySelector('.lines');
 };
 
 const getActiveCodeElement = (): HTMLElement | null => {
   return getMainCodeWrapper()?.querySelector('code.active') ?? null;
+};
+
+const getFileCodeElement = (filename: string): HTMLElement | null => {
+  return getCodeContainer().querySelector(`code[data-filepath="${filename}"]`);
+};
+
+
+const getFileTab = (filepath: string): HTMLButtonElement | null => {
+  return getFileTabs().querySelector(`.file-tab[data-filepath="${filepath}"]`);
+};
+
+const getActiveFileTab = (): HTMLButtonElement | null => {
+  return getFileTabs().querySelector('.file-tab.active');
 };
 
 
@@ -206,6 +220,9 @@ export {
   getMainCodeWrapper,
   getCodeLines,
   getActiveCodeElement,
+  getFileCodeElement,
+  getFileTab,
+  getActiveFileTab,
   createNodeDropdown,
   createNodeDropdownButton,
   createNodeElement,
