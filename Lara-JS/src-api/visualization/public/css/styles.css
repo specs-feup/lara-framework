@@ -269,16 +269,15 @@ main {
 }
 
 .file-tab {
+  box-sizing: border-box;
   height: 2.25em;
-  padding-inline: 1em;
+  padding: 0.625em 1em;
   border-radius: 2px;
   background-color: var(--tab-bg-color);
 
   font-weight: 500;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
 
   user-select: none;
   -webkit-user-select: none;

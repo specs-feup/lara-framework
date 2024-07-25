@@ -16,9 +16,9 @@ const initCodeContainer = (codeContainer) => {
     codeLines.classList.add('code-wrapper');
     codeContainer.append(codePre, codeLines);
 };
-const addCode = (code, filename) => {
+const addCode = (code, filepath) => {
     const codeElement = document.createElement('code');
-    codeElement.dataset.filename = filename;
+    codeElement.dataset.filepath = filepath;
     codeElement.innerHTML = code;
     const codeContainer = getCodeContainer();
     const codePre = codeContainer.querySelector('pre.code-wrapper');
