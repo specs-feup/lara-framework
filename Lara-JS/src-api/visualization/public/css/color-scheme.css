@@ -11,12 +11,12 @@
   --light-blue: #19d8ff;
   --strong-translucid-light-blue: #19d8ff66;
   --weak-translucid-light-blue: #19d8ff33;
-  --gray-blue: #005cb3;
-  --strong-translucid-gray-blue: #005cb3aa;
-  --weak-translucid-gray-blue: #005cb355;
+  --gray-blue: #004483;
+  --strong-translucid-gray-blue: #004483bf;
+  --weak-translucid-gray-blue: #0044837f;
   --blue: #0000ff;
-  --violet: #c58bff;
-  --purple: #8c00c4;
+  --violet: #dbb8fe;
+  --purple: #7d00ae;
 }
 
 /* Light color scheme */
