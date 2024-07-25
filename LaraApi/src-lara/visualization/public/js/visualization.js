@@ -110,7 +110,6 @@ const highlightableOnClick = (node, event) => {
 const addHighlighingEventListeners = (root) => {
     const addListeners = (node) => {
         const highlightableElements = getHighlightableElements(node.id);
-        console.log(highlightableElements);
         for (const element of highlightableElements) {
             element.addEventListener('mouseover', event => highlightableOnMouseOver(node, event));
             element.addEventListener('mouseout', event => highlightableOnMouseOut(node, event));

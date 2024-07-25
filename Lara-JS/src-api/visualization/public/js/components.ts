@@ -1,3 +1,5 @@
+import { createIcon } from "./utils.js";
+
 const getAstContainer = (() => {
   const astContainer = document.querySelector<HTMLDivElement>('#ast-container');
   if (!astContainer) {
@@ -49,7 +51,7 @@ const getFileTabs = (() => {
 
 const getNodeElement = (nodeId: string): HTMLSpanElement | null => {
   return document.querySelector(`.ast-node[data-node-id="${nodeId}"]`);
-}
+};
 
 const getNodeText = (nodeId: string): HTMLSpanElement | null => {
   const nodeElement = getNodeElement(nodeId);
@@ -58,7 +60,7 @@ const getNodeText = (nodeId: string): HTMLSpanElement | null => {
 
 const getFirstNodeCodeElement = (nodeId: string): HTMLSpanElement | null => {
   return document.querySelector(`.node-code[data-node-id="${nodeId}"]`);
-}
+};
 
 const getNodeCodeElements = (nodeId: string): HTMLSpanElement[] => {
   return Array.from(document.querySelectorAll(`.node-code[data-node-id="${nodeId}"]`));
@@ -73,16 +75,91 @@ const getHighlightableElements = (nodeId: string): HTMLElement[] => {
   return [nodeText, ...nodeCodeElements];
 };
 
+const getMainCodeWrapper = (): HTMLPreElement | null => {
+  return getCodeContainer().querySelector('pre.code-wrapper');
+};
+
+const getCodeLines = (): HTMLPreElement | null => {
+  return getCodeContainer().querySelector('pre.lines');
+};
+
+const getActiveCodeElement = (): HTMLElement | null => {
+  return getMainCodeWrapper()?.querySelector('code.active') ?? null;
+};
+
+
+const createNodeDropdown = (nodeId: string): HTMLDivElement => {
+	const dropdown = document.createElement('div');
+	dropdown.classList.add('ast-node-dropdown');
+	dropdown.dataset.nodeId = nodeId;
+
+	return dropdown;
+};
+
+const createDropdownButtonOnClick = (dropdown: HTMLElement) => {
+	let nodeCollapsed = false;
+	return (event: Event): void => {
+		nodeCollapsed = !nodeCollapsed;
+		dropdown.style.display = nodeCollapsed ? 'none' : 'block';
+
+		const dropdownButton = event.currentTarget as HTMLElement;
+		const chevronIcon = dropdownButton.children[0] as HTMLElement;
+		chevronIcon.textContent = nodeCollapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down';
+
+		event.stopPropagation();
+	};
+};
+
+const createNodeDropdownButton = (dropdown?: HTMLElement): HTMLButtonElement => {
+	const dropdownButton = document.createElement('button');
+
+  const arrowIcon = createIcon('keyboard_arrow_down');
+  dropdownButton.appendChild(arrowIcon);
+
+  if (dropdown) {
+    dropdownButton.addEventListener('click', createDropdownButtonOnClick(dropdown));
+  } else {
+		dropdownButton.disabled = true;
+  }
+
+	return dropdownButton;
+};
+
+const createNodeElement = (nodeId: string, text: string, dropdownButton: HTMLElement): HTMLSpanElement => {
+	const nodeElement = document.createElement('span');  // TODO: Convert to div
+	nodeElement.classList.add('ast-node');
+
+	nodeElement.dataset.nodeId = nodeId;
+
+	const nodeText = document.createElement('span');
+	nodeText.classList.add('node-text');
+	nodeText.textContent = text;
+
+	nodeElement.appendChild(dropdownButton);
+	nodeElement.appendChild(nodeText);
+
+	return nodeElement;
+};
+
 
 const createCodeElement = (code: string = ''): HTMLElement => {
   const codeElement = document.createElement('code');
-  codeElement.textContent = code;
+  codeElement.innerHTML = code;
   return codeElement;
-}
+};
+
+const createCodeLines = (numLines: number): HTMLPreElement => {
+  const codeLines = document.createElement('pre');
+  codeLines.classList.add('lines');
+  codeLines.textContent = Array.from({ length: numLines }, (_, i) => i + 1).join('\n');
+  return codeLines;
+};
 
 const createCodeWrapper = (): HTMLPreElement => {
-  return document.createElement('pre');
-}
+  const codeWrapper = document.createElement('pre');
+	codeWrapper.classList.add('code-wrapper');
+  return codeWrapper;
+};
 
 const createNodeInfoLine = (name: string, value: string): HTMLParagraphElement => {
   const attributeName = document.createElement('span');
@@ -94,14 +171,14 @@ const createNodeInfoLine = (name: string, value: string): HTMLParagraphElement =
   const line = document.createElement('p');
   line.append(attributeName, attributeValue);
   return line;
-}
+};
 
 const createNodeInfoAlert = (alert: string): HTMLParagraphElement => {
   const codeAlert = document.createElement('p');
   codeAlert.classList.add('alert');
   codeAlert.textContent = alert;
   return codeAlert;
-}
+};
 
 const createFileTab = (filepath: string): HTMLButtonElement => {
 	const fileTab = document.createElement('button');
@@ -126,8 +203,15 @@ export {
   getFirstNodeCodeElement,
   getNodeCodeElements,
   getHighlightableElements,
+  getMainCodeWrapper,
+  getCodeLines,
+  getActiveCodeElement,
+  createNodeDropdown,
+  createNodeDropdownButton,
+  createNodeElement,
   createNodeInfoLine,
   createNodeInfoAlert,
+  createCodeLines,
   createCodeElement,
   createCodeWrapper,
   createFileTab,
