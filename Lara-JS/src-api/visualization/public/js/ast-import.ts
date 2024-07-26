@@ -57,7 +57,7 @@ const addFileCode = (code: string, filepath: string): void => {
  * @brief Converts the AST to node HTML elements and their respective dropdowns.
  * 
  * @param root Root of the AST
- * @return The resulting node HTML elements
+ * @returns The resulting node HTML elements
  */
 const toNodeElements = (root: JoinPoint): DocumentFragment => {
 	const fragment = new DocumentFragment();
