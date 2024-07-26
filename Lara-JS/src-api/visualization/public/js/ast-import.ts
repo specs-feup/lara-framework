@@ -1,3 +1,8 @@
+/**
+ * @file ast-import.ts
+ * @brief Functions for importing the AST and code to the visualization.
+ */
+
 import { countChar } from './utils.js';
 import JoinPoint from './ToolJoinPoint.js';
 import { createCodeElement, createCodeLines, createCodeWrapper, createNodeDropdown, createNodeDropdownButton, createNodeElement, getActiveCodeElement, getAstContainer, getCodeContainer, getCodeLines, getMainCodeWrapper } from './components.js';
@@ -52,7 +57,7 @@ const addFileCode = (code: string, filepath: string): void => {
  * @brief Converts the AST to node HTML elements and their respective dropdowns.
  * 
  * @param root Root of the AST
- * @returns The resulting node HTML elements
+ * @return The resulting node HTML elements
  */
 const toNodeElements = (root: JoinPoint): DocumentFragment => {
 	const fragment = new DocumentFragment();
