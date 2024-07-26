@@ -1,5 +1,3 @@
-import { createIcon } from "./utils.js";
-
 const getAstContainer = (() => {
   const astContainer = document.querySelector<HTMLDivElement>('#ast-container');
   if (!astContainer) {
@@ -100,6 +98,15 @@ const getFileTab = (filepath: string): HTMLButtonElement | null => {
 const getActiveFileTab = (): HTMLButtonElement | null => {
   return getFileTabs().querySelector('.file-tab.active');
 };
+
+
+const createIcon = (name: string): HTMLElement => {
+  const icon = document.createElement('span');
+  icon.classList.add('icon', 'material-symbols-outlined');
+  icon.textContent = name;
+  
+  return icon;
+}
 
 
 const createNodeDropdown = (nodeId: string): HTMLDivElement => {
@@ -223,6 +230,7 @@ export {
   getFileCodeElement,
   getFileTab,
   getActiveFileTab,
+  createIcon,
   createNodeDropdown,
   createNodeDropdownButton,
   createNodeElement,
