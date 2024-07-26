@@ -2,6 +2,9 @@ import { countChar } from './utils.js';
 import JoinPoint from './ToolJoinPoint.js';
 import { createCodeElement, createCodeLines, createCodeWrapper, createNodeDropdown, createNodeDropdownButton, createNodeElement, getActiveCodeElement, getAstContainer, getCodeContainer, getCodeLines, getMainCodeWrapper } from './components.js';
 
+/**
+ * @brief Updates the line numbering of the code container.
+ */
 const updateLines = (): void => {
 	const codeLines = getCodeLines();
 	const codeWrapper = getMainCodeWrapper();
@@ -16,6 +19,9 @@ const updateLines = (): void => {
   codeLines.replaceWith(newCodeLines);
 };
 
+/**
+ * @brief Initializes the code container, by adding the code lines and the code wrapper.
+ */
 const initCodeContainer = (): void => {
   const codeContainer = getCodeContainer();
 	codeContainer.innerHTML = '';
@@ -26,7 +32,13 @@ const initCodeContainer = (): void => {
 	codeContainer.append(codeLines, codeWrapper);
 };
 
-const addCode = (code: string, filepath: string): void => {
+/**
+ * @brief Adds a new hidden code element, with the given code, to the code container.
+ * 
+ * @param code Code of the element
+ * @param filepath Path of the file
+ */
+const addFileCode = (code: string, filepath: string): void => {
   const codeWrapper = getMainCodeWrapper();
   if (!codeWrapper)
     throw new Error('Code container not initialized');
@@ -36,6 +48,12 @@ const addCode = (code: string, filepath: string): void => {
 	codeWrapper.appendChild(codeElement);
 };
 
+/**
+ * @brief Converts the AST to node HTML elements and their respective dropdowns.
+ * 
+ * @param root Root of the AST
+ * @returns The resulting node HTML elements
+ */
 const toNodeElements = (root: JoinPoint): DocumentFragment => {
 	const fragment = new DocumentFragment();
 
@@ -61,6 +79,11 @@ const toNodeElements = (root: JoinPoint): DocumentFragment => {
 	return fragment;
 };
 
+/**
+ * @brief Imports the AST to the AST container.
+ * 
+ * @param astRoot Root of the AST
+ */
 const importAst = (astRoot: JoinPoint): void => {
   const astContainer = getAstContainer();
 
@@ -69,4 +92,4 @@ const importAst = (astRoot: JoinPoint): void => {
   astContainer.appendChild(astFragment);
 };
 
-export { importAst, initCodeContainer, addCode, updateLines };
+export { importAst, initCodeContainer, addFileCode, updateLines };

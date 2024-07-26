@@ -1,10 +1,10 @@
-import { addCode, updateLines } from "./ast-import.js";
+import { addFileCode, updateLines } from "./ast-import.js";
 import { createFileTab, getActiveCodeElement, getActiveFileTab, getFileCodeElement, getFileTab, getFileTabs, getMainCodeWrapper } from "./components.js";
 
 let selectedFilepath: string | null = null;
 
 const addFile = (path: string, code: string): void => {
-  addCode(code, path);
+  addFileCode(code, path);
   
   const fileTab = createFileTab(path);
   fileTab.addEventListener('click', () => selectFile(path));
