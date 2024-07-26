@@ -4,19 +4,18 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
 import { AddressInfo } from 'net';
-import child from 'child_process';
 
 import { LaraJoinPoint } from '../LaraJoinPoint.js';
 import JoinPoints from '../weaver/JoinPoints.js';
 import GenericAstConverter, { FilesCode } from './GenericAstConverter.js';
 import ToolJoinPoint from './public/js/ToolJoinPoint.js';
 
-type VisualizationOptions = {
-  astRoot: LaraJoinPoint;
-  hostname: string;
-  port: number;
-}
-
+/**
+ * @brief Abstract class for a the LARA visualization tool.
+ * @details To use this class in a compiler, this class must be extended and
+ * the getAstConverter method must be implemented, returning the compiler
+ * specialization of the GenericAstConverter class.
+ */
 export default abstract class GenericVisualizationTool {
   #hostname: string | undefined;
   #port: number | undefined;
@@ -25,22 +24,39 @@ export default abstract class GenericVisualizationTool {
   #toolAst: ToolJoinPoint | undefined;
   #prettyHtmlCode: FilesCode | undefined;
 
-  get isLaunched(): boolean {
+  /**
+   * @brief True whether the visualization tool is launched, and false otherwise
+   */
+  public get isLaunched(): boolean {
     return this.#wss !== undefined && this.#serverClosed === false;
   }
 
-  get hostname(): string | undefined {
+  /**
+   * @brief Hostname to which the visualization tool is listening to.
+   */
+  public get hostname(): string | undefined {
     return this.#hostname;
   }
 
-  get port(): number | undefined {
+  /**
+   * @brief Port to which the visualization tool is listening to.
+   */
+  public get port(): number | undefined {
     return this.#port;
   }
 
-  get url(): string | undefined {
+  /**
+   * @brief URL to which the visualization tool is listening to.
+   */
+  public get url(): string | undefined {
     return this.#hostname && this.#port ? `http://${this.#hostname}:${this.#port}` : undefined;
   }
 
+  /**
+   * @brief Updates the stored tool AST and code with the info retrieved from the astConverter.
+   * 
+   * @param astRoot The root of the wanted AST
+   */
   private updateAstAndCode(astRoot: LaraJoinPoint): void {
     const astConverter = this.getAstConverter();
     astConverter.updateAst();
@@ -49,6 +65,11 @@ export default abstract class GenericVisualizationTool {
     this.#prettyHtmlCode = astConverter.getPrettyHtmlCode(astRoot);
   }
 
+  /**
+   * @brief WebSocket server error handler.
+   * 
+   * @param error The error that occurred
+   */
   private onWssError(error: NodeJS.ErrnoException): void {
     switch (error.code) {
       case 'EADDRINUSE':
@@ -67,7 +88,13 @@ export default abstract class GenericVisualizationTool {
     this.#wss!.close();
   }
 
-  private async launch({ hostname, port }: VisualizationOptions): Promise<void> {
+  /**
+   * @brief Launches the visualization tool.
+   * 
+   * @param hostname The hostname to listen to
+   * @param port The port to listen to
+   */
+  private async launch(hostname: string, port: number): Promise<void> {
     const app = express();
     const server = http.createServer(app);
     this.#wss = new WebSocketServer({ server: server });
@@ -92,14 +119,30 @@ export default abstract class GenericVisualizationTool {
     });
   }
 
+  /**
+   * @brief Sends a message to a specific client
+   * 
+   * @param ws Client WebSocket
+   * @param data Data to be sent
+   */
   private sendToClient(ws: WebSocket, data: any): void {
     ws.send(JSON.stringify(data));
   }
 
+  /**
+   * @brief Sends a message to all the clients
+   * 
+   * @param data Message data
+   */
   private sendToAllClients(data: any): void {
     this.#wss!.clients.forEach(ws => this.sendToClient(ws, data));
   }
 
+  /**
+   * @brief Updates the client with the current tool AST and code.
+   * 
+   * @param ws Client WebSocket
+   */
   private updateClient(ws: WebSocket): void {
     this.sendToClient(ws, {
       message: 'update',
@@ -108,6 +151,16 @@ export default abstract class GenericVisualizationTool {
     });
   }
 
+  /**
+   * @brief Updates all the clients with the current tool AST and code.
+   */
+  private updateAllClients(): void {
+    this.#wss!.clients.forEach(ws => this.updateClient(ws));
+  }
+
+  /**
+   * @brief Waits for the tool to be ready to receive the AST and code.
+   */
   private async waitForTool(): Promise<void> {
     return new Promise(res => {
       let placeClientOnWait: (ws: WebSocket) => void;
@@ -135,18 +188,31 @@ export default abstract class GenericVisualizationTool {
     });
   }
 
+  /**
+   * @brief Visualizes the given AST.
+   * @details This function launches the visualization tool, if it is not
+   * already launched, and updates the web interface with the AST and code,
+   * otherwise. This can involve the recompilation of the code.
+   * 
+   * @param astRoot Root of the AST to be visualized
+   * @param port The port to listen to
+   * @param hostname The hostname to listen to
+   */
   public async visualize(astRoot: LaraJoinPoint = JoinPoints.root(), port: number = 3000, hostname: string = '127.0.0.1'): Promise<void> {
     this.updateAstAndCode(astRoot!);
 
     if (!this.isLaunched) {
-      await this.launch({astRoot, hostname, port});
+      await this.launch(hostname, port);
     } else {
-      this.#wss!.clients.forEach(ws => this.updateClient(ws));
+      this.updateAllClients();
     }
 
     console.log(`\nVisualization tool is running at ${this.url}\n`);
     await this.waitForTool();
   }
 
+  /**
+   * @brief Returns the compiler AST converter.
+   */
   protected abstract getAstConverter(): GenericAstConverter;
-}
+};

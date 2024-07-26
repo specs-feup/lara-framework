@@ -106,7 +106,7 @@ const createIcon = (name: string): HTMLElement => {
   icon.textContent = name;
   
   return icon;
-}
+};
 
 
 const createNodeDropdown = (nodeId: string): HTMLDivElement => {

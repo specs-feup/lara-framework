@@ -1,5 +1,12 @@
+/**
+ * @file ast-import.ts
+ * @brief Functions for importing the AST and code to the visualization.
+ */
 import { countChar } from './utils.js';
 import { createCodeElement, createCodeLines, createCodeWrapper, createNodeDropdown, createNodeDropdownButton, createNodeElement, getActiveCodeElement, getAstContainer, getCodeContainer, getCodeLines, getMainCodeWrapper } from './components.js';
+/**
+ * @brief Updates the line numbering of the code container.
+ */
 const updateLines = () => {
     const codeLines = getCodeLines();
     const codeWrapper = getMainCodeWrapper();
@@ -11,6 +18,9 @@ const updateLines = () => {
     const newCodeLines = createCodeLines(numLines);
     codeLines.replaceWith(newCodeLines);
 };
+/**
+ * @brief Initializes the code container, by adding the code lines and the code wrapper.
+ */
 const initCodeContainer = () => {
     const codeContainer = getCodeContainer();
     codeContainer.innerHTML = '';
@@ -18,7 +28,13 @@ const initCodeContainer = () => {
     const codeWrapper = createCodeWrapper();
     codeContainer.append(codeLines, codeWrapper);
 };
-const addCode = (code, filepath) => {
+/**
+ * @brief Adds a new hidden code element, with the given code, to the code container.
+ *
+ * @param code Code of the element
+ * @param filepath Path of the file
+ */
+const addFileCode = (code, filepath) => {
     const codeWrapper = getMainCodeWrapper();
     if (!codeWrapper)
         throw new Error('Code container not initialized');
@@ -26,6 +42,12 @@ const addCode = (code, filepath) => {
     codeElement.dataset.filepath = filepath;
     codeWrapper.appendChild(codeElement);
 };
+/**
+ * @brief Converts the AST to node HTML elements and their respective dropdowns.
+ *
+ * @param root Root of the AST
+ * @returns The resulting node HTML elements
+ */
 const toNodeElements = (root) => {
     const fragment = new DocumentFragment();
     if (root.children.length > 0) {
@@ -45,11 +67,16 @@ const toNodeElements = (root) => {
     }
     return fragment;
 };
+/**
+ * @brief Imports the AST to the AST container.
+ *
+ * @param astRoot Root of the AST
+ */
 const importAst = (astRoot) => {
     const astContainer = getAstContainer();
     const astFragment = toNodeElements(astRoot);
     astContainer.innerHTML = '';
     astContainer.appendChild(astFragment);
 };
-export { importAst, initCodeContainer, addCode, updateLines };
+export { importAst, initCodeContainer, addFileCode, updateLines };
 //# sourceMappingURL=ast-import.js.map

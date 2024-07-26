@@ -1,3 +1,14 @@
+/**
+ * @file utils.ts
+ * @brief Utility functions for the visualization tool.
+ */
+/**
+ * @brief Counts the number of occurrences of a character in a string.
+ *
+ * @param str String to search
+ * @param char Target character
+ * @returns Number of occurrences of char in str
+ */
 const countChar = (str, char) => {
     let count = 0;
     for (const c of str) {
@@ -6,11 +17,5 @@ const countChar = (str, char) => {
     }
     return count;
 };
-const createIcon = (name) => {
-    const icon = document.createElement('span');
-    icon.classList.add('icon', 'material-symbols-outlined');
-    icon.textContent = name;
-    return icon;
-};
-export { countChar, createIcon };
+export { countChar };
 //# sourceMappingURL=utils.js.map

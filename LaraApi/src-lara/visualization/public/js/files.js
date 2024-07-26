@@ -1,13 +1,26 @@
-import { addCode, updateLines } from "./ast-import.js";
+/**
+ * @file files.ts
+ * @brief Functions for handling files in the visualization.
+ */
+import { addFileCode, updateLines } from "./ast-import.js";
 import { createFileTab, getActiveCodeElement, getActiveFileTab, getFileCodeElement, getFileTab, getFileTabs, getMainCodeWrapper } from "./components.js";
 let selectedFilepath = null;
+/**
+ * @brief Adds a new file, with the respective file tab and (hidden) code, to the visualization.
+ *
+ * @param path Path of the file
+ * @param code File code
+ */
 const addFile = (path, code) => {
-    addCode(code, path);
+    addFileCode(code, path);
     const fileTab = createFileTab(path);
     fileTab.addEventListener('click', () => selectFile(path));
     const fileTabs = getFileTabs();
     fileTabs.appendChild(fileTab);
 };
+/**
+ * @brief Clears all files from the code container.
+ */
 const clearFiles = () => {
     const codeWrapper = getMainCodeWrapper();
     if (!codeWrapper)
@@ -17,6 +30,10 @@ const clearFiles = () => {
     codeWrapper.innerHTML = '';
     selectedFilepath = null;
 };
+/**
+ * @brief Selects a file, by making its code visible in the code container.
+ * @param filepath
+ */
 const selectFile = (filepath) => {
     const fileTab = getFileTab(filepath);
     if (!fileTab)

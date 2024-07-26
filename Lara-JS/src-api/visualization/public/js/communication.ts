@@ -31,7 +31,7 @@ const onUpdate = (data: any): void => {
   selectFile(Object.keys(data.code)[0]);
 
   getContinueButton().disabled = buttonDisabled;
-}
+};
 
 const webSocketOnMessage = (message: MessageEvent): void => {
   const continueButton = getContinueButton();
@@ -85,4 +85,4 @@ export {
   parseMessage,
   webSocketOnMessage,
   continueButtonOnClick,
-}
+};

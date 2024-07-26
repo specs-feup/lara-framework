@@ -1,5 +1,15 @@
+/**
+ * @file visualization.ts
+ * @brief Functions for handling the visualization behavior and events.
+ */
 import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
+/**
+ * @brief Highlights the node with the given id.
+ *
+ * @param nodeId Node id
+ * @param strong If the highlight should use a strong color
+ */
 const highlightNode = (nodeId, strong) => {
     const nodeElement = getNodeElement(nodeId);
     if (!nodeElement) {
@@ -16,6 +26,11 @@ const highlightNode = (nodeId, strong) => {
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
+/**
+ * @brief Unhighlights the node with the given id.
+ *
+ * @param nodeId Node id
+ */
 const unhighlightNode = (nodeId) => {
     const nodeElement = getNodeElement(nodeId);
     if (!nodeElement) {
@@ -32,6 +47,11 @@ const unhighlightNode = (nodeId) => {
         parentNode = parentNode.parentElement?.previousSibling;
     }
 };
+/**
+ * @brief Shows the node info container with the given node information.
+ *
+ * @param node The target node
+ */
 const showNodeInfo = (node) => {
     const nodeInfoContainer = getNodeInfoContainer();
     nodeInfoContainer.style.display = 'block';
@@ -55,6 +75,9 @@ const showNodeInfo = (node) => {
         }
     }
 };
+/**
+ * @brief Hides the node information container.
+ */
 const hideNodeInfo = () => {
     const nodeInfoContainer = getNodeInfoContainer();
     nodeInfoContainer.style.display = 'none';
@@ -107,6 +130,12 @@ const highlightableOnClick = (node, event) => {
     }
     showNodeInfo(node);
 };
+/**
+ * @brief Adds event listeners to all the highlightable elements relative to
+ * the nodes in the given AST.
+ *
+ * @param root Root of the AST
+ */
 const addHighlighingEventListeners = (root) => {
     const addListeners = (node) => {
         const highlightableElements = getHighlightableElements(node.id);
@@ -128,7 +157,10 @@ const addHighlighingEventListeners = (root) => {
     selectedNodeId = null; // To prevent invalid references
     addListeners(root);
 };
-const addDividerEventListeners = () => {
+/**
+ * @brief Adds event listeners to the resizer element.
+ */
+const addResizerEventListeners = () => {
     const resizer = getResizer();
     const astContainer = getAstContainer();
     const codeContainer = getCodeContainer();
@@ -156,5 +188,5 @@ const addDividerEventListeners = () => {
         }
     });
 };
-export { addHighlighingEventListeners, addDividerEventListeners };
+export { addHighlighingEventListeners, addResizerEventListeners };
 //# sourceMappingURL=visualization.js.map

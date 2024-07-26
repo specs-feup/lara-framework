@@ -17,6 +17,6 @@ const countChar = (str: string, char: string): number => {
       count++;
   }
   return count;
-}
+};
 
 export { countChar };
