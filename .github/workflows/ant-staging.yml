@@ -24,7 +24,9 @@ jobs:
 
     steps:
     
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        ref: staging
     
     #- name: Show working dir
     #  run: |
