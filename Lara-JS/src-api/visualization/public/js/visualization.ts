@@ -1,7 +1,18 @@
+/**
+ * @file visualization.ts
+ * @brief Functions for handling the visualization behavior and events.
+ */
+
 import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer } from "./components.js";
 import { selectFile } from "./files.js";
 import JoinPoint from "./ToolJoinPoint.js";
 
+/**
+ * @brief Highlights the node with the given id.
+ * 
+ * @param nodeId Node id
+ * @param strong If the highlight should use a strong color
+ */
 const highlightNode = (nodeId: string, strong: boolean): void => {
   const nodeElement = getNodeElement(nodeId);
   if (!nodeElement) {
@@ -22,6 +33,11 @@ const highlightNode = (nodeId: string, strong: boolean): void => {
   }
 };
 
+/**
+ * @brief Unhighlights the node with the given id.
+ * 
+ * @param nodeId Node id
+ */
 const unhighlightNode = (nodeId: string): void => {
   const nodeElement = getNodeElement(nodeId);
   if (!nodeElement) {
@@ -42,6 +58,11 @@ const unhighlightNode = (nodeId: string): void => {
   }
 };
 
+/**
+ * @brief Shows the node info container with the given node information.
+ * 
+ * @param node The target node
+ */
 const showNodeInfo = (node: JoinPoint): void => {
   const nodeInfoContainer = getNodeInfoContainer();
   nodeInfoContainer.style.display = 'block';
@@ -67,6 +88,9 @@ const showNodeInfo = (node: JoinPoint): void => {
   }
 };
 
+/**
+ * @brief Hides the node information container.
+ */
 const hideNodeInfo = (): void => {
   const nodeInfoContainer = getNodeInfoContainer();
   nodeInfoContainer.style.display = 'none';
@@ -134,6 +158,12 @@ const highlightableOnClick = (node: JoinPoint, event: Event): void => {
   showNodeInfo(node);
 };
 
+/**
+ * @brief Adds event listeners to all the highlightable elements relative to
+ * the nodes in the given AST.
+ * 
+ * @param root Root of the AST
+ */
 const addHighlighingEventListeners = (root: JoinPoint): void => {
   const addListeners = (node: JoinPoint) => {
     const highlightableElements = getHighlightableElements(node.id);
@@ -161,8 +191,10 @@ const addHighlighingEventListeners = (root: JoinPoint): void => {
   addListeners(root);
 };
 
-
-const addDividerEventListeners = (): void => {
+/**
+ * @brief Adds event listeners to the resizer element.
+ */
+const addResizerEventListeners = (): void => {
   const resizer = getResizer();
   const astContainer = getAstContainer();
   const codeContainer = getCodeContainer();
@@ -197,4 +229,4 @@ const addDividerEventListeners = (): void => {
   });
 };
 
-export { addHighlighingEventListeners, addDividerEventListeners };
+export { addHighlighingEventListeners, addResizerEventListeners };

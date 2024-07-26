@@ -56,7 +56,7 @@ const webSocketOnMessage = (message: MessageEvent): void => {
  * @brief Creates a WebSocket connection to the server, with the message event
  * listener.
  * 
- * @return WebSocket object
+ * @returns WebSocket object
  */
 const getWebSocket = (): WebSocket => {
   const url = '/';
