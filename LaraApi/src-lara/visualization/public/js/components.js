@@ -1,4 +1,3 @@
-import { createIcon } from "./utils.js";
 const getAstContainer = (() => {
     const astContainer = document.querySelector('#ast-container');
     if (!astContainer) {
@@ -79,6 +78,12 @@ const getFileTab = (filepath) => {
 const getActiveFileTab = () => {
     return getFileTabs().querySelector('.file-tab.active');
 };
+const createIcon = (name) => {
+    const icon = document.createElement('span');
+    icon.classList.add('icon', 'material-symbols-outlined');
+    icon.textContent = name;
+    return icon;
+};
 const createNodeDropdown = (nodeId) => {
     const dropdown = document.createElement('div');
     dropdown.classList.add('ast-node-dropdown');
@@ -158,5 +163,5 @@ const createFileTab = (filepath) => {
     fileTab.textContent = filepath !== '' ? filepath.slice(filepath.lastIndexOf('/') + 1) : '<no file>';
     return fileTab;
 };
-export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, getFileCodeElement, getFileTab, getActiveFileTab, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
+export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, getFileCodeElement, getFileTab, getActiveFileTab, createIcon, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
 //# sourceMappingURL=components.js.map
