@@ -15,5 +15,8 @@ const getSpanTags = (...attrs) => {
 const getNodeCodeTags = (nodeId) => {
     return getSpanTags('class="node-code"', `data-node-id="${nodeId}"`);
 };
-export { addIdentation, escapeHtml, getSpanTags, getNodeCodeTags };
+const getSyntaxHighlightTags = (type) => {
+    return getSpanTags(`class="${type}"`);
+};
+export { addIdentation, escapeHtml, getSpanTags, getNodeCodeTags, getSyntaxHighlightTags };
 //# sourceMappingURL=AstConverterUtils.js.map
