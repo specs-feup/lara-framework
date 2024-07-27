@@ -8,7 +8,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
-import JavaTypes from "./lara/util/JavaTypes.js";
+import java from "java";
+import JavaTypes, { Engine, engine } from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     /**
      * @hidden
@@ -104,6 +105,23 @@ export function unwrapJoinPoint(obj) {
         return obj._javaObject;
     }
     if (Array.isArray(obj)) {
+        if (engine == Engine.NodeJS) {
+            const isJpArray = obj.reduce((prev, curr) => {
+                return prev && curr instanceof LaraJoinPoint;
+            }, true);
+            const getClassName = (jp) => Object.getPrototypeOf(jp._javaObject).constructor.name;
+            if (isJpArray) {
+                const clazz = (obj.map(getClassName).reduce((prev, curr) => {
+                    if (prev != curr) {
+                        return undefined;
+                    }
+                    return prev;
+                }) ?? "java.lang.Object")
+                    .replace("nodeJava_", "")
+                    .replaceAll("_", ".");
+                return java.newArray(clazz, obj.map(unwrapJoinPoint));
+            }
+        }
         return obj.map(unwrapJoinPoint);
     }
     return obj;
