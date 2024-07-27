@@ -11,7 +11,7 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 
 import java from "java";
-import JavaTypes, { Engine, engine } from "./lara/util/JavaTypes.js";
+import JavaTypes, { Engine, engine, NodeJavaPrefix } from "./lara/util/JavaTypes.js";
 
 /**
  * Type for type equality assertion. If T is equal to U, return Y, otherwise return N.
@@ -197,7 +197,7 @@ export function unwrapJoinPoint(obj: any): any {
                 return prev;
             }) ?? "java.lang.Object"
         )
-            .replace("nodeJava_", "")
+            .replace(NodeJavaPrefix, "")
             .replaceAll("_", ".");
         
         return java.newArray(clazz, obj.map(unwrapJoinPoint));

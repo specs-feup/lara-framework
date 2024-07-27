@@ -32,7 +32,7 @@ function buildLaraJoinPoint(inputFileName, outputFileName) {
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 
 import java from "java";
-import JavaTypes, { Engine, engine } from "./lara/util/JavaTypes.js";
+import JavaTypes, { Engine, engine, NodeJavaPrefix } from "./lara/util/JavaTypes.js";
 
 /**
  * Type for type equality assertion. If T is equal to U, return Y, otherwise return N.
@@ -180,8 +180,8 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
   );
 
   fs.writeSync(
-    outputFile,
-    `\nexport function unwrapJoinPoint(obj: any): any {
+      outputFile,
+      `\nexport function unwrapJoinPoint(obj: any): any {
   if (obj instanceof LaraJoinPoint) {
     return obj._javaObject;
   }
@@ -204,7 +204,7 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
                 return prev;
             }) ?? "java.lang.Object"
         )
-            .replace("nodeJava_", "")
+            .replace(NodeJavaPrefix, "")
             .replaceAll("_", ".");
         
         return java.newArray(clazz, obj.map(unwrapJoinPoint));

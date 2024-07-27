@@ -9,7 +9,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 import java from "java";
-import JavaTypes, { Engine, engine } from "./lara/util/JavaTypes.js";
+import JavaTypes, { Engine, engine, NodeJavaPrefix } from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     /**
      * @internal
@@ -120,7 +120,7 @@ export function unwrapJoinPoint(obj) {
                     }
                     return prev;
                 }) ?? "java.lang.Object")
-                    .replace("nodeJava_", "")
+                    .replace(NodeJavaPrefix, "")
                     .replaceAll("_", ".");
                 return java.newArray(clazz, obj.map(unwrapJoinPoint));
             }
