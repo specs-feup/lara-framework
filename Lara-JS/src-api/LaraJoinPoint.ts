@@ -54,11 +54,14 @@ export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapp
 
 export class LaraJoinPoint {
   /**
-   * @hidden
+   * @internal
    */
   static readonly _defaultAttributeInfo: {readonly map?: any, readonly name: string | null, readonly type?: any, readonly jpMapper?: any} = {
     name: null,
   };
+  /**
+   * @internal
+   */
   _javaObject!: any;
   constructor(obj: any) {
     this._javaObject = obj;

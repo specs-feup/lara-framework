@@ -12,11 +12,14 @@ import java from "java";
 import JavaTypes, { Engine, engine } from "./lara/util/JavaTypes.js";
 export class LaraJoinPoint {
     /**
-     * @hidden
+     * @internal
      */
     static _defaultAttributeInfo = {
         name: null,
     };
+    /**
+     * @internal
+     */
     _javaObject;
     constructor(obj) {
         this._javaObject = obj;
