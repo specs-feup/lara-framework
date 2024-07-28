@@ -4,6 +4,7 @@ export var Engine;
     Engine["GraalVM"] = "GraalVM";
     Engine["NodeJS"] = "NodeJS";
 })(Engine || (Engine = {}));
+export const NodeJavaPrefix = "nodeJava_";
 export let engine = Engine.GraalVM;
 if ("Java" in globalThis) {
     engine = Engine.GraalVM;
@@ -49,6 +50,11 @@ export default class JavaTypes {
         }
     }
     static isJavaObject(value) {
+        if (engine == Engine.NodeJS) {
+            return (typeof value === "object" &&
+                value !== null &&
+                Object.getPrototypeOf(value).constructor.name.startsWith(NodeJavaPrefix));
+        }
         try {
             value.getClass().getName();
             return true;

@@ -2,16 +2,12 @@ loop own actions:
 optimize
 loop all actions:
 Name: optimize
-Name: insert
-Name: def
 Name: def
 Name: insert
 Name: out
 Name: replaceWith
 body all actions:
 Name: testbody
-Name: insert
-Name: def
 Name: def
 Name: insert
 Name: out

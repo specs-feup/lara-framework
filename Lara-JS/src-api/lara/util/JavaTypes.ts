@@ -5,6 +5,8 @@ export enum Engine {
   NodeJS = "NodeJS",
 }
 
+export const NodeJavaPrefix = "nodeJava_";
+
 export let engine: Engine = Engine.GraalVM;
 
 if ("Java" in globalThis) {
@@ -132,6 +134,16 @@ export default class JavaTypes {
   }
 
   static isJavaObject<T>(value: T): boolean {
+    if (engine == Engine.NodeJS) {
+        return (
+            typeof value === "object" &&
+            value !== null &&
+            Object.getPrototypeOf(value).constructor.name.startsWith(
+                NodeJavaPrefix
+            )
+        );
+    }
+
     try {
       (value as any).getClass().getName();
       return true;

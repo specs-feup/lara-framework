@@ -17,14 +17,15 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   if (jp.name === "LaraJoinPoint") {
     fs.writeSync(
       outputFile,
-      "  /**\n   * @hidden\n   */\n" +
+      "  /**\n   * @internal\n   */\n" +
         "  static readonly _defaultAttributeInfo: {readonly map?: any, readonly name: string | null, readonly type?: any, readonly jpMapper?: any} = {\n" +
         `    name: ${jp.defaultAttribute ? '"' + jp.defaultAttribute + '"' : "null"},\n` +
         "  };\n"
     );
     fs.writeSync(
       outputFile,
-      `  _javaObject!: any;
+      "  /**\n   * @internal\n   */\n" +
+        `  _javaObject!: any;
   constructor(obj: any) {
     this._javaObject = obj;
   }\n`
@@ -32,7 +33,7 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   } else {
     fs.writeSync(
       outputFile,
-      "  /**\n   * @hidden\n   */\n" +
+      "  /**\n   * @internal\n   */\n" +
         "  static readonly _defaultAttributeInfo: {readonly map?: DefaultAttributeMap, readonly name: string | null, readonly type?: PrivateMapper, readonly jpMapper?: typeof JoinpointMapper} = {\n" +
         `    name: ${jp.defaultAttribute ? '"' + jp.defaultAttribute + '"' : "null"},\n` +
         "  };\n"
