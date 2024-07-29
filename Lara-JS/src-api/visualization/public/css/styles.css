@@ -241,7 +241,7 @@ main {
 
 #file-tabs {
   box-sizing: border-box;
-  height: 3.5em;
+  height: 3em;
   width: fit-content;
   max-width: 100%;
   padding: 0.125em;
