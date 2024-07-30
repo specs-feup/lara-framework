@@ -3,7 +3,7 @@
  * @brief Functions for handling files in the visualization.
  */
 import { addFileCode, updateLines } from "./ast-import.js";
-import { createFileTab, getActiveCodeElement, getActiveFileTab, getFileCodeElement, getFileTab, getFileTabs, getMainCodeWrapper } from "./components.js";
+import { createFileTab, createFileTabsArrow, getActiveCodeElement, getActiveFileTab, getFileCodeElement, getFileTab, getFileTabsInternalDiv, getFileTabs, getMainCodeWrapper, updateFileTabsArrows } from "./components.js";
 let selectedFilepath = null;
 /**
  * @brief Adds a new file, with the respective file tab and (hidden) code, to the visualization.
@@ -16,7 +16,13 @@ const addFile = (path, code) => {
     const fileTab = createFileTab(path);
     fileTab.addEventListener('click', () => selectFile(path));
     const fileTabs = getFileTabs();
-    fileTabs.appendChild(fileTab);
+    const fileTabsInternalDiv = getFileTabsInternalDiv();
+    if (fileTabsInternalDiv.children.length === 0) {
+        const fileTabsLeftArrow = createFileTabsArrow('left');
+        const fileTabsRightArrow = createFileTabsArrow('right');
+        fileTabs.append(fileTabsLeftArrow, fileTabsRightArrow);
+    }
+    fileTabsInternalDiv.appendChild(fileTab);
 };
 /**
  * @brief Clears all files from the code container.
@@ -27,6 +33,7 @@ const clearFiles = () => {
         throw new Error('Code container not initialized');
     const fileTabs = getFileTabs();
     fileTabs.innerHTML = '';
+    fileTabs.appendChild(document.createElement('div'));
     codeWrapper.innerHTML = '';
     selectedFilepath = null;
 };
@@ -49,6 +56,8 @@ const selectFile = (filepath) => {
         const fileCodeElement = getFileCodeElement(filepath);
         fileCodeElement.classList.add('active');
         updateLines();
+        fileTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        updateFileTabsArrows();
         selectedFilepath = filepath;
     }
 };

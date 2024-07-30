@@ -2,7 +2,7 @@
  * @file visualization.ts
  * @brief Functions for handling the visualization behavior and events.
  */
-import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer } from "./components.js";
+import { createCodeElement, createCodeWrapper, createNodeInfoAlert, createNodeInfoLine, getAstContainer, getCodeContainer, getContinueButton, getFileTabsInternalDiv, getFirstNodeCodeElement, getHighlightableElements, getNodeElement, getNodeInfoContainer, getNodeText, getResizer, updateFileTabsArrows } from "./components.js";
 import { selectFile } from "./files.js";
 /**
  * @brief Highlights the node with the given id.
@@ -185,6 +185,8 @@ const addResizerEventListeners = () => {
             else if (width > maxWidth)
                 width = maxWidth;
             rootStyle.setProperty('--ast-container-width', `${width}px`);
+            if (getFileTabsInternalDiv())
+                updateFileTabsArrows();
         }
     });
 };

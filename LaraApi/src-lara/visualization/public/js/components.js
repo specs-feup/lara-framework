@@ -72,11 +72,17 @@ const getActiveCodeElement = () => {
 const getFileCodeElement = (filename) => {
     return getCodeContainer().querySelector(`code[data-filepath="${filename}"]`);
 };
+const getFileTabsInternalDiv = () => {
+    return getFileTabs().querySelector('div');
+};
 const getFileTab = (filepath) => {
     return getFileTabs().querySelector(`.file-tab[data-filepath="${filepath}"]`);
 };
 const getActiveFileTab = () => {
     return getFileTabs().querySelector('.file-tab.active');
+};
+const getFileTabsArrow = (direction) => {
+    return document.querySelector(`#file-tabs-arrow-${direction}`);
 };
 const createIcon = (name) => {
     const icon = document.createElement('span');
@@ -163,5 +169,38 @@ const createFileTab = (filepath) => {
     fileTab.textContent = filepath !== '' ? filepath.slice(filepath.lastIndexOf('/') + 1) : '<no file>';
     return fileTab;
 };
-export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, getFileCodeElement, getFileTab, getActiveFileTab, createIcon, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, };
+const fileTabsArrowOnClick = (event, direction) => {
+    const fileTabsInternalDiv = getFileTabsInternalDiv();
+    const activeTabIndex = Array.from(fileTabsInternalDiv.children).findIndex(tab => tab.classList.contains('active'));
+    if (direction === 'left' && activeTabIndex > 0) {
+        fileTabsInternalDiv.children[activeTabIndex - 1].click();
+    }
+    else if (direction === 'right' && activeTabIndex < fileTabsInternalDiv.children.length - 1) {
+        fileTabsInternalDiv.children[activeTabIndex + 1].click();
+    }
+    event.stopPropagation();
+};
+const createFileTabsArrow = (direction) => {
+    const arrow = document.createElement('button');
+    arrow.classList.add('file-tabs-arrow');
+    arrow.id = `file-tabs-arrow-${direction}`;
+    arrow.appendChild(createIcon(`keyboard_arrow_${direction}`));
+    arrow.addEventListener('click', event => fileTabsArrowOnClick(event, direction));
+    return arrow;
+};
+/**
+ * @brief Updates the file tabs arrows, enabling or disabling them based on the
+ * number of tabs and selected tab.
+ */
+const updateFileTabsArrows = () => {
+    const fileTabs = getFileTabs();
+    const fileTabsInternalDiv = getFileTabsInternalDiv();
+    const activeFileTab = getActiveFileTab();
+    const fileTabsLeftArrow = getFileTabsArrow('left');
+    const fileTabsRightArrow = getFileTabsArrow('right');
+    const fileTabsOverflow = fileTabs.scrollWidth < fileTabsInternalDiv.scrollWidth;
+    fileTabsLeftArrow.disabled = !fileTabsOverflow || fileTabsInternalDiv.children[0] === activeFileTab;
+    fileTabsRightArrow.disabled = !fileTabsOverflow || fileTabsInternalDiv.children[fileTabsInternalDiv.children.length - 1] === activeFileTab;
+};
+export { getAstContainer, getCodeContainer, getNodeInfoContainer, getContinueButton, getResizer, getFileTabs, getNodeElement, getNodeText, getFirstNodeCodeElement, getNodeCodeElements, getHighlightableElements, getMainCodeWrapper, getCodeLines, getActiveCodeElement, getFileCodeElement, getFileTab, getFileTabsInternalDiv, getActiveFileTab, getFileTabsArrow, createIcon, createNodeDropdown, createNodeDropdownButton, createNodeElement, createNodeInfoLine, createNodeInfoAlert, createCodeLines, createCodeElement, createCodeWrapper, createFileTab, createFileTabsArrow, updateFileTabsArrows, };
 //# sourceMappingURL=components.js.map
