@@ -91,6 +91,10 @@ const getFileCodeElement = (filename: string): HTMLElement | null => {
 };
 
 
+const getFileTabsInternalDiv = (): HTMLDivElement | null => {
+  return getFileTabs().querySelector('div');
+}
+
 const getFileTab = (filepath: string): HTMLButtonElement | null => {
   return getFileTabs().querySelector(`.file-tab[data-filepath="${filepath}"]`);
 };
@@ -98,6 +102,10 @@ const getFileTab = (filepath: string): HTMLButtonElement | null => {
 const getActiveFileTab = (): HTMLButtonElement | null => {
   return getFileTabs().querySelector('.file-tab.active');
 };
+
+const getFileTabsArrow = (direction: 'left' | 'right'): HTMLButtonElement | null => {
+  return document.querySelector(`#file-tabs-arrow-${direction}`);
+}
 
 
 const createIcon = (name: string): HTMLElement => {
@@ -212,6 +220,46 @@ const createFileTab = (filepath: string): HTMLButtonElement => {
 	return fileTab;
 };
 
+const fileTabsArrowOnClick = (event: Event, direction: 'left' | 'right') => {
+  const fileTabsInternalDiv = getFileTabsInternalDiv()!;
+  const activeTabIndex = Array.from(fileTabsInternalDiv.children).findIndex(tab => tab.classList.contains('active'));
+
+  if (direction === 'left' && activeTabIndex > 0) {
+    (fileTabsInternalDiv.children[activeTabIndex - 1] as HTMLButtonElement).click();
+  } else if (direction === 'right' && activeTabIndex < fileTabsInternalDiv.children.length - 1) {
+    (fileTabsInternalDiv.children[activeTabIndex + 1] as HTMLButtonElement).click();
+  }
+
+  event.stopPropagation();
+};
+
+const createFileTabsArrow = (direction: 'left' | 'right'): HTMLButtonElement => {
+  const arrow = document.createElement('button');
+  arrow.classList.add('file-tabs-arrow');
+  arrow.id = `file-tabs-arrow-${direction}`;
+
+  arrow.appendChild(createIcon(`keyboard_arrow_${direction}`));
+  arrow.addEventListener('click', event => fileTabsArrowOnClick(event, direction));
+  return arrow;
+}
+
+/**
+ * @brief Updates the file tabs arrows, enabling or disabling them based on the
+ * number of tabs and selected tab.
+ */
+const updateFileTabsArrows = (): void => {
+  const fileTabs = getFileTabs();
+  const fileTabsInternalDiv = getFileTabsInternalDiv()!;
+  const activeFileTab = getActiveFileTab();
+
+  const fileTabsLeftArrow = getFileTabsArrow('left')!;
+  const fileTabsRightArrow = getFileTabsArrow('right')!;
+
+  const fileTabsOverflow = fileTabs.scrollWidth < fileTabsInternalDiv.scrollWidth;
+  fileTabsLeftArrow.disabled = !fileTabsOverflow || fileTabsInternalDiv.children[0] === activeFileTab;
+  fileTabsRightArrow.disabled = !fileTabsOverflow || fileTabsInternalDiv.children[fileTabsInternalDiv.children.length - 1] === activeFileTab;
+}
+
 export {
   getAstContainer,
   getCodeContainer,
@@ -229,7 +277,9 @@ export {
   getActiveCodeElement,
   getFileCodeElement,
   getFileTab,
+  getFileTabsInternalDiv,
   getActiveFileTab,
+  getFileTabsArrow,
   createIcon,
   createNodeDropdown,
   createNodeDropdownButton,
@@ -240,4 +290,6 @@ export {
   createCodeElement,
   createCodeWrapper,
   createFileTab,
+  createFileTabsArrow,
+  updateFileTabsArrows,
 };
