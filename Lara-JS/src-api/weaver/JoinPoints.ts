@@ -1,5 +1,6 @@
 import { LaraJoinPoint, wrapJoinPoint } from "../LaraJoinPoint.js";
 import Weaver from "./Weaver.js";
+import JpPredicate from "./predicate/JpPredicate.js";
 
 /**
  * Object which provides low-level join point-related methods.
@@ -70,9 +71,9 @@ export default class JoinPoints {
    *
    * @returns the nodes inside the scope of the given node.
    */
-  static scope<T extends typeof LaraJoinPoint>(
+  static scope(
     $jp: LaraJoinPoint,
-    jpType?: T
+    jpType?: JpPredicate
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(jpType, JoinPoints._all_scope_nodes($jp));
   }
@@ -81,9 +82,9 @@ export default class JoinPoints {
    *
    * @returns the children of the given node, according to the AST
    */
-  static children<T extends typeof LaraJoinPoint>(
+  static children(
     $jp: LaraJoinPoint,
-    jpType?: T
+    jpType?: JpPredicate
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(jpType, JoinPoints._all_children($jp));
   }
@@ -92,9 +93,9 @@ export default class JoinPoints {
    *
    * @returns the descendants of the given node, according to the AST, preorder traversal
    */
-  static descendants<T extends typeof LaraJoinPoint>(
+  static descendants(
     $jp: LaraJoinPoint,
-    jpType?: T
+    jpType?: JpPredicate
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(jpType, JoinPoints._all_descendants($jp));
   }
@@ -103,9 +104,9 @@ export default class JoinPoints {
    *
    * @returns the descendants of the given node, according to the AST, postorder traversal
    */
-  static descendantsPostorder<T extends typeof LaraJoinPoint>(
+  static descendantsPostorder(
     $jp: LaraJoinPoint,
-    jpType?: T
+    jpType?: JpPredicate
   ): LaraJoinPoint[] {
     return JoinPoints._getNodes(
       jpType,
@@ -117,8 +118,8 @@ export default class JoinPoints {
    *
    * @returns  the nodes related with the given node, according to the search function
    */
-  private static _getNodes<T extends typeof LaraJoinPoint>(
-    jpType?: T,
+  private static _getNodes(
+    jpType?: JpPredicate,
     $allJps: LaraJoinPoint[] = []
   ): LaraJoinPoint[] {
     // TODO: This function can be optimized by using streaming
@@ -126,7 +127,7 @@ export default class JoinPoints {
       return $allJps;
     }
 
-    return $allJps.filter((jp) => jp instanceof jpType);
+    return $allJps.filter((jp) => jpType.isInstance(jp));    
   }
 
   /**

@@ -9,6 +9,9 @@ import { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
 import TraversalType from "./TraversalType.js";
 import Weaver from "./Weaver.js";
+import JpPredicate from "./predicate/JpPredicate.js";
+import StringPredicate from "./predicate/StringPredicate.js";
+import TypePredicate from "./predicate/TypePredicate.js";
 
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
@@ -275,7 +278,7 @@ export default class Selector<
    * @returns The results of the search.
    */
   search(
-    name?: string,
+    type?: string,
     filter?: Filter_StringVariant,
     traversal?: TraversalType
   ): Selector;
@@ -285,33 +288,31 @@ export default class Selector<
     traversal: TraversalType = TraversalType.PREORDER
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
+    let jpPredicate : JpPredicate;
 
     if (typeof type === "string") {
       jpFilter = Selector.convertStringFilterToWrapperFilter(
         type,
         filter as Filter_StringVariant
       );
-      const jpType = Weaver.findJoinpointType(type);
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return this.search(jpType, jpFilter, traversal);
+      jpPredicate = new StringPredicate(type);
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
         (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
+      jpPredicate = new TypePredicate(type);
     }
 
     let fn;
     switch (traversal) {
       case TraversalType.PREORDER:
-        fn = function ($jp: LaraJoinPoint, name?: T) {
+        fn = function ($jp: LaraJoinPoint, name?: JpPredicate) {
           return selectorJoinPointsClass.descendants($jp, name);
         };
         break;
       case TraversalType.POSTORDER:
-        fn = function ($jp: LaraJoinPoint, name?: T) {
+        fn = function ($jp: LaraJoinPoint, name?: JpPredicate) {
           return selectorJoinPointsClass.descendantsPostorder($jp, name);
         };
         break;
@@ -322,7 +323,7 @@ export default class Selector<
         );
     }
 
-    return this.searchPrivate(type, fn, jpFilter);
+    return this.searchPrivate(jpPredicate, fn, jpFilter);
   }
 
   /**
@@ -353,28 +354,26 @@ export default class Selector<
     filter: Filter_WrapperVariant<T> | Filter_StringVariant
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
+    let jpPredicate : JpPredicate;
 
     if (typeof type === "string") {
       jpFilter = Selector.convertStringFilterToWrapperFilter(
         type,
         filter as Filter_StringVariant
       );
-      const jpType = Weaver.findJoinpointType(type);
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return this.children(jpType, jpFilter);
+      jpPredicate = new StringPredicate(type);
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
         (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
+      jpPredicate = new TypePredicate(type);
     }
 
     return this.searchPrivate(
-      type,
-      function ($jp: LaraJoinPoint, name?: T) {
-        return selectorJoinPointsClass.children($jp, name);
+      jpPredicate,
+      function ($jp: LaraJoinPoint, type?: JpPredicate) {
+        return selectorJoinPointsClass.children($jp, type);
       },
       jpFilter
     );
@@ -408,27 +407,24 @@ export default class Selector<
     filter: Filter_WrapperVariant<T> | Filter_StringVariant
   ): Selector<T, ChU | T> {
     let jpFilter: JpFilterFunction<T>;
-
+    let jpPredicate: JpPredicate;
     if (typeof type === "string") {
       jpFilter = Selector.convertStringFilterToWrapperFilter(
         type,
         filter as Filter_StringVariant
       );
-      const jpType = Weaver.findJoinpointType(type);
-      if (!jpType) {
-        throw new Error(`Join point type '${type}' not found.`);
-      }
-      return this.scope(jpType, jpFilter);
+      jpPredicate = new StringPredicate(type);
     } else {
       jpFilter = Selector.parseWrapperFilter(
         type,
         (filter as Filter_WrapperVariant<T>) ?? (() => true)
       );
+      jpPredicate = new TypePredicate(type);
     }
 
     return this.searchPrivate(
-      type,
-      function ($jp: LaraJoinPoint, name?: T) {
+      jpPredicate,      
+      function ($jp: LaraJoinPoint, name?: JpPredicate) {
         return selectorJoinPointsClass.scope($jp, name);
       },
       jpFilter
@@ -436,17 +432,17 @@ export default class Selector<
   }
 
   private searchPrivate<T extends typeof LaraJoinPoint>(
-    type: T,
-    selectFunction: (jp: LaraJoinPoint, name?: T) => LaraJoinPoint[],
+    type: JpPredicate,
+    selectFunction: (jp: LaraJoinPoint, name?: JpPredicate) => LaraJoinPoint[],
     jpFilter: JpFilterFunction<T> = () => true
   ): Selector<T, ChU | T> {
-    const name = Weaver.findJoinpointTypeName(type) ?? "joinpoint";
+    const name = type.jpName();
     const $newJps: SelectorChain[] = [];
 
     /**
      * Lara Common Language dirty hack. REMOVE ME PLEASE!
      */
-    if (selectorJoinPointsClass !== JoinPoints && type === LaraJoinPoint) {
+    if (selectorJoinPointsClass !== JoinPoints && type.isLaraJoinPoint()) {      
       // We are in LCL mode.
       throw new Error("In LCL mode you are required to specify a type in a search.");
     }
@@ -463,7 +459,7 @@ export default class Selector<
 
       // Filter does not test if the join point is of the right type
       const $root = this.$currentJps[0].jpAttributes[this.lastName];
-      if ($root instanceof type) {
+      if (type.isInstance($root)) {
         this.addJps(name, $newJps, [$root], jpFilter, this.$currentJps[0]);
       }
     }
