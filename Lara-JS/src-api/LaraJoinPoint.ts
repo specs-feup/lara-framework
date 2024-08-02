@@ -165,7 +165,10 @@ export function wrapJoinPoint(obj: any): any {
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  // Get join point type from name of the Java class, since getJoinPointType() might
+  // not always correspond to the actual join point class (e.g., anyweaver)
+  const jpType: string = obj.get_class();
+
   for (const mapper of JoinpointMappers) {
     if (mapper[jpType]) {
       return new mapper[jpType](obj);

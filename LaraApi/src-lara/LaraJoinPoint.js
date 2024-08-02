@@ -95,7 +95,9 @@ export function wrapJoinPoint(obj) {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Given Java join point is a Java class but is not a JoinPoint: ${obj.getClass()}`);
     }
-    const jpType = obj.getJoinPointType();
+    // Get join point type from name of the Java class, since getJoinPointType() might
+    // not always correspond to the actual join point class (e.g., anyweaver)
+    const jpType = obj.get_class();
     for (const mapper of JoinpointMappers) {
         if (mapper[jpType]) {
             return new mapper[jpType](obj);
