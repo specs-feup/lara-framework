@@ -90,7 +90,7 @@ export default class JoinPoints {
         if (jpType === undefined) {
             return $allJps;
         }
-        return $allJps.filter((jp) => jp instanceof jpType);
+        return $allJps.filter((jp) => jpType.isInstance(jp));
     }
     /**
      * Iterates of attributeNames, returns the first value that is not null or undefined.
