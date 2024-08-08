@@ -90,7 +90,7 @@ export default class Strings {
      * Returns a random unique identifier.
      */
     static uuid() {
-        let uuid = JavaTypes.Uuid().randomUUID().toString();
+        let uuid = JavaTypes.Uuid.randomUUID().toString();
         // Regular expression and 'g' is needed to replace all occurences
         uuid = Strings.replacer(uuid, /-/g, "_");
         return "id_" + uuid;
@@ -101,7 +101,7 @@ export default class Strings {
      * 2) Trims lines and removes empty lines
      */
     static normalize(string) {
-        return JavaTypes.SpecsStrings().normalizeFileContents(string, true);
+        return JavaTypes.SpecsStrings.normalizeFileContents(string, true);
     }
     /**
      * Converts a given object to a XML string.
@@ -111,7 +111,7 @@ export default class Strings {
      * @returns The XML representation of the object.
      */
     static toXml(object) {
-        return JavaTypes.XStreamUtils().toString(object);
+        return JavaTypes.XStreamUtils.toString(object);
     }
     /**
      * Converts a given XML string to an object.
@@ -121,7 +121,7 @@ export default class Strings {
      * @returns The deserialized object.
      */
     static fromXml(xmlString) {
-        return JavaTypes.XStreamUtils().from(xmlString, JavaTypes.Object.class);
+        return JavaTypes.XStreamUtils.from(xmlString, JavaTypes.Object.class);
     }
 }
 //# sourceMappingURL=Strings.js.map
