@@ -118,12 +118,16 @@ export default class System {
     return JavaTypes.Runtime.getRuntime().availableProcessors();
   }
 
-  static getCurrentFile(): string | undefined {
-    return this.getCurrentFilePrivate(3);
+  static getCurrentFile(depth: number): string | undefined {
+    depth = depth ?? 0;
+
+    return this.getCurrentFilePrivate(3 + depth);
   }
 
-  static getCurrentFolder(): string | undefined {
-    const filepath = this.getCurrentFilePrivate(3);
+  static getCurrentFolder(depth: number): string | undefined {
+    depth = depth ?? 0;
+
+    const filepath = this.getCurrentFilePrivate(3 + depth);
 
     if (filepath === undefined) {
       return undefined;

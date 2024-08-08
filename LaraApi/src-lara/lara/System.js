@@ -78,11 +78,13 @@ export default class System {
     static getNumLogicalCores() {
         return JavaTypes.Runtime.getRuntime().availableProcessors();
     }
-    static getCurrentFile() {
-        return this.getCurrentFilePrivate(3);
+    static getCurrentFile(depth) {
+        depth = depth ?? 0;
+        return this.getCurrentFilePrivate(3 + depth);
     }
-    static getCurrentFolder() {
-        const filepath = this.getCurrentFilePrivate(3);
+    static getCurrentFolder(depth) {
+        depth = depth ?? 0;
+        const filepath = this.getCurrentFilePrivate(3 + depth);
         if (filepath === undefined) {
             return undefined;
         }
