@@ -110,7 +110,7 @@ export default class ProcessExecutor {
             console.log("Executed command: " + command.join(" "));
         }
         if (this.stopOnError && this.getReturnValue() !== 0) {
-            throw ("Problem while running command '" +
+            throw new Error("Problem while running command '" +
                 command.join(" ") +
                 "'\nError: " +
                 this.getConsoleOutput());

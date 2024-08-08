@@ -145,7 +145,7 @@ export default class ProcessExecutor {
     }
 
     if (this.stopOnError && this.getReturnValue() !== 0) {
-      throw (
+      throw new Error(
         "Problem while running command '" +
         command.join(" ") +
         "'\nError: " +
