@@ -1025,24 +1025,11 @@ public class LaraI {
 
             var source = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename());
 
-            var sourceFile = new File(source);
-
-            // For some reason that we still don't know, if an import comes from a resource
+            // For some reason that we still don't know if an import comes from a resource
             // and the 'source' value does not have the following suffix, the class of the import will
             // not be found (at least in Linux, in Windows is ok).
-            if (!sourceFile.exists() || !sourceFile.isAbsolute()) {
-                source = source + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
-            }
+            source = source + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
 
-            /*
-            var sourceOld = laraImport.getFilename() + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
-            var anotherSource = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename()) + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
-
-            System.out.println("JS FILE: " + laraImport.getJsFile());
-            System.out.println("Source prev: " + sourceOld);
-            System.out.println("Source new: " + source);
-            System.out.println("Source current: " + anotherSource);
-             */
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
                     source);
         }
