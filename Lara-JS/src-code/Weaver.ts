@@ -31,6 +31,11 @@ export class Weaver {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static javaWeaver: any;
 
+  /**
+   * This flag is used to determine if the weaver is running in 'Classic' mode.
+   */
+  private static classicMode: boolean = false;
+
   static async setupJavaEnvironment(sourceDir: string) {
     const files = fs.readdirSync(sourceDir, { recursive: true });
 
@@ -102,38 +107,39 @@ export class Weaver {
 
     let datastore;
     if (args._[0] === "classic") {
-        try {
-            datastore = JavaLaraI.convertArgsToDataStore(
-                args._.slice(1),
-                javaWeaver
-            ).get();
-        } catch (error) {
-            throw new Error(
-                "Failed to parse 'Classic' weaver arguments:\n" + error
-            );
-        }
+      Weaver.classicMode = true;
+      try {
+        datastore = JavaLaraI.convertArgsToDataStore(
+          args._.slice(1),
+          javaWeaver
+        ).get();
+      } catch (error) {
+        throw new Error(
+          "Failed to parse 'Classic' weaver arguments:\n" + error
+        );
+      }
     } else {
-        const JavaDataStore = java.import(
-            "org.suikasoft.jOptions.Interfaces.DataStore"
-        );
+      const JavaDataStore = java.import(
+        "org.suikasoft.jOptions.Interfaces.DataStore"
+      );
 
-        datastore = await new JavaDataStore.newInstanceP(
-            `${javaWeaverClassName}DataStore`
-        );
+      datastore = await new JavaDataStore.newInstanceP(
+        `${javaWeaverClassName}DataStore`
+      );
 
-        const fileList = new JavaArrayList();
-        //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
-        const clangArgs = args._.slice(1);
-        clangArgs.forEach((arg: string | number) => {
-          fileList.add(new JavaFile(arg));
-        });
+      const fileList = new JavaArrayList();
+      //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
+      const clangArgs = args._.slice(1);
+      clangArgs.forEach((arg: string | number) => {
+        fileList.add(new JavaFile(arg));
+      });
 
-        datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-        datastore.set(
-          LaraiKeys.WORKSPACE_FOLDER,
-          JavaFileList.newInstance(fileList)
-        );
-        datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
+      datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+      datastore.set(
+        LaraiKeys.WORKSPACE_FOLDER,
+        JavaFileList.newInstance(fileList)
+      );
+      datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
     }
 
 
@@ -156,50 +162,56 @@ export class Weaver {
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
   ) {
-    if (args.scriptFile == undefined) {
-      Weaver.debug("No script file provided.");
-      return;
-    }
-
-    for (const file of config.importForSideEffects ?? []) {
-      await import(file);
-    }
-
-    Weaver.debug("Executing user script...");
-    if (
-      typeof args.scriptFile === "string" &&
-      fs.existsSync(args.scriptFile) &&
-      isValidFileExtension(path.extname(args.scriptFile))
-    ) {
-      // import is using a URL converted to string.
-      // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
-      // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
-      await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
-        .then(() => {
-          Weaver.debug("Execution completed successfully.");
-        })
-        .catch((error: unknown) => {
-          console.error("Execution failed.");
-          if (error instanceof Error) {
-            // JS exception
-            console.error(error);
-          } else if (isJavaError(error)) {
-            // Java exception
-            console.error(error.cause.getMessage());
-          } else {
-            console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
-          }
-          Weaver.debug(error);
-        });
+    if (Weaver.classicMode) {
+      java.import("larai.LaraI").execPrivate(Weaver.datastore, Weaver.javaWeaver);
     } else {
-      throw new Error("Invalid file path or file type.");
+      if (args.scriptFile == undefined) {
+        Weaver.debug("No script file provided.");
+        return;
+      }
+
+      for (const file of config.importForSideEffects ?? []) {
+        await import(file);
+      }
+
+      Weaver.debug("Executing user script...");
+      if (
+        typeof args.scriptFile === "string" &&
+        fs.existsSync(args.scriptFile) &&
+        isValidFileExtension(path.extname(args.scriptFile))
+      ) {
+        // import is using a URL converted to string.
+        // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
+        // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
+        await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
+          .then(() => {
+            Weaver.debug("Execution completed successfully.");
+          })
+          .catch((error: unknown) => {
+            console.error("Execution failed.");
+            if (error instanceof Error) {
+              // JS exception
+              console.error(error);
+            } else if (isJavaError(error)) {
+              // Java exception
+              console.error(error.cause.getMessage());
+            } else {
+              console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
+            }
+            Weaver.debug(error);
+          });
+      } else {
+        throw new Error("Invalid file path or file type.");
+      }
     }
   }
 
   static shutdown() {
     Weaver.debug("Exiting...");
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    Weaver.javaWeaver.close();
+    if (!Weaver.classicMode) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      Weaver.javaWeaver.close();
+    }
   }
 }
 

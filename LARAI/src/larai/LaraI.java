@@ -220,7 +220,7 @@ public class LaraI {
     }
 
 
-    private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
+    public static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
 
@@ -348,23 +348,20 @@ public class LaraI {
         return switch (mode) {
             // convert configuration file to data store and run
             case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
-//                isRunningGui = false;
+
             // get the configuration file and execute GUI
             case CONFIG_GUI -> Optional.empty();
-//                guiFile = OptionsParser.getConfigFile(cmd);
-//                isRunningGui = true;
+
             // convert options to data store and run
             case OPTIONS ->
                     Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
-//                isRunningGui = false;
+
             // convert configuration file to data store, override with extra options and run
             case CONFIG_OPTIONS ->
                     Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
-//                isRunningGui = false;
+
             // launch GUI
             case GUI -> Optional.empty();
-//                guiFile = null;
-//                isRunningGui = true;
         };
     }
 
