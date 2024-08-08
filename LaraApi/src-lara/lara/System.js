@@ -78,8 +78,17 @@ export default class System {
     static getNumLogicalCores() {
         return JavaTypes.Runtime.getRuntime().availableProcessors();
     }
-    static getCurrentFile() {
-        return this.getCurrentFilePrivate(3);
+    static getCurrentFile(depth) {
+        depth = depth ?? 0;
+        return this.getCurrentFilePrivate(3 + depth);
+    }
+    static getCurrentFolder(depth) {
+        depth = depth ?? 0;
+        const filepath = this.getCurrentFilePrivate(3 + depth);
+        if (filepath === undefined) {
+            return undefined;
+        }
+        return Io.getPath(filepath).getParentFile().getAbsolutePath();
     }
     static getCurrentFilePrivate(depth) {
         // Store originakl stack trace limit
@@ -104,8 +113,9 @@ export default class System {
         let stackline;
         let currentDepth = 0;
         for (let i = 0; i < stackLines.length; i++) {
-            console.log("Line " + i + ": " + stackLines[i]);
-            const match = stackLines[i].match(/\(([^)]+)\)/);
+            //console.log("Line " + i + ": " + stackLines[i]);
+            // Use greediness, capture everything between ()
+            const match = stackLines[i].match(/\((.+)\)/);
             if (match && match[1]) {
                 currentDepth++;
                 stackline = match[1];
@@ -118,13 +128,19 @@ export default class System {
         if (stackline === undefined) {
             return undefined;
         }
-        // Extract file path
+        //console.log("Stack line match: " + stackline);
+        // Remove line information
         const lastColonIndex = stackline.lastIndexOf(":");
-        const filePathTemp = lastColonIndex == -1 ? stackline : stackline.substring(0, lastColonIndex);
-        console.log("Potential Path: " + filePathTemp);
+        let filePathTemp = lastColonIndex == -1 ? stackline : stackline.substring(0, lastColonIndex);
+        // Remove LaraImport information, if present
+        if (filePathTemp.includes("(LARA import")) {
+            const endIndex = filePathTemp.lastIndexOf("(");
+            filePathTemp = filePathTemp.substring(0, endIndex).trim();
+        }
+        //console.log("Potential Path: " + filePathTemp);
         let file = Io.getPath(filePathTemp);
         if (!file.isAbsolute()) {
-            console.log("Base dir: " + __dirname);
+            //console.log("Base dir: " + __dirname);
             file = Io.getPath(Io.getPath(__dirname), file.getPath());
         }
         const absolutePath = file.getAbsolutePath();
