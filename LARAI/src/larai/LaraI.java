@@ -1025,8 +1025,12 @@ public class LaraI {
 
             var source = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename());
             var sourceOld = laraImport.getFilename() + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
+            var anotherSource = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename()) + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
+            System.out.println("Source prev: " + sourceOld);
+            System.out.println("Source new: " + source);
+            System.out.println("Source current: " + anotherSource);
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    sourceOld);
+                    anotherSource);
         }
 
     }
