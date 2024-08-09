@@ -142,7 +142,6 @@ export class Weaver {
       datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
     }
 
-
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
 
@@ -163,55 +162,56 @@ export class Weaver {
     config: WeaverMessageFromLauncher["config"]
   ) {
     if (Weaver.classicMode) {
-      java.import("larai.LaraI").execPrivate(Weaver.datastore, Weaver.javaWeaver);
+      args.scriptFile = new String(Weaver.datastore.get("aspect")).toString();
+      //java.import("larai.LaraI").execPrivate(Weaver.datastore, Weaver.javaWeaver);
+    }
+
+    if (args.scriptFile == undefined) {
+      Weaver.debug("No script file provided.");
+      return;
+    }
+
+    for (const file of config.importForSideEffects ?? []) {
+      await import(file);
+    }
+
+    Weaver.debug("Executing user script...");
+    if (
+      typeof args.scriptFile === "string" &&
+      fs.existsSync(args.scriptFile) &&
+      isValidFileExtension(path.extname(args.scriptFile))
+    ) {
+      // import is using a URL converted to string.
+      // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
+      // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
+      await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
+        .then(() => {
+          Weaver.debug("Execution completed successfully.");
+        })
+        .catch((error: unknown) => {
+          console.error("Execution failed.");
+          if (error instanceof Error) {
+            // JS exception
+            console.error(error);
+          } else if (isJavaError(error)) {
+            // Java exception
+            console.error(error.cause.getMessage());
+          } else {
+            console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
+          }
+          Weaver.debug(error);
+        });
     } else {
-      if (args.scriptFile == undefined) {
-        Weaver.debug("No script file provided.");
-        return;
-      }
-
-      for (const file of config.importForSideEffects ?? []) {
-        await import(file);
-      }
-
-      Weaver.debug("Executing user script...");
-      if (
-        typeof args.scriptFile === "string" &&
-        fs.existsSync(args.scriptFile) &&
-        isValidFileExtension(path.extname(args.scriptFile))
-      ) {
-        // import is using a URL converted to string.
-        // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
-        // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
-        await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
-          .then(() => {
-            Weaver.debug("Execution completed successfully.");
-          })
-          .catch((error: unknown) => {
-            console.error("Execution failed.");
-            if (error instanceof Error) {
-              // JS exception
-              console.error(error);
-            } else if (isJavaError(error)) {
-              // Java exception
-              console.error(error.cause.getMessage());
-            } else {
-              console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
-            }
-            Weaver.debug(error);
-          });
-      } else {
-        throw new Error("Invalid file path or file type.");
-      }
+      throw new Error("Invalid file path or file type.");
     }
   }
 
   static shutdown() {
     Weaver.debug("Exiting...");
-    if (!Weaver.classicMode) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      Weaver.javaWeaver.close();
-    }
+    //if (!Weaver.classicMode) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    Weaver.javaWeaver.close();
+    // }
   }
 }
 
