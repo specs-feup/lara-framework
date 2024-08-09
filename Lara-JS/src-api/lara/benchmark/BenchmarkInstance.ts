@@ -188,17 +188,25 @@ export default abstract class BenchmarkInstance {
     }
 
     if (this.currentExecutable === undefined) {
-      throw "BenchmarkInstance._executePrivate(): no executable currently defined";
+      throw "BenchmarkInstance.execute(): no executable currently defined";
     }
 
     console.log(`Executing ${this.getName()}...`);
+
+    this.executePrivate();
+
+    return this.currentExecutor;
+  }
+
+  protected executePrivate(): void {
+    if (this.currentExecutable === undefined) {
+      return;
+    }
 
     this.currentExecutor.execute(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this.currentExecutable.getAbsolutePath()
     );
-
-    return this.currentExecutor;
   }
 
   setExecutable(executable: JavaClasses.File) {
@@ -258,7 +266,7 @@ export default abstract class BenchmarkInstance {
 
   protected abstract compilePrivate(): JavaClasses.File | undefined;
 
-  protected abstract loadCached(astFile: JavaClasses.File): void ;
+  protected abstract loadCached(astFile: JavaClasses.File): void;
 
   /**
    * @returns Point in the code representing the execution of the benchmark kernel, around which metrics should be measured.
