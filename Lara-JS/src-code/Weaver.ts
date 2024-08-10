@@ -31,11 +31,6 @@ export class Weaver {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static javaWeaver: any;
 
-  /**
-   * This flag is used to determine if the weaver is running in 'Classic' mode.
-   */
-  private static classicMode: boolean = false;
-
   static async setupJavaEnvironment(sourceDir: string) {
     const files = fs.readdirSync(sourceDir, { recursive: true });
 
@@ -107,12 +102,12 @@ export class Weaver {
 
     let datastore;
     if (args._[0] === "classic") {
-      Weaver.classicMode = true;
       try {
         datastore = JavaLaraI.convertArgsToDataStore(
           args._.slice(1),
           javaWeaver
         ).get();
+        args.scriptFile = datastore.get("aspect").toString();
       } catch (error) {
         throw new Error(
           "Failed to parse 'Classic' weaver arguments:\n" + error
@@ -161,11 +156,6 @@ export class Weaver {
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
   ) {
-    if (Weaver.classicMode) {
-      args.scriptFile = new String(Weaver.datastore.get("aspect")).toString();
-      //java.import("larai.LaraI").execPrivate(Weaver.datastore, Weaver.javaWeaver);
-    }
-
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
       return;
@@ -208,10 +198,8 @@ export class Weaver {
 
   static shutdown() {
     Weaver.debug("Exiting...");
-    //if (!Weaver.classicMode) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     Weaver.javaWeaver.close();
-    // }
   }
 }
 
