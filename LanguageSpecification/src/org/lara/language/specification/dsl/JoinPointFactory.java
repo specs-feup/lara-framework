@@ -14,7 +14,6 @@
 package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import org.lara.language.specification.artifactsmodel.schema.Global;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.GlobalJoinPoints;
@@ -40,7 +38,7 @@ public class JoinPointFactory {
         ActionModel actionModel = langSpec.getActionModel();
 
         LanguageSpecificationV2 langSpecV2 = new LanguageSpecificationV2();
-        JoinPointClass global = JoinPointClass.globalJoinPoint(langSpecV2);
+        JoinPointClass global = JoinPointClass.globalJoinPoint();
         langSpecV2.setGlobal(global);
 
         /**
@@ -65,7 +63,7 @@ public class JoinPointFactory {
         Collections.sort(joinPoints);
         // for (JoinPointType jpType : jpModel.getJoinPointList().getJoinpoint()) {
         for (JoinPointType jpType : joinPoints) {
-            JoinPointClass newJPClass = new JoinPointClass(jpType.getClazz(), langSpecV2);
+            JoinPointClass newJPClass = new JoinPointClass(jpType.getClazz());
             newJPClass.setToolTip(jpType.getTooltip());
             langSpecV2.add(newJPClass);
         }
@@ -120,26 +118,7 @@ public class JoinPointFactory {
             }
         }
 
-        // Add default global attributes (e.g., joinPointType, instanceOf)
-        addDefaultGlobalAttributes(langSpecV2);
-
         return langSpecV2;
-
-    }
-
-    private static void addDefaultGlobalAttributes(LanguageSpecificationV2 langSpec) {
-        /*
-        var joinPointType = new Attribute(PrimitiveClasses.STRING, "joinPointType");
-        joinPointType.setDefault(true);
-        joinPointType.setToolTip("a String with the type of the join point");
-        langSpec.getGlobal().add(joinPointType);
-        */
-        var instanceOf = new Attribute(PrimitiveClasses.BOOLEAN, "instanceOf",
-                Arrays.asList(new Declaration(PrimitiveClasses.STRING, "name")));
-        instanceOf.setDefault(true);
-        instanceOf.setToolTip("true if the current join point is an instance of the given type");
-        langSpec.getGlobal().add(instanceOf);
-
     }
 
     private static List<Action> convertActions(LanguageSpecificationV2 langSpecV2,
@@ -266,7 +245,8 @@ public class JoinPointFactory {
         newAttribute.setToolTip(attribute.getTooltip());
         List<org.lara.language.specification.artifactsmodel.schema.Parameter> parameters = attribute.getParameter();
         if (parameters != null && !parameters.isEmpty()) {
-            parameters.forEach(p -> newAttribute.addParameter(langSpec.getType(p.getType()), p.getName()));
+            parameters.forEach(p -> newAttribute.addParameter(langSpec.getType(p.getType()), p.getName(),
+                    (p.getDefault() != null ? p.getDefault() : "")));
         }
         return newAttribute;
     }

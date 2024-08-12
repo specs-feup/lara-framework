@@ -4,7 +4,8 @@
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
-    "lara-build-interfaces": "scripts/build-interfaces.js"
+    "lara-build-interfaces": "scripts/build-interfaces.js",
+    "lara-java-dist": "scripts/java-dist.js"
   },
   "files": [
     "api",
@@ -13,31 +14,30 @@
     "src-code",
     ".gitignore",
     "jest.config.json",
+    "LaraJoinPointSpecification.json",
     "LICENSE",
     "package.json",
     "README.md",
     "tsconfig.json"
   ],
   "scripts": {
-    "build": "tsc -b src-api src-code",
-    "build:api": "tsc -b src-api",
-    "build:code": "tsc -b src-code",
+    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
+    "build:api": "npx tsc -b src-api",
+    "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "cross-env NODE_OPTIONS='$NODE_OPTIONS --experimental-vm-modules' jest --detectOpenHandles --forceExit",
     "test:api": "npm run test -- src-api",
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "docs:api": "typedoc src-api --name api --tsconfig src-api/tsconfig.json --entryPointStrategy Expand --json docs/api.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
-    "docs:code": "typedoc src-code --name code --tsconfig src-code/tsconfig.json --entryPointStrategy Expand --json docs/code.json --plugin typedoc-plugin-merge-modules --mergeModulesMergeMode module",
-    "docs:merge": "typedoc --entryPointStrategy Merge --includeVersion --out docs docs/api.json docs/code.json",
-    "docs": "npm run docs:api && npm run docs:code && npm run docs:merge",
-    "java-dist": "node scripts/java-dist.js"
+    "java-dist": "node scripts/java-dist.js --jsSourceFolder api --jsDestinationFolder ../LaraApi/src-lara/ --javaClassname LaraApiJsResource --javaPackageName pt.up.fe.specs.lara --javaDestinationFolder ../LaraApi/src-java/pt/up/fe/specs/lara/",
+    "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lm-sousa/Lara-JS.git"
+    "url": "git+https://github.com/specs-feup/lara-framework.git",
+    "directory": "Lara-JS"
   },
   "keywords": [
     "C",
@@ -49,34 +49,35 @@
   "author": "L. Sousa",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lm-sousa/Lara-JS/issues"
+    "url": "https://github.com/specs-feup/lara-framework/issues"
   },
-  "homepage": "https://github.com/lm-sousa/Lara-JS#readme",
+  "homepage": "https://github.com/specs-feup/lara-framework#readme",
+  "engines": {
+    "node": ">=18.18"
+  },
   "dependencies": {
-    "chokidar": "^3.5.3",
-    "debug": "^4.3.4",
-    "java": "^0.13.0",
-    "supports-color": "^9.3.1",
+    "chokidar": "^3.6.0",
+    "debug": "^4.3.5",
+    "java": "^0.14.0",
+    "supports-color": "^9.4.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@jest/globals": "^29.5.0",
-    "@types/debug": "^4.1.8",
-    "@types/java": "^0.9.2",
-    "@types/jest": "^29.5.2",
-    "@types/node": "^20.3.1",
-    "@types/yargs": "^17.0.24",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-jest": "^27.2.2",
-    "eslint-plugin-tsdoc": "^0.2.17",
-    "jest": "^29.5.0",
+    "@jest/globals": "^29.7.0",
+    "@types/debug": "^4.1.12",
+    "@types/java": "^0.9.5",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.10",
+    "@types/yargs": "^17.0.32",
+    "typescript-eslint": "^8.0.0-alpha.44",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.7.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jest": "^28.6.0",
+    "eslint-plugin-tsdoc": "^0.3.0",
+    "jest": "^29.7.0",
     "node-notifier": "^10.0.1",
-    "ts-jest": "^29.1.0",
-    "typedoc": "^0.24.8",
-    "typedoc-plugin-merge-modules": "^5.0.1",
-    "typescript": "^5.1.3"
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.5.3"
   }
 }

@@ -137,7 +137,14 @@ public class ConvertUtils {
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
             final int arrayDimension) {
-        final String keyType = StringUtils.firstCharToUpper(type);
+        String keyType = StringUtils.firstCharToUpper(type);
+        
+        // if the object declaration exist in the artifacts
+        final LanguageSpecification languageSpecification = generator.getLanguageSpecification();
+        if (languageSpecification.getArtifacts().hasEnumDef(type)) {
+            keyType = "String";
+        }
+        
         // if it is a primitive type of the interpreter
         if (ConvertUtils.InterpreterTypes.containsKey(keyType)) {
             final JavaType clone = ConvertUtils.InterpreterTypes.get(keyType).clone();
@@ -159,14 +166,8 @@ public class ConvertUtils {
             return clone;
         }
 
-        // if the object declaration exist in the artifacts
-        final LanguageSpecification languageSpecification = generator.getLanguageSpecification();
         if (languageSpecification.getArtifacts().hasTypeDef(type)) {
             return new JavaType(type, generator.getEntitiesPackage(), arrayDimension);
-        }
-
-        if (languageSpecification.getArtifacts().hasEnumDef(type)) {
-            return new JavaType(type, generator.getEnumsPackage(), arrayDimension);
         }
 
         // if it is a join point class

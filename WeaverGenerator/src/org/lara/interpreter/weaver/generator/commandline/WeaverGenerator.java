@@ -31,50 +31,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
 public class WeaverGenerator {
-
-    // public static JavaGenerator newJavaGenerator() {
-    // return new JavaGenerator();
-    // }
-    /**
-     * 
-     * @deprecated change to
-     *             {@link WeaverGenerator#generateJava(String, LanguageSpecification, File, String, boolean, Class)}
-     */
-    /*
-    @Deprecated
-    public static void generate(String weaverName, LanguageSpecification langSpec, File outputDir, String outputPackage,
-            boolean abstractGetters) {
-    
-        final BaseGenerator generator = new JavaAbstractsGenerator(langSpec).weaverName(weaverName).outputDir(outputDir)
-                .setPackage(outputPackage).abstractGetters(abstractGetters);
-        printReport(generator);
-        generator.generate();
-    }
-    */
-
-    /**
-     * Generate a new weaver, according to the input language specification.
-     * 
-     * @param weaverName
-     *            The name for the new Weaver
-     * @param languageSpecification
-     *            The language specification
-     * @param outputDir
-     *            The output directory
-     * @param outputPackage
-     *            The package for the generated classes
-     * @param abstractGetters
-     *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
-     * @return true if generated successfully, false otherwise.
-     */
-    /*
-    @Deprecated
-    public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
-            String outputPackage, boolean abstractGetters) {
-        generateJava(weaverName, langSpec, outputDir, outputPackage, abstractGetters, Object.class);
-    }
-    */
-
     /**
      * Generate a new weaver, according to the input language specification.
      * 
@@ -108,7 +64,7 @@ public class WeaverGenerator {
      * 
      * @param weaverName
      *            The name for the new Weaver
-     * @param languageSpecification
+     * @param langSpec
      *            The language specification
      * @param outputDir
      *            The output directory

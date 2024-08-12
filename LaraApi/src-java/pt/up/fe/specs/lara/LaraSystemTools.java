@@ -25,6 +25,16 @@ import pt.up.fe.specs.util.system.ProcessOutputAsString;
 public class LaraSystemTools {
 
     public static ProcessOutputAsString runCommand(String command, String workingDir, boolean printToConsole,
+            Integer timeoutNanos) {
+        return runCommand(command, workingDir, printToConsole, timeoutNanos.longValue());
+    }
+
+    public static ProcessOutputAsString runCommand(List<String> commandList, String workingDir,
+            boolean printToConsole, Integer timeoutNanos) {
+        return runCommand(commandList, workingDir, printToConsole, timeoutNanos.longValue());
+    }
+
+    public static ProcessOutputAsString runCommand(String command, String workingDir, boolean printToConsole,
             Long timeoutNanos) {
 
         ArgumentsParser argsParser = ArgumentsParser.newCommandLine();

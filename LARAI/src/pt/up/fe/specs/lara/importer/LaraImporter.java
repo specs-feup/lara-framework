@@ -95,14 +95,9 @@ public class LaraImporter {
 
                 if (importingFile.exists()) {
                     boolean isNpmImport = false;
-                    // Check if inside APIs folder, and if it is an automatically generated resource
-                    // System.out.println(npmImports);
-                    // System.out.println("Is " + importPath + " a NPM import? " + npmImports.contains(importPath));
 
-                    // if (path.equals(larai.getWeaverEngine().getApisFolder()) && npmImports.contains(importPath)) {
                     if (npmApiFolders.contains(path) && npmImports.contains(importPath)) {
-                        SpecsLogs.debug("Detected import '" + importName + "' as NPM import");
-                        // System.out.println("TESTE: " + importPath);
+                        SpecsLogs.debug(() -> "Detected import '" + importName + "' as NPM import");
                         isNpmImport = true;
                     }
 
@@ -170,19 +165,12 @@ public class LaraImporter {
         return buildLaraImport(code, resource.getFilename());
     }
 
-    // private LaraImportData buildLaraImport(File importingFile) {
-    // return buildLaraImport(importingFile, null);
-    // }
-
     private LaraImportData buildLaraImport(File importingFile, boolean isNpmImport) {
         // NPM imports are always accessed from file
         var code = SpecsIo.read(importingFile);
         var ext = isNpmImport ? "mjs" : null;
-        // SpecsCheck.checkNotNull(code, () -> "laraImport: could not read file '" + importingFile + "'");
-        return buildLaraImport(code, importingFile.getName(), ext, importingFile, isNpmImport);
 
-        // Creating from file, no need to read the code
-        // return buildLaraImport(null, importingFile.getName(), forcedExtension, importingFile);
+        return buildLaraImport(code, importingFile.getName(), ext, importingFile, isNpmImport);
 
     }
 
@@ -202,12 +190,12 @@ public class LaraImporter {
 
         switch (ext) {
         case "js":
-            var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL, jsFile);
-            // var jsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.NORMAL, jsFile);
+            var jsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.NORMAL,
+                    jsFile);
             return jsLaraImport;
         case "mjs":
-            var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE, jsFile);
-            // var mjsLaraImport = new LaraImportData(filename, processCode(code, jsFile), JsFileType.MODULE, jsFile);
+            var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE,
+                    jsFile);
             return mjsLaraImport;
         case "lara":
             // Compile LARA file

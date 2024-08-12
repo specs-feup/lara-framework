@@ -3,8 +3,8 @@ import path from "path";
 import EventEmitter from "events";
 import java from "java";
 import Debug from "debug";
-import { fileURLToPath } from "url";
-import JavaError from "./JavaError.js";
+import { fileURLToPath, pathToFileURL } from "url";
+import { isJavaError } from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
@@ -25,17 +25,29 @@ java.asyncOptions = {
 };
 
 export class Weaver {
-  static #isSetup = false;
-  static #javaWeaver: unknown;
+  private static debug: Debug.Debugger;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static datastore: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static javaWeaver: any;
 
-  static get isSetup() {
-    return Weaver.#isSetup;
-  }
+  static async setupJavaEnvironment(sourceDir: string) {
+    const files = fs.readdirSync(sourceDir, { recursive: true });
 
-  static async awaitSetup() {
-    while (!Weaver.isSetup) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    for (const file of files) {
+      if (typeof file === "string") {
+        if (file.endsWith(".jar")) {
+          java.classpath.push(path.join(sourceDir, file));
+        }
+      } else {
+        // TODO: review this Buffer thing and why it exists.
+        throw new Error(
+          `Returned a Buffer instead of a string for path: ${file.toString()}.`
+        );
+      }
     }
+
+    await java.ensureJvm();
   }
 
   static async setupWeaver(
@@ -43,17 +55,15 @@ export class Weaver {
     config: WeaverMessageFromLauncher["config"]
   ) {
     // Create debug instance
-    const debug = Debug(`Weaver:${config.weaverPrettyName}`);
-    debug("Initiating weaver setup.");
+    Weaver.debug = Debug(`Weaver:${config.weaverPrettyName}`);
+    Weaver.debug("Initiating weaver setup.");
 
-    // Setup java
-    java.classpath.push(config.jarFilePath);
-    await java.ensureJvm();
+    await this.setupJavaEnvironment(config.jarPath);
 
-    debug(`${config.weaverPrettyName} execution arguments: %O`, args);
+    Weaver.debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 
-    const javaWeaverClassName = config.javaWeaverQualifiedName.match(
-      new RegExp("(?<=\\.)\\w+$")
+    const javaWeaverClassName = RegExp(/(?<=\.)\w+$/).exec(
+      config.javaWeaverQualifiedName
     )?.[0];
 
     if (javaWeaverClassName === undefined || javaWeaverClassName === null) {
@@ -64,100 +74,132 @@ export class Weaver {
     // This code is intentionally ignored by eslint
     const JavaArrayList = java.import("java.util.ArrayList");
     const JavaFile = java.import("java.io.File");
+    const JavaFileList = java.import(
+      "org.lara.interpreter.joptions.keys.FileList"
+    );
+    const JavaLaraI = java.import("larai.LaraI");
     const JavaLaraIDataStore = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
     );
-    const JavaDataStore = java.import(
-      "org.suikasoft.jOptions.Interfaces.DataStore"
-    );
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
+    );
+    const CxxWeaverOptions = java.import(
+      "pt.up.fe.specs.clava.weaver.options.CxxWeaverOption"
     );
     const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
     );
-    const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
+    const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
 
-    const fileList = new JavaArrayList();
-    //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
-    const clangArgs = args._.slice(1);
-    clangArgs.forEach((arg: string | number) => {
-      fileList.add(new JavaFile(arg));
-    });
+    const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
-    const datastore = await new JavaDataStore.newInstanceP(
-      `${javaWeaverClassName}DataStore`
-    );
-    datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+    let datastore;
+    if (args._[0] === "classic") {
+      try {
+        datastore = JavaLaraI.convertArgsToDataStore(
+          args._.slice(1),
+          javaWeaver
+        ).get();
+        args.scriptFile = datastore.get("aspect").toString();
+      } catch (error) {
+        throw new Error(
+          "Failed to parse 'Classic' weaver arguments:\n" + error
+        );
+      }
+    } else {
+      const JavaDataStore = java.import(
+        "org.suikasoft.jOptions.Interfaces.DataStore"
+      );
 
-    const laraIDataStore = new JavaLaraIDataStore(null, datastore, javaWeaver);
-    javaWeaver.begin(
-      fileList,
-      new JavaFile(JavaWeaverClass.getWovenCodeFoldername()),
-      laraIDataStore.getWeaverArgs()
-    );
+      datastore = await new JavaDataStore.newInstanceP(
+        `${javaWeaverClassName}DataStore`
+      );
+
+      const fileList = new JavaArrayList();
+      //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
+      const clangArgs = args._.slice(1);
+      clangArgs.forEach((arg: string | number) => {
+        fileList.add(new JavaFile(arg));
+      });
+
+      datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+      datastore.set(
+        LaraiKeys.WORKSPACE_FOLDER,
+        JavaFileList.newInstance(fileList)
+      );
+      datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
+    }
+
+    // Needed only for side-effects over the datastore
+    new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
+
+    JavaSpecsSystem.programStandardInit();
+
+    Weaver.javaWeaver = javaWeaver;
+    Weaver.datastore = datastore;
     /* eslint-enable */
+  }
 
-    Object.defineProperty(globalThis, config.weaverName, {
-      value: new (class {
-        get rootJp() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return javaWeaver.getRootJp();
-        }
-        get weaver() {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return javaWeaver;
-        }
-      })(),
-      enumerable: false,
-      configurable: true,
-      writable: false,
-    });
-
-    Weaver.#isSetup = true;
-    Weaver.#javaWeaver = javaWeaver;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return debug;
+  static start() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    Weaver.javaWeaver.run(Weaver.datastore);
   }
 
   static async executeScript(
     args: WeaverMessageFromLauncher["args"],
-    config: WeaverMessageFromLauncher["config"],
-    debug: Debug.Debugger
+    config: WeaverMessageFromLauncher["config"]
   ) {
-    debug("Executing user script...");
+    if (args.scriptFile == undefined) {
+      Weaver.debug("No script file provided.");
+      return;
+    }
+
+    for (const file of config.importForSideEffects ?? []) {
+      await import(file);
+    }
+
+    Weaver.debug("Executing user script...");
     if (
       typeof args.scriptFile === "string" &&
       fs.existsSync(args.scriptFile) &&
       isValidFileExtension(path.extname(args.scriptFile))
     ) {
-      await import(path.resolve(args.scriptFile))
+      // import is using a URL converted to string.
+      // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
+      // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
+      await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
         .then(() => {
-          debug("Execution completed successfully.");
+          Weaver.debug("Execution completed successfully.");
         })
-        .catch((error: JavaError) => {
+        .catch((error: unknown) => {
           console.error("Execution failed.");
-
-          if (error.cause !== undefined && error.cause !== null) {
+          if (error instanceof Error) {
+            // JS exception
+            console.error(error);
+          } else if (isJavaError(error)) {
             // Java exception
             console.error(error.cause.getMessage());
+          } else {
+            console.error("UNKNOWN ERROR: Execute in debug mode to see more.");
           }
-          debug(error);
+          Weaver.debug(error);
         });
     } else {
-      new Error("Invalid file path or file type.");
+      throw new Error("Invalid file path or file type.");
     }
   }
 
   static shutdown() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    (Weaver.#javaWeaver as any).close();
+    Weaver.debug("Exiting...");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    Weaver.javaWeaver.close();
   }
 }
 
@@ -211,22 +253,16 @@ export function setupWeaver(message: WeaverMessageFromLauncher) {
  */
 waitForMessage(eventEmitter)
   .then(async (messageFromParent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const debug = await Weaver.setupWeaver(
-      messageFromParent.args,
-      messageFromParent.config
-    );
+    await Weaver.setupWeaver(messageFromParent.args, messageFromParent.config);
 
     if (directExecution) {
+      Weaver.start();
       await Weaver.executeScript(
         messageFromParent.args,
-        messageFromParent.config,
-        debug
+        messageFromParent.config
       );
 
       Weaver.shutdown();
-
-      debug("Exiting...");
       process.exit(0);
     }
   })

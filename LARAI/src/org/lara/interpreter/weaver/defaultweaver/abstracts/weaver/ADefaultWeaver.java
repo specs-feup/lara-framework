@@ -3,7 +3,6 @@ package org.lara.interpreter.weaver.defaultweaver.abstracts.weaver;
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver<br>
@@ -33,20 +32,6 @@ public abstract class ADefaultWeaver extends LaraWeaverEngine {
     @Override
     public final String getRoot() {
         return "workspace";
-    }
-
-    /**
-     * Returns a list of classes that may be imported and used in LARA.
-     * 
-     * @return a list of importable classes
-     */
-    @Override
-    public final List<Class<?>> getAllImportableClasses() {
-        Class<?>[] defaultClasses = {};
-        List<Class<?>> otherClasses = this.getImportableClasses();
-        List<Class<?>> allClasses = new ArrayList<>(Arrays.asList(defaultClasses));
-        allClasses.addAll(otherClasses);
-        return allClasses;
     }
 
     /**

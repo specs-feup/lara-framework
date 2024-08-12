@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.api.LaraIo;
-import org.lara.interpreter.api.WeaverApis;
 import org.lara.interpreter.exception.AspectDefException;
 import org.lara.interpreter.exception.JavaImportException;
 import org.lara.interpreter.exception.ScriptImportException;
@@ -44,7 +43,6 @@ import org.lara.language.specification.dsl.LanguageSpecificationV2;
 
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
@@ -80,16 +78,6 @@ public class ImportProcessor {
     public void importScriptsAndClasses() {
         interpreter.out().println("Importing internal scripts:");
 
-        // JS scripts that are needed for older LARA code
-        // for (final JsLaraCompatibilityResource resource : JsLaraCompatibilityResource.values()) {
-        // importScript(resource);
-        // }
-
-        // JS scripts from LaraApi
-        // for (final JsApiResource resource : JsApiResource.values()) {
-        // importScript(resource);
-        // }
-
         /* Load weaver API scripts */
         LaraI laraI = interpreter.getLaraI();
         MasterWeaver weaver = laraI.getWeaver();
@@ -106,24 +94,12 @@ public class ImportProcessor {
         oldFilesToImport.stream().filter(file -> LaraExtension.isValidExtension(file))
                 .forEach(this::importScript);
 
-        // List<ResourceProvider> engineScripts = engine.getImportableScripts();
-        // engineScripts.forEach(this::importScript);
-
         /* Load user scripts */
         FileList includeFolders = interpreter.getOptions().getProcessedIncludeDirs(engine);
-        /*
-        // LaraBundle laraBundle = new LaraBundle(engine.getLanguages(), engine.getWeaverNames());
-        LaraBundle laraBundle = new LaraBundle(engine.getWeaverNames(), interpreter.getOptions().getBundleTags());
-        includeFolders = laraBundle.process(includeFolders);
-        
-        // Process LARA Resources
-        LaraResource laraResource = new LaraResource(engine);
-        includeFolders = laraResource.process(includeFolders);
-        */
+
         if (!includeFolders.isEmpty()) {
 
             interpreter.out().println("Importing scripts/classes in included folders:");
-            // getIncludedLocalScripts(laraInterp, includeFolders);
 
             // Also include java and javascript files which respect the
             // following structure inside the include folders:
@@ -135,14 +111,6 @@ public class ImportProcessor {
                     interpreter.out().warnln("Included folder '" + includeFolder + "' does not exist.");
                     continue;
                 }
-
-                // var importScripts = true;
-                // if (includeFolder.getName().endsWith("-lara")) {
-                // interpreter.out().println("Included folder '" + includeFolder
-                // + "' ends in '-lara', not importing scripts (except from 'scripts' folder)");
-                //
-                // importScripts = false;
-                // }
 
                 // Get JAVA files from "java" folder
                 final File javaPath = new File(includeFolder, "java");
@@ -183,14 +151,6 @@ public class ImportProcessor {
      *
      */
     public void importAndInitialize() {
-
-        for (Class<?> importingClass : LaraApis.getImportableClasses()) {
-            importClassWithSimpleName(importingClass);
-        }
-
-        for (Class<?> importingClass : WeaverApis.getImportableClasses()) {
-            importClassWithSimpleName(importingClass);
-        }
 
         for (Class<?> importingClass : CLASSES_TO_IMPORT) {
             importClassWithSimpleName(importingClass);
@@ -260,10 +220,8 @@ public class ImportProcessor {
     // ================================================================================//
     public static List<File> getAllScriptFiles(File dir) {
         final ArrayList<File> files = new ArrayList<>();
-        // final File dir = new File(path);
+
         if (!dir.isDirectory()) {
-            // WarningMsg.say("The path for the javascripts directory is
-            // invalid: " + path);
             return files;
         }
         for (final File f : dir.listFiles()) {
@@ -282,8 +240,6 @@ public class ImportProcessor {
         }
 
         URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        // URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        // Class.forName("nameofclass", true, new URLClassLoader(urlarrayofextrajarsordirs));
 
         Class<URLClassLoader> sysclass = URLClassLoader.class;
 
@@ -296,33 +252,9 @@ public class ImportProcessor {
                 method.invoke(sysloader, new Object[] { classPath.toURI().toURL() });
             } catch (Throwable t) {
                 throw new JavaImportException(classPath, t);
-            } // end try catch
-              // try {
-              // if (classPath.getName().endsWith("test.jar")) {
-              // // Class<?> forName = Class.forName("org.Test", true, sysloader);
-              // Class<?> forName = Class.forName("org.Test");
-              // System.out.println("--->" + forName);
-              // }
-              // } catch (Exception e) {
-              // System.out.println("--->COULD NOT FIND Test: " + e.getMessage());
-              // }
+            }
         }
     } // end method
-
-    // }
-    // LaraIUtils.includeClassPath(jarFolderFiles, interpreter.out());
-    // LaraIUtils.includeClassPath(classPath);
-    // if (classPath.getName().endsWith("hashexporter.jar")) {
-    // try {
-    // Class<?> forName = Class.forName("exporter.BinaryHashLARA");
-    // System.out.println("--->" + forName);
-    // } catch (Exception e) {
-    // System.out.println("--->COULD NOT FIND BINARY: " + e.getMessage());
-    // }
-    // }
-
-    // }
-    // }
 
     private void importScript(ResourceProvider resource) {
         final String internalScripts = SpecsIo.getResource(resource);

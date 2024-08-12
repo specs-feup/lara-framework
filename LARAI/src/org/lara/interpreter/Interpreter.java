@@ -13,7 +13,6 @@
 package org.lara.interpreter;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -118,14 +117,9 @@ public class Interpreter {
         }
 
         if (options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
-            importProcessor.importScriptsAndClasses(); // this order is important so the output stream is set
+            importProcessor.importScriptsAndClasses();
             importProcessor.importAndInitialize();
         }
-
-        if (options.isJavaScriptStream()) { // AFTER it is initialized
-            setprintStream(out.getOutStream());
-        }
-
     }
 
     public JsEngine getEngine() {
@@ -1277,16 +1271,6 @@ public class Interpreter {
 
     public LaraIDataStore getOptions() {
         return options;
-    }
-
-    /**
-     * Change the print stream where the javascript output is going
-     */
-    private void setprintStream(PrintStream printStream) {
-
-        // Get function
-        var streamSetter = engine.eval("setPrintStream");
-        engine.call(streamSetter, printStream);
     }
 
     /**

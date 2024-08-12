@@ -67,9 +67,9 @@ public class EventTrigger {
      * @param args
      * @param sources
      */
-    public void triggerWeaver(Stage stage, DataStore args, List<File> sources, String mainAspect,
+    public void triggerWeaver(Stage stage, DataStore args, String mainAspect,
             String aspectFile) {
-        final WeaverEvent data = new WeaverEvent(stage, args, sources, mainAspect,
+        final WeaverEvent data = new WeaverEvent(stage, args, mainAspect,
                 aspectFile);
         final Event event = new SimpleEvent(LaraIEvent.OnWeaver, data);
         eventController.notifyEvent(event);

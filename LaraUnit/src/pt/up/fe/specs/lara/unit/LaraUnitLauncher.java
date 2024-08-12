@@ -13,7 +13,11 @@
 
 package pt.up.fe.specs.lara.unit;
 
-import static pt.up.fe.specs.lara.unit.LaraUnitOptions.*;
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.BASE_FOLDER;
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.INFO;
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.METRICS;
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.TEST_FOLDER;
+import static pt.up.fe.specs.lara.unit.LaraUnitOptions.WEAVER_CLASS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -209,7 +213,7 @@ public class LaraUnitLauncher {
         }
         laraUnitData.add(LaraUnitOptions.BASE_FOLDER, includes.get(0));
 
-        SpecsLogs.debug("Launching lara-unit with the following options: " + laraUnitData);
+        SpecsLogs.debug(() -> "Launching lara-unit with the following options: " + laraUnitData);
 
         return LaraUnitLauncher.execute(laraUnitData);
     }

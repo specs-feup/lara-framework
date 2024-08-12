@@ -234,10 +234,12 @@ public class OptionsConverter {
 
     public static DataStore configFile2DataStore(WeaverEngine weaverEngine, CommandLine cmd) {
         File file = OptionsParser.getConfigFile(cmd);
+        return configFile2DataStore(weaverEngine, file);
+    }
+
+    public static DataStore configFile2DataStore(WeaverEngine weaverEngine, File configFile) {
         StoreDefinition laraiDefinition = OptionsParser.getLaraStoreDefinition(weaverEngine);
         AppPersistence persistence = OptionsParser.getXmlPersistence(laraiDefinition);
-        DataStore laraiStore = persistence.loadData(file);
-
-        return laraiStore;
+        return persistence.loadData(configFile);
     }
 }

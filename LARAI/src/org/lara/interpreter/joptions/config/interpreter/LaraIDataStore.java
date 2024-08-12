@@ -52,8 +52,8 @@ import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.utilities.StringList;
 
 /**
- * TODO: Should deprecate and just use DataStore directly? TODO: Also, the "ifs" in the getters interfere with the
- * default values set in the DataKey
+ * TODO: Should deprecate and just use DataStore directly?
+ * TODO: Also, the "ifs" in the getters interfere with the default values set in the DataKey
  * 
  * @author JoaoBispo
  *
@@ -112,9 +112,8 @@ public class LaraIDataStore implements LaraiKeys {
         var storeDef = localArgs.getStoreDefinitionTry().orElse(null);
 
         if (storeDef == null) {
-            SpecsLogs.debug(
-                    "Local data store does not have a store definition, system-wide options in file '"
-                            + systemOptionsFilename + "' not supported");
+            SpecsLogs.debug(() -> "Local data store does not have a store definition, system-wide options in file '"
+                    + systemOptionsFilename + "' not supported");
             return localArgs;
         }
 
@@ -122,7 +121,7 @@ public class LaraIDataStore implements LaraiKeys {
 
         if (persistence == null) {
             SpecsLogs.debug(
-                    "Local data store does not have an instance of AppPersistence set, system-wide options in file '"
+                    () -> "Local data store does not have an instance of AppPersistence set, system-wide options in file '"
                             + systemOptionsFilename + "' not supported");
             return localArgs;
         }
@@ -177,14 +176,16 @@ public class LaraIDataStore implements LaraiKeys {
         }
         if (dataStore.hasValue(LaraiKeys.LOG_FILE)) {
             OptionalFile logFile = dataStore.get(LaraiKeys.LOG_FILE);
-            if (logFile.isUsed()) {
+            if (larai != null && logFile.isUsed()) {
                 larai.out.addFileStream(logFile.getFile());
             }
         }
 
         if (dataStore.hasValue(LaraiKeys.VERBOSE)) {
             int level = dataStore.get(LaraiKeys.VERBOSE).ordinal();
-            larai.out.setLevel(level);
+            if (larai != null) {
+                larai.out.setLevel(level);
+            }
         }
 
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {

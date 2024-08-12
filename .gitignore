@@ -16,6 +16,7 @@ bin/
 RemoteSystemsTempFiles/
 .recommenders/
 
+
 # Custom ignores #
 ##################
 
@@ -28,6 +29,10 @@ Matisse.lara
 
 # Eclipse settings folder
 **/.settings/**
+
+# Build
+**/.gradle/*
+**/build/*
 
 #output/
 .idea/

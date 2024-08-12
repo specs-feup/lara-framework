@@ -14,6 +14,7 @@
 package org.lara.language.specification.dsl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.lara.language.specification.dsl.types.IType;
 
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -35,24 +38,21 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     private List<Attribute> attributes;
     private List<Select> selects;
     private List<Action> actions;
-    private LanguageSpecificationV2 langSpec;
 
     // TODO: There is attribute and action overloading, fix this
     private final Lazy<MultiMap<String, Attribute>> attributeMap;
     private final Lazy<MultiMap<String, Action>> actionsMap;
     private final Lazy<Map<String, Select>> selectsMap;
 
-    public JoinPointClass(String name, LanguageSpecificationV2 langSpec) {
-        this(name, null, null, langSpec);
+    public JoinPointClass(String name) {
+        this(name, null, null);
     }
 
-    public JoinPointClass(String name, JoinPointClass extend, String defaultAttribute,
-            LanguageSpecificationV2 langSpec) {
+    public JoinPointClass(String name, JoinPointClass extend, String defaultAttribute) {
 
         setName(name);
         setExtend(extend);
         setDefaultAttribute(defaultAttribute);
-        setLangSpec(langSpec);
         attributes = new ArrayList<>();
         selects = new ArrayList<>();
         actions = new ArrayList<>();
@@ -204,6 +204,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         attributes.add(attribute);
     }
 
+    public void addAttribute(IType type, String name, Parameter... parameters) {
+        attributes.add(new Attribute(type, name, Arrays.asList(parameters)));
+    }
+
     public void add(Select select) {
         selects.add(select);
     }
@@ -212,6 +216,10 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         // action.addJoinPoint(this);
         actions.add(action);
         // action.setJoinPoint(this);
+    }
+
+    public void addAction(IType returnType, String name, Parameter... parameters) {
+        actions.add(new Action(returnType, name, Arrays.asList(parameters)));
     }
 
     public void setActions(List<Action> actions) {
@@ -295,26 +303,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     /**
-     * Get selects in which this join point is selected
-     * 
-     * @return
-     */
-    public List<Select> getSelectedBy() {
-        List<Select> selectedBy = new ArrayList<>();
-
-        // Get
-        JoinPointClass global = langSpec.getGlobal();
-        global.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(this)).forEach(selectedBy::add);
-
-        Collection<JoinPointClass> allJPs = langSpec.getJoinPoints().values();
-        for (JoinPointClass joinPointClass : allJPs) {
-            joinPointClass.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(this))
-                    .forEach(selectedBy::add);
-        }
-        return selectedBy;
-    }
-
-    /**
      * Get all attributes for this join point
      * 
      * @return
@@ -390,13 +378,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         return extend.isPresent();
     }
 
-    public static JoinPointClass globalJoinPoint(LanguageSpecificationV2 langSpec) {
-        JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME, langSpec);
-        globalNode.add(Attribute.getAttributesAttribute());
-        globalNode.add(Attribute.getSelectsAttribute());
-        globalNode.add(Attribute.getActionsAttribute());
-        globalNode.add(Action.getInsertAction());
-        globalNode.add(Action.getDefAction());
+    public static JoinPointClass globalJoinPoint() {
+        JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME);
         return globalNode;
     }
 
@@ -424,14 +407,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     public static String getGlobalName() {
         return GLOBAL_NAME;
-    }
-
-    public LanguageSpecificationV2 getLangSpec() {
-        return langSpec;
-    }
-
-    public void setLangSpec(LanguageSpecificationV2 langSpec) {
-        this.langSpec = langSpec;
     }
 
     @Override

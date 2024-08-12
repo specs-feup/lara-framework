@@ -337,8 +337,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             fillWithActions.appendCode(joinedArgs);
             fillWithActions.appendCode(")\");" + ln());
 
-            Method cloned = GeneratorUtils.generateActionImplMethod(m, action.getName(), action.getReturn(),
-                    abstJPClass, javaGenerator.hasEvents());
+            Method cloned = GeneratorUtils.generateActionImplMethod(m, action,
+                    abstJPClass, javaGenerator);
             abstJPClass.add(cloned);
         }
         // addDefaultActions(abstJPClass, fillWithActions);

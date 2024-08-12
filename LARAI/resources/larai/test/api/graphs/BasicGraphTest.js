@@ -1,6 +1,6 @@
 laraImport("lara.graphs.Graphs");
-laraImport("lara.graphs.GraphNode");
-laraImport("lara.graphs.GraphEdge");
+laraImport("lara.graphs.NodeData");
+laraImport("lara.graphs.EdgeData");
 
 var graph = Graphs.newGraph();
 

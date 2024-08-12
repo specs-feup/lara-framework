@@ -13,13 +13,7 @@
 package org.lara.interpreter.weaver.interf;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.lara.interpreter.profile.BasicWeaverProfiler;
@@ -81,19 +75,27 @@ public abstract class WeaverEngine {
         apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
     }
 
+
+    public Optional<DataStore> getData() {
+        throw new NotImplementedException(this);
+    }
+
     protected void addApis(String key, List<ResourceProvider> resources) {
         var previousValue = apis.put(key, resources);
         SpecsCheck.checkArgument(previousValue == null,
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
-    /**
-     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
-     */
-    protected void addWeaverApis() {
-        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
-        addApis(getName(), getAspectsAPI());
-    }
+//    /**
+//     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
+//     *
+//     * @deprecated should only use getAspectAPU(), getNpmResources() and getWeaverApiName()
+//     */
+//    @Deprecated
+//    protected void addWeaverApis() {
+//        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
+//        addApis(getName(), getAspectsAPI());
+//    }
 
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
@@ -156,17 +158,17 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Set a file in the weaver if it is valid file type for the weaver.
+     * Starts execution of the weaver, for the given arguments
      *
-     * @param sourceDir
-     *            the file/directory with the source code
+     * @param sources
+     *            the files/directories with the source code
      * @param outputDir
      *            output directory for the generated file(s)
-     * @oaram dataStore the dataStore containing the options for the weaver
-     * @return true if the file type is valid
+     * @param dataStore
+     *            the dataStore containing the options for the weaver
+     * @return true if executed without errors
      */
-    // public boolean begin(File sourceDir, File outputDir, DataStore dataStore);
-    public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
+    public abstract boolean run(DataStore dataStore);
 
     /**
      * Get the list of available actions in the weaver
@@ -287,12 +289,12 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * The name of the Weaver.
+     * 
      *
-     * @return
+     * @return the name of the Weaver. By default, returns the simple name of the class
      */
     public String getName() {
-        return "<unnamed weaver>";
+        return getClass().getSimpleName();
     }
 
     /**
@@ -313,8 +315,15 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Return a list of resources that are lara files
-     *
+     * 
+     * @return the base name for the weaver API. By default returns the weaver name.
+     */
+    public String getWeaverApiName() {
+        return getName();
+    }
+
+    /**
+     * Return a list of hand-made resources that point to lara/js resources.
      * @return
      */
     public List<ResourceProvider> getAspectsAPI() {
@@ -473,9 +482,7 @@ public abstract class WeaverEngine {
      */
     public List<String> getPredefinedExternalDependencies() {
         return Arrays.asList("Experimental - SourceAction",
-                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction",
-                "Experimental - Mutation",
-                "https://github.com/specs-feup/lara-framework.git?folder=experimental/Mutation");
+                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction");
     }
 
     /**

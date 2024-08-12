@@ -40,6 +40,8 @@ public class Parameter {
     protected String name;
     @XmlAttribute(name = "type", required = true)
     protected String type;
+    @XmlAttribute(name = "default")
+    protected String _default;
 
     /**
      * Gets the value of the name property.
@@ -87,6 +89,27 @@ public class Parameter {
      */
     public void setType(String value) {
         this.type = value;
+    }
+
+    /**
+     * Gets the value of the default property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getDefault() {
+        return _default;
+    }
+
+    /**
+     * Sets the value of the default property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setDefault(String value) {
+        this._default = value;
     }
 
 }

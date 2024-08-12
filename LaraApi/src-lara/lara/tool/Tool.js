@@ -1,15 +1,9 @@
-"use strict";
-
-class Tool {
+export default class Tool {
     toolName;
     disableWeaving;
-
-    constructor(toolName, disableWeaving) {
-        if (this.constructor == Tool) {
-            throw new Error("Class 'Tool' is abstract and cannot be instantiated");
-        }
-
+    constructor(toolName, disableWeaving = false) {
         this.toolName = toolName;
-        this.disableWeaving = defaultValue(disableWeaving, false);
+        this.disableWeaving = disableWeaving;
     }
 }
+//# sourceMappingURL=Tool.js.map

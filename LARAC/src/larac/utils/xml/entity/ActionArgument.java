@@ -103,12 +103,12 @@ public class ActionArgument {
         if (type.contains("[]")) {
 
             lit.setType(Types.Array);
+        } else if (value.equals("null")) {
+            lit.setType(Types.Null);
         } else {
             lit.setType(organizer.getConvertedType(type));
         }
         // } catch (Exception e) {
-        // if (value.equals("null"))
-        // lit.setType(Types.Null);
         // else
         // value.equals(Types.Object);
         // }

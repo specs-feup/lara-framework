@@ -1,18 +1,23 @@
 /**
- * Based on this code: https://stackoverflow.com/questions/4343746/is-there-a-data-structure-like-the-java-set-in-javascript
+ * ~Based on this code: https://stackoverflow.com/questions/4343746/is-there-a-data-structure-like-the-java-set-in-javascript
  *
  * Changed the name of functions 'contains' to the name used in ECMAScript 6 ('has').
  * 'remove' has not been changed to 'delete' because in LARA 'delete' is a keyword and cannot be used as a function name
- * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.
+ * Also, tweaked the functionality of 'add' and 'delete' to behave similarly to ECMAScript 6 Set.~
  *
- * @param {Object...} [args=[]] - Objects that will be transformed to Strings and used as the initial values of the set.
+ * Implementation changed to use a standard javascript Set instead of a custom implementation.
+ *
+ * @deprecated Use a standard Set instead
  */
 export default class StringSet {
-    setObj = {};
-    val = {};
+    set = new Set();
+    /**
+     *
+     * @param args - Objects that will be transformed to Strings and used as the initial values of the set.
+     */
     constructor(...args) {
         for (const arg of args) {
-            this.add(arg.toString());
+            this.add(arg);
         }
     }
     /**
@@ -23,18 +28,11 @@ export default class StringSet {
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*}
      */
     *[Symbol.iterator]() {
-        yield* Object.keys(this.setObj);
-    }
-    /**
-     * @param {StringSet} s
-     * @returns {Boolean} True, if `s` is an instance of StringSet
-     */
-    static isStringSet(s) {
-        return s instanceof StringSet;
+        yield* this.set;
     }
     /**
      *
-     * @returns {StringSet} A new copy of the set
+     * @returns A new copy of the set
      */
     copy() {
         const newStringSet = new StringSet();
@@ -45,58 +43,50 @@ export default class StringSet {
     }
     /**
      * Add an element to the set
-     * @param {String} str Element to be added
+     *
+     * @param str - Element to be added
      * @returns The element `str` itself
      */
     add(str) {
-        this.setObj[str] = this.val;
+        this.set.add(str);
         return str;
     }
     /**
      * Check if element exists in the set
-     * @param {String} str Element to be checked
+     *
+     * @param str - Element to be checked
      * @returns True if exists, false otherwise
      */
     has(str) {
-        return this.setObj[str] === this.val;
+        return this.set.has(str);
     }
     /**
      * Remove an element from the set if it exists
-     * @param {String} str Element to be removed
-     * @returns {Boolean} True if the element `str` existed and was removed, false
+     *
+     * @param str - Element to be removed
+     * @returns True if the element `str` existed and was removed, false
      * otherwise
      */
     remove(str) {
-        const hasValue = this.has(str);
-        delete this.setObj[str];
-        return hasValue;
+        return this.set.delete(str);
     }
     /**
      *
-     * @returns {String[]} A list of the elements in the set
+     * @returns A list of the elements in the set
      */
     values() {
-        const values = [];
-        for (const i in this.setObj) {
-            if (this.setObj[i] === this.val) {
-                values.push(i);
-            }
-        }
-        return values;
+        return Array.from(this.set.values());
     }
     /**
      *
-     * @returns {Boolean} True if the set is empty, false otherwise
+     * @returns True if the set is empty, false otherwise
      */
     isEmpty() {
-        for (const i in this.setObj) {
-            return false;
-        }
-        return true;
+        return this.set.size === 0;
     }
     /**
      *
-     * @returns {String} A comma seperated list of the values in this set,
+     * @returns A comma seperated list of the values in this set,
      * delimited by brackets to denote a set like data-structure
      */
     toString() {
@@ -104,49 +94,29 @@ export default class StringSet {
     }
     /**
      * Stores in this set the union of it with another another set
-     * @param {StringSet} otherSet
-     * @returns {this}
      */
     union(otherSet) {
-        if (!StringSet.isStringSet(otherSet)) {
-            throw new Error("Invalid argument: must be instance of StringSet");
-        }
-        // for every element in the other set, add it to this set
-        for (const el of otherSet) {
-            this.add(el);
-        }
-        // return self object for chaining
+        otherSet.values().forEach((value) => {
+            this.add(value);
+        });
         return this;
     }
     /**
      * Stores in this set the intersection of it with another another set
-     * @param {StringSet} otherSet
-     * @returns {this}
      */
     intersection(otherSet) {
-        if (!StringSet.isStringSet(otherSet)) {
-            throw new Error("Invalid argument: must be instance of StringSet");
-        }
-        // for every element in this set that does not exist in the other set,
-        // remove it from this set
         for (const el of this) {
             if (!otherSet.has(el)) {
                 this.remove(el);
             }
         }
-        // return self object for chaining
         return this;
     }
     /**
      * Stores in this set the difference of it with another another set (i.e.
-     * `this - otherSet`). Notice that is not equivalent to `otherSet - this`.
-     * @param {StringSet} otherSet
-     * @returns {this}
+     * `this - otherSet`). Notice that this is not equivalent to `otherSet - thisSet`.
      */
     difference(otherSet) {
-        if (!StringSet.isStringSet(otherSet)) {
-            throw new Error("Invalid argument: must be instance of StringSet");
-        }
         for (const el of otherSet) {
             if (this.has(el)) {
                 this.remove(el);
@@ -156,40 +126,31 @@ export default class StringSet {
     }
     /**
      *
-     * @param {StringSet} setA
-     * @param {StringSet} setB
-     * @returns {StringSet} A new set with the union of sets A and B
+     * @param setA -
+     * @param setB -
+     * @returns A new set with the union of sets A and B
      */
     static union(setA, setB) {
-        if (!StringSet.isStringSet(setA) || !StringSet.isStringSet(setB))
-            throw new Error("Invalid arguments: setA and setB must be instances of StringSet");
-        const setNew = setA.copy();
-        return setNew.union(setB);
+        return setA.copy().union(setB);
     }
     /**
      *
-     * @param {StringSet} setA
-     * @param {StringSet} setB
-     * @returns {StringSet} A new set with the insersection of sets A and B
+     * @param setA -
+     * @param setB -
+     * @returns A new set with the insersection of sets A and B
      */
     static intersection(setA, setB) {
-        if (!StringSet.isStringSet(setA) || !StringSet.isStringSet(setB))
-            throw new Error("Invalid arguments: setA and setB must be instances of StringSet");
-        const setNew = setA.copy();
-        return setNew.intersection(setB);
+        return setA.copy().intersection(setB);
     }
     /**
      *
-     * @param {StringSet} setA
-     * @param {StringSet} setB
-     * @returns {StringSet} A new set with the difference of sets A and B, i.e.
+     * @param setA -
+     * @param setB -
+     * @returns A new set with the difference of sets A and B, i.e.
      * `A - B`. Note that is different from `B - A`.
      */
     static difference(setA, setB) {
-        if (!StringSet.isStringSet(setA) || !StringSet.isStringSet(setB))
-            throw new Error("Invalid arguments: setA and setB must be instances of StringSet");
-        const setNew = setA.copy();
-        return setNew.difference(setB);
+        return setA.copy().difference(setB);
     }
 }
 //# sourceMappingURL=StringSet.js.map

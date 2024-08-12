@@ -15,7 +15,6 @@ package pt.up.fe.specs.lara.langspec;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.Declaration;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.lara.language.specification.dsl.Parameter;
@@ -31,7 +29,6 @@ import org.lara.language.specification.dsl.Select;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.TypeDef;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -59,8 +56,6 @@ public class LangSpecsXmlParser {
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
             InputStream actionModel, boolean validate) {
 
-        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.read());
-        // System.out.println("JP SCHEMA: " + SchemaResource.JOIN_POINT_SCHEMA.getResource());
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
         var actionSchema = validate ? SchemaResource.ACTION_SCHEMA.toStream() : null;
@@ -71,7 +66,7 @@ public class LangSpecsXmlParser {
 
         // Setup global JoinPointClass
         LanguageSpecificationV2 langSpecV2 = new LanguageSpecificationV2();
-        JoinPointClass global = JoinPointClass.globalJoinPoint(langSpecV2);
+        JoinPointClass global = JoinPointClass.globalJoinPoint();
         langSpecV2.setGlobal(global);
 
         // Initialize types (typedef, enums), to have access to available names
@@ -94,7 +89,7 @@ public class LangSpecsXmlParser {
 
         List<JoinPointClass> jps = new ArrayList<>();
         for (var jpNode : joinPointModelNode.getElementsByName("joinpoint")) {
-            var jp = new JoinPointClass(jpNode.getAttribute("class"), langSpecV2);
+            var jp = new JoinPointClass(jpNode.getAttribute("class"));
             setOptional(jpNode.getAttribute("tooltip"), jp::setToolTip);
             jps.add(jp);
         }
@@ -116,9 +111,8 @@ public class LangSpecsXmlParser {
                 globalActions.add(actionNode);
                 continue;
             }
-            // System.out.println("CLASS NAMES: " + classNames);
+
             for (String className : classNames.split(",")) {
-                // System.out.println("NAME: " + className);
                 joinPointActions.add(className.strip(), actionNode);
             }
         }
@@ -168,10 +162,6 @@ public class LangSpecsXmlParser {
                     continue;
                 }
 
-                // Get corresponding join point and set default
-                // System.out.println("ARTIFACT CLASS: " + artifact.getAttribute("class"));
-                // System.out.println("JP: " + langSpecV2.getJoinPoint(artifact.getAttribute("class")));
-
                 var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
 
                 if (artifactJp == null) {
@@ -180,17 +170,8 @@ public class LangSpecsXmlParser {
                 }
 
                 artifactJp.setDefaultAttribute(defaultValue);
-                // System.out.println("SETTING DEFAULT '" + defaultValue + "' for JP " +
-                // artifact.getAttribute("class"));
             }
         }
-
-        // Add default global attributes (e.g., joinPointType, instanceOf)
-        addDefaultGlobalAttributes(langSpecV2);
-
-        // System.out.println("JP: " + joinPointModelNode);
-        // System.out.println("ATTR: " + attributeModelNode);
-        // System.out.println("ACTIONS: " + actionModelNode);
 
         return langSpecV2;
 
@@ -221,27 +202,12 @@ public class LangSpecsXmlParser {
     private static void populateGlobal(XmlDocument jpModel, XmlDocument artifacts, XmlDocument actionModel,
             LanguageSpecificationV2 langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
 
-        /*
-        GlobalJoinPoints globalSelects = jpModel.getJoinPointList().getGlobal();
-        if (globalSelects != null) {
-            convertSelects(langSpecV2, globalSelects.getSelect())
-                    .forEach(global::add);
-            // global.setSelects();
-        }
-        */
-
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
             convertAttributes(globalAttributes.getElementsByName("attribute"), langSpecV2)
                     .forEach(global::add);
         }
 
-        // Global actions either do not have 'class' set, or is set to '*'
-        // List<XmlElement> globalActionNodes = actionModel.getElementsByName("action").stream()
-        // .filter(node -> node.getAttribute("class").isBlank() || node.getAttribute("class").equals("*"))
-        // .collect(Collectors.toList());
-
-        // global.getActions().addAll(convertActions(langSpecV2, globalActionNodes));
         convertActions(langSpecV2, globalActionNodes).stream()
                 .forEach(global::add);
     }
@@ -270,7 +236,7 @@ public class LangSpecsXmlParser {
         var parameterNodes = attributeNode.getElementsByName("parameter");
         for (var parameterNode : parameterNodes) {
             newAttribute.addParameter(langSpec.getType(getType(parameterNode)),
-                    parameterNode.getAttribute("name"));
+                    parameterNode.getAttribute("name"), parameterNode.getAttribute("default"));
         }
 
         return newAttribute;
@@ -325,24 +291,6 @@ public class LangSpecsXmlParser {
             selects.add(newSelect);
         }
 
-        // Collections.sort(selects);
-
         return selects;
-    }
-
-    private static void addDefaultGlobalAttributes(LanguageSpecificationV2 langSpec) {
-        /*
-        var joinPointType = new Attribute(PrimitiveClasses.STRING, "joinPointType");
-        joinPointType.setDefault(true);
-        joinPointType.setToolTip("a String with the type of the join point");
-        langSpec.getGlobal().add(joinPointType);
-        */
-
-        var instanceOf = new Attribute(PrimitiveClasses.BOOLEAN, "instanceOf",
-                Arrays.asList(new Declaration(PrimitiveClasses.STRING, "name")));
-        instanceOf.setDefault(true);
-        instanceOf.setToolTip("true if the current join point is an instance of the given type");
-        langSpec.getGlobal().add(instanceOf);
-
     }
 }

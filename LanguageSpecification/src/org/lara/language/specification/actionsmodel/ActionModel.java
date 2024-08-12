@@ -61,29 +61,6 @@ public class ActionModel implements IModel {
      * @throws SAXException
      * @throws XMLParseException
      */
-    /*
-     * public ActionModel(File actionsModelFile, boolean validate) throws
-     * JAXBException, SAXException, XMLParseException {
-     *
-     * this(new StreamSource(actionsModelFile), actionsModelFile.getName(),
-     * validate); }
-     */
-
-    /*
-     * public ActionModel(ResourceProvider actions, boolean validate) {
-     *
-     *
-     * try(InputStream actionStream = IoUtils.resourceToStream(actions); new
-     * StreamSource(actionStream)) {
-     *
-     * }
-     *
-     * ActionModel actionModel = new ActionModel(new StreamSource(actionStream),
-     * "default", validate);
-     *
-     *
-     * }
-     */
 
     public static ActionModel newInstance(File actionsModelFile, boolean validate) {
         // Don't know how StreamSource works.
@@ -132,16 +109,6 @@ public class ActionModel implements IModel {
         }
     }
 
-    /*
-     * public ActionModel(Source joinPointModelSource, String sourceName,
-     * boolean validate) throws JAXBException, SAXException {
-     *
-     * InputStream iS = null; if (validate) { iS =
-     * IoUtils.resourceToStream(LanguageSpecificationResources.ActionModelSchema
-     * .getResource()); } this.actionsList =
-     * MarshalUtils.unmarshal(joinPointModelSource, sourceName, iS,
-     * ActionsList.class, ActionsModelPackageName); this.sanitize(); }
-     */
     private void sanitize() {
 
         for (final Action action : actionsList.getAction()) {
@@ -209,11 +176,10 @@ public class ActionModel implements IModel {
             final boolean actionPertainsToJoinPoint = doesActionPertainsToJoinPoint(joinPointType, action);
 
             if (actionPertainsToJoinPoint) {
-
                 actions.add(action);
             }
         }
-
+        
         // Add default insert action
         final Action insertAct = new Action();
         insertAct.setName("insert");
@@ -262,23 +228,6 @@ public class ActionModel implements IModel {
 
         return actions;
     }
-
-    /*
-     * Method insertMethod = new Method(void.class.getSimpleName(), "insert");
-     * insertMethod.addArgument("String", "position");
-     * insertMethod.addArgument("String", "code"); insertMethod.appendCode(
-     * "throw new UnsupportedOperationException(\"Join point \"+" +
-     * GET_CLASS_NAME + "()+\": Action insert not implemented \");");
-     * abstJPClass.add(insertMethod);
-     *
-     * Method defMethod = new Method(void.class.getSimpleName(), "def");
-     * defMethod.addArgument("String", "attribute");
-     * defMethod.addArgument("Object", "value"); defMethod.appendCode(
-     * "throw new UnsupportedOperationException(\"Join point \"+" +
-     * GET_CLASS_NAME + "()+\": Action def not implemented \");");
-     * abstJPClass.add(defMethod);
-     *
-     */
 
     /**
      * Returns a list of all actions pertaining to a join point. Includes global actions and actions pertaining to the
@@ -412,8 +361,6 @@ public class ActionModel implements IModel {
      */
     @Override
     public void toXML(OutputStream oStream) throws JAXBException {
-
-        // MarshalUtils.marshal(actionsList, ActionsList.class, ActionModel.ActionsModelPackageName,
         MarshalUtils.marshal(actionsList, ActionsList.class, ActionModel.ActionsModelObjectFactory,
                 ActionModel._Actions_QNAME, oStream);
     }

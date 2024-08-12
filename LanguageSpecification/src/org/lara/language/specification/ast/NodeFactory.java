@@ -115,8 +115,8 @@ public class NodeFactory {
         AttributeNode attrNode = new AttributeNode(declNode);
         attribute.getToolTip().ifPresent(attrNode::setToolTip);
 
-        for (Declaration parameter : attribute.getParameters()) {
-            DeclarationNode paramNode = toNode(parameter);
+        for (Parameter parameter : attribute.getParameters()) {
+            ParameterNode paramNode = toNode(parameter);
             attrNode.addChild(paramNode);
         }
         return attrNode;

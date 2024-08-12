@@ -29,33 +29,24 @@ import org.lara.language.specification.dsl.types.PrimitiveClasses;
  */
 public class Attribute extends BaseNode implements Comparable<Attribute> {
 
-    private static final Attribute ATTRIBUTES;
-    private static final Attribute SELECTS;
-    private static final Attribute ACTIONS;
-
-    static {
-        PrimitiveClasses string = PrimitiveClasses.STRING;
-        ArrayType stringA = new ArrayType(string);
-
-        ATTRIBUTES = new Attribute(stringA, "attributes");
-        SELECTS = new Attribute(stringA, "selects");
-        ACTIONS = new Attribute(stringA, "actions");
-    }
-
     private Declaration declaration;
-    private List<Declaration> parameters;
+    private List<Parameter> parameters;
 
     public Attribute(IType type, String name) {
         this(type, name, new ArrayList<>());
     }
 
-    public Attribute(IType type, String name, List<Declaration> parameters) {
+    public Attribute(IType type, String name, List<Parameter> parameters) {
         declaration = new Declaration(type, name);
         this.parameters = parameters;
     }
-
+    
     public void addParameter(IType type, String name) {
-        parameters.add(new Declaration(type, name));
+        addParameter(type, name, "");
+    }
+
+    public void addParameter(IType type, String name, String defaultValue) {
+        parameters.add(new Parameter(type, name, defaultValue));
     }
 
     public IType getType() {
@@ -78,11 +69,11 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
         declaration.setName(name);
     }
 
-    public List<Declaration> getParameters() {
+    public List<Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<Declaration> parameters) {
+    public void setParameters(List<Parameter> parameters) {
         this.parameters = parameters;
     }
 
@@ -98,18 +89,6 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
 
     public void setDeclaration(Declaration declaration) {
         this.declaration = declaration;
-    }
-
-    public static Attribute getSelectsAttribute() {
-        return SELECTS;
-    }
-
-    public static Attribute getActionsAttribute() {
-        return ACTIONS;
-    }
-
-    public static Attribute getAttributesAttribute() {
-        return ATTRIBUTES;
     }
 
     @Override

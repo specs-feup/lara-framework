@@ -1,6 +1,0 @@
-rootProject.name = 'LaraExtraApi'
-
-includeBuild("../../specs-java-libs/SpecsUtils")
-includeBuild("../../specs-java-libs/SymjaPlus")
-
-includeBuild("../../lara-framework/LaraUtils")

@@ -31,7 +31,6 @@ dependencies {
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
 	implementation ':LaraDoc'	
-	implementation ':LaraExtraApi'	
 	implementation ':LARAI'	
 	implementation ':LaraLoc'	
 	implementation ':LaraUnit'	
