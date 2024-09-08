@@ -1,12 +1,15 @@
 import { fileToJSON } from "../../core/output.js";
 import Io from "../Io.js";
 import JavaTypes from "./JavaTypes.js";
+import System from "../System.js";
 /**
  * Provides access to files in a specific folder.
  */
 export default class LocalFolder {
     baseFolder;
     constructor(foldername) {
+        // Use depth +1 to compensate for call to super
+        foldername = foldername ?? System.getCurrentFolder(1);
         // TODO: DESIGN: currently foldername must exist, should create the folder if it does not exist?
         this.baseFolder = Io.getPath(foldername);
         if (!Io.isFolder(this.baseFolder)) {

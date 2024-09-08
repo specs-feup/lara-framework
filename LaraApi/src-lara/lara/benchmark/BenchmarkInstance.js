@@ -145,13 +145,19 @@ export default class BenchmarkInstance {
             this.compile();
         }
         if (this.currentExecutable === undefined) {
-            throw "BenchmarkInstance._executePrivate(): no executable currently defined";
+            throw "BenchmarkInstance.execute(): no executable currently defined";
         }
         console.log(`Executing ${this.getName()}...`);
+        this.executePrivate();
+        return this.currentExecutor;
+    }
+    executePrivate() {
+        if (this.currentExecutable === undefined) {
+            return;
+        }
         this.currentExecutor.execute(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.currentExecutable.getAbsolutePath());
-        return this.currentExecutor;
     }
     setExecutable(executable) {
         this.currentExecutable = executable;

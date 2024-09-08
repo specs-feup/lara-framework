@@ -58,7 +58,10 @@ export namespace JavaClasses {
   }
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
-  export interface XStreamUtils extends JavaClass {}
+  export interface XStreamUtils extends JavaClass {
+    // Otherwise TS will get confused about .toString()
+    toString(obj: any): string;
+  }
   export interface Object extends JavaClass {}
   export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
@@ -383,4 +386,5 @@ export default class JavaTypes {
       "pt.up.fe.specs.util.utilities.LineStream"
     ) as JavaClasses.LineStream;
   }
+
 }

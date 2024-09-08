@@ -12,20 +12,8 @@
  */
 package larai;
 
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
+import larac.LaraC;
+import larac.utils.output.Output;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.Interpreter;
@@ -52,16 +40,13 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-
-import larac.LaraC;
-import larac.utils.output.Output;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
@@ -79,6 +64,14 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import tdrc.utils.Pair;
+
+import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * An interpreter for the LARA language, which converts the Aspect-IR into a javascript representation and runs that
@@ -204,6 +197,7 @@ public class LaraI {
     // "Could not instantiate weaver engine with class '" + weaverEngine.getClass() + "'", e);
     // }
     // }
+
     /**
      * Executes larai with a Weaving engine implementing {@link WeaverEngine}.
      * <p>
@@ -226,8 +220,7 @@ public class LaraI {
     }
 
 
-
-    private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
+    public static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
 
@@ -318,6 +311,7 @@ public class LaraI {
     // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
     // return exec(args, weaverEngine.newInstance());
     // }
+
     /**
      * Executes larai with a Weaving engine implementing {@link WeaverEngine}. The varargs are converted into a
      * DataStore
@@ -337,11 +331,16 @@ public class LaraI {
     /**
      * Converts an array of strings to the corresponding DataStore.
      *
-     * @param args
+     * @param objArgs
      * @param weaverEngine
      * @return A DataStore that corresponds to the given arguments, or empty if the arguments represent a GUI execution mode.
      */
-    public static Optional<DataStore> convertArgsToDataStore(String[] args, WeaverEngine weaverEngine) {
+    public static Optional<DataStore> convertArgsToDataStore(Object[] objArgs, WeaverEngine weaverEngine) {
+
+        var args = new String[objArgs.length];
+        for (int i = 0; i < objArgs.length; i++) {
+            args[i] = objArgs[i].toString();
+        }
 
         Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 
@@ -354,21 +353,20 @@ public class LaraI {
         return switch (mode) {
             // convert configuration file to data store and run
             case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
-//                isRunningGui = false;
+
             // get the configuration file and execute GUI
-            case CONFIG_GUI ->  Optional.empty();
-//                guiFile = OptionsParser.getConfigFile(cmd);
-//                isRunningGui = true;
+            case CONFIG_GUI -> Optional.empty();
+
             // convert options to data store and run
-            case OPTIONS ->  Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
-//                isRunningGui = false;
+            case OPTIONS ->
+                    Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
+
             // convert configuration file to data store, override with extra options and run
-            case CONFIG_OPTIONS -> Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
-//                isRunningGui = false;
+            case CONFIG_OPTIONS ->
+                    Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
+
             // launch GUI
-            case GUI->Optional.empty();
-//                guiFile = null;
-//                isRunningGui = true;
+            case GUI -> Optional.empty();
         };
     }
 
@@ -414,43 +412,43 @@ public class LaraI {
             SpecsLogs.debug("Launching weaver in mode " + mode);
 
             switch (mode) {
-            // case UNIT_TEST:
-            // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
-            case CONFIG: // convert configuration file to data store and run
-                // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
-                dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
-                success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
-                break;
-            // return execPrivate(dataStore, weaverEngine);
-            case CONFIG_GUI: // get the configuration file and execute GUI
-                File guiFile = OptionsParser.getConfigFile(cmd);
-                LaraLauncher.launchGUI(weaverEngine, Optional.of(guiFile));
-                success = true;
-                isRunningGui = true;
-                break;
-            case OPTIONS: // convert options to data store and run
-                // SpecsLogs.debug("Received args: " + Arrays.toString(args));
-
-                dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
-
+                // case UNIT_TEST:
+                // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
+                case CONFIG: // convert configuration file to data store and run
+                    // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
+                    dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
+                    success = execPrivate(dataStore, weaverEngine);
+                    isRunningGui = false;
+                    break;
                 // return execPrivate(dataStore, weaverEngine);
-                success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
-                break;
-            case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
-                dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
-                // return execPrivate(dataStore, weaverEngine);
-                success = execPrivate(dataStore, weaverEngine);
-                isRunningGui = false;
-                break;
-            case GUI:
-                LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-                success = true;
-                isRunningGui = true;
-                break;
-            default:
-                throw new NotImplementedException(mode);
+                case CONFIG_GUI: // get the configuration file and execute GUI
+                    File guiFile = OptionsParser.getConfigFile(cmd);
+                    LaraLauncher.launchGUI(weaverEngine, Optional.of(guiFile));
+                    success = true;
+                    isRunningGui = true;
+                    break;
+                case OPTIONS: // convert options to data store and run
+                    // SpecsLogs.debug("Received args: " + Arrays.toString(args));
+
+                    dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
+
+                    // return execPrivate(dataStore, weaverEngine);
+                    success = execPrivate(dataStore, weaverEngine);
+                    isRunningGui = false;
+                    break;
+                case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
+                    dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
+                    // return execPrivate(dataStore, weaverEngine);
+                    success = execPrivate(dataStore, weaverEngine);
+                    isRunningGui = false;
+                    break;
+                case GUI:
+                    LaraLauncher.launchGUI(weaverEngine, Optional.empty());
+                    success = true;
+                    isRunningGui = true;
+                    break;
+                default:
+                    throw new NotImplementedException(mode);
             }
 
             return LaraiResult.newInstance(success, isRunningGui);
@@ -574,8 +572,8 @@ public class LaraI {
      * @throws Exception
      */
     public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
-            LaraIDataStore options,
-            Output out) throws Exception {
+                                                  LaraIDataStore options,
+                                                  Output out) throws Exception {
 
         // Process Lara Bundles in include folders
         // includesFolder = processLaraBundles(includesFolder);
@@ -708,7 +706,6 @@ public class LaraI {
         // final ImporterTopLevel scope = new ImporterTopLevel(cx);
 
 
-
         // final FileList folderApplication = options.getWorkingDir();
 
         // if (!folderApplication.exists()) {
@@ -779,7 +776,7 @@ public class LaraI {
                 main = asps.main;
             }
 
-            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(),  main,
+            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), main,
                     options.getLaraFile().getPath());
             finish(engine);
         } catch (Exception e) {
@@ -857,16 +854,14 @@ public class LaraI {
     }
 
     /**
-     * @param js
-     *            the js to set
+     * @param js the js to set
      */
     public void setJs(StringBuilder js) {
         this.js = js;
     }
 
     /**
-     * @param js
-     *            the js to append
+     * @param js the js to append
      */
     public void appendJs(StringBuilder js) {
         this.js.append(js);
@@ -904,8 +899,7 @@ public class LaraI {
     }
 
     /**
-     * @param weaver
-     *            the weaver to set
+     * @param weaver the weaver to set
      */
     public void setWeaver(MasterWeaver weaver) {
         this.weaver = weaver;
@@ -919,8 +913,7 @@ public class LaraI {
     }
 
     /**
-     * @param laraIDataStore
-     *            the options to set
+     * @param laraIDataStore the options to set
      */
     public void setOptions(LaraIDataStore laraIDataStore) {
         options = laraIDataStore;
@@ -954,8 +947,8 @@ public class LaraI {
     }
 
     /**
-     * @deprecated Check if this method can be replaced with getWeaverEngine()
      * @return
+     * @deprecated Check if this method can be replaced with getWeaverEngine()
      */
     @Deprecated
     public WeaverEngine getEngine() {
@@ -1009,10 +1002,10 @@ public class LaraI {
 
     /**
      * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
-     * 
+     *
      * <p>
      * Does not verify if import has already been imported.
-     * 
+     *
      * @param importName
      */
     public static void loadLaraImport(String importName) {
@@ -1032,9 +1025,15 @@ public class LaraI {
             SpecsLogs.debug(
                     () -> "Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
 
+            var source = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename());
+
+            // For some reason that we still don't know if an import comes from a resource
+            // and the 'source' value does not have the following suffix, the class of the import will
+            // not be found (at least in Linux, in Windows is ok).
+            source = source + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
+
             weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    laraImport.getFilename() + " (LARA import '" + importName + "' as "
-                            + laraImport.getFileType().toString() + ")");
+                    source);
         }
 
     }

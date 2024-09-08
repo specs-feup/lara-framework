@@ -165,13 +165,16 @@ export function wrapJoinPoint(obj: any): any {
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  // Get join point class from name of the Java class, since getJoinPointType() might
+  // not always correspond to the actual join point class (e.g., anyweaver)
+  const jpClass: string = obj.get_class();
+
   for (const mapper of JoinpointMappers) {
-    if (mapper[jpType]) {
-      return new mapper[jpType](obj);
+    if (mapper[jpClass]) {
+      return new mapper[jpClass](obj);
     }
   }
-  throw new Error("No mapper found for join point type: " + jpType);
+  throw new Error("No mapper found for join point type: " + jpClass);
 }
 
 export function unwrapJoinPoint(obj: any): any {

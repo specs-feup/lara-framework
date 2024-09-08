@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,12 +13,7 @@
 
 package org.lara.interpreter.tester;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
+import larai.LaraI;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.config.interpreter.VerboseLevel;
 import org.lara.interpreter.joptions.keys.FileList;
@@ -26,15 +21,19 @@ import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-
-import larai.LaraI;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
-public class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> {
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+public abstract class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> {
 
     private static final boolean DEBUG = false;
 
@@ -91,7 +90,6 @@ public class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> 
     }
 
     /**
-     * 
      * @param checkWeavedCodeSyntax
      * @return the previous value
      */
@@ -106,7 +104,6 @@ public class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> 
     // public JavaWeaverTester(String basePackage, Standard standard) {
     // this(basePackage, standard, "");
     // }
-
     @SuppressWarnings("unchecked")
     public K setResultPackage(String resultPackage) {
         this.resultPackage = sanitizePackage(resultPackage);
@@ -164,9 +161,8 @@ public class WeaverTester<T extends WeaverEngine, K extends WeaverTester<T, K>> 
         String expectedResource = expectedResourceBuilder.toString();
 
         if (!SpecsIo.hasResource(expectedResource)) {
-            SpecsLogs.msgInfo("Could not find resource '" + expectedResource
+            fail("Could not find resource '" + expectedResource
                     + "', skipping verification. Actual output:\n" + logContents);
-            return;
         }
 
         assertEquals(normalize(SpecsIo.getResource(expectedResource)), normalize(logContents));

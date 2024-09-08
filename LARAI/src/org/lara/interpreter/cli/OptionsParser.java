@@ -355,12 +355,10 @@ public class OptionsParser {
      * @return
      */
     public static StoreDefinition getLaraStoreDefinition(WeaverEngine engine) {
-        StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
-        builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
-        builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
-        StoreDefinition laraiDefinition = builder.build();
-        return laraiDefinition;
-        // return getLaraStoreDefinition(engine, false);
+        return new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName())
+            .addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition())
+            .addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition())
+            .build();
     }
 
     // /**

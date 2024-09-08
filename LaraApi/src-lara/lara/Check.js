@@ -98,8 +98,8 @@ export default class Check {
      */
     static strings(currentString, expectedString) {
         // Normalize both strings
-        currentString = JavaTypes.SpecsStrings().normalizeFileContents(currentString, true);
-        expectedString = JavaTypes.SpecsStrings().normalizeFileContents(expectedString, true);
+        currentString = JavaTypes.SpecsStrings.normalizeFileContents(currentString, true);
+        expectedString = JavaTypes.SpecsStrings.normalizeFileContents(expectedString, true);
         if (currentString !== expectedString) {
             //throw "Current result does not match expected result.\nCurrent result begin:\n"+currentString+"\nCurrent result end\n\nExpected result begin:\n"+expectedString+"\nExpected result end";
             throw ("Current result does not match expected result. Diff:\n" +
@@ -111,7 +111,7 @@ export default class Check {
      * @param revised - The revised text
      */
     static diff(original, revised) {
-        return JavaTypes.Diff().Diff(original, revised);
+        return JavaTypes.Diff.getDiff(original, revised);
     }
     /**
      * Checks if the array contains the element. Throws an expression if it doens't.

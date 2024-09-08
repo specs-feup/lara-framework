@@ -127,11 +127,11 @@ export default class Check {
    */
   static strings(currentString: string, expectedString: string) {
     // Normalize both strings
-    currentString = JavaTypes.SpecsStrings().normalizeFileContents(
+    currentString = JavaTypes.SpecsStrings.normalizeFileContents(
       currentString,
       true
     );
-    expectedString = JavaTypes.SpecsStrings().normalizeFileContents(
+    expectedString = JavaTypes.SpecsStrings.normalizeFileContents(
       expectedString,
       true
     );
@@ -149,7 +149,7 @@ export default class Check {
    * @param revised - The revised text
    */
   static diff(original: string, revised: string) {
-    return JavaTypes.Diff().Diff(original, revised);
+    return JavaTypes.Diff.getDiff(original, revised);
   }
 
   /**

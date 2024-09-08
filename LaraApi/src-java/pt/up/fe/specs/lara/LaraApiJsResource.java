@@ -114,6 +114,9 @@ public enum LaraApiJsResource implements LaraResourceProvider {
     WEAVER_JS("weaver/Weaver.js"),
     WEAVERLAUNCHERBASE_JS("weaver/WeaverLauncherBase.js"),
     WEAVEROPTIONS_JS("weaver/WeaverOptions.js"),
+    JPPREDICATE_JS("weaver/predicate/JpPredicate.js"),
+    STRINGPREDICATE_JS("weaver/predicate/StringPredicate.js"),
+    TYPEPREDICATE_JS("weaver/predicate/TypePredicate.js"),
     ACTIONAWARECACHE_JS("weaver/util/ActionAwareCache.js"),
     WEAVERDATASTORE_JS("weaver/util/WeaverDataStore.js");
 

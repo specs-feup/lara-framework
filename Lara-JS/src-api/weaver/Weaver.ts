@@ -279,7 +279,7 @@ export default class Weaver {
 
   static get laraArgs(): any {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const datastore = new DataStore(Weaver.getWeaverEngine().getData());
+    const datastore = new DataStore(Weaver.getWeaverEngine().getData().get());
     let jsonString = datastore.get(
       JavaTypes.LaraiKeys.ASPECT_ARGS as string
     ) as string | undefined;

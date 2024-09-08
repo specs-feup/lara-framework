@@ -141,18 +141,25 @@ export default class WeaverLauncher {
           console.log("Did nothing. Not implemented yet.");
         },
       })
-      .command("classic", `Execute ${this.config.weaverPrettyName} in 'Classic' compatibility mode`, (yargs) => {
-        return yargs
-          .strict(false)
-          .parserConfiguration({ "unknown-options-as-args": true });
-      }, (argv) => {
-        try {
-          console.log(`Executing ${this.config.weaverPrettyName} in 'Classic' mode...`);
-          void this.main(argv);
-        } catch (error) {
-          console.error(error);
+      .command(
+        "classic",
+        `Execute ${this.config.weaverPrettyName} using the 'Classic' CLI`,
+        (yargs) => {
+          return yargs
+            .strict(false)
+            .parserConfiguration({ "unknown-options-as-args": true });
+        },
+        (argv) => {
+          try {
+            console.log(
+              `Executing ${this.config.weaverPrettyName} with 'Classic' CLI...`
+            );
+            void this.main(argv);
+          } catch (error) {
+            console.error(error);
+          }
         }
-      })
+      )
       .help()
       .showHelpOnFail(true)
       .strict(true)

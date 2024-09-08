@@ -102,40 +102,40 @@ export class Weaver {
 
     let datastore;
     if (args._[0] === "classic") {
-        try {
-            datastore = JavaLaraI.convertArgsToDataStore(
-                args._.slice(1),
-                javaWeaver
-            ).get();
-        } catch (error) {
-            throw new Error(
-                "Failed to parse 'Classic' weaver arguments:\n" + error
-            );
-        }
+      try {
+        datastore = JavaLaraI.convertArgsToDataStore(
+          args._.slice(1),
+          javaWeaver
+        ).get();
+        args.scriptFile = datastore.get("aspect").toString();
+      } catch (error) {
+        throw new Error(
+          "Failed to parse 'Classic' weaver arguments:\n" + error
+        );
+      }
     } else {
-        const JavaDataStore = java.import(
-            "org.suikasoft.jOptions.Interfaces.DataStore"
-        );
+      const JavaDataStore = java.import(
+        "org.suikasoft.jOptions.Interfaces.DataStore"
+      );
 
-        datastore = await new JavaDataStore.newInstanceP(
-            `${javaWeaverClassName}DataStore`
-        );
+      datastore = await new JavaDataStore.newInstanceP(
+        `${javaWeaverClassName}DataStore`
+      );
 
-        const fileList = new JavaArrayList();
-        //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
-        const clangArgs = args._.slice(1);
-        clangArgs.forEach((arg: string | number) => {
-          fileList.add(new JavaFile(arg));
-        });
+      const fileList = new JavaArrayList();
+      //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
+      const clangArgs = args._.slice(1);
+      clangArgs.forEach((arg: string | number) => {
+        fileList.add(new JavaFile(arg));
+      });
 
-        datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
-        datastore.set(
-          LaraiKeys.WORKSPACE_FOLDER,
-          JavaFileList.newInstance(fileList)
-        );
-        datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
+      datastore.set(LaraiKeys.LARA_FILE, new JavaFile("placeholderFileName"));
+      datastore.set(
+        LaraiKeys.WORKSPACE_FOLDER,
+        JavaFileList.newInstance(fileList)
+      );
+      datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
     }
-
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
