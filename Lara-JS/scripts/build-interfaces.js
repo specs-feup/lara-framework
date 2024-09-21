@@ -61,7 +61,9 @@ import {
   registerJoinpointMapper,
   wrapJoinPoint,
   unwrapJoinPoint,
-} from "lara-js/api/LaraJoinPoint.js";\n\n`
+} from "lara-js/api/LaraJoinPoint.js";
+import eventListener from "./clava/events/EventListener.js";
+import { Event, EventTime } from "./clava/events/Events.js";\n\n`
   );
 
   generateDefaultAttributeMappers(specification.joinpoints, outputFile);
