@@ -1,6 +1,6 @@
 {
-  "name": "lara-js",
-  "version": "0.0.1",
+  "name": "@specs-feup/lara",
+  "version": "3.0.0",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
@@ -13,12 +13,16 @@
     "src-api",
     "src-code",
     ".gitignore",
-    "jest.config.json",
+    "eslint.config.js",
+    "jest.config.js",
     "LaraJoinPointSpecification.json",
     "LICENSE",
     "package.json",
     "README.md",
-    "tsconfig.json"
+    "tsconfig.jest.json",
+    "tsconfig.json",
+    "typedoc.base.json",
+    "typedoc.json"
   ],
   "scripts": {
     "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
