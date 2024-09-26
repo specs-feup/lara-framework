@@ -61,7 +61,7 @@ import {
   registerJoinpointMapper,
   wrapJoinPoint,
   unwrapJoinPoint,
-} from "lara-js/api/LaraJoinPoint.js";\n\n`
+} from "@specs-feup/lara/api/LaraJoinPoint.js";\n\n`
   );
 
   generateDefaultAttributeMappers(specification.joinpoints, outputFile);

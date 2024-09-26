@@ -1,4 +1,4 @@
-const prefix = "lara-js/api/";
+const prefix = "@specs-feup/lara/api/";
 const coreImports = [
     "core/output.js",
     "lara/core/LaraCore.js",
