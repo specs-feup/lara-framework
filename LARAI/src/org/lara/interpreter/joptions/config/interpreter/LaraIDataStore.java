@@ -12,36 +12,22 @@
  */
 package org.lara.interpreter.joptions.config.interpreter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.xml.parsers.ParserConfigurationException;
-
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import larai.LaraI;
+import larai.larabundle.LaraBundle;
+import larai.lararesource.LaraResource;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.suikasoft.jOptions.JOptionKeys;
-import org.suikasoft.jOptions.JOptionsUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.JOptionKeys;
+import org.suikasoft.jOptions.JOptionsUtils;
 import org.xml.sax.SAXException;
-
-import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-
-import larai.LaraI;
-import larai.larabundle.LaraBundle;
-import larai.lararesource.LaraResource;
 import pt.up.fe.specs.git.GitRepos;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.lara.aspectir.Argument;
@@ -51,12 +37,17 @@ import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 import pt.up.fe.specs.util.utilities.StringList;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
+
 /**
  * TODO: Should deprecate and just use DataStore directly?
  * TODO: Also, the "ifs" in the getters interfere with the default values set in the DataKey
- * 
- * @author JoaoBispo
  *
+ * @author JoaoBispo
  */
 public class LaraIDataStore implements LaraiKeys {
 
@@ -131,7 +122,7 @@ public class LaraIDataStore implements LaraiKeys {
 
         var defaultOptionsFile = defaultOptions.getConfigFile().orElse(null);
         if (defaultOptionsFile != null) {
-            SpecsLogs.info("Loading default options in file '" + defaultOptionsFile.getAbsolutePath() + "'");
+            SpecsLogs.debug("Loading default options in file '" + defaultOptionsFile.getAbsolutePath() + "'");
         }
 
         SpecsLogs.debug(() -> "Loading system-wide options");
@@ -377,7 +368,7 @@ public class LaraIDataStore implements LaraiKeys {
     /**
      * Returns a JSON string representing the aspect arguments. If the value represents a json file, reads it before
      * returning.
-     * 
+     *
      * @return the aspect arguments as a JSON string
      */
     public String getAspectArgumentsStr() {

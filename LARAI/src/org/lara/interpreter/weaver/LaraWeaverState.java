@@ -23,7 +23,6 @@ public class LaraWeaverState {
     private URLClassLoader classLoader;
 
     /**
-     *
      * @param dataStore DataStore that supports LaraIKeys
      */
     public LaraWeaverState(DataStore dataStore) {
@@ -48,7 +47,7 @@ public class LaraWeaverState {
         var urls = jarFiles.stream()
                 .map(f -> {
                     try {
-                        System.out.println("Loading JAR " + f);
+                        SpecsLogs.debug(() -> "Loading JAR " + f);
                         return f.toURI().toURL();
                     } catch (MalformedURLException e) {
                         throw new RuntimeException("Could not convert JAR file to URL", e);
@@ -65,9 +64,9 @@ public class LaraWeaverState {
 
         var jarFiles = new ArrayList<File>();
 
-        for(var jarPath : jarPaths) {
-            if(!jarPath.exists()) {
-                SpecsLogs.info("Jar path '"+jarPath+"' does not exist");
+        for (var jarPath : jarPaths) {
+            if (!jarPath.exists()) {
+                SpecsLogs.info("Jar path '" + jarPath + "' does not exist");
                 continue;
             }
 

@@ -31,7 +31,7 @@ export default interface WeaverConfiguration {
    * This is useful for registering the joinpoint mappers for the weaver.
    * Files must be importtable using the ES6 import syntax.
    *
-   * @example ["clava-js/api/Joinpoints.js"]
+   * @example ["@specs-feup/clava/api/Joinpoints.js"]
    */
   importForSideEffects?: string[];
 }

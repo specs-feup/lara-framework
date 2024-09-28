@@ -1,11 +1,11 @@
 /**
  * Copyright 2023 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,19 +13,19 @@
 
 package org.lara.interpreter.weaver.interf;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.StringLines;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages a set of resources as files on disk, considering they come from, or will be used by NPM packages.
@@ -60,15 +60,27 @@ public class WeaverApiManager {
     }
 
     /**
-     * 
+     *
      * @return a list of folders inside the node_modules folder that correspond to the base folders that laraImport
      *         should look for APIs
      */
     public List<File> getNpmApiFolders() {
-        var nodeModules = getNodeModulesFolder();
-
+        var moduleFolders = SpecsIo.getFolders(getNodeModulesFolder());
+        
+        var packageFolders = new ArrayList<File>();
+        for (var folder : moduleFolders) {
+            if (folder.getName().startsWith("@")) {
+                // It's a scope for packages.
+                // Add subfolders to packageFolders.
+                packageFolders.addAll(SpecsIo.getFolders(folder));
+            }
+            else {
+                packageFolders.add(folder);
+            }
+        }
+        
         var apiFolders = new ArrayList<File>();
-        for (var packageFolder : SpecsIo.getFolders(nodeModules)) {
+        for (var packageFolder : packageFolders) {
             var apiFolder = new File(packageFolder, "api");
 
             if (!apiFolder.isDirectory()) {
@@ -84,7 +96,7 @@ public class WeaverApiManager {
     }
 
     /**
-     * 
+     *
      * @return a list of files named core.js inside the node_modules folder that should be executed to enable the core
      *         LARA environment
      */
@@ -120,7 +132,7 @@ public class WeaverApiManager {
         prepareCoreFolder(baseFolder, engine);
 
         // Get base folder
-        SpecsLogs.msgInfo("Weaver API manager: using '" + baseFolder.getAbsolutePath() + "' as base folder");
+        SpecsLogs.debug(() -> "Weaver API manager: using '" + baseFolder.getAbsolutePath() + "' as base folder");
         return new WeaverApiManager(baseFolder);
     }
 
@@ -232,7 +244,7 @@ public class WeaverApiManager {
     }
 
     /**
-     * 
+     *
      * @param resourcesFolder
      * @return if true, means that resources need to be extracted to files, false means that folder can be reused as-is
      */

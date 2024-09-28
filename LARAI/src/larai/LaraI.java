@@ -331,11 +331,16 @@ public class LaraI {
     /**
      * Converts an array of strings to the corresponding DataStore.
      *
-     * @param args
+     * @param objArgs
      * @param weaverEngine
      * @return A DataStore that corresponds to the given arguments, or empty if the arguments represent a GUI execution mode.
      */
-    public static Optional<DataStore> convertArgsToDataStore(String[] args, WeaverEngine weaverEngine) {
+    public static Optional<DataStore> convertArgsToDataStore(Object[] objArgs, WeaverEngine weaverEngine) {
+
+        var args = new String[objArgs.length];
+        for (int i = 0; i < objArgs.length; i++) {
+            args[i] = objArgs[i].toString();
+        }
 
         Options finalOptions = LaraCli.getCliOptions(weaverEngine);
 

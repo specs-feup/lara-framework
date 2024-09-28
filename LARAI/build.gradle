@@ -57,7 +57,7 @@ sourceSets {
       }
 	  
 	  resources {
-		 srcDir 'src'
+		 //srcDir 'src'
          srcDir 'src-lara'	  
          srcDir 'resources'	  
 	  }
@@ -69,7 +69,7 @@ sourceSets {
       }
 	  
 	  resources {
-		 srcDir 'src'
+		 //srcDir 'src'
          srcDir 'src-lara'	  
          srcDir 'resources'	  
 	  }
