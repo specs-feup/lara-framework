@@ -65,10 +65,22 @@ public class WeaverApiManager {
      *         should look for APIs
      */
     public List<File> getNpmApiFolders() {
-        var nodeModules = getNodeModulesFolder();
-
+        var moduleFolders = SpecsIo.getFolders(getNodeModulesFolder());
+        
+        var packageFolders = new ArrayList<File>();
+        for (var folder : moduleFolders) {
+            if (folder.getName().startsWith("@")) {
+                // It's a scope for packages.
+                // Add subfolders to packageFolders.
+                packageFolders.addAll(SpecsIo.getFolders(folder));
+            }
+            else {
+                packageFolders.add(folder);
+            }
+        }
+        
         var apiFolders = new ArrayList<File>();
-        for (var packageFolder : SpecsIo.getFolders(nodeModules)) {
+        for (var packageFolder : packageFolders) {
             var apiFolder = new File(packageFolder, "api");
 
             if (!apiFolder.isDirectory()) {
