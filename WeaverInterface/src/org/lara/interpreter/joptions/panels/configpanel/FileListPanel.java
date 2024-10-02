@@ -42,7 +42,6 @@ public class FileListPanel extends KeyPanel<FileList> {
     // private JComboBox<String> comboBoxValues;
     private final JList<File> listValues;
     private final FilePanel file;
-    private final DataKey<File> fileKey;
     private final DefaultListModel<File> files;
     // private final DataStore fileStore;
     private final JButton removeButton;
@@ -70,12 +69,9 @@ public class FileListPanel extends KeyPanel<FileList> {
         removeButton = new JButton("Remove");
         addButton = new JButton("Add");
 
-        //fileKey = LaraIKeyFactory.file("", fileSelectionMode, false, extensions);
-        this.fileKey = fileKey;
         file = new FilePanel(fileKey, data, fileSelectionMode, extensions);
 
         file.setOnFileOpened(this::onFileOpen);
-        // file = new FilePanel(fileKey, fileStore = DataStore.newInstance("dummy"));
 
         addButton.addActionListener(this::addButtonActionPerformed);
         removeButton.addActionListener(this::removeButtonActionPerformed);

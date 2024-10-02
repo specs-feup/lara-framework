@@ -65,7 +65,7 @@ public class MasterWeaver {
     public static final String GET_EVENT_TRIGGER = MasterWeaver.WEAVER_NAME + ".eventTrigger()";
     public static final String JPWEAVER_NAME = "__myWeaver";
     public static final String LANGUAGE_SPECIFICATION_NAME = "Weaver";
-    private List<File> sources;
+
     // private Class<? extends WeaverEngine> weaverClass;
     // private final Map<File, WeaverEngine> weavers;
     private String root;
@@ -95,8 +95,6 @@ public class MasterWeaver {
         jpUtils = new JoinpointUtils(engine);
 
         this.weaverEngine = weaverEngine;
-        //this.sources = sources.getFiles();
-        this.sources = larai.getOptions().getWorkingDir().getFiles();
     }
 
     public static Class<? extends WeaverEngine> getWeaverClass(String className) throws ClassNotFoundException {
@@ -157,10 +155,6 @@ public class MasterWeaver {
             final boolean weaverIsWorking = weaverEngine.run(larai.getWeaverArgs());
 
             if (!weaverIsWorking) {
-                // throw new RuntimeException("Application folder '" + sources
-                // + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
-
-                // LoggingUtils.msgInfo
                 larai.out.warnln("Application inputs '" + getSources()
                         + "' could not be used by '" + weaverEngine.getClass().getName() + "'");
 
@@ -577,14 +571,6 @@ public class MasterWeaver {
     public List<File> getSources() {
         return larai.getOptions().getWorkingDir().getFiles();
     }
-
-    /**
-     * @param sources
-     *            the applicationFolder to set
-     */
-//    public void setApplicationFolder(List<File> sources) {
-//        this.sources = sources;
-//    }
 
     /**
      *
