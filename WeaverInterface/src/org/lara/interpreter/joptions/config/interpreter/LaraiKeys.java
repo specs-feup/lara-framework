@@ -34,10 +34,6 @@ public interface LaraiKeys {
         return "server";
     }
 
-    static String getApiFlag() {
-        return "api";
-    }
-
     DataKey<File> LARA_FILE = KeyFactory.file("aspect", "lara", "js").setLabel("Aspect");
 
     DataKey<String> MAIN_ASPECT = KeyFactory.string("main").setLabel("Main Aspect");

@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -49,8 +48,6 @@ import pt.up.fe.specs.util.SpecsSystem;
  */
 public class WeaverLauncher {
 
-    private static final String FLAG_KEEP_LARA = "--keepLara";
-
     private final WeaverEngine engine;
 
     private final Map<String, Function<String[], Boolean>> tasks;
@@ -67,69 +64,7 @@ public class WeaverLauncher {
         // If server flag is present, run server
         taskMap.put("-" + LaraiKeys.getServerFlag(), args -> executeServer(args));
 
-        // If api flag is present, copy APIs to a folder
-        taskMap.put("-" + LaraiKeys.getApiFlag(), args -> executeApiExtractor(args));
-
         return taskMap;
-    }
-
-    private boolean executeApiExtractor(String[] args) {
-
-        // Options
-        var keepLara = false;
-
-        var processedArgs = new ArrayList<String>();
-
-        // Remove first argument (e.g. -api)
-        IntStream.range(1, args.length)
-                .mapToObj(i -> args[i])
-                .forEach(processedArgs::add);
-
-        int index = -1;
-
-        index = processedArgs.indexOf("--help");
-        if (index != -1) {
-            SpecsLogs.info("<lara compiler> -api [--keepLara] <output folder>");
-            return true;
-        }
-
-        while ((index = processedArgs.indexOf(FLAG_KEEP_LARA)) != -1) {
-            processedArgs.remove(index);
-            keepLara = true;
-        }
-
-        if (processedArgs.isEmpty()) {
-            SpecsLogs.info("Expected output folder as parameter");
-            return false;
-        }
-
-        var outputFolder = SpecsIo.mkdir(processedArgs.get(0));
-
-        copyAndProcessApiFolder(engine.getApiManager().getCoreFolder(), outputFolder, keepLara);
-        for (var apiFolder : engine.getApiManager().getNpmApiFolders()) {
-            copyAndProcessApiFolder(apiFolder, outputFolder, keepLara);
-        }
-
-        return true;
-    }
-
-    private void copyAndProcessApiFolder(File apiFolder, File outputFolder, boolean keepLara) {
-
-        SpecsLogs.info("Extracting APIs in folder '" + apiFolder.getAbsolutePath() + "' to '"
-                + outputFolder.getAbsolutePath() + "'");
-
-        var apiFiles = SpecsIo.getFilesRecursive(apiFolder);
-
-        for (var apiFile : apiFiles) {
-            var fileLocation = SpecsIo.getRelativePath(apiFolder, apiFile);
-
-            var destinationFile = new File(outputFolder, fileLocation);
-            var fileContents = SpecsIo.read(apiFile);
-
-            SpecsLogs.info("Writing file " + destinationFile);
-            SpecsIo.write(destinationFile, fileContents);
-        }
-
     }
 
     public boolean launchExternal(String[] args) {
