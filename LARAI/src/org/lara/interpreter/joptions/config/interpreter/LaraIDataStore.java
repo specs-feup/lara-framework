@@ -358,13 +358,6 @@ public class LaraIDataStore implements LaraiKeys {
         return OptionalFile.newInstance(null);
     }
 
-    public boolean isLaraLoc() {
-        if (dataStore.hasValue(LaraiKeys.LARA_LOC)) {
-            return dataStore.get(LaraiKeys.LARA_LOC);
-        }
-        return false;
-    }
-
     /**
      * Returns a JSON string representing the aspect arguments. If the value represents a json file, reads it before
      * returning.

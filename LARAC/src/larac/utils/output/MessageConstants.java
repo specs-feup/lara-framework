@@ -14,7 +14,6 @@ package larac.utils.output;
 
 import java.io.File;
 
-import larac.objects.Variable;
 
 /**
  * Class containing all the predefined messages used on Lara
@@ -74,9 +73,6 @@ public class MessageConstants {
 
     public static String getDuplicateMessage(Object obj) {
         String type = obj.getClass().getName();
-        if (obj instanceof Variable) {
-            return "Duplicate Variable: ";
-        }
         if (obj.getClass().getName().contains("AST")) {
             type = type.substring(type.lastIndexOf("AST") + 3);
         }

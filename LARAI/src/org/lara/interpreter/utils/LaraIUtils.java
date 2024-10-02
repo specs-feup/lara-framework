@@ -20,22 +20,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import larai.LaraI;
 import pt.up.fe.specs.lara.aspectir.Base;
-import pt.up.fe.specs.lara.loc.LaraLoc;
-import pt.up.fe.specs.lara.loc.LaraStats;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
@@ -286,12 +281,6 @@ public class LaraIUtils {
             String unescapeJava = StringEscapeUtils.unescapeHtml4(comment.toString());
             ret.append(unescapeJava);
         }
-    }
-
-    public static Map<String, LaraStats> getLaraLoc(WeaverEngine engine, DataStore args) {
-        // Collect LARA files and folders
-        List<File> laraFiles = getLaraFiles(args);
-        return new LaraLoc(engine).getStats(laraFiles);
     }
 
     /**

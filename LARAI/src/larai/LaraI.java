@@ -12,22 +12,17 @@
  */
 package larai;
 
-import larac.LaraC;
 import larac.utils.output.Output;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.cli.CLIConfigOption;
 import org.lara.interpreter.cli.LaraCli;
 import org.lara.interpreter.cli.OptionsConverter;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.cli.OptionsParser.ExecutionMode;
 import org.lara.interpreter.exception.LaraIException;
-import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.gui.LaraLauncher;
-import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
@@ -39,7 +34,6 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.app.AppPersistence;
@@ -50,7 +44,6 @@ import org.w3c.dom.Document;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.LaraCompiler;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
@@ -63,8 +56,6 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
-import tdrc.utils.Pair;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -87,8 +78,7 @@ public class LaraI {
     public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
-    public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
-
+    public static final String PROPERTY_JAR_PATH = "lara.jarpath";
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
     private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
 
@@ -225,7 +215,6 @@ public class LaraI {
         prepareDataStore(dataStore, weaverEngine);
 
         MessageConstants.order = 1;
-        larac.utils.output.MessageConstants.order = 1;
 
         LaraI larai = null;
         try {
@@ -354,9 +343,6 @@ public class LaraI {
             // convert configuration file to data store and run
             case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
 
-            // get the configuration file and execute GUI
-            case CONFIG_GUI -> Optional.empty();
-
             // convert options to data store and run
             case OPTIONS ->
                     Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
@@ -364,9 +350,6 @@ public class LaraI {
             // convert configuration file to data store, override with extra options and run
             case CONFIG_OPTIONS ->
                     Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
-
-            // launch GUI
-            case GUI -> Optional.empty();
         };
     }
 
@@ -378,12 +361,6 @@ public class LaraI {
 
         // Reset global state
         MessageConstants.order = 1;
-        if (CLIConfigOption.ALLOW_GUI && OptionsParser.guiMode(args)) {
-
-            LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-            // return true;
-            return LaraiResult.newInstance(true, true);
-        }
 
         try {
             // Collection<Option> configOptions = OptionsParser.buildConfigOptions();
@@ -420,13 +397,6 @@ public class LaraI {
                     success = execPrivate(dataStore, weaverEngine);
                     isRunningGui = false;
                     break;
-                // return execPrivate(dataStore, weaverEngine);
-                case CONFIG_GUI: // get the configuration file and execute GUI
-                    File guiFile = OptionsParser.getConfigFile(cmd);
-                    LaraLauncher.launchGUI(weaverEngine, Optional.of(guiFile));
-                    success = true;
-                    isRunningGui = true;
-                    break;
                 case OPTIONS: // convert options to data store and run
                     // SpecsLogs.debug("Received args: " + Arrays.toString(args));
 
@@ -441,11 +411,6 @@ public class LaraI {
                     // return execPrivate(dataStore, weaverEngine);
                     success = execPrivate(dataStore, weaverEngine);
                     isRunningGui = false;
-                    break;
-                case GUI:
-                    LaraLauncher.launchGUI(weaverEngine, Optional.empty());
-                    success = true;
-                    isRunningGui = true;
                     break;
                 default:
                     throw new NotImplementedException(mode);
@@ -464,41 +429,6 @@ public class LaraI {
         // return true;
     }
 
-    /**
-     * Treats the given exception and closes the required streams
-     *
-     * @param laraInterp
-     * @param e
-     * @return
-     */
-    private static RuntimeException treatExceptionInInterpreter(LaraI laraInterp, Throwable e) {
-
-        if (laraInterp == null) {
-            LaraIException ex = new LaraIException("Exception before LARA Interpreter was initialized", e);
-            return prettyRuntimeException(ex);
-        }
-
-        laraInterp.out.close();
-        laraInterp.quit = true;
-
-        if (laraInterp.options.useStackTrace()) {
-
-            if (laraInterp.interpreter == null) {
-
-                return prettyRuntimeException(e);
-            }
-
-            CallStackTrace stackStrace = laraInterp.interpreter.getStackStrace();
-            if (stackStrace.isEmpty()) {
-
-                return prettyRuntimeException(e);
-            }
-
-            return prettyRuntimeException(e, stackStrace);
-        }
-        return prettyRuntimeException(e);
-
-    }
 
     private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
         BaseException laraException;
@@ -544,94 +474,9 @@ public class LaraI {
      */
     private void startAspectIR() throws DOMException, Exception {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, ". Loading Aspect-IR"));
-        // this.out.println(larac.utils.output.MessageConstants.FILE_READ + this.options.getLaraFile().getName());
-        // try {
         asps = new Aspects(aspectIRDocument, "");
-        // out.println("-----------Converted Aspect-IR-----------");
-        // asps.print(out.getOutStream(), 0);
-        // } catch (Exception e) {
-        // throw new LARAIException(this.options.getAspectOriginalName(), "Could
-        // not parse Aspect-IR", e);
-        // }
     }
 
-    // public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
-    // LaraIDataStore options,
-    // Output out) throws Exception {
-    //
-    // }
-
-    /**
-     * Compile the lara file with LARAC, according to a {@link LanguageSpecificationV2}
-     *
-     * @param fileName
-     * @param langSpec
-     * @param options
-     * @param out
-     * @return
-     * @throws Exception
-     */
-    public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
-                                                  LaraIDataStore options,
-                                                  Output out) throws Exception {
-
-        // Process Lara Bundles in include folders
-        // includesFolder = processLaraBundles(includesFolder);
-
-        String path = options.getOutputDir().getPath();
-
-        FileList includeDirs = options.getProcessedIncludeDirs(getWeaverEngine());
-
-        // LaraIDataStore.processIncludeDirs(includeDirs);
-        /*
-        // Process LARA Bundles
-        // LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getLanguages(), getWeaverEngine().getWeaverNames());
-        LaraBundle laraBundle = new LaraBundle(getWeaverEngine().getWeaverNames(), options.getBundleTags());
-        FileList processedIncludeDirs = laraBundle.process(includeDirs);
-        
-        // Process LARA Resources
-        LaraResource laraResource = new LaraResource(getWeaverEngine());
-        processedIncludeDirs = laraResource.process(processedIncludeDirs);
-        */
-        String encodedIncludes = includeDirs.encode();
-        // String encodedIncludes = options.getIncludeDirs().encode();
-        List<String> preprocess = new ArrayList<>();
-        preprocess.add(fileName.getPath());
-        preprocess.add("-o");
-        preprocess.add(path);
-        if (!encodedIncludes.trim().isEmpty()) {
-            preprocess.add("-i");
-            preprocess.add(encodedIncludes);
-        }
-
-        // lara files as resources
-        // List<ResourceProvider> laraAPIs = new ArrayList<>(ResourceProvider.getResources(LaraApiResource.class));
-        // System.out.println("LARA APIS :" + IoUtils.getResource(laraAPIs2.get(0)));
-        // laraAPIs.addAll(options.getLaraAPIs());
-        List<ResourceProvider> laraAPIs = getWeaverEngine().getLaraApis();
-        if (!laraAPIs.isEmpty()) {
-            preprocess.add("-r");
-            String resources = laraAPIs.stream().map(LaraI::getOriginalResource)
-                    .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
-            preprocess.add(resources);
-        }
-
-        if (options.isDebug()) {
-            preprocess.add("-d");
-        }
-
-        final LaraC lara = new LaraC(preprocess.toArray(new String[0]), langSpec, out);
-        // lara.compileAndSave();
-        // Document compile = lara.getAspectIRXmlRepresentation();
-        // return compile;
-        Document compile = lara.compile();
-        this.setNumMainLaraTokens(lara.getNumTokens());
-        out.println("Processed " + getNumMainLaraTokens() + " tokens from the LARA file.");
-
-        return Pair.newInstance(compile, lara);
-        // return compile;
-
-    }
 
     private static String getOriginalResource(ResourceProvider resource) {
         if (resource instanceof LaraResourceProvider) {
@@ -639,46 +484,6 @@ public class LaraI {
         }
 
         return resource.getResource();
-    }
-
-    private LaraC compile(LanguageSpecificationV2 languageSpecification) {
-
-        // final String aspectIR_name = this.options.getAspectIR_name();
-        final String extention = SpecsIo.getExtension(options.getLaraFile());
-
-        Document aspectIR;
-        LaraC larac = null;
-        if (extention.equals("lara")) {
-            try {
-                var result = compileWithLARAC(options.getLaraFile(), languageSpecification, options,
-                        out);
-
-                aspectIR = result.getLeft();
-                larac = result.getRight();
-
-                quit = aspectIR == null;
-                if (quit) {
-                    throw new Exception("problems during compilation");
-                }
-
-            } catch (Exception e) {
-                throw new LaraIException(options.getLaraFile(), "Compilation problem", e);
-            }
-            // if (this.quit) {
-            // return;
-            // }
-            // options.setAspectIR_name(aspectIR_name.replace(".lara", ".xml"));
-
-        } else {
-            try {
-                aspectIR = Aspects.readDocument(options.getLaraFile().getAbsolutePath());
-            } catch (Exception e) {
-                throw new LaraIException(options.getLaraFile(), "Reading aspect-ir problem", e);
-            }
-        }
-
-        aspectIRDocument = aspectIR;
-        return larac;
     }
 
     private void interpret(WeaverEngine weaverEngine) throws Exception {
@@ -758,16 +563,6 @@ public class LaraI {
 
                 // Close weaver
                 weaver.close();
-            }
-            // If LARA file
-            else {
-                var laraJsCode = SpecsSystem.executeOnThreadAndWait(() -> {
-                    var laraCompiler = new LaraCompiler(weaverEngine.getLanguageSpecificationV2()).setAddMain(true);
-                    return laraCompiler.compile(options.getLaraFile());
-                });
-                // System.out.println("CODE:\n" + laraJsCode);
-                interpreter.executeMainAspect(laraJsCode, JsFileType.NORMAL,
-                        options.getLaraFile().getAbsolutePath() + "->js");
             }
 
             String main = options.getMainAspect();
@@ -973,31 +768,6 @@ public class LaraI {
 
     public void setNumMainLaraTokens(int mainLaraTokens) {
         this.mainLaraTokens = mainLaraTokens;
-    }
-
-    public static AspectClassProcessor buildAspectProcessor(WeaverEngine weaver, JsEngine jsEngine) {
-
-        // Create LARA Interpreter
-        DataStore laraiConfig = DataStore.newInstance("LaraCompiler");
-        laraiConfig.set(LaraiKeys.LARA_FILE, new File(""));
-        LaraI larai = LaraI.newInstance(laraiConfig, weaver);
-
-        // Create MasterWeaver
-        MasterWeaver masterWeaver = new MasterWeaver(larai, weaver, jsEngine);
-        larai.setWeaver(masterWeaver);
-
-        // Disable API auto-load
-        larai.getOptions().getWeaverArgs().set(LaraiKeys.API_AUTOLOAD, false);
-
-        // Create interpreter
-        Interpreter interpreter = new Interpreter(larai, jsEngine);
-        larai.setInterpreter(interpreter);
-        // larai.getInterpreter().getImportProcessor().importAndInitialize();
-
-        masterWeaver.simpleBegin();
-
-        var aspectProcessor = AspectClassProcessor.newInstance(interpreter);
-        return aspectProcessor;
     }
 
     /**

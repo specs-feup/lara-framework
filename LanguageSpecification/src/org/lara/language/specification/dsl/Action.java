@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.Primitive;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
 /**
  * A basic class that contains a type and a name

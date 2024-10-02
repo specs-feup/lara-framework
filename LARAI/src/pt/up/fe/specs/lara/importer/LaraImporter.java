@@ -15,6 +15,7 @@ package pt.up.fe.specs.lara.importer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,13 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.lara.interpreter.generator.stmt.AspectClassProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
-import larac.LaraC;
-import larac.options.LaraCOptions;
-import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.util.SpecsCheck;
@@ -84,7 +81,7 @@ public class LaraImporter {
 
         var includePaths = getIncludePaths();
 
-        ext: for (var ext : LaraC.getSupportedExtensions()) {
+        ext: for (var ext : Arrays.asList("js", "mjs")) {
 
             // 1.
             // Check include paths
@@ -197,28 +194,6 @@ public class LaraImporter {
             var mjsLaraImport = new LaraImportData(filename, processCodeOld(code, filename), JsFileType.MODULE,
                     jsFile);
             return mjsLaraImport;
-        case "lara":
-            // Compile LARA file
-            var args = new ArrayList<>();
-            args.add(LaraCOptions.getSkipArgs());
-            var lara = new LaraC(args.toArray(new String[0]),
-                    larai.getWeaverEngine().getLanguageSpecificationV2(), new Output(1));
-            lara.setLaraPath(filename);
-            lara.setLaraStreamProvider(() -> SpecsIo.toInputStream(code));
-
-            var aspectIr = lara.compile();
-
-            var processor = AspectClassProcessor.newInstance(larai.getInterpreter());
-            try {
-                var aspectJsCode = processor.toSimpleJs(aspectIr);
-                // return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, jsFile);
-                // LARA files need to be transformed, will never use the file to load,
-                // but directly the processed source code
-                return new LaraImportData(filename, aspectJsCode, JsFileType.NORMAL, null);
-            } catch (Exception e) {
-                throw new RuntimeException("Error during LARA compilation", e);
-            }
-
         default:
             throw new CaseNotDefinedException(ext);
         }
@@ -306,7 +281,7 @@ public class LaraImporter {
 
         var includePaths = getIncludePaths();
 
-        for (var ext : LaraC.getSupportedExtensions()) {
+        for (var ext : Arrays.asList("js", "mjs")) {
 
             // 1.
             // Check include paths

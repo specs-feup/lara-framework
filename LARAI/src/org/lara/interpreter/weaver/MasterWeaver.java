@@ -28,7 +28,6 @@ package org.lara.interpreter.weaver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +36,6 @@ import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.exception.WeaverEngineException;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.utils.SelectUtils;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.AGear;
@@ -50,7 +47,6 @@ import org.lara.interpreter.weaver.utils.FilterExpression;
 
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
@@ -156,15 +152,6 @@ public class MasterWeaver {
                 larai.getWeavingProfile().reportLaraNumTokens(larai.getNumMainLaraTokens());
                 eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), main,
                         larai.getOptions().getLaraFile().getName());
-            }
-
-            // Create CSV with stats, if asked
-            if (larai.getWeaverArgs().get(LaraiKeys.LARA_LOC)) {
-                // Collect LARA files and folders
-                List<String> laraPaths = new ArrayList<>();
-                laraPaths.add(larai.getWeaverArgs().get(LaraiKeys.LARA_FILE).getPath());
-                larai.getWeaverArgs().get(LaraiKeys.INCLUDES_FOLDER).forEach(path -> laraPaths.add(path.getPath()));
-                new LaraLoc(weaverEngine).execute(laraPaths);
             }
 
             final boolean weaverIsWorking = weaverEngine.run(larai.getWeaverArgs());
@@ -552,55 +539,6 @@ public class MasterWeaver {
     public LaraJoinPoint defaultOfJoin() {
         return LaraJoinPoint.createRoot();
         // return jpUtils.toJavaScript(LaraJoinPoint.createRoot());
-    }
-
-    public LaraJoinPoint natural_join(String leftName, LaraJoinPoint left, String rightName, LaraJoinPoint right) {
-
-        if (left == null) {
-
-            warnJoin(leftName, rightName, "the left-hand side for the join operation is null");
-            return defaultOfJoin();
-        }
-
-        if (right == null) {
-            warnJoin(leftName, rightName, "the right-hand side for the join operation is null");
-            return defaultOfJoin();
-        }
-
-        // final LaraJoinPoint leftJP = (LaraJoinPoint) Context.jsToJava(leftScriptable, LaraJoinPoint.class);
-        // final LaraJoinPoint rightJP = (LaraJoinPoint) Context.jsToJava(rightScriptable, LaraJoinPoint.class);
-
-        // final LaraJoinPoint leftJP = (LaraJoinPoint) left.get("laraJoinPoint");
-        // if (leftJP == null) {
-        // warnJoin(leftName, rightName, "the first is empty");
-        // return defaultOfJoin();
-        // }
-        // final LaraJoinPoint rightJP = (LaraJoinPoint) right.get("laraJoinPoint");
-        // if (rightJP == null) {
-        // warnJoin(leftName, rightName, "the second is empty");
-        // return defaultOfJoin();
-        // }
-
-        if (!left.hasChildren()) {
-            warnJoin(leftName, rightName, "the left-hand side for the join operation is empty");
-            return defaultOfJoin();
-        }
-        if (!right.hasChildren()) {
-            warnJoin(leftName, rightName, "the right-hand side for the join operation is empty");
-            return defaultOfJoin();
-        }
-        // final List<LaraJoinPoint> aChildren = left.getChildren();
-        // final List<LaraJoinPoint> bChildren = right.getChildren();
-
-        final LaraJoinPoint joined = SelectUtils.join(left, right);
-
-        if (joined == null) {
-            warnJoin(leftName, rightName, "the result was null");
-            return defaultOfJoin();
-        }
-
-        // final Bindings javascriptObject = jpUtils.toJavaScript(joined);
-        return joined;
     }
 
     /**

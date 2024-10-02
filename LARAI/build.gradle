@@ -30,7 +30,6 @@ dependencies {
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
 	implementation ':LaraCommonLanguage'	
-	implementation ':LaraLoc'	
 	implementation ':LaraUtils'	
 	implementation ':WeaverInterface'	
 

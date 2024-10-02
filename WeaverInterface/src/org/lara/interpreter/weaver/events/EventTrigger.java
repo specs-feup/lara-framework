@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.weaver.events;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

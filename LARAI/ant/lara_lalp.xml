@@ -9,7 +9,6 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="C:/Users/Tiago/FEUP/SPeCS/JavaSe/LARAI/bin"/>
-            <fileset dir="C:/Users/Tiago/FEUP/SPeCS/JavaSe/LARAC/bin"/>
             <fileset dir="C:/Users/Tiago/FEUP/SPeCS/JavaSe/WeaverInterface/bin"/>
             <zipfileset excludes="META-INF/*.SF" src="C:/Users/Tiago/FEUP/SPeCS/JavaSe/Libraries-3rdparty/lib/CommandLineParser/jar/CommandLineParser.jar"/>
             <fileset dir="C:/Users/Tiago/FEUP/SPeCS/JavaSe/JavaGenerator/bin"/>

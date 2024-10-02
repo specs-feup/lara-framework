@@ -30,14 +30,6 @@ import pt.up.fe.specs.util.utilities.StringList;
 
 public interface LaraiKeys {
 
-    static String getUnitTestFlag() {
-        return "ut";
-    }
-
-    static String getDocGeneratorFlag() {
-        return "doc";
-    }
-
     static String getServerFlag() {
         return "server";
     }
@@ -88,8 +80,6 @@ public interface LaraiKeys {
     DataKey<OptionalFile> REPORT_FILE = LaraIKeyFactory.optionalFile("report", false, "js").setLabel("Report File");
 
     DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
-
-    DataKey<Boolean> LARA_LOC = KeyFactory.bool("loc").setLabel("LARA CSV with stats (LoC, #aspects, etc)");
 
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
             .setDefault(() -> VerboseLevel.warnings);
@@ -156,7 +146,7 @@ public interface LaraiKeys {
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
                     INCLUDES_FOLDER, AUTOMATICALLY_IMPORT_JS, EXTERNAL_DEPENDENCIES, TOOLS_FILE, REPORT_FILE,
-                    METRICS_FILE, LARA_LOC, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
+                    METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
                     DEBUG_MODE, TRACE_MODE, BUNDLE_TAGS, RESTRICT_MODE, JS_ENGINE, API_AUTOLOAD, JAR_PATHS)
             .build();
 

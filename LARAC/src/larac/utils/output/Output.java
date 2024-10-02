@@ -21,7 +21,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Optional;
 
-import larac.exceptions.LARACompilerException;
 import pt.up.fe.specs.compress.ZipFormat;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.logging.MultiOutputStream;
@@ -157,7 +156,7 @@ public class Output {
             try {
                 fileOutputStream = new FileOutputStream(outFile);
             } catch (FileNotFoundException e) {
-                throw new LARACompilerException("Could not use file '" + outFile + "' for zipped output: ", e);
+                throw new RuntimeException("Could not use file '" + outFile + "' for zipped output: ", e);
             }
 
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
@@ -173,7 +172,7 @@ public class Output {
             return new PrintStream(outFile);
         } catch (FileNotFoundException e) {
 
-            throw new LARACompilerException("Could not create output file: ", e);
+            throw new RuntimeException("Could not create output file: ", e);
         }
 
     }

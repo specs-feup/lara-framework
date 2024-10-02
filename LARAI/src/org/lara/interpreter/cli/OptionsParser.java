@@ -221,12 +221,7 @@ public class OptionsParser {
 
         List<Option> options = new ArrayList<>();
         options.add(CLIConfigOption.config.buildOption());
-        if (CLIConfigOption.ALLOW_GUI) {
-            options.add(CLIConfigOption.gui.buildOption());
-        }
-        // for (CLIConfigOption option : CLIConfigOption.values()) {
-        //
-        // }
+
         return options;
     }
 
@@ -239,46 +234,25 @@ public class OptionsParser {
         // .findFirst();
 
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
-        boolean guiPresent = cmd.hasOption(CLIConfigOption.gui.getShortOpt());
 
         // No configuration option means normal execution
         if (!configPresent) {
-            if (guiPresent) {
-                throw new LaraIException(
-                        "Cannot accept GUI mode and execution options: lara file (" + firstArg
-                                + ") was given.\n" + getHelp(finalOptions, 3));
-            }
             return ExecutionMode.OPTIONS; // for now -g is completely ignored in this case
         }
 
         // A configuration option in GUI mode plus a normal option means exception
         if (!firstArg.startsWith("-")) { // then we are redefining the lara file
-            if (guiPresent) {
-                throw new LaraIException(
-                        "Cannot accept both configuration in GUI mode and execution options: lara file (" + firstArg
-                                + ") was given.\n" + getHelp(finalOptions, 3));
-            }
             return ExecutionMode.CONFIG_OPTIONS;
         }
         // for (Option option : mainOptions) {
         for (Option option : finalOptions.getOptions()) {
             if (cmd.hasOption(option.getOpt())) {
-                if (guiPresent) {
-
-                    // String configOptionStr = configOption.get().getShortOpt() + "(" + configOption.get().name() +
-                    // ")";
-                    String mainOption = option.getOpt() + "(" + option.getLongOpt() + ")";
-                    throw new LaraIException(
-                            "Cannot accept both configuration in GUI mode and execution options: option " /*+ configOptionStr + " vs "*/
-                                    + mainOption + "was given.\n");
-                } else {
-                    return ExecutionMode.CONFIG_OPTIONS;
-                }
+                return ExecutionMode.CONFIG_OPTIONS;
             }
         }
 
         // A configuration option means config execution
-        return guiPresent && CLIConfigOption.ALLOW_GUI ? ExecutionMode.CONFIG_GUI : ExecutionMode.CONFIG;
+        return ExecutionMode.CONFIG;
     }
 
     public enum ExecutionMode {
@@ -291,15 +265,6 @@ public class OptionsParser {
          * Execute Weaver with the given config file (no overriding options)
          */
         CONFIG,
-
-        /**
-         * GUI mode only (no configuration file)
-         */
-        GUI,
-        /**
-         * Open GUI with the given config file (no overriding options allowed!)
-         */
-        CONFIG_GUI,
         /**
          * Execute Weaver with the given config file and the overriding options
          */
@@ -312,17 +277,6 @@ public class OptionsParser {
          * Unit testing mode
          */
         // UNIT_TEST
-    }
-
-    /**
-     * Verify if it is to launch the GUI without config file
-     *
-     * @param args
-     * @return
-     */
-    public static boolean guiMode(String[] args) {
-        return args.length == 0 ||
-                (args.length == 1 && args[0].startsWith("-") && CLIConfigOption.gui.sameAs(args[0]));
     }
 
     /**
