@@ -42,7 +42,7 @@ public class JsEngineTest {
     @Test
     public void testException() {
         try {
-            newTester().test("ExceptionTest.lara");
+            newTester().test("ExceptionTest.js");
         } catch (Exception e) {
             // throw e;
             // Caught
@@ -55,7 +55,7 @@ public class JsEngineTest {
 
     @Test
     public void testArrow() {
-        newTester().test("ArrowTest.lara");
+        newTester().test("ArrowTest.js");
     }
 
 }
