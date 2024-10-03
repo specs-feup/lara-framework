@@ -71,7 +71,7 @@ public class LaraApiTest {
 
     @Test
     public void testDataStore() {
-        newTester().test("util/DataStoreTest.lara");
+        newTester().test("util/DataStoreTest.js");
     }
 
     @Test
@@ -111,12 +111,12 @@ public class LaraApiTest {
 
     @Test
     public void testLineInserter() {
-        newTester().setStack().test("util/LineInserterTest.lara");
+        newTester().setStack().test("util/LineInserterTest.js");
     }
 
     @Test
     public void testTupleId() {
-        newTester().test("util/TupleIdTest.lara");
+        newTester().test("util/TupleIdTest.js");
     }
 
     @Test
