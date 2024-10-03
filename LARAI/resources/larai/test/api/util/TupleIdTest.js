@@ -1,21 +1,16 @@
-import lara.util.TupleId;
+laraImport("lara.util.TupleId");
 
-aspectdef TupleIdTest
+const tupleId = new TupleId();
 
-	var tupleId = new TupleId();
-	
-	println(tupleId.getId("a", "b"));
-	println(tupleId.getId("a", "b", "c"));
-	println(tupleId.getId("a", "b"));
-	println(tupleId.getId("a", "hasOwnProperty", "d"));
-	println(tupleId.getId("a", "hasOwnProperty", "d"));
-	println(tupleId.getId("a", "hasOwnProperty"));
-	
-	
-	println("Tuples:");
-	var tuples = tupleId.getTuples();
-	for(var key in tuples) {
-		println(key + " -> " + tuples[key]);
-	}
-	
-end
+console.log(tupleId.getId("a", "b"));
+console.log(tupleId.getId("a", "b", "c"));
+console.log(tupleId.getId("a", "b"));
+console.log(tupleId.getId("a", "hasOwnProperty", "d"));
+console.log(tupleId.getId("a", "hasOwnProperty", "d"));
+console.log(tupleId.getId("a", "hasOwnProperty"));
+
+console.log("Tuples:");
+const tuples = tupleId.getTuples();
+for (let key in tuples) {
+    console.log(key + " -> " + tuples[key]);
+}

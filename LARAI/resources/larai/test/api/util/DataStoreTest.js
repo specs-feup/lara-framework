@@ -1,15 +1,11 @@
-import lara.util.DataStore;
-import weaver.WeaverOptions;
+laraImport("lara.util.DataStore");
+laraImport("weaver.WeaverOptions");
 
-aspectdef DataStoreTest
-	
-	
-	var dataStore = new DataStore(WeaverOptions.getData());
-	println("GET:" + dataStore.get("javascript"));
-	println("TYPE:" + dataStore.getType("javascript"));
-	dataStore.put("javascript", false);
-	println("GET AFTER PUT:" + dataStore.get("javascript"));
-	dataStore.put("javascript", true);
-	
-	println("DataStore Context folder: " + dataStore.getContextFolder());
-end
+const dataStore = new DataStore(WeaverOptions.getData());
+console.log("GET:" + dataStore.get("javascript"));
+console.log("TYPE:" + dataStore.getType("javascript"));
+dataStore.put("javascript", false);
+console.log("GET AFTER PUT:" + dataStore.get("javascript"));
+dataStore.put("javascript", true);
+
+console.log("DataStore Context folder: " + dataStore.getContextFolder());
