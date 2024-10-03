@@ -41,7 +41,7 @@ public class WeaverApiTest {
 
     @Test
     public void testWeaverOptions() {
-        newTester().test("WeaverOptionsTest.lara");
+        newTester().test("WeaverOptionsTest.js");
     }
 
     @Test
