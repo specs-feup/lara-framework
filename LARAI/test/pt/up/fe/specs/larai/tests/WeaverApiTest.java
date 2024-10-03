@@ -58,31 +58,14 @@ public class WeaverApiTest {
      * TODO: Disable feature where more than one file is imported, with the same name?
      */
     @Test
-    public void testImportMultipleFiles() {
-        newTester().test("ImportMultipleFilesTest.lara", "ImportMultipleFiles.lara", "ImportMultipleFiles.js",
-                "ImportMultipleFiles.mjs");
-    }
-
-    @Test
-    public void testJsImportTest() {
-        newTester().test("JsImportTest.lara", "JsImport.mjs", "JsImportFile.js");
-    }
-
-    @Test
-    public void testLaraImportInLara() {
-        newTester().test("LaraImportFromLaraTest.lara", "LaraImportFromLaraLara.lara", "LaraImportFromLaraJs.js",
-                "LaraImportFromLaraMjs.mjs");
-    }
-
-    @Test
     public void testLaraImportInJs() {
-        newTester().test("LaraImportFromJsTest.js", "LaraImportFromJsLara.lara", "LaraImportFromJsJs.js",
+        newTester().test("LaraImportFromJsTest.js", "LaraImportFromJsJs.js",
                 "LaraImportFromJsMjs.mjs");
     }
 
     @Test
     public void testLaraImportInMjs() {
-        newTester().test("LaraImportFromMjsTest.mjs", "LaraImportFromMjsLara.lara", "LaraImportFromMjsJs.js",
+        newTester().test("LaraImportFromMjsTest.mjs", "LaraImportFromMjsJs.js",
                 "LaraImportFromMjsMjs.mjs");
     }
 

@@ -1,6 +1,0 @@
-Importing .lara
-Importing .js
-Warning: using laraImport() for file 'ImportMultipleFiles.js', however it does not define a variable or class 'ImportMultipleFiles'
-Importing .mjs
-Warning: using laraImport() for file 'ImportMultipleFiles.mjs', however it does not define a variable or class 'ImportMultipleFiles'
-Test
