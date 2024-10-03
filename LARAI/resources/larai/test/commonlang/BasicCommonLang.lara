@@ -1,8 +1,0 @@
-import weaver.jp.FunctionJp;
-
-aspectdef BasicCommonLang
-
-	var $function = new FunctionJp();
-	printlnObject($function);
-
-end
