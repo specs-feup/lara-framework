@@ -29,15 +29,6 @@ export default class Weaver {
     static getWeaverEngine() {
         return JavaTypes.WeaverEngine.getThreadLocalWeaver();
     }
-    static getLaraLoc() {
-        return JavaTypes.LaraIUtils.getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get());
-    }
-    static getLaraLocTotals() {
-        var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
-        return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
-            .getLaraLoc(Weaver.getWeaverEngine(), Weaver.getWeaverEngine().getData().get())
-            .get(laraLoc.getTotalsKey());
-    }
     static writeCode(outputFolder) {
         if (outputFolder === undefined) {
             console.log("Weaver.writeCode: Output folder not defined");
