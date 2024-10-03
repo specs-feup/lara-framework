@@ -41,37 +41,32 @@ public class LaraApiTest {
 
     @Test
     public void testAccumulator() {
-        newTester().test("AccumulatorTest.lara");
+        newTester().test("AccumulatorTest.js");
     }
 
     @Test
     public void testCheckpoint() {
-        newTester().test("CheckpointTest.lara");
+        newTester().test("CheckpointTest.js");
     }
 
     @Test
     public void testIo() {
-        newTester().test("IoTest.lara");
+        newTester().test("IoTest.js");
     }
 
     @Test
     public void testReplacer() {
-        newTester().test("ReplacerTest.lara");
+        newTester().test("ReplacerTest.js");
     }
 
     @Test
     public void testSystem() {
-        newTester().test("SystemTest.lara");
+        newTester().test("SystemTest.js");
     }
 
     @Test
     public void testStrings() {
-        newTester().test("StringsTest.lara");
-    }
-
-    @Test
-    public void testThis() {
-        newTester().test("ThisTest.lara");
+        newTester().test("StringsTest.js");
     }
 
     @Test
@@ -81,17 +76,17 @@ public class LaraApiTest {
 
     @Test
     public void testLaraCore() {
-        newTester().test("LaraCoreTest.lara");
+        newTester().test("LaraCoreTest.js");
     }
 
     @Test
     public void testCsv() {
-        newTester().test("CsvTest.lara");
+        newTester().test("CsvTest.js");
     }
 
     @Test
     public void testPlatforms() {
-        newTester().test("PlatformsTest.lara");
+        newTester().test("PlatformsTest.js");
     }
 
     @Test
@@ -117,11 +112,6 @@ public class LaraApiTest {
     @Test
     public void testLineInserter() {
         newTester().setStack().test("util/LineInserterTest.lara");
-    }
-
-    @Test
-    public void testCallInFunction() {
-        newTester().test("CallInFunction.lara");
     }
 
     @Test
