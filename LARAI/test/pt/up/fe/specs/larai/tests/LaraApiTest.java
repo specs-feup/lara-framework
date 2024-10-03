@@ -91,22 +91,22 @@ public class LaraApiTest {
 
     @Test
     public void testDseValues() {
-        newTester().test("dse/DseValuesTest.lara");
+        newTester().test("dse/DseValuesTest.js");
     }
 
     @Test
     public void testTimeUnit() {
-        newTester().test("units/TimeUnitTest.lara");
+        newTester().test("units/TimeUnitTest.js");
     }
 
     @Test
     public void testEnergyUnit() {
-        newTester().test("units/EnergyUnitTest.lara");
+        newTester().test("units/EnergyUnitTest.js");
     }
 
     @Test
     public void testLineIterator() {
-        newTester().test("iterators/LineIteratorTest.lara");
+        newTester().test("iterators/LineIteratorTest.js");
     }
 
     @Test
