@@ -56,7 +56,6 @@ public class JOptionsInterface {
         // Setting custom decoder because Properties use numbers instead of names for the verbose level
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,
                 LaraiKeys.VERBOSE.setDecoder(s -> VerboseLevel.values()[Integer.parseInt(s)]));
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.call, LaraiKeys.CALL_ARGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jsengine, LaraiKeys.JS_ENGINE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jarpaths, LaraiKeys.JAR_PATHS);
     }

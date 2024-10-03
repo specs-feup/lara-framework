@@ -56,7 +56,6 @@ public enum CLIOption implements WeaverOption {
             LaraiKeys.BUNDLE_TAGS),
     restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restrict mode (some Java classes are not allowed)",
             LaraiKeys.RESTRICT_MODE),
-    call("ca", OptionArguments.ONE_ARG, "call args", LaraiKeys.CALL_ARGS.getLabel(), LaraiKeys.CALL_ARGS),
     jsengine("js", OptionArguments.ONE_ARG, "engine name",
             "JS Engine to use. Available: NASHORN, GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE),
 

@@ -117,9 +117,6 @@ public interface LaraiKeys {
     // .setLabel("Unit-testing arguments");
     DataKey<List<String>> UNIT_TEST_ARGS = KeyFactory.generic("unit_test_args", new ArrayList<>());
 
-    DataKey<String> CALL_ARGS = KeyFactory.string("call_args").setLabel(
-            "If present, interpret aspect file as the full path to an aspect to be called, and this argument as the arguments to use to call the aspect");
-
     // No GUI, only CLI
     DataKey<Boolean> GENERATE_DOCUMENTATION = KeyFactory.bool("generateDoc").setLabel("Generate Documentation");
 

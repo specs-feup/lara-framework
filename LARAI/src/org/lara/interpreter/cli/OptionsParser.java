@@ -79,7 +79,6 @@ public class OptionsParser {
 
         final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
-        final Option call = OptionsBuilderUtils.newOption(CLIOption.call);
         final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
         final Option jarpaths = OptionsBuilderUtils.newOption(CLIOption.jarpaths);
 
@@ -104,7 +103,6 @@ public class OptionsParser {
                 .addOption(metrics)
                 .addOption(bundleTags)
                 .addOption(restrict)
-                .addOption(call)
                 .addOption(jsengine)
                 .addOption(jarpaths);
 
