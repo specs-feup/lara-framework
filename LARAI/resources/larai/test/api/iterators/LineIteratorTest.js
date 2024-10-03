@@ -1,57 +1,51 @@
-import lara.iterators.LineIterator;
-import lara.Io;
+laraImport("lara.iterators.LineIterator");
+laraImport("lara.Io");
 
-aspectdef LineIteratorTest
+const stringContents = "Hello\nline2\n\nline 4";
 
-	var stringContents = "Hello\nline2\n\nline 4";
+// LineIterator from String
+const stringLineIterator = new LineIterator(stringContents);
+let stringTest = "";
+let isFirstLine = true;
+while (stringLineIterator.hasNext()) {
+    const line = stringLineIterator.next();
+    if (isFirstLine) {
+        isFirstLine = false;
+    } else {
+        stringTest += "\n";
+    }
 
-	// LineIterator from String
-	var stringLineIterator = new LineIterator(stringContents);
-	var stringTest = "";
-	var isFirstLine = true;
-	while(stringLineIterator.hasNext()) {
-		var line = stringLineIterator.next();
-		if(isFirstLine) {
-			isFirstLine = false;
-		} else {
-			stringTest += "\n";
-		}
-		
-		stringTest += line;
-	}
-	
-	checkTrue(stringTest === stringContents, "Expected string to be the same as stringContents: " + stringTest);
-	
-	// LineIterator from File
-	var filename = "line_iterator_test.txt";
-	var file = Io.writeFile(filename, stringContents);
-	var fileLineIterator = new LineIterator(file);
-	
-	stringTest = "";
-	isFirstLine = true;
-	
-	//var jsIterator = fileLineIterator.jsIterator();
-	//println("JS ITERATOR:");
-	//printObject(jsIterator);
-	
-	//println("Iterator next:" + jsIterator.next().value);
-	//println("Symbol.iterator before: " + fileLineIterator[Symbol.iterator]);
-//	fileLineIterator[Symbol.iterator] = function() {return new _JsIterator(fileLineIterator)};
-//	println("Symbol.iterator after: " + fileLineIterator[Symbol.iterator]);
-	// Use javascript iterator
-	while(fileLineIterator.hasNext()) {
-		var line = fileLineIterator.next();
-		if(isFirstLine) {
-			isFirstLine = false;
-		} else {
-			stringTest += "\n";
-		}
-		
-		stringTest += line;	
-	}
-	
-	checkTrue(stringTest === stringContents, "Expected file to be the same as stringContents: " + stringTest);
+    stringTest += line;
+}
 
-	
-	Io.deleteFile(file);
-end
+checkTrue(
+    stringTest === stringContents,
+    "Expected string to be the same as stringContents: " + stringTest
+);
+
+// LineIterator from File
+const filename = "line_iterator_test.txt";
+const file = Io.writeFile(filename, stringContents);
+const fileLineIterator = new LineIterator(file);
+
+stringTest = "";
+isFirstLine = true;
+
+// Use javascript iterator
+while (fileLineIterator.hasNext()) {
+    const line = fileLineIterator.next();
+    if (isFirstLine) {
+        isFirstLine = false;
+    } else {
+        stringTest += "\n";
+    }
+
+    stringTest += line;
+}
+
+checkTrue(
+    stringTest === stringContents,
+    "Expected file to be the same as stringContents: " + stringTest
+);
+
+Io.deleteFile(file);

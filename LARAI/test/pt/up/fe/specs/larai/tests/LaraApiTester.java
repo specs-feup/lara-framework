@@ -47,7 +47,7 @@ public class LaraApiTester {
 
     @Test
     public void testLocalFolder() {
-        newTester().test("LocalFolderTest.lara");
+        newTester().test("LocalFolderTest.js");
     }
 
 }
