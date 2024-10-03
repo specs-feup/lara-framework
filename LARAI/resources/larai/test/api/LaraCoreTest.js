@@ -1,27 +1,22 @@
-aspectdef LaraCoreTest
-
-	// Single element
-	println(arrayFromArgsTest("Hello").length);
-
-	// Several elements
-	println(arrayFromArgsTest("Hello", "World").length);
-	
-	// Single array
-	println(arrayFromArgsTest(["Hello", "World"]).length);
-
-	// Single element after 1
-	println(arrayFromArgsAfterOneTest("Hello").length);
-		
-	// Several elements after 1
-	println(arrayFromArgsAfterOneTest("Hello", "World").length);
-	
-end
-
-
 function arrayFromArgsTest() {
-	return arrayFromArgs(arguments);
+    return arrayFromArgs(arguments);
 }
 
 function arrayFromArgsAfterOneTest() {
-	return arrayFromArgs(arguments, 1);
+    return arrayFromArgs(arguments, 1);
 }
+
+// Single element
+console.log(arrayFromArgsTest("Hello").length);
+
+// Several elements
+console.log(arrayFromArgsTest("Hello", "World").length);
+
+// Single array
+console.log(arrayFromArgsTest(["Hello", "World"]).length);
+
+// Single element after 1
+console.log(arrayFromArgsAfterOneTest("Hello").length);
+
+// Several elements after 1
+console.log(arrayFromArgsAfterOneTest("Hello", "World").length);

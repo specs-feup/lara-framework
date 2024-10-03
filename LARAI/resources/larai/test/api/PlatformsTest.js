@@ -1,9 +1,6 @@
-import lara.Platforms;
+laraImport("lara.Platforms");
 
-aspectdef PlatformsTest
-
-	println("Is Windows? " + Platforms.isWindows());
-	Platforms.setLinux();
-	println("Is Windows? " + Platforms.isWindows());
-	println("Is Linux? " + Platforms.isLinux());
-end
+console.log("Is Windows? " + Platforms.isWindows());
+Platforms.setLinux();
+console.log("Is Windows? " + Platforms.isWindows());
+console.log("Is Linux? " + Platforms.isLinux());

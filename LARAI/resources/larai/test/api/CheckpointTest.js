@@ -1,51 +1,48 @@
-import lara.util.Checkpoint;
-import lara.Io;
-import lara.System;
-import lara.util.TimeUnits;
+laraImport("lara.util.Checkpoint");
+laraImport("lara.Io");
+laraImport("lara.System");
+laraImport("lara.util.TimeUnits");
 
 
-aspectdef CheckpointTest
+const checkpoint = new Checkpoint("test_checkpoint");
 
-	var checkpoint = new Checkpoint("test_checkpoint");
+let object = {};
+object.aNumber = 10;
+object.aString = "Hello";
+object.anObject = {};
+object.anObject.anotherNumber = 100;
+object.anArray = [1, 2, 3, 5, 7, 11];
 
-	var object = {};
-	object.aNumber = 10;
-	object.aString = "Hello";
-	object.anObject = {};
-	object.anObject.anotherNumber = 100;
-	object.anArray = [1, 2, 3, 5, 7, 11];
-	
-	var checkedObject = checkpoint.monitor(object);
+let checkedObject = checkpoint.monitor(object);
 
-	// No interval set, perform immediate checkpoint
-	checkpoint.save();
-	
-	// Check that checkpoint file exists
-	println("checkpoint exists: " + Io.isFile(checkpoint.getCheckpointFile()));
-	
-	// Change number
-	checkedObject.aNumber = 20;
-	
-	// Set a minum interval of 1 second
-	checkpoint.setInterval(1, TimerUnit.SECONDS);
-	
-	// Save immediatly, there should be no changes due to the interval
-	checkpoint.save();
-	
-	println("Is 10? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
-	
-	// Sleep for 1 second
-	System.sleep(1000);
-	
-	// Save again
-	checkpoint.save();
+// No interval set, perform immediate checkpoint
+checkpoint.save();
 
-	// Check that number is saved
-	println("Is 20? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
-	
-	// Print saved object
-	printObject(Io.readJson(checkpoint.getCheckpointFile()));
-	
-	// Stop checkpoint
-	checkpoint.stop();
-end
+// Check that checkpoint file exists
+console.log("checkpoint exists: " + Io.isFile(checkpoint.getCheckpointFile()));
+
+// Change number
+checkedObject.aNumber = 20;
+
+// Set a minum interval of 1 second
+checkpoint.setInterval(1, TimerUnit.SECONDS);
+
+// Save immediatly, there should be no changes due to the interval
+checkpoint.save();
+
+console.log("Is 10? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
+
+// Sleep for 1 second
+System.sleep(1000);
+
+// Save again
+checkpoint.save();
+
+// Check that number is saved
+console.log("Is 20? " + Io.readJson(checkpoint.getCheckpointFile()).aNumber);
+
+// Print saved object
+printObject(Io.readJson(checkpoint.getCheckpointFile()));
+
+// Stop checkpoint
+checkpoint.stop();
