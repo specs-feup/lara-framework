@@ -31,8 +31,6 @@ import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.aspectir.ExprOp;
-import pt.up.fe.specs.lara.aspectir.Expression;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
@@ -168,71 +166,6 @@ public class Interpreter {
 
     public Object evaluate(File jsFile) {
         return engine.evalFile(jsFile);
-    }
-
-    private boolean useLaraGetter(Expression propertyExp) {
-        // var prop = getJavascriptString(propertyExp.exprs.get(1), 0).toString();
-        // var access = getJavascriptString(propertyExp.exprs.get(0), -1) + "[" +
-        // getJavascriptString(propertyExp.exprs.get(1), 0) + "]";
-        // if (prop.equals("'descendants'")) {
-        // System.out.println("Found descendants in " + access);
-        // }
-
-        // If engine supports transforming properties into accessors,
-        // always use properties
-        if (getEngine().supportsProperties()) {
-            // if (prop.equals("'descendants'")) {
-            // System.out.println("1 false. Engine supports");
-            // }
-            return false;
-        }
-
-        // If parent is a method, do not use laraGetter
-        var parent = propertyExp.getParent();
-        if (parent instanceof Expression && "method".equals(((Expression) parent).xmltag)) {
-
-            // if (prop.equals("'descendants'")) {
-            // System.out.println("2 false. Parent is a method");
-            // }
-            return false;
-            // var exprParent = (Expression) parent;
-            // System.out.println("PARENT TAG: " + exprParent.xmltag);
-        }
-
-        // Do not use laraGetter if it is the target of an operation
-        ExprOp opAncestor = propertyExp.getAncestor(ExprOp.class);
-
-        // Do not use laraGetter if this is an arrow function
-
-        if (opAncestor == null) {
-            // if (prop.equals("'descendants'")) {
-            // System.out.println("3 true. No op ancestor");
-            // }
-            return true;
-        }
-
-        // Set<String> problematicOps = new HashSet<>(Arrays.asList("ASSIGN", "INCS", "DECS"));
-        // if (!problematicOps.contains(opAncestor.name)) {
-        // return false;
-        // }
-
-        SpecsCheck.checkArgument(!opAncestor.exprs.isEmpty(), () -> "Expected operator to have expressions");
-        Expression currentLeftHand = opAncestor.exprs.get(0);
-
-        // Look for the first property on the left hand
-        if (currentLeftHand == propertyExp) {
-            // if (prop.equals("'descendants'")) {
-            // System.out.println("4 false. current left hand == propertyExp");
-            // }
-            return false;
-        }
-        // System.out.println("LARA GETTER 2: " + propertyExp);
-        // Otherwise, always use laraGeter
-        // if (prop.equals("'descendants'")) {
-        // System.out.println("5 true.");
-        // }
-        return true;
-
     }
 
     private int oldDepth;

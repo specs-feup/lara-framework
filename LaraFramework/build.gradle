@@ -31,7 +31,6 @@ dependencies {
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
 	implementation ':LARAI'	
-	implementation ':LaraUtils'	
 	implementation ':WeaverGenerator'	
 	implementation ':WeaverInterface'	
 

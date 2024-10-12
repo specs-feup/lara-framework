@@ -143,10 +143,6 @@ public class MasterWeaver {
             if (eventTrigger.hasListeners()) {
 
                 String main = larai.getOptions().getMainAspect();
-                if (main == null) {
-
-                    main = larai.getAsps().main;
-                }
                 larai.getWeavingProfile().reportLaraNumTokens(larai.getNumMainLaraTokens());
                 eventTrigger().triggerWeaver(Stage.BEGIN, larai.getWeaverArgs(), main,
                         larai.getOptions().getLaraFile().getName());

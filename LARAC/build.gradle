@@ -24,7 +24,6 @@ dependencies {
 	implementation ":SpecsUtils"
 	implementation ":tdrcLibrary"
 
-	implementation ":LaraUtils"
 	implementation ":LanguageSpecification"
 	implementation ":WeaverInterface"
 

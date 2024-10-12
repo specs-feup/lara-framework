@@ -14,7 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverGenerator"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverInterface"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GearmanPlus"/>

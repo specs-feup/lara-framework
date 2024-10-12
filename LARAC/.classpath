@@ -12,7 +12,6 @@
 	<classpathentry exported="true" kind="src" path="/SpecsUtils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LanguageSpecification"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/tdrcLibrary"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CommonsCompressPlus"/>
 	<classpathentry exported="true" kind="src" path="/CommonsLangPlus"/>
 	<classpathentry kind="output" path="bin/default"/>

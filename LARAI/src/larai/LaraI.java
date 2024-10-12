@@ -45,7 +45,6 @@ import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraSystemTools;
-import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.importer.LaraImporter;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -124,7 +123,6 @@ public class LaraI {
     // private LaraIOptionParser opts = new LaraIOptionParser();
     private Document aspectIRDocument;
     private Interpreter interpreter;
-    private Aspects asps = null;
     private StringBuilder js = new StringBuilder();
     private WeaverProfiler weavingProfile;
 
@@ -466,18 +464,6 @@ public class LaraI {
         return laraException.generateRuntimeException();
     }
 
-    /**
-     * Initialize the AspectIR structure
-     *
-     * @throws Exception
-     * @throws DOMException
-     */
-    private void startAspectIR() throws DOMException, Exception {
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, ". Loading Aspect-IR"));
-        asps = new Aspects(aspectIRDocument, "");
-    }
-
-
     private static String getOriginalResource(ResourceProvider resource) {
         if (resource instanceof LaraResourceProvider) {
             return ((LaraResourceProvider) resource).getOriginalResource();
@@ -566,10 +552,6 @@ public class LaraI {
             }
 
             String main = options.getMainAspect();
-            if (main == null) {
-
-                main = asps.main;
-            }
 
             weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), main,
                     options.getLaraFile().getPath());
@@ -667,19 +649,6 @@ public class LaraI {
      */
     public StringBuilder getJs() {
         return js;
-    }
-
-    /*
-     * public static void die(String error) { ErrorMsg.say(error);
-     *
-     * throw new RuntimeException(error); }
-     */
-    public Aspects getAsps() {
-        return asps;
-    }
-
-    public void setAsps(Aspects asps) {
-        this.asps = asps;
     }
 
     public Tools getTools() {
