@@ -521,11 +521,6 @@ public class MasterWeaver {
 
     }
 
-    private void warnJoin(String left, String right, String reason) {
-        larai.out.warnln("Could not join the selects " + left + " and " + right
-                + ", " + reason);
-    }
-
     public LaraJoinPoint defaultOfJoin() {
         return LaraJoinPoint.createRoot();
         // return jpUtils.toJavaScript(LaraJoinPoint.createRoot());

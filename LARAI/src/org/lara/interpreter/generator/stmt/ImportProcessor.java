@@ -256,12 +256,6 @@ public class ImportProcessor {
         }
     } // end method
 
-    private void importScript(ResourceProvider resource) {
-        final String internalScripts = SpecsIo.getResource(resource);
-        var extension = SpecsIo.getExtension(resource.getFilename());
-        evaluateImport(internalScripts, resource.getResource(), true, JsFileType.getType(extension));
-    }
-
     private void importScript(File source) {
         final String internalScripts = SpecsIo.read(source);
         var extension = SpecsIo.getExtension(source);

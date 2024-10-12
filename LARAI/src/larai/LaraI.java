@@ -33,26 +33,20 @@ import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraSystemTools;
 import pt.up.fe.specs.lara.importer.LaraImporter;
-import pt.up.fe.specs.tools.lara.exception.BaseException;
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import java.io.File;
@@ -120,8 +114,6 @@ public class LaraI {
     public Output out = new Output();
     private boolean quit = false;
 
-    // private LaraIOptionParser opts = new LaraIOptionParser();
-    private Document aspectIRDocument;
     private Interpreter interpreter;
     private StringBuilder js = new StringBuilder();
     private WeaverProfiler weavingProfile;
@@ -427,50 +419,6 @@ public class LaraI {
         // return true;
     }
 
-
-    private static RuntimeException prettyRuntimeException(Throwable e, CallStackTrace stackStrace) {
-        BaseException laraException;
-
-        if (!(e instanceof BaseException)) {
-            laraException = new LaraIException("During LARA Interpreter execution ", e);
-        } else {
-            laraException = (BaseException) e;
-
-        }
-        //
-        // BaseException laraException = (BaseException) e;
-        return laraException.generateRuntimeException(stackStrace);
-    }
-
-    /**
-     * Builds the pretty printed runtime exception if the exception given in of type {@link BaseException}.
-     * <p>
-     * If a normal exception is given, then it outputs the same exception.
-     *
-     * @param e
-     * @return
-     */
-    private static RuntimeException prettyRuntimeException(Throwable e) {
-
-        BaseException laraException;
-
-        if (!(e instanceof BaseException)) {
-            laraException = new LaraIException("During LARA Interpreter execution ", e);
-        } else {
-            laraException = (BaseException) e;
-        }
-        //
-        // BaseException laraException = (BaseException) e;
-        return laraException.generateRuntimeException();
-    }
-
-    private static String getOriginalResource(ResourceProvider resource) {
-        if (resource instanceof LaraResourceProvider) {
-            return ((LaraResourceProvider) resource).getOriginalResource();
-        }
-
-        return resource.getResource();
-    }
 
     private void interpret(WeaverEngine weaverEngine) throws Exception {
         String engineWorkingDir = SpecsIo.getWorkingDir().getAbsolutePath();

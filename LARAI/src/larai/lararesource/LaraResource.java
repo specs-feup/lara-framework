@@ -137,28 +137,6 @@ public class LaraResource {
 
     }
 
-    /**
-     * Check folder and all its parents
-     * 
-     * @param includeFolder
-     * @return
-     */
-    private boolean isFromBundle(File includeFolder) {
-        File currentFolder = includeFolder;
-
-        while (currentFolder != null) {
-
-            File laraBundleFile = new File(currentFolder, "lara.bundle");
-            if (laraBundleFile.isFile()) {
-                return true;
-            }
-
-            currentFolder = currentFolder.getParentFile();
-        }
-
-        return false;
-    }
-
     private boolean addResourceFolder(File includeFolder, Set<File> processedFolders, boolean addedResourceFolder) {
         // Process folder. Returns include resource folder,
         // which is the same for all Lara resources, add it

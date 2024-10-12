@@ -43,7 +43,6 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
-import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
@@ -200,14 +199,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
             // concreteJoinPoints.put(className, concreteClass);
             // }
         }
-    }
-
-    private String getConcreteClassname(JavaClass abstractClass) {
-        var abstractName = abstractClass.getName();
-        SpecsCheck.checkArgument(abstractName.startsWith("A"),
-                () -> "Expected abstract class name to start with A: " + abstractName);
-
-        return getConcreteClassesPrefix() + abstractName.substring(1);
     }
 
     private void setJavaTypes() {

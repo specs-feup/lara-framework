@@ -32,7 +32,6 @@ import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
-import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
