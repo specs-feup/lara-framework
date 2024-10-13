@@ -1,5 +1,5 @@
-laraImport("lara.Io");
-laraImport("lara.util.Replacer");
+import Io from "@specs-feup/lara/api/lara/Io.js";
+import Replacer from "@specs-feup/lara/api/lara/util/Replacer.js";
 
 const replacer1 = new Replacer("a template <string_to_replace>");
 console.log(

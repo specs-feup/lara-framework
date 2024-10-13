@@ -1,4 +1,4 @@
-laraImport("lara.util.Random");
+import Random from "@specs-feup/lara/api/lara/util/Random.js";
 
 const rand = new Random();
 // Just to test it works

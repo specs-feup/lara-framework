@@ -1,5 +1,5 @@
-laraImport("weaver.util.ActionAwareCache");
-laraImport("weaver.Weaver");
+import ActionAwareCache from "@specs-feup/lara/api/weaver/util/ActionAwareCache.js";
+import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 
 const data = {foo: "bar"}
 const testCache = new ActionAwareCache(data);

@@ -1,4 +1,4 @@
-laraImport("lara.util.LocalFolder");
+import LocalFolder from "@specs-feup/lara/api/lara/util/LocalFolder.js";
 
 const localFolder = new LocalFolder("./");
 

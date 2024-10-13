@@ -1,6 +1,6 @@
-laraImport("lara.graphs.Graphs");
-laraImport("lara.graphs.NodeData");
-laraImport("lara.graphs.EdgeData");
+import Graphs from "@specs-feup/lara/api/lara/graphs/Graphs.js";
+import NodeData from "@specs-feup/lara/api/lara/graphs/NodeData.js";
+import EdgeData from "@specs-feup/lara/api/lara/graphs/EdgeData.js";
 
 const graph = Graphs.newGraph();
 

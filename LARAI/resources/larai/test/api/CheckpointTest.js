@@ -1,7 +1,7 @@
-laraImport("lara.util.Checkpoint");
-laraImport("lara.Io");
-laraImport("lara.System");
-laraImport("lara.util.TimeUnits");
+import Checkpoint from "@specs-feup/lara/api/lara/util/Checkpoint.js";
+import Io from "@specs-feup/lara/api/lara/Io.js";
+import System from "@specs-feup/lara/api/lara/System.js";
+import { TimerUnit } from "@specs-feup/lara/api/lara/util/TimeUnits.js";
 
 
 const checkpoint = new Checkpoint("test_checkpoint");

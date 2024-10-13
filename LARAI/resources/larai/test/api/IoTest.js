@@ -1,4 +1,4 @@
-laraImport("lara.Io");
+import Io from "@specs-feup/lara/api/lara/Io.js";
 
 function getName(file) {
     return file.getName();

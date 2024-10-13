@@ -1,5 +1,5 @@
-laraImport("lara.iterators.LineIterator");
-laraImport("lara.Io");
+import LineIterator from "@specs-feup/lara/api/lara/iterators/LineIterator.js";
+import Io from "@specs-feup/lara/api/lara/Io.js";
 
 const stringContents = "Hello\nline2\n\nline 4";
 

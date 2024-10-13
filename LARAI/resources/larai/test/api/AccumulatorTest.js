@@ -1,4 +1,4 @@
-laraImport("lara.util.Accumulator");
+import Accumulator from "@specs-feup/lara/api/lara/util/Accumulator.js";
 
 const acc = new Accumulator();
 

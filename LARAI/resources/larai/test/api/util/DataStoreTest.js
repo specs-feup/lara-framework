@@ -1,5 +1,5 @@
-laraImport("lara.util.DataStore");
-laraImport("weaver.WeaverOptions");
+import DataStore from "@specs-feup/lara/api/lara/util/DataStore.js";
+import WeaverOptions from "@specs-feup/lara/api/weaver/WeaverOptions.js";
 
 const dataStore = new DataStore(WeaverOptions.getData());
 console.log("GET:" + dataStore.get("javascript"));

@@ -1,5 +1,5 @@
-laraImport("lara.util.LineInserter");
-laraImport("lara.Io");
+import LineInserter from "@specs-feup/lara/api/lara/util/LineInserter.js";
+import Io from "@specs-feup/lara/api/lara/Io.js";
 
 const stringContents = "Hello\nline2\n\nline 4";
 const linesToInsert = { 1: "// Inserted line at 1", 3: "// Inserted line at 3" };

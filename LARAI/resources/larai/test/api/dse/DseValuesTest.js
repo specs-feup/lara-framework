@@ -1,6 +1,6 @@
-laraImport("lara.dse.DseValuesList");
-laraImport("lara.dse.DseValuesSet");
-laraImport("lara.dse.VariableVariant");
+import DseValuesList from "@specs-feup/lara/api/lara/dse/DseValuesList.js";
+import DseValuesSet from "@specs-feup/lara/api/lara/dse/DseValuesSet.js";
+import VariableVariant from "@specs-feup/lara/api/lara/dse/VariableVariant.js";
 
 function dseValueTester(name, dseValues) {
     console.log(name + " size: " + dseValues.getNumElements());

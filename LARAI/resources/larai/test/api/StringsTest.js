@@ -1,4 +1,4 @@
-laraImport("lara.Strings");
+import Strings from "@specs-feup/lara/api/lara/Strings.js";
 
 console.log("Escaped HTML: " + Strings.escapeHtml("<h1>Hello</h1>"));
 

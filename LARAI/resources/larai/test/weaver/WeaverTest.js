@@ -1,5 +1,4 @@
-//import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
-laraImport("weaver.Weaver");
+import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 
 const ArrayList = Java.type('java.util.ArrayList');
 const javaList = new ArrayList();

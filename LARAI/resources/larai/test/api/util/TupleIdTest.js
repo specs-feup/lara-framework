@@ -1,4 +1,4 @@
-laraImport("lara.util.TupleId");
+import TupleId from "@specs-feup/lara/api/lara/util/TupleId.js";
 
 const tupleId = new TupleId();
 
