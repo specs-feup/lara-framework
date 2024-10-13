@@ -1,1 +1,1 @@
-println("Importing .mjs");
+console.log("Importing .mjs");

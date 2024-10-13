@@ -1,5 +1,4 @@
-//import WeaverOptions from "@specs-feup/lara/api/weaver/WeaverOptions.js";
-laraImport("weaver/WeaverOptions");
+import WeaverOptions from "@specs-feup/lara/api/weaver/WeaverOptions.js";
 
 const data = WeaverOptions.getData();
 
