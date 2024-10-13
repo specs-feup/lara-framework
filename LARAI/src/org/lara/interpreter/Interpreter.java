@@ -164,7 +164,7 @@ public class Interpreter {
     }
 
     public Object evaluate(File jsFile) {
-        return engine.evalFile(jsFile);
+        return engine.evalFile(jsFile, JsFileType.MODULE);
     }
 
     private int oldDepth;
