@@ -4,11 +4,11 @@ import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 const data = {foo: "bar"}
 const testCache = new ActionAwareCache(data);
 
-println("DATA BEFORE ACTION: ");
+console.log("DATA BEFORE ACTION: ");
 printlnObject(testCache.data);
 
 Weaver.getWeaverEngine().getRootJp().report();
 
-println("DATA AFTER ACTION: ");
+console.log("DATA AFTER ACTION: ");
 printlnObject(testCache.data);
 

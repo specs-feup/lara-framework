@@ -6,14 +6,14 @@ rand.next();
 
 
 const randSeed1 = new Random(1);
-println(randSeed1.next());
-println(randSeed1.next());
-println(randSeed1.next());
-println(randSeed1.next());
+console.log(randSeed1.next());
+console.log(randSeed1.next());
+console.log(randSeed1.next());
+console.log(randSeed1.next());
 
 
 const randSeed2 = new Random(1678485728385);
-println(randSeed2.next());
-println(randSeed2.next());
-println(randSeed2.next());
-println(randSeed2.next());
+console.log(randSeed2.next());
+console.log(randSeed2.next());
+console.log(randSeed2.next());
+console.log(randSeed2.next());

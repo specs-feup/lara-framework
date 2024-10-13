@@ -4,6 +4,6 @@ println("Imported MjsImport")
 
 var JsImport = 0;
 
-laraImport("lara.Strings");
+import Strings from "@specs-feup/lara/api/lara/Strings.js";
 
 println("Imported lara.Strings: " + (typeof Strings));
