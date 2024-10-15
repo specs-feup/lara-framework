@@ -649,6 +649,31 @@ public class GeneratorUtils {
     }
 
     /**
+     * Processes the arguments. Processing includes:
+     *
+     * <p>
+     * - Arrays are converted to arrays of Objects, for compatibility with the JavaScript layer.
+     * </p>
+     *
+     * @param arguments
+     * @return
+     */
+    public static List<Argument> convertParamArrayToObjArray(List<Argument> arguments) {
+        var newArgs = new ArrayList<Argument>(arguments.size());
+
+        for (var arg : arguments) {
+            if (arg.getClassType().isArray()) {
+                arg = arg.clone();
+                arg.getClassType().setName("Object");
+            }
+
+            newArgs.add(arg);
+        }
+
+        return newArgs;
+    }
+
+    /**
      * Convert an action method to actionImpl,which will be the one the user should implement, and generate the action
      * implementation that invokes this new actionImpl
      *
@@ -726,6 +751,8 @@ public class GeneratorUtils {
                 argStr = "NamedEnum.fromString(" + arg.getClassType().getName() + ".class, " + arg.getName()
                         + ", \"parameter " + arg.getName() + "\")";
                 arg.setClassType(stringType);
+            } else if (arg.getClassType().isArray()) {
+                argStr = "pt.up.fe.specs.util.SpecsCollections.cast(" + arg.getName() + ", " + arg.getClassType().getName() + ".class)";
             } else {
                 argStr = arg.getName();
             }
@@ -765,6 +792,12 @@ public class GeneratorUtils {
         cloned.appendCodeln("(" + GenConstants.getClassName() + "(), \"" + actionName + "\", e);");
         cloned.appendCodeln("}");
         targetClass.addImport(ActionException.class);
+
+        // Adapts parameters after processing and code generation is done, to improve compatibility with
+        // calls from JavaScript
+        cloned.setArguments(convertParamArrayToObjArray(cloned.getParams()));
+
+
         return cloned;
 
     }
