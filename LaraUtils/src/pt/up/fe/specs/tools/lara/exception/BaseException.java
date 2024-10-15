@@ -13,8 +13,6 @@
 
 package pt.up.fe.specs.tools.lara.exception;
 
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
-
 /**
  * Abstract exception of a LARA exception. These type of exceptions are used to encapsulate other thrown exceptions
  *
@@ -84,17 +82,6 @@ public abstract class BaseException extends RuntimeException {
         // return message;
     }
 
-    /**
-     * Generate a Runtime exception and use a specific stack trace instead of the one generated based on the chained
-     * exceptions
-     *
-     * @param stackStrace
-     * @return
-     */
-    public RuntimeException generateRuntimeException(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = generateExceptionBuilder(stackStrace);
-        throw builder.getRuntimeException();
-    }
 
     public RuntimeException generateRuntimeException() {
         LARAExceptionBuilder builder = generateExceptionBuilder();
@@ -107,11 +94,6 @@ public abstract class BaseException extends RuntimeException {
         return builder;
     }
 
-    public LARAExceptionBuilder generateExceptionBuilder(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = new LARAExceptionBuilder(stackStrace);
-        generateException(builder);
-        return builder;
-    }
 
     protected void generateException(LARAExceptionBuilder builder) {
         String thisMessage = generateSimpleMessage();

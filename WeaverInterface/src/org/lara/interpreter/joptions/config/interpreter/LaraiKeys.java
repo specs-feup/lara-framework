@@ -74,9 +74,6 @@ public interface LaraiKeys {
     DataKey<Boolean> LOG_JS_OUTPUT = KeyFactory.bool("javascript").setLabel("Log JavaScript Output");
     DataKey<Boolean> DEBUG_MODE = KeyFactory.bool("debug").setLabel("Debug Mode");
 
-    DataKey<Boolean> TRACE_MODE = KeyFactory.bool("stack trace").setLabel("Show LARA Stack Trace")
-            .setDefault(() -> true);
-
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restrict mode (some Java classes are not allowed)");
 
@@ -121,7 +118,7 @@ public interface LaraiKeys {
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
                     TOOLS_FILE, REPORT_FILE,
                     METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, TRACE_MODE, RESTRICT_MODE, JS_ENGINE, JAR_PATHS)
+                    DEBUG_MODE, RESTRICT_MODE, JS_ENGINE, JAR_PATHS)
             .build();
 
 }

@@ -252,13 +252,6 @@ public class LaraIDataStore implements LaraiKeys {
         return dataStore.get(LaraiKeys.RESTRICT_MODE);
     }
 
-    public boolean useStackTrace() {
-        if (dataStore.hasValue(LaraiKeys.TRACE_MODE)) {
-            return dataStore.get(LaraiKeys.TRACE_MODE);
-        }
-        return false;
-    }
-
     public File getOutputDir() {
         return getTryFolder(LaraiKeys.OUTPUT_FOLDER);
     }

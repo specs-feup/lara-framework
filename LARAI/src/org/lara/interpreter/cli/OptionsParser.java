@@ -58,7 +58,6 @@ public class OptionsParser {
         final Option version = OptionsBuilderUtils.newOption(CLIOption.version);
         final Option javascript = OptionsBuilderUtils.newOption(CLIOption.javascript);
         final Option debug = OptionsBuilderUtils.newOption(CLIOption.debug);
-        final Option stack = OptionsBuilderUtils.newOption(CLIOption.stack);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
         final Option workDir = OptionsBuilderUtils.newOption(CLIOption.workspace);
@@ -85,7 +84,6 @@ public class OptionsParser {
                 // .addOption(argw)
                 .addOption(main)
                 .addOption(debug)
-                .addOption(stack)
                 .addOption(outDir)
                 .addOption(workDir)
                 .addOption(workDirExtra)

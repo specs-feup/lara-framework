@@ -111,7 +111,7 @@ public class LaraApiTest {
 
     @Test
     public void testLineInserter() {
-        newTester().setStack().test("util/LineInserterTest.js");
+        newTester().test("util/LineInserterTest.js");
     }
 
     @Test
