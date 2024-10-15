@@ -71,7 +71,6 @@ public class LaraJoinPoint {
     public LaraJoinPoint() {
         leaf = false;
         children = new ArrayList<>();
-        // laraJoinPoint = this; // This is just of backwards compatibility. After migrating to nashorn remove this!
     }
 
     /**

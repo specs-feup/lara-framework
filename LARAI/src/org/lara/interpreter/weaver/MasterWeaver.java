@@ -366,7 +366,6 @@ public class MasterWeaver {
         try {
 
             boolean isArray = weaverEngine.getScriptEngine().isArray(joinPointReferences);
-            // weaverEngine.getScriptEngine().nashornWarning("SCRIPTOBJECTMIRROR");
             if (isArray) {
 
                 // final ScriptObjectMirror jpReferences = (ScriptObjectMirror) joinPointReferences;

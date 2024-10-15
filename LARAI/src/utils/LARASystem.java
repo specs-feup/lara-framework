@@ -564,22 +564,6 @@ public class LARASystem {
     }
 
     /**
-     * @deprecated
-     * @param arr
-     * @return
-     */
-    @Deprecated
-    public static Object[] toJavaArray(Object arr) {
-        throw new RuntimeException("Deprecated method, is this necessary?");
-
-        // if (!NashornUtils.isJSArray(arr)) {
-        // return new Object[] { arr };
-        // }
-        //
-        // return NashornUtils.getValues(arr).toArray(new Object[0]);
-    }
-
-    /**
      * Simply return class {@link Class}&lt;{@link JoinPoint}&gt;
      *
      * @return

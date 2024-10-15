@@ -436,9 +436,6 @@ public class LaraI {
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
 
-        // NashornScriptEngine engine = (NashornScriptEngine) new NashornScriptEngineFactory()
-        // .getScriptEngine(new String[] { "--global-per-engine" });
-
         // weaverEngine.setScriptEngine(engine);
         // try {
         out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
@@ -539,24 +536,6 @@ public class LaraI {
     private void finish(JsEngine engine) {
         // if cleaning is needed
     }
-
-    // private NashornScriptEngine createJsEngine() {
-    // // System.out.println("RESTRIC MODE:" + getOptions().isRestricMode());
-    // // If restric mode is enabled, use ClassFilter
-    // if (getOptions().isRestricMode()) {
-    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine(new RestrictModeFilter());
-    // }
-    //
-    // return (NashornScriptEngine) new NashornScriptEngineFactory().getScriptEngine();
-    //
-    // // NashornScriptEngine engine = (NashornScriptEngine) new ScriptEngineManager().getEngineByName("nashorn");
-    // // return engine;
-    //
-    // }
-
-    // private JsEngine createJsEngine(JsEngineType engineType) {
-    // return createJsEngine(engineType, null);
-    // }
 
     private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
 

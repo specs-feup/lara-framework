@@ -80,7 +80,6 @@ public interface LaraiKeys {
     DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
             .setLabel("JavaScript Engine")
             // TODO: Change to GraalVM when transition is done
-            // .setDefault(() -> JsEngineType.NASHORN);
             .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
     // .setDefault(() -> JsEngineType.GRAALVM);
 
