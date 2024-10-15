@@ -2,6 +2,7 @@ import Checkpoint from "@specs-feup/lara/api/lara/util/Checkpoint.js";
 import Io from "@specs-feup/lara/api/lara/Io.js";
 import System from "@specs-feup/lara/api/lara/System.js";
 import { TimerUnit } from "@specs-feup/lara/api/lara/util/TimeUnits.js";
+import { printObject } from "@specs-feup/lara/api/core/output.js";
 
 
 const checkpoint = new Checkpoint("test_checkpoint");

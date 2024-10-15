@@ -1,3 +1,5 @@
+import { arrayFromArgs } from "@specs-feup/lara/api/lara/core/LaraCore.js";
+
 function arrayFromArgsTest() {
     return arrayFromArgs(arguments);
 }
