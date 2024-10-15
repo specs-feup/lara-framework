@@ -115,11 +115,9 @@ public class LaraI {
     private boolean quit = false;
 
     private Interpreter interpreter;
-    private StringBuilder js = new StringBuilder();
     private WeaverProfiler weavingProfile;
 
     private final WeaverEngine weaverEngine;
-    private int mainLaraTokens = -1;
 
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
@@ -200,7 +198,7 @@ public class LaraI {
     }
 
 
-    public static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
+    private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
 
         prepareDataStore(dataStore, weaverEngine);
 
@@ -343,7 +341,7 @@ public class LaraI {
         };
     }
 
-    public static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
+    private static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
         SpecsLogs.debug(() -> "Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
 
         // Set weaver (e.g. for help message to access name and build number)
@@ -557,27 +555,6 @@ public class LaraI {
         return options.getWeaverArgs();
     }
 
-    /**
-     * @param js the js to set
-     */
-    public void setJs(StringBuilder js) {
-        this.js = js;
-    }
-
-    /**
-     * @param js the js to append
-     */
-    public void appendJs(StringBuilder js) {
-        this.js.append(js);
-    }
-
-    /**
-     * @return the js
-     */
-    public StringBuilder getJs() {
-        return js;
-    }
-
     public Tools getTools() {
         return options.getTools();
     }
@@ -606,47 +583,8 @@ public class LaraI {
     /**
      * @param laraIDataStore the options to set
      */
-    public void setOptions(LaraIDataStore laraIDataStore) {
+    private void setOptions(LaraIDataStore laraIDataStore) {
         options = laraIDataStore;
-    }
-
-    public Interpreter getInterpreter() {
-        return interpreter;
-    }
-
-    public void setInterpreter(Interpreter interpreter) {
-        this.interpreter = interpreter;
-    }
-
-    public static String getVersion() {
-        return LaraI.LARAI_VERSION_TEXT;
-    }
-
-    /**
-     * Execute larai with the input arguments and the default weaver
-     *
-     * @param args
-     */
-    public static void main(String args[]) {
-        SpecsSystem.programStandardInit();
-        // SpecsProperty.ShowStackTrace.applyProperty("true");
-        exec(args);
-    }
-
-    public static boolean exec(String args[]) {
-        return exec(args, new DefaultWeaver());
-    }
-
-    /**
-     * @return
-     * @deprecated Check if this method can be replaced with getWeaverEngine()
-     */
-    @Deprecated
-    public WeaverEngine getEngine() {
-        if (weaver.getEngine() != getWeaverEngine()) {
-            throw new RuntimeException("Weaver engines are not the same instance, should this happen?");
-        }
-        return weaver.getEngine();
     }
 
     public WeaverProfiler getWeavingProfile() {
@@ -654,16 +592,7 @@ public class LaraI {
     }
 
     public static long getCurrentTime() {
-
         return timeProvider.get();
-    }
-
-    public int getNumMainLaraTokens() {
-        return mainLaraTokens;
-    }
-
-    public void setNumMainLaraTokens(int mainLaraTokens) {
-        this.mainLaraTokens = mainLaraTokens;
     }
 
     /**
@@ -704,7 +633,7 @@ public class LaraI {
 
     }
 
-    public static LaraImporter getLaraImporter() {
+    private static LaraImporter getLaraImporter() {
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
 
         // Prepare includes
@@ -731,10 +660,4 @@ public class LaraI {
 
         return laraImporter;
     }
-
-    public static Collection<String> getLaraImportInPackage(String packageName) {
-        var laraImporter = getLaraImporter();
-        return laraImporter.getImportsFromPackage(packageName);
-    }
-
 }
