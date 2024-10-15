@@ -18,7 +18,6 @@ import java.util.List;
 import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.EvaluationException;
-import org.lara.interpreter.generator.stmt.ImportProcessor;
 import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.OptionalFile;
@@ -46,7 +45,6 @@ public class Interpreter {
     private final LaraIDataStore options;
     private Output out = new Output();
     private final JsEngine engine;
-    private final ImportProcessor importProcessor;
     private CallStackTrace stackStrace;
 
     // private List<Integer> js2LARALines;
@@ -70,14 +68,8 @@ public class Interpreter {
         options = laraInterp.getOptions();
         out = laraInterp.out;
         this.engine = engine;
-        importProcessor = ImportProcessor.newInstance(this);
         if (options.useStackTrace()) {
             stackStrace = new CallStackTrace();
-        }
-
-        if (options.getWeaverArgs().get(LaraiKeys.API_AUTOLOAD)) {
-            importProcessor.importScriptsAndClasses();
-            importProcessor.importAndInitialize();
         }
     }
 
@@ -216,10 +208,6 @@ public class Interpreter {
 
     public void setOldDepth(int oldDepth) {
         this.oldDepth = oldDepth;
-    }
-
-    public ImportProcessor getImportProcessor() {
-        return importProcessor;
     }
 
     public CallStackTrace getStackStrace() {

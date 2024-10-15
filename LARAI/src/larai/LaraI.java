@@ -727,7 +727,6 @@ public class LaraI {
 
     public static LaraImporter getLaraImporter() {
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-        var larai = LaraI.getThreadLocalLarai();
 
         // Prepare includes
         var includes = new LinkedHashSet<File>();
@@ -743,9 +742,6 @@ public class LaraI {
         if (configurationFolder != null && configurationFolder.isDirectory()) {
             includes.add(configurationFolder);
         }
-
-        // Add user includes
-        includes.addAll(larai.getOptions().getProcessedIncludeDirs(weaverEngine).getFiles());
 
         // Finally, add weaver APIs (they have the lowest priority)
         weaverEngine.getApiManager().getNpmApiFolders().stream()

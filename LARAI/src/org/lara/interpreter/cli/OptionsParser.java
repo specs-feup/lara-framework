@@ -72,12 +72,8 @@ public class OptionsParser {
 
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
 
-        final Option scripts = OptionsBuilderUtils.newOption(CLIOption.includes);
-        final Option dependencies = OptionsBuilderUtils.newOption(CLIOption.dependencies);
-
         final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
 
-        final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
         final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
         final Option jarpaths = OptionsBuilderUtils.newOption(CLIOption.jarpaths);
@@ -96,12 +92,9 @@ public class OptionsParser {
                 .addOption(verbose)
                 .addOption(tools)
                 .addOption(report)
-                .addOption(scripts)
-                .addOption(dependencies)
                 .addOption(javascript)
                 .addOption(log)
                 .addOption(metrics)
-                .addOption(bundleTags)
                 .addOption(restrict)
                 .addOption(jsengine)
                 .addOption(jarpaths);
