@@ -31,11 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
-import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.exception.WeaverEngineException;
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint;
@@ -164,86 +162,6 @@ public class MasterWeaver {
         setRoot(weaverEngine.getRoot());
     }
 
-    private final static String PATH_MODEL_BEGIN = "(path())==('";
-    private final static String PATH_MODEL_END = "')";
-
-    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-    // FilterExpression[][] filterChain,
-    // String aspect_name, Bindings localScope, int lineNumber) throws IOException {
-    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    // }
-
-    // public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-    // FilterExpression[][] filterChain,
-    // String aspect_name, Value localScope, int lineNumber) throws IOException {
-    // return selectPrivate(selectName, jpChain, aliasChain, filterChain, aspect_name, localScope, lineNumber);
-    // }
-
-    /**
-     * Select method that invokes the weaver(s) to get the desired pointcuts
-     *
-     * @param jpChain
-     *            the join point chain
-     * @param aliasChain
-     *            the alias for each member in the join point chain
-     * @param filterChain
-     *            the filter for each join point
-     * @return a javascript variable with the pointcut
-     * @throws IOException
-     */
-    public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            String aspect_name, Object localScope, int lineNumber) throws IOException {
-
-        // System.out.println("SELECT 2");
-
-        // localScope comes from JS, convert first to compatible Bindings
-        // localScope = getEngine().getScriptEngine().asBindings(localScope);
-
-        // TRIGGER SELECT BEGIN EVENT
-        if (eventTrigger.hasListeners()) {
-            eventTrigger.triggerSelect(Stage.BEGIN, aspect_name, selectName, jpChain, aliasChain, filterChain,
-                    Optional.empty());
-        }
-
-        try {
-            final LaraJoinPoint root = LaraJoinPoint.createRoot();
-
-            if (weaverEngine instanceof DefaultWeaver) {
-                selectWithDefaultWeaver(jpChain, aliasChain, filterChain, localScope, root);
-            } else {
-                selectWithWeaver(jpChain, aliasChain, filterChain, localScope, root, aspect_name,
-                        selectName);
-            }
-
-            // if (handlesApplicationFolder) {
-            // }
-            // } else {
-            // for (final WeaverEngine currentWeaver : weavers.values()) {
-            // selectByWeaver(currentWeaver, jpChain, aliasChain, filterChain, localScope, root);
-            // }
-            // }
-
-            // TRIGGER SELECT END EVENT
-            if (eventTrigger.hasListeners()) {
-
-                Optional<LaraJoinPoint> pointcut = root.getChildren().isEmpty() ? Optional.empty()
-                        : Optional.of(root.getChild(0));
-                eventTrigger.triggerSelect(Stage.END, aspect_name, selectName, jpChain, aliasChain, filterChain,
-                        pointcut);
-            }
-            LaraLog.printMemory("before converting to javascript");
-            // final Bindings javascriptObject = jpUtils.toJavaScript(root);
-            LaraLog.printMemory("after converting to javascript");
-            // System.out.println("LOCAL SCOPE: " + localScope);
-            // System.out.println("ROOT: " + root);
-
-            return root;
-        } catch (Exception e) {
-            throw processSelectException(selectName, jpChain, e, lineNumber);
-        }
-    }
-
     private static PointcutExprException processSelectException(String selectName, String[] jpChain, Exception e,
             int lineNumber) {
 
@@ -255,70 +173,6 @@ public class MasterWeaver {
         }
 
         return new PointcutExprException(selectName, jpChain, lineNumber, e);
-    }
-
-    // private void selectByWeaver(WeaverEngine currentWeaver, String[] jpChain, String[] aliasChain,
-    private void selectWithWeaver(String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            Object localScope, LaraJoinPoint root, String aspect_name, String selectName)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        final JoinPoint rootSelect = weaverEngine.select();
-        // TRIGGER SELECT BEGIN EVENT
-        if (eventTrigger.hasListeners()) {
-
-            eventTrigger.triggerJoinPoint(Stage.BEGIN, selectName, weaverEngine.getRoot(), filterChain[0], rootSelect,
-                    true);
-        }
-        // rootSelect.setWeaverEngine(weaverEngine);
-        final MWRoot mwRoot = new MWRoot();
-        root.setReference(mwRoot);
-        if (jpUtils.evalFilter(rootSelect, filterChain[0], localScope)) {
-            final LaraJoinPoint wRoot = new LaraJoinPoint(rootSelect);
-            wRoot.setClassAlias(aliasChain[0]);
-            generateSelect(wRoot, jpChain, aliasChain, filterChain, 1, localScope);
-
-            if (!wRoot.isLeaf() && wRoot.getChildren().isEmpty()) {
-                return;
-            }
-            wRoot.setParent(root);
-            root.addChild(wRoot);
-        }
-    }
-
-    private void selectWithDefaultWeaver(String[] jpChain, String[] aliasChain, FilterExpression[][] filterChain,
-            Object localScope,
-            LaraJoinPoint root)
-            throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        DefaultWeaver defWeaver = (DefaultWeaver) weaverEngine;
-        if (!filterChain[0][0].isEmpty()) {
-            String path = (String) filterChain[0][0].getExpected();
-            path = path.substring(MasterWeaver.PATH_MODEL_BEGIN.length(),
-                    path.length() - MasterWeaver.PATH_MODEL_END.length());
-            path = "";
-            // System.out.println(path);
-            final File appFolder = new File(path).getCanonicalFile();
-            if (!appFolder.isDirectory()) {
-                throw new LaraIException("Path used in 'folder' must be a directory!");
-            }
-            defWeaver.ensureThatContains(appFolder);
-            // if (!defWeaver.contains(appFolder)) {
-            // WeaverEngine newWeaver;
-            // try {
-            // newWeaver = weaverClass.newInstance();
-            // newWeaver.begin(appFolder, larai.getOptions().getOutputDir(),
-            // larai.getWeaverArgs());
-            // weavers.put(appFolder, newWeaver);
-            // } catch (final InstantiationException | IllegalAccessException e) {
-            // throw new LaraIException("Could instanciate selected weaver", e);
-            // }
-            // }
-            // currentWeaver = weavers.get(appFolder);
-
-        } else {
-            // currentWeaver = weavers.get(getApplicationFolder());
-        }
-        root.setReference(defWeaver.select());
-        generateSelect(root, jpChain, aliasChain, filterChain, 0, localScope);
     }
 
     /**
