@@ -633,7 +633,7 @@ public class LaraI {
 
     }
 
-    private static LaraImporter getLaraImporter() {
+    public static LaraImporter getLaraImporter() {
         var weaverEngine = WeaverEngine.getThreadLocalWeaver();
 
         // Prepare includes

@@ -495,8 +495,8 @@ export function laraImport(importName: string) {
 }
 
 function _laraImportKleeneStar(packageName: string) {
-  const laraImports = JavaTypes.LaraI.getLaraImportInPackage(
-    packageName
+  const laraImports = JavaTypes.LaraI.getLaraImporter().getImportsFromPackage(
+      packageName
   ) as string[];
 
   for (const singleLaraImport of laraImports) {

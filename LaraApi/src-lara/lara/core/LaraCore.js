@@ -403,7 +403,8 @@ export function laraImport(importName) {
     }
 }
 function _laraImportKleeneStar(packageName) {
-    const laraImports = JavaTypes.LaraI.getLaraImportInPackage(packageName);
+    const laraImports =
+        JavaTypes.LaraI.getLaraImporter().getImportsFromPackage(packageName);
     for (const singleLaraImport of laraImports) {
         laraImport(singleLaraImport);
     }
