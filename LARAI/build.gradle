@@ -29,7 +29,6 @@ dependencies {
 	implementation ':LanguageSpecification'	
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
-	implementation ':LaraCommonLanguage'	
 	implementation ':LaraUtils'	
 	implementation ':WeaverInterface'	
 
