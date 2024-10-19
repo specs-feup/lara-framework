@@ -1,0 +1,37 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Number of Children
+ * @constructor
+ */
+function NOC() {
+	var id = "CK-NOC";
+	var name = "Number of Children";
+	var sigla = "NOC";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Number of Children (NOC) measures  number of immediate sub-classes of a class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+NOC.prototype = Object.create(Metric.prototype);
+
+NOC.prototype.calculateForProjectPerClass = function() {
+
+	var superClassesMap =  new Map();
+	var classes = Query.search('class').get();	
+
+	for($classSuper of classes){
+		superClassesMap.set($classSuper.id,0);
+		for($classSub of classes)
+			if($classSub.superClasses.some($superClass => $superClass.id === $classSuper.id))
+				superClassesMap.set($classSuper.id,superClassesMap.get($classSuper.id)+1);
+
+	}
+	
+
+	return superClassesMap;	
+}

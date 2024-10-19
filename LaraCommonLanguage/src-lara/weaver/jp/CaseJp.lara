@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function CaseJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+CaseJp.prototype = Object.create(StmtJp.prototype);
+CaseJp.prototype.constructor = CaseJp;
+
+// JoinPoint Types
+CaseJp._JP_TYPES = new Set();
+_lara_dummy_ = CaseJp._JP_TYPES.add('case');
+_lara_dummy_ = CaseJp._JP_TYPES.add('stmt');
+_lara_dummy_ = CaseJp._JP_TYPES.add('joinpoint');
+
+
+CaseJp.prototype.instanceOf = function(joinPointType) {
+	return CaseJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CaseJp.prototype.types = function(joinPointType) {
+	return CaseJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(CaseJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'case'; }
+});
+

@@ -1,0 +1,59 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function VarDeclJp(astNode) {
+    // Parent constructor
+    DeclJp.call(this,astNode);
+    
+}
+// Inheritance
+VarDeclJp.prototype = Object.create(DeclJp.prototype);
+VarDeclJp.prototype.constructor = VarDeclJp;
+
+// JoinPoint Types
+VarDeclJp._JP_TYPES = new Set();
+_lara_dummy_ = VarDeclJp._JP_TYPES.add('varDecl');
+_lara_dummy_ = VarDeclJp._JP_TYPES.add('decl');
+_lara_dummy_ = VarDeclJp._JP_TYPES.add('stmt');
+_lara_dummy_ = VarDeclJp._JP_TYPES.add('joinpoint');
+
+
+VarDeclJp.prototype.instanceOf = function(joinPointType) {
+	return VarDeclJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+VarDeclJp.prototype.types = function(joinPointType) {
+	return VarDeclJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'varDecl'; }
+});
+
+_lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(VarDeclJp.prototype, 'isParam', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isParam not implemented'; }
+});
+

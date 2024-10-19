@@ -1,0 +1,30 @@
+import lcl.LaraCommonLanguage;
+
+import lcl.metrics.ck.CKMetricsIndex;
+import lcl.metrics.lh.LHMetricsIndex;
+import lcl.metrics.om.OtherMetricsIndex;
+
+var metrics = [
+		//CK metrics
+		new NOC(), 		
+		new DIT(), 			
+		new RFC(), 					
+		new WMC(), 		
+		new LCOM94(), 
+		new CBO(),	
+
+		//LH metrics		
+		new NOM(),
+		new SIZE1(), 
+		new SIZE2(),
+		new MPC(),
+		new DAC(),	
+
+		//Other metrics
+		new CycloComplex(),	
+		new CogniComplex(),
+		new NOCl(),
+		new NOFu(),
+		new NOFi(),
+		new NOL(),			
+];

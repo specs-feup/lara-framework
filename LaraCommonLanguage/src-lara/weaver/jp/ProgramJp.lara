@@ -1,0 +1,47 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ProgramJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+ProgramJp.prototype = Object.create(JoinPoint.prototype);
+ProgramJp.prototype.constructor = ProgramJp;
+
+// JoinPoint Types
+ProgramJp._JP_TYPES = new Set();
+_lara_dummy_ = ProgramJp._JP_TYPES.add('program');
+_lara_dummy_ = ProgramJp._JP_TYPES.add('joinpoint');
+
+
+ProgramJp.prototype.instanceOf = function(joinPointType) {
+	return ProgramJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ProgramJp.prototype.types = function(joinPointType) {
+	return ProgramJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ProgramJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'program'; }
+});
+

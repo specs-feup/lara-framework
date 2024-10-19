@@ -1,0 +1,57 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FileJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+FileJp.prototype = Object.create(JoinPoint.prototype);
+FileJp.prototype.constructor = FileJp;
+
+// JoinPoint Types
+FileJp._JP_TYPES = new Set();
+_lara_dummy_ = FileJp._JP_TYPES.add('file');
+_lara_dummy_ = FileJp._JP_TYPES.add('joinpoint');
+
+
+FileJp.prototype.instanceOf = function(joinPointType) {
+	return FileJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FileJp.prototype.types = function(joinPointType) {
+	return FileJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'file'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FileJp.prototype, 'id', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.id not implemented'; }
+});
+

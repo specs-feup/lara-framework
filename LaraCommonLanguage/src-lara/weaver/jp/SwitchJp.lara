@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function SwitchJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+SwitchJp.prototype = Object.create(StmtJp.prototype);
+SwitchJp.prototype.constructor = SwitchJp;
+
+// JoinPoint Types
+SwitchJp._JP_TYPES = new Set();
+_lara_dummy_ = SwitchJp._JP_TYPES.add('switch');
+_lara_dummy_ = SwitchJp._JP_TYPES.add('stmt');
+_lara_dummy_ = SwitchJp._JP_TYPES.add('joinpoint');
+
+
+SwitchJp.prototype.instanceOf = function(joinPointType) {
+	return SwitchJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+SwitchJp.prototype.types = function(joinPointType) {
+	return SwitchJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(SwitchJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'switch'; }
+});
+

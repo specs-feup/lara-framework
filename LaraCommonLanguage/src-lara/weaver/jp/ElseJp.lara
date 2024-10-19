@@ -1,0 +1,53 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ElseJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+ElseJp.prototype = Object.create(StmtJp.prototype);
+ElseJp.prototype.constructor = ElseJp;
+
+// JoinPoint Types
+ElseJp._JP_TYPES = new Set();
+_lara_dummy_ = ElseJp._JP_TYPES.add('else');
+_lara_dummy_ = ElseJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ElseJp._JP_TYPES.add('joinpoint');
+
+
+ElseJp.prototype.instanceOf = function(joinPointType) {
+	return ElseJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ElseJp.prototype.types = function(joinPointType) {
+	return ElseJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ElseJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'else'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ElseJp.prototype, 'isElseIf', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isElseIf not implemented'; }
+});
+

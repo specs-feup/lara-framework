@@ -1,0 +1,47 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Lines of Code
+ * @constructor
+ */
+function LOC() {
+	var id = "OO-LOC";
+	var name = "Lines of Code";
+	var sigla = "LOC";
+	var author = "Unknown";
+	var year = 1960;
+	var description = "Lines of code (LOC) counts the number of lines of the source code.";
+	
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+LOC.prototype = Object.create(Metric.prototype);
+
+LOC.prototype.calculateForProject = function() {
+	var value = 0;
+	for ($file of  Query.search("file"))
+		value += this.calculateForFile($file);
+	return value;
+}
+
+LOC.prototype.calculateForJoinPoint = function($jp) {
+	//Remove Comments
+	//str.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'');
+	return $jp.code.split(/\r\n|\r|\n/).length;
+}
+
+
+LOC.prototype.calculateForClass = function($class) {
+	return this.calculateForJoinPoint($class);
+
+}
+
+LOC.prototype.calculateForFunction = function($function) {
+	return this.calculateForJoinPoint($function);
+}
+
+LOC.prototype.calculateForFile = function($file) {
+	return this.calculateForJoinPoint($file);
+}

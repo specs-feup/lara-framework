@@ -1,0 +1,24 @@
+import weaver.Weaver;
+import weaver.jp.JoinPointIndex;
+
+
+var CommonJoinPoints = {};
+
+
+CommonJoinPoints.toJoinPoint = function(astNode) {
+ 	var jpName = Weaver.AST_METHODS.getJoinPointName(astNode);
+ 	return new classesMapping[jpName](astNode);
+}
+
+CommonJoinPoints.toJoinPoints = function(astNodes) {
+   //return astNodes.map(astNode => this.toJoinPoint(astNode));
+
+   var jps = [];
+   
+   for(var astNode of astNodes) {
+		jps.push(this.toJoinPoint(astNode));
+   }
+   
+   return jps;
+}
+

@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function CatchJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+CatchJp.prototype = Object.create(StmtJp.prototype);
+CatchJp.prototype.constructor = CatchJp;
+
+// JoinPoint Types
+CatchJp._JP_TYPES = new Set();
+_lara_dummy_ = CatchJp._JP_TYPES.add('catch');
+_lara_dummy_ = CatchJp._JP_TYPES.add('stmt');
+_lara_dummy_ = CatchJp._JP_TYPES.add('joinpoint');
+
+
+CatchJp.prototype.instanceOf = function(joinPointType) {
+	return CatchJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CatchJp.prototype.types = function(joinPointType) {
+	return CatchJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(CatchJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'catch'; }
+});
+

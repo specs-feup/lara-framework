@@ -1,0 +1,84 @@
+import weaver.jp.DeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FunctionJp(astNode) {
+    // Parent constructor
+    DeclJp.call(this,astNode);
+    
+}
+// Inheritance
+FunctionJp.prototype = Object.create(DeclJp.prototype);
+FunctionJp.prototype.constructor = FunctionJp;
+
+// JoinPoint Types
+FunctionJp._JP_TYPES = new Set();
+_lara_dummy_ = FunctionJp._JP_TYPES.add('function');
+_lara_dummy_ = FunctionJp._JP_TYPES.add('decl');
+_lara_dummy_ = FunctionJp._JP_TYPES.add('stmt');
+_lara_dummy_ = FunctionJp._JP_TYPES.add('joinpoint');
+
+
+FunctionJp.prototype.instanceOf = function(joinPointType) {
+	return FunctionJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new DeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FunctionJp.prototype.types = function(joinPointType) {
+	return FunctionJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'function'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'id', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.id not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'signature', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.signature not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'returnType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.returnType not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'params', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.params not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'stmts', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.stmts not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FunctionJp.prototype, 'hasBody', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.hasBody not implemented'; }
+});
+

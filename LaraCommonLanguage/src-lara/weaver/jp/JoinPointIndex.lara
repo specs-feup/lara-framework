@@ -1,0 +1,79 @@
+import weaver.jp.JoinPoint;
+import weaver.jp.ProgramJp;
+import weaver.jp.FileJp;
+import weaver.jp.StmtJp;
+import weaver.jp.DeclJp;
+import weaver.jp.InterfaceJp;
+import weaver.jp.ClassJp;
+import weaver.jp.ClassTypeJp;
+import weaver.jp.FunctionJp;
+import weaver.jp.MethodJp;
+import weaver.jp.ConstructorJp;
+import weaver.jp.FieldJp;
+import weaver.jp.ExprJp;
+import weaver.jp.CallJp;
+import weaver.jp.MemberCallJp;
+import weaver.jp.ConstructorCallJp;
+import weaver.jp.VarRefJp;
+import weaver.jp.FieldRefJp;
+import weaver.jp.VarDeclJp;
+import weaver.jp.ParamJp;
+import weaver.jp.TypeJp;
+import weaver.jp.IfJp;
+import weaver.jp.SwitchJp;
+import weaver.jp.CaseJp;
+import weaver.jp.LoopJp;
+import weaver.jp.TernaryJp;
+import weaver.jp.BinaryJp;
+import weaver.jp.TryJp;
+import weaver.jp.CatchJp;
+import weaver.jp.ThrowJp;
+import weaver.jp.DefaultJp;
+import weaver.jp.BreakJp;
+import weaver.jp.ContinueJp;
+import weaver.jp.GotoJp;
+import weaver.jp.ThenJp;
+import weaver.jp.ElseJp;
+import weaver.jp.LambdaJp;
+
+
+var classesMapping = {
+	'JoinPoint':JoinPoint,
+	'ProgramJp': ProgramJp,
+	'FileJp': FileJp,
+	'StmtJp': StmtJp,
+	'DeclJp': DeclJp,
+	'InterfaceJp': InterfaceJp,
+	'ClassJp': ClassJp,
+	'ClassTypeJp': ClassTypeJp,
+	'FunctionJp': FunctionJp,
+	'MethodJp': MethodJp,
+	'ConstructorJp': ConstructorJp,
+	'FieldJp': FieldJp,
+	'ExprJp': ExprJp,
+	'CallJp': CallJp,
+	'MemberCallJp': MemberCallJp,
+	'ConstructorCallJp': ConstructorCallJp,
+	'VarRefJp': VarRefJp,
+	'FieldRefJp': FieldRefJp,
+	'VarDeclJp': VarDeclJp,
+	'ParamJp': ParamJp,
+	'TypeJp': TypeJp,
+	'IfJp': IfJp,
+	'SwitchJp': SwitchJp,
+	'CaseJp': CaseJp,
+	'LoopJp': LoopJp,
+	'TernaryJp': TernaryJp,
+	'BinaryJp': BinaryJp,
+	'TryJp': TryJp,
+	'CatchJp': CatchJp,
+	'ThrowJp': ThrowJp,
+	'DefaultJp': DefaultJp,
+	'BreakJp': BreakJp,
+	'ContinueJp': ContinueJp,
+	'GotoJp': GotoJp,
+	'ThenJp': ThenJp,
+	'ElseJp': ElseJp,
+	'LambdaJp': LambdaJp
+};
+

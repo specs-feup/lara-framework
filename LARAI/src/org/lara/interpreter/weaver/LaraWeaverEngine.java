@@ -26,6 +26,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.lara.LaraApiJsResource;
 import pt.up.fe.specs.lara.LaraApis;
+import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
@@ -113,6 +114,8 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         var laraAPIs = new ArrayList<ResourceProvider>();
 
         laraAPIs.addAll(LaraApis.getApis());
+        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
+        // laraAPIs.addAll(getAspectsAPI());
         return laraAPIs;
     }
 

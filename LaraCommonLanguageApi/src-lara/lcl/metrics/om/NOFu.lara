@@ -1,0 +1,38 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Number of Functions
+ * @constructor
+ */
+function NOFu() {
+	var id = "OO-NOFu";
+	var name = "Number of Functions";
+	var sigla = "NOFu";
+	var author = "";
+	var year = "";
+	var description = "Number of Functions.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+
+}
+
+// Inheritance
+NOFu.prototype = Object.create(Metric.prototype);
+
+NOFu.prototype.calculateForProject = function() {
+	return Query.search("function").get().length;
+}
+
+NOFu.prototype.calculateForFile = function($file) {
+	return this.calculateForJoinPoint($file);
+}
+
+NOFu.prototype.calculateForClass = function($class) {
+	return this.calculateForJoinPoint($class);
+}
+
+NOFu.prototype.calculateForJoinPoint = function($jp) {
+	return Query.searchFrom($jp, "function").get().length;
+
+}

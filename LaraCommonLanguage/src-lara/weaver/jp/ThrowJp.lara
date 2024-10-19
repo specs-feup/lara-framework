@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ThrowJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+ThrowJp.prototype = Object.create(StmtJp.prototype);
+ThrowJp.prototype.constructor = ThrowJp;
+
+// JoinPoint Types
+ThrowJp._JP_TYPES = new Set();
+_lara_dummy_ = ThrowJp._JP_TYPES.add('throw');
+_lara_dummy_ = ThrowJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ThrowJp._JP_TYPES.add('joinpoint');
+
+
+ThrowJp.prototype.instanceOf = function(joinPointType) {
+	return ThrowJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ThrowJp.prototype.types = function(joinPointType) {
+	return ThrowJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ThrowJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'throw'; }
+});
+

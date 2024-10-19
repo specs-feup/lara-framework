@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ThenJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+ThenJp.prototype = Object.create(StmtJp.prototype);
+ThenJp.prototype.constructor = ThenJp;
+
+// JoinPoint Types
+ThenJp._JP_TYPES = new Set();
+_lara_dummy_ = ThenJp._JP_TYPES.add('then');
+_lara_dummy_ = ThenJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ThenJp._JP_TYPES.add('joinpoint');
+
+
+ThenJp.prototype.instanceOf = function(joinPointType) {
+	return ThenJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ThenJp.prototype.types = function(joinPointType) {
+	return ThenJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ThenJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'then'; }
+});
+

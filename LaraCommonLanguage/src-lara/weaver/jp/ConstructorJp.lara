@@ -1,0 +1,56 @@
+import weaver.jp.MethodJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ConstructorJp(astNode) {
+    // Parent constructor
+    MethodJp.call(this,astNode);
+    
+}
+// Inheritance
+ConstructorJp.prototype = Object.create(MethodJp.prototype);
+ConstructorJp.prototype.constructor = ConstructorJp;
+
+// JoinPoint Types
+ConstructorJp._JP_TYPES = new Set();
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('constructor');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('method');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('function');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('decl');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ConstructorJp._JP_TYPES.add('joinpoint');
+
+
+ConstructorJp.prototype.instanceOf = function(joinPointType) {
+	return ConstructorJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new MethodJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ConstructorJp.prototype.types = function(joinPointType) {
+	return ConstructorJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'constructor'; }
+});
+
+_lara_dummy_ = Object.defineProperty(ConstructorJp.prototype, 'superCalls', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.superCalls not implemented'; }
+});
+

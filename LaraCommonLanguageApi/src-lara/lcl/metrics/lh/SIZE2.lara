@@ -1,0 +1,25 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Size of properties defined in a class
+ * @constructor
+ */
+function SIZE2() {
+	var id = "LH-SIZE2";
+	var name = "Size of properties defined in a class";
+	var sigla = "SIZE2";
+	var author = "Li and Henry";
+	var year = 1993;
+	var description = "Size of properties defined in a class (SIZE2) sums the number of attributes and methods of a class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+SIZE2.prototype = Object.create(Metric.prototype);
+
+// Override
+SIZE2.prototype.calculateForClass = function($class) {
+	return $class.allMethods.length + $class.fields.length;
+}

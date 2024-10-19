@@ -1,0 +1,48 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ContinueJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+ContinueJp.prototype = Object.create(StmtJp.prototype);
+ContinueJp.prototype.constructor = ContinueJp;
+
+// JoinPoint Types
+ContinueJp._JP_TYPES = new Set();
+_lara_dummy_ = ContinueJp._JP_TYPES.add('continue');
+_lara_dummy_ = ContinueJp._JP_TYPES.add('stmt');
+_lara_dummy_ = ContinueJp._JP_TYPES.add('joinpoint');
+
+
+ContinueJp.prototype.instanceOf = function(joinPointType) {
+	return ContinueJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ContinueJp.prototype.types = function(joinPointType) {
+	return ContinueJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ContinueJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'continue'; }
+});
+

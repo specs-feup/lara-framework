@@ -1,0 +1,86 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Cyclomatic complexity
+ * @constructor
+ */
+function CycloComplex() {
+	var id = "OO-CyC";
+	var name = "Cyclomatic complexity";
+	var sigla = "CycloComplex";
+	var author = "Thomas J. McCabe";
+	var year = 1976;
+	var description = "Cyclomatic complexity (CyC) measures the number of linearly independent paths through a program's source code.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+
+}
+
+// Inheritance
+CycloComplex.prototype = Object.create(Metric.prototype);
+
+
+CycloComplex.prototype.calculateForProject = function() {
+	var value = 0;
+	for ($file of  Query.search("file"))
+		value += this.calculateForFile($file);
+	return value;
+}
+
+
+CycloComplex.prototype.calculateForJoinPoint = function($jp) {
+	var complexityCounter = 0;
+
+	complexityCounter += $jp.instanceOf('if')?1:0;
+	complexityCounter += $jp.instanceOf('loop')?1:0;
+	complexityCounter += $jp.instanceOf('ternary')?1:0;
+	complexityCounter += ($jp.instanceOf('case') && !$jp.instanceOf('default'))?1:0;
+	complexityCounter += ($jp.instanceOf('binary')&& ($jp.kind === '&&' || $jp.kind === '||'))?1:0;
+	complexityCounter += $jp.instanceOf('goto')?1:0;
+	complexityCounter += ($jp.instanceOf('function') && $jp.hasBody)?1:0;
+	complexityCounter += $jp.instanceOf('lambda')?1:0;
+
+	// Optional join points
+	//complexityCounter += $jp.instanceOf('switch')?1:0;
+	//complexityCounter += $jp.instanceOf('try')?1:0;  // try catch are 1
+	//complexityCounter += $jp.instanceOf('throw')?1:0;
+	//complexityCounter += $jp.instanceOf('break')?1:0;
+	//complexityCounter += $jp.instanceOf('continue')?1:0;
+
+	return complexityCounter;
+
+}
+
+CycloComplex.prototype.calculateForFile = function($file) {
+	var complexityCounter = 0;
+
+	for(jp of $file.descendants){
+		complexityCounter += this.calculateForJoinPoint(jp);	
+	
+	}
+	
+	return complexityCounter;
+}
+
+CycloComplex.prototype.calculateForClass = function($class) {
+	var complexityCounter = 0;
+	for ($method of $class.allMethods){
+		complexityCounter += this.calculateForFunction($method);
+		complexityCounter++;
+	}
+
+	return complexityCounter;
+}
+
+
+
+CycloComplex.prototype.calculateForFunction = function($function) {
+	var complexityCounter = 0;
+
+	for(jp of $function.descendants){
+		complexityCounter += this.calculateForJoinPoint(jp);	
+	}
+	
+	return complexityCounter;
+}

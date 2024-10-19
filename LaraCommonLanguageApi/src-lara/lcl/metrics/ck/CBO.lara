@@ -1,0 +1,67 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Coupling between Object Classes
+ * @constructor
+ */
+function CBO() {
+	var id = "CK-CBO";
+	var name = "Coupling between Object Classes";
+	var sigla = "CBO";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Coupling between Object Classes (CBO) measures the number of classes to which a class is coupled.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+CBO.prototype = Object.create(Metric.prototype);
+
+
+// Override
+
+CBO.prototype.calculateForClass = function($class) {
+
+	var classesCoupled = new Set();
+
+	var memberAccesses = [];
+	var $varDecls = [];
+
+	var typesUsed = [];
+	var members = $class.fields.concat($class.allMethods);
+	for(member of members){
+		if(member.instanceOf("varDecl"))
+			$varDecls.push(member);
+	
+		for(jp of member.descendants){
+			if(jp.instanceOf("fieldRef") || jp.instanceOf("memberCall"))
+				memberAccesses.push(jp);
+	
+			if(jp.instanceOf("varDecl"))
+				$varDecls.push(jp);
+	
+		}
+	}
+
+	$class.allSuperClasses.forEach($classSuper => classesCoupled.add($classSuper.id));	
+	
+	memberAccesses = memberAccesses.filter(memberAccess=> memberAccess.class !== null && memberAccess.class.id !== $class.id && memberAccess.class.isCustom);	
+	memberAccesses.forEach(memberAccess => classesCoupled.add(memberAccess.class.id));
+
+	$varDecls = $varDecls.filter($varDecl => $varDecl.type != null); // when not in classpath
+	$varDecls.forEach($varDecl => typesUsed=typesUsed.concat($varDecl.type.usedTypes));
+
+	
+
+	$class.methods.forEach($method => {
+		typesUsed=typesUsed.concat($method.returnType.usedTypes);
+	});		
+		
+	typesUsed = typesUsed.filter($type => $type.isClass && $type.decl.id !== $class.id && $type.decl.isCustom);
+	typesUsed.forEach($type => classesCoupled.add($type.decl.id));
+
+	return classesCoupled.size;
+
+}

@@ -1,0 +1,82 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function TypeJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+TypeJp.prototype = Object.create(JoinPoint.prototype);
+TypeJp.prototype.constructor = TypeJp;
+
+// JoinPoint Types
+TypeJp._JP_TYPES = new Set();
+_lara_dummy_ = TypeJp._JP_TYPES.add('type');
+_lara_dummy_ = TypeJp._JP_TYPES.add('joinpoint');
+
+
+TypeJp.prototype.instanceOf = function(joinPointType) {
+	return TypeJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+TypeJp.prototype.types = function(joinPointType) {
+	return TypeJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'type'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isArray', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isArray not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isPointer', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isPointer not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isPrimitive', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isPrimitive not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isClass', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isClass not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isInterface', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isInterface not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'isClassType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isClassType not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(TypeJp.prototype, 'classType', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.classType not implemented'; }
+});
+

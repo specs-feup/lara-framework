@@ -1,0 +1,58 @@
+import weaver.jp.ExprJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function CallJp(astNode) {
+    // Parent constructor
+    ExprJp.call(this,astNode);
+    
+}
+// Inheritance
+CallJp.prototype = Object.create(ExprJp.prototype);
+CallJp.prototype.constructor = CallJp;
+
+// JoinPoint Types
+CallJp._JP_TYPES = new Set();
+_lara_dummy_ = CallJp._JP_TYPES.add('call');
+_lara_dummy_ = CallJp._JP_TYPES.add('expr');
+_lara_dummy_ = CallJp._JP_TYPES.add('joinpoint');
+
+
+CallJp.prototype.instanceOf = function(joinPointType) {
+	return CallJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+CallJp.prototype.types = function(joinPointType) {
+	return CallJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'call'; }
+});
+
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'name', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.name not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(CallJp.prototype, 'function', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.function not implemented'; }
+});
+

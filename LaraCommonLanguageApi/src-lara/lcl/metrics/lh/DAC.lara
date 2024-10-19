@@ -1,0 +1,35 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Data Abstraction Coupling
+ * @constructor
+ */
+function DAC() {
+	var id = "LH-DAC";
+	var name = "Data Abstraction Coupling";
+	var sigla = "DAC";
+	var author = "Li and Henry";
+	var year = 1993;
+	var description = "Data Abstraction Coupling (DAC) counts the number of attributes in a class that have another class as their type.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+DAC.prototype = Object.create(Metric.prototype);
+
+// Override
+DAC.prototype.calculateForClass = function($class) {
+
+	var classesCoupled = new Set();
+	
+	var $fieldsTypes = $class.fields.reduce(($types, $field) => {
+		return $types.concat($field.type.usedTypes);
+	},[]);	
+	
+	$fieldsTypes = $fieldsTypes.filter($type => $type.isClass && $type.decl.id !== $class.id && $type.decl.isCustom);
+	$fieldsTypes.forEach($type => classesCoupled.add($type.decl.id));
+
+	return classesCoupled.size;
+}

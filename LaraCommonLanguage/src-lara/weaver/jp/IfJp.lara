@@ -1,0 +1,73 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function IfJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+IfJp.prototype = Object.create(StmtJp.prototype);
+IfJp.prototype.constructor = IfJp;
+
+// JoinPoint Types
+IfJp._JP_TYPES = new Set();
+_lara_dummy_ = IfJp._JP_TYPES.add('if');
+_lara_dummy_ = IfJp._JP_TYPES.add('stmt');
+_lara_dummy_ = IfJp._JP_TYPES.add('joinpoint');
+
+
+IfJp.prototype.instanceOf = function(joinPointType) {
+	return IfJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+IfJp.prototype.types = function(joinPointType) {
+	return IfJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'if'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'condition', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.condition not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'then', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.then not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'else', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.else not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'hasElse', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.hasElse not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(IfJp.prototype, 'isElseIf', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.isElseIf not implemented'; }
+});
+

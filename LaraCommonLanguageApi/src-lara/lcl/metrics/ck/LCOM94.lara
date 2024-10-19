@@ -1,0 +1,73 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Lack of Cohesion of Methods
+ * @constructor
+ */
+function LCOM94() {
+	var id = "CK-LCOM";
+	var name = "Lack of Cohesion of Methods";
+	var sigla = "LCOM94";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Lack of Cohesion of Methods (LCOM) describes the lack of cohesion among the methods of a class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+	
+// Inheritance
+LCOM94.prototype = Object.create(Metric.prototype);
+
+
+LCOM94.prototype.calculateForClass = function($class) {
+
+	var methodFieldRefsMap = new Map();
+
+	for ($method of $class.methods){
+		var $fieldRefs = Query.searchFrom($method,"fieldRef").get();
+		$fieldRefs = $fieldRefs.filter($fieldRef=> $fieldRef.field!==null && $fieldRef.class.id === $class.id);
+		var fieldRefsIds = $fieldRefs.map($fieldRef => $fieldRef.field.id);
+		methodFieldRefsMap.set($method.id,new Set(fieldRefsIds));
+
+	}
+
+
+	var numPairMethodCommomFieldAccess = 0; // Q
+	var numPairMethodNoCommomFieldAccess = 0; // P
+
+	var methods = $class.methods;
+
+	for (i = 0; i < methods.length; i++)
+		for (j = i + 1; j < methods.length; j++){
+			var method1Id = methods[i].id;
+			var method2Id = methods[j].id;
+
+			var setMethod1 = methodFieldRefsMap.get(method1Id);
+			var setMethod2 = methodFieldRefsMap.get(method2Id);
+
+			
+
+			if(!hasIntersectionSets(setMethod1,setMethod2))
+	      		numPairMethodNoCommomFieldAccess++;
+	      	else numPairMethodCommomFieldAccess++;
+
+		}
+
+	// LCOM = |P| - |Q|, if |P| > |Q|
+	// LCOM = 0, if |P| <= |Q|
+	
+	var lcom = Math.max((numPairMethodNoCommomFieldAccess - numPairMethodCommomFieldAccess), 0);
+
+	return lcom; 
+}
+
+function hasIntersectionSets(setA, setB){
+    var _intersection = new Set();
+    for (var elem of setB) {
+        if (setA.has(elem)) {
+            return true;
+        }
+    }
+    return false;
+}

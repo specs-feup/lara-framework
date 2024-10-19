@@ -1,0 +1,5 @@
+_lara_dummy_ = Object.defineProperty(<THIS_JP>.prototype, '<ATT>', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.<ATT> not implemented'; }
+});
+

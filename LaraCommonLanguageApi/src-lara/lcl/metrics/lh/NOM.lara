@@ -1,0 +1,25 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Number Of Methods
+ * @constructor
+ */
+function NOM() {
+	var id = "LH-NOM";
+	var name = "Number Of Methods";
+	var sigla = "NOM";
+	var author = "Li and Henry";
+	var year = 1993;
+	var description = "Number Of Methods (NOM) counts the number of local methods.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+NOM.prototype = Object.create(Metric.prototype);
+
+// Override
+NOM.prototype.calculateForClass = function($class) {
+	return $class.allMethods.length;
+}

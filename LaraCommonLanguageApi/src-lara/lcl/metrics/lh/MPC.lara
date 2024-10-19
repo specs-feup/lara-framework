@@ -1,0 +1,34 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Message Passing Coupling
+ * @constructor
+ */
+function MPC() {
+	var id = "LH-MPC";
+	var name = "Message Passing Coupling";
+	var sigla = "MPC";
+	var author = "Li and Henry";
+	var year = 1993;
+	var description = "Message Passing Coupling (MPC) counts the number of send statements defined in a class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+MPC.prototype = Object.create(Metric.prototype);
+
+// Override
+MPC.prototype.calculateForClass = function($class) {
+
+	var classesCoupled = new Set();
+
+	for ($method of $class.methods){		
+		var $memberCalls = Query.searchFrom($method, "memberCall").get();
+		$memberCalls = $memberCalls.filter($memberCall=> $memberCall.class !== null && $memberCall.class.id !== $class.id && $memberCall.class.isCustom);
+		$memberCalls.forEach($memberCall => classesCoupled.add($memberCall.class.id));
+	}
+
+	return classesCoupled.size;
+}

@@ -1,0 +1,58 @@
+import weaver.jp.StmtJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function LoopJp(astNode) {
+    // Parent constructor
+    StmtJp.call(this,astNode);
+    
+}
+// Inheritance
+LoopJp.prototype = Object.create(StmtJp.prototype);
+LoopJp.prototype.constructor = LoopJp;
+
+// JoinPoint Types
+LoopJp._JP_TYPES = new Set();
+_lara_dummy_ = LoopJp._JP_TYPES.add('loop');
+_lara_dummy_ = LoopJp._JP_TYPES.add('stmt');
+_lara_dummy_ = LoopJp._JP_TYPES.add('joinpoint');
+
+
+LoopJp.prototype.instanceOf = function(joinPointType) {
+	return LoopJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new StmtJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+LoopJp.prototype.types = function(joinPointType) {
+	return LoopJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(LoopJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'loop'; }
+});
+
+_lara_dummy_ = Object.defineProperty(LoopJp.prototype, 'condition', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.condition not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(LoopJp.prototype, 'hasCondition', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.hasCondition not implemented'; }
+});
+

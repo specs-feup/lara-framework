@@ -1,0 +1,92 @@
+import lcl.metrics.Metric;
+
+/**
+ * Measures the Cognitive Complexity
+ * @constructor
+ */
+function CogniComplex() {
+	var id = "OO-CoC";
+	var name = "Cognitive Complexity";
+	var sigla = "CogniComplex";
+	var author = "G. Ann Campbell";
+	var year = 2018;
+	var description = "CogniComplex (CoC) measure the relative understandability of methods.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+
+}
+
+// Inheritance
+CogniComplex.prototype = Object.create(Metric.prototype);
+
+CogniComplex.prototype.calculateForProject = function() {
+	var value = 0;
+	for ($file of  Query.search("file"))
+		value += this.calculateForFile($file);
+	return value;
+}
+
+CogniComplex.prototype.calculateForFile = function($file) {
+	return this.calculateForJoinPoint($file);
+}
+
+CogniComplex.prototype.calculateForClass = function($class) {
+	var complexityCounter = 0;
+	for ($method of $class.allMethods){
+		complexityCounter += this.calculateForFunction($method);
+	}
+
+	return complexityCounter;
+}
+
+
+CogniComplex.prototype.calculateForFunction = function($function) {
+	return this.calculateForJoinPoint($function);
+
+}
+
+CogniComplex.prototype.calculateForJoinPoint = function($jp) {
+	var complexityCounter = 0;
+	
+	var stmtStack = [];
+	$jp.children.forEach(stmt => stmtStack.push({'stmt':stmt,'nesting':0}));
+
+    while (stmtStack.length !== 0) 
+    { 
+    	var stmtTop =  stmtStack.shift();
+    	var stmt = stmtTop.stmt;
+    	var nesting = stmtTop.nesting;
+
+		//B1
+    	if(stmt.instanceOf('if') || (stmt.instanceOf('else') && !stmt.isElseIf) || 
+    		stmt.instanceOf('ternary') || stmt.instanceOf('switch') ||
+    		 stmt.instanceOf('loop')|| stmt.instanceOf('catch') || stmt.instanceOf('goto')
+    		 || (stmt.instanceOf('binary') && stmt.isLogicOp && stmt.isInnerExpr && stmt.kind !== stmt.outerExpr.kind )
+    		 || (stmt.instanceOf('binary') && stmt.isLogicOp && !stmt.isInnerExpr)
+    		 ){
+    		complexityCounter++;    		
+    	}
+
+		//B3
+    	if((stmt.instanceOf('if') && !stmt.isElseIf ) ||
+    		stmt.instanceOf('ternary') || stmt.instanceOf('switch') ||
+    		 stmt.instanceOf('loop')|| stmt.instanceOf('catch')){
+    		complexityCounter+=nesting;
+    	}
+
+		//B2
+    	if(stmt.instanceOf('if')  && !stmt.isElseIf  || 
+    		stmt.instanceOf('ternary') || stmt.instanceOf('switch') ||
+    		 stmt.instanceOf('loop')|| stmt.instanceOf('catch')
+    		 || stmt.instanceOf('lambda')
+    		 ){
+    		nesting++;
+    	}
+
+    	stmt.children.slice().reverse().forEach(stmtChild => stmtStack.unshift({'stmt':stmtChild,'nesting':nesting}));
+
+    } 
+
+	return complexityCounter;
+}

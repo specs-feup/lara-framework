@@ -1,0 +1,49 @@
+import lcl.metrics.Metric;
+ 
+/**
+ * Measures the Response For Class
+ * @constructor
+ */
+function RFC() {
+	var id = "CK-RFC";
+	var name = "Response For Class";
+	var sigla = "RFC";
+	var author = "Chidamber and Kemerer";
+	var year = 1994;
+	var description = "Response For Class (RFC) measures the set of methods that can potentially be executed in response to a message received by an object of that class.";
+
+    // Parent constructor    
+    Metric.call(this, id, name, sigla, author, year, description);
+}
+
+// Inheritance
+RFC.prototype = Object.create(Metric.prototype);
+
+
+RFC.prototype.calculateForClass = function($class) {
+
+	// Given a class, its RFC is the addition of:
+	// Method elements
+	// References to any Method
+
+	var methodsIds = new Set();
+
+	
+	for (var $method of $class.allMethods){
+		methodsIds.add($method.id);
+		
+		// Get super calls
+		if($method.instanceOf('constructor')){
+			for(constructorCall of $method.superCalls)
+				methodsIds.add(constructorCall.constructor.id);
+		}
+		
+		for($memberCall of Query.searchFrom($method,"memberCall")){			
+			if($memberCall.method !== null && $memberCall.method.isCustom){
+				methodsIds.add($memberCall.method.id);
+			}
+		}
+	}
+	
+	return methodsIds.size;
+}

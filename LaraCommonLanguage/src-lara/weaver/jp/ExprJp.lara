@@ -1,0 +1,47 @@
+import weaver.jp.JoinPoint;
+
+/**
+ * 
+ *
+ * @class
+ */
+function ExprJp(astNode) {
+    // Parent constructor
+    JoinPoint.call(this,astNode);
+    
+}
+// Inheritance
+ExprJp.prototype = Object.create(JoinPoint.prototype);
+ExprJp.prototype.constructor = ExprJp;
+
+// JoinPoint Types
+ExprJp._JP_TYPES = new Set();
+_lara_dummy_ = ExprJp._JP_TYPES.add('expr');
+_lara_dummy_ = ExprJp._JP_TYPES.add('joinpoint');
+
+
+ExprJp.prototype.instanceOf = function(joinPointType) {
+	return ExprJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new JoinPoint(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+ExprJp.prototype.types = function(joinPointType) {
+	return ExprJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(ExprJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'expr'; }
+});
+

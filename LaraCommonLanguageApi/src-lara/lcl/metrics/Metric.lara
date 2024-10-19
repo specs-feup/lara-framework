@@ -1,0 +1,82 @@
+import lcl.LaraCommonLanguage;
+
+/**
+ * Reprents a metric we want to extract.
+ * @constructor
+ * @param {string} id - Unique id for the metric
+ * @param {string} name - The name of the metric
+ * @param {string} sigla - The sigla of the metric
+ * @param {string} author - The author of the metric
+ * @param {number} year - The year in which the metric was purposed
+ * @param {string} description - The name of the metric
+ */
+function Metric(id, name, sigla, author, year, description) {
+	this.id = id;
+	this.name = name;
+	this.sigla = sigla;
+	this.author = author;
+	this.year = year;
+	this.description = description;
+	//this.recommendedValue = description;
+}
+
+
+/**
+ * Get the metric's name.
+ *
+ * @return {string} metric's name
+ */
+Metric.prototype.getName = function() {
+	return this.name;
+}
+
+/**
+ * Get the metric's author.
+ *
+ * @return {string} metric's author
+ */
+Metric.prototype.getAuthor = function() {
+	return this.author;
+}
+
+/**
+ * Get the metric's year.
+ *
+ * @return {string} metric's year
+ */
+Metric.prototype.getYear = function() {
+	return this.year;
+}
+
+/**
+ * Get the metric's description.
+ *
+ * @return {string} metric's description
+ */
+Metric.prototype.getDescription = function() {
+	return this.description;
+}
+
+/**
+ * Calculate metric.
+ *
+ * @param {joinpoint} $joinpoint - join point where the metric is gonna be calculated
+ * @return {number} metric's value
+ */
+/*
+Metric.prototype.calculate = function($joinpoint) {
+	throw new Error('Calculation not implemented');
+}
+*/
+
+/**
+ * Calculate metric for a class.
+ *
+ * @param {class} $class - class where the metric is gonna be calculated
+ * @return {number} metric's value
+ */
+ /*
+Metric.prototype.calculateForClass = function($class) {
+	throw new Error('Calculation not implemented');
+}
+*/

@@ -1,0 +1,3 @@
+<THIS_JP>.prototype.<ATT> = function(<PARAMS>) {
+	throw this.constructor.name + '.<ATT> not implemented';
+}

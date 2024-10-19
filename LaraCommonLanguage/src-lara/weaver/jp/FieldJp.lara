@@ -1,0 +1,65 @@
+import weaver.jp.VarDeclJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function FieldJp(astNode) {
+    // Parent constructor
+    VarDeclJp.call(this,astNode);
+    
+}
+// Inheritance
+FieldJp.prototype = Object.create(VarDeclJp.prototype);
+FieldJp.prototype.constructor = FieldJp;
+
+// JoinPoint Types
+FieldJp._JP_TYPES = new Set();
+_lara_dummy_ = FieldJp._JP_TYPES.add('field');
+_lara_dummy_ = FieldJp._JP_TYPES.add('varDecl');
+_lara_dummy_ = FieldJp._JP_TYPES.add('decl');
+_lara_dummy_ = FieldJp._JP_TYPES.add('stmt');
+_lara_dummy_ = FieldJp._JP_TYPES.add('joinpoint');
+
+
+FieldJp.prototype.instanceOf = function(joinPointType) {
+	return FieldJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new VarDeclJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+FieldJp.prototype.types = function(joinPointType) {
+	return FieldJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'field'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'id', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.id not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'class', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.class not implemented'; }
+});
+
+_lara_dummy_ = Object.defineProperty(FieldJp.prototype, 'type', {
+	configurable: true,
+	get: function () { throw this.constructor.name + '.type not implemented'; }
+});
+

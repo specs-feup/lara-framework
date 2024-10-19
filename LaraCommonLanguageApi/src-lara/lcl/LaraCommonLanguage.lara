@@ -1,0 +1,10 @@
+import weaver.jp.CommonJoinPoints;
+
+/**
+ * Importing this class enables the LARA Common Language. 
+ *
+ * Check the language specification here: http://specs.fe.up.pt/tools/lcl/language_specification.html
+ *
+ * @class
+ */
+var LaraCommonLanguage = {};

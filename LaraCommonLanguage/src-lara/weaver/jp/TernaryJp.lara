@@ -1,0 +1,48 @@
+import weaver.jp.ExprJp;
+
+/**
+ * 
+ *
+ * @class
+ */
+function TernaryJp(astNode) {
+    // Parent constructor
+    ExprJp.call(this,astNode);
+    
+}
+// Inheritance
+TernaryJp.prototype = Object.create(ExprJp.prototype);
+TernaryJp.prototype.constructor = TernaryJp;
+
+// JoinPoint Types
+TernaryJp._JP_TYPES = new Set();
+_lara_dummy_ = TernaryJp._JP_TYPES.add('ternary');
+_lara_dummy_ = TernaryJp._JP_TYPES.add('expr');
+_lara_dummy_ = TernaryJp._JP_TYPES.add('joinpoint');
+
+
+TernaryJp.prototype.instanceOf = function(joinPointType) {
+	return TernaryJp._JP_TYPES.has(joinPointType);
+	
+	/*
+	if(joinPointType === this.joinPointType) {
+		return true;
+	}
+	
+	return (new ExprJp(this.astNode)).instanceOf(joinPointType);
+	*/
+}
+
+
+/**
+ * @return an Iterator with the types of this join point.
+ */
+TernaryJp.prototype.types = function(joinPointType) {
+	return TernaryJp._JP_TYPES.values();
+}
+
+_lara_dummy_ = Object.defineProperty(TernaryJp.prototype, 'joinPointType', {
+	configurable: true,
+	get: function () { return 'ternary'; }
+});
+
