@@ -262,13 +262,7 @@ public class LaraI {
 
         // Set store definition
 
-        String weaverName = weaverEngine.getName();
-        StoreDefinition weaverKeys = new StoreDefinitionBuilder(weaverName)
-                // Add LaraI keys
-                .addDefinition(LaraiKeys.STORE_DEFINITION)
-                // Add weaver custom keys
-                .addDefinition(weaverEngine.getStoreDefinition())
-                .build();
+        StoreDefinition weaverKeys = getStoreDefinition(weaverEngine);
 
         dataStore.setStoreDefinition(weaverKeys);
 
@@ -278,6 +272,16 @@ public class LaraI {
             dataStore.setPersistence(persistence);
         }
 
+    }
+
+    public static StoreDefinition getStoreDefinition(WeaverEngine weaverEngine) {
+        String weaverName = weaverEngine.getName();
+        return new StoreDefinitionBuilder(weaverName)
+                // Add LaraI keys
+                .addDefinition(LaraiKeys.STORE_DEFINITION)
+                // Add weaver custom keys
+                .addDefinition(weaverEngine.getStoreDefinition())
+                .build();
     }
 
     // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
