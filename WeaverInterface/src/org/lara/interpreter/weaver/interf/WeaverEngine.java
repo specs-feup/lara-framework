@@ -86,17 +86,6 @@ public abstract class WeaverEngine {
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
-//    /**
-//     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
-//     *
-//     * @deprecated should only use getAspectAPU(), getNpmResources() and getWeaverApiName()
-//     */
-//    @Deprecated
-//    protected void addWeaverApis() {
-//        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
-//        addApis(getName(), getAspectsAPI());
-//    }
-
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
     }
@@ -147,17 +136,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time
-     *
-     * @return true if the weaver is able to work with several files, false if only works with one file
-     * @deprecated this method is not called anymore as LaraI now assumes that the weaver always accepts a folder
-     */
-    @Deprecated
-    public boolean handlesApplicationFolder() {
-        return true;
-    }
-
-    /**
      * Starts execution of the weaver, for the given arguments
      *
      * @param sources
@@ -183,12 +161,6 @@ public abstract class WeaverEngine {
      * @return if close was successful
      */
     public abstract boolean close();
-
-    /**
-     *
-     *
-     * @return an instance of the join point root/program
-     */
 
     /**
      *
@@ -223,12 +195,7 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    // default
-    public abstract List<WeaverOption> getOptions()
-    // {
-    // return Collections.emptyList();
-    // }
-    ;
+    public abstract List<WeaverOption> getOptions();
 
     /**
      * The store definition for the options specific to this weaver
@@ -371,21 +338,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * The names of the weaver. These strings will be used to process folders for LARA bundles.
-     *
-     * @return the names of the weaver. By default, returns the class name in lower-case, and without the suffix
-     *         "weaver", if one is present
-     */
-    // public Set<String> getWeaverNames() {
-    // String weaverName = getClass().getSimpleName().toLowerCase();
-    // if (weaverName.endsWith("weaver")) {
-    // weaverName = weaverName.substring(0, weaverName.length() - "weaver".length());
-    // }
-    //
-    // return new HashSet<>(Arrays.asList(weaverName));
-    // }
-
-    /**
      * The languages supported by the weaver. These strings will be used to process folders for LARA bundles.
      *
      * @return the languages supported by the weaver. By default, returns empty.
@@ -454,16 +406,6 @@ public abstract class WeaverEngine {
     }
 
     public String getDefaultAttribute(String joinPointType) {
-        // var langSpec = getLanguageSpecification();
-        //
-        // var artifact = langSpec.getArtifacts().getArtifact(joinPointType);
-        // System.out.println(
-        // "ART TYPE: " + artifact.getClazz() + "; " + artifact.getTooltip() + "; " + artifact.getDefault());
-        // for (var art : artifact.getAttribute()) {
-        // System.out.println("ATTR NAME: " + art.getName());
-        // }
-        // return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
-
         var jp = getLanguageSpecificationV2().getJoinPoint(joinPointType);
         if (jp == null) {
             throw new RuntimeException("Used unsupported join point '" + joinPointType + "'");

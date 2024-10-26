@@ -47,39 +47,17 @@ public abstract class BaseException extends RuntimeException {
      *
      * @return
      */
-    protected abstract String generateSimpleMessage();
+    protected String generateSimpleMessage() {
+        return LARAExceptionBuilder.getEvaluationExceptionMessage();
+    }
 
     @Override
     public String getMessage() {
-        // return generateMessage();
-        String message = generateMessage();
-
-        // Throwable primaryCause = this;
-        // while (primaryCause.getCause() != null) {
-        // primaryCause = primaryCause.getCause();
-        // }
-        //
-        // if (primaryCause != this) {
-        // StringBuilder cause = new StringBuilder();
-        // cause.append("Primary cause:");
-        // for (var element : primaryCause.getStackTrace()) {
-        // cause.append("\n").append(element);
-        // }
-        //
-        // message += "\n" + cause.toString();
-        // }
-
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        return message;
+        return generateMessage();
     }
 
     public String getSimpleMessage() {
         return generateSimpleMessage();
-        // String message = generateSimpleMessage();
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        // return message;
     }
 
 

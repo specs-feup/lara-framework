@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import pt.up.fe.specs.util.SpecsIo;
 
 public enum LaraExtension {
-    LARA,
     JS,
     MJS;
 
