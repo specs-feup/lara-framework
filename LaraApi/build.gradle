@@ -19,15 +19,12 @@ repositories {
 dependencies {
 	testImplementation "junit:junit:4.11"     
 	
-	implementation ':SpecsUtils'
-	implementation ':CommonsLangPlus'
+   implementation ':SpecsUtils'
 	implementation ':Gprofer'
 	implementation ':XStreamPlus'
-	implementation ':LaraUtils'		
+   implementation ':LaraUtils'
 	
 	implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.7'
-	
-
 }
 
 java {

@@ -1,7 +1,6 @@
 rootProject.name = 'LaraApi'
 
 includeBuild("../../specs-java-libs/SpecsUtils")
-includeBuild("../../specs-java-libs/CommonsLangPlus")
 includeBuild("../../specs-java-libs/Gprofer")
 includeBuild("../../specs-java-libs/XStreamPlus")
 includeBuild("../../lara-framework/LaraUtils")

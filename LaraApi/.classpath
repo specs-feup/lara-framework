@@ -16,7 +16,6 @@
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Gprofer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/XStreamPlus"/>
 	<classpathentry kind="output" path="bin/default"/>
