@@ -16,13 +16,7 @@ package others.exceptions;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.lara.interpreter.exception.ApplyException;
-import org.lara.interpreter.exception.AspectDefException;
 import org.lara.interpreter.exception.LaraIException;
-import org.lara.interpreter.exception.PointcutExprException;
-import org.lara.interpreter.exception.SelectException;
-
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 public class ExceptionTest {
 
@@ -47,65 +41,9 @@ public class ExceptionTest {
     public static void testLARAIException(int level) {
 
         try {
-            if (level <= 0) {
-                throw new NumberFormatException("the error was given in larai");
-            }
-
-            testAspectDefException(level);
+            throw new NumberFormatException("the error was given in larai");
         } catch (Exception cause) {
             throw new LaraIException("file.lara", "execution", cause);
-        }
-    }
-
-    private static void testAspectDefException(int level) {
-
-        try {
-            if (level == 1) {
-                throw new NullPointerException();
-            }
-            testPointcutException(level);
-            testApplyException(level);
-
-        } catch (Exception e) {
-            throw new AspectDefException("main", "file.lara", 2, 4, e);
-        }
-    }
-
-    private static void testPointcutException(int level) {
-
-        try {
-            if (level == 2) {
-                throw new NotImplementedException("select is not implemented");
-            }
-
-            testSelectException(level);
-
-        } catch (Exception e) {
-            String[] chain = { "file", "function", "body", "var" };
-            throw new PointcutExprException("select1", chain, 2, e);
-
-        }
-    }
-
-    private static void testSelectException(int level) {
-        try {
-            if (level == 3) {
-                throw new NullPointerException("join point list was null");
-            }
-        } catch (Exception e) {
-            throw new SelectException("function", "body", e);
-        }
-
-    }
-
-    private static void testApplyException(int level) {
-
-        try {
-
-            throw new RuntimeException("Action was not applied");
-
-        } catch (Exception e) {
-            throw new ApplyException("apply1", "select1", null, e);
         }
     }
 }

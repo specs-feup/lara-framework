@@ -36,7 +36,6 @@ public class Interpreter {
     public static final String ATTRIBUTES = "attributes";
     public static final String TOOLS_CONTEXT = "tools";
 
-    public static final String JPUTILS_NAME = "__jpUtils";
     private final LaraI laraInterp;
     private final LaraIDataStore options;
     private Output out = new Output();
