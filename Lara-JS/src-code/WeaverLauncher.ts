@@ -13,6 +13,9 @@ import {
 } from "./ChildProcessHandling.js";
 import WeaverConfiguration from "./WeaverConfiguration.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
+import { writeFileSync } from "fs";
+
+import { Weaver } from "./Weaver.js";
 
 listenForTerminationSignals();
 
@@ -28,7 +31,46 @@ export default class WeaverLauncher {
     this.debug = Debug(`WeaverLauncher:${this.config.weaverPrettyName}:main`);
   }
 
-  async execute(customArgs: string | undefined = undefined): Promise<void> {
+  /*
+  executeSync(customArgs: string[] | undefined = undefined): void {
+    const cliArgs = customArgs ?? hideBin(process.argv);
+
+    if (cliArgs.length > 0 && cliArgs[0] === "classic") {
+      const weaverArgs = cliArgs.slice(1);
+      console.log(
+        `Executing ${this.config.weaverPrettyName} script in classic CLI mode...`
+      );
+    }
+
+    await execute(customArgs);
+  }
+  */
+
+  async execute(customArgs: string[] | undefined = undefined): Promise<void> {
+    const cliArgs = customArgs ?? hideBin(process.argv);
+
+    if (cliArgs.length > 0 && cliArgs[0] === "classic") {
+      const weaverArgs = cliArgs.slice(1);
+
+      return new Promise<void>((resolve, reject) => {
+        try {
+          console.log(
+            `Executing ${this.config.weaverPrettyName} script in classic CLI mode...`
+          );
+          // TODO: Avoid using a third-party data object (i.e., Arguments) in our main interface
+          // TODO: Use instead the argument-handling launcher Java code instead of reimplementing it
+          void this.main({
+            $0: weaverArgs[0],
+            _: [],
+            scriptFile: weaverArgs[0],
+            configClassic: weaverArgs,
+          } as Arguments);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    }
+
     await this.generateConfig(customArgs).parse();
   }
 
@@ -63,6 +105,21 @@ export default class WeaverLauncher {
   }
 
   protected async executeWeaver(args: Arguments) {
+    // Check if Classic CLI
+    const isClassicCli =
+      args.configClassic !== undefined && args.configClassic !== null;
+
+    // If classic CLI, do not spawn processes, execute directly
+    if (isClassicCli) {
+      await Weaver.setupWeaver(args, this.config);
+
+      Weaver.start();
+
+      await Weaver.executeScript(args, this.config);
+      Weaver.shutdown();
+      process.exit(0);
+    }
+
     if (this.midExecution) return;
     this.midExecution = true;
     const activeProcess = Object.values(getActiveChildProcesses())[0];
@@ -81,11 +138,13 @@ export default class WeaverLauncher {
       }
     }
 
-    const child = fork(
-      this.config.weaverFileName
-        ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
-        : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js")
-    );
+    const weaverScript = this.config.weaverFileName
+      ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
+      : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js");
+
+    console.debug("Launcher weaver using the script '" + weaverScript + "'");
+
+    const child = fork(weaverScript);
     child.send({
       config: this.config,
       args,
@@ -95,7 +154,7 @@ export default class WeaverLauncher {
     this.midExecution = false;
   }
 
-  protected generateConfig(args: string | undefined = undefined) {
+  protected generateConfig(args: string[] | undefined = undefined) {
     return yargs(args ?? hideBin(process.argv))
       .scriptName(this.config.weaverName)
       .command({
