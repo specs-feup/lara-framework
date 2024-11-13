@@ -13,7 +13,6 @@ import {
 } from "./ChildProcessHandling.js";
 import WeaverConfiguration from "./WeaverConfiguration.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
-import { writeFileSync } from "fs";
 
 import { Weaver } from "./Weaver.js";
 
@@ -30,21 +29,6 @@ export default class WeaverLauncher {
     this.config = config;
     this.debug = Debug(`WeaverLauncher:${this.config.weaverPrettyName}:main`);
   }
-
-  /*
-  executeSync(customArgs: string[] | undefined = undefined): void {
-    const cliArgs = customArgs ?? hideBin(process.argv);
-
-    if (cliArgs.length > 0 && cliArgs[0] === "classic") {
-      const weaverArgs = cliArgs.slice(1);
-      console.log(
-        `Executing ${this.config.weaverPrettyName} script in classic CLI mode...`
-      );
-    }
-
-    await execute(customArgs);
-  }
-  */
 
   async execute(customArgs: string[] | undefined = undefined): Promise<void> {
     const cliArgs = customArgs ?? hideBin(process.argv);
