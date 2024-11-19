@@ -109,7 +109,7 @@ export class Weaver {
       //if (args._[0] === "classic") {
       try {
         assert(args.configClassic instanceof Array);
-        console.log("FLAGS: " + args.configClassic);
+        //console.log("FLAGS: " + args.configClassic);
 
         datastore = JavaLaraI.convertArgsToDataStore(
           //args._.slice(1),
@@ -163,10 +163,9 @@ export class Weaver {
   static async executeScript(
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
-  ) {
+  ): Promise<boolean> {
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
-      return;
     }
 
     for (const file of config.importForSideEffects ?? []) {
@@ -192,11 +191,13 @@ export class Weaver {
       // import is using a URL converted to string.
       // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
       // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
+      let success = true;
       await import(pathToFileURL(path.resolve(scriptFile)).toString())
         .then(() => {
           Weaver.debug("Execution completed successfully.");
         })
         .catch((error: unknown) => {
+          success = false;
           console.error("Execution failed.");
           if (error instanceof Error) {
             // JS exception
@@ -209,6 +210,7 @@ export class Weaver {
           }
           Weaver.debug(error);
         });
+      return success;
     } else {
       throw new Error("Invalid file path or file type: " + scriptFile);
     }
@@ -276,13 +278,19 @@ waitForMessage(eventEmitter)
     if (directExecution) {
       Weaver.start();
 
-      await Weaver.executeScript(
+      const success = await Weaver.executeScript(
         messageFromParent.args,
         messageFromParent.config
-      );
+      ).catch((error: unknown) => {
+        return false;
+      });
 
       Weaver.shutdown();
-      process.exit(0);
+      if (success) {
+        process.exit(0);
+      } else {
+        process.exit(-1);
+      }
     }
   })
   .catch((error) => {

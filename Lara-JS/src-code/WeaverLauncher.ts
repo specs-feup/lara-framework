@@ -99,9 +99,20 @@ export default class WeaverLauncher {
 
       Weaver.start();
 
-      await Weaver.executeScript(args, this.config);
+      const success = await Weaver.executeScript(args, this.config).catch(
+        (reason) => {
+          console.log(reason);
+          return false;
+        }
+      );
+
       Weaver.shutdown();
-      process.exit(0);
+
+      if (success) {
+        process.exit(0);
+      } else {
+        process.exit(-1);
+      }
     }
 
     if (this.midExecution) return;
