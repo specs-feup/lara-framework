@@ -1,20 +1,16 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 package org.lara.interpreter.weaver.defaultweaver;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADefaultWeaver;
@@ -24,12 +20,16 @@ import org.lara.interpreter.weaver.defaultweaver.options.DefaultWeaverOption;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver. The implementation of the abstract methods is mandatory!
- * 
+ *
  * @author Lara C.
  */
 public class DefaultWeaver extends ADefaultWeaver {
@@ -46,11 +46,9 @@ public class DefaultWeaver extends ADefaultWeaver {
 
     /**
      * Set a file/folder in the weaver if it is valid file/folder type for the weaver.
-     * 
-     * @param source
-     *            the file with the source code
-     * @param outputDir
-     *            output directory for the generated file(s)
+     *
+     * @param source    the file with the source code
+     * @param outputDir output directory for the generated file(s)
      * @return true if the file type is valid
      */
     @Override
@@ -69,7 +67,7 @@ public class DefaultWeaver extends ADefaultWeaver {
 
     /**
      * Closes the weaver and specifies the output directory location if the weaver generates new file(s)
-     * 
+     *
      * @return if close was successful
      */
     @Override
@@ -79,7 +77,7 @@ public class DefaultWeaver extends ADefaultWeaver {
 
     /**
      * Returns the program root to be used by the weaver for the selects
-     * 
+     *
      * @return interface implementation for the join point root/program
      */
     @Override
@@ -102,8 +100,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     /**
-     * @param property
-     *            the property to set
+     * @param property the property to set
      */
     public void setProperty(boolean property) {
         this.property = property;
@@ -120,7 +117,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     @Override
-    public LanguageSpecification getLanguageSpecification() {
+    protected LanguageSpecificationV2 buildLangSpecs() {
         return LaraIUtils.createDefaultLanguageSpecification();
     }
 

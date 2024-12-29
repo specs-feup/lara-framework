@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,38 +13,24 @@
 
 package org.lara.language.specification.dsl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.lara.language.specification.dsl.types.ArrayType;
-import org.lara.language.specification.dsl.types.EnumDef;
-import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.JPType;
-import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.Primitive;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import org.lara.language.specification.dsl.types.TypeDef;
+import org.lara.language.specification.dsl.types.*;
 import org.lara.language.specification.exception.LanguageSpecificationException;
-
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.lazy.Lazy;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 import tdrc.utils.StringUtils;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * New version of the LanguageSpecification.
- * 
- * @author jbispo
  *
+ * @author jbispo
  */
 public class LanguageSpecificationV2 {
 
@@ -87,15 +73,13 @@ public class LanguageSpecificationV2 {
 
     /**
      * Creates a language specification instance with the files contained in the folder 'specDir'
-     * 
-     * @param specDir
-     *            the source folder of the language specification, should include 3 files:
-     *            {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME} and {@value #ACTIONS_FILENAME}
-     * 
+     *
+     * @param specDir  the source folder of the language specification, should include 3 files:
+     *                 {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME} and {@value #ACTIONS_FILENAME}
      * @param validate
      * @return
      */
-    public static LanguageSpecificationV2 newInstance(File specDir, boolean validate) {
+    public static LanguageSpecificationV2 newInstance(File specDir) {
 
         if (!specDir.exists() || !specDir.isDirectory()) {
             throw new RuntimeException("Language Specification directory is invalid: " + specDir.getAbsolutePath());
@@ -108,11 +92,24 @@ public class LanguageSpecificationV2 {
             final File actionModelFile = SpecsIo.existingFile(specDir, ACTIONS_FILENAME);
 
             return LangSpecsXmlParser.parse(SpecsIo.toInputStream(jpModelFile), SpecsIo.toInputStream(artifactsFile),
-                    SpecsIo.toInputStream(actionModelFile), validate);
+                    SpecsIo.toInputStream(actionModelFile), true);
         } catch (final Exception e) {
             throw new LanguageSpecificationException(
                     "Could not create a Language Specification from folder '" + specDir + "'", e);
         }
+    }
+
+    public static LanguageSpecificationV2 newInstance(InputStream joinPointModel, InputStream attributeModel,
+                                                      InputStream actionModel) {
+
+        return LangSpecsXmlParser.parse(joinPointModel, attributeModel, actionModel, true);
+    }
+
+    public static LanguageSpecificationV2 newInstance(ResourceProvider joinPointModel, ResourceProvider attributeModel,
+                                                      ResourceProvider actionModel) {
+
+        return LangSpecsXmlParser.parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
+                SpecsIo.resourceToStream(actionModel), true);
     }
 
     private Set<String> buildAvailableAttributes() {
@@ -170,7 +167,6 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @param name
      * @return true if the given name corresponds to an existing join point (not considering alias)
      */
@@ -189,7 +185,6 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @param name
      * @return true if the given name is a valid join point (considering alias)
      */
@@ -290,7 +285,6 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @return a list of all join points, including the global join point
      */
     public List<JoinPointClass> getAllJoinPoints() {
@@ -355,7 +349,6 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @param name
      * @return the actions with the given name. Since overloading is supported, several actions can have the same name
      */
@@ -367,7 +360,6 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @return all the actions in the join point model
      */
     public List<Action> getAllActions() {
@@ -378,10 +370,9 @@ public class LanguageSpecificationV2 {
     }
 
     /**
-     * 
      * @param name
      * @return the attributes with the given name. Since overloading is supported, several attributes can have the same
-     *         name
+     * name
      */
     public List<Attribute> getAttribute(String name) {
         return getAllJoinPoints().stream()
@@ -393,9 +384,9 @@ public class LanguageSpecificationV2 {
 
     /**
      * Verify if the given Join point is a super type of any other Join Point
-     * 
+     * <p>
      * TODO: Could be more efficient (e.g., using a tree to represent the hierarchy)
-     * 
+     *
      * @param joinPoint
      * @return
      */
@@ -412,7 +403,7 @@ public class LanguageSpecificationV2 {
 
     /**
      * Builds a hierarchy diagram in DOT format.
-     * 
+     *
      * @return a string with the Language Specification hierarchy diagram in DOT format
      */
     public String toHierarchyDiagram() {
@@ -421,12 +412,8 @@ public class LanguageSpecificationV2 {
 
     /**
      * Builds a hierarchy diagram in DOT format.
-     * 
-     * 
-     * 
-     * @param langSpecName
-     *            the name of the language specification.
-     * 
+     *
+     * @param langSpecName the name of the language specification.
      * @return a string with the Language Specification hierarchy diagram in DOT format
      */
     public String toHierarchyDiagram(String langSpecName) {
@@ -454,7 +441,7 @@ public class LanguageSpecificationV2 {
 
     /**
      * Get selects in which the given join point is selected
-     * 
+     *
      * @return
      */
     public List<Select> getSelectedBy(JoinPointClass jp) {

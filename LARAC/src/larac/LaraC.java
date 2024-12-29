@@ -261,7 +261,7 @@ public class LaraC {
         // Parse the language specification
         if (ready) {
             final File xmlSourceDir = options.getXmlSpecDir();
-            setLanguageSpec(LanguageSpecificationV2.newInstance(xmlSourceDir, true));
+            setLanguageSpec(LanguageSpecificationV2.newInstance(xmlSourceDir));
         }
         return ready;
         // parse();

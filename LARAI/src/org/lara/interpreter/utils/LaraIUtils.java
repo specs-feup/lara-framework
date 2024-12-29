@@ -12,16 +12,7 @@
  */
 package org.lara.interpreter.utils;
 
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import larai.LaraI;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -29,16 +20,23 @@ import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-
-import larai.LaraI;
 import pt.up.fe.specs.lara.aspectir.Base;
+import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.lara.loc.LaraStats;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.*;
 
 public class LaraIUtils {
 
@@ -199,7 +197,6 @@ public class LaraIUtils {
      * Enables lazy initialization of jarParth
      *
      * @author Joao Bispo
-     *
      */
     private static class JarPathHolder {
         public static final String instance = new JarPath(LaraI.class, LaraI.PROPERTY_JAR_PATH).buildJarPath();
@@ -215,8 +212,9 @@ public class LaraIUtils {
      *
      * @return
      */
-    public static LanguageSpecification createDefaultLanguageSpecification() {
-        return LanguageSpecification.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS, false);
+    public static LanguageSpecificationV2 createDefaultLanguageSpecification() {
+        // TODO: Why validate is false?
+        return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
     }
 
     public static void appendComment(Base base, final StringBuilder ret) {
@@ -235,7 +233,7 @@ public class LaraIUtils {
 
     /**
      * Returns all the LARA files defined as inputs in the arguments.
-     * 
+     *
      * @param args
      * @return
      */
