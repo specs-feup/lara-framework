@@ -1,25 +1,15 @@
-
 /**
  * Copyright 2013 SPeCS Research Group.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.stream.StreamSource;
 
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.ActionModel;
@@ -31,15 +21,25 @@ import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointsList;
 import org.lara.language.specification.resources.LanguageSpecificationResources;
 import org.xml.sax.SAXException;
-
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.MarshalUtils;
 import tdrc.utils.Pair;
 import tdrc.utils.PairList;
 
+import javax.management.modelmbean.XMLParseException;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+/**
+ * @deprecated tests LangSpecV1
+ */
 public class LangSpecTester {
 
-    private static final File LANG_SPEC_DIR = new File("language");
+    private static final File LANG_SPEC_DIR = new File("../../lara-framework/LanguageSpecification/language");
 
     public static void main(String[] args) {
         System.out.println("Starting Application");
@@ -167,21 +167,21 @@ public class LangSpecTester {
      * XMLParseException { File xml = new File(LANG_SPEC_DIR,
      * ATTRIBUTES_MODEL_XML_NAME); File schema = new File(XSD_DIR,
      * ATTRIBUTES_MODEL_SCHEMA_NAME);
-     * 
+     *
      * try { ArtifactsModel am = new ArtifactsModel(xml, schema);
      * System.out.println(am);
-     * 
+     *
      * } catch (SchemaValidationException e) {
      * System.err.println(e.getMessage()); System.exit(-1); } }
-     * 
+     *
      * private static void testActions() throws JAXBException, SAXException,
      * XMLParseException { File xml = new File(LANG_SPEC_DIR,
      * ACTION_MODEL_XML_NAME); File schema = new File(XSD_DIR,
      * ACTION_MODEL_SCHEMA_NAME);
-     * 
+     *
      * try { ActionModel am = new ActionModel(xml, schema);
      * System.out.println(am);
-     * 
+     *
      * } catch (SchemaValidationException e) {
      * System.err.println(e.getMessage()); System.exit(-1); } }
      */

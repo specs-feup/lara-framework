@@ -29,6 +29,7 @@ import org.lara.language.specification.ast.NodeFactory;
 import org.lara.language.specification.ast.RootNode;
 import org.lara.language.specification.ast.TypeDefNode;
 
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
 import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
 import pt.up.fe.specs.lara.doc.data.LaraDocModule;
@@ -99,7 +100,7 @@ public class LaraDocHtmlGenerator {
         generateDoc(laraDocTop, null);
     }
 
-    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecification languageSpecification) {
+    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecificationV2 languageSpecification) {
         StringBuilder moduleList = new StringBuilder();
 
         // Get direct children

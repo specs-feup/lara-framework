@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,19 +13,11 @@
 
 package pt.up.fe.specs.lara.doc;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.LanguageSpecification;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.arguments.ArgumentsParser;
-
 import pt.up.fe.specs.lara.doc.data.LaraDocTop;
 import pt.up.fe.specs.lara.doc.html.StaticPageLaraDocHtmlGenerator;
 import pt.up.fe.specs.lara.doc.jsdocgen.BasicHtmlGenerator;
@@ -34,6 +26,12 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.collections.MultiMap;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 public class LaraDocLauncher {
 
@@ -120,8 +118,8 @@ public class LaraDocLauncher {
         // LaraDocHtmlGenerator generator = new LaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
         var generator = new StaticPageLaraDocHtmlGenerator(new BasicHtmlGenerator(), outputFolder);
 
-        LanguageSpecification langSpec = data.get(INCLUDE_LANGUAGE_SPECIFICATION)
-                ? weaverEngine.getLanguageSpecification()
+        var langSpec = data.get(INCLUDE_LANGUAGE_SPECIFICATION)
+                ? weaverEngine.getLanguageSpecificationV2()
                 : null;
         generator.generateDoc(laraDocTop, langSpec);
 

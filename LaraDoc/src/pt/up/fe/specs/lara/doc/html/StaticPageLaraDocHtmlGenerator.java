@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,34 +13,19 @@
 
 package pt.up.fe.specs.lara.doc.html;
 
-import java.io.File;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.ast.EnumDefNode;
-import org.lara.language.specification.ast.JoinPointNode;
-import org.lara.language.specification.ast.NodeFactory;
-import org.lara.language.specification.ast.RootNode;
-import org.lara.language.specification.ast.TypeDefNode;
-
+import org.lara.language.specification.ast.*;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import pt.up.fe.specs.lara.doc.LaraDocResource;
-import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
-import pt.up.fe.specs.lara.doc.data.LaraDocFiles;
-import pt.up.fe.specs.lara.doc.data.LaraDocModule;
-import pt.up.fe.specs.lara.doc.data.LaraDocNode;
-import pt.up.fe.specs.lara.doc.data.LaraDocPackage;
-import pt.up.fe.specs.lara.doc.data.LaraDocTop;
+import pt.up.fe.specs.lara.doc.data.*;
 import pt.up.fe.specs.lara.doc.jsdocgen.JsDocGenerator;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.utilities.Replacer;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StaticPageLaraDocHtmlGenerator {
 
@@ -98,7 +83,7 @@ public class StaticPageLaraDocHtmlGenerator {
         generateDoc(laraDocTop, null);
     }
 
-    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecification languageSpecification) {
+    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecificationV2 languageSpecification) {
 
         // Get direct children
         List<LaraDocNode> laraDocNodes = new ArrayList<>(laraDocTop.getChildren());
@@ -137,12 +122,12 @@ public class StaticPageLaraDocHtmlGenerator {
         LaraDocResource.STYLES_CSS.write(outputFolder);
 
         // Write HTML page for each module
-        writeStaticPages(basePage, languageSpecification, laraDocPackages);
+        writeStaticPages(basePage, laraDocPackages);
 
     }
 
-    private void writeStaticPages(String basePage, LanguageSpecification languageSpecification,
-            List<LaraDocPackage> laraDocPackages) {
+    private void writeStaticPages(String basePage,
+                                  List<LaraDocPackage> laraDocPackages) {
 
         for (LaraDocPackage laraPackage : laraDocPackages) {
             if (!generator.getNameFilter().test(laraPackage.getPackageName())) {
@@ -151,15 +136,7 @@ public class StaticPageLaraDocHtmlGenerator {
 
             writeStaticPages(basePage, laraPackage);
         }
-
-        // Generate base static page
-
-        // // Add language specification, if present
-        // if (languageSpecification != null) {
-        // RootNode rootNode = NodeFactory.toNode(languageSpecification);
-        // moduleList.append(buildImportSidebar(rootNode));
-        // }
-
+        
     }
 
     private void writeStaticPages(String basePage, LaraDocNode laraDocNode) {
@@ -196,8 +173,8 @@ public class StaticPageLaraDocHtmlGenerator {
         SpecsIo.write(outputFile, staticPage);
     }
 
-    private StringBuilder buildImportsSidebar(LanguageSpecification languageSpecification,
-            List<LaraDocPackage> laraDocPackages) {
+    private StringBuilder buildImportsSidebar(LanguageSpecificationV2 languageSpecification,
+                                              List<LaraDocPackage> laraDocPackages) {
 
         // Generate import list
         StringBuilder moduleList = new StringBuilder();
