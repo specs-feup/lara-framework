@@ -111,11 +111,11 @@ jobs:
             report_paths: './**/build/test-results/test/TEST-*.xml'
             summary: true
 
-      - name: Upload lara-framework artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-binaries
-          path: lara-framework/LaraFramework/build/install/LaraFramework
+      #- name: Upload lara-framework artifacts
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: java-binaries
+      #    path: lara-framework/LaraFramework/build/install/LaraFramework
 
 
   build-js:
@@ -158,11 +158,11 @@ jobs:
           cd lara-framework/Lara-JS
           npm run build
 
-      - name: Pull java-binaries
-        uses: actions/download-artifact@v4
-        with:
-          name: java-binaries
-          path: lara-framework/Lara-JS/java-binaries
+      #- name: Pull java-binaries
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: java-binaries
+      #    path: lara-framework/Lara-JS/java-binaries
 
       # Not working yet, missing connection to Java classes
       #- name: Test JS
