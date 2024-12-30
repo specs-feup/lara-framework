@@ -74,32 +74,32 @@ jobs:
 
       # Setting up gradle multi-project would be helpful
       - name: Build and test LanguageSpecification
-        working-directory: workspace/lara-framework/LanguageSpecification
+        working-directory: lara-framework/LanguageSpecification
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test LaraCommonLanguage
-        working-directory: workspace/lara-framework/LaraCommonLanguage
+        working-directory: lara-framework/LaraCommonLanguage
         run: gradle build test      
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test LaraDoc
-        working-directory: workspace/lara-framework/LaraDoc
+        working-directory: lara-framework/LaraDoc
         run: gradle build test            
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test LARAI
-        working-directory: workspace/lara-framework/LARAI
+        working-directory: lara-framework/LARAI
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test WeaverGenerator
-        working-directory: workspace/lara-framework/WeaverGenerator
+        working-directory: lara-framework/WeaverGenerator
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test WeaverInterface
-        working-directory: workspace/lara-framework/WeaverInterface
+        working-directory: lara-framework/WeaverInterface
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
