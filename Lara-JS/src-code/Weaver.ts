@@ -8,6 +8,7 @@ import { isJavaError } from "./JavaError.js";
 import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
+import assert from "assert";
 
 let directExecution = false;
 
@@ -100,11 +101,19 @@ export class Weaver {
     javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
+    const isClassicCli =
+      args.configClassic !== undefined && args.configClassic !== null;
+
     let datastore;
-    if (args._[0] === "classic") {
+    if (isClassicCli) {
+      //if (args._[0] === "classic") {
       try {
+        assert(args.configClassic instanceof Array);
+        //console.log("FLAGS: " + args.configClassic);
+
         datastore = JavaLaraI.convertArgsToDataStore(
-          args._.slice(1),
+          //args._.slice(1),
+          args.configClassic,
           javaWeaver
         ).get();
         args.scriptFile = datastore.get("aspect").toString();
@@ -139,7 +148,6 @@ export class Weaver {
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
-
     JavaSpecsSystem.programStandardInit();
 
     Weaver.javaWeaver = javaWeaver;
@@ -155,30 +163,41 @@ export class Weaver {
   static async executeScript(
     args: WeaverMessageFromLauncher["args"],
     config: WeaverMessageFromLauncher["config"]
-  ) {
+  ): Promise<boolean> {
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
-      return;
     }
 
     for (const file of config.importForSideEffects ?? []) {
       await import(file);
     }
 
+    if (typeof args.scriptFile !== "string") {
+      throw new Error(
+        "Script file '" +
+          args.scriptFile +
+          "' is not a string: " +
+          typeof args.scriptFile
+      );
+    }
+
+    const scriptFile = args.scriptFile;
+
     Weaver.debug("Executing user script...");
     if (
-      typeof args.scriptFile === "string" &&
-      fs.existsSync(args.scriptFile) &&
-      isValidFileExtension(path.extname(args.scriptFile))
+      fs.existsSync(scriptFile) &&
+      isValidFileExtension(path.extname(scriptFile))
     ) {
       // import is using a URL converted to string.
       // The URL is used due to a Windows error with paths. See https://stackoverflow.com/questions/69665780/error-err-unsupported-esm-url-scheme-only-file-and-data-urls-are-supported-by
       // The conversion of the URl back to a string is due to a TS bug. See https://github.com/microsoft/TypeScript/issues/42866
-      await import(pathToFileURL(path.resolve(args.scriptFile)).toString())
+      let success = true;
+      await import(pathToFileURL(path.resolve(scriptFile)).toString())
         .then(() => {
           Weaver.debug("Execution completed successfully.");
         })
         .catch((error: unknown) => {
+          success = false;
           console.error("Execution failed.");
           if (error instanceof Error) {
             // JS exception
@@ -191,8 +210,9 @@ export class Weaver {
           }
           Weaver.debug(error);
         });
+      return success;
     } else {
-      throw new Error("Invalid file path or file type.");
+      throw new Error("Invalid file path or file type: " + scriptFile);
     }
   }
 
@@ -257,13 +277,20 @@ waitForMessage(eventEmitter)
 
     if (directExecution) {
       Weaver.start();
-      await Weaver.executeScript(
+
+      const success = await Weaver.executeScript(
         messageFromParent.args,
         messageFromParent.config
-      );
+      ).catch((error: unknown) => {
+        return false;
+      });
 
       Weaver.shutdown();
-      process.exit(0);
+      if (success) {
+        process.exit(0);
+      } else {
+        process.exit(-1);
+      }
     }
   })
   .catch((error) => {

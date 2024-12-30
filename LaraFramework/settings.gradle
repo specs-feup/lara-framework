@@ -6,6 +6,8 @@ includeBuild("../../specs-java-libs/JsEngine")
 includeBuild("../../specs-java-libs/SpecsUtils")
 
 includeBuild("../../lara-framework/LanguageSpecification")
+includeBuild("../../lara-framework/LaraCommonLanguage")
+includeBuild("../../lara-framework/LaraCommonLanguageApi")
 includeBuild("../../lara-framework/LaraApi")
 includeBuild("../../lara-framework/LARAC")
 includeBuild("../../lara-framework/LaraDoc")

@@ -5,6 +5,9 @@ plugins {
 // Java project
 apply plugin: 'java'
 
+// Executable
+apply plugin: 'application'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -28,6 +31,8 @@ dependencies {
 	implementation ':SpecsUtils'	
 
 	implementation ':LanguageSpecification'	
+	implementation ':LaraCommonLanguage'
+	implementation ':LaraCommonLanguageApi'
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
 	implementation ':LaraDoc'	

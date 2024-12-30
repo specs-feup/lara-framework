@@ -1,6 +1,6 @@
 {
   "name": "@specs-feup/lara",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
@@ -32,7 +32,7 @@
     "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
-    "test": "cross-env NODE_OPTIONS='$NODE_OPTIONS --experimental-vm-modules' jest --detectOpenHandles --forceExit",
+    "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --detectOpenHandles --forceExit",
     "test:api": "npm run test -- src-api",
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
