@@ -1,17 +1,29 @@
 /**
  * Copyright 2020 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 
 package pt.up.fe.specs.lara.langspec;
+
+import org.lara.language.specification.dsl.*;
+import org.lara.language.specification.dsl.types.EnumDef;
+import org.lara.language.specification.dsl.types.EnumValue;
+import org.lara.language.specification.dsl.types.IType;
+import org.lara.language.specification.dsl.types.TypeDef;
+import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.SpecsLogs;
+import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.providers.ResourceProvider;
+import pt.up.fe.specs.util.xml.XmlDocument;
+import pt.up.fe.specs.util.xml.XmlElement;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,41 +32,23 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.Select;
-import org.lara.language.specification.dsl.types.EnumDef;
-import org.lara.language.specification.dsl.types.EnumValue;
-import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.TypeDef;
-
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.collections.MultiMap;
-import pt.up.fe.specs.util.providers.ResourceProvider;
-import pt.up.fe.specs.util.xml.XmlDocument;
-import pt.up.fe.specs.util.xml.XmlElement;
-
 public class LangSpecsXmlParser {
 
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
-            InputStream actionModel) {
+                                                InputStream actionModel) {
 
         return parse(joinPointModel, attributeModel, actionModel, true);
     }
 
     public static LanguageSpecificationV2 parse(ResourceProvider joinPointModel, ResourceProvider attributeModel,
-            ResourceProvider actionModel, boolean validate) {
+                                                ResourceProvider actionModel, boolean validate) {
 
         return parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
                 SpecsIo.resourceToStream(actionModel), validate);
     }
 
     public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
-            InputStream actionModel, boolean validate) {
+                                                InputStream actionModel, boolean validate) {
 
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
@@ -72,9 +66,21 @@ public class LangSpecsXmlParser {
         // Initialize types (typedef, enums), to have access to available names
         for (var type : attributeModelNode.getElementsByName("object")) {
             var typeDef = new TypeDef(type.getAttribute("name"));
+            setOptional(type.getAttribute("tooltip"), typeDef::setToolTip);
+
             langSpecV2.add(typeDef);
+        }
+
+        for (var type : attributeModelNode.getElementsByName("typedef")) {
+            var typeDef = new TypeDef(type.getAttribute("name"));
+
+            // Add typedef attributes
+            var typedefAttrs = convertAttributes(type.getElementsByName("attribute"), langSpecV2);
+            typeDef.setFields(typedefAttrs);
 
             setOptional(type.getAttribute("tooltip"), typeDef::setToolTip);
+
+            langSpecV2.add(typeDef);
         }
 
         for (var type : attributeModelNode.getElementsByName("enum")) {
@@ -200,7 +206,7 @@ public class LangSpecsXmlParser {
     }
 
     private static void populateGlobal(XmlDocument jpModel, XmlDocument artifacts, XmlDocument actionModel,
-            LanguageSpecificationV2 langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
+                                       LanguageSpecificationV2 langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
 
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
@@ -213,7 +219,7 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Attribute> convertAttributes(List<XmlElement> attributeNodes,
-            LanguageSpecificationV2 langSpec) {
+                                                     LanguageSpecificationV2 langSpec) {
 
         List<Attribute> attributes = new ArrayList<>();
         for (var attributeNode : attributeNodes) {
@@ -248,7 +254,7 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Action> convertActions(LanguageSpecificationV2 langSpecV2,
-            List<XmlElement> actionNodes) {
+                                               List<XmlElement> actionNodes) {
 
         List<Action> newActions = new ArrayList<>();
         for (var action : actionNodes) {
@@ -271,7 +277,7 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Select> convertSelects(LanguageSpecificationV2 langSpecV2,
-            List<XmlElement> selectNodes) {
+                                               List<XmlElement> selectNodes) {
 
         List<Select> selects = new ArrayList<>();
 
