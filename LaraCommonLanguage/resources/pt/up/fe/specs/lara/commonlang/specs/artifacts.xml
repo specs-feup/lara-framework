@@ -1,163 +1,169 @@
 <?xml version="1.0"?>
 <artifacts>
 
-	<!-- Attributes for all join points -->
-	<global>
-		<attribute name="line" type="integer" tooltip="The starting line of the current node in the original code."/>
-		<attribute name="endLine" type="integer" tooltip="The ending line of the current node in the original code."/>
-		<attribute name="code" type="string" tooltip="The source code corresponding to this join point."/>		
-		<attribute name="joinPointType" type="string" tooltip="A string with the type of the join point."/>	
-		<attribute name="instanceOf" type="boolean" tooltip="True if the current join point is an instance of the given type.">
-			<parameter name="joinPointType" type="string" />
-		</attribute>
-		<attribute name="sameTypeAs" type="boolean" tooltip="True if the join point are of the same type.">
-			<parameter name="joinPoint" type="joinPoint" />
-		</attribute>
-		<attribute name="equals" type="boolean" tooltip="True if the join point are equal.">
-			<parameter name="joinPoint" type="joinPoint" />
-		</attribute>
-		<attribute name="parent" type="joinpoint" tooltip="Returns the parent joinpoint in the AST."/>	
-		<attribute name="children" type="joinpoint[]" tooltip="Returns an array with the children of the joinpoint."/>
-		<attribute name="descendants" type="joinpoint[]" tooltip="Returns an array with the descendants of the joinpoint."/>
-		<attribute name="hasChildren" type="boolean" tooltip="Returns an array with the descendants of the joinpoint."/>
-		<attribute name="astId" type="string" tooltip="The ID of the node in the AST."/>
-		<attribute name="hasAncestor" type="boolean" tooltip="Check if joinpoint has ancestor of type.">
-			<parameter name="joinPointType" type="boolean" />
-		</attribute>
-		
-		
+    <!-- Attributes for all join points -->
+    <global>
+        <attribute name="line" type="integer" tooltip="The starting line of the current node in the original code."/>
+        <attribute name="endLine" type="integer" tooltip="The ending line of the current node in the original code."/>
+        <attribute name="code" type="string" tooltip="The source code corresponding to this join point."/>
+        <attribute name="joinPointType" type="string" tooltip="A string with the type of the join point."/>
+        <attribute name="instanceOf" type="boolean"
+                   tooltip="True if the current join point is an instance of the given type.">
+            <parameter name="joinPointType" type="string"/>
+        </attribute>
+        <attribute name="sameTypeAs" type="boolean" tooltip="True if the join point are of the same type.">
+            <parameter name="joinPoint" type="joinPoint"/>
+        </attribute>
+        <attribute name="equals" type="boolean" tooltip="True if the join point are equal.">
+            <parameter name="joinPoint" type="joinPoint"/>
+        </attribute>
+        <attribute name="parent" type="joinpoint" tooltip="Returns the parent joinpoint in the AST."/>
+        <attribute name="children" type="joinpoint[]" tooltip="Returns an array with the children of the joinpoint."/>
+        <attribute name="descendants" type="joinpoint[]"
+                   tooltip="Returns an array with the descendants of the joinpoint."/>
+        <attribute name="hasChildren" type="boolean" tooltip="Returns an array with the descendants of the joinpoint."/>
+        <attribute name="astId" type="string" tooltip="The ID of the node in the AST."/>
+        <attribute name="hasAncestor" type="boolean" tooltip="Check if joinpoint has ancestor of type.">
+            <parameter name="joinPointType" type="boolean"/>
+        </attribute>
 
-		
-	</global>
-	
-	<artifact class="file" default="name">
-		<attribute name="name" type="string" tooltip="The name of the file."/>
-		<attribute name="id" type="string" tooltip="The id of the file."/>
-	</artifact>
-	
-	<artifact class="decl">
-		<attribute name="isStatic" type="boolean" tooltip="Returns true if decl is considered static"/>
-	</artifact>
-	
-	<artifact class="call" default="name">
-		<attribute name="name" type="string" tooltip="The name of the function called."/>
-		<attribute name="function" type="function" tooltip="The function called."/>
-	</artifact>
-	
-	
-	<artifact class="classType" default="name">
-		<attribute name="name" type="string" tooltip="The name of the interface."/>
-		<attribute name="methods" type="method[]" tooltip="The methods of this interface"/>
-		<attribute name="allMethods" type="method[]" tooltip="The methods of this interface and the methods of the super interfaces"/>
-		<attribute name="interfaces" type="interface[]" tooltip="The interfaces that this interface DIRECTLY extends"/>	
-		<attribute name="allInterfaces" type="interface[]" tooltip="The interfaces that this interface extends"/>		
-	</artifact>
-	
-	<artifact class="interface" default="name">
 
-	</artifact>
-	
-	<artifact class="class" default="name">
-		<attribute name="id" type="string" tooltip="The id of the class."/>
-		<attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
-		<attribute name="allSuperClasses" type="class[]" tooltip="The superClasses this class and its superClasses extends."/>
-		<attribute name="listOfAllMethods" type="method[]" tooltip="All the methods of this class and superClasses, interfaces."/>
-		<attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
-		<attribute name="fields" type="field[]" tooltip="The fields of this class."/>
-		<attribute name="kind" type="string" tooltip="The kind of record."/>
-		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
-		<attribute name="isAbstract" type="boolean" tooltip="Check if the class is abstract."/>
-	</artifact>
-	
-	<artifact class="method" default="name">
-		<attribute name="id" type="string" tooltip="The id of the method."/>
-		<attribute name="class" type="class" tooltip="The class of the method."/>
-		<attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
-	</artifact>
-	
-	<artifact class="field" default="name">
-		<attribute name="id" type="string" tooltip="The id of the field."/>
-		<attribute name="name" type="string" tooltip="The name of the field."/>
-		<attribute name="class" type="class" tooltip="The class of the field."/>
-		<attribute name="type" type="type"/>
-	</artifact>
+    </global>
 
-	<artifact class="function" default="name">
-		<attribute name="id" type="string" tooltip="The id of the function."/>
-		<attribute name="name" type="string" tooltip="The name of the function."/>
-		<attribute name="signature" type="string" tooltip="The signature of the function."/>
-		<attribute name="returnType" type="type"/>
-		<attribute name="params" type="param[]"/>
-		<attribute name="stmts" type="stmt[]"/>
-		<attribute name="hasBody" type="Boolean"/>		
-	</artifact>
-	
-	<artifact class="memberCall" default="name">
-		<attribute name="class" type="class" tooltip="The class of the method called."/>
-		<attribute name="method" type="method" tooltip="The method called."/>
-	</artifact>
-	
-	<artifact class="constructor" default="name">
-		<attribute name="superCalls" type="constructorCall[]" tooltip=""/>
-	</artifact>
-	
-	<artifact class="constructorCall" default="name">
-		<attribute name="constructor" type="constructor" tooltip="The constructor called."/>
-	</artifact>
+    <artifact class="file" default="name">
+        <attribute name="name" type="string" tooltip="The name of the file."/>
+        <attribute name="id" type="string" tooltip="The id of the file."/>
+    </artifact>
 
-		
-	<artifact class="fieldRef" default="name">
-		<attribute name="name" type="string" tooltip="The name of the field referenced."/>
-		<attribute name="field" type="method" tooltip="The field referenced."/>
-		<attribute name="class" type="class" tooltip="The class of the field referenced."/>
-	</artifact>
-	
-	<artifact class="type">
-		<attribute name="isArray" type="Boolean" />
-		<attribute name="isPointer" type="Boolean" />
-		<attribute name="isPrimitive" type="Boolean" />
-		<attribute name="isClass" type="Boolean" />
-		<attribute name="isInterface" type="Boolean" />
-		<attribute name="isClassType" type="Boolean" />
-		<attribute name="classType" type="classType" />
-	</artifact>
-	
-	<artifact class="varRef" default="name">
-		<attribute name="name" type="string" tooltip="The name of the variable referenced."/>		
-		<attribute name="decl" type="varDecl" tooltip="The declaration of the variable."/>
-	</artifact>
-	
-	<artifact class="varDecl" default="name">
-		<attribute name="name" type="string" tooltip="The name of the variable declared."/>
-		<attribute name="isParam" type="string" tooltip="Check if the var is a param."/>
-	</artifact>
-	
-	<artifact class="param" default="name">
-		<attribute name="function" type="function" tooltip="The function where the param is declared."/>
-	</artifact>
-	
-	<artifact class="binaryOp" default="kind">
-		<attribute name="kind" type="string" tooltip="Gets the kind of this binary operator."/>
-		<attribute name="isInnerExpr" type="Boolean" tooltip="Check if this expr is inside another expr."/>
-		<attribute name="outerExpr" type="expr" tooltip="Gets the  outer expr."/>
-	</artifact>
-	
-	<artifact class="loop">
-		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the loop's condition."/>
-		<attribute name="hasCondition" type="Boolean" tooltip="Check if the loop has a condition."/>
-	</artifact>
-	
-	<artifact class="if">
-		<attribute name="condition" type="expr" tooltip="Gets the boolean expression that represents the if's condition."/>
-		<attribute name="then" type="stmt" tooltip=""/>
-		<attribute name="else" type="stmt" tooltip=""/>
-		<attribute name="hasElse" type="boolean" tooltip=""/>
-		<attribute name="isElseIf" type="boolean" tooltip=""/>
-	</artifact>
-	
-	<artifact class="else">
-		<attribute name="isElseIf" type="boolean" tooltip=""/>
-	</artifact>
+    <artifact class="decl">
+        <attribute name="isStatic" type="boolean" tooltip="Returns true if decl is considered static"/>
+    </artifact>
+
+    <artifact class="call" default="name">
+        <attribute name="name" type="string" tooltip="The name of the function called."/>
+        <attribute name="function" type="function" tooltip="The function called."/>
+    </artifact>
+
+
+    <artifact class="classType" default="name">
+        <attribute name="name" type="string" tooltip="The name of the interface."/>
+        <attribute name="methods" type="method[]" tooltip="The methods of this interface"/>
+        <attribute name="allMethods" type="method[]"
+                   tooltip="The methods of this interface and the methods of the super interfaces"/>
+        <attribute name="interfaces" type="interface[]" tooltip="The interfaces that this interface DIRECTLY extends"/>
+        <attribute name="allInterfaces" type="interface[]" tooltip="The interfaces that this interface extends"/>
+    </artifact>
+
+    <artifact class="interface" default="name">
+
+    </artifact>
+
+    <artifact class="class" default="name">
+        <attribute name="id" type="string" tooltip="The id of the class."/>
+        <attribute name="superClasses" type="class[]" tooltip="The superClasses this class extends."/>
+        <attribute name="allSuperClasses" type="class[]"
+                   tooltip="The superClasses this class and its superClasses extends."/>
+        <attribute name="listOfAllMethods" type="method[]"
+                   tooltip="All the methods of this class and superClasses, interfaces."/>
+        <attribute name="constructors" type="constructor[]" tooltip="The constructors of this class."/>
+        <attribute name="fields" type="field[]" tooltip="The fields of this class."/>
+        <attribute name="kind" type="string" tooltip="The kind of record."/>
+        <attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
+        <attribute name="isAbstract" type="boolean" tooltip="Check if the class is abstract."/>
+    </artifact>
+
+    <artifact class="method" default="name">
+        <attribute name="id" type="string" tooltip="The id of the method."/>
+        <attribute name="class" type="class" tooltip="The class of the method."/>
+        <attribute name="isCustom" type="boolean" tooltip="Check if the class is defined by the user."/>
+    </artifact>
+
+    <artifact class="field" default="name">
+        <attribute name="id" type="string" tooltip="The id of the field."/>
+        <attribute name="name" type="string" tooltip="The name of the field."/>
+        <attribute name="class" type="class" tooltip="The class of the field."/>
+        <attribute name="type" type="type"/>
+    </artifact>
+
+    <artifact class="function" default="name">
+        <attribute name="id" type="string" tooltip="The id of the function."/>
+        <attribute name="name" type="string" tooltip="The name of the function."/>
+        <attribute name="signature" type="string" tooltip="The signature of the function."/>
+        <attribute name="returnType" type="type"/>
+        <attribute name="params" type="param[]"/>
+        <attribute name="stmts" type="stmt[]"/>
+        <attribute name="hasBody" type="Boolean"/>
+    </artifact>
+
+    <artifact class="memberCall" default="name">
+        <attribute name="class" type="class" tooltip="The class of the method called."/>
+        <attribute name="method" type="method" tooltip="The method called."/>
+    </artifact>
+
+    <artifact class="constructor" default="name">
+        <attribute name="superCalls" type="constructorCall[]" tooltip=""/>
+    </artifact>
+
+    <artifact class="constructorCall" default="name">
+        <attribute name="constructor" type="constructor" tooltip="The constructor called."/>
+    </artifact>
+
+
+    <artifact class="fieldRef" default="name">
+        <attribute name="name" type="string" tooltip="The name of the field referenced."/>
+        <attribute name="field" type="method" tooltip="The field referenced."/>
+        <attribute name="class" type="class" tooltip="The class of the field referenced."/>
+    </artifact>
+
+    <artifact class="type">
+        <attribute name="isArray" type="Boolean"/>
+        <attribute name="isPointer" type="Boolean"/>
+        <attribute name="isPrimitive" type="Boolean"/>
+        <attribute name="isClass" type="Boolean"/>
+        <attribute name="isInterface" type="Boolean"/>
+        <attribute name="isClassType" type="Boolean"/>
+        <attribute name="classType" type="classType"/>
+    </artifact>
+
+    <artifact class="varRef" default="name">
+        <attribute name="name" type="string" tooltip="The name of the variable referenced."/>
+        <attribute name="decl" type="varDecl" tooltip="The declaration of the variable."/>
+    </artifact>
+
+    <artifact class="varDecl" default="name">
+        <attribute name="name" type="string" tooltip="The name of the variable declared."/>
+        <attribute name="isParam" type="string" tooltip="Check if the var is a param."/>
+    </artifact>
+
+    <artifact class="param" default="name">
+        <attribute name="function" type="function" tooltip="The function where the param is declared."/>
+    </artifact>
+
+    <!--<artifact class="binaryOp" default="kind">-->
+    <artifact class="binary" default="kind">
+        <attribute name="kind" type="string" tooltip="Gets the kind of this binary operator."/>
+        <attribute name="isInnerExpr" type="Boolean" tooltip="Check if this expr is inside another expr."/>
+        <attribute name="outerExpr" type="expr" tooltip="Gets the  outer expr."/>
+    </artifact>
+
+    <artifact class="loop">
+        <attribute name="condition" type="expr"
+                   tooltip="Gets the boolean expression that represents the loop's condition."/>
+        <attribute name="hasCondition" type="Boolean" tooltip="Check if the loop has a condition."/>
+    </artifact>
+
+    <artifact class="if">
+        <attribute name="condition" type="expr"
+                   tooltip="Gets the boolean expression that represents the if's condition."/>
+        <attribute name="then" type="stmt" tooltip=""/>
+        <attribute name="else" type="stmt" tooltip=""/>
+        <attribute name="hasElse" type="boolean" tooltip=""/>
+        <attribute name="isElseIf" type="boolean" tooltip=""/>
+    </artifact>
+
+    <artifact class="else">
+        <attribute name="isElseIf" type="boolean" tooltip=""/>
+    </artifact>
 
 
 </artifacts>

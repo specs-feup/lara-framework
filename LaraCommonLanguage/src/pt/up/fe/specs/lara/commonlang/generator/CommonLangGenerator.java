@@ -1,11 +1,11 @@
 /**
  * Copyright 2020 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,28 +13,24 @@
 
 package pt.up.fe.specs.lara.commonlang.generator;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
-
+import org.lara.language.specification.dsl.JoinPointClass;
 import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.Replacer;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Generates the LARA files that implement the language specification hierarchy.
- * 
- * @author JBispo
  *
+ * @author JBispo
  */
 public class CommonLangGenerator {
 
@@ -43,10 +39,14 @@ public class CommonLangGenerator {
     public static List<ResourceProvider> getGeneratedResources() {
         List<ResourceProvider> resources = new ArrayList<>();
 
-        var langSpec = LaraCommonLang.getLanguageSpecification();
+        for (var jp : LaraCommonLang.getLanguageSpecification().getAllJoinPoints()) {
+            // Exclude joinpoint to keep previous behaviour
+            // TODO: Check if this exception is really needed
+            if (jp.getName().equals("joinpoint")) {
+                continue;
+            }
 
-        for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
-            resources.add(() -> getJpResource(jp.getClazz()));
+            resources.add(() -> getJpResource(jp.getName()));
         }
 
         return resources;
@@ -60,21 +60,27 @@ public class CommonLangGenerator {
         // Read lang spec
         var langSpec = LaraCommonLang.getLanguageSpecification();
 
-        generateJpBase(langSpec.getArtifacts().getGlobalAttributes());
+        var globalAttrs = langSpec.getGlobal().getAttributes();
 
-        for (var jp : langSpec.getJpModel().getJoinPointList().getJoinpoint()) {
+        generateJpBase(globalAttrs);
 
-            System.out.println("JP: " + "weaver/jp/" + jp.getClazz() + ".lara");
+        for (var jp : langSpec.getAllJoinPoints()) {
 
-            var atts = langSpec.getArtifacts().getAttributes(jp.getClazz());
-            atts = (atts == null) ? new ArrayList<>() : atts;
+            // Exclude joinpoint to keep previous behaviour
+            // TODO: Check if this exception is really needed
+            if (jp.getName().equals("joinpoint")) {
+                continue;
+            }
 
-            generate(jp, atts);
+            System.out.println("JP: " + "weaver/jp/" + jp.getName() + ".lara");
+
+            generate(jp);
         }
 
         generateIndex();
 
         // Generate JSON
+
         LangSpecNode node = NodeFactory.toNode(langSpec);
         String json = node.toJson();
 
@@ -90,11 +96,14 @@ public class CommonLangGenerator {
 
         jpIndexStr += importTemplate.replace("<SUPER_JP>", "JoinPoint");
 
-        var langSpec = LaraCommonLang.getLanguageSpecification();
-        var jps = langSpec.getJpModel().getJoinPointList().getJoinpoint();
+
+        // TODO: Is it needed to exclude joinpoint?
+        var jps = LaraCommonLang.getLanguageSpecification().getAllJoinPoints().stream()
+                .filter(jp -> !jp.getName().equals("joinpoint"))
+                .toList();
 
         for (var jp : jps) {
-            jpIndexStr += importTemplate.replace("<SUPER_JP>", getJoinPointClassName(jp.getClazz()));
+            jpIndexStr += importTemplate.replace("<SUPER_JP>", getJoinPointClassName(jp.getName()));
         }
 
         // classMapper
@@ -102,7 +111,7 @@ public class CommonLangGenerator {
                 () -> "pt/up/fe/specs/lara/commonlang/generator/ClassMapperTemplate.txt");
 
         var jpsMapping = jps.stream()
-                .map(jp -> getJoinPointClassName(jp.getClazz()))
+                .map(jp -> getJoinPointClassName(jp.getName()))
                 .map(jp -> "	'" + jp + "': " + jp)
                 .reduce((jp1, jp2) -> jp1 + ",\n" + jp2).get();
         classMapperTemplate.replace("<MAPPING>", jpsMapping);
@@ -114,13 +123,15 @@ public class CommonLangGenerator {
 
     }
 
-    private void generateJpBase(Map<String, Attribute> globAtts) {
+    private void generateJpBase(List<org.lara.language.specification.dsl.Attribute> globAtts) {
 
         var jpBase = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/JpBase.txt");
         var jpName = "JoinPoint";
         var jpBaseStr = jpBase.toString();
 
-        for (var att : globAtts.keySet()) {
+        for (var globAttr : globAtts) {
+            var att = globAttr.getName();
+
             // if att is already defined do not create template
             var attFunc = String.format("JoinPoint.prototype.%s = function(", att);
             var attParamsFunc = String.format("Object.defineProperty(JoinPoint.prototype, \'%s\', {", att);
@@ -129,9 +140,9 @@ public class CommonLangGenerator {
                 continue;
 
             var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
-            if (!globAtts.get(att).getParameter().isEmpty()) {
+            if (!globAttr.getParameters().isEmpty()) {
                 attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
-                var params = globAtts.get(att).getParameter().stream().map(param -> param.getName())
+                var params = globAttr.getParameters().stream().map(param -> param.getName())
                         .reduce((param1, param2) -> param1 + "," + param2).get();
                 attTemplate.replace("<PARAMS>", params);
             }
@@ -151,14 +162,18 @@ public class CommonLangGenerator {
         return StringUtils.capitalize(jpName) + "Jp";
     }
 
-    private void generate(JoinPointType jpType, List<Attribute> atts) {
+
+    private void generate(JoinPointClass jpType) {
+
+        var atts = jpType.getAttributes();
 
         var jpTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/JpTemplate.txt");
 
-        var jpName = jpType.getClazz();
+        var jpName = jpType.getName();
         var jpClassName = getJoinPointClassName(jpName);
-        var superName = ((JoinPointType) jpType.getExtends()).getClazz();
-        var superClassName = superName.equals(jpName) ? "JoinPoint" : getJoinPointClassName(superName);
+        var superClassName = jpType.getExtend()
+                .map(JoinPointClass::getName)
+                .map(name -> !name.equals("joinpoint") ? getJoinPointClassName(name) : "JoinPoint").orElseThrow();
 
         var types = getJpTypes(jpType);
         var typesSet = new StringBuilder();
@@ -180,9 +195,9 @@ public class CommonLangGenerator {
                 continue;
 
             var attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttTemplate.txt");
-            if (!att.getParameter().isEmpty()) {
+            if (!att.getParameters().isEmpty()) {
                 attTemplate = new Replacer(() -> "pt/up/fe/specs/lara/commonlang/generator/AttParamTemplate.txt");
-                var params = att.getParameter().stream().map(param -> param.getName())
+                var params = att.getParameters().stream().map(param -> param.getName())
                         .reduce((param1, param2) -> param1 + "," + param2).get();
                 attTemplate.replace("<PARAMS>", params);
             }
@@ -196,27 +211,27 @@ public class CommonLangGenerator {
         SpecsIo.write(laraFile, jpTemplateStr);
     }
 
-    public static List<String> getJpTypes(JoinPointType jpType) {
+    public static List<String> getJpTypes(JoinPointClass jpType) {
         var types = new ArrayList<String>();
         var current = jpType;
         boolean stop = false;
 
         while (!stop) {
-            types.add(current.getClazz());
-            var superJp = (JoinPointType) current.getExtends();
-            if (superJp.getClazz().equals(current.getClazz())) {
+            types.add(current.getName());
+            var superJp = current.getExtend();
+            if (superJp.isEmpty()) {
                 stop = true;
             } else {
-                current = superJp;
+                current = superJp.get();
             }
         }
 
         // Finally add base
-        types.add("joinpoint");
+        //types.add("joinpoint");
 
         return types;
     }
-    
+
     // classes written in javascript
     public static List<String> classesInJS = Arrays
             .asList("DeclJp", "FunctionJp", "StmtJp", "JoinPoint");
@@ -229,22 +244,24 @@ public class CommonLangGenerator {
         return "weaver/jp/" + jpClassName + ".lara";
     }
 
-    public static Boolean isAttDefinedInSuper(JoinPointType jpType, Attribute att) {
-        var jpName = jpType.getClazz();
-        var superName = ((JoinPointType) jpType.getExtends()).getClazz();
-        if (superName.equals(jpName))
+    public static Boolean isAttDefinedInSuper(JoinPointClass jpType, org.lara.language.specification.dsl.Attribute att) {
+        var superJpTry = jpType.getExtend();
+
+        // TODO: Is the joinpoint check needed?
+        //if (superJpTry.isEmpty() || superJpTry.get().equals("joinpoint"))
+        if (superJpTry.isEmpty()) {
             return false;
+        }
+        var superJp = superJpTry.get();
 
-        var langSpec = LaraCommonLang.getLanguageSpecification();
 
-        var atts = langSpec.getArtifacts().getAttributes(superName);
-        atts = (atts == null) ? new ArrayList<>() : atts;
+        var atts = superJp.getAttributes();
 
         if (atts.stream().anyMatch(attElem -> attElem.getName().equals(att.getName()))) {
             return true;
         }
 
-        return isAttDefinedInSuper((JoinPointType) jpType.getExtends(), att);
+        return isAttDefinedInSuper(superJp, att);
 
     }
 

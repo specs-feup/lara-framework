@@ -1,11 +1,11 @@
 /**
  * Copyright 2020 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,22 +13,20 @@
 
 package pt.up.fe.specs.lara.commonlang;
 
-import static pt.up.fe.specs.lara.commonlang.CommonLangResource.ACTIONS;
-import static pt.up.fe.specs.lara.commonlang.CommonLangResource.ARTIFACTS;
-import static pt.up.fe.specs.lara.commonlang.CommonLangResource.JOINPOINTS;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import pt.up.fe.specs.lara.commonlang.generator.CommonLangGenerator;
+import pt.up.fe.specs.util.providers.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.language.specification.LanguageSpecification;
-
-import pt.up.fe.specs.lara.commonlang.generator.CommonLangGenerator;
-import pt.up.fe.specs.util.providers.ResourceProvider;
+import static pt.up.fe.specs.lara.commonlang.CommonLangResource.*;
 
 public class LaraCommonLang {
 
-    public static LanguageSpecification getLanguageSpecification() {
-        return LanguageSpecification.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS, false);
+
+    public static LanguageSpecificationV2 getLanguageSpecification() {
+        return LanguageSpecificationV2.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS);
     }
 
     public static List<ResourceProvider> getLaraCommonLangApi() {
@@ -42,12 +40,15 @@ public class LaraCommonLang {
 
         return api;
     }
-    
+
+    /**
+     * Used by JS code.
+     *
+     * @param joinPointType
+     * @return
+     */
     public static String getDefaultAttribute(String joinPointType) {
-        var langSpec = getLanguageSpecification();        
-        var artifact = langSpec.getArtifacts().getArtifact(joinPointType);        
-        return artifact == null ? null :artifact.getDefault();
-      
+        return getLanguageSpecification().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
     }
 
 }
