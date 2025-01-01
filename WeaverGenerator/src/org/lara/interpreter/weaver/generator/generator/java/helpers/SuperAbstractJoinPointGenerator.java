@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,21 +13,10 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.SelectOp;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
-import org.lara.language.specification.artifactsmodel.schema.DefArgType;
-import org.lara.language.specification.artifactsmodel.schema.Global;
-import org.lara.language.specification.joinpointmodel.schema.GlobalJoinPoints;
-import org.lara.language.specification.joinpointmodel.schema.Select;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -37,9 +26,9 @@ import org.specs.generators.java.members.Argument;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
-import pt.up.fe.specs.util.SpecsCollections;
 import tdrc.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * Generates the base Join Point abstract class, containing the global attributes and actions
@@ -52,20 +41,21 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @param javaGenerator
      * @param sanitizedOutPackage
      * @param enums
      * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
+
         final SuperAbstractJoinPointGenerator gen = new SuperAbstractJoinPointGenerator(javaGenerator);
         return gen.generate();
     }
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @param sanitizedOutPackage
      * @param enums
      * @return
@@ -78,7 +68,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * Generate an abstract class for the join points, containing the global attributes and actions. It also generates
      * the code for listing the available attributes and actions.
-     * 
+     *
      * @param langSpec
      * @param sanitizedOutPackage
      * @param interfaceName
@@ -129,9 +119,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate the default methods com comparing two joinpoints: same, compareNodes and getNode()
-     * 
-     * @param abstJPClass
-     *            target class
+     *
+     * @param abstJPClass target class
      */
     private void generateCompareMethods(JavaClass abstJPClass) {
         generateSameMethod(abstJPClass);
@@ -142,7 +131,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate default implementation of the getNode() method
-     * 
+     *
      * @param abstJPClass
      */
     private void generateGetNodeMethod(JavaClass abstJPClass) {
@@ -156,7 +145,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * Generate the default "same" method, that verifies if the argument has the same join point class as "this" and
      * calls the compareNodes method to compare the join point nodes
-     * 
+     *
      * @param abstJPClass
      */
     private static void generateSameMethod(JavaClass abstJPClass) {
@@ -172,10 +161,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate fields and methods for the attributes and actions global to all join points
-     * 
-     * @param abstJPClass
-     *            the target join point abstraction class
-     * 
+     *
+     * @param abstJPClass the target join point abstraction class
      * @return
      */
     private void generateGlobalJoinPointData(JavaClass abstJPClass) {
@@ -192,23 +179,19 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate the global attributes as fields and/or getter methods
-     * 
+     *
      * @param abstJPClass
      * @param enums
      */
     private void generateGlobalAttributes(JavaClass abstJPClass) {
-        final LanguageSpecification langSpec = javaGenerator.getLanguageSpecification();
 
-        // Add attributes and methods to the abstract join point class
-        final Global global = langSpec.getArtifacts().getArtifactsList().getGlobal();
-        if (global == null) {
+        var globalAttrs = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf();
+
+        if (globalAttrs.isEmpty()) {
             return;
         }
 
-        List<Attribute> attributes = global.getAttribute();
-        if (attributes.isEmpty()) {
-            return;
-        }
+
         final Method fillWithAttributes = new Method(JavaTypeFactory.getVoidType(),
                 GenConstants.fillWAttrMethodName(),
                 Privacy.PROTECTED);
@@ -219,8 +202,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         fillWithAttributes.appendCode("//Attributes available for all join points" + ln());
         abstJPClass.add(fillWithAttributes);
 
-        for (final Attribute attr : attributes) {
-
+        for (var attr : globalAttrs) {
             final String name = attr.getName();
             fillWithAttributes.appendCode("attributes.add(\"" + name);
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);
@@ -259,19 +241,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate the global selects as abstract methods
-     * 
+     *
      * @param actionModel
      * @param abstJPClass
      */
     private void generateGlobalSelects(JavaClass abstJPClass) {
 
-        final GlobalJoinPoints globalSelects = javaGenerator.getLanguageSpecification().getJpModel()
-                .getJoinPointList()
-                .getGlobal();
-        if (globalSelects == null) {
-            return;
-        }
-        List<Select> selects = globalSelects.getSelect();
+        var selects = javaGenerator.getLanguageSpecificationV2().getGlobal().getSelectsSelf();
+
         if (selects.isEmpty()) {
             return;
         }
@@ -283,12 +260,9 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         fillWithSelects.addArgument(JavaTypeFactory.getListStringJavaType(), "selects");
         fillWithSelects.appendCode("//Selects available for all join points" + ln());
 
-        // abstJPClass.addImport(List.class.getCanonicalName());
-        for (final Select select : selects) {
+        for (var select : selects) {
 
-            // final Method selectMethod = GeneratorUtils.generateSelectMethod(select,
-            // javaGenerator.getJoinPointClassPackage(),
-            // true);
+
             final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(select,
                     javaGenerator.getJoinPointClassPackage());
             abstJPClass.add(selectMethod);
@@ -301,24 +275,28 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * List all the actions as methods
-     * 
+     *
      * @param actionModel
      * @param abstJPClass
      */
     private void generateGlobalActionsAsMethods(JavaClass abstJPClass) {
 
         if (javaGenerator.hasDefs()) {
-            List<Attribute> attributes = javaGenerator.getLanguageSpecification().getArtifacts().getArtifactsList()
-                    .getGlobal().getAttribute().stream().filter(a -> !a.getDef().isEmpty())
-                    .collect(Collectors.toList());
-            GeneratorUtils.createDefImpl(abstJPClass, false, attributes, javaGenerator);
-            // generateDefImpl(abstJPClass);
-        }
-        List<Action> actionsForAll = javaGenerator.getLanguageSpecification().getActionModel().getActionsForAll();
 
-        if (actionsForAll.isEmpty()) {
+            var attrs = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf().stream()
+                    .filter(a -> !a.getDefs().isEmpty())
+                    .toList();
+
+            GeneratorUtils.createDefImpl(abstJPClass, false, attrs, javaGenerator);
+        }
+
+        var actions = javaGenerator.getLanguageSpecificationV2().getGlobal().getActionsSelf();
+
+        if (actions.isEmpty()) {
             return;
         }
+
+
         final Method fillWithActions = new Method(JavaTypeFactory.getVoidType(), GenConstants.fillWActMethodName(),
                 Privacy.PROTECTED);
         fillWithActions.add(Annotation.OVERRIDE);
@@ -326,7 +304,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.addImport(List.class);
         final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
         fillWithActions.addArgument(listStringType, "actions");
-        for (final Action action : actionsForAll) {
+
+        for (var action : actions) {
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
             abstJPClass.add(m);
 
@@ -344,62 +323,11 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         // addDefaultActions(abstJPClass, fillWithActions);
     }
 
-    @Deprecated
-    void generateDefImpl(JavaClass abstJPClass) {
-        List<Attribute> attributes = javaGenerator.getLanguageSpecification().getArtifacts().getArtifactsList()
-                .getGlobal().getAttribute();
-        Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
-        defMethod.add(Annotation.OVERRIDE);
-        defMethod.addArgument(String.class, "attribute");
-        defMethod.addArgument(Object.class, "value");
-        defMethod.appendCodeln("switch(attribute){");
-
-        for (Attribute attribute : attributes) {
-            List<DefArgType> def = attribute.getDef();
-            if (def.isEmpty()) {
-                continue;
-            }
-            JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getType(), javaGenerator);
-            defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
-            List<String> processedTypes = SpecsCollections.newArrayList();
-            for (DefArgType defType : def) {
-                String type = defType.getType();
-                if (processedTypes.contains(type)) {
-                    continue;
-                }
-                JavaType defJavaType;
-                if (type == null) {
-                    defJavaType = returnType.clone();
-                } else {
-                    defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
-                }
-                abstJPClass.addImport(defJavaType);
-                defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
-                defMethod.appendCode("\t\tthis.");
-                defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
-                defMethod.appendCode("((");
-                defMethod.appendCode(defJavaType.getSimpleType());
-                defMethod.appendCodeln(")value);");
-                defMethod.appendCodeln("\t\treturn;");
-                defMethod.appendCodeln("\t}");
-                processedTypes.add(type);
-            }
-            defMethod.appendCodeln("\t" +
-                    GeneratorUtils.UnsupDefTypeExceptionCode(attribute.getName(), "value.getClass()"));
-            defMethod.appendCodeln("}");
-        }
-
-        defMethod.appendCode("default: ");
-        defMethod.appendCodeln(
-                GeneratorUtils.UnsupDefExceptionCode("attribute"));
-        defMethod.appendCodeln("}");
-        abstJPClass.add(defMethod);
-    }
 
     /**
      * Add the default attributes to the abstract join point representation <br>
      * Already in JoinPoint class!
-     * 
+     *
      * @param abstJPClass
      */
     // private static void addDefaultAttributes(JavaClass abstJPClass, Method fillWithAttributes) {
@@ -412,7 +340,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * Add the default actions to the abstract join point representation <br>
      * already in JoinPoint class!
-     * 
+     *
      * @param abstJPClass
      */
     // private static void addDefaultActions(JavaClass abstJPClass, Method fillWithActions) {

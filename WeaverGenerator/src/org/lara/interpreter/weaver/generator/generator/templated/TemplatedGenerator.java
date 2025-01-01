@@ -22,7 +22,6 @@ import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.members.Field;
@@ -99,10 +98,12 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
      *
      * @param langSpec the language specification
      */
+    /*
     public TemplatedGenerator(LanguageSpecification langSpec) {
         this();
         this.languageSpec(langSpec);
     }
+     */
 
     /**
      * Create a JavaGenerator with the given language specification folder
@@ -294,13 +295,9 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
 
     protected List<JavaClass> generateClasses() {
 
-        final LanguageSpecification langSpec = getLanguageSpecification();
-        final JoinPointModel jpModel = langSpec.getJpModel();
-
         final List<JavaClass> joinPointClasses = new ArrayList<>();
 
-        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
-
+        for (var joinPoint : getLanguageSpecificationV2().getAllJoinPoints()) {
             final JavaClass jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
             joinPointClasses.add(jClass);
         }

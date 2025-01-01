@@ -44,12 +44,14 @@ public class JavaImplGenerator extends BaseGenerator {
      * @param joinPointPrefix
      *            the prefix to use for the name of the join point implementations
      */
+    /*
     public JavaImplGenerator(LanguageSpecification langSpec, String joinPointPrefix) {
         super();
         this.languageSpec(langSpec);
         setJoinPointPrefix(joinPointPrefix);
 
     }
+     */
 
     public JavaImplGenerator(File langSpecDir) {
         super();

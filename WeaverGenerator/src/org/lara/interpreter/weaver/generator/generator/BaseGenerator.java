@@ -338,6 +338,10 @@ public abstract class BaseGenerator {
         return languageSpecification;
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public LanguageSpecification getLanguageSpecification() {
         return languageSpecificationOld;
     }
