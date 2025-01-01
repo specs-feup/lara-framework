@@ -245,7 +245,21 @@ public class LangSpecsXmlParser {
                     parameterNode.getAttribute("name"), parameterNode.getAttribute("default"));
         }
 
+        var defNodes = attributeNode.getElementsByName("def");
+
+        for (var defNode : defNodes) {
+            // If def does not have a type, use the attribute type
+            newAttribute.addDef(parseDef(defNode, type));
+        }
+
         return newAttribute;
+    }
+
+    private static Def parseDef(XmlElement defNode, String attributeType) {
+        // Check if it has an optional 'type'
+        var type = defNode.getAttribute("type", attributeType);
+
+        return new Def(type);
     }
 
     private static String getType(XmlElement node) {
@@ -293,7 +307,7 @@ public class LangSpecsXmlParser {
             String alias = selectNode.getAttribute("alias");
             alias = alias.equals(selectClassName) ? "" : alias; // Is this necessary?
             Select newSelect = new Select(selectJP, alias);
-            newSelect.setToolTip(selectNode.getAttribute("tooltip"));
+            newSelect.setToolTip(selectNode.getAttribute("tooltip", null));
             selects.add(newSelect);
         }
 

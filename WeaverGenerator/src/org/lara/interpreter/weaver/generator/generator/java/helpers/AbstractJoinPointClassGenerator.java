@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
@@ -23,9 +22,7 @@ import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
-import org.lara.language.specification.joinpointmodel.schema.Select;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -39,7 +36,6 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,12 +44,10 @@ import java.util.Optional;
  */
 public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
-    private final JoinPointType joinPoint;
     private final JoinPointClass joinPointV2;
 
     protected AbstractJoinPointClassGenerator(JavaAbstractsGenerator javaGenerator, JoinPointType joinPoint) {
         super(javaGenerator);
-        this.joinPoint = joinPoint;
         this.joinPointV2 = javaGenerator.getLanguageSpecificationV2().getJoinPoint(joinPoint.getClazz());
     }
 
@@ -185,11 +179,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     private void addSelects(JavaClass javaC) {
 
-        // if (!joinPoint.getSelect().isEmpty())
-        // javaC.addImport("java.util.List");
-
-        for (final Select sel : joinPoint.getSelect()) {
-
+        for (var sel : joinPointV2.getSelectsSelf()) {
             addSelect(sel, javaC);
         }
 
@@ -223,16 +213,13 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      * @param type
      * @param javaC
      */
-    private void addSelect(Select sel, JavaClass javaC) {
+    private void addSelect(org.lara.language.specification.dsl.Select sel, JavaClass javaC) {
 
         final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
-        // final Method selectMethod = GeneratorUtils.generateSelectMethod(sel, joinPointPackage, true);
         final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(sel, joinPointPackage);
 
         javaC.add(selectMethod);
         javaC.addImport(SelectOp.class);
-
-        // addSelectWithTryCatch(selectName, javaC, selectMethod);
     }
 
     /**
@@ -242,6 +229,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      * @param javaC
      * @param selectMethod
      */
+    /*
     void addSelectWithTryCatch(String selectName, JavaClass javaC, final Method selectMethod) {
         // Add the method used to encapsulate the output with an Optional, or
         // encapsulate a thrown exception
@@ -263,6 +251,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.addImport(Collections.class);
         javaC.addImport(SelectException.class);
     }
+     */
 
     /**
      * Add code that calls to the super methods
@@ -273,31 +262,32 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     private String addSuperMethods(JavaClass javaC) {
 
-        final JoinPointType superType = JoinPointModel.toJoinPointType(joinPoint.getExtends());
-        final JoinPointType superSuperType = JoinPointModel.toJoinPointType(superType.getExtends());
-        final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getClazz());
+        var superType = joinPointV2.getExtendExplicit().orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
+
+        final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
-                + Utils.firstCharToUpper(superType.getClazz());
+                + Utils.firstCharToUpper(superType.getName());
         final JavaType joinPointType = new JavaType(superClassName, javaGenerator.getJoinPointClassPackage());
         javaC.add(new Field(joinPointType, fieldName, Privacy.PROTECTED));
 
         final Constructor constructor = new Constructor(javaC);
         constructor.addArgument(joinPointType, fieldName);
-        if (!superType.equals(superSuperType)) {
+        if (superType.getExtendExplicit().isPresent()) {
             constructor.appendCode("super(" + fieldName + ");" + ln());
         }
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
         // System.out.println("addSuperMethods: " + joinPoint.getClazz());
-        GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
+        GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPointV2);
 
         // Add global methods for global attributes
-        var globalAttributes = javaGenerator.getLanguageSpecification().getArtifacts().getGlobalAttributes().values();
+        var globalAttributes = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf();
+
         GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
         // GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, superType.getClazz());
         // addSuperGetters(javaC, fieldName, javaGenerator, parent);
         // System.out.println("ABS JP: " + superType.getClazz());
         // Update also here for actionImpl
-        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getClazz(), fieldName);
+        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getName(), fieldName);
         // GeneratorUtils.addSuperToString(javaC, fieldName); // Do not add toString(), JoinPoint already implements it,
         // and this one has bugs (e.g., param shows 'decl')
         // addSuperWeaverEngineSetter(javaC, fieldName);

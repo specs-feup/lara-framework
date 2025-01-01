@@ -23,7 +23,6 @@ import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
-import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.artifactsmodel.schema.DefArgType;
 import org.lara.language.specification.dsl.JoinPointClass;
@@ -46,10 +45,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class GeneratorUtils {
@@ -194,25 +190,17 @@ public class GeneratorUtils {
      * @param current
      */
     public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                       JoinPointType current) {
-        // public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-        // JoinPointType current, boolean calledOnBaseJp) {
-        final String parentType = JoinPointModelConstructor.getJoinPointClass(current.getExtends());
-        if (parentType == null || parentType.equals(current.getClazz())) {
+                                       JoinPointClass current) {
+
+        var parentV2 = current.getExtendExplicit().orElse(null);
+        if (parentV2 == null) {
             return;
         }
-        // if (parentType == null || calledOnBaseJp) {
-        // return;
-        // }
-        //
-        // var newCalledOnBaseJp = parentType.equals(current.getClazz());
 
-        final JoinPointType parent = generator.getLanguageSpecification().getJpModel().getJoinPoint(parentType);
-        addSuperGetters(javaC, fieldName, generator, parent);
-        addSuperSelect(javaC, fieldName, generator, parent);
-        // addSuperMethods(javaC, fieldName, generator, parent, newCalledOnBaseJp);
-        addSuperMethods(javaC, fieldName, generator, parent);
-        addSuperDefs(javaC, fieldName, generator, parent);
+        addSuperGetters(javaC, fieldName, generator, parentV2);
+        addSuperSelect(javaC, fieldName, generator, parentV2);
+        addSuperMethods(javaC, fieldName, generator, parentV2);
+        addSuperDefs(javaC, fieldName, generator, parentV2);
     }
 
     /**
@@ -221,8 +209,8 @@ public class GeneratorUtils {
      * @param parent
      */
     public static void addSuperSelect(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                      JoinPointType parent) {
-        for (final Select sel : parent.getSelect()) {
+                                      JoinPointClass parent) {
+        for (var sel : parent.getSelectsSelf()) {
 
             final Method selectMethod = generateSelectMethod(sel, generator.getJoinPointClassPackage(), false);
             selectMethod.add(Annotation.OVERRIDE);
@@ -244,35 +232,33 @@ public class GeneratorUtils {
         javaC.add(toStringMethod);
     }
 
+
     public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                       JoinPointType parent) {
+                                       JoinPointClass parent) {
 
-        final Artifact artifact = generator.getLanguageSpecification().getArtifacts().getArtifact(parent.getClazz());
-
-        if (artifact == null) {
-            return;
-        }
-
-        addSuperGetters(javaC, fieldName, generator, artifact.getAttribute());
+        addSuperGetters(javaC, fieldName, generator, parent.getAttributesSelf());
     }
 
     public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                       Collection<Attribute> attributes) {
+                                       List<org.lara.language.specification.dsl.Attribute> attributes) {
 
+        // TODO: Remove sort
+        Collections.sort(attributes, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
         // System.out.println("JP: " + javaC.getName());
-        for (final Attribute attribute : attributes) {
+        //for (final Attribute attribute : attributes) {
+        for (var attributeV2 : attributes) {
+
             // System.out.println("ATTR:" + attribute.getName());
-            String attrClassStr = attribute.getType().trim();
+            String attrClassStr = attributeV2.getReturnType().trim();
 
             if (attrClassStr.startsWith("{")) { // then it is an enumerator
-                // attrClassStr = extractEnumName(attribute.getName());
                 attrClassStr = String.class.getSimpleName();
             }
 
             // if (ObjectOfPrimitives.contains(attrClassStr))
             // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
 
-            String name = attribute.getName();
+            String name = attributeV2.getName();
             // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
 
             JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
@@ -284,7 +270,8 @@ public class GeneratorUtils {
             if (generator.hasImplMode() && !type.isArray()) {
                 name += GenConstants.getImplementationSufix();
             }
-            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameter(),
+
+            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attributeV2.getParameters(),
                     generator);
             getter.add(Annotation.OVERRIDE);
             javaC.add(getter);
@@ -423,16 +410,17 @@ public class GeneratorUtils {
      * @return
      */
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
-                                            List<org.lara.language.specification.artifactsmodel.schema.Parameter> list,
+                                            List<org.lara.language.specification.dsl.Parameter> listV2,
                                             JavaAbstractsGenerator generator) {
 
-        if (list != null && !list.isEmpty()) {
+        if (!listV2.isEmpty()) {
             final Method getAttribute = new Method(getAttrType, originalName);
             // getAttribute.addModifier(Modifier.ABSTRACT);
             getAttribute.appendComment("Get value on attribute " + attr);
             getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
             getAttribute.appendCode("return this." + superField + "." + originalName + "(");
-            for (org.lara.language.specification.artifactsmodel.schema.Parameter parameter : list) {
+
+            for (var parameter : listV2) {
 
                 JavaType type = ConvertUtils.getConvertedType(parameter.getType(), generator);
                 getAttribute.addArgument(type, parameter.getName());
@@ -734,6 +722,7 @@ public class GeneratorUtils {
      * @param selectName
      * @param type
      * @return
+     * @deprecated
      */
     public static Method generateSelectMethod(Select sel, String _package, boolean isAbstract) {
         final String selectName = sel.getAlias();
@@ -757,11 +746,38 @@ public class GeneratorUtils {
     }
 
     /**
+     * @param selectName
+     * @param type
+     * @return
+     */
+    public static Method generateSelectMethod(org.lara.language.specification.dsl.Select sel, String _package, boolean isAbstract) {
+        final String selectName = sel.getSelectName();
+        final String type = sel.getClazz().getName();
+        //final String type = JoinPointModelConstructor.getJoinPointClass(sel);
+        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
+        final String methodName = "select" + firstCharToUpper;
+        final JavaType baseType = generateJoinPointBaseType(_package, type);
+        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
+        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
+        // Method selectMethod = new Method("List<? extends A" +
+        // typeFirstCharToUpper + ">", methodName);
+        final Method selectMethod = new Method(listType, methodName);
+        selectMethod.addJavaDocTag(JDocTag.RETURN);
+        if (isAbstract) {
+            selectMethod.add(Modifier.ABSTRACT);
+        }
+        String comment = sel.getToolTip().orElse("Method used by the lara interpreter to select " + selectName + "s");
+        selectMethod.appendComment(comment);
+        return selectMethod;
+    }
+
+    /**
      * Generic implementation of the select method which uses the select() function in the global join point class.
      *
      * @param selectName
      * @param type
      * @return
+     * @deprecated
      */
     public static Method generateSelectMethodGeneric(Select sel, String _package) {
         final String selectName = sel.getAlias();
@@ -778,6 +794,33 @@ public class GeneratorUtils {
         String comment = Optional.ofNullable(sel.getTooltip())
                 .orElse("Default implementation of the method used by the lara interpreter to select " + selectName
                         + "s");
+        selectMethod.appendComment(comment);
+
+        selectMethod.appendCode("return select(" + baseType + ".class, SelectOp.DESCENDANTS);");
+
+        return selectMethod;
+    }
+
+    /**
+     * Generic implementation of the select method which uses the select() function in the global join point class.
+     *
+     * @param selectName
+     * @param type
+     * @return
+     */
+    public static Method generateSelectMethodGeneric(org.lara.language.specification.dsl.Select sel, String _package) {
+        final String selectName = sel.getSelectName();
+        final String type = sel.getClazz().getName();
+        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
+        final String methodName = "select" + firstCharToUpper;
+        final JavaType baseType = generateJoinPointBaseType(_package, type);
+        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
+        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
+        // Method selectMethod = new Method("List<? extends A" +
+        // typeFirstCharToUpper + ">", methodName);
+        final Method selectMethod = new Method(listType, methodName);
+        selectMethod.addJavaDocTag(JDocTag.RETURN);
+        String comment = sel.getToolTip().orElse("Default implementation of the method used by the lara interpreter to select " + selectName + "s");
         selectMethod.appendComment(comment);
 
         selectMethod.appendCode("return select(" + baseType + ".class, SelectOp.DESCENDANTS);");
@@ -1134,6 +1177,14 @@ public class GeneratorUtils {
 
     }
 
+    /**
+     * @param attribute
+     * @param returnType
+     * @param javaC
+     * @param javaGenerator
+     * @param codeProvider
+     * @deprecated
+     */
     public static void generateDefForType(Attribute attribute, JavaType returnType, JavaClass javaC,
                                           JavaAbstractsGenerator javaGenerator, Function<String, String> codeProvider) {
         List<DefArgType> defs = attribute.getDef();
@@ -1163,30 +1214,59 @@ public class GeneratorUtils {
         }
     }
 
-    public static void addSuperDefs(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                    JoinPointType parent) {
-
-        final Artifact artifact = generator.getLanguageSpecification().getArtifacts().getArtifact(parent.getClazz());
-        if (artifact != null) {
-            for (final Attribute attribute : artifact.getAttribute()) {
-                List<DefArgType> defs = attribute.getDef();
-                if (defs.isEmpty()) {
-                    continue;
-                }
-                String attrClassStr = attribute.getType().trim();
-
-                if (attrClassStr.startsWith("{")) { // then it is an enumerator
-                    // attrClassStr = extractEnumName(attribute.getName());
-                    attrClassStr = String.class.getSimpleName();
-                }
-                String defMethodName = GenConstants.getDefAttributeImplName(attribute);
-                JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
-
-                Function<String, String> codeProvider = t -> "this." + fieldName + "." + defMethodName + "(value);";
-                generateDefForType(attribute, type, javaC, generator, codeProvider);
+    public static void generateDefForType(org.lara.language.specification.dsl.Attribute attribute, JavaType returnType, JavaClass javaC,
+                                          JavaAbstractsGenerator javaGenerator, Function<String, String> codeProvider) {
+        var defs = attribute.getDefs();
+        if (defs.isEmpty()) {
+            return;
+        }
+        List<String> processedTypes = SpecsCollections.newArrayList();
+        for (var defType : defs) {
+            String type = defType.getType();
+            if (processedTypes.contains(type)) {
+                continue;
             }
+            JavaType defJavaType;
+            if (type == null) {
+                defJavaType = returnType.clone();
+            } else {
+                defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+            }
+            Method defAttrImpl = new Method(JavaTypeFactory.getVoidType(),
+                    GenConstants.getDefAttributeImplName(attribute.getName()));
+            defAttrImpl.setPrivacy(Privacy.PUBLIC);
+            defAttrImpl.addArgument(defJavaType, "value");
+            defAttrImpl.appendCode(codeProvider.apply(defJavaType.getName()));
+
+            processedTypes.add(type);
+            javaC.add(defAttrImpl);
         }
     }
+
+    public static void addSuperDefs(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
+                                    JoinPointClass parent) {
+
+        //for (var attribute : parent.getAttributesSelf().stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList()) {
+        for (var attribute : parent.getAttributesSelf()) {
+
+            var defs = attribute.getDefs();
+            if (defs.isEmpty()) {
+                continue;
+            }
+            String attrClassStr = attribute.getReturnType().trim();
+
+            if (attrClassStr.startsWith("{")) { // then it is an enumerator
+                attrClassStr = String.class.getSimpleName();
+            }
+            String defMethodName = GenConstants.getDefAttributeImplName(attribute.getName());
+            JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
+
+            Function<String, String> codeProvider = t -> "this." + fieldName + "." + defMethodName + "(value);";
+            generateDefForType(attribute, type, javaC, generator, codeProvider);
+        }
+
+    }
+
 
     public static void createDefImpl(JavaClass javaC, boolean isFinal,
                                      List<Attribute> attributes, JavaAbstractsGenerator javaGenerator) {

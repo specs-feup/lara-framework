@@ -13,10 +13,8 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.Modifier;
@@ -35,7 +33,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttributesEnumGenerator {
-
+    
     private JoinPointClass joinPointV2;
     private JavaClass javaC;
 
@@ -50,28 +48,16 @@ public class AttributesEnumGenerator {
     }
 
     public void generate() {
-        String clazz = joinPointV2.getName();
-/*
-        List<Attribute> attributes = langSpec.getArtifacts()
-                .getAttributesRecursively(clazz).stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList();
-
-        System.out.println(clazz);
-        System.out.println("OLD: " + langSpec.getArtifacts()
-                .getAttributesRecursively(clazz).stream().map(Attribute::getName).sorted().toList());
-        System.out.println("NEW: " + joinPointV2.getAttributes().stream().map(org.lara.language.specification.dsl.Attribute::getName).sorted().toList());
-*/
-        // TODO: Sorting so that refactor output can be compared with previous output, can be removed after
-        var attributes = joinPointV2.getAttributes().stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList();
+        var attributes = joinPointV2.getAttributes();
 
         if (attributes.isEmpty()) {
             return;
         }
 
-        String enumName = StringUtils.firstCharToUpper(clazz) + "Attributes";
+        String enumName = StringUtils.firstCharToUpper(joinPointV2.getName()) + "Attributes";
         JavaEnum anEnum = new JavaEnum(enumName, javaC.getClassPackage());
         anEnum.setPrivacy(Privacy.PROTECTED);
 
-        //addAttributes(attributes, anEnum);
         addAttributesV2(attributes, anEnum);
 
         addNameField(anEnum);
