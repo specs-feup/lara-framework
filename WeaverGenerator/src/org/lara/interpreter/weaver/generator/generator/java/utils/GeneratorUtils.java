@@ -21,7 +21,6 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.NamedEnum;
 import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.actionsmodel.schema.Parameter;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
@@ -59,46 +58,8 @@ public class GeneratorUtils {
         return SpecsIo.getNewline();
     }
 
-    /**
-     * @param javaC
-     * @param langSpec
-     * @param joinPoint
-     * @param superName
-     * @param isFinal
-     * @deprecated
-     */
-    public static void createListOfAvailableAttributes(JavaClass javaC, LanguageSpecification langSpec,
-                                                       JoinPointType joinPoint, String superName, boolean isFinal) {
-        // javaC.addImport(List.class.getCanonicalName());
-        final String fillAttributesName = GenConstants.fillWAttrMethodName();
-        final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillAttributesName, Privacy.PROTECTED);
-        listSelects.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            listSelects.add(Modifier.FINAL);
-        }
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        listSelects.addArgument(listStringType, "attributes");
 
-        if (superName != null) {
-
-            listSelects.appendCode("this." + superName + "." + fillAttributesName + "(attributes);" + ln());
-        } else {
-            listSelects.appendCode("super." + fillAttributesName + "(attributes);" + ln());
-        }
-
-        final Artifact artifact = langSpec.getArtifacts().getArtifact(joinPoint.getClazz());
-        if (artifact != null) {
-            for (final Attribute attribute : artifact.getAttribute()) {
-
-                listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
-            }
-        }
-
-        javaC.add(listSelects);
-    }
-
-    public static void createListOfAvailableAttributes(JavaClass javaC, LanguageSpecification langSpec,
-                                                       JoinPointType joinPoint, JoinPointClass joinPointV2, String superName, boolean isFinal) {
+    public static void createListOfAvailableAttributes(JavaClass javaC, JoinPointClass joinPoint, String superName, boolean isFinal) {
 
         final String fillAttributesName = GenConstants.fillWAttrMethodName();
         final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillAttributesName, Privacy.PROTECTED);
@@ -116,16 +77,16 @@ public class GeneratorUtils {
             listSelects.appendCode("super." + fillAttributesName + "(attributes);" + ln());
         }
 
-        for (var attribute : joinPointV2.getAttributesSelf()) {
+        for (var attribute : joinPoint.getAttributesSelf()) {
             listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
         }
 
         javaC.add(listSelects);
     }
 
-    public static void createListOfAvailableSelects(JavaClass javaC, JoinPointType joinPoint, String superName,
+    public static void createListOfAvailableSelects(JavaClass javaC, JoinPointClass joinPointV2, String superName,
                                                     boolean isFinal) {
-        // javaC.addImport(List.class.getCanonicalName());
+
         final String fillSelectsName = GenConstants.fillWSelMethodName();
         final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillSelectsName, Privacy.PROTECTED);
         listSelects.add(Annotation.OVERRIDE);
@@ -143,9 +104,8 @@ public class GeneratorUtils {
             listSelects.appendCode("super." + fillSelectsName + "(selects);" + ln());
         }
 
-        for (final Select sel : joinPoint.getSelect()) {
-
-            listSelects.appendCode("selects.add(\"" + sel.getAlias() + "\");" + ln());
+        for (var sel : joinPointV2.getSelectsSelf()) {
+            listSelects.appendCode("selects.add(\"" + sel.getSelectName() + "\");" + ln());
         }
 
         javaC.add(listSelects);
@@ -193,9 +153,8 @@ public class GeneratorUtils {
 
     }
 
-    public static void createListOfAvailableActions(JavaClass javaC, JoinPointType joinPoint, String superName,
-                                                    LanguageSpecification langSpec, boolean isFinal) {
-        // javaC.addImport(List.class.getCanonicalName());
+    public static void createListOfAvailableActions(JavaClass javaC, JoinPointClass joinPointV2, String superName, boolean isFinal) {
+
         final String fillActionsName = GenConstants.fillWActMethodName();
 
         final Method listActions = new Method(JavaTypeFactory.getVoidType(), fillActionsName, Privacy.PROTECTED);
@@ -215,21 +174,16 @@ public class GeneratorUtils {
         }
         listActions.appendCode("." + fillActionsName + "(actions);" + ln());
 
-        for (final Action act : langSpec.getActionModel().getJoinPointOwnActions(joinPoint.getClazz())) {
-
-            listActions.appendCode("actions.add(\"" + act.getReturn() + " " + act.getName() + "(");
-            final String joinedParams = StringUtils.join(act.getParameter(), Parameter::getType, ", ");
+        for (var act : joinPointV2.getActionsSelf()) {
+            listActions.appendCode("actions.add(\"" + act.getReturnType() + " " + act.getName() + "(");
+            final String joinedParams = StringUtils.join(act.getParameters(), org.lara.language.specification.dsl.Parameter::getType, ", ");
             listActions.appendCode(joinedParams);
             listActions.appendCode(")\");" + ln());
         }
 
+
         javaC.add(listActions);
     }
-
-    // public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-    // JoinPointType current) {
-    // addSuperMethods(javaC, fieldName, generator, current, false);
-    // }
 
     /**
      * Add methods of the super join point to the java class

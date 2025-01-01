@@ -125,9 +125,9 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
             GeneratorUtils.createDefImpl(javaC, isFinal, allDefinableAttributes, javaGenerator);
         }
-        GeneratorUtils.createListOfAvailableAttributes(javaC, langSpec, joinPoint, joinPointV2, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, langSpec, isFinal);
+        GeneratorUtils.createListOfAvailableAttributes(javaC, joinPointV2, superTypeName, isFinal);
+        GeneratorUtils.createListOfAvailableSelects(javaC, joinPointV2, superTypeName, isFinal);
+        GeneratorUtils.createListOfAvailableActions(javaC, joinPointV2, superTypeName, isFinal);
 
         generateGet_Class(javaC, isFinal);
 
