@@ -16,7 +16,7 @@ joinpoint joinpoint {
 	int num_pointer_refs
 	int size
 	selects {
-		
+
 	}
 	actions {
 		void def(String attribute, Object value)
@@ -40,16 +40,16 @@ joinpoint body extends section {
 		if as otherIf
 	}
 	actions {
-		
+
 	}
 }
 joinpoint elseif {
-	
+
 	selects {
-		
+
 	}
 	actions {
-		
+
 	}
 }
 joinpoint expr {
@@ -59,10 +59,10 @@ joinpoint expr {
 	int num_oper
 	int num_pointer_refs
 	selects {
-		
+
 	}
 	actions {
-		
+
 	}
 }
 joinpoint file {
@@ -71,7 +71,7 @@ joinpoint file {
 		function
 	}
 	actions {
-		
+
 	}
 }
 joinpoint function {
@@ -115,9 +115,9 @@ joinpoint loop {
 	int num_children
 	int num_iterations
 	int num_levels
-	[for| while| do-while] type
+	{for,while,do-while} type
 	selects {
-		
+
 	}
 	actions {
 		void optimize(String kind, Json args = {})
@@ -138,21 +138,21 @@ joinpoint section {
 	}
 }
 joinpoint statement {
-	
+
 	selects {
-		
+
 	}
 	actions {
-		
+
 	}
 }
 joinpoint test {
-	
+
 	selects {
-		
+
 	}
 	actions {
-		
+
 	}
 }
 joinpoint var {
@@ -171,26 +171,26 @@ joinpoint var {
 	int num_read
 	int num_writes
 	Float rate
-	[read| write| all| declaration] reference
-	[local| global] scope
+	{read,write,all,declaration} reference
+    {local,global} scope
 	String shape
 	int size
 	String type
 	Object value
 	selects {
-		
+
 	}
 	actions {
 		void optimize(String kind, Json args = {})
 	}
 }
 joinpoint weaver {
-	
+
 	selects {
-		
+
 	}
 	actions {
-		
+
 	}
 }
 
@@ -199,5 +199,5 @@ typedef SYM{
 	String type
 }
 typedef Json{
-	
+
 }
