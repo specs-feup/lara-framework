@@ -18,7 +18,6 @@ import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
-import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -240,31 +239,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         return text;
     }
 
-    /**
-     * Generate classes according to the join point model, the hierarchy, the attributes and the actions
-     *
-     * @param jpModel         the join point model xml
-     * @param artifacts       the attributes xml
-     * @param actionModel     the available actions in xml format
-     * @param outPackage      the output package
-     * @param abstractGetters
-     * @return
-     */
-    protected List<JavaClass> generateClassesV2() {
-
-        var langSpec = getLanguageSpecificationV2();
-        // final JoinPointModel jpModel = langSpec.getJpModel();
-
-        final List<JavaClass> joinPointClasses = new ArrayList<>();
-
-        for (var joinPoint : langSpec.getAllJoinPoints()) {
-
-            final JavaClass jClass = AbstractJoinPointClassGeneratorV2.generate(this, joinPoint);
-            joinPointClasses.add(jClass);
-        }
-
-        return joinPointClasses;
-    }
 
     protected List<JavaClass> generateClasses() {
 
@@ -278,7 +252,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
 
         for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
-            var jClass = AbstractJoinPointClassGeneratorV3.generate(this, joinPoint, getLanguageSpecificationV2());
+            var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
 /*
         for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
             var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);

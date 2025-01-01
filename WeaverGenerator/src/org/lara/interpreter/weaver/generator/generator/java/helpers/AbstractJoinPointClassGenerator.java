@@ -22,6 +22,7 @@ import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.actionsmodel.schema.Action;
 import org.lara.language.specification.artifactsmodel.schema.Artifact;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.lara.language.specification.joinpointmodel.schema.Select;
@@ -44,15 +45,16 @@ import java.util.Optional;
 
 /**
  * Generate the Join Point abstract class for a given join point type
- * @deprecated use {@link AbstractJoinPointClassGeneratorV3}
  */
 public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
     private final JoinPointType joinPoint;
+    private final JoinPointClass joinPointV2;
 
     protected AbstractJoinPointClassGenerator(JavaAbstractsGenerator javaGenerator, JoinPointType joinPoint) {
         super(javaGenerator);
         this.joinPoint = joinPoint;
+        this.joinPointV2 = javaGenerator.getLanguageSpecificationV2().getJoinPoint(joinPoint.getClazz());
     }
 
     /**
@@ -76,18 +78,14 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     @Override
     public JavaClass generate() {
-        // generateClass(JoinPointType joinPoint, String superClass, String
-        // outPackage,
-        // LanguageSpecification langSpec, List<JavaEnum> enums, boolean
-        // abstractGetters)
         final LanguageSpecification langSpec = javaGenerator.getLanguageSpecification();
-        final String className = Utils.firstCharToUpper(joinPoint.getClazz());
+        final String className = Utils.firstCharToUpper(joinPointV2.getName());
         final JavaClass javaC = new JavaClass(GenConstants.abstractPrefix() + className,
                 javaGenerator.getJoinPointClassPackage());
         javaC.add(Modifier.ABSTRACT);
         javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
         javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator." + ln() + ln());
-        String comment = joinPoint.getTooltip();
+        String comment = joinPointV2.getToolTip().orElse(null);
         if (comment != null) {
             javaC.appendComment(comment);
         }
@@ -101,10 +99,12 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         // Returns itself if join point does extend anything
         // This is testing if the node
-        if (!joinPoint.equals(joinPoint.getExtends())) {
-            final JoinPointType superType = (JoinPointType) joinPoint.getExtends();
 
-            String superClass = Utils.firstCharToUpper(superType.getClazz());
+        // If explicitly extends a join point
+        if (joinPointV2.getExtendExplicit().isPresent()) {
+            var superType = joinPointV2.getExtendExplicit().get();
+
+            String superClass = Utils.firstCharToUpper(superType.getName());
             superClass = GenConstants.abstractPrefix() + superClass;
 
             superTypeName = addSuperMethods(javaC);
@@ -112,21 +112,20 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             javaC.setSuperClass(new JavaType(superClass, javaGenerator.getJoinPointClassPackage()));
 
         } else {
-            // System.out.println("CODE :" + javaC.generateCode(0));
-
             javaC.setSuperClass(javaGenerator.getSuperClass());
         }
 
-        boolean isFinal = !langSpec.getJpModel().isSuper(joinPoint);
+        // If join point is not extended by any other join point, it is final
+        boolean isFinal = !javaGenerator.getLanguageSpecificationV2().isSuper(joinPointV2);
 
-        GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal, langSpec.getJpModel());
+        GeneratorUtils.createSelectByName(javaC, joinPointV2, superTypeName, isFinal);
         if (javaGenerator.hasDefs()) {
             List<Attribute> allDefinableAttributes = langSpec.getArtifacts()
-                    .getAllDefinableAttributes(joinPoint.getClazz());
+                    .getAllDefinableAttributes(joinPointV2.getName());
 
             GeneratorUtils.createDefImpl(javaC, isFinal, allDefinableAttributes, javaGenerator);
         }
-        GeneratorUtils.createListOfAvailableAttributes(javaC, langSpec, joinPoint, superTypeName, isFinal);
+        GeneratorUtils.createListOfAvailableAttributes(javaC, langSpec, joinPoint, joinPointV2, superTypeName, isFinal);
         GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);
         GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, langSpec, isFinal);
 
@@ -149,7 +148,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         }
         clazzMethod.appendComment("Returns the join point type of this class");
         clazzMethod.addJavaDocTag(JDocTag.RETURN, "The join point type");
-        clazzMethod.appendCode("return \"" + joinPoint.getClazz() + "\";");
+        clazzMethod.appendCode("return \"" + joinPointV2.getName() + "\";");
         javaC.add(clazzMethod);
     }
 
@@ -164,7 +163,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     private void addFieldsAndConstructors(JavaClass javaC) {
         final Artifact artifact = javaGenerator.getLanguageSpecification().getArtifacts()
-                .getArtifact(joinPoint.getClazz());
+                .getArtifact(joinPointV2.getName());
         if (artifact != null) {
             for (final Attribute attribute : artifact.getAttribute()) {
                 Method generateAttribute = GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator);
@@ -204,7 +203,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     private void addActions(JavaClass javaC) {
 
         final List<Action> actions = javaGenerator.getLanguageSpecification().getActionModel()
-                .getJoinPointOwnActions(joinPoint.getClazz());
+                .getJoinPointOwnActions(joinPointV2.getName());
 
         for (final Action action : actions) {
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
@@ -257,7 +256,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         selectWithTry.appendCodeln(tab + "return " + listName + "!=null?" + listName + ":Collections.emptyList();");
         selectWithTry.appendCodeln("} catch(Exception e) {");
         selectWithTry.appendCodeln(tab + "throw new " + SelectException.class.getSimpleName() + "(\""
-                + joinPoint.getClazz() + "\",\"" + selectName + "\",e);");
+                + joinPointV2.getName() + "\",\"" + selectName + "\",e);");
         selectWithTry.appendCodeln("}");
 
         javaC.add(selectWithTry);
