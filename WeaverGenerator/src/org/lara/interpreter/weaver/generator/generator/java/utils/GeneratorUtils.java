@@ -60,6 +60,14 @@ public class GeneratorUtils {
         return SpecsIo.getNewline();
     }
 
+    /**
+     * @param javaC
+     * @param langSpec
+     * @param joinPoint
+     * @param superName
+     * @param isFinal
+     * @deprecated
+     */
     public static void createListOfAvailableAttributes(JavaClass javaC, LanguageSpecification langSpec,
                                                        JoinPointType joinPoint, String superName, boolean isFinal) {
         // javaC.addImport(List.class.getCanonicalName());
@@ -85,6 +93,32 @@ public class GeneratorUtils {
 
                 listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
             }
+        }
+
+        javaC.add(listSelects);
+    }
+
+    public static void createListOfAvailableAttributes(JavaClass javaC, LanguageSpecification langSpec,
+                                                       JoinPointType joinPoint, JoinPointClass joinPointV2, String superName, boolean isFinal) {
+
+        final String fillAttributesName = GenConstants.fillWAttrMethodName();
+        final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillAttributesName, Privacy.PROTECTED);
+        listSelects.add(Annotation.OVERRIDE);
+        if (isFinal) {
+            listSelects.add(Modifier.FINAL);
+        }
+        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
+        listSelects.addArgument(listStringType, "attributes");
+
+        if (superName != null) {
+
+            listSelects.appendCode("this." + superName + "." + fillAttributesName + "(attributes);" + ln());
+        } else {
+            listSelects.appendCode("super." + fillAttributesName + "(attributes);" + ln());
+        }
+        
+        for (var attribute : joinPointV2.getAttributesSelf()) {
+            listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
         }
 
         javaC.add(listSelects);
@@ -118,6 +152,14 @@ public class GeneratorUtils {
         javaC.add(listSelects);
     }
 
+    /**
+     * @param javaC
+     * @param joinPoint
+     * @param superName
+     * @param isFinal
+     * @param jpm
+     * @deprecated use createSelectByNameV3
+     */
     public static void createSelectByName(JavaClass javaC, JoinPointType joinPoint, String superName,
                                           boolean isFinal, JoinPointModel jpm) {
         // javaC.addImport(List.class.getCanonicalName());
