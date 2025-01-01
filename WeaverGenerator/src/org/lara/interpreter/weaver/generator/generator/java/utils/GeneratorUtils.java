@@ -27,7 +27,6 @@ import org.lara.language.specification.artifactsmodel.schema.Attribute;
 import org.lara.language.specification.artifactsmodel.schema.DefArgType;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.lara.language.specification.joinpointmodel.schema.Select;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -1329,6 +1328,7 @@ public class GeneratorUtils {
 
     public static void createDefImplV2(JavaClass javaC, boolean isFinal,
                                        List<org.lara.language.specification.dsl.Attribute> attributes, JavaAbstractsGenerator javaGenerator) {
+
         Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
         defMethod.add(Annotation.OVERRIDE);
         if (isFinal) {
@@ -1339,34 +1339,34 @@ public class GeneratorUtils {
         defMethod.appendCodeln("switch(attribute){");
 
         for (var attribute : attributes) {
-            // TODO: Support DEFs in LangSpecV2, add here
-            // List<DefArgType> def = attribute.getDef();
-            // JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getType(), javaGenerator);
-            // defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
-            // List<String> processedTypes = SpecsCollections.newArrayList();
-            // for (DefArgType defType : def) {
-            // String type = defType.getType();
-            // // System.out.println("\tFOR DEF: " + type);
-            // if (processedTypes.contains(type)) {
-            // continue;
-            // }
-            // JavaType defJavaType;
-            // if (type == null) {
-            // defJavaType = returnType.clone();
-            // } else {
-            // defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
-            // }
-            // javaC.addImport(defJavaType);
-            // defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
-            // defMethod.appendCode("\t\tthis.");
-            // defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
-            // defMethod.appendCode("((");
-            // defMethod.appendCode(defJavaType.getSimpleType());
-            // defMethod.appendCodeln(")value);");
-            // defMethod.appendCodeln("\t\treturn;");
-            // defMethod.appendCodeln("\t}");
-            // processedTypes.add(type);
-            // }
+            // System.out.println("CREATING DEF FOR " + attribute.getN);
+            var def = attribute.getDefs();
+            JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getReturnType(), javaGenerator);
+            defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
+            List<String> processedTypes = SpecsCollections.newArrayList();
+            for (var defType : def) {
+                String type = defType.getType();
+                // System.out.println("\tFOR DEF: " + type);
+                if (processedTypes.contains(type)) {
+                    continue;
+                }
+                JavaType defJavaType;
+                if (type == null) {
+                    defJavaType = returnType.clone();
+                } else {
+                    defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
+                }
+                javaC.addImport(defJavaType);
+                defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
+                defMethod.appendCode("\t\tthis.");
+                defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
+                defMethod.appendCode("((");
+                defMethod.appendCode(defJavaType.getSimpleType());
+                defMethod.appendCodeln(")value);");
+                defMethod.appendCodeln("\t\treturn;");
+                defMethod.appendCodeln("\t}");
+                processedTypes.add(type);
+            }
 
             defMethod.appendCodeln("\tthis.unsupportedTypeForDef(attribute, value);");
             // \tString valueType = value.getClass().getSimpleName();");
@@ -1385,4 +1385,5 @@ public class GeneratorUtils {
         javaC.add(defMethod);
         javaC.addImport(JoinPoint.class);
     }
+
 }

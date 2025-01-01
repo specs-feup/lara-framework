@@ -243,6 +243,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     protected List<JavaClass> generateClasses() {
 
         final LanguageSpecification langSpec = getLanguageSpecification();
+        var langSpecV2 = getLanguageSpecificationV2();
         final JoinPointModel jpModel = langSpec.getJpModel();
 
         final List<JavaClass> joinPointClasses = new ArrayList<>();
@@ -251,7 +252,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         //System.out.println("NEW: " + getLanguageSpecificationV2().getAllJoinPoints().stream().map(JoinPointClass::getName).sorted().toList());
 
 
-        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
+        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
+//        for (var joinPoint : langSpecV2.getAllJoinPoints()) {
             var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
 /*
         for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
