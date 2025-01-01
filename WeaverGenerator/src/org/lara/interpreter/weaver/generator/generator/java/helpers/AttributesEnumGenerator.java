@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,13 +13,9 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -31,30 +27,42 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
 import tdrc.utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AttributesEnumGenerator {
 
-    private JoinPointType joinPoint;
+    private JoinPointClass joinPointV2;
     private JavaClass javaC;
-    private LanguageSpecification langSpec;
 
-    protected AttributesEnumGenerator(JavaClass javaC, JoinPointType joinPoint, LanguageSpecification langSpec) {
-        this.langSpec = langSpec;
+    protected AttributesEnumGenerator(JavaClass javaC, JoinPointClass joinPointV2) {
         this.javaC = javaC;
-        this.joinPoint = joinPoint;
+        this.joinPointV2 = joinPointV2;
     }
 
-    public static void generate(JavaClass javaC, JoinPointType joinPoint, LanguageSpecification langSpec) {
-        AttributesEnumGenerator generator = new AttributesEnumGenerator(javaC, joinPoint, langSpec);
+    public static void generate(JavaClass javaC, JoinPointClass joinPointV2) {
+        AttributesEnumGenerator generator = new AttributesEnumGenerator(javaC, joinPointV2);
         generator.generate();
     }
 
     public void generate() {
-        String clazz = joinPoint.getClazz();
+        String clazz = joinPointV2.getName();
+/*
         List<Attribute> attributes = langSpec.getArtifacts()
-                .getAttributesRecursively(clazz);
+                .getAttributesRecursively(clazz).stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList();
+
+        System.out.println(clazz);
+        System.out.println("OLD: " + langSpec.getArtifacts()
+                .getAttributesRecursively(clazz).stream().map(Attribute::getName).sorted().toList());
+        System.out.println("NEW: " + joinPointV2.getAttributes().stream().map(org.lara.language.specification.dsl.Attribute::getName).sorted().toList());
+*/
+        // TODO: Sorting so that refactor output can be compared with previous output, can be removed after
+        var attributes = joinPointV2.getAttributes().stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList();
+
         if (attributes.isEmpty()) {
             return;
         }
@@ -63,7 +71,8 @@ public class AttributesEnumGenerator {
         JavaEnum anEnum = new JavaEnum(enumName, javaC.getClassPackage());
         anEnum.setPrivacy(Privacy.PROTECTED);
 
-        addAttributes(attributes, anEnum);
+        //addAttributes(attributes, anEnum);
+        addAttributesV2(attributes, anEnum);
 
         addNameField(anEnum);
 
@@ -76,6 +85,15 @@ public class AttributesEnumGenerator {
 
     private void addAttributes(List<Attribute> attributes, JavaEnum anEnum) {
         for (Attribute attribute : attributes) {
+            String name = attribute.getName();
+            EnumItem item = new EnumItem(name.toUpperCase());
+            item.addParameter("\"" + name + "\"");
+            anEnum.add(item);
+        }
+    }
+
+    private void addAttributesV2(List<org.lara.language.specification.dsl.Attribute> attributes, JavaEnum anEnum) {
+        for (var attribute : attributes) {
             String name = attribute.getName();
             EnumItem item = new EnumItem(name.toUpperCase());
             item.addParameter("\"" + name + "\"");

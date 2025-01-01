@@ -135,7 +135,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             GeneratorUtils.generateInstanceOf(javaC, "this." + superTypeName, isFinal);
         }
 
-        AttributesEnumGenerator.generate(javaC, joinPoint, langSpec);
+        AttributesEnumGenerator.generate(javaC, joinPointV2);
 
         return javaC;
     }
