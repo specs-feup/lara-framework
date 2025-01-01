@@ -61,3 +61,8 @@ PerformanceTests/sdvbs-disparity.txt
 ### ignore media formats
 *.mp4
 *.wmv
+
+
+### Node
+
+**/node_modules/*
