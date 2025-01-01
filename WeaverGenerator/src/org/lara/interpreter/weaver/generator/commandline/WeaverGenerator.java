@@ -48,6 +48,7 @@ public class WeaverGenerator {
      *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
      * @return true if generated successfully, false otherwise.
      */
+    /*
     public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
             String outputPackage, boolean abstractGetters, Class<?> nodeType) {
 
@@ -58,6 +59,7 @@ public class WeaverGenerator {
         generator.generate();
         generator.print();
     }
+     */
 
     /**
      * Generate a new weaver, according to the input language specification.
@@ -76,6 +78,7 @@ public class WeaverGenerator {
      *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
      * @return true if generated successfully, false otherwise.
      */
+    /*
     public static void generateJava2CPP(String weaverName, LanguageSpecification langSpec, File outputDir,
             String outputPackage, boolean abstractGetters, Class<?> nodeType) {
 
@@ -85,6 +88,7 @@ public class WeaverGenerator {
         generator.generate();
         generator.print();
     }
+     */
 
     /**
      * Generate a new weaver, according to the input language specification.

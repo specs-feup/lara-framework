@@ -150,6 +150,7 @@ public class GeneratorUtils {
         for (final Select sel : allSelects) {
 
             String alias = sel.getAlias();
+            //System.out.println("ALIAS OLD: " + alias);
             selectByName.appendCodeln("\tcase \"" + alias + "\": ");
             selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
             selectByName.appendCodeln("\t\tbreak;");
@@ -200,7 +201,11 @@ public class GeneratorUtils {
         var allSelects = joinPoint.getSelects();
         for (var sel : allSelects) {
 
-            String alias = sel.getAlias();
+            String alias = sel.getAlias().orElse(null);
+            if (alias == null) {
+                continue;
+            }
+            //System.out.println("ALIAS NEW: " + alias);
             selectByName.appendCodeln("\tcase \"" + alias + "\": ");
             selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
             selectByName.appendCodeln("\t\tbreak;");
@@ -211,6 +216,48 @@ public class GeneratorUtils {
         String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
 
         selectByName.appendCodeln(superCall + "." + selectMethodName + "(selectName);\n\t\tbreak;" + ln() + "}");
+        // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
+        // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
+        // selectByName.appendCodeln("}");
+        selectByName.appendCodeln("return joinPointList;");
+        javaC.add(selectByName);
+
+    }
+
+
+    public static void createSelectByNameV3(JavaClass javaC, JoinPointClass joinPointV2, String superName,
+                                            boolean isFinal) {
+
+        final String selectMethodName = GenConstants.getSelectByNameMethodName();
+
+        JavaType joinPointType = JavaTypeFactory.convert(JoinPoint.class);
+        JavaType joinPointListType = JavaTypeFactory.convert(List.class);
+        JavaGenericType joinPointWildCardType = JavaTypeFactory.getWildExtendsType(joinPointType);
+        joinPointListType.addGeneric(joinPointWildCardType);
+
+        final Method selectByName = new Method(joinPointListType, selectMethodName, Privacy.PUBLIC);
+        selectByName.add(Annotation.OVERRIDE);
+        if (isFinal) {
+            selectByName.add(Modifier.FINAL);
+        }
+        selectByName.addArgument(JavaTypeFactory.getStringType(), "selectName");
+
+        selectByName.appendCodeln(joinPointListType.getSimpleType() + " joinPointList;");
+        selectByName.appendCodeln("switch(selectName) {");
+
+        for (var sel : joinPointV2.getSelects()) {
+            var alias = sel.getSelectName();
+            selectByName.appendCodeln("\tcase \"" + alias + "\": ");
+            selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
+            selectByName.appendCodeln("\t\tbreak;");
+        }
+
+        selectByName.appendCode("\tdefault:" + ln() + "\t\tjoinPointList = ");
+
+        String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
+
+        selectByName
+                .appendCodeln(superCall + "." + selectMethodName + "(selectName);" + ln() + "\t\tbreak;" + ln() + "}");
         // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
         // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
         // selectByName.appendCodeln("}");

@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,14 +13,19 @@
 
 package org.lara.interpreter.joptions.panels.editor.components;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import org.lara.interpreter.joptions.panels.editor.EditorPanel;
+import org.lara.interpreter.joptions.panels.editor.components.langspecsidebar.LangSpecSorting;
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.*;
+import org.lara.language.specification.dsl.types.GenericType;
+import pt.up.fe.specs.util.SpecsEnums;
+import pt.up.fe.specs.util.SpecsStrings;
+import pt.up.fe.specs.util.exceptions.NotImplementedException;
+import pt.up.fe.specs.util.swing.GenericActionListener;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,41 +34,12 @@ import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
-import org.lara.interpreter.joptions.panels.editor.EditorPanel;
-import org.lara.interpreter.joptions.panels.editor.components.langspecsidebar.LangSpecSorting;
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.Declaration;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.Select;
-import org.lara.language.specification.dsl.types.GenericType;
-
-import pt.up.fe.specs.util.SpecsEnums;
-import pt.up.fe.specs.util.SpecsStrings;
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.swing.GenericActionListener;
-
 public class LanguageSpecificationSideBar extends JPanel {
 
     private static final String SEPARATOR_TYPE = "%LARA_SIDEBAR_SEPARATOR%";
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -96,14 +72,13 @@ public class LanguageSpecificationSideBar extends JPanel {
 
     /**
      * This constructor exists for compatibility purposes
-     * 
+     *
      * @param editor
      * @param langSpec
      */
     // public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecification langSpec) {
     // this(editor, JoinPointFactory.fromOld(langSpec));
     // }
-
     public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecificationV2 langSpec) {
         super(new BorderLayout());
         setBorder(new EmptyBorder(4, 0, 5, 0));
@@ -283,44 +258,44 @@ public class LanguageSpecificationSideBar extends JPanel {
     private List<Attribute> getAttributes(JoinPointClass joinPoint) {
 
         switch (sortingMethod) {
-        case ALPHABETICALLY:
-            return getAlphabetical(joinPoint, jp -> jp.getAttributes());
-        case HIERARCHICALLY:
-            List<Attribute> attributes = new ArrayList<>();
-            getHierarchical(joinPoint, attributes, jp -> jp.getAttributesSelf(),
-                    jp -> new Attribute(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
-            return attributes;
-        default:
-            throw new NotImplementedException(sortingMethod);
+            case ALPHABETICALLY:
+                return getAlphabetical(joinPoint, jp -> jp.getAttributes());
+            case HIERARCHICALLY:
+                List<Attribute> attributes = new ArrayList<>();
+                getHierarchical(joinPoint, attributes, jp -> jp.getAttributesSelf(),
+                        jp -> new Attribute(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+                return attributes;
+            default:
+                throw new NotImplementedException(sortingMethod);
         }
     }
 
     private List<Select> getSelects(JoinPointClass joinPoint) {
         switch (sortingMethod) {
-        case ALPHABETICALLY:
-            return getAlphabetical(joinPoint, jp -> jp.getSelects());
-        case HIERARCHICALLY:
-            List<Select> selects = new ArrayList<>();
-            getHierarchical(joinPoint, selects, jp -> jp.getSelectsSelf(),
-                    jp -> new Select(jp, SEPARATOR_TYPE));
-            return selects;
-        default:
-            throw new NotImplementedException(sortingMethod);
+            case ALPHABETICALLY:
+                return getAlphabetical(joinPoint, jp -> jp.getSelects());
+            case HIERARCHICALLY:
+                List<Select> selects = new ArrayList<>();
+                getHierarchical(joinPoint, selects, jp -> jp.getSelectsSelf(),
+                        jp -> new Select(jp, SEPARATOR_TYPE));
+                return selects;
+            default:
+                throw new NotImplementedException(sortingMethod);
         }
 
     }
 
     private List<Action> getActions(JoinPointClass joinPoint) {
         switch (sortingMethod) {
-        case ALPHABETICALLY:
-            return getAlphabetical(joinPoint, jp -> jp.getActions());
-        case HIERARCHICALLY:
-            List<Action> actions = new ArrayList<>();
-            getHierarchical(joinPoint, actions, jp -> jp.getActionsSelf(),
-                    jp -> new Action(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
-            return actions;
-        default:
-            throw new NotImplementedException(sortingMethod);
+            case ALPHABETICALLY:
+                return getAlphabetical(joinPoint, jp -> jp.getActions());
+            case HIERARCHICALLY:
+                List<Action> actions = new ArrayList<>();
+                getHierarchical(joinPoint, actions, jp -> jp.getActionsSelf(),
+                        jp -> new Action(new GenericType(SEPARATOR_TYPE, false), jp.getName()));
+                return actions;
+            default:
+                throw new NotImplementedException(sortingMethod);
         }
 
     }
@@ -340,7 +315,7 @@ public class LanguageSpecificationSideBar extends JPanel {
     // }
 
     private <T extends Comparable<T>> List<T> getAlphabetical(JoinPointClass joinPoint,
-            Function<JoinPointClass, List<T>> getter) {
+                                                              Function<JoinPointClass, List<T>> getter) {
 
         var elements = getter.apply(joinPoint);
         Collections.sort(elements);
@@ -348,8 +323,8 @@ public class LanguageSpecificationSideBar extends JPanel {
     }
 
     private <T> void getHierarchical(JoinPointClass joinPoint, List<T> elements,
-            Function<JoinPointClass, List<T>> childrenGetter,
-            Function<JoinPointClass, T> separatorBuilder) {
+                                     Function<JoinPointClass, List<T>> childrenGetter,
+                                     Function<JoinPointClass, T> separatorBuilder) {
 
         // First element is a separator with the name of the join point
         elements.add(separatorBuilder.apply(joinPoint));
@@ -435,7 +410,7 @@ public class LanguageSpecificationSideBar extends JPanel {
     static class AttributeCellRenderer extends JLabel implements ListCellRenderer<Attribute> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -446,7 +421,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Attribute> list, Attribute value, int index,
-                boolean isSelected, boolean cellHasFocus) {
+                                                      boolean isSelected, boolean cellHasFocus) {
             Declaration declaration = value.getDeclaration();
             String toHtml = toHtml(declaration);
             String text = "<html>" + toHtml;
@@ -466,7 +441,7 @@ public class LanguageSpecificationSideBar extends JPanel {
     static class ActionCellRenderer extends JLabel implements ListCellRenderer<Action> {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -477,7 +452,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Action> list, Action value, int index,
-                boolean isSelected, boolean cellHasFocus) {
+                                                      boolean isSelected, boolean cellHasFocus) {
             // String text = "<html><b>" + value.getName() + "</b>";
             Declaration declaration = value.getDeclaration();
             String toHtml = toHtml(declaration);
@@ -501,7 +476,7 @@ public class LanguageSpecificationSideBar extends JPanel {
         // }
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -512,8 +487,9 @@ public class LanguageSpecificationSideBar extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Select> list, Select value, int index,
-                boolean isSelected, boolean cellHasFocus) {
-            String name = value.getAlias();
+                                                      boolean isSelected, boolean cellHasFocus) {
+
+            String name = value.getAlias().orElse("");
             String ofType = "";
             String temp = value.getClazz().getName();
             if (name.isEmpty()) {
@@ -548,7 +524,7 @@ public class LanguageSpecificationSideBar extends JPanel {
         // }
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -559,7 +535,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Select> list, Select value, int index,
-                boolean isSelected, boolean cellHasFocus) {
+                                                      boolean isSelected, boolean cellHasFocus) {
 
             String text = selectedBytoHtml(value);
             setText(text);
@@ -592,7 +568,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
     private static String selectedBytoHtml(Select select) {
         JoinPointClass selector = select.getSelector();
-        String alias = select.getAlias();
+        String alias = select.getAlias().orElse("");
         if (alias.isEmpty()) {
             alias = select.getClazz().getName();
         }

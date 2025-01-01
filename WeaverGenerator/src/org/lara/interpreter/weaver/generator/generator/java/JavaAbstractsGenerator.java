@@ -1,35 +1,24 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 package org.lara.interpreter.weaver.generator.generator.java;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGeneratorV2;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.ExceptionGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.SuperAbstractJoinPointGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.UserAbstractJPClassGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEntitiesGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEnumsGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverAbstractGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverImplGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.*;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -38,9 +27,12 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
-
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaAbstractsGenerator extends BaseGenerator {
     private static final String INTERFACE_NAME = GenConstants.interfaceName();
@@ -92,9 +84,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Create a JavaGenerator with the given language specification
-     * 
-     * @param langSpec
-     *            the language specification
+     *
+     * @param langSpec the language specification
      */
     public JavaAbstractsGenerator(LanguageSpecification langSpec) {
         this();
@@ -103,9 +94,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Create a JavaGenerator with the given language specification folder
-     * 
-     * @param langSpec
-     *            the folder location of the language specification
+     *
+     * @param langSpec the folder location of the language specification
      */
     public JavaAbstractsGenerator(File langSpec) {
         this();
@@ -114,9 +104,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Create a JavaGenerator with the given language specification folder
-     * 
-     * @param langSpec
-     *            the name of the folder containing the language specification
+     *
+     * @param langSpec the name of the folder containing the language specification
      */
     public JavaAbstractsGenerator(String langSpec) {
         this();
@@ -212,8 +201,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Write the java class files in the defined output directory
-     * 
-     * 
      */
     @Override
     public void printCode() {// List<String> definedObjects, JavaClass abstrJPClass, JavaClass userClass,
@@ -255,15 +242,11 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Generate classes according to the join point model, the hierarchy, the attributes and the actions
-     * 
-     * @param jpModel
-     *            the join point model xml
-     * @param artifacts
-     *            the attributes xml
-     * @param actionModel
-     *            the available actions in xml format
-     * @param outPackage
-     *            the output package
+     *
+     * @param jpModel         the join point model xml
+     * @param artifacts       the attributes xml
+     * @param actionModel     the available actions in xml format
+     * @param outPackage      the output package
      * @param abstractGetters
      * @return
      */
@@ -290,9 +273,26 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
         final List<JavaClass> joinPointClasses = new ArrayList<>();
 
-        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint()) {
+        //System.out.println("OLD: " + jpModel.getJoinPointList().getJoinpoint().stream().map(JoinPointType::getClazz).sorted().toList());
+        //System.out.println("NEW: " + getLanguageSpecificationV2().getAllJoinPoints().stream().map(JoinPointClass::getName).sorted().toList());
 
-            final JavaClass jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
+
+        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
+            var jClass = AbstractJoinPointClassGeneratorV3.generate(this, joinPoint, getLanguageSpecificationV2());
+/*
+        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
+            var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
+*/
+        /*
+        for (var joinPoint : getLanguageSpecificationV2().getAllJoinPoints().stream().sorted().toList()) {
+
+            if (joinPoint.getName().equals("joinpoint")) {
+                continue;
+            }
+
+            var jClass = AbstractJoinPointClassGeneratorV2.generate(this, joinPoint);
+*/
+
             joinPointClasses.add(jClass);
         }
 
@@ -302,11 +302,9 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * Generate Java Classes defined by the user in the artifacts model, such as <object name="Symbol">
      * <attribute name="name" type="String"/> </object>
-     * 
-     * @param newObjects
-     *            the map containing the objects mapped to the field elements
-     * @param outPackage
-     *            the class package (will append '.entities')
+     *
+     * @param newObjects the map containing the objects mapped to the field elements
+     * @param outPackage the class package (will append '.entities')
      */
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
@@ -334,7 +332,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This package will contain the abstract join points, including the super type AJoinPoint
-     * 
+     *
      * @return
      */
     public String getJoinPointClassPackage() {
@@ -343,7 +341,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This is the package for the Weaver implementation
-     * 
+     *
      * @return
      */
     public String getWeaverPackage() {
@@ -352,7 +350,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This is the package for the abstract representation of the weaver
-     * 
+     *
      * @return
      */
     public String getAbstractWeaverPackage() {
@@ -361,7 +359,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This package is the one containing the abstract class that can be edited by the use
-     * 
+     *
      * @return
      */
     public String getAbstractUserJoinPointClassPackage() {
@@ -370,7 +368,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This is the name of the (uneditable) abstract join point
-     * 
+     *
      * @return
      */
     public static String getAbstractJoinPointClassName() {
@@ -393,7 +391,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * This package will contain the user defined entities
-     * 
+     *
      * @return
      */
     public String getEntitiesPackage() {
