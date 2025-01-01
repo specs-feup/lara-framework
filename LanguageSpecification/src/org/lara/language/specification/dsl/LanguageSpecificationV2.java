@@ -291,6 +291,13 @@ public class LanguageSpecificationV2 {
         return SpecsCollections.concat(global, joinPoints.values());
     }
 
+    /**
+     * @return a list of all declared join points, excluding the global join point
+     */
+    public List<JoinPointClass> getDeclaredJoinPoints() {
+        return new ArrayList<>(joinPoints.values());
+    }
+
     public void setJoinPoints(Map<String, JoinPointClass> joinpoints) {
         joinPoints = joinpoints;
     }
@@ -309,6 +316,10 @@ public class LanguageSpecificationV2 {
 
     public boolean hasTypeDef(String name) {
         return typeDefs.containsKey(name);
+    }
+
+    public boolean hasEnumDef(String name) {
+        return enumDefs.containsKey(name);
     }
 
     public void setTypeDefs(Map<String, TypeDef> typeDefs) {

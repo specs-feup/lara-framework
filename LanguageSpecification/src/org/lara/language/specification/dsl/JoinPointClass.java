@@ -333,6 +333,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         // if (extend.isPresent()) {
         // actions.addAll(extend.get().getAllActions());
         // }
+
         return actions;
     }
 
@@ -382,6 +383,20 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     public static JoinPointClass globalJoinPoint() {
         JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME);
+
+        // TODO: Handle this in another way, it is here for compatibility reasons with the weaver generator
+        // Add default define (def) action
+        //var defAction = new Action(new GenericType("Object", false), "def");
+        //globalNode.add(defAction);
+/*
+        globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
+                List.of(new Parameter(PrimitiveClasses.STRING, "position"),
+                        new Parameter(PrimitiveClasses.STRING, "code"))));
+
+        globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
+                List.of(new Parameter(PrimitiveClasses.STRING, "position"),
+                        new Parameter(new GenericType("Joinpoint", false), "code"))));
+*/
         return globalNode;
     }
 
