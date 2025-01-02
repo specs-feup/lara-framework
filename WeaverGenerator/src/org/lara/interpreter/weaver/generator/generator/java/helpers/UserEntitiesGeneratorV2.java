@@ -16,8 +16,7 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
+import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -29,36 +28,30 @@ import org.specs.generators.java.types.JavaTypeFactory;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
-/**
- * @deprecated
- */
-public class UserEntitiesGenerator extends GeneratorHelper {
+public class UserEntitiesGeneratorV2 extends GeneratorHelper {
     private final TypeDef entity;
 
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject
-     *            the new Object to generate
+     * @param newObject the new Object to generate
      * @return
      */
-    protected UserEntitiesGenerator(JavaAbstractsGenerator javaGenerator, TypeDef object) {
+    protected UserEntitiesGeneratorV2(JavaAbstractsGenerator javaGenerator, TypeDef object) {
         super(javaGenerator);
         entity = object;
     }
 
     /**
      * Generate an entity based on the NewObject instance
-     * @deprecated
-     * @param newObject
-     *            the new Object to generate
+     *
+     * @param newObject the new Object to generate
      * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator, TypeDef object) {
-        final UserEntitiesGenerator gen = new UserEntitiesGenerator(javaGenerator, object);
+        final UserEntitiesGeneratorV2 gen = new UserEntitiesGeneratorV2(javaGenerator, object);
         return gen.generate();
     }
-
 
     /**
      * Generate an entity based on the NewObject instance
@@ -70,10 +63,11 @@ public class UserEntitiesGenerator extends GeneratorHelper {
         final JavaClass uDClass = new JavaClass(entity.getName(), javaGenerator.getEntitiesPackage());
         uDClass.appendComment(ln());
         uDClass.add(JDocTag.AUTHOR, "Lara C.");
-        for (final Attribute attribute : entity.getAttribute()) {
+
+        for (var attribute : entity.getFields()) {
 
             final String fieldName = attribute.getName();
-            final String classType = attribute.getType();
+            final String classType = attribute.getReturnType();
 
             final String sanitizedName = StringUtils.getSanitizedName(fieldName);
             final JavaType jType = ConvertUtils.getConvertedType(classType, javaGenerator);

@@ -17,9 +17,8 @@ import org.lara.interpreter.weaver.LaraWeaverEngine;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.artifactsmodel.schema.EnumDef;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
+import org.lara.language.specification.dsl.types.EnumDef;
+import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -32,6 +31,7 @@ import tdrc.utils.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -132,13 +132,12 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getActions.add(Modifier.FINAL);
         getActions.appendComment("Get the list of available actions in the weaver" + ln());
         getActions.addJavaDocTag(JDocTag.RETURN, "list with all actions");
-        final List<Action> actions = javaGenerator.getLanguageSpecification().getActionModel().getActionsList()
-                .getAction();
 
-        /* Use Arrays.asList() */
-        final Function<Action, String> mapper = a -> '"' + a.getName() + '"';
-        // String joinedActions = StringUtils.join(actions, mapper, ", ");
-        final StringBuffer generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", actions, mapper);
+        // Using linked hashset to have deterministic order
+        var uniqueActions = new LinkedHashSet<>(javaGenerator.getLanguageSpecificationV2().getAllActions());
+        var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions, a -> '"' + a.getName() + '"');
+
+
         getActions.appendCode(generatedCode);
         java.add(getActions);
     }
@@ -149,8 +148,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getRoot.add(Modifier.FINAL);
         getRoot.appendComment("Returns the name of the root" + ln());
         getRoot.addJavaDocTag(JDocTag.RETURN, "the root name");
-        final String rootAlias = javaGenerator.getLanguageSpecification().getJpModel().getJoinPointList()
-                .getRootAlias();
+        final String rootAlias = javaGenerator.getLanguageSpecificationV2().getRootAlias();
         getRoot.appendCode("return \"" + rootAlias + "\";");
         java.add(getRoot);
     }
@@ -164,8 +162,9 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getImportableClasses.add(Annotation.OVERRIDE);
         getImportableClasses.appendComment("Returns a list of classes that may be imported and used in LARA." + ln());
         getImportableClasses.addJavaDocTag(JDocTag.RETURN, "a list of importable classes");
-        final List<TypeDef> entities = javaGenerator.getLanguageSpecification().getArtifacts().getTypeDefs();
-        final List<EnumDef> enums = javaGenerator.getLanguageSpecification().getArtifacts().getEnumDefs();
+
+        var entities = javaGenerator.getLanguageSpecificationV2().getTypeDefs().values();
+        var enums = javaGenerator.getLanguageSpecificationV2().getEnumDefs().values();
 
         final String entPackage = javaGenerator.getEntitiesPackage() + ".";
         final String enumPackage = javaGenerator.getEnumsPackage() + ".";

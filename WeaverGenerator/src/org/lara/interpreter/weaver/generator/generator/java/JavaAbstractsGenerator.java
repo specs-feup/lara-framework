@@ -15,8 +15,6 @@ package org.lara.interpreter.weaver.generator.generator.java;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.*;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.artifactsmodel.schema.EnumDef;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.members.Field;
@@ -277,16 +275,14 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
 
-        final List<TypeDef> newObjects = getLanguageSpecification().getArtifacts().getTypeDefs();
-        for (final TypeDef newObject : newObjects) {
-            final JavaClass uDClass = UserEntitiesGenerator.generate(this, newObject);
+        for (var newObject : getLanguageSpecificationV2().getTypeDefs().values()) {
+            final JavaClass uDClass = UserEntitiesGeneratorV2.generate(this, newObject);
             userDefinedClasses.add(newObject.getName());
             Utils.generateToFile(getOutDir(), uDClass, true);
         }
 
-        final List<EnumDef> newEnums = getLanguageSpecification().getArtifacts().getEnumDefs();
-        for (final EnumDef newEnum : newEnums) {
-            final JavaEnum userEnum = UserEnumsGenerator.generate(this, newEnum);
+        for (var newEnum : getLanguageSpecificationV2().getEnumDefs().values()) {
+            final JavaEnum userEnum = UserEnumsGeneratorV2.generate(this, newEnum);
             userDefinedClasses.add(newEnum.getName());
             Utils.generateToFile(getOutDir(), userEnum, true);
         }

@@ -14,8 +14,6 @@
 package org.lara.interpreter.weaver.generator.generator;
 
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
 import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import pt.up.fe.specs.util.SpecsCheck;
 
@@ -25,7 +23,6 @@ import java.util.Arrays;
 public abstract class BaseGenerator {
 
     private String outPackage;
-    private LanguageSpecification languageSpecificationOld;
     private LanguageSpecificationV2 languageSpecification;
     private File outDir;
     private String weaverName;
@@ -84,7 +81,6 @@ public abstract class BaseGenerator {
     private void init() {
 
         languageSpecification = null;
-        languageSpecificationOld = null;
         setOutPackage(GenConstants.getDefaultPackage());
         setOutDir(GenConstants.getDefaultOutputDir());
         setWeaverName(GenConstants.getDefaultWeaverName());
@@ -110,7 +106,6 @@ public abstract class BaseGenerator {
             return;
         }
 
-        setLanguageSpecificationOld(baseGenerator.languageSpecificationOld);
         setOutPackage(baseGenerator.getOutPackage());
         setOutDir(baseGenerator.getOutDir());
         setWeaverName(baseGenerator.getWeaverName());
@@ -172,12 +167,6 @@ public abstract class BaseGenerator {
 
     public BaseGenerator languageSpec(File langSpec) {
         setLanguageSpecification(langSpec);
-        return this;
-    }
-
-    public BaseGenerator languageSpec(LanguageSpecification langSpec) {
-        languageSpecificationOld = langSpec;
-        setLanguageSpecification(JoinPointFactory.fromOld(langSpec));
         return this;
     }
 
@@ -339,14 +328,6 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * @deprecated
-     * @return
-     */
-    public LanguageSpecification getLanguageSpecification() {
-        return languageSpecificationOld;
-    }
-
-    /**
      * Set the language specification for this generation
      *
      * @param languageSpecification
@@ -355,19 +336,12 @@ public abstract class BaseGenerator {
         this.languageSpecification = languageSpecification;
     }
 
-    public void setLanguageSpecificationOld(LanguageSpecification languageSpecification) {
-        this.languageSpecificationOld = languageSpecification;
-        setLanguageSpecification(JoinPointFactory.fromOld(languageSpecification));
-    }
-
     /**
      * Create a language specification using the models defined in the given directory
      *
      * @param langSpecDirStr the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
-        languageSpecificationOld = LanguageSpecification.newInstance(langSpecDir, true);
-        //languageSpecification = JoinPointFactory.fromOld(languageSpecificationOld);
         languageSpecification = LanguageSpecificationV2.newInstance(langSpecDir);
     }
 
