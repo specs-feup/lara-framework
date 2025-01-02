@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author jbispo
  */
-public class LanguageSpecificationV2 {
+public class LanguageSpecification {
 
     private static final String ACTIONS_FILENAME = "actionModel.xml";
     private static final String JOIN_POINTS_FILENAME = "joinPointModel.xml";
@@ -54,7 +54,7 @@ public class LanguageSpecificationV2 {
     private final Lazy<Set<String>> availableAttributes;
     private final Lazy<Set<String>> availableActions;
 
-    public LanguageSpecificationV2(JoinPointClass root, String rootAlias) {
+    public LanguageSpecification(JoinPointClass root, String rootAlias) {
         super();
         this.root = root;
         this.rootAlias = rootAlias == null ? "" : rootAlias;
@@ -67,7 +67,7 @@ public class LanguageSpecificationV2 {
         availableActions = Lazy.newInstance(this::buildAvailableActions);
     }
 
-    public LanguageSpecificationV2() {
+    public LanguageSpecification() {
         this(null, null);
     }
 
@@ -79,7 +79,7 @@ public class LanguageSpecificationV2 {
      * @param validate
      * @return
      */
-    public static LanguageSpecificationV2 newInstance(File specDir) {
+    public static LanguageSpecification newInstance(File specDir) {
 
         if (!specDir.exists() || !specDir.isDirectory()) {
             throw new RuntimeException("Language Specification directory is invalid: " + specDir.getAbsolutePath());
@@ -99,14 +99,14 @@ public class LanguageSpecificationV2 {
         }
     }
 
-    public static LanguageSpecificationV2 newInstance(InputStream joinPointModel, InputStream attributeModel,
-                                                      InputStream actionModel) {
+    public static LanguageSpecification newInstance(InputStream joinPointModel, InputStream attributeModel,
+                                                    InputStream actionModel) {
 
         return LangSpecsXmlParser.parse(joinPointModel, attributeModel, actionModel, true);
     }
 
-    public static LanguageSpecificationV2 newInstance(ResourceProvider joinPointModel, ResourceProvider attributeModel,
-                                                      ResourceProvider actionModel) {
+    public static LanguageSpecification newInstance(ResourceProvider joinPointModel, ResourceProvider attributeModel,
+                                                    ResourceProvider actionModel) {
 
         return LangSpecsXmlParser.parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
                 SpecsIo.resourceToStream(actionModel), true);

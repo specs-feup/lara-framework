@@ -34,21 +34,21 @@ import java.util.stream.Collectors;
 
 public class LangSpecsXmlParser {
 
-    public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
-                                                InputStream actionModel) {
+    public static LanguageSpecification parse(InputStream joinPointModel, InputStream attributeModel,
+                                              InputStream actionModel) {
 
         return parse(joinPointModel, attributeModel, actionModel, true);
     }
 
-    public static LanguageSpecificationV2 parse(ResourceProvider joinPointModel, ResourceProvider attributeModel,
-                                                ResourceProvider actionModel, boolean validate) {
+    public static LanguageSpecification parse(ResourceProvider joinPointModel, ResourceProvider attributeModel,
+                                              ResourceProvider actionModel, boolean validate) {
 
         return parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
                 SpecsIo.resourceToStream(actionModel), validate);
     }
 
-    public static LanguageSpecificationV2 parse(InputStream joinPointModel, InputStream attributeModel,
-                                                InputStream actionModel, boolean validate) {
+    public static LanguageSpecification parse(InputStream joinPointModel, InputStream attributeModel,
+                                              InputStream actionModel, boolean validate) {
 
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
@@ -59,7 +59,7 @@ public class LangSpecsXmlParser {
         var actionModelNode = XmlDocument.newInstance(actionModel, actionSchema);
 
         // Setup global JoinPointClass
-        LanguageSpecificationV2 langSpecV2 = new LanguageSpecificationV2();
+        LanguageSpecification langSpecV2 = new LanguageSpecification();
         JoinPointClass global = JoinPointClass.globalJoinPoint();
         langSpecV2.setGlobal(global);
 
@@ -191,7 +191,7 @@ public class LangSpecsXmlParser {
         setter.accept(attributeValue);
     }
 
-    private static List<EnumValue> toEnumValues(List<XmlElement> enumValues, LanguageSpecificationV2 langSpecV2) {
+    private static List<EnumValue> toEnumValues(List<XmlElement> enumValues, LanguageSpecification langSpecV2) {
         List<EnumValue> attributes = new ArrayList<>();
 
         for (var enumValue : enumValues) {
@@ -206,7 +206,7 @@ public class LangSpecsXmlParser {
     }
 
     private static void populateGlobal(XmlDocument jpModel, XmlDocument artifacts, XmlDocument actionModel,
-                                       LanguageSpecificationV2 langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
+                                       LanguageSpecification langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
 
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
@@ -219,7 +219,7 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Attribute> convertAttributes(List<XmlElement> attributeNodes,
-                                                     LanguageSpecificationV2 langSpec) {
+                                                     LanguageSpecification langSpec) {
 
         List<Attribute> attributes = new ArrayList<>();
         for (var attributeNode : attributeNodes) {
@@ -234,7 +234,7 @@ public class LangSpecsXmlParser {
         return attributes;
     }
 
-    private static Attribute getAttribute(XmlElement attributeNode, LanguageSpecificationV2 langSpec) {
+    private static Attribute getAttribute(XmlElement attributeNode, LanguageSpecification langSpec) {
         String type = getType(attributeNode);
         Attribute newAttribute = new Attribute(langSpec.getType(type), attributeNode.getAttribute("name"));
         setOptional(attributeNode.getAttribute("tooltip"), newAttribute::setToolTip);
@@ -267,7 +267,7 @@ public class LangSpecsXmlParser {
         return node.getAttribute("type", "void");
     }
 
-    private static List<Action> convertActions(LanguageSpecificationV2 langSpecV2,
+    private static List<Action> convertActions(LanguageSpecification langSpecV2,
                                                List<XmlElement> actionNodes) {
 
         List<Action> newActions = new ArrayList<>();
@@ -290,7 +290,7 @@ public class LangSpecsXmlParser {
         return newActions;
     }
 
-    private static List<Select> convertSelects(LanguageSpecificationV2 langSpecV2,
+    private static List<Select> convertSelects(LanguageSpecification langSpecV2,
                                                List<XmlElement> selectNodes) {
 
         List<Select> selects = new ArrayList<>();

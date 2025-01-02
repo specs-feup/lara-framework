@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class NodeFactory {
 
-    public static RootNode toNode(LanguageSpecificationV2 langSpec) {
+    public static RootNode toNode(LanguageSpecification langSpec) {
         RootNode node = new RootNode(langSpec.getRoot().getName(), langSpec.getRootAlias());
         JoinPointNode child = toNode(langSpec.getGlobal());
         node.addChild(child);
