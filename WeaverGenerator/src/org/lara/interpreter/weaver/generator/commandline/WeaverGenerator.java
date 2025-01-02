@@ -1,39 +1,36 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 package org.lara.interpreter.weaver.generator.commandline;
 
-import java.io.File;
-
 import org.apache.commons.cli.CommandLine;
 import org.lara.interpreter.weaver.generator.commandline.WeaverGeneratorOptions.GeneratorOption;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
-import org.lara.interpreter.weaver.generator.generator.java2cpp.JavaImplGenerator;
 import org.lara.interpreter.weaver.generator.generator.templated.TemplatedGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
-
 import pt.up.fe.specs.util.DotRenderFormat;
 import pt.up.fe.specs.util.SpecsGraphviz;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
+import java.io.File;
+
 public class WeaverGenerator {
     /**
      * Generate a new weaver, according to the input language specification.
-     * 
+     *
      * @param weaverName
      *            The name for the new Weaver
      * @param languageSpecification
@@ -48,6 +45,7 @@ public class WeaverGenerator {
      *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
      * @return true if generated successfully, false otherwise.
      */
+    /*
     public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
             String outputPackage, boolean abstractGetters, Class<?> nodeType) {
 
@@ -58,10 +56,11 @@ public class WeaverGenerator {
         generator.generate();
         generator.print();
     }
+     */
 
     /**
      * Generate a new weaver, according to the input language specification.
-     * 
+     *
      * @param weaverName
      *            The name for the new Weaver
      * @param langSpec
@@ -76,6 +75,7 @@ public class WeaverGenerator {
      *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
      * @return true if generated successfully, false otherwise.
      */
+    /*
     public static void generateJava2CPP(String weaverName, LanguageSpecification langSpec, File outputDir,
             String outputPackage, boolean abstractGetters, Class<?> nodeType) {
 
@@ -85,12 +85,12 @@ public class WeaverGenerator {
         generator.generate();
         generator.print();
     }
+     */
 
     /**
      * Generate a new weaver, according to the input language specification.
-     * 
-     * @param generator
-     *            the generator that will generate the weaver implementation
+     *
+     * @param generator the generator that will generate the weaver implementation
      * @return true if generated successfully, false otherwise.
      */
     private static boolean generate(BaseGenerator generator) {
@@ -108,9 +108,8 @@ public class WeaverGenerator {
 
     /**
      * Print the new weaver in files, according to the generated code.
-     * 
-     * @param generator
-     *            the generator that has the generated code
+     *
+     * @param generator the generator that has the generated code
      * @return true if generated successfully, false otherwise.
      */
     private static boolean print(BaseGenerator generator) {
@@ -129,45 +128,44 @@ public class WeaverGenerator {
     /**
      * Generate a new weaver, according to the input language specification. <br>
      * Usage: java -jar WeaverGenerator.jar [options] <br>
-     * 
-     * @param args
-     *            List of available arguments:
-     *            <table width="100">
-     *            <thead>
-     *            <tr>
-     *            <th>Option</th>
-     *            <th>Long Option</th>
-     *            <th>Description</th>
-     *            </tr>
-     *            <thead> <tbody>
-     *            <tr>
-     *            <td>-h</td>
-     *            <td>--help</td>
-     *            <td>Print a help message</td>
-     *            </tr>
-     *            <tr>
-     *            <td>-o</td>
-     *            <td>--output &ltdir&gt</td>
-     *            <td>Change output directory (default: .)</td>
-     *            </tr>
-     * 
-     *            <tr>
-     *            <td>-p</td>
-     *            <td>--package &ltpackageName&gt</td>
-     *            <td>Define the package for the java files</td>
-     *            </tr>
-     *            <tr>
-     *            <td>-w</td>
-     *            <td>--weaver &ltclassName&gt</td>
-     *            <td>Name for the class (default: MyWeaver)</td>
-     *            </tr>
-     *            <tr>
-     *            <td>-x</td>
-     *            <td>--XMLspec &ltdir&gt</td>
-     *            <td>Location of the target language specification (default: .)</td>
-     *            </tr>
-     *            </tbody>
-     *            </table>
+     *
+     * @param args List of available arguments:
+     *             <table width="100">
+     *             <thead>
+     *             <tr>
+     *             <th>Option</th>
+     *             <th>Long Option</th>
+     *             <th>Description</th>
+     *             </tr>
+     *             <thead> <tbody>
+     *             <tr>
+     *             <td>-h</td>
+     *             <td>--help</td>
+     *             <td>Print a help message</td>
+     *             </tr>
+     *             <tr>
+     *             <td>-o</td>
+     *             <td>--output &ltdir&gt</td>
+     *             <td>Change output directory (default: .)</td>
+     *             </tr>
+     *
+     *             <tr>
+     *             <td>-p</td>
+     *             <td>--package &ltpackageName&gt</td>
+     *             <td>Define the package for the java files</td>
+     *             </tr>
+     *             <tr>
+     *             <td>-w</td>
+     *             <td>--weaver &ltclassName&gt</td>
+     *             <td>Name for the class (default: MyWeaver)</td>
+     *             </tr>
+     *             <tr>
+     *             <td>-x</td>
+     *             <td>--XMLspec &ltdir&gt</td>
+     *             <td>Location of the target language specification (default: .)</td>
+     *             </tr>
+     *             </tbody>
+     *             </table>
      */
     /**/
     public static void main(String[] args) {
@@ -191,14 +189,16 @@ public class WeaverGenerator {
         final BaseGenerator generator;
         String optionValue;
         if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
+            System.out.println("Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
             generator = new TemplatedGenerator(XMLSpecDir);
         } else if (cmdLine.hasOption(GeneratorOption.L.getOption())) {
             optionValue = cmdLine.getOptionValue(GeneratorOption.L.getOption());
             if (optionValue.equals("java2cpp")) {
-                generator = new JavaImplGenerator(XMLSpecDir);
-            } else {
-                generator = new JavaAbstractsGenerator(XMLSpecDir);
+                throw new RuntimeException("Option java2cpp no longer supported");
             }
+
+            generator = new JavaAbstractsGenerator(XMLSpecDir);
+
         } else {
             // Create the JavaAbstractGenerator
             generator = new JavaAbstractsGenerator(XMLSpecDir);
@@ -279,7 +279,7 @@ public class WeaverGenerator {
             // Also generate the graph
             File dotOutFile = new File(jsonDir, generator.getWeaverName() + ".dotty");
             var graphName = generator.getWeaverName() + "_join_point_hierarchy";
-            var graph = generator.getLanguageSpecificationV2().toHierarchyDiagram(graphName);
+            var graph = generator.getLanguageSpecification().toHierarchyDiagram(graphName);
             SpecsIo.write(dotOutFile, graph);
 
             // If dot available, generate PNG and SVG
@@ -292,7 +292,7 @@ public class WeaverGenerator {
     }
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
-        var languageSpecification = generator.getLanguageSpecificationV2();
+        var languageSpecification = generator.getLanguageSpecification();
 
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
@@ -308,8 +308,8 @@ public class WeaverGenerator {
     }
 
     private static void printReport(String weaverName, String outPackage, File xMLSpecDir, File outDir,
-            boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
-            boolean showGraph, String concreteClassesPrefix) {
+                                    boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
+                                    boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
         report.append("Weaver name:   " + weaverName + "\n");
         report.append("Package:       " + outPackage + "\n");

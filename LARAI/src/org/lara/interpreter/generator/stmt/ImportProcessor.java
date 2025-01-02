@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,15 +13,7 @@
 
 package org.lara.interpreter.generator.stmt;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import larai.LaraI;
 import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.api.LaraIo;
 import org.lara.interpreter.exception.AspectDefException;
@@ -39,9 +31,7 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.FilterExpression;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-
-import larai.LaraI;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
@@ -51,10 +41,19 @@ import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import utils.LARASystem;
 
+import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ImportProcessor {
 
-    private static final Class<?>[] CLASSES_TO_IMPORT = { LARASystem.class, Stage.class, AspectDefException.class,
-            ExceptionUtils.class, UserException.class, FilterExpression.class, JoinPoint.class, LaraIo.class };
+    private static final Class<?>[] CLASSES_TO_IMPORT = {LARASystem.class, Stage.class, AspectDefException.class,
+            ExceptionUtils.class, UserException.class, FilterExpression.class, JoinPoint.class, LaraIo.class};
 
     private final Interpreter interpreter;
     private final Set<String> loadedSources;
@@ -171,7 +170,7 @@ public class ImportProcessor {
         interpreter.put(MasterWeaver.WEAVER_NAME, laraI.getWeaver());
         interpreter.put(LARASystem.LARA_SYSTEM_NAME, new LARASystem(laraI));
         WeaverEngine engine = laraI.getWeaver().getEngine();
-        LanguageSpecificationV2 ls = engine.getLanguageSpecificationV2();
+        LanguageSpecification ls = engine.getLanguageSpecificationV2();
         interpreter.put(MasterWeaver.LANGUAGE_SPECIFICATION_NAME,
                 WeaverSpecification.newInstance(ls, engine.getScriptEngine()));
     }
@@ -249,7 +248,7 @@ public class ImportProcessor {
             try {
                 Method method = sysclass.getDeclaredMethod("addURL", URL.class);
                 method.setAccessible(true);
-                method.invoke(sysloader, new Object[] { classPath.toURI().toURL() });
+                method.invoke(sysloader, new Object[]{classPath.toURI().toURL()});
             } catch (Throwable t) {
                 throw new JavaImportException(classPath, t);
             }

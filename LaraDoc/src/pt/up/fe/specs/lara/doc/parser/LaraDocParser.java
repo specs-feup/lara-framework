@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,28 +13,16 @@
 
 package pt.up.fe.specs.lara.doc.parser;
 
-import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-
 import larac.LaraC;
 import larai.larabundle.LaraBundle;
 import larai.lararesource.LaraResource;
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.lara.doc.LaraDocs;
 import pt.up.fe.specs.lara.doc.LaraToJs;
 import pt.up.fe.specs.lara.doc.aspectir.AspectIrDocBuilder;
-import pt.up.fe.specs.lara.doc.data.LaraDocBundle;
-import pt.up.fe.specs.lara.doc.data.LaraDocModule;
-import pt.up.fe.specs.lara.doc.data.LaraDocNode;
-import pt.up.fe.specs.lara.doc.data.LaraDocPackage;
-import pt.up.fe.specs.lara.doc.data.LaraDocTop;
+import pt.up.fe.specs.lara.doc.data.*;
 import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.SpecsCollections;
 import pt.up.fe.specs.util.SpecsIo;
@@ -43,9 +31,16 @@ import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.exceptions.CaseNotDefinedException;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 /**
  * Parses documentation from .lara and .js files.
- * 
+ *
  * @author JoaoBispo
  *
  */
@@ -64,14 +59,14 @@ public class LaraDocParser {
     private final MultiMap<String, File> packagesPaths;
     // Filters folders/files based on name
     private final Predicate<File> nameFilter;
-    private final LanguageSpecificationV2 languageSpecification;
+    private final LanguageSpecification languageSpecification;
 
     public LaraDocParser() {
         // this(LaraDocParser::defaultNameFilter);
         this(null, new DefaultWeaver().getLanguageSpecificationV2());
     }
 
-    public LaraDocParser(Predicate<File> nameFilter, LanguageSpecificationV2 languageSpecification) {
+    public LaraDocParser(Predicate<File> nameFilter, LanguageSpecification languageSpecification) {
         this.packagesPaths = new MultiMap<>(() -> new LinkedHashMap<>());
         this.nameFilter = nameFilter;
         this.languageSpecification = languageSpecification;
@@ -206,10 +201,10 @@ public class LaraDocParser {
         String filename = laraFile.getName();
 
         switch (extension) {
-        case "lara":
-        case "mjs":
-        case "js":
-            String importPath = LaraDocs.getImportPath(laraFile, baseFolder);
+            case "lara":
+            case "mjs":
+            case "js":
+                String importPath = LaraDocs.getImportPath(laraFile, baseFolder);
             /*
             LaraDocModule module = currentNode.getNode(LaraDocModule.class, importPath)
                     .orElse(new LaraDocModule(importPath));
@@ -217,40 +212,40 @@ public class LaraDocParser {
             // Add module if not present
             currentNode.addIfNotPresent(module);
             */
-            // Check if base file
-            boolean isBaseFile = filename.substring(0, filename.length() - ".lara".length()).endsWith("Base");
+                // Check if base file
+                boolean isBaseFile = filename.substring(0, filename.length() - ".lara".length()).endsWith("Base");
 
-            // Get correct module import
-            String moduleImport = isBaseFile ? importPath.substring(0, importPath.length() - "Base".length())
-                    : importPath;
+                // Get correct module import
+                String moduleImport = isBaseFile ? importPath.substring(0, importPath.length() - "Base".length())
+                        : importPath;
 
-            // Get or create module from current node
-            LaraDocModule module = currentNode.getOrCreateNode(LaraDocModule.class, moduleImport,
-                    () -> new LaraDocModule(moduleImport));
+                // Get or create module from current node
+                LaraDocModule module = currentNode.getOrCreateNode(LaraDocModule.class, moduleImport,
+                        () -> new LaraDocModule(moduleImport));
 
-            if (isBaseFile) {
-                module.setBaseLara(laraFile);
-            } else if (extension.equals("lara")) {
-                module.setMainLara(laraFile);
-            } else if (extension.equals("js") || extension.equals("mjs")) {
-                module.setMainJs(laraFile);
-            } else {
-                throw new CaseNotDefinedException(extension);
-            }
+                if (isBaseFile) {
+                    module.setBaseLara(laraFile);
+                } else if (extension.equals("lara")) {
+                    module.setMainLara(laraFile);
+                } else if (extension.equals("js") || extension.equals("mjs")) {
+                    module.setMainJs(laraFile);
+                } else {
+                    throw new CaseNotDefinedException(extension);
+                }
 
-            break;
+                break;
 
-        // case "js":
-        // // Get or create module from current node
-        // var moduleJs = currentNode.getOrCreateNode(LaraDocJs.class, laraFile.getName(),
-        // () -> new LaraDocJs(laraFile));
-        //
-        // // LaraDocJs jsNode = new LaraDocJs(laraFile);
-        // // currentNode.add(jsNode);
-        // break;
+            // case "js":
+            // // Get or create module from current node
+            // var moduleJs = currentNode.getOrCreateNode(LaraDocJs.class, laraFile.getName(),
+            // () -> new LaraDocJs(laraFile));
+            //
+            // // LaraDocJs jsNode = new LaraDocJs(laraFile);
+            // // currentNode.add(jsNode);
+            // break;
 
-        default:
-            throw new RuntimeException("Not implemented for files with extension '" + extension + "'");
+            default:
+                throw new RuntimeException("Not implemented for files with extension '" + extension + "'");
         }
 
     }

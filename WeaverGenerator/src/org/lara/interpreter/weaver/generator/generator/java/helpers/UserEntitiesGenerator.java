@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -16,8 +16,7 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
+import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -26,7 +25,6 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -35,9 +33,8 @@ public class UserEntitiesGenerator extends GeneratorHelper {
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
-     * @param newObject
-     *            the new Object to generate
+     *
+     * @param newObject the new Object to generate
      * @return
      */
     protected UserEntitiesGenerator(JavaAbstractsGenerator javaGenerator, TypeDef object) {
@@ -47,9 +44,8 @@ public class UserEntitiesGenerator extends GeneratorHelper {
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
-     * @param newObject
-     *            the new Object to generate
+     *
+     * @param newObject the new Object to generate
      * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator, TypeDef object) {
@@ -59,7 +55,7 @@ public class UserEntitiesGenerator extends GeneratorHelper {
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
+     *
      * @return
      */
     @Override
@@ -67,10 +63,11 @@ public class UserEntitiesGenerator extends GeneratorHelper {
         final JavaClass uDClass = new JavaClass(entity.getName(), javaGenerator.getEntitiesPackage());
         uDClass.appendComment(ln());
         uDClass.add(JDocTag.AUTHOR, "Lara C.");
-        for (final Attribute attribute : entity.getAttribute()) {
+
+        for (var attribute : entity.getFields()) {
 
             final String fieldName = attribute.getName();
-            final String classType = attribute.getType();
+            final String classType = attribute.getReturnType();
 
             final String sanitizedName = StringUtils.getSanitizedName(fieldName);
             final JavaType jType = ConvertUtils.getConvertedType(classType, javaGenerator);
@@ -88,7 +85,7 @@ public class UserEntitiesGenerator extends GeneratorHelper {
 
     /**
      * Generate the toString method based on a json format
-     * 
+     *
      * @param uDClass
      */
     private static void generateToString(JavaClass uDClass) {

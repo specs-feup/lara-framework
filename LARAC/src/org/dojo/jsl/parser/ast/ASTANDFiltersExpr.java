@@ -5,7 +5,7 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,7 +19,7 @@ public class ASTANDFiltersExpr extends SimpleNode {
     }
 
     @Override
-    public String organize(String type, LanguageSpecificationV2 langSpec) {
+    public String organize(String type, LanguageSpecification langSpec) {
         // ArrayList<String> props = new ArrayList<String>();
         for (final Node child : getChildren()) {
             // String s =

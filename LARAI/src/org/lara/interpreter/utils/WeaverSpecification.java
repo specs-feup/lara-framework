@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,28 +13,23 @@
 
 package org.lara.interpreter.utils;
 
+import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.language.specification.dsl.*;
+import pt.up.fe.specs.jsengine.JsEngine;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.lara.language.specification.dsl.Select;
-
-import pt.up.fe.specs.jsengine.JsEngine;
-
 public class WeaverSpecification {
-    private final LanguageSpecificationV2 ls;
+    private final LanguageSpecification ls;
     private final JsEngine engine;
 
-    public static WeaverSpecification newInstance(LanguageSpecificationV2 ls, JsEngine engine) {
+    public static WeaverSpecification newInstance(LanguageSpecification ls, JsEngine engine) {
         return new WeaverSpecification(ls, engine);
     }
 
-    private WeaverSpecification(LanguageSpecificationV2 ls, JsEngine engine) {
+    private WeaverSpecification(LanguageSpecification ls, JsEngine engine) {
         this.ls = ls;
         this.engine = engine;
     }

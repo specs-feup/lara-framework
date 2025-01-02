@@ -5,7 +5,7 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,7 +44,7 @@ public class ASTFilter extends SimpleNode {
     }
 
     @Override
-    public String organize(String type, LanguageSpecificationV2 langSpec) {
+    public String organize(String type, LanguageSpecification langSpec) {
         if (type == null) {
             SimpleNode pcParent = (SimpleNode) parent;
             while (!(pcParent instanceof ASTPointcut)) {
@@ -82,8 +82,7 @@ public class ASTFilter extends SimpleNode {
     }
 
     /**
-     * @param attrType
-     *            the attrType to set
+     * @param attrType the attrType to set
      */
     public void setAttrType(String attrType) {
         this.attrType = attrType;

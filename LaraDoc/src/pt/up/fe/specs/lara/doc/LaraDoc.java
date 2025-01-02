@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,30 +13,19 @@
 
 package pt.up.fe.specs.lara.doc;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
-import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.generator.stmt.AspectClassProcessor;
-import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.weaver.MasterWeaver;
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.LanguageSpecification;
-import org.suikasoft.jOptions.Interfaces.DataStore;
-
 import larac.LaraC;
 import larai.LaraI;
 import larai.larabundle.BundleType;
 import larai.larabundle.LaraBundle;
 import larai.larabundle.LaraBundleProperty;
 import larai.lararesource.LaraResource;
+import org.lara.interpreter.Interpreter;
+import org.lara.interpreter.generator.stmt.AspectClassProcessor;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.weaver.MasterWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.graal.GraalvmJsEngine;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -51,10 +40,13 @@ import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.properties.SpecsProperties;
 
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
+
 /**
- * @deprecated Replaced by LaraDocParser
  * @author JBispo
- *
+ * @deprecated Replaced by LaraDocParser
  */
 @Deprecated
 public class LaraDoc {
@@ -65,12 +57,9 @@ public class LaraDoc {
     // private final File inputPath;
     // private final File outputFolder;
     private final Lazy<AspectClassProcessor> aspectProcessor;
-    private final LanguageSpecification languageSpecification;
 
     private final boolean ignoreUnderscoredFolders = true;
 
-    // public LaraDoc(WeaverEngine weaverEngine, File inputPath, File outputFolder) {
-    // public LaraDoc(File inputPath) {
     public LaraDoc() {
         packagesPaths = new MultiMap<>();
 
@@ -79,7 +68,6 @@ public class LaraDoc {
         // this.outputFolder = SpecsIo.mkdir(outputFolder);
         // this.aspectProcessor = Lazy.newInstance(() -> LaraDoc.newAspectProcessor(weaverEngine));
         this.aspectProcessor = Lazy.newInstance(LaraDoc::newAspectProcessor);
-        this.languageSpecification = new DefaultWeaver().getLanguageSpecification();
     }
 
     public LaraDoc addPath(String packageName, File path) {
@@ -333,12 +321,12 @@ public class LaraDoc {
         BundleType bundleType = BundleType.getHelper().fromValue(laraBundle.get(LaraBundleProperty.BUNDLE_TYPE));
 
         switch (bundleType) {
-        case WEAVER:
-            return "-- Weaver --";
-        case CUSTOM:
-            return laraBundle.get(LaraBundleProperty.BUNDLE_TAG);
-        default:
-            throw new RuntimeException("Case not defined:" + bundleType);
+            case WEAVER:
+                return "-- Weaver --";
+            case CUSTOM:
+                return laraBundle.get(LaraBundleProperty.BUNDLE_TAG);
+            default:
+                throw new RuntimeException("Case not defined:" + bundleType);
         }
     }
 
