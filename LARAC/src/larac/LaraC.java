@@ -169,23 +169,11 @@ public class LaraC {
         return laraC;
     }
 
-    // public static LaraC newImporter(String filename, String laraCode, LaraCOptions options,
-    // LanguageSpecificationV2 langSpec,
-    // Output output, Map<String, LaraC> importedFiles) {
-    //
-    // LaraC laraC = new LaraC(options, langSpec, output);
-    // laraC.setLaraPath(filename);
-    // laraC.setLaraStreamProvider(() -> SpecsIo.toInputStream(laraCode));
-    // laraC.parseForImport(importedFiles);
-    // return laraC;
-    // }
-
     private LaraC(LaraCOptions options, LanguageSpecification langSpec, Output output) {
         setParsed(false);
         this.options = options;
         print = output;
         languageSpec = langSpec;
-        // languageSpecV2 = JoinPointFactory.fromOld(langSpec);
     }
 
     public void setToJsMode(boolean toJsMode, String laraFilename, String laraCode) {
@@ -668,10 +656,6 @@ public class LaraC {
         return languageSpec;
     }
 
-    // public LanguageSpecificationV2 getLanguageSpecV2() {
-    // // return languageSpecV2;
-    // return JoinPointFactory.fromOld(getLanguageSpec());
-    // }
 
     public Organizer getOrganizer() {
         return new Organizer(getLanguageSpec());

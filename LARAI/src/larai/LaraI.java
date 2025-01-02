@@ -555,11 +555,6 @@ public class LaraI {
         // }
     }
 
-    // public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
-    // LaraIDataStore options,
-    // Output out) throws Exception {
-    //
-    // }
 
     /**
      * Compile the lara file with LARAC, according to a {@link LanguageSpecification}
