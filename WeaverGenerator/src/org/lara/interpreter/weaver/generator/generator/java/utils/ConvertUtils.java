@@ -15,9 +15,7 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.artifactsmodel.schema.TypeDef;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
+import org.lara.language.specification.dsl.LanguageSpecificationV2;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
@@ -28,7 +26,6 @@ import tdrc.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ConvertUtils {
@@ -136,10 +133,6 @@ public class ConvertUtils {
                                                 final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);
 
-        // if the object declaration exist in the artifacts
-        final LanguageSpecification languageSpecification = generator.getLanguageSpecification();
-
-
         if (generator.getLanguageSpecificationV2().hasEnumDef(type)) {
             keyType = "String";
         }
@@ -165,12 +158,12 @@ public class ConvertUtils {
             return clone;
         }
 
-        if (languageSpecification.getArtifacts().hasTypeDef(type)) {
+        if (generator.getLanguageSpecificationV2().hasTypeDef(type)) {
             return new JavaType(type, generator.getEntitiesPackage(), arrayDimension);
         }
 
         // if it is a join point class
-        if (languageSpecification.getJpModel().containsJoinPoint(type)) {
+        if (generator.getLanguageSpecificationV2().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
             final JavaType jpType = new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
             return jpType;
@@ -182,31 +175,31 @@ public class ConvertUtils {
         final StringBuilder message = new StringBuilder(
                 "Could not convert type '" + type + "'. Available types in the Language Specification: ");
 
-        final StringBuilder availableTypes = reportAvailableTypes(languageSpecification);
+        final StringBuilder availableTypes = reportAvailableTypes(generator.getLanguageSpecificationV2());
         message.append(availableTypes);
 
         throw new RuntimeException(message.toString());
     }
 
-    private static StringBuilder reportAvailableTypes(LanguageSpecification languageSpecification) {
+    private static StringBuilder reportAvailableTypes(LanguageSpecificationV2 langSpec) {
         final StringBuilder message = new StringBuilder(ln() + "\t Primitives: ");
         String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
                 + ", Object, Array, Map, Template, Joinpoint";
         message.append(join);
 
-        final List<TypeDef> objects = languageSpecification.getArtifacts().getTypeDefs();
+        var objects = langSpec.getTypeDefs().values();
         if (!objects.isEmpty()) {
 
             message.append(ln() + "\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
+            final String objectsString = StringUtils.join(objects, t -> t.getName(), ", ");
             message.append(objectsString);
         }
 
-        final List<JoinPointType> joinpoints = languageSpecification.getJpModel().getJoinPointList().getJoinpoint();
+        var joinpoints = langSpec.getDeclaredJoinPoints();
         if (!joinpoints.isEmpty()) {
 
             message.append(ln() + "\t Join point types: ");
-            final String jpsString = StringUtils.join(joinpoints, JoinPointType::getClazz, ", ");
+            final String jpsString = StringUtils.join(joinpoints, j -> j.getName(), ", ");
             message.append(jpsString);
         }
         return message;
