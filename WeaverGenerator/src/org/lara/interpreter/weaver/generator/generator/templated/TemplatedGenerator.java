@@ -292,7 +292,7 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
 
         final List<JavaClass> joinPointClasses = new ArrayList<>();
 
-        for (var joinPoint : getLanguageSpecificationV2().getAllJoinPoints()) {
+        for (var joinPoint : getLanguageSpecification().getAllJoinPoints()) {
             final JavaClass jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
             joinPointClasses.add(jClass);
         }
@@ -310,16 +310,16 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
 
-        var newObjects = getLanguageSpecificationV2().getTypeDefs().values();
+        var newObjects = getLanguageSpecification().getTypeDefs().values();
         for (var newObject : newObjects) {
-            final JavaClass uDClass = UserEntitiesGeneratorV2.generate(this, newObject);
+            final JavaClass uDClass = UserEntitiesGenerator.generate(this, newObject);
             userDefinedClasses.add(newObject.getName());
             Utils.generateToFile(getOutDir(), uDClass, true);
         }
 
-        var newEnums = getLanguageSpecificationV2().getEnumDefs().values();
+        var newEnums = getLanguageSpecification().getEnumDefs().values();
         for (var newEnum : newEnums) {
-            final JavaEnum userEnum = UserEnumsGeneratorV2.generate(this, newEnum);
+            final JavaEnum userEnum = UserEnumsGenerator.generate(this, newEnum);
             userDefinedClasses.add(newEnum.getName());
             Utils.generateToFile(getOutDir(), userEnum, true);
         }

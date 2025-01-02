@@ -45,7 +45,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
     private static final String PREFERENCE_SORTING_METHOD = "langSpecSortingMethod";
 
-    private final LanguageSpecificationV2 langSpec;
+    private final LanguageSpecification langSpec;
     private JComboBox<JoinPointClass> joinPoints;
 
     private final EditorPanel editor;
@@ -79,7 +79,7 @@ public class LanguageSpecificationSideBar extends JPanel {
     // public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecification langSpec) {
     // this(editor, JoinPointFactory.fromOld(langSpec));
     // }
-    public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecificationV2 langSpec) {
+    public LanguageSpecificationSideBar(EditorPanel editor, LanguageSpecification langSpec) {
         super(new BorderLayout());
         setBorder(new EmptyBorder(4, 0, 5, 0));
         // setBackground(Colors.BLUE_GREY);
@@ -399,7 +399,7 @@ public class LanguageSpecificationSideBar extends JPanel {
 
     }
 
-    public LanguageSpecificationV2 getLangSpec() {
+    public LanguageSpecification getLangSpec() {
         return langSpec;
     }
 

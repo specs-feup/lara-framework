@@ -14,7 +14,7 @@
 package pt.up.fe.specs.lara.doc.html;
 
 import org.lara.language.specification.ast.*;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import pt.up.fe.specs.lara.doc.LaraDocResource;
 import pt.up.fe.specs.lara.doc.data.*;
 import pt.up.fe.specs.lara.doc.jsdocgen.JsDocGenerator;
@@ -83,7 +83,7 @@ public class StaticPageLaraDocHtmlGenerator {
         generateDoc(laraDocTop, null);
     }
 
-    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecificationV2 languageSpecification) {
+    public void generateDoc(LaraDocTop laraDocTop, LanguageSpecification languageSpecification) {
 
         // Get direct children
         List<LaraDocNode> laraDocNodes = new ArrayList<>(laraDocTop.getChildren());
@@ -136,7 +136,7 @@ public class StaticPageLaraDocHtmlGenerator {
 
             writeStaticPages(basePage, laraPackage);
         }
-        
+
     }
 
     private void writeStaticPages(String basePage, LaraDocNode laraDocNode) {
@@ -173,7 +173,7 @@ public class StaticPageLaraDocHtmlGenerator {
         SpecsIo.write(outputFile, staticPage);
     }
 
-    private StringBuilder buildImportsSidebar(LanguageSpecificationV2 languageSpecification,
+    private StringBuilder buildImportsSidebar(LanguageSpecification languageSpecification,
                                               List<LaraDocPackage> laraDocPackages) {
 
         // Generate import list

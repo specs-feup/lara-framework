@@ -159,7 +159,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
      */
     private void addSelectMethod(JavaClass java) {
         final Method select = new Method(GenConstants.getJoinPointInterfaceType(), "select");
-        String rootName = javaGenerator.getLanguageSpecificationV2().getRoot().getName();
+        String rootName = javaGenerator.getLanguageSpecification().getRoot().getName();
 
         rootName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(rootName);
         select.appendComment(" Return a JoinPoint instance of the language root, i.e., an instance of " + rootName);

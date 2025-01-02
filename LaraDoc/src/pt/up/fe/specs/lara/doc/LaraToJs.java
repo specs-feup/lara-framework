@@ -1,11 +1,11 @@
 /**
  * Copyright 2017 SPeCS.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,26 +13,18 @@
 
 package pt.up.fe.specs.lara.doc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import org.lara.interpreter.Interpreter;
-import org.lara.interpreter.generator.stmt.AspectClassProcessor;
-import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.weaver.MasterWeaver;
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.w3c.dom.Document;
-
 import larac.LaraC;
 import larac.utils.output.Output;
 import larai.LaraI;
+import org.lara.interpreter.Interpreter;
+import org.lara.interpreter.generator.stmt.AspectClassProcessor;
+import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.weaver.MasterWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.w3c.dom.Document;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.graal.GraalvmJsEngine;
 import pt.up.fe.specs.lara.aspectir.Aspects;
@@ -41,6 +33,12 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.lazy.Lazy;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Convert Lara to JS.
@@ -153,7 +151,7 @@ public class LaraToJs {
         return parseLara(laraFile, new DefaultWeaver().getLanguageSpecificationV2());
     }
 
-    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecificationV2 languageSpecification) {
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
         // Pass through LaraC
         System.out.println("COMPILING FILE " + laraFile);
         List<String> args = new ArrayList<>();

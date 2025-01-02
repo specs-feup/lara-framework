@@ -134,7 +134,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getActions.addJavaDocTag(JDocTag.RETURN, "list with all actions");
 
         // Using linked hashset to have deterministic order
-        var uniqueActions = new LinkedHashSet<>(javaGenerator.getLanguageSpecificationV2().getAllActions());
+        var uniqueActions = new LinkedHashSet<>(javaGenerator.getLanguageSpecification().getAllActions());
         var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions, a -> '"' + a.getName() + '"');
 
 
@@ -148,7 +148,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getRoot.add(Modifier.FINAL);
         getRoot.appendComment("Returns the name of the root" + ln());
         getRoot.addJavaDocTag(JDocTag.RETURN, "the root name");
-        final String rootAlias = javaGenerator.getLanguageSpecificationV2().getRootAlias();
+        final String rootAlias = javaGenerator.getLanguageSpecification().getRootAlias();
         getRoot.appendCode("return \"" + rootAlias + "\";");
         java.add(getRoot);
     }
@@ -163,8 +163,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         getImportableClasses.appendComment("Returns a list of classes that may be imported and used in LARA." + ln());
         getImportableClasses.addJavaDocTag(JDocTag.RETURN, "a list of importable classes");
 
-        var entities = javaGenerator.getLanguageSpecificationV2().getTypeDefs().values();
-        var enums = javaGenerator.getLanguageSpecificationV2().getEnumDefs().values();
+        var entities = javaGenerator.getLanguageSpecification().getTypeDefs().values();
+        var enums = javaGenerator.getLanguageSpecification().getEnumDefs().values();
 
         final String entPackage = javaGenerator.getEntitiesPackage() + ".";
         final String enumPackage = javaGenerator.getEnumsPackage() + ".";

@@ -185,7 +185,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      */
     private void generateGlobalAttributes(JavaClass abstJPClass) {
 
-        var globalAttrs = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf();
+        var globalAttrs = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
 
         if (globalAttrs.isEmpty()) {
             return;
@@ -247,7 +247,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      */
     private void generateGlobalSelects(JavaClass abstJPClass) {
 
-        var selects = javaGenerator.getLanguageSpecificationV2().getGlobal().getSelectsSelf();
+        var selects = javaGenerator.getLanguageSpecification().getGlobal().getSelectsSelf();
 
         if (selects.isEmpty()) {
             return;
@@ -283,14 +283,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
         if (javaGenerator.hasDefs()) {
 
-            var attrs = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf().stream()
+            var attrs = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf().stream()
                     .filter(a -> !a.getDefs().isEmpty())
                     .toList();
 
             GeneratorUtils.createDefImpl(abstJPClass, false, attrs, javaGenerator);
         }
 
-        var actions = javaGenerator.getLanguageSpecificationV2().getGlobal().getActionsSelf();
+        var actions = javaGenerator.getLanguageSpecification().getGlobal().getActionsSelf();
 
         if (actions.isEmpty()) {
             return;

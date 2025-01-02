@@ -20,7 +20,7 @@ import org.lara.interpreter.weaver.defaultweaver.options.DefaultWeaverOption;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import java.io.File;
@@ -117,7 +117,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     @Override
-    protected LanguageSpecificationV2 buildLangSpecs() {
+    protected LanguageSpecification buildLangSpecs() {
         return LaraIUtils.createDefaultLanguageSpecification();
     }
 

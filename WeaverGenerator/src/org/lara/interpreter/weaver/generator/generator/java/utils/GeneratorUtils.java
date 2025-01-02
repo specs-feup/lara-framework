@@ -21,16 +21,11 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.NamedEnum;
 import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.interf.events.Stage;
-import org.lara.language.specification.actionsmodel.schema.Action;
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
-import org.lara.language.specification.artifactsmodel.schema.DefArgType;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import org.lara.language.specification.joinpointmodel.constructor.JoinPointModelConstructor;
-import org.lara.language.specification.joinpointmodel.schema.Select;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.Annotation;
@@ -82,7 +77,7 @@ public class GeneratorUtils {
         javaC.add(listSelects);
     }
 
-    public static void createListOfAvailableSelects(JavaClass javaC, JoinPointClass joinPointV2, String superName,
+    public static void createListOfAvailableSelects(JavaClass javaC, JoinPointClass joinPoint, String superName,
                                                     boolean isFinal) {
 
         final String fillSelectsName = GenConstants.fillWSelMethodName();
@@ -102,7 +97,7 @@ public class GeneratorUtils {
             listSelects.appendCode("super." + fillSelectsName + "(selects);" + ln());
         }
 
-        for (var sel : joinPointV2.getSelectsSelf()) {
+        for (var sel : joinPoint.getSelectsSelf()) {
             listSelects.appendCode("selects.add(\"" + sel.getSelectName() + "\");" + ln());
         }
 
@@ -110,7 +105,7 @@ public class GeneratorUtils {
     }
 
 
-    public static void createSelectByName(JavaClass javaC, JoinPointClass joinPointV2, String superName,
+    public static void createSelectByName(JavaClass javaC, JoinPointClass joinPoint, String superName,
                                           boolean isFinal) {
 
         final String selectMethodName = GenConstants.getSelectByNameMethodName();
@@ -130,7 +125,7 @@ public class GeneratorUtils {
         selectByName.appendCodeln(joinPointListType.getSimpleType() + " joinPointList;");
         selectByName.appendCodeln("switch(selectName) {");
 
-        for (var sel : joinPointV2.getSelects()) {
+        for (var sel : joinPoint.getSelects()) {
             var alias = sel.getSelectName();
             selectByName.appendCodeln("\tcase \"" + alias + "\": ");
             selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
@@ -151,7 +146,7 @@ public class GeneratorUtils {
 
     }
 
-    public static void createListOfAvailableActions(JavaClass javaC, JoinPointClass joinPointV2, String superName, boolean isFinal) {
+    public static void createListOfAvailableActions(JavaClass javaC, JoinPointClass joinPoint, String superName, boolean isFinal) {
 
         final String fillActionsName = GenConstants.fillWActMethodName();
 
@@ -172,7 +167,7 @@ public class GeneratorUtils {
         }
         listActions.appendCode("." + fillActionsName + "(actions);" + ln());
 
-        for (var act : joinPointV2.getActionsSelf()) {
+        for (var act : joinPoint.getActionsSelf()) {
             listActions.appendCode("actions.add(\"" + act.getReturnType() + " " + act.getName() + "(");
             final String joinedParams = StringUtils.join(act.getParameters(), org.lara.language.specification.dsl.Parameter::getType, ", ");
             listActions.appendCode(joinedParams);
@@ -194,15 +189,15 @@ public class GeneratorUtils {
     public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
                                        JoinPointClass current) {
 
-        var parentV2 = current.getExtendExplicit().orElse(null);
-        if (parentV2 == null) {
+        var parent = current.getExtendExplicit().orElse(null);
+        if (parent == null) {
             return;
         }
 
-        addSuperGetters(javaC, fieldName, generator, parentV2);
-        addSuperSelect(javaC, fieldName, generator, parentV2);
-        addSuperMethods(javaC, fieldName, generator, parentV2);
-        addSuperDefs(javaC, fieldName, generator, parentV2);
+        addSuperGetters(javaC, fieldName, generator, parent);
+        addSuperSelect(javaC, fieldName, generator, parent);
+        addSuperMethods(javaC, fieldName, generator, parent);
+        addSuperDefs(javaC, fieldName, generator, parent);
     }
 
     /**
@@ -248,10 +243,10 @@ public class GeneratorUtils {
         Collections.sort(attributes, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
         // System.out.println("JP: " + javaC.getName());
         //for (final Attribute attribute : attributes) {
-        for (var attributeV2 : attributes) {
+        for (var attribute : attributes) {
 
             // System.out.println("ATTR:" + attribute.getName());
-            String attrClassStr = attributeV2.getReturnType().trim();
+            String attrClassStr = attribute.getReturnType().trim();
 
             if (attrClassStr.startsWith("{")) { // then it is an enumerator
                 attrClassStr = String.class.getSimpleName();
@@ -260,7 +255,7 @@ public class GeneratorUtils {
             // if (ObjectOfPrimitives.contains(attrClassStr))
             // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
 
-            String name = attributeV2.getName();
+            String name = attribute.getName();
             // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
 
             JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
@@ -273,7 +268,7 @@ public class GeneratorUtils {
                 name += GenConstants.getImplementationSufix();
             }
 
-            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attributeV2.getParameters(),
+            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameters(),
                     generator);
             getter.add(Annotation.OVERRIDE);
             javaC.add(getter);
@@ -281,78 +276,6 @@ public class GeneratorUtils {
 
     }
 
-    /**
-     * Create the action methods calling the super class method
-     *
-     * @param javaGenerator
-     * @param javaC
-     * @param fieldName
-     * @deprecated
-     */
-    /*
-    public static void addSuperActions(JavaAbstractsGenerator javaGenerator, JavaClass javaC, String joinPointSuperType,
-                                       String fieldName) {
-
-        final List<Action> joinPointOwnActions = javaGenerator.getLanguageSpecification().getActionModel()
-                .getJoinPointActions(joinPointSuperType);
-        Collections.sort(joinPointOwnActions, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
-
-        var jp = javaGenerator.getLanguageSpecificationV2().getJoinPoints().get(joinPointSuperType).getActions();
-
-        var l1 = joinPointOwnActions.stream().map(a -> a.getName()).filter(a -> !a.equals("def")).sorted().toList();
-        var l2 = new ArrayList<>(jp.stream().map(a -> a.getName()).sorted().toList());
-        l2.add("insert");
-        l2.add("insert");
-        Collections.sort(l2);
-
-        var jpAlt = new ArrayList<>(jp.stream().map(a -> a.getName()).toList());
-        jpAlt.add("insert");
-        jpAlt.add("insert");
-
-        if (!l1.equals(l2)) {
-            System.out.println("Super type: " + joinPointSuperType);
-            System.out.println("OLD: " + joinPointOwnActions.stream().map(a -> a.getName()).filter(a -> !a.equals("def")).sorted().toList());
-            System.out.println("NEW: " + jpAlt.stream().sorted().toList());
-        }
-
-
-        // getJoinPointOwnActions(joinPointSuperType); // These two lines makes
-        // the same thing as the code above
-        // joinPointOwnActions.addAll(langSpec.getActionModel().getActionsForAll());
-        for (final Action action : joinPointOwnActions) {
-
-            if (javaGenerator.hasDefs() && action.getName().equals("def")) {
-                continue;
-            }
-
-            final Method m = generateActionMethod(action, javaGenerator);
-            m.setName(m.getName() + GenConstants.getImplementationSufix());
-            m.clearCode();
-            m.add(Annotation.OVERRIDE);
-            if (!action.getReturn().equals("void")) {
-                m.appendCode("return ");
-            }
-            m.appendCode("this." + fieldName + "." + m.getName() + "(");
-            final String joinedParameters = StringUtils.join(m.getParams(), Argument::getName, ", ");
-            m.appendCode(joinedParameters);
-            // if (!parameters.isEmpty()) {
-            //
-            // for (int i = 0; i < parameters.size() - 1; i++) {
-            //
-            // Parameter param = parameters.get(i);
-            // m.appendCode(param.getName() + ", ");
-            // }
-            //
-            // Parameter param = parameters.get(parameters.size() - 1);
-            // m.appendCode(param.getName());
-            // }
-            m.appendCode(");");
-
-            javaC.add(m);
-        }
-
-    }
-*/
 
     /**
      * Create the action methods calling the super class method
@@ -493,17 +416,17 @@ public class GeneratorUtils {
      * @return
      */
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
-                                            List<org.lara.language.specification.dsl.Parameter> listV2,
+                                            List<org.lara.language.specification.dsl.Parameter> list,
                                             JavaAbstractsGenerator generator) {
 
-        if (!listV2.isEmpty()) {
+        if (!list.isEmpty()) {
             final Method getAttribute = new Method(getAttrType, originalName);
             // getAttribute.addModifier(Modifier.ABSTRACT);
             getAttribute.appendComment("Get value on attribute " + attr);
             getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
             getAttribute.appendCode("return this." + superField + "." + originalName + "(");
 
-            for (var parameter : listV2) {
+            for (var parameter : list) {
 
                 JavaType type = ConvertUtils.getConvertedType(parameter.getType(), generator);
                 getAttribute.addArgument(type, parameter.getName());
@@ -603,37 +526,6 @@ public class GeneratorUtils {
      *
      * @param action the action used to generate its method
      * @return
-     * @deprecated
-     */
-    public static Method generateActionMethod(Action action, JavaAbstractsGenerator generator) {
-
-        JavaType actionReturn = getJavaType(action.getReturn(), action.getName(), action, "ActionParam", generator);
-        final Method m = new Method(actionReturn, action.getName());
-        String comment = action.getTooltip();
-        if (comment != null) {
-            m.appendComment(comment);
-        }
-        for (var param : action.getParameter()) {
-
-            String paramName = param.getName();
-            paramName = StringUtils.getSanitizedName(paramName);
-            JavaType jType = getJavaType(param.getType(), paramName, action, "ActionParam", generator);
-
-            paramName = StringUtils.getSanitizedName(paramName);
-            m.addArgument(jType, paramName);
-            m.addJavaDocTag(JDocTag.PARAM, paramName + " ");
-        }
-        m.appendCode("throw new UnsupportedOperationException(" + GenConstants.getClassName() + "()+\": Action "
-                + action.getName() + " not implemented \");");
-
-        return m;
-    }
-
-    /**
-     * Generates the method with the name and parameters of the action
-     *
-     * @param action the action used to generate its method
-     * @return
      */
     public static Method generateActionMethod(org.lara.language.specification.dsl.Action action, JavaAbstractsGenerator generator) {
 
@@ -657,34 +549,6 @@ public class GeneratorUtils {
                 + action.getName() + " not implemented \");");
 
         return m;
-    }
-
-    /**
-     * @param type
-     * @param paramName
-     * @param action
-     * @param sufix
-     * @param generator
-     * @return
-     * @deprecated
-     */
-    private static JavaType getJavaType(String type, String paramName, Action action, String sufix,
-                                        JavaAbstractsGenerator generator) {
-
-        JavaType jType;
-        if (type.startsWith("{")) { // then it is an enumerator
-            final String firstCharToUpper = StringUtils.firstCharToUpper(action.getName());
-            final JavaEnum enumerator = generateEnum(type, paramName, firstCharToUpper + sufix, generator);
-            generator.getEnums().add(enumerator);
-            // if (!generator.isAbstractGetters())
-            // javaC.addImport(enumerator.getClassPackage() + "." +
-            // enumerator.getName());
-            type = enumerator.getName();
-            jType = JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
-        } else {
-            jType = ConvertUtils.getConvertedType(type, generator);
-        }
-        return jType;
     }
 
     private static JavaType getJavaType(String type, String paramName, org.lara.language.specification.dsl.Action action, String sufix,
@@ -730,136 +594,6 @@ public class GeneratorUtils {
         }
 
         return newArgs;
-    }
-
-    /**
-     * Convert an action method to actionImpl,which will be the one the user should implement, and generate the action
-     * implementation that invokes this new actionImpl
-     *
-     * @param original
-     * @return
-     * @deprecated
-     */
-    public static Method generateActionImplMethod(Method original, Action action,
-                                                  JavaClass targetClass, JavaAbstractsGenerator generator) {
-
-        String actionName = action.getName();
-        String returnType = action.getReturn();
-        boolean hasEvents = generator.hasEvents();
-
-        JavaType actionReturn = getJavaType(action.getReturn(), action.getName(), action, "ActionParam", generator);
-
-        // TODO: This is the abstract method that will be called from JavaScript, instead of cloned should have another name. Also, this method is called generateActionImplMethod, but is not generating that method.
-        Method cloned = original.clone();
-        original.setName(original.getName() + GenConstants.getImplementationSufix());
-        cloned.clearCode();
-        cloned.add(Modifier.FINAL);
-
-        // If return type is not void, set return to Object
-        if (!returnType.equals("void")) {
-            cloned.setReturnType(JavaTypeFactory.getObjectType());
-        }
-
-        String joinedArgs = StringUtils.join(original.getParams(), Argument::getName, ", ");
-
-        // Special case: when single argument is an array, it will be used as the varargs of triggerAction() that
-        // expected Object[]. This can raise a warning, it might be ambiguous since we want to pass the array as
-        // the only value of the varags, and not each element of the array as an arguments of the args.
-        if (original.getParams().size() == 1 && original.getParams().get(0).getClassType().isArray()) {
-            joinedArgs = "new Object[] { " + joinedArgs + "}";
-        }
-
-        cloned.appendCodeln("try {");
-        cloned.appendCode("\t");
-        // System.out.println("JOINED ARGS '" + joinedArgs + "': " + original.getParams());
-        if (hasEvents) {
-            targetClass.addImport(Stage.class);
-            targetClass.addImport(Optional.class);
-            // if (hasListeners()) {
-            // eventTrigger().triggerAction(Stage.BEGIN, "insert", this, position, code);
-            // }
-            cloned.appendCodeln("if(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAction(Stage.BEGIN, \"" + actionName
-                    + "\", this, Optional.empty()");
-
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-
-            cloned.appendCodeln(");");
-
-            cloned.appendCodeln("\t}");
-            cloned.appendCode("\t");
-            if (!returnType.equals("void")) {
-                cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
-            }
-        } else {
-            // TODO: Not sure when this is called, and if it should also have code to convert null to undefined
-            if (!returnType.equals("void")) {
-                cloned.appendCode("return ");
-            }
-        }
-
-        List<Argument> arguments = cloned.getParams();
-        List<String> newArgs = new ArrayList<>(arguments.size());
-        JavaType stringType = JavaTypeFactory.getStringType();
-        for (Argument arg : arguments) {
-            String argStr = "";
-            if (arg.getClassType().isEnum()) {
-                targetClass.addImport(NamedEnum.class);
-                targetClass.addImport(arg.getClassType());
-                argStr = "NamedEnum.fromString(" + arg.getClassType().getName() + ".class, " + arg.getName()
-                        + ", \"parameter " + arg.getName() + "\")";
-                arg.setClassType(stringType);
-            } else if (arg.getClassType().isArray()) {
-                argStr = "pt.up.fe.specs.util.SpecsCollections.cast(" + arg.getName() + ", " + arg.getClassType().getName() + ".class)";
-            } else {
-                argStr = arg.getName();
-            }
-            newArgs.add(argStr);
-        }
-
-        // System.out.println(actionName + ": " + newArgs);
-        cloned.appendCodeln("this." + original.getName() + "(" + StringUtils.join(newArgs, ", ") + ");");
-        if (hasEvents) {
-
-            cloned.appendCodeln("\tif(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAction(Stage.END, \"" + actionName + "\", this, ");
-            if (returnType.equals("void")) {
-                cloned.appendCode("Optional.empty()");
-            } else {
-                cloned.appendCode("Optional.ofNullable(result)");
-            }
-
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-
-            if (!returnType.equals("void")) {
-                if (actionReturn.isPrimitive()) {
-                    cloned.appendCodeln("\treturn result;");
-                } else {
-                    cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
-                }
-            }
-        }
-
-        cloned.appendCodeln("} catch(Exception e) {");
-        cloned.appendCode("\tthrow new " + ActionException.class.getSimpleName());
-        cloned.appendCodeln("(" + GenConstants.getClassName() + "(), \"" + actionName + "\", e);");
-        cloned.appendCodeln("}");
-        targetClass.addImport(ActionException.class);
-
-        // Adapts parameters after processing and code generation is done, to improve compatibility with
-        // calls from JavaScript
-        cloned.setArguments(convertParamArrayToObjArray(cloned.getParams()));
-
-
-        return cloned;
-
     }
 
     /**
@@ -990,32 +724,6 @@ public class GeneratorUtils {
 
     }
 
-    /**
-     * @param selectName
-     * @param type
-     * @return
-     * @deprecated
-     */
-    public static Method generateSelectMethod(Select sel, String _package, boolean isAbstract) {
-        final String selectName = sel.getAlias();
-        final String type = JoinPointModelConstructor.getJoinPointClass(sel);
-        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
-        final String methodName = "select" + firstCharToUpper;
-        final JavaType baseType = generateJoinPointBaseType(_package, type);
-        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
-        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
-        // Method selectMethod = new Method("List<? extends A" +
-        // typeFirstCharToUpper + ">", methodName);
-        final Method selectMethod = new Method(listType, methodName);
-        selectMethod.addJavaDocTag(JDocTag.RETURN);
-        if (isAbstract) {
-            selectMethod.add(Modifier.ABSTRACT);
-        }
-        String comment = Optional.ofNullable(sel.getTooltip())
-                .orElse("Method used by the lara interpreter to select " + selectName + "s");
-        selectMethod.appendComment(comment);
-        return selectMethod;
-    }
 
     /**
      * @param selectName
@@ -1142,76 +850,6 @@ public class GeneratorUtils {
         // + ";");
     }
 
-    /**
-     * Generate code for a given attribute
-     *
-     * @param javaC
-     * @param enums
-     * @param abstractGetters
-     * @param langSpec
-     * @param attribute
-     * @deprecated
-     */
-    public static Method generateAttributeImpl(Method original, Attribute attribute, JavaClass targetClass,
-                                               JavaAbstractsGenerator generator) {
-
-        Method cloned = original.clone();
-        original.setName(original.getName() + GenConstants.getImplementationSufix());
-        cloned.clearCode();
-        cloned.add(Modifier.FINAL);
-        cloned.remove(Modifier.ABSTRACT);
-        cloned.setReturnType(JavaTypeFactory.getObjectType());
-
-        String joinedArgs = StringUtils.join(original.getParams(), Argument::getName, ", ");
-        cloned.appendCodeln("try {");
-        cloned.appendCode("\t");
-
-        if (generator.hasEvents()) {
-            targetClass.addImport(Stage.class);
-            targetClass.addImport(Optional.class);
-            // if (hasListeners()) {
-            // eventTrigger().triggerAction(Stage.BEGIN, "insert", this, position, code);
-            // }
-            cloned.appendCodeln("if(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAttribute(Stage.BEGIN, this, \"" + attribute.getName()
-                    + "\", Optional.empty()");
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-            cloned.appendCode("\t");
-            cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
-        } else {
-
-            cloned.appendCode("return ");
-        }
-        cloned.appendCodeln("this." + original.getName() + "(" + joinedArgs + ");");
-        if (generator.hasEvents()) {
-
-            cloned.appendCodeln("\tif(hasListeners()) {");
-            cloned.appendCode(
-                    "\t\teventTrigger().triggerAttribute(Stage.END, this, \"" + attribute.getName()
-                            + "\", Optional.ofNullable(result)");
-
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-            // cloned.appendCodeln("\treturn result;");
-            cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();"); // return Undefined if result ==
-            // null
-
-        }
-        cloned.appendCodeln("} catch(Exception e) {");
-        cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
-        cloned.appendCodeln("(" + GenConstants.getClassName() + "(), \"" + attribute.getName() + "\", e);");
-        cloned.appendCodeln("}");
-        targetClass.addImport(AttributeException.class);
-
-        return cloned;
-    }
 
     /**
      * Generate code for a given attribute
@@ -1283,98 +921,6 @@ public class GeneratorUtils {
         return cloned;
     }
 
-    /**
-     * @param attribute
-     * @param javaC
-     * @param generator
-     * @return
-     * @deprecated
-     */
-    public static Method generateAttribute(Attribute attribute, JavaClass javaC, JavaAbstractsGenerator generator) {
-        String attrClassStr = attribute.getType().trim();
-        // String originalType = attrClassStr;
-        boolean isEnum = false;
-        JavaEnum enumerator = null;
-        JavaType javaType;
-        final String name = attribute.getName();
-        if (attrClassStr.startsWith("{")) { // then it is an enumerator
-            isEnum = true;
-            enumerator = generateEnum(attrClassStr, name, javaC.getName(), generator);
-            generator.getEnums().add(enumerator);
-            // if (!generator.isAbstractGetters())
-            // javaC.addImport(enumerator.getClassPackage() + "." +
-            // enumerator.getName());
-            attrClassStr = enumerator.getName();
-            javaType = new JavaType(enumerator.getName(), enumerator.getClassPackage());
-        } else {
-            // Any primitive type for attributes are now converted into their wrapper
-            javaType = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
-        }
-        final String sanName = StringUtils.getSanitizedName(name);
-        final Field attributeField = new Field(javaType, sanName, Privacy.PROTECTED);
-        // attributeField.setPrivacy(Privacy.PUBLIC);
-        if (!generator.isAbstractGetters()) {
-            javaC.add(attributeField);
-        }
-
-        final List<org.lara.language.specification.artifactsmodel.schema.Parameter> parameters = attribute
-                .getParameter();
-        if (parameters.isEmpty()) {
-
-            final Pair<Method, Method> get_set = createGetterAndSetter(attributeField, name,
-                    generator.isAbstractGetters());
-            final Method getter = get_set.getLeft();
-            if (isEnum) {
-                defineEnumReturnType(getter, enumerator, attributeField, generator.isAbstractGetters());
-            } else if (javaType.isArray()) {
-                // TODO - see if this is really necessary, and if so correct the
-                // implementations
-                encapsulateArrayAttribute(javaC, getter);
-            }
-            // Old code
-            // } else if (originalType.equals("Array")) { // if the attribute is
-            // an array then it should return a
-            // // NativeArray!
-            // encapsulateArrayAttribute(javaC, getter);
-            // }
-            String comment = attribute.getTooltip();
-            if (comment != null) {
-                getter.setJavaDocComment(new JavaDoc(comment));
-            }
-            javaC.add(getter);
-
-            return getter;
-            // javaC.add(get_set.getRight());
-        }
-        if (StringUtils.isJavaKeyword(name)) {
-            throw new RuntimeException("Could not create functional attribute with reserved keyword '" + name
-                    + "'. Please define a different name for the attribute");
-        }
-
-        final Method methodForAttribute = new Method(javaType, name);
-
-        methodForAttribute.add(Modifier.ABSTRACT);
-        for (final org.lara.language.specification.artifactsmodel.schema.Parameter param : parameters) {
-
-            final Argument arg = newSanitizedArgument(param.getName(), param.getType(), generator);
-            methodForAttribute.addArgument(arg);
-            methodForAttribute.addJavaDocTag(JDocTag.PARAM, arg.getName());
-        }
-
-        methodForAttribute.addJavaDocTag(JDocTag.RETURN, "");
-        if (javaType.isArray()) {
-            encapsulateArrayAttribute(javaC, methodForAttribute);
-        }
-        // if (originalType.equals("Array")) { // if the attribute is an array
-        // then it should return a
-        // NativeArray!
-        // encapsulateArrayAttribute(javaC, methodForAttribute);
-        // }
-
-        javaC.add(methodForAttribute);
-        return methodForAttribute;
-
-    }
 
     public static Method generateAttribute(org.lara.language.specification.dsl.Attribute attribute, JavaClass javaC, JavaAbstractsGenerator generator) {
         String attrClassStr = attribute.getReturnType().trim();
@@ -1575,21 +1121,6 @@ public class GeneratorUtils {
         // return arrayCode;
     }
 
-    /**
-     * @param attribute
-     * @param returnType
-     * @param javaC
-     * @param javaGenerator
-     * @deprecated
-     */
-    public static void generateDefMethods(Attribute attribute, JavaType returnType, JavaClass javaC,
-                                          JavaAbstractsGenerator javaGenerator) {
-
-        Function<String, String> codeProvider = t -> UnsupActionExceptionCode(
-                "def " + attribute.getName() + " with type " + t);
-        generateDefForType(attribute, returnType, javaC, javaGenerator, codeProvider);
-
-    }
 
     public static void generateDefMethods(org.lara.language.specification.dsl.Attribute attribute, JavaType returnType, JavaClass javaC,
                                           JavaAbstractsGenerator javaGenerator) {
@@ -1598,43 +1129,6 @@ public class GeneratorUtils {
                 "def " + attribute.getName() + " with type " + t);
         generateDefForType(attribute, returnType, javaC, javaGenerator, codeProvider);
 
-    }
-
-    /**
-     * @param attribute
-     * @param returnType
-     * @param javaC
-     * @param javaGenerator
-     * @param codeProvider
-     * @deprecated
-     */
-    public static void generateDefForType(Attribute attribute, JavaType returnType, JavaClass javaC,
-                                          JavaAbstractsGenerator javaGenerator, Function<String, String> codeProvider) {
-        List<DefArgType> defs = attribute.getDef();
-        if (defs.isEmpty()) {
-            return;
-        }
-        List<String> processedTypes = SpecsCollections.newArrayList();
-        for (DefArgType defType : defs) {
-            String type = defType.getType();
-            if (processedTypes.contains(type)) {
-                continue;
-            }
-            JavaType defJavaType;
-            if (type == null) {
-                defJavaType = returnType.clone();
-            } else {
-                defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
-            }
-            Method defAttrImpl = new Method(JavaTypeFactory.getVoidType(),
-                    GenConstants.getDefAttributeImplName(attribute));
-            defAttrImpl.setPrivacy(Privacy.PUBLIC);
-            defAttrImpl.addArgument(defJavaType, "value");
-            defAttrImpl.appendCode(codeProvider.apply(defJavaType.getName()));
-
-            processedTypes.add(type);
-            javaC.add(defAttrImpl);
-        }
     }
 
     public static void generateDefForType(org.lara.language.specification.dsl.Attribute attribute, JavaType returnType, JavaClass javaC,

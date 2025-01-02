@@ -103,7 +103,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         }
 
         // If join point is not extended by any other join point, it is final
-        boolean isFinal = !javaGenerator.getLanguageSpecificationV2().isSuper(joinPoint);
+        boolean isFinal = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
 
         GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal);
 
@@ -214,38 +214,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(selectMethod);
         javaC.addImport(SelectOp.class);
     }
-
-    /**
-     * Create the select method with try catch
-     *
-     * @param selectName
-     * @param javaC
-     * @param selectMethod
-     */
-    /*
-    void addSelectWithTryCatch(String selectName, JavaClass javaC, final Method selectMethod) {
-        // Add the method used to encapsulate the output with an Optional, or
-        // encapsulate a thrown exception
-        final Method selectWithTry = new Method(selectMethod.getReturnType(),
-                selectMethod.getName() + GenConstants.getWithTryPrefix());
-        selectWithTry.appendCodeln("try{");
-
-        String tab = "   ";
-        selectWithTry.appendCode(tab + selectMethod.getReturnType().getSimpleType());
-        String listName = selectName + "List";
-        selectWithTry.appendCodeln(" " + listName + " = " + selectMethod.getName() + "();");
-        selectWithTry.appendCodeln(tab + "return " + listName + "!=null?" + listName + ":Collections.emptyList();");
-        selectWithTry.appendCodeln("} catch(Exception e) {");
-        selectWithTry.appendCodeln(tab + "throw new " + SelectException.class.getSimpleName() + "(\""
-                + joinPointV2.getName() + "\",\"" + selectName + "\",e);");
-        selectWithTry.appendCodeln("}");
-
-        javaC.add(selectWithTry);
-        javaC.addImport(Collections.class);
-        javaC.addImport(SelectException.class);
-    }
-     */
-
+    
     /**
      * Add code that calls to the super methods
      *
@@ -273,7 +242,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
 
         // Add global methods for global attributes
-        var globalAttributes = javaGenerator.getLanguageSpecificationV2().getGlobal().getAttributesSelf();
+        var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
 
         GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
         // GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, superType.getClazz());

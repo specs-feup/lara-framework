@@ -241,23 +241,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         final List<JavaClass> joinPointClasses = new ArrayList<>();
 
 
-        for (var joinPoint : getLanguageSpecificationV2().getDeclaredJoinPoints()) {
+        for (var joinPoint : getLanguageSpecification().getDeclaredJoinPoints()) {
             var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
-
-
-/*
-        for (final JoinPointType joinPoint : jpModel.getJoinPointList().getJoinpoint().stream().sorted().toList()) {
-            var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
-*/
-        /*
-        for (var joinPoint : getLanguageSpecificationV2().getAllJoinPoints().stream().sorted().toList()) {
-
-            if (joinPoint.getName().equals("joinpoint")) {
-                continue;
-            }
-
-            var jClass = AbstractJoinPointClassGeneratorV2.generate(this, joinPoint);
-*/
 
             joinPointClasses.add(jClass);
         }
@@ -275,14 +260,14 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
 
-        for (var newObject : getLanguageSpecificationV2().getTypeDefs().values()) {
-            final JavaClass uDClass = UserEntitiesGeneratorV2.generate(this, newObject);
+        for (var newObject : getLanguageSpecification().getTypeDefs().values()) {
+            final JavaClass uDClass = UserEntitiesGenerator.generate(this, newObject);
             userDefinedClasses.add(newObject.getName());
             Utils.generateToFile(getOutDir(), uDClass, true);
         }
 
-        for (var newEnum : getLanguageSpecificationV2().getEnumDefs().values()) {
-            final JavaEnum userEnum = UserEnumsGeneratorV2.generate(this, newEnum);
+        for (var newEnum : getLanguageSpecification().getEnumDefs().values()) {
+            final JavaEnum userEnum = UserEnumsGenerator.generate(this, newEnum);
             userDefinedClasses.add(newEnum.getName());
             Utils.generateToFile(getOutDir(), userEnum, true);
         }

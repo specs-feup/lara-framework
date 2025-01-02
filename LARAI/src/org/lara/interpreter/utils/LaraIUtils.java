@@ -20,7 +20,7 @@ import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.lara.aspectir.Base;
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
@@ -212,7 +212,7 @@ public class LaraIUtils {
      *
      * @return
      */
-    public static LanguageSpecificationV2 createDefaultLanguageSpecification() {
+    public static LanguageSpecification createDefaultLanguageSpecification() {
         // TODO: Why validate is false?
         return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
     }

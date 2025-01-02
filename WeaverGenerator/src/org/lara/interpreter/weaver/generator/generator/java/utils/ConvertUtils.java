@@ -15,7 +15,7 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
@@ -133,7 +133,7 @@ public class ConvertUtils {
                                                 final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);
 
-        if (generator.getLanguageSpecificationV2().hasEnumDef(type)) {
+        if (generator.getLanguageSpecification().hasEnumDef(type)) {
             keyType = "String";
         }
 
@@ -158,12 +158,12 @@ public class ConvertUtils {
             return clone;
         }
 
-        if (generator.getLanguageSpecificationV2().hasTypeDef(type)) {
+        if (generator.getLanguageSpecification().hasTypeDef(type)) {
             return new JavaType(type, generator.getEntitiesPackage(), arrayDimension);
         }
 
         // if it is a join point class
-        if (generator.getLanguageSpecificationV2().hasJoinPoint(type)) {
+        if (generator.getLanguageSpecification().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
             final JavaType jpType = new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
             return jpType;
@@ -175,13 +175,13 @@ public class ConvertUtils {
         final StringBuilder message = new StringBuilder(
                 "Could not convert type '" + type + "'. Available types in the Language Specification: ");
 
-        final StringBuilder availableTypes = reportAvailableTypes(generator.getLanguageSpecificationV2());
+        final StringBuilder availableTypes = reportAvailableTypes(generator.getLanguageSpecification());
         message.append(availableTypes);
 
         throw new RuntimeException(message.toString());
     }
 
-    private static StringBuilder reportAvailableTypes(LanguageSpecificationV2 langSpec) {
+    private static StringBuilder reportAvailableTypes(LanguageSpecification langSpec) {
         final StringBuilder message = new StringBuilder(ln() + "\t Primitives: ");
         String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
                 + ", Object, Array, Map, Template, Joinpoint";

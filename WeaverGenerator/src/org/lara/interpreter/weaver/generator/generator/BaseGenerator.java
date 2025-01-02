@@ -14,7 +14,7 @@
 package org.lara.interpreter.weaver.generator.generator;
 
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import pt.up.fe.specs.util.SpecsCheck;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 public abstract class BaseGenerator {
 
     private String outPackage;
-    private LanguageSpecificationV2 languageSpecification;
+    private LanguageSpecification languageSpecification;
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
@@ -323,7 +323,7 @@ public abstract class BaseGenerator {
      *
      * @return
      */
-    public LanguageSpecificationV2 getLanguageSpecificationV2() {
+    public LanguageSpecification getLanguageSpecification() {
         return languageSpecification;
     }
 
@@ -332,7 +332,7 @@ public abstract class BaseGenerator {
      *
      * @param languageSpecification
      */
-    private void setLanguageSpecification(LanguageSpecificationV2 languageSpecification) {
+    private void setLanguageSpecification(LanguageSpecification languageSpecification) {
         this.languageSpecification = languageSpecification;
     }
 
@@ -342,7 +342,7 @@ public abstract class BaseGenerator {
      * @param langSpecDirStr the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
-        languageSpecification = LanguageSpecificationV2.newInstance(langSpecDir);
+        languageSpecification = LanguageSpecification.newInstance(langSpecDir);
     }
 
     /**

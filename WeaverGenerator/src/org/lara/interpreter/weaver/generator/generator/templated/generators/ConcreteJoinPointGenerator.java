@@ -80,7 +80,7 @@ public class ConcreteJoinPointGenerator {
 
         var classes = new ArrayList<GeneratedFile>();
 
-        for (var joinPoint : baseGenerator.getLanguageSpecificationV2().getDeclaredJoinPoints()) {
+        for (var joinPoint : baseGenerator.getLanguageSpecification().getDeclaredJoinPoints()) {
             classes.add(generate(joinPoint));
         }
 

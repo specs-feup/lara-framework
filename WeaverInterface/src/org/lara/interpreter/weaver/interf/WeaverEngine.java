@@ -19,7 +19,7 @@ import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
@@ -52,7 +52,7 @@ public abstract class WeaverEngine {
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
-    private final Lazy<LanguageSpecificationV2> langSpec;
+    private final Lazy<LanguageSpecification> langSpec;
 
     private JsEngine scriptEngine;
 
@@ -225,7 +225,7 @@ public abstract class WeaverEngine {
     }
 
 
-    public LanguageSpecificationV2 getLanguageSpecificationV2() {
+    public LanguageSpecification getLanguageSpecificationV2() {
         return langSpec.get();
     }
 
@@ -234,7 +234,7 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    protected abstract LanguageSpecificationV2 buildLangSpecs();
+    protected abstract LanguageSpecification buildLangSpecs();
 //        return LangSpecsXmlParser.parse(ClavaWeaverResource.JOINPOINTS, ClavaWeaverResource.ARTIFACTS,
 //                ClavaWeaverResource.ACTIONS, true);
 

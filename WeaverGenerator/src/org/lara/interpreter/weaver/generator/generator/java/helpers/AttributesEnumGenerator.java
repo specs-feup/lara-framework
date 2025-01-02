@@ -13,7 +13,7 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import org.lara.language.specification.artifactsmodel.schema.Attribute;
+
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -33,32 +33,32 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttributesEnumGenerator {
-    
-    private JoinPointClass joinPointV2;
+
+    private JoinPointClass joinPoint;
     private JavaClass javaC;
 
-    protected AttributesEnumGenerator(JavaClass javaC, JoinPointClass joinPointV2) {
+    protected AttributesEnumGenerator(JavaClass javaC, JoinPointClass joinPoint) {
         this.javaC = javaC;
-        this.joinPointV2 = joinPointV2;
+        this.joinPoint = joinPoint;
     }
 
-    public static void generate(JavaClass javaC, JoinPointClass joinPointV2) {
-        AttributesEnumGenerator generator = new AttributesEnumGenerator(javaC, joinPointV2);
+    public static void generate(JavaClass javaC, JoinPointClass joinPoint) {
+        AttributesEnumGenerator generator = new AttributesEnumGenerator(javaC, joinPoint);
         generator.generate();
     }
 
     public void generate() {
-        var attributes = joinPointV2.getAttributes();
+        var attributes = joinPoint.getAttributes();
 
         if (attributes.isEmpty()) {
             return;
         }
 
-        String enumName = StringUtils.firstCharToUpper(joinPointV2.getName()) + "Attributes";
+        String enumName = StringUtils.firstCharToUpper(joinPoint.getName()) + "Attributes";
         JavaEnum anEnum = new JavaEnum(enumName, javaC.getClassPackage());
         anEnum.setPrivacy(Privacy.PROTECTED);
 
-        addAttributesV2(attributes, anEnum);
+        addAttributes(attributes, anEnum);
 
         addNameField(anEnum);
 
@@ -69,16 +69,7 @@ public class AttributesEnumGenerator {
         javaC.add(anEnum);
     }
 
-    private void addAttributes(List<Attribute> attributes, JavaEnum anEnum) {
-        for (Attribute attribute : attributes) {
-            String name = attribute.getName();
-            EnumItem item = new EnumItem(name.toUpperCase());
-            item.addParameter("\"" + name + "\"");
-            anEnum.add(item);
-        }
-    }
-
-    private void addAttributesV2(List<org.lara.language.specification.dsl.Attribute> attributes, JavaEnum anEnum) {
+    private void addAttributes(List<org.lara.language.specification.dsl.Attribute> attributes, JavaEnum anEnum) {
         for (var attribute : attributes) {
             String name = attribute.getName();
             EnumItem item = new EnumItem(name.toUpperCase());

@@ -279,7 +279,7 @@ public class WeaverGenerator {
             // Also generate the graph
             File dotOutFile = new File(jsonDir, generator.getWeaverName() + ".dotty");
             var graphName = generator.getWeaverName() + "_join_point_hierarchy";
-            var graph = generator.getLanguageSpecificationV2().toHierarchyDiagram(graphName);
+            var graph = generator.getLanguageSpecification().toHierarchyDiagram(graphName);
             SpecsIo.write(dotOutFile, graph);
 
             // If dot available, generate PNG and SVG
@@ -292,7 +292,7 @@ public class WeaverGenerator {
     }
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
-        var languageSpecification = generator.getLanguageSpecificationV2();
+        var languageSpecification = generator.getLanguageSpecification();
 
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();

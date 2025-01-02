@@ -5,20 +5,19 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import java.util.List;
-
-import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
-import org.lara.language.specification.dsl.Select;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import larac.LaraC;
 import larac.exceptions.LARACompilerException;
 import larac.exceptions.LaraException;
 import larac.objects.Enums.Types;
 import larac.objects.Variable;
-import utils.SelectionPathV2;
+import org.dojo.jsl.parser.ast.utils.LARACConstantPool;
+import org.lara.language.specification.dsl.Select;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import utils.SelectionPath;
 import utils.Selector;
+
+import java.util.List;
 
 public class ASTPointcut extends SimpleNode {
     public String reference;
@@ -57,8 +56,7 @@ public class ASTPointcut extends SimpleNode {
     }
 
     /**
-     * @param var
-     *            the var to set
+     * @param var the var to set
      */
     public void setVar(Variable var) {
         this.var = var;
@@ -97,7 +95,7 @@ public class ASTPointcut extends SimpleNode {
         final String jpType = getType();
         final String selectName = pointcutNode.value.toString();
         // final PairList<String, String> path2 = joinPointModel.getPath(jpType, selectName, validateChain);
-        final SelectionPathV2 selPath = new Selector(lara.languageSpec()).selectionPath(jpType, selectName,
+        final SelectionPath selPath = new Selector(lara.languageSpec()).selectionPath(jpType, selectName,
                 validateChain);
         // final SelectionPathV2 selPath = joinPointModel.selectionPath(jpType, selectName, validateChain);
 
@@ -217,7 +215,7 @@ public class ASTPointcut extends SimpleNode {
                 childAsPointCut.setType(firstChild.value.toString());
                 childAsPointCut.setValidateChain(false);
                 childAsPointCut.organize(obj); // TODO- if the next child cannot be found in the join point model then
-                                               // do not
+                // do not
                 // validate the child. This should be recursive for the rest of the chain,
                 // until a valid join point is found
             }
@@ -229,7 +227,7 @@ public class ASTPointcut extends SimpleNode {
             // exist in the join point model");
         }
         // final PairList<String, String> path2 = joinPointModel.getPath(value.toString());
-        final SelectionPathV2 selPath = new Selector(lara.languageSpec()).selectionPath(value.toString());
+        final SelectionPath selPath = new Selector(lara.languageSpec()).selectionPath(value.toString());
         // final SelectionPath selPath = joinPointModel.selectionPath(value.toString());
         //
         // System.out.println("##########################################");
@@ -363,8 +361,7 @@ public class ASTPointcut extends SimpleNode {
     }
 
     /**
-     * @param type
-     *            the type to set
+     * @param type the type to set
      */
     public void setType(String type) {
         this.type = type;

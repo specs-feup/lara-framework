@@ -13,7 +13,7 @@
 
 package pt.up.fe.specs.lara.commonlang;
 
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import pt.up.fe.specs.lara.commonlang.generator.CommonLangGenerator;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
@@ -25,8 +25,8 @@ import static pt.up.fe.specs.lara.commonlang.CommonLangResource.*;
 public class LaraCommonLang {
 
 
-    public static LanguageSpecificationV2 getLanguageSpecification() {
-        return LanguageSpecificationV2.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS);
+    public static LanguageSpecification getLanguageSpecification() {
+        return LanguageSpecification.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS);
     }
 
     public static List<ResourceProvider> getLaraCommonLangApi() {

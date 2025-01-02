@@ -1,48 +1,16 @@
 /*
  * Copyright 2013 SPeCS.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 package larac;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import org.apache.commons.io.input.BOMInputStream;
-import org.dojo.jsl.parser.ast.ASTStart;
-import org.dojo.jsl.parser.ast.LARAEcmaScript;
-import org.dojo.jsl.parser.ast.LARAEcmaScriptTreeConstants;
-import org.dojo.jsl.parser.ast.ParseException;
-import org.dojo.jsl.parser.ast.Token;
-import org.dojo.jsl.parser.ast.TokenMgrError;
-import org.dojo.jsl.parser.ast.utils.ASTScriptImport;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import larac.exceptions.LARACompilerException;
 import larac.exceptions.StopParseException;
@@ -54,6 +22,12 @@ import larac.utils.FileUtils;
 import larac.utils.Organizer;
 import larac.utils.output.MessageConstants;
 import larac.utils.output.Output;
+import org.apache.commons.io.input.BOMInputStream;
+import org.dojo.jsl.parser.ast.*;
+import org.dojo.jsl.parser.ast.utils.ASTScriptImport;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import pt.up.fe.specs.lara.aspectir.Aspects;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.util.SpecsCollections;
@@ -62,12 +36,20 @@ import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import tdrc.utils.StringUtils;
 
+import javax.management.modelmbean.XMLParseException;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Main class of the LARA compiler. The process involves parsing the input file given by the user, organize the AST,
  * according to the target language specification, and the create the Aspect Intermediate Representation (Aspect-IR)
- * 
+ *
  * @author Tiago
- * 
  */
 public class LaraC {
     /**
@@ -82,6 +64,7 @@ public class LaraC {
     // Disabled .mjs since it is not properly working for imports
     private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js", "mjs"));
     private static final Collection<String> SUPPORTED_EXT = new LinkedHashSet<>();
+
     static {
         SUPPORTED_EXT.addAll(SUPPORTED_LARA_EXT);
         SUPPORTED_EXT.addAll(SUPPORTED_SCRIPT_EXT);
@@ -95,7 +78,7 @@ public class LaraC {
     private InputStreamProvider laraStreamProvider;
     private String prefix = "";
 
-    private LanguageSpecificationV2 languageSpec;
+    private LanguageSpecification languageSpec;
 
     private AspectIR aspectIR;
 
@@ -111,9 +94,8 @@ public class LaraC {
 
     /**
      * Create a LaraC instance with the input arguments and the default output stream
-     * 
-     * @param args
-     *            input arguments
+     *
+     * @param args input arguments
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -121,18 +103,16 @@ public class LaraC {
      * @throws JAXBException
      */
     public LaraC(String args[])
-            // throws IOException, ParserConfigurationException, SAXException, JAXBException, XMLParseException {
+    // throws IOException, ParserConfigurationException, SAXException, JAXBException, XMLParseException {
             throws IOException, ParserConfigurationException, SAXException, JAXBException {
         this(args, new Output());
     }
 
     /**
      * Create a LaraC instance with the input arguments and a user-defined output stream
-     * 
-     * @param args
-     *            input arguments
-     * @param out
-     *            user-defined output, containing a user-defined verbose level
+     *
+     * @param args input arguments
+     * @param out  user-defined output, containing a user-defined verbose level
      */
     public LaraC(String args[], Output out) {
 
@@ -141,13 +121,11 @@ public class LaraC {
 
     /**
      * Create a LaraC instance with the input arguments and a user-defined output stream
-     * 
-     * @param args
-     *            input arguments
-     * @param out
-     *            user-defined output, containing a user-defined verbose level
+     *
+     * @param args input arguments
+     * @param out  user-defined output, containing a user-defined verbose level
      */
-    public LaraC(String args[], LanguageSpecificationV2 langSpec, Output out) {
+    public LaraC(String args[], LanguageSpecification langSpec, Output out) {
         setReadyToParse(laraConstructor(args, langSpec, out));
     }
 
@@ -155,18 +133,14 @@ public class LaraC {
      * Generate a LaraC instance with a previous information of a (parent) LaraC instance and the target language
      * specification. <br>
      * NOTE: This constructor should only be called when an import is made in a LARA file
-     * 
-     * @param laraFile
-     *            input lara file
-     * @param options
-     *            input arguments previously parsed by other LaraC instance
-     * @param langSpec
-     *            language specification previously parsed by other LaraC instance
-     * @param output
-     *            the output stream used on the parent LaraC instance
+     *
+     * @param laraFile input lara file
+     * @param options  input arguments previously parsed by other LaraC instance
+     * @param langSpec language specification previously parsed by other LaraC instance
+     * @param output   the output stream used on the parent LaraC instance
      */
-    public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecificationV2 langSpec,
-            Output output, Map<String, LaraC> importedFiles) {
+    public static LaraC newImporter(File laraFile, LaraCOptions options, LanguageSpecification langSpec,
+                                    Output output, Map<String, LaraC> importedFiles) {
 
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraFile(laraC, laraFile);
@@ -178,19 +152,16 @@ public class LaraC {
      * Generate a LaraC instance with a previous information of a (parent) LaraC instance and the target language
      * specification. <br>
      * NOTE: This constructor should only be called when an import is made in a LARA file
-     * 
+     * <p>
      * * @param laraResource input lara resource
-     * 
-     * @param options
-     *            input arguments previously parsed by other LaraC instance
-     * @param langSpec
-     *            language specification previously parsed by other LaraC instance
-     * @param output
-     *            the output stream used on the parent LaraC instance
+     *
+     * @param options  input arguments previously parsed by other LaraC instance
+     * @param langSpec language specification previously parsed by other LaraC instance
+     * @param output   the output stream used on the parent LaraC instance
      */
     public static LaraC newImporter(ResourceProvider laraResource, LaraCOptions options,
-            LanguageSpecificationV2 langSpec,
-            Output output, Map<String, LaraC> importedFiles) {
+                                    LanguageSpecification langSpec,
+                                    Output output, Map<String, LaraC> importedFiles) {
         LaraC laraC = new LaraC(options, langSpec, output);
         laraC.getOptions().setLaraResource(laraC, laraResource);
         laraC.parseForImport(importedFiles);
@@ -209,7 +180,7 @@ public class LaraC {
     // return laraC;
     // }
 
-    private LaraC(LaraCOptions options, LanguageSpecificationV2 langSpec, Output output) {
+    private LaraC(LaraCOptions options, LanguageSpecification langSpec, Output output) {
         setParsed(false);
         this.options = options;
         print = output;
@@ -250,7 +221,7 @@ public class LaraC {
 
     /**
      * Constructs the LaraC instance with the given arguments and an output stream
-     * 
+     *
      * @param args
      */
     private boolean laraConstructor(String[] args, Output out) {
@@ -261,21 +232,21 @@ public class LaraC {
         // Parse the language specification
         if (ready) {
             final File xmlSourceDir = options.getXmlSpecDir();
-            setLanguageSpec(LanguageSpecificationV2.newInstance(xmlSourceDir));
+            setLanguageSpec(LanguageSpecification.newInstance(xmlSourceDir));
         }
         return ready;
         // parse();
     }
 
     /**
-     * Constructs the LaraC instance with the given arguments, the output stream and a {@link LanguageSpecificationV2}
+     * Constructs the LaraC instance with the given arguments, the output stream and a {@link LanguageSpecification}
      * instance
-     * 
+     *
      * @param args
      * @param langSpec
      * @param out
      */
-    private boolean laraConstructor(String[] args, LanguageSpecificationV2 langSpec, Output out) {
+    private boolean laraConstructor(String[] args, LanguageSpecification langSpec, Output out) {
 
         // initialize lara
         boolean ready = initialize(args, out);
@@ -300,7 +271,7 @@ public class LaraC {
 
     /**
      * Initialize LaraC with the input arguments and the output stream
-     * 
+     *
      * @param args
      * @return true if all options were successfully managed, false otherwise
      */
@@ -322,7 +293,7 @@ public class LaraC {
 
     /**
      * Parse the input LARA file
-     * 
+     *
      * @return true if parsed successful, false otherwise
      */
     private boolean execParse() {
@@ -359,7 +330,7 @@ public class LaraC {
     private void parseLara() {
         // try (BOMInputStream bis = new BOMInputStream(new FileInputStream(laraFile));
         try (BOMInputStream bis = new BOMInputStream(getLaraStream());
-                BufferedReader br = new BufferedReader(new InputStreamReader(bis));) {
+             BufferedReader br = new BufferedReader(new InputStreamReader(bis));) {
             ASTStart ast = javaCCParser(br);
             aspectIR.setAst(ast);
         } catch (Exception e) {
@@ -462,13 +433,10 @@ public class LaraC {
 
     /**
      * Write an XML (org.w3c.dom.Document instance) into a file
-     * 
-     * @param doc
-     *            the Document to be written
-     * @param fileName
-     *            output file name
-     * @throws TransformerException
-     *             if doc is not correctly transformed to XML
+     *
+     * @param doc      the Document to be written
+     * @param fileName output file name
+     * @throws TransformerException if doc is not correctly transformed to XML
      */
     private void saveXML(Document doc, String fileName) throws TransformerException {
         final StringBuffer xmlStringBuffer = StringUtils.xmlToStringBuffer(doc, MessageConstants.INDENT);
@@ -478,7 +446,7 @@ public class LaraC {
 
     /**
      * Kill the execution. The method is deprecated, please use {@link LaraC} .kill(error).
-     * 
+     *
      * @param error
      */
     @Deprecated
@@ -489,7 +457,7 @@ public class LaraC {
 
     /**
      * Kill the execution, throwing a RuntimeException
-     * 
+     *
      * @param error
      *            an error message
      */
@@ -504,11 +472,9 @@ public class LaraC {
 
     /**
      * Method used to print the section where the front-end currently is
-     * 
-     * @param topic
-     *            the current topic
-     * @param larac
-     *            the current instance of LaraC
+     *
+     * @param topic the current topic
+     * @param larac the current instance of LaraC
      */
     public void printTopic(String topic) {
         final StringBuffer buf = new StringBuffer(MessageConstants.UNDERLINE);
@@ -523,11 +489,9 @@ public class LaraC {
 
     /**
      * Method used to print the section where the front-end currently is
-     * 
-     * @param topic
-     *            the current topic
-     * @param larac
-     *            the current instance of LaraC
+     *
+     * @param topic the current topic
+     * @param larac the current instance of LaraC
      */
     public void printSubTopic(String topic) {
         final StringBuffer buf = new StringBuffer(MessageConstants.UNDERLINE);
@@ -567,16 +531,14 @@ public class LaraC {
     // //////////////////////////////////////////
 
     /**
-     * @param printer
-     *            the printer to set
+     * @param printer the printer to set
      */
     public void setPrint(Output printer) {
         print = printer;
     }
 
     /**
-     * @param the
-     *            printer
+     * @param the printer
      */
     public Output getPrint() {
         return print;
@@ -590,8 +552,7 @@ public class LaraC {
     }
 
     /**
-     * @param options
-     *            the options to set
+     * @param options the options to set
      */
     public void setOptions(LaraCOptions options) {
         this.options = options;
@@ -605,8 +566,7 @@ public class LaraC {
     }
 
     /**
-     * @param laraName
-     *            the laraName to set
+     * @param laraName the laraName to set
      */
     public void setLaraName(String laraName) {
         this.laraName = laraName;
@@ -628,8 +588,7 @@ public class LaraC {
     // }
 
     /**
-     * @param laraFile
-     *            the laraFile to set
+     * @param laraFile the laraFile to set
      */
     public void setLaraFile(File laraFile) {
         this.laraFile = laraFile;
@@ -643,8 +602,7 @@ public class LaraC {
     }
 
     /**
-     * @param jarPath
-     *            the jarPath to set
+     * @param jarPath the jarPath to set
      */
     public void setJarPath(String jarPath) {
         this.jarPath = jarPath;
@@ -658,8 +616,7 @@ public class LaraC {
     }
 
     /**
-     * @param prefix
-     *            the prefix to set
+     * @param prefix the prefix to set
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
@@ -668,15 +625,14 @@ public class LaraC {
     /**
      * @return the languageSpec
      */
-    public LanguageSpecificationV2 languageSpec() {
+    public LanguageSpecification languageSpec() {
         return languageSpec;
     }
 
     /**
-     * @param languageSpec
-     *            the languageSpec to set
+     * @param languageSpec the languageSpec to set
      */
-    public void setLanguageSpec(LanguageSpecificationV2 languageSpec) {
+    public void setLanguageSpec(LanguageSpecification languageSpec) {
         this.languageSpec = languageSpec;
     }
 
@@ -688,8 +644,7 @@ public class LaraC {
     }
 
     /**
-     * @param aspectIR
-     *            the aspectIR to set
+     * @param aspectIR the aspectIR to set
      */
     public void setAspectIR(AspectIR aspectIR) {
         this.aspectIR = aspectIR;
@@ -703,14 +658,13 @@ public class LaraC {
     }
 
     /**
-     * @param initialized
-     *            the initialized to set
+     * @param initialized the initialized to set
      */
     public void setParsed(boolean initialized) {
         parsed = initialized;
     }
 
-    public LanguageSpecificationV2 getLanguageSpec() {
+    public LanguageSpecification getLanguageSpec() {
         return languageSpec;
     }
 
@@ -735,7 +689,7 @@ public class LaraC {
      * <li>Generate XML - generate the XML representation of the Aspect-IR</li>
      * <li>Save the XML in a file, within the output folder: <output_dir>/<lara_file_name>.xml
      * </ol>
-     * 
+     *
      * @return
      */
     public int compileAndSave() {
@@ -759,7 +713,7 @@ public class LaraC {
      * <br>
      * <b>NOTE:</b>Use this method if you intend to access immediately the Aspect-IR xml representation and do not want
      * to create the xml file
-     * 
+     *
      * @return an xml representation of the Aspect-IR
      */
     public Document compile() {
@@ -871,7 +825,7 @@ public class LaraC {
         this.previouslyImportedLARA.add(previouslyImportedLARA);
     }
 
-    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecificationV2 languageSpecification) {
+    public static Optional<Aspects> parseLara(File laraFile, LanguageSpecification languageSpecification) {
         // Pass through LaraC
         List<String> args = new ArrayList<>();
 
@@ -910,10 +864,9 @@ public class LaraC {
     }
 
     /**
-     * 
      * Generates a XML document with the AspectIR corresponding to the JS code that needs to be executed in order to
      * import the given name, using the same format as the imports in LARA files (e.g. weaver.Query).
-     * 
+     *
      * @param importName
      */
     public Document importLara(String importName) {

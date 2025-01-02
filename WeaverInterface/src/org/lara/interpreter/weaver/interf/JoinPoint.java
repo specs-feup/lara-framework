@@ -12,33 +12,25 @@
  */
 package org.lara.interpreter.weaver.interf;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
+
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Abstract class used by the LARA interpreter to define a join point instance
@@ -83,6 +75,7 @@ public abstract class JoinPoint {
     }
 
     private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
+
     static {
         JOIN_POINTS_ATTRIBUTES = new HashMap<Class<? extends JoinPoint>, Set<String>>();
     }
@@ -163,7 +156,7 @@ public abstract class JoinPoint {
      */
     public String get_class() {
         // return BASE_JOINPOINT_CLASS;
-        return LanguageSpecificationV2.getBaseJoinpointClass();
+        return LanguageSpecification.getBaseJoinpointClass();
     }
 
     /**
@@ -185,7 +178,6 @@ public abstract class JoinPoint {
     }
 
     /**
-     * 
      * @param type
      * @return true, if this join point is an instance of the given type, false otherwise
      */
@@ -204,7 +196,6 @@ public abstract class JoinPoint {
     }
 
     /**
-     * 
      * @param type
      * @return true, if this join point is an instance of any of the given types, false otherwise
      */
@@ -341,10 +332,8 @@ public abstract class JoinPoint {
     /**
      * Action insert that accepts a string containing the code snippet to inject
      *
-     * @param position
-     *            before|after|replace|around
-     * @param code
-     *            the code to inject
+     * @param position before|after|replace|around
+     * @param code     the code to inject
      */
     public final JoinPoint[] insert(String position, String code) {
         try {
@@ -365,10 +354,8 @@ public abstract class JoinPoint {
     /**
      * Action insert that accepts a join point to inject
      *
-     * @param position
-     *            before|after|replace|around
-     * @param code
-     *            the code to inject
+     * @param position before|after|replace|around
+     * @param code     the code to inject
      */
     public final <T extends JoinPoint> void insert(String position, T joinPoint) {
         try {
@@ -389,10 +376,8 @@ public abstract class JoinPoint {
      * Action insert that accepts a string containing the code snippet to inject as far as possible from the join point
      * based on other insertions over the targeted join point
      *
-     * @param position
-     *            before|after|replace|around
-     * @param code
-     *            the code to inject
+     * @param position before|after|replace|around
+     * @param code     the code to inject
      */
     public final void insertFar(String position, String code) {
         try {
@@ -414,13 +399,10 @@ public abstract class JoinPoint {
      * possible to the join point (false) or as far as possible to the join point (true) based on other insertions over
      * the targeted join point
      *
-     * @param position
-     *            before|after|replace|around
-     * @param code
-     *            the code to inject
-     * @param farthestInsertion
-     *            if true will insert the code as far as possible from the join point, based on the other insertions
-     *            over this targeted join point
+     * @param position          before|after|replace|around
+     * @param code              the code to inject
+     * @param farthestInsertion if true will insert the code as far as possible from the join point, based on the other insertions
+     *                          over this targeted join point
      */
     public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
         try {
@@ -593,7 +575,7 @@ public abstract class JoinPoint {
 
     /**
      * Implement this method and getJpParent() in order to obtain tree-like functionality (descendants, etc).
-     * 
+     *
      * @return
      */
 
@@ -603,7 +585,7 @@ public abstract class JoinPoint {
 
     /**
      * Implement this method and getJpChildrenStream() in order to obtain tree-like functionality (descendants, etc).
-     * 
+     *
      * @return
      */
     public JoinPoint getJpParent() {
