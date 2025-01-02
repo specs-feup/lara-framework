@@ -38,7 +38,6 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 import pt.up.fe.specs.util.SpecsCollections;
-import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -48,7 +47,8 @@ import java.util.function.Function;
 public class GeneratorUtils {
 
     private static String ln() {
-        return SpecsIo.getNewline();
+        return Utils.ln();
+        //return SpecsIo.getNewline();
     }
 
 

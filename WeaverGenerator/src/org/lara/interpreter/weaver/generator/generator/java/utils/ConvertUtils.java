@@ -20,7 +20,7 @@ import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.types.Primitive;
-import pt.up.fe.specs.util.SpecsIo;
+import org.specs.generators.java.utils.Utils;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -205,7 +205,9 @@ public class ConvertUtils {
         return message;
     }
 
-    private static String ln() {
-        return SpecsIo.getNewline();
+    public static String ln() {
+        return Utils.ln();
+        //return "\n";
+        //return SpecsIo.getNewline();
     }
 }
