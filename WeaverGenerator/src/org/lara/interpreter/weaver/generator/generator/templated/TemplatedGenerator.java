@@ -18,10 +18,8 @@ import org.lara.interpreter.weaver.generator.generator.java.helpers.*;
 import org.lara.interpreter.weaver.generator.generator.templated.generators.AbstractJoinPointGenerator;
 import org.lara.interpreter.weaver.generator.generator.templated.generators.ConcreteJoinPointGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
-import org.lara.language.specification.joinpointmodel.JoinPointModel;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.members.Field;
@@ -172,7 +170,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
             }
             for (final Field f : javaC.getFields()) {
                 if (definedObjects.contains(f.getType().toString())) {
-
                     javaC.addImport(getOutPackage() + "." + GenConstants.entity() + "." + f.getType());
                 }
             }

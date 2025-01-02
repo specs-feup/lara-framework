@@ -367,6 +367,7 @@ public class GeneratorUtils {
         var jps = new ArrayList<>(joinPointSuperType.getActions());
 
         // TODO: HACK - Two insert methods are missing from the actions/generation, adding them manually
+
         var returnType = new ArrayType(new JPType(JoinPointClass.globalJoinPoint()));
 //        var globalJpType = new GenericType("JoinpointInterface", false);
         var globalJpType = PrimitiveClasses.JOINPOINT_INTERFACE;
@@ -722,6 +723,7 @@ public class GeneratorUtils {
             if (arg.getClassType().isArray()) {
                 arg = arg.clone();
                 arg.getClassType().setName("Object");
+                arg.getClassType().setPackage("java.lang");
             }
 
             newArgs.add(arg);
@@ -983,7 +985,6 @@ public class GeneratorUtils {
         // Adapts parameters after processing and code generation is done, to improve compatibility with
         // calls from JavaScript
         cloned.setArguments(convertParamArrayToObjArray(cloned.getParams()));
-
 
         return cloned;
 

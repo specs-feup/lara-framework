@@ -15,7 +15,6 @@ package org.lara.interpreter.weaver.generator.generator.java;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.*;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
 import org.lara.language.specification.artifactsmodel.schema.EnumDef;
 import org.lara.language.specification.artifactsmodel.schema.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -150,7 +149,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
             }
             for (final Field f : javaC.getFields()) {
                 if (definedObjects.contains(f.getType().toString())) {
-
                     javaC.addImport(getOutPackage() + "." + GenConstants.entity() + "." + f.getType());
                 }
             }
@@ -292,6 +290,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
             userDefinedClasses.add(newEnum.getName());
             Utils.generateToFile(getOutDir(), userEnum, true);
         }
+
         // System.out.println("USER DEFINED CLASSES: " + userDefinedClasses);
         return userDefinedClasses;
     }

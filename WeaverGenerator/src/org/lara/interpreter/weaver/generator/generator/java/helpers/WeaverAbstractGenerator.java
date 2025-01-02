@@ -1,23 +1,17 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
@@ -33,16 +27,20 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
 import tdrc.utils.StringUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Generate the weaver abstract class, containing the four methods to implement: handlesApplicationFolder, begin, select
  * and close. The getActions method (list of available actions) will be automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
- * 
- * @author tiago
  *
+ * @author tiago
  */
 public class WeaverAbstractGenerator extends GeneratorHelper {
 
@@ -52,7 +50,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @param enums
      * @return
      */
@@ -63,7 +61,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @return
      */
     @Override
@@ -97,7 +95,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generate the Weaver abstract class with name : A + the weaver name, in the given package and
-     * 
+     *
      * @param weaverName
      * @param weaverPackage
      * @param aJoinPointPackage
@@ -122,7 +120,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that returns a list of the available actions in the weaver
-     * 
+     *
      * @param actionModel
      * @param java
      */
@@ -173,12 +171,10 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         final String enumPackage = javaGenerator.getEnumsPackage() + ".";
         final Function<TypeDef, String> mapper = ent -> {
             java.addImport(entPackage + ent.getName());
-
             return ent.getName() + ".class";
         };
         final Function<EnumDef, String> enumMapper = _enum -> {
             java.addImport(enumPackage + _enum.getName());
-
             return _enum.getName() + ".class";
         };
         List<String> joined = new ArrayList<>();
@@ -200,7 +196,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     /**
      * Generates the method that defines if the weaver can deal with a folder as the application, or only one file at
      * the time
-     * 
+     *
      * @param java
      */
     @Deprecated
@@ -217,7 +213,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that starts the weaving process
-     * 
+     *
      * @param java
      */
     @Deprecated
@@ -239,7 +235,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that selects the root join point
-     * 
+     *
      * @param java
      */
     @Deprecated
@@ -252,7 +248,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that closes the weaving process
-     * 
+     *
      * @param java
      */
     @Deprecated

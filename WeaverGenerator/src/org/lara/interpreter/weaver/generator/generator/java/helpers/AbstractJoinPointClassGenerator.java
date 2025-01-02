@@ -193,6 +193,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
             Method cloned = GeneratorUtils.generateActionImplMethod(m, action, javaC,
                     javaGenerator);
+
             javaC.add(cloned);
         }
 
