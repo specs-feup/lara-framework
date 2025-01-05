@@ -1,0 +1,27 @@
+/* Syntax highlighting color scheme (using base colors in color-scheme.css) */
+
+:root {
+  --comment: var(--dark-gray);
+  --keyword: var(--purple);
+  --type: var(--purple);
+  --string: var(--blue);
+  --literal: var(--blue);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --comment: var(--gray);
+    --keyword: var(--violet);
+    --type: var(--violet);
+    --string: var(--light-blue);
+    --literal: var(--light-blue);
+  }
+}
+
+/* Syntax highlighting classes */
+
+.comment { color: var(--comment); }
+.keyword { color: var(--keyword); }
+.type    { color: var(--type);    }
+.string  { color: var(--string);  }
+.literal { color: var(--literal); }
