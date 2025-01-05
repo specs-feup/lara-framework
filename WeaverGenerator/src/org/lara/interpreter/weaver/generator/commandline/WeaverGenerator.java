@@ -191,14 +191,6 @@ public class WeaverGenerator {
         if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
             System.out.println("Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
             generator = new TemplatedGenerator(XMLSpecDir);
-        } else if (cmdLine.hasOption(GeneratorOption.L.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.L.getOption());
-            if (optionValue.equals("java2cpp")) {
-                throw new RuntimeException("Option java2cpp no longer supported");
-            }
-
-            generator = new JavaAbstractsGenerator(XMLSpecDir);
-
         } else {
             // Create the JavaAbstractGenerator
             generator = new JavaAbstractsGenerator(XMLSpecDir);
