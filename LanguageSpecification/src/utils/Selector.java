@@ -1,11 +1,11 @@
 /**
  * Copyright 2020 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,40 +13,39 @@
 
 package utils;
 
+import org.lara.language.specification.dsl.JoinPointClass;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.Select;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.lara.language.specification.dsl.Select;
-import org.lara.language.specification.joinpointmodel.schema.JoinPointType;
-
 public class Selector {
 
-    private final LanguageSpecificationV2 langSpec;
+    private final LanguageSpecification langSpec;
     private boolean alreadyFound;
 
-    public Selector(LanguageSpecificationV2 langSpec) {
+    public Selector(LanguageSpecification langSpec) {
         this.langSpec = langSpec;
     }
 
     /**
      * Returns the path between a source join point (exclusive) and a destination join point (inclusive). The Pairs are
      * the select alias and the type of the selected join point
-     * 
+     *
      * @param sourceJP
      * @param targetJP
      * @return
      */
-    public SelectionPathV2 selectionPath(String sourceJP, String targetJP, boolean validatePath) {
+    public SelectionPath selectionPath(String sourceJP, String targetJP, boolean validatePath) {
 
         alreadyFound = false;
         // Verify if the join point exist
         // final JoinPointType source = getJoinPoint(joinPointList, sourceJP);
         var source = langSpec.getJoinPoint(sourceJP);
-        var selPath = new SelectionPathV2(source, targetJP);
+        var selPath = new SelectionPath(source, targetJP);
 
         if (source == null) {
             if (!validatePath) {
@@ -78,11 +77,9 @@ public class Selector {
 
     /**
      * Selects a subsequent join point from the given join point
-     * 
-     * @param jp
-     *            the base join point
-     * @param joinPointClass
-     *            the selected join point
+     *
+     * @param jp             the base join point
+     * @param joinPointClass the selected join point
      * @return a {@link Select} if the name occurs, null otherwise.
      */
     public Select select(JoinPointClass jp, String joinPointClass) {
@@ -111,7 +108,7 @@ public class Selector {
     }
 
     private Stack<Select> selectWithMiddlePath(String targetJP, JoinPointClass source,
-            SelectionPathV2 selPath) {
+                                               SelectionPath selPath) {
         Stack<Select> path = new Stack<>();
 
         final Set<JoinPointClass> ignoreSet = new HashSet<>();
@@ -180,7 +177,7 @@ public class Selector {
 
     /**
      * Auxiliary method to get the path to a join point
-     * 
+     *
      * @param current
      * @param joinPointName
      * @param visitedList
@@ -189,7 +186,7 @@ public class Selector {
      * @return
      */
     private Stack<Select> selectionPathAux(JoinPointClass current, String joinPointName,
-            ArrayList<JoinPointClass> visitedList, Set<JoinPointClass> ignoreSet, SelectionPathV2 selPath) {
+                                           ArrayList<JoinPointClass> visitedList, Set<JoinPointClass> ignoreSet, SelectionPath selPath) {
 
         Stack<Select> path = new Stack<>();
 
@@ -249,12 +246,10 @@ public class Selector {
 
     /**
      * Searches for a join point with the same description as the {@link Select} element
-     * 
-     * @param jp
-     *            the list of join points
-     * @param select
-     *            the selected join point to search
-     * @return a {@link JoinPointType} if the select exists in the join point model, null otherwise.
+     *
+     * @param jp     the list of join points
+     * @param select the selected join point to search
+     * @return a {@link JoinPointClass} if the select exists in the join point model, null otherwise.
      */
     public static JoinPointClass getJoinPoint(Select select) {
         final JoinPointClass joinPointType = select.getClazz();
@@ -263,16 +258,15 @@ public class Selector {
 
     /**
      * Get the path from an existent join point root (inclusive) to the target join point (inclusive)
-     * 
-     * @param tag
-     *            the join point target
+     *
+     * @param tag the join point target
      * @return the first path to the join point (Depth First Search)
      */
-    public SelectionPathV2 selectionPath(String joinPointName) {
+    public SelectionPath selectionPath(String joinPointName) {
         // System.out.println("SELECT PATH 1: from root (" + langSpec.getRoot() + ") to " + joinPointName);
         // final JoinPointClass joinPointRoot = getRoot();
         final JoinPointClass joinPointRoot = langSpec.getRoot();
-        SelectionPathV2 selPath = new SelectionPathV2(joinPointRoot, joinPointName);
+        SelectionPath selPath = new SelectionPath(joinPointRoot, joinPointName);
         Stack<Select> path = new Stack<>();
         alreadyFound = false;
         // Verify if the join point exist

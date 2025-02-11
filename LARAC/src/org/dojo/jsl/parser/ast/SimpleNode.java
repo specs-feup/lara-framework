@@ -17,19 +17,6 @@
  */
 package org.dojo.jsl.parser.ast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import larac.LaraC;
 import larac.exceptions.LARACompilerException;
 import larac.exceptions.ParseExceptionData;
@@ -37,9 +24,16 @@ import larac.objects.Enums;
 import larac.objects.Enums.Types;
 import larac.objects.Variable;
 import larac.utils.OrganizeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import pt.up.fe.specs.util.Preconditions;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import tdrc.utils.StringUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SimpleNode implements Node {
     // protected int beginLine = -1;
@@ -147,8 +141,7 @@ public class SimpleNode implements Node {
     }
 
     /**
-     * @param children
-     *            the children to set
+     * @param children the children to set
      */
     public void setChildren(Node[] children) {
         this.children = children;
@@ -380,7 +373,7 @@ public class SimpleNode implements Node {
         return false;
     }
 
-    public String organize(String type, LanguageSpecificationV2 langSpec) {
+    public String organize(String type, LanguageSpecification langSpec) {
         // getLara().warnln("Organize: Node \"" + LARAEcmaScriptTreeConstants.jjtNodeName[id] + "\" not supported");
         // return null;
         throw new RuntimeException(
@@ -650,9 +643,9 @@ public class SimpleNode implements Node {
     /**
      * Return the LARA source code of the AST
      *
-     * @see SimpleNode#toSource()
      * @param indentation
      * @return
+     * @see SimpleNode#toSource()
      */
     public String toSource(int indentation) {
         throw new NotImplementedException(

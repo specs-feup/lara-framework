@@ -39,7 +39,7 @@ import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.app.AppPersistence;
@@ -555,14 +555,9 @@ public class LaraI {
         // }
     }
 
-    // public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
-    // LaraIDataStore options,
-    // Output out) throws Exception {
-    //
-    // }
 
     /**
-     * Compile the lara file with LARAC, according to a {@link LanguageSpecificationV2}
+     * Compile the lara file with LARAC, according to a {@link LanguageSpecification}
      *
      * @param fileName
      * @param langSpec
@@ -571,7 +566,7 @@ public class LaraI {
      * @return
      * @throws Exception
      */
-    public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecificationV2 langSpec,
+    public Pair<Document, LaraC> compileWithLARAC(File fileName, LanguageSpecification langSpec,
                                                   LaraIDataStore options,
                                                   Output out) throws Exception {
 
@@ -641,7 +636,7 @@ public class LaraI {
         return resource.getResource();
     }
 
-    private LaraC compile(LanguageSpecificationV2 languageSpecification) {
+    private LaraC compile(LanguageSpecification languageSpecification) {
 
         // final String aspectIR_name = this.options.getAspectIR_name();
         final String extention = SpecsIo.getExtension(options.getLaraFile());
