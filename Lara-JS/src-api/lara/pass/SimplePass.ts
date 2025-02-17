@@ -60,12 +60,13 @@ export default abstract class SimplePass extends Pass {
   }
 
   /**
-   * Apply tranformation to
+   * Apply tranformation to matching joinpoints
    *
    * @param $jp - Joinpoint on which the pass will be applied
+   * @param data - Optional data that may be needed to perform the transformation
    * @returns Results of applying this pass to the given joinpoint
    */
-  _apply_impl($jp: LaraJoinPoint): AggregatePassResult {
+  _apply_impl($jp: LaraJoinPoint, data?: any): AggregatePassResult {
     const matchingJps = this._selectedJps($jp).filter(($jp) =>
       this.matchJoinpoint($jp)
     );
@@ -73,7 +74,7 @@ export default abstract class SimplePass extends Pass {
     const aggResult = new AggregatePassResult(this, $jp);
     for (const $jp of matchingJps) {
       try {
-        const result = this.transformJoinpoint($jp);
+        const result = this.transformJoinpoint($jp, data);
         aggResult.pushResult(result);
       } catch (e) {
         if (e instanceof PassTransformationError) {
@@ -97,7 +98,8 @@ export default abstract class SimplePass extends Pass {
    * Transformation to be applied to matching joinpoints
    *
    * @param $jp - Join point to transform
+   * @param data - Optional data that may be needed to perform the transformation
    * @returns The result of the transformation
    */
-  abstract transformJoinpoint($jp: LaraJoinPoint): PassResult | never;
+  abstract transformJoinpoint($jp: LaraJoinPoint, data?: any): PassResult | never;
 }
