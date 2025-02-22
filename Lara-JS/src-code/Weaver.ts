@@ -32,6 +32,10 @@ export class Weaver {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static javaWeaver: any;
 
+  static getDatastore(): any {
+    return Weaver.datastore;
+  }
+
   static async setupJavaEnvironment(sourceDir: string) {
     const files = fs.readdirSync(sourceDir, { recursive: true });
 
@@ -116,6 +120,12 @@ export class Weaver {
           args.configClassic,
           javaWeaver
         ).get();
+
+        // Arguments parser has shown help, exit
+        if (datastore.get("help")) {
+          process.exit(0);
+        }
+
         args.scriptFile = datastore.get("aspect").toString();
       } catch (error) {
         throw new Error(

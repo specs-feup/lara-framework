@@ -350,6 +350,18 @@ public class LaraI {
 
         SpecsLogs.debug("Detected launch mode " + mode);
 
+        var dataStore = buildDataStore(weaverEngine, mode, cmd, args[0]);
+
+        // If help, print help
+        var helpFlag = dataStore.map(data -> data.get(LaraiKeys.SHOW_HELP)).orElse(false);
+        if (helpFlag) {
+            LaraIUtils.printHelp(cmd, finalOptions);
+        }
+
+        return dataStore;
+    }
+
+    private static Optional<DataStore> buildDataStore(WeaverEngine weaverEngine, ExecutionMode mode, CommandLine cmd, String mainScript) {
         return switch (mode) {
             // convert configuration file to data store and run
             case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
@@ -359,11 +371,11 @@ public class LaraI {
 
             // convert options to data store and run
             case OPTIONS ->
-                    Optional.of(OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions()));
+                    Optional.of(OptionsConverter.commandLine2DataStore(mainScript, cmd, weaverEngine.getOptions()));
 
             // convert configuration file to data store, override with extra options and run
             case CONFIG_OPTIONS ->
-                    Optional.of(OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine));
+                    Optional.of(OptionsConverter.configExtraOptions2DataStore(mainScript, cmd, weaverEngine));
 
             // launch GUI
             case GUI -> Optional.empty();
