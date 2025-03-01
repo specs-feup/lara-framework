@@ -135,12 +135,18 @@ export class Weaver {
         JavaFileList.newInstance(fileList)
       );
       datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
+      datastore.set(CxxWeaverOptions.DISABLE_CLAVA_INFO, true);
     }
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
 
     JavaSpecsSystem.programStandardInit();
+
+
+    for (const file of config.importForSideEffects ?? []) {
+      await import(file);
+    }
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;
@@ -159,10 +165,6 @@ export class Weaver {
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
       return;
-    }
-
-    for (const file of config.importForSideEffects ?? []) {
-      await import(file);
     }
 
     Weaver.debug("Executing user script...");
