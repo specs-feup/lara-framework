@@ -200,6 +200,9 @@ export function arrayFromArgs(args, start = 0) {
     return Array.prototype.slice.call(args, start);
 }
 function isJavaList(list) {
+    if (typeof list !== "object") {
+        return false;
+    }
     return JavaTypes.instanceOf(list, "java.util.List");
 }
 export function info(message, origin) {
@@ -403,8 +406,7 @@ export function laraImport(importName) {
     }
 }
 function _laraImportKleeneStar(packageName) {
-    const laraImports =
-        JavaTypes.LaraI.getLaraImporter().getImportsFromPackage(packageName);
+    const laraImports = JavaTypes.LaraI.getLaraImporter().getImportsFromPackage(packageName);
     for (const singleLaraImport of laraImports) {
         laraImport(singleLaraImport);
     }

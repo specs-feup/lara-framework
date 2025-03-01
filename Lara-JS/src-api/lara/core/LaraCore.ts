@@ -252,6 +252,10 @@ export function arrayFromArgs(args: any, start = 0) {
 }
 
 function isJavaList<T>(list: T) {
+  if (typeof list !== "object") {
+    return false;
+  }
+
   return JavaTypes.instanceOf(list, "java.util.List");
 }
 
