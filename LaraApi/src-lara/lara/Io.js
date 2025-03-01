@@ -167,7 +167,7 @@ export default class Io {
             }
             return files;
         }
-        const list = JavaTypes.SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern.toString(), isRecursive, "FILES");
+        const list = JavaTypes.SpecsIo.getPathsWithPattern(Io.getPath(baseFolder), pattern.toString(), isRecursive, "FILES").toArray();
         const files = [];
         for (const file of list) {
             files.push(file);

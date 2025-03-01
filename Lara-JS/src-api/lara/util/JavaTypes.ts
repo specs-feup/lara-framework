@@ -55,6 +55,7 @@ export namespace JavaClasses {
   }
   export interface List<T> extends JavaClass {
     [Symbol.iterator](): IterableIterator<T>;
+    toArray(): T[];
   }
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
