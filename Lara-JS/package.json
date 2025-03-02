@@ -27,7 +27,7 @@
     "typedoc.json"
   ],
   "scripts": {
-    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
+    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && node scripts/copy-folder.js -i src-api/visualization/public -o api/visualization/public && npx tsc -b src-api src-code",
     "build:api": "npx tsc -b src-api",
     "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
@@ -64,16 +64,20 @@
   "dependencies": {
     "chokidar": "^3.6.0",
     "debug": "^4.3.5",
+    "express": "^4.19.2",
     "java": "^0.14.0",
     "supports-color": "^9.4.0",
+    "ws": "^8.17.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/debug": "^4.1.12",
+    "@types/express": "^4.17.21",
     "@types/java": "^0.9.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.11",
     "@types/yargs": "^17.0.32",
     "typescript-eslint": "^8.0.0-alpha.44",
     "cross-env": "^7.0.3",

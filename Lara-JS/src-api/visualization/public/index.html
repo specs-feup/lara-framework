@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/imports.css">
+    <link rel="stylesheet" href="/css/color-scheme.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/syntax-highlighting.css">
+    <script type="module" src="/js/main.js"></script>
+    <title>LARA Visualization Tool</title>
+</head>
+<body>
+    <script>0</script>  <!-- To prevent FOUC (Flash Of Unstyled Content) -->
+    <header>
+        <img class="specs-logo" src="/img/specs-logo.png" alt="SPeCS Logo">
+        <h1>LARA Visualization Tool</h1>
+    </header>
+    <main>
+        <button id="continue-button" disabled>
+            <span class="icon material-symbols-outlined">resume</span>
+            Continue
+        </button>
+        <div id="resizer"><div></div></div>
+        <div id="ast-container" class="container">
+            <div class="loading">Loading...</div>
+        </div>
+        <div id="file-tabs">
+        </div>
+        <div id="code-container" class="container">
+            <div class="loading">Loading...</div>
+        </div>
+        <div id="node-info-container" class="container"></div>
+    </main>
+</body>
+</html>
