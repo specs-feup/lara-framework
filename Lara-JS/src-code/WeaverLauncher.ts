@@ -15,6 +15,7 @@ import WeaverConfiguration from "./WeaverConfiguration.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 
 import { Weaver } from "./Weaver.js";
+import { SourceTextModule } from "vm";
 
 listenForTerminationSignals();
 
@@ -95,22 +96,32 @@ export default class WeaverLauncher {
 
     // If classic CLI, do not spawn processes, execute directly
     if (isClassicCli) {
-      await Weaver.setupWeaver(args, this.config);
+      try {
 
-      Weaver.start();
+        await Weaver.setupWeaver(args, this.config);
 
-      const success = await Weaver.executeScript(args, this.config).catch(
-        (reason) => {
-          console.log(reason);
-          return false;
+        // After setup, DataStore should be initialized
+        //const datastore = Weaver.getDatastore();
+        //console.log("DataStore: " + datastore);
+
+        Weaver.start();
+
+        const success = await Weaver.executeScript(args, this.config).catch(
+          (reason) => {
+            console.log(reason);
+            return false;
+          }
+        );
+
+        Weaver.shutdown();
+
+        if (success) {
+          process.exit(0);
+        } else {
+          process.exit(-1);
         }
-      );
-
-      Weaver.shutdown();
-
-      if (success) {
-        process.exit(0);
-      } else {
+      } catch (error) {
+        console.log(error);
         process.exit(-1);
       }
     }
