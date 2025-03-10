@@ -5,6 +5,9 @@ plugins {
 // Java project
 apply plugin: 'java'
 
+// Executable
+apply plugin: 'application'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -20,14 +23,14 @@ repositories {
 }
 
 dependencies {
-	implementation "junit:junit:4.11"     
+	implementation "junit:junit:4.13.1"     
 	
 	implementation ':GearmanPlus'
 	implementation ':jOptions'
 	implementation ':JsEngine'
 	implementation ':SpecsUtils'	
 
-	implementation ':LanguageSpecification'	
+	implementation ':LanguageSpecification'
 	implementation ':LaraApi'	
 	implementation ':LARAC'	
 	implementation ':LARAI'	

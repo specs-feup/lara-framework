@@ -1,11 +1,11 @@
 /**
  * Copyright 2016 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,34 +13,16 @@
 
 package org.lara.language.specification.ast;
 
-import java.util.Optional;
-
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.Declaration;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.JoinPointFactory;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.Select;
+import org.lara.language.specification.dsl.*;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.TypeDef;
 
+import java.util.Optional;
+
 public class NodeFactory {
 
-    /**
-     * @deprecated use LanguageSpecificationV2
-     * @param languageSpecification
-     * @return
-     */
-    @Deprecated
-    public static RootNode toNode(LanguageSpecification languageSpecification) {
-        return toNode(JoinPointFactory.fromOld(languageSpecification));
-    }
-
-    public static RootNode toNode(LanguageSpecificationV2 langSpec) {
+    public static RootNode toNode(LanguageSpecification langSpec) {
         RootNode node = new RootNode(langSpec.getRoot().getName(), langSpec.getRootAlias());
         JoinPointNode child = toNode(langSpec.getGlobal());
         node.addChild(child);
@@ -123,7 +105,7 @@ public class NodeFactory {
     }
 
     private static SelectNode toNode(Select select) {
-        SelectNode selectNode = new SelectNode(select.getClazz().getName(), select.getAlias());
+        SelectNode selectNode = new SelectNode(select.getClazz().getName(), select.getAlias().orElse(""));
         select.getToolTip().ifPresent(selectNode::setToolTip);
         return selectNode;
     }

@@ -33,22 +33,19 @@ import java.util.stream.Collectors;
 public class WeaverApiManager {
 
     private final static String CHECKSUM_FILENAME = "checksum.txt";
-    private final static String NPM_FOLDERNAME = "npm";
     private final static String NODE_MODULES_FOLDERNAME = "node_modules";
     private final static String CORE_FOLDERNAME = "core";
 
-    private final File baseFolder;
+    private final File coreFolder;
+    private final File npmFolder;
 
-    private WeaverApiManager(File baseFolder) {
-        this.baseFolder = baseFolder;
+    private WeaverApiManager(File coreFolder, File npmFolder) {
+        this.coreFolder = coreFolder;
+        this.npmFolder = npmFolder;
     }
 
-    public File getBaseFolder() {
-        return baseFolder;
-    }
-
-    public File getNpmFolder() {
-        return new File(getBaseFolder(), NPM_FOLDERNAME);
+    private File getNpmFolder() {
+        return npmFolder;
     }
 
     public File getNodeModulesFolder() {
@@ -56,29 +53,27 @@ public class WeaverApiManager {
     }
 
     public File getCoreFolder() {
-        return new File(getBaseFolder(), CORE_FOLDERNAME);
+        return coreFolder;
     }
 
     /**
-     *
      * @return a list of folders inside the node_modules folder that correspond to the base folders that laraImport
-     *         should look for APIs
+     * should look for APIs
      */
     public List<File> getNpmApiFolders() {
         var moduleFolders = SpecsIo.getFolders(getNodeModulesFolder());
-        
+
         var packageFolders = new ArrayList<File>();
         for (var folder : moduleFolders) {
             if (folder.getName().startsWith("@")) {
                 // It's a scope for packages.
                 // Add subfolders to packageFolders.
                 packageFolders.addAll(SpecsIo.getFolders(folder));
-            }
-            else {
+            } else {
                 packageFolders.add(folder);
             }
         }
-        
+
         var apiFolders = new ArrayList<File>();
         for (var packageFolder : packageFolders) {
             var apiFolder = new File(packageFolder, "api");
@@ -96,9 +91,8 @@ public class WeaverApiManager {
     }
 
     /**
-     *
      * @return a list of files named core.js inside the node_modules folder that should be executed to enable the core
-     *         LARA environment
+     * LARA environment
      */
     public List<File> getNpmCoreFiles() {
 
@@ -127,18 +121,23 @@ public class WeaverApiManager {
         var baseFoldername = weaverId + "_apis";
         var baseFolder = SpecsIo.getTempFolder(baseFoldername);
 
-        // Ensure there are two folders inside, npm and core
-        prepareNpmFolder(baseFolder, engine);
-        prepareCoreFolder(baseFolder, engine);
+        // Ensure there is a core folder inside
+        var coreFolder = prepareCoreFolder(baseFolder, engine);
 
-        // Get base folder
-        SpecsLogs.debug(() -> "Weaver API manager: using '" + baseFolder.getAbsolutePath() + "' as base folder");
-        return new WeaverApiManager(baseFolder);
+        SpecsLogs.debug(() -> "Weaver API manager: using '" + coreFolder.getAbsolutePath() + "' as code folder");
+
+        // For compatibility reasons with ESM and GraalVM, node_modules folder should be on the working directory
+        var npmFolder = prepareNpmFolder(SpecsIo.getWorkingDir(), engine);
+
+        SpecsLogs.debug(() -> "Weaver API manager: using '" + npmFolder.getAbsolutePath() + "' as npm folder with node_modules folder inside");
+
+        return new WeaverApiManager(coreFolder, npmFolder);
     }
 
-    private static File prepareNpmFolder(File baseFolder, WeaverEngine engine) {
+    //    private static File prepareNpmFolder(File baseFolder, WeaverEngine engine) {
+    private static File prepareNpmFolder(File npmFolder, WeaverEngine engine) {
         // Ensure there is an npm folder
-        var npmFolder = SpecsIo.mkdir(baseFolder, NPM_FOLDERNAME);
+        //var npmFolder = SpecsIo.mkdir(baseFolder, NPM_FOLDERNAME);
 
         // Ensure it has a node_modules folder
         var nodeModulesFolder = SpecsIo.mkdir(npmFolder, NODE_MODULES_FOLDERNAME);
@@ -244,7 +243,6 @@ public class WeaverApiManager {
     }
 
     /**
-     *
      * @param resourcesFolder
      * @return if true, means that resources need to be extracted to files, false means that folder can be reused as-is
      */

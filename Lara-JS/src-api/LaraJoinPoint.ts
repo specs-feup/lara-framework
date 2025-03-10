@@ -11,7 +11,11 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 
 import java from "java";
-import JavaTypes, { Engine, engine, NodeJavaPrefix } from "./lara/util/JavaTypes.js";
+import JavaTypes, {
+  Engine,
+  engine,
+  NodeJavaPrefix,
+} from "./lara/util/JavaTypes.js";
 
 /**
  * Type for type equality assertion. If T is equal to U, return Y, otherwise return N.
@@ -37,26 +41,33 @@ type DefaultAttributeHelper<
 // Extract the type A from A | undefined
 type ExtractedType<T> = T extends undefined ? never : T;
 
-export type DefaultAttribute<T extends typeof LaraJoinPoint> = DefaultAttributeHelper<
-  T,
-  ExtractedType<T["_defaultAttributeInfo"]["map"]>,
-  ExtractedType<T["_defaultAttributeInfo"]["type"]>
->;
+export type DefaultAttribute<T extends typeof LaraJoinPoint> =
+  DefaultAttributeHelper<
+    T,
+    ExtractedType<T["_defaultAttributeInfo"]["map"]>,
+    ExtractedType<T["_defaultAttributeInfo"]["type"]>
+  >;
 
 type NameFromWrapperClassHelper<T extends typeof LaraJoinPoint, U> = {
   [K in keyof U]: Equals<T, U[K], K, never>;
 }[keyof U];
 
-export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapperClassHelper<
-  T,
-  ExtractedType<T["_defaultAttributeInfo"]["jpMapper"]>
->;
+export type NameFromWrapperClass<T extends typeof LaraJoinPoint> =
+  NameFromWrapperClassHelper<
+    T,
+    ExtractedType<T["_defaultAttributeInfo"]["jpMapper"]>
+  >;
 
 export class LaraJoinPoint {
   /**
    * @internal
    */
-  static readonly _defaultAttributeInfo: {readonly map?: any, readonly name: string | null, readonly type?: any, readonly jpMapper?: any} = {
+  static readonly _defaultAttributeInfo: {
+    readonly map?: any;
+    readonly name: string | null;
+    readonly type?: any;
+    readonly jpMapper?: any;
+  } = {
     name: null,
   };
   /**
@@ -66,28 +77,69 @@ export class LaraJoinPoint {
   constructor(obj: any) {
     this._javaObject = obj;
   }
-  get attributes(): string[] { return wrapJoinPoint(this._javaObject.getAttributes()) }
-  get selects(): string[] { return wrapJoinPoint(this._javaObject.getSelects()) }
-  get actions(): string[] { return wrapJoinPoint(this._javaObject.getActions()) }
-  get dump(): string { return wrapJoinPoint(this._javaObject.getDump()) }
-  get joinPointType(): string { return wrapJoinPoint(this._javaObject.getJoinPointType()) }
-  get node(): object { return (this._javaObject.getNode()) }
-  get self(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSelf()) }
-  get super(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSuper()) }
-  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
-  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
-  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
+  get attributes(): string[] {
+    return wrapJoinPoint(this._javaObject.getAttributes());
+  }
+  get selects(): string[] {
+    return wrapJoinPoint(this._javaObject.getSelects());
+  }
+  get actions(): string[] {
+    return wrapJoinPoint(this._javaObject.getActions());
+  }
+  get dump(): string {
+    return wrapJoinPoint(this._javaObject.getDump());
+  }
+  get joinPointType(): string {
+    return wrapJoinPoint(this._javaObject.getJoinPointType());
+  }
+  get node(): object {
+    return this._javaObject.getNode();
+  }
+  get self(): LaraJoinPoint {
+    return wrapJoinPoint(this._javaObject.getSelf());
+  }
+  get super(): LaraJoinPoint {
+    return wrapJoinPoint(this._javaObject.getSuper());
+  }
+  get children(): LaraJoinPoint[] {
+    return wrapJoinPoint(this._javaObject.getChildren());
+  }
+  get descendants(): LaraJoinPoint[] {
+    return wrapJoinPoint(this._javaObject.getDescendants());
+  }
+  get scopeNodes(): LaraJoinPoint[] {
+    return wrapJoinPoint(this._javaObject.getScopeNodes());
+  }
   insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint;
-  insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint;
-  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
-  def(attribute: string, value: object): void { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
-  toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
-  equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
+  insert(
+    position: "before" | "after" | "replace",
+    joinpoint: LaraJoinPoint
+  ): LaraJoinPoint;
+  insert(
+    p1: "before" | "after" | "replace",
+    p2: string | LaraJoinPoint
+  ): LaraJoinPoint {
+    return wrapJoinPoint(
+      this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))
+    );
+  }
+  def(attribute: string, value: object): void {
+    return wrapJoinPoint(
+      this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))
+    );
+  }
+  toString(): string {
+    return wrapJoinPoint(this._javaObject.toString());
+  }
+  equals(jp: LaraJoinPoint): boolean {
+    return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp)));
+  }
   instanceOf(name: string): boolean;
   instanceOf(names: string[]): boolean;
-  instanceOf(p1: string | string[]): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
+  instanceOf(p1: string | string[]): boolean {
+    return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1)));
+  }
 }
-
 
 export type JoinpointMapperType = { [key: string]: typeof LaraJoinPoint };
 

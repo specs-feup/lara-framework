@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -15,8 +15,7 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.interf.NamedEnum;
-import org.lara.language.specification.artifactsmodel.schema.EnumDef;
-import org.lara.language.specification.artifactsmodel.schema.EnumValue;
+import org.lara.language.specification.dsl.types.EnumDef;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
@@ -28,7 +27,6 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
 import pt.up.fe.specs.util.enums.EnumHelperWithValue;
 import pt.up.fe.specs.util.lazy.Lazy;
 
@@ -37,9 +35,8 @@ public class UserEnumsGenerator extends GeneratorHelper {
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
-     * @param newObject
-     *            the new Object to generate
+     *
+     * @param newObject the new Object to generate
      * @return
      */
     protected UserEnumsGenerator(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
@@ -49,19 +46,18 @@ public class UserEnumsGenerator extends GeneratorHelper {
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
-     * @param newObject
-     *            the new Object to generate
+     *
+     * @param newObject the new Object to generate
      * @return
      */
     public static JavaEnum generate(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
-        final UserEnumsGenerator gen = new UserEnumsGenerator(javaGenerator, enumDef);
+        var gen = new UserEnumsGenerator(javaGenerator, enumDef);
         return gen.generate();
     }
 
     /**
      * Generate an entity based on the NewObject instance
-     * 
+     *
      * @return
      */
     @Override
@@ -82,9 +78,9 @@ public class UserEnumsGenerator extends GeneratorHelper {
         userEnum.add(toString);
         userEnum.appendComment(ln());
         userEnum.add(JDocTag.AUTHOR, "Lara C.");
-        for (final EnumValue enumValue : enumDef.getValue()) {
+        for (var enumValue : enumDef.getValues()) {
 
-            final String fieldName = enumValue.getName();
+            final String fieldName = enumValue.getValue();
             String fieldType = enumValue.getString();
             if (fieldType == null) {
                 fieldType = fieldName.toLowerCase();

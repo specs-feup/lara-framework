@@ -20,10 +20,19 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
-import org.lara.language.specification.LanguageSpecification;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import larai.LaraI;
+import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.*;
 
 public class LaraIUtils {
 
@@ -184,7 +193,6 @@ public class LaraIUtils {
      * Enables lazy initialization of jarParth
      *
      * @author Joao Bispo
-     *
      */
     private static class JarPathHolder {
         public static final String instance = new JarPath(LaraI.class, LaraI.PROPERTY_JAR_PATH).buildJarPath();
@@ -201,7 +209,8 @@ public class LaraIUtils {
      * @return
      */
     public static LanguageSpecification createDefaultLanguageSpecification() {
-        return LanguageSpecification.newInstance(JOINPOINTS, ARTIFACTS, ACTIONS, false);
+        // TODO: Why validate is false?
+        return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
     }
 
 }

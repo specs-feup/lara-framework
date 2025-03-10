@@ -1,20 +1,17 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
-
-import java.io.File;
-import java.util.List;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
@@ -27,16 +24,17 @@ import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-
 import tdrc.utils.StringUtils;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Generate the weaver abstract class, containing the four methods to implement: handlesApplicationFolder, begin, select
  * and close. The getActions method (list of available actions) will be automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
- * 
- * @author tiago
  *
+ * @author tiago
  */
 public class WeaverImplGenerator extends GeneratorHelper {
 
@@ -46,7 +44,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @param enums
      * @return
      */
@@ -57,7 +55,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generate the base Join Point abstract class, containing the global attributes and actions
-     * 
+     *
      * @return
      */
     @Override
@@ -87,13 +85,13 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generate the Weaver abstract class with name : A + the weaver name, in the given package and
-     * 
+     *
      * @param weaverName
      * @param weaverPackage
      * @param aJoinPointPackage
      * @return JavaClass java = new JavaClass(weaverName, outPackage); String text = getWeaverText(weaverName,
-     *         outPackage); java.appendComment(text); java.add(JDocTag.AUTHOR, "Lara C."); java.setSuperClass(new
-     *         JavaType(abstractWeaver.getName(), abstractWeaver.getClassPackage()));
+     * outPackage); java.appendComment(text); java.add(JDocTag.AUTHOR, "Lara C."); java.setSuperClass(new
+     * JavaType(abstractWeaver.getName(), abstractWeaver.getClassPackage()));
      */
     private JavaClass generateWeaverClass() {
         final String weaverName = javaGenerator.getWeaverName();
@@ -109,7 +107,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
     /**
      * Generates the method that defines if the weaver can deal with a folder as the application, or only one file at
      * the time
-     * 
+     *
      * @param java
      */
     private static void addHandlesApplicationFolderMethod(JavaClass java) {
@@ -127,7 +125,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that starts the weaving process
-     * 
+     *
      * @param java
      */
     private static void addBeginMethod(JavaClass java) {
@@ -156,12 +154,13 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that selects the root join point
-     * 
+     *
      * @param java
      */
     private void addSelectMethod(JavaClass java) {
         final Method select = new Method(GenConstants.getJoinPointInterfaceType(), "select");
-        String rootName = javaGenerator.getLanguageSpecification().getJpModel().getRoot().getClazz();
+        String rootName = javaGenerator.getLanguageSpecification().getRoot().getName();
+
         rootName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(rootName);
         select.appendComment(" Return a JoinPoint instance of the language root, i.e., an instance of " + rootName);
         select.addJavaDocTag(JDocTag.RETURN, "an instance of the join point root/program");
@@ -173,7 +172,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generates the method that closes the weaving process
-     * 
+     *
      * @param java
      */
     private static void addCloseMethod(JavaClass java) {
@@ -190,7 +189,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
     /**
      * Generates the default code for method getGears
-     * 
+     *
      * @param java
      */
     private static void addGetGearsMethod(JavaClass java) {

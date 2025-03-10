@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,21 +13,17 @@
 
 package org.lara.interpreter.weaver.generator.generator;
 
+import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import pt.up.fe.specs.util.SpecsCheck;
+
 import java.io.File;
 import java.util.Arrays;
-
-import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
-
-import pt.up.fe.specs.util.SpecsCheck;
 
 public abstract class BaseGenerator {
 
     private String outPackage;
-    private LanguageSpecification languageSpecificationOld;
-    private LanguageSpecificationV2 languageSpecification;
+    private LanguageSpecification languageSpecification;
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
@@ -54,10 +50,9 @@ public abstract class BaseGenerator {
 
     /**
      * Generate the code for the given language specification
-     * 
-     * @throws RuntimeException
-     *             if the language specification was not defined
+     *
      * @return true if generation was successful; false otherwise
+     * @throws RuntimeException if the language specification was not defined
      */
     public void generate() {
         if (languageSpecification == null) {
@@ -69,10 +64,9 @@ public abstract class BaseGenerator {
 
     /**
      * Print the generated code in files
-     * 
-     * @throws RuntimeException
-     *             if the language specification was not defined
+     *
      * @return true if generation was successful; false otherwise
+     * @throws RuntimeException if the language specification was not defined
      */
     public void print() {
         if (!generated) {
@@ -87,7 +81,6 @@ public abstract class BaseGenerator {
     private void init() {
 
         languageSpecification = null;
-        languageSpecificationOld = null;
         setOutPackage(GenConstants.getDefaultPackage());
         setOutDir(GenConstants.getDefaultOutputDir());
         setWeaverName(GenConstants.getDefaultWeaverName());
@@ -104,7 +97,7 @@ public abstract class BaseGenerator {
 
     /**
      * Initialize the generator based on another generator
-     * 
+     *
      * @param baseGenerator
      */
     private void init(BaseGenerator baseGenerator) {
@@ -113,7 +106,6 @@ public abstract class BaseGenerator {
             return;
         }
 
-        setLanguageSpecificationOld(baseGenerator.languageSpecificationOld);
         setOutPackage(baseGenerator.getOutPackage());
         setOutDir(baseGenerator.getOutDir());
         setWeaverName(baseGenerator.getWeaverName());
@@ -127,7 +119,7 @@ public abstract class BaseGenerator {
 
     /**
      * Generate the code for the given language specification
-     * 
+     *
      * @return
      */
     protected abstract void generateCode();
@@ -178,12 +170,6 @@ public abstract class BaseGenerator {
         return this;
     }
 
-    public BaseGenerator languageSpec(LanguageSpecification langSpec) {
-        languageSpecificationOld = langSpec;
-        setLanguageSpecification(JoinPointFactory.fromOld(langSpec));
-        return this;
-    }
-
     public BaseGenerator nodeType(Class<?> className) {
         setNodeType(className);
         return this;
@@ -196,7 +182,7 @@ public abstract class BaseGenerator {
 
     /**
      * Get the output package for the weaver and join points
-     * 
+     *
      * @return
      */
     public String getOutPackage() {
@@ -205,7 +191,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set the output package for the weaver and join points
-     * 
+     *
      * @param outPackage
      */
     public void setOutPackage(String outPackage) {
@@ -214,7 +200,7 @@ public abstract class BaseGenerator {
 
     /**
      * Get the output dir for the generated files
-     * 
+     *
      * @return
      */
     public File getOutDir() {
@@ -223,7 +209,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set the output dir for the generated files
-     * 
+     *
      * @return
      */
     public void setOutDir(File outDir) {
@@ -232,7 +218,7 @@ public abstract class BaseGenerator {
 
     /**
      * Get the name of the weaver
-     * 
+     *
      * @return
      */
     public String getWeaverName() {
@@ -241,7 +227,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set the name of the weaver
-     * 
+     *
      * @return
      */
     public void setWeaverName(String weaverName) {
@@ -250,7 +236,7 @@ public abstract class BaseGenerator {
 
     /**
      * See if the getters should be generated as abstract, and thus no field is generated
-     * 
+     *
      * @return
      */
     public boolean isAbstractGetters() {
@@ -259,7 +245,7 @@ public abstract class BaseGenerator {
 
     /**
      * Should the generated code have events or not
-     * 
+     *
      * @return
      */
     public boolean hasEvents() {
@@ -268,7 +254,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set if the getters should be generated as abstract, and thus no field is generated
-     * 
+     *
      * @return
      */
     public void setAbstractGetters(boolean abstractGetters) {
@@ -277,7 +263,7 @@ public abstract class BaseGenerator {
 
     /**
      * Get the base AST node.
-     * 
+     *
      * @return
      */
     public String getNodeType() {
@@ -286,7 +272,7 @@ public abstract class BaseGenerator {
 
     /**
      * Get the base AST node name.
-     * 
+     *
      * @return
      */
     public String getNodeName() {
@@ -300,7 +286,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set the base AST node.
-     * 
+     *
      * @param nodeType
      */
     public void setNodeType(String nodeType) {
@@ -309,7 +295,7 @@ public abstract class BaseGenerator {
 
     /**
      * Set the generic type of the join points
-     * 
+     *
      * @param nodeType
      */
     public void setNodeType(Class<?> nodeType) {
@@ -318,7 +304,7 @@ public abstract class BaseGenerator {
 
     /**
      * Should the generator show a graph in the end of the generation
-     * 
+     *
      * @return
      */
     public boolean isShowGraph() {
@@ -327,7 +313,6 @@ public abstract class BaseGenerator {
 
     /**
      * Set if the generator should show a graph in the end of the generation
-     * 
      */
     public void setShowGraph(boolean showGraph) {
         this.showGraph = showGraph;
@@ -335,48 +320,35 @@ public abstract class BaseGenerator {
 
     /**
      * The language specification for this generation
-     * 
+     *
      * @return
      */
-    public LanguageSpecificationV2 getLanguageSpecificationV2() {
-        return languageSpecification;
-    }
-
     public LanguageSpecification getLanguageSpecification() {
-        return languageSpecificationOld;
+        return languageSpecification;
     }
 
     /**
      * Set the language specification for this generation
-     * 
+     *
      * @param languageSpecification
      */
-    private void setLanguageSpecification(LanguageSpecificationV2 languageSpecification) {
+    private void setLanguageSpecification(LanguageSpecification languageSpecification) {
         this.languageSpecification = languageSpecification;
-    }
-
-    public void setLanguageSpecificationOld(LanguageSpecification languageSpecification) {
-        this.languageSpecificationOld = languageSpecification;
-        setLanguageSpecification(JoinPointFactory.fromOld(languageSpecification));
     }
 
     /**
      * Create a language specification using the models defined in the given directory
-     * 
-     * @param langSpecDirStr
-     *            the input folder
+     *
+     * @param langSpecDirStr the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
-        languageSpecificationOld = LanguageSpecification.newInstance(langSpecDir, true);
-        languageSpecification = JoinPointFactory.fromOld(languageSpecificationOld);
-        // languageSpecification = LanguageSpecificationV2.newInstance(langSpecDir, true);
+        languageSpecification = LanguageSpecification.newInstance(langSpecDir);
     }
 
     /**
      * Create a language specification using the models defined in the given directory name
-     * 
-     * @param langSpecDirStr
-     *            name of the input folder
+     *
+     * @param langSpecDirStr name of the input folder
      */
     public void setLanguageSpecification(String langSpecDirStr) {
         final File langSpecDir = new File(langSpecDirStr);
@@ -431,8 +403,7 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * @param concreteClassesPrefix
-     *            the concreteClassesPrefix to set
+     * @param concreteClassesPrefix the concreteClassesPrefix to set
      */
     public void setConcreteClassesPrefix(String concreteClassesPrefix) {
         this.concreteClassesPrefix = concreteClassesPrefix;

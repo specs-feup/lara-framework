@@ -12,10 +12,6 @@
  */
 package org.lara.interpreter.weaver.interf;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.lara.interpreter.profile.BasicWeaverProfiler;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.ast.AstMethods;
@@ -23,13 +19,10 @@ import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
-import org.lara.language.specification.LanguageSpecification;
-import org.lara.language.specification.dsl.JoinPointFactory;
-import org.lara.language.specification.dsl.LanguageSpecificationV2;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
@@ -39,6 +32,10 @@ import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Interface for connecting the lara interpreter with the target language weaver. A Weaver can be associated to an
@@ -55,7 +52,7 @@ public abstract class WeaverEngine {
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
-    private final Lazy<LanguageSpecificationV2> langSpec;
+    private final Lazy<LanguageSpecification> langSpec;
 
     private JsEngine scriptEngine;
 
@@ -69,7 +66,7 @@ public abstract class WeaverEngine {
 
         scriptEngine = null;
 
-        langSpec = Lazy.newInstance(this::buildLangSpecsV2);
+        langSpec = Lazy.newInstance(this::buildLangSpecs);
 
         apis = new HashMap<>();
         apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
@@ -94,14 +91,6 @@ public abstract class WeaverEngine {
         return apiManager.get();
     }
 
-    /**
-     * TODO: remove after {@link LanguageSpecification} has been dealt with
-     * 
-     * @return
-     */
-    protected LanguageSpecificationV2 buildLangSpecsV2() {
-        return JoinPointFactory.fromOld(this.getLanguageSpecification());
-    }
 
     public JsEngine getScriptEngine() {
         if (scriptEngine == null) {
@@ -138,12 +127,9 @@ public abstract class WeaverEngine {
     /**
      * Starts execution of the weaver, for the given arguments
      *
-     * @param sources
-     *            the files/directories with the source code
-     * @param outputDir
-     *            output directory for the generated file(s)
-     * @param dataStore
-     *            the dataStore containing the options for the weaver
+     * @param sources   the files/directories with the source code
+     * @param outputDir output directory for the generated file(s)
+     * @param dataStore the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
     public abstract boolean run(DataStore dataStore);
@@ -206,19 +192,19 @@ public abstract class WeaverEngine {
         return storeDefinition.get();
     }
 
-    /**
-     * The Language Specification associated to this weaver. This specification is required for the LARA compiler
-     * (larac)
-     * 
-     * @deprecated please use getLanguageSpecificationV2() instead
-     * 
-     */
-    @Deprecated
-    public abstract LanguageSpecification getLanguageSpecification();
 
-    public LanguageSpecificationV2 getLanguageSpecificationV2() {
+    public LanguageSpecification getLanguageSpecificationV2() {
         return langSpec.get();
     }
+
+    /**
+     * Builds and returns the language specification for this weaver.
+     *
+     * @return
+     */
+    protected abstract LanguageSpecification buildLangSpecs();
+//        return LangSpecsXmlParser.parse(ClavaWeaverResource.JOINPOINTS, ClavaWeaverResource.ARTIFACTS,
+//                ClavaWeaverResource.ACTIONS, true);
 
     /**
      * Returns a list of Gears associated to this weaver engine
@@ -256,8 +242,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * 
-     *
      * @return the name of the Weaver. By default, returns the simple name of the class
      */
     public String getName() {
@@ -282,7 +266,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * 
      * @return the base name for the weaver API. By default returns the weaver name.
      */
     public String getWeaverApiName() {
@@ -291,6 +274,7 @@ public abstract class WeaverEngine {
 
     /**
      * Return a list of hand-made resources that point to lara/js resources.
+     *
      * @return
      */
     public List<ResourceProvider> getAspectsAPI() {
@@ -356,7 +340,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     *
      * @return true if the temporary weaver folder has been created
      */
     public boolean hasTemporaryWeaverFolder() {
@@ -418,7 +401,7 @@ public abstract class WeaverEngine {
      * Pairs of labels-values that will populate the predefined list of the option "External Dependencies".
      * <p>
      * Default implementation returns a list with experimental LARA packages.
-     * 
+     *
      * @param labelValuePairs
      * @return
      */
@@ -428,7 +411,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * 
      * @return an instance with basic functionality required of AST nodes
      */
     public AstMethods getAstMethods() {

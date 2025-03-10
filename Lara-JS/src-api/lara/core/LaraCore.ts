@@ -273,7 +273,7 @@ export function info(message: string, origin?: string): void {
  * @deprecated Use the javascript `instanceof` operator instead
  */
 export function isJoinPoint($jp: any, type?: string): boolean {
-  if (!($jp instanceof LaraJoinPoint) && $jp.getClass === undefined ) {
+  if (!($jp instanceof LaraJoinPoint) && $jp.getClass === undefined) {
     return false;
   }
   if (type) {
@@ -371,9 +371,12 @@ export function debugObject<T>(object: T, origin?: string) {
  * @param args - Arguments array. Must be some array-like object.
  * @returns Flattened argument array
  *
- * @deprecated This is implemented for compatibility reasons. As the Lara language used ES5 as its
+ * This method had been deprecated with the following justification, however, Node.JS is not handling
+ * well calling Java functions with variadic arguments, so this is still necessary.
+ *
+ * "This is implemented for compatibility reasons. As the Lara language used ES5 as its
  * base, there was no spread operator to pass argument arrays to variadic functions, so there
- * is calling code expecting to be able to pass a single array as the variadic argument.
+ * is calling code expecting to be able to pass a single array as the variadic argument."
  */
 export function flattenArgsArray(args: any[]) {
   if (args.length === 1) {

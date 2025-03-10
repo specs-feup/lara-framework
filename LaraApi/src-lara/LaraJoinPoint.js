@@ -16,22 +16,54 @@ export class LaraJoinPoint {
     constructor(obj) {
         this._javaObject = obj;
     }
-    get attributes() { return wrapJoinPoint(this._javaObject.getAttributes()); }
-    get selects() { return wrapJoinPoint(this._javaObject.getSelects()); }
-    get actions() { return wrapJoinPoint(this._javaObject.getActions()); }
-    get dump() { return wrapJoinPoint(this._javaObject.getDump()); }
-    get joinPointType() { return wrapJoinPoint(this._javaObject.getJoinPointType()); }
-    get node() { return (this._javaObject.getNode()); }
-    get self() { return wrapJoinPoint(this._javaObject.getSelf()); }
-    get super() { return wrapJoinPoint(this._javaObject.getSuper()); }
-    get children() { return wrapJoinPoint(this._javaObject.getChildren()); }
-    get descendants() { return wrapJoinPoint(this._javaObject.getDescendants()); }
-    get scopeNodes() { return wrapJoinPoint(this._javaObject.getScopeNodes()); }
-    insert(p1, p2) { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
-    def(attribute, value) { return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value))); }
-    toString() { return wrapJoinPoint(this._javaObject.toString()); }
-    equals(jp) { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-    instanceOf(p1) { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
+    get attributes() {
+        return wrapJoinPoint(this._javaObject.getAttributes());
+    }
+    get selects() {
+        return wrapJoinPoint(this._javaObject.getSelects());
+    }
+    get actions() {
+        return wrapJoinPoint(this._javaObject.getActions());
+    }
+    get dump() {
+        return wrapJoinPoint(this._javaObject.getDump());
+    }
+    get joinPointType() {
+        return wrapJoinPoint(this._javaObject.getJoinPointType());
+    }
+    get node() {
+        return this._javaObject.getNode();
+    }
+    get self() {
+        return wrapJoinPoint(this._javaObject.getSelf());
+    }
+    get super() {
+        return wrapJoinPoint(this._javaObject.getSuper());
+    }
+    get children() {
+        return wrapJoinPoint(this._javaObject.getChildren());
+    }
+    get descendants() {
+        return wrapJoinPoint(this._javaObject.getDescendants());
+    }
+    get scopeNodes() {
+        return wrapJoinPoint(this._javaObject.getScopeNodes());
+    }
+    insert(p1, p2) {
+        return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2)));
+    }
+    def(attribute, value) {
+        return wrapJoinPoint(this._javaObject.def(unwrapJoinPoint(attribute), unwrapJoinPoint(value)));
+    }
+    toString() {
+        return wrapJoinPoint(this._javaObject.toString());
+    }
+    equals(jp) {
+        return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp)));
+    }
+    instanceOf(p1) {
+        return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1)));
+    }
 }
 const JoinpointMappers = [];
 export function registerJoinpointMapper(mapper) {
