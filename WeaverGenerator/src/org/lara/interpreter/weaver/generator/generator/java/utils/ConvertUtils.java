@@ -100,6 +100,13 @@ public class ConvertUtils {
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
+
+        // Check if enum in the format [name1| name2| ...]
+        // In this case, the type is String
+        if (type.contains("[") && type.contains("|") && type.contains("]")) {
+            type = String.class.getSimpleName();
+        }
+        
         // String original = type;
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
