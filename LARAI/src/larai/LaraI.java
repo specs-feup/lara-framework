@@ -42,7 +42,6 @@ import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.jsengine.JsFileType;
 import pt.up.fe.specs.lara.LaraSystemTools;
-import pt.up.fe.specs.lara.importer.LaraImporter;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -434,8 +433,7 @@ public class LaraI {
         Path path = Paths.get(engineWorkingDir);
 
         // JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
-        JsEngine engine = createJsEngine(options.getJsEngine(), path,
-                weaverEngine.getApiManager().getNodeModulesFolder());
+        JsEngine engine = createJsEngine(options.getJsEngine(), path, null);
 
         // Set javascript engine in WeaverEngine
         weaverEngine.setScriptEngine(engine);
@@ -599,71 +597,5 @@ public class LaraI {
 
     public static long getCurrentTime() {
         return timeProvider.get();
-    }
-
-    /**
-     * Loads a LARA import, using the same format as the imports in LARA files (e.g. weaver.Query).
-     *
-     * <p>
-     * Does not verify if import has already been imported.
-     *
-     * @param importName
-     */
-    public static void loadLaraImport(String importName) {
-
-        var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-
-        var laraImporter = getLaraImporter();
-        var laraImports = laraImporter.getLaraImports(importName);
-
-        if (laraImports.isEmpty()) {
-            throw new RuntimeException("Could not find files for import '" + importName + "'. Current include paths: "
-                    + laraImporter.getIncludes());
-        }
-
-        // Import JS code
-        for (var laraImport : laraImports) {
-            SpecsLogs.debug(
-                    () -> "Loading LARA Import '" + laraImport.getFilename() + "' as " + laraImport.getFileType());
-
-            var source = laraImport.getJsFile().map(file -> SpecsIo.normalizePath(file.getAbsolutePath())).orElse(laraImport.getFilename());
-
-            // For some reason that we still don't know if an import comes from a resource
-            // and the 'source' value does not have the following suffix, the class of the import will
-            // not be found (at least in Linux, in Windows is ok).
-            source = source + " (LARA import '" + importName + "' as " + laraImport.getFileType().toString() + ")";
-
-            weaverEngine.getScriptEngine().eval(laraImport.getCode(), laraImport.getFileType(),
-                    source);
-        }
-
-    }
-
-    public static LaraImporter getLaraImporter() {
-        var weaverEngine = WeaverEngine.getThreadLocalWeaver();
-
-        // Prepare includes
-        var includes = new LinkedHashSet<File>();
-
-        // Add working directory
-        includes.add(SpecsIo.getWorkingDir());
-
-        // Add context folder, if present
-        var configurationFolder = LaraI.getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH)
-                .map(File::new)
-                .orElse(null);
-
-        if (configurationFolder != null && configurationFolder.isDirectory()) {
-            includes.add(configurationFolder);
-        }
-
-        // Finally, add weaver APIs (they have the lowest priority)
-        weaverEngine.getApiManager().getNpmApiFolders().stream()
-                .forEach(includes::add);
-
-        // Find files to import
-        var laraImporter = new LaraImporter(LaraI.getThreadLocalLarai(), new ArrayList<>(includes));
-
-        return laraImporter;
     }
 }

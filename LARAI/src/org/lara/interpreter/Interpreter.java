@@ -21,8 +21,6 @@ import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.MessageConstants;
-import org.lara.interpreter.weaver.LaraExtension;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import larac.utils.output.Output;
 import larai.LaraI;
@@ -57,13 +55,6 @@ public class Interpreter {
         options = laraInterp.getOptions();
         out = laraInterp.out;
         this.engine = engine;
-
-        WeaverEngine weaverEngine = laraInterp.getWeaver().getEngine();
-
-        // Import all scripts in the new 'core' folder as modules (.mjs)
-        var newFilesToImport = weaverEngine.getApiManager().getNpmCoreFiles();
-        newFilesToImport.stream().filter(LaraExtension::isValidExtension)
-                .forEach(source -> evaluate(SpecsIo.read(source), JsFileType.MODULE, source.getAbsolutePath()));
     }
 
     public Object executeMainAspect(File mainFile) {

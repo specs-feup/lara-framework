@@ -41,16 +41,11 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         state = null;
 
         // Add LARA APIs
-        // System.out.println("Adding to " + API_NAME + "\n" + laraApis);
         addApis(API_NAME, laraApis);
 
         // Add weaver-specific APIs
-        // addWeaverApis();
         var weaverApis = new ArrayList<ResourceProvider>();
         weaverApis.addAll(getAspectsAPI());
-        // weaverApis.addAll(getNpmResources());
-        weaverApis.addAll(getWeaverNpmResources());
-        // System.out.println("Adding to " + getWeaverApiName() + "\n" + weaverApis);
         addApis(getWeaverApiName(), weaverApis);
     }
 
@@ -119,27 +114,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     private List<ResourceProvider> buildLaraCore() {
         return new ArrayList<ResourceProvider>(getImportableScripts());
     }
-
-    @Override
-    public List<LaraResourceProvider> getNpmResources() {
-        var npmResources = new ArrayList<LaraResourceProvider>();
-
-        // Weaver API
-        npmResources.addAll(getWeaverNpmResources());
-
-        return npmResources;
-    }
-
-    /**
-     * The preferred way of distributing APIs is now through NPM modules, for that override this method.
-     *
-     * @return the APIs specific for this weaver implementation, excluding the standard LARA API. By default returns an
-     *         empty list
-     */
-    protected List<LaraResourceProvider> getWeaverNpmResources() {
-        return List.of();
-    }
-
 
     /**
      *

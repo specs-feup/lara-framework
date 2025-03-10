@@ -58,8 +58,6 @@ public abstract class WeaverEngine {
 
     private final Map<String, List<ResourceProvider>> apis;
 
-    private final Lazy<WeaverApiManager> apiManager;
-
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
@@ -69,7 +67,6 @@ public abstract class WeaverEngine {
         langSpec = Lazy.newInstance(this::buildLangSpecs);
 
         apis = new HashMap<>();
-        apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
     }
 
 
@@ -86,11 +83,6 @@ public abstract class WeaverEngine {
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
     }
-
-    public WeaverApiManager getApiManager() {
-        return apiManager.get();
-    }
-
 
     public JsEngine getScriptEngine() {
         if (scriptEngine == null) {
