@@ -247,7 +247,7 @@ public class GeneratorUtils {
 
             // System.out.println("ATTR:" + attribute.getName());
             String attrClassStr = attribute.getReturnType().trim();
-
+            
             if (attrClassStr.startsWith("{")) { // then it is an enumerator
                 attrClassStr = String.class.getSimpleName();
             }
