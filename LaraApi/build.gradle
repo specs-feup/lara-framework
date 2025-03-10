@@ -17,13 +17,9 @@ repositories {
 }
 
 dependencies {
-	testImplementation "junit:junit:4.13.1"     
-	
    implementation ':SpecsUtils'
-	implementation ':Gprofer'
-	implementation ':XStreamPlus'
    implementation ':LaraUtils'
-	
+
 	implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.7'
 }
 
@@ -38,12 +34,5 @@ sourceSets {
       java {
          srcDir 'src-java'
       }
-
-      resources {
-         srcDir 'src-lara'
-         srcDir 'src-lara-base'
-         srcDir 'src-js'		 
-      }
-	  
    }   
 }

@@ -24,8 +24,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import pt.up.fe.specs.lara.LaraApiJsResource;
-import pt.up.fe.specs.lara.LaraApis;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
@@ -110,10 +108,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     }
 
     private List<ResourceProvider> buildLaraApis() {
-        var laraAPIs = new ArrayList<ResourceProvider>();
-
-        laraAPIs.addAll(LaraApis.getApis());
-        return laraAPIs;
+        return new ArrayList<ResourceProvider>();
     }
 
     @Override
@@ -129,18 +124,10 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     public List<LaraResourceProvider> getNpmResources() {
         var npmResources = new ArrayList<LaraResourceProvider>();
 
-        // LARA standard API
-        npmResources.addAll(getLaraNpmResources());
-        // npmResources.addAll(Arrays.asList(LaraApiJsResource.values()));
-
         // Weaver API
         npmResources.addAll(getWeaverNpmResources());
 
         return npmResources;
-    }
-
-    public List<LaraResourceProvider> getLaraNpmResources() {
-        return Arrays.asList(LaraApiJsResource.values());
     }
 
     /**

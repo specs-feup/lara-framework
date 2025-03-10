@@ -37,7 +37,6 @@
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "java-dist": "node scripts/java-dist.js --jsSourceFolder api --jsDestinationFolder ../LaraApi/src-lara/ --javaClassname LaraApiJsResource --javaPackageName pt.up.fe.specs.lara --javaDestinationFolder ../LaraApi/src-java/pt/up/fe/specs/lara/",
     "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
   "repository": {
