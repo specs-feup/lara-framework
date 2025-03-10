@@ -1,203 +1,203 @@
 root file as root
 joinpoint joinpoint {
-	joinpoint ancestor(String type)
-	int cost
-	int end_col
-	int end_line
-	String file_name
-	int initial_col
-	int initial_line
-	int live_in_size
-	int live_out_size
-	int num_array_refs
-	int num_calls
-	int num_levels
-	int num_oper
-	int num_pointer_refs
-	int size
-	selects {
-
-	}
-	actions {
-		void def(String attribute, Object value)
-		void insert(String position = before, String code)
-		void out(String code)
-		joinpoint replaceWith(joinpoint node)
-	}
+    joinpoint ancestor(String type)
+    int cost
+    int end_col
+    int end_line
+    String file_name
+    int initial_col
+    int initial_line
+    int live_in_size
+    int live_out_size
+    int num_array_refs
+    int num_calls
+    int num_levels
+    int num_oper
+    int num_pointer_refs
+    int size
+    selects {
+        
+    }
+    actions {
+        void def(String attribute, Object value)
+        void insert(String position = before, String code)
+        void out(String code)
+        joinpoint replaceWith(joinpoint node)
+    }
 }
 joinpoint body extends section {
-	int num_dowhile
-	int num_for
-	int num_loops
-	int num_statements
-	int num_while
-	selects {
-		statement as first
-		statement as last
-		statement
-		var
-		if
-		if as otherIf
-	}
-	actions {
-
-	}
+    int num_dowhile
+    int num_for
+    int num_loops
+    int num_statements
+    int num_while
+    selects {
+        statement as first
+        statement as last
+        statement
+        var
+        if
+        if as otherIf
+    }
+    actions {
+        
+    }
 }
 joinpoint elseif {
-
-	selects {
-
-	}
-	actions {
-
-	}
+    
+    selects {
+        
+    }
+    actions {
+        
+    }
 }
 joinpoint expr {
-	int num_array_refs
-	int num_calls
-	int num_levels
-	int num_oper
-	int num_pointer_refs
-	selects {
-
-	}
-	actions {
-
-	}
+    int num_array_refs
+    int num_calls
+    int num_levels
+    int num_oper
+    int num_pointer_refs
+    selects {
+        
+    }
+    actions {
+        
+    }
 }
 joinpoint file {
-	String name
-	selects {
-		function
-	}
-	actions {
-
-	}
+    String name
+    selects {
+        function
+    }
+    actions {
+        
+    }
 }
 joinpoint function {
-	String complexity
-	int exec_contribution
-	int exec_time
-	Boolean hardware_kernel
-	int latency
-	String name
-	int num_lines
-	int resources
-	String return_type
-	selects {
-		var as input
-		var as output
-		body
-	}
-	actions {
-		void map(String to, String id = 0, String mode = default)
-	}
+    String complexity
+    int exec_contribution
+    int exec_time
+    Boolean hardware_kernel
+    int latency
+    String name
+    int num_lines
+    int resources
+    String return_type
+    selects {
+        var as input
+        var as output
+        body
+    }
+    actions {
+        void map(String to, String id = 0, String mode = default)
+    }
 }
 joinpoint if {
-	int num_branches
-	selects {
-		expr as condition
-		body as then
-		elseif
-	}
-	actions {
-		void optimize(String kind, Json args = {})
-	}
+    int num_branches
+    selects {
+        expr as condition
+        body as then
+        elseif
+    }
+    actions {
+        void optimize(String kind, Json args = {})
+    }
 }
 joinpoint loop {
-	int increment_value
-	Boolean interchange_legal(loop loop2)
-	Boolean is_bound
-	Boolean is_innermost
-	Boolean is_normalized
-	Boolean is_perfect
-	int nested_level
-	int num_children
-	int num_iterations
-	int num_levels
-	{for,while,do-while} type
-	selects {
-
-	}
-	actions {
-		void optimize(String kind, Json args = {})
-	}
+    int increment_value
+    Boolean interchange_legal(loop loop2)
+    Boolean is_bound
+    Boolean is_innermost
+    Boolean is_normalized
+    Boolean is_perfect
+    int nested_level
+    int num_children
+    int num_iterations
+    int num_levels
+    [for| while| do-while] type
+    selects {
+        
+    }
+    actions {
+        void optimize(String kind, Json args = {})
+    }
 }
 joinpoint section {
-	int exec_contribution
-	int exec_time
-	Boolean hardware_kernel
-	String label
-	int latency
-	int resources
-	selects {
-		test
-	}
-	actions {
-		void testbody(String attribute, Object value)
-	}
+    int exec_contribution
+    int exec_time
+    Boolean hardware_kernel
+    String label
+    int latency
+    int resources
+    selects {
+        test
+    }
+    actions {
+        void testbody(String attribute, Object value)
+    }
 }
 joinpoint statement {
-
-	selects {
-
-	}
-	actions {
-
-	}
+    
+    selects {
+        
+    }
+    actions {
+        
+    }
 }
 joinpoint test {
-
-	selects {
-
-	}
-	actions {
-
-	}
+    
+    selects {
+        
+    }
+    actions {
+        
+    }
 }
 joinpoint var {
-	String base_type
-	String initializer
-	Boolean is_arg
-	Boolean is_array
-	Boolean is_const
-	Boolean is_in
-	Boolean is_inout
-	Boolean is_out
-	Boolean is_pointer
-	Boolean is_scalar
-	String name
-	int num_accesses
-	int num_read
-	int num_writes
-	Float rate
-	{read,write,all,declaration} reference
-    {local,global} scope
-	String shape
-	int size
-	String type
-	Object value
-	selects {
-
-	}
-	actions {
-		void optimize(String kind, Json args = {})
-	}
+    String base_type
+    String initializer
+    Boolean is_arg
+    Boolean is_array
+    Boolean is_const
+    Boolean is_in
+    Boolean is_inout
+    Boolean is_out
+    Boolean is_pointer
+    Boolean is_scalar
+    String name
+    int num_accesses
+    int num_read
+    int num_writes
+    Float rate
+    [read| write| all| declaration] reference
+    [local| global] scope
+    String shape
+    int size
+    String type
+    Object value
+    selects {
+        
+    }
+    actions {
+        void optimize(String kind, Json args = {})
+    }
 }
 joinpoint weaver {
-
-	selects {
-
-	}
-	actions {
-
-	}
+    
+    selects {
+        
+    }
+    actions {
+        
+    }
 }
 
 typedef SYM{
-	String name
-	String type
+    String name
+    String type
 }
 typedef Json{
-
+    
 }
