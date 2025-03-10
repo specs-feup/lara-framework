@@ -15,13 +15,11 @@ package org.lara.interpreter.weaver;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.util.providers.ResourceProvider;
