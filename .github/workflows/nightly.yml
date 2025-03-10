@@ -77,16 +77,6 @@ jobs:
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-      - name: Build and test LaraCommonLanguage
-        working-directory: lara-framework/LaraCommonLanguage
-        run: gradle build test      
-        env:
-          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-      - name: Build and test LaraDoc
-        working-directory: lara-framework/LaraDoc
-        run: gradle build test            
-        env:
-          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test LARAI
         working-directory: lara-framework/LARAI
         run: gradle build test

@@ -55,8 +55,6 @@ sourceSets {
       }
 	  
 	  resources {
-		 //srcDir 'src'
-         srcDir 'src-lara'	  
          srcDir 'resources'	  
 	  }
    }
@@ -65,10 +63,8 @@ sourceSets {
       java {
          srcDir 'test'
       }
-	  
-	  resources {
-		 //srcDir 'src'
-         srcDir 'src-lara'	  
+
+	  resources { 
          srcDir 'resources'	  
 	  }
    }   
