@@ -77,9 +77,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   if (attribute.name === "data") {
     fs.writeSync(
       outputFile,
-      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): ${
-        attribute.type
-      } { const data = (this._javaObject.get${capitalizeFirstLetter(attribute.name)}() as string | undefined); return data ? JSON.parse(data) : data; }\n`
+      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): any { const data = (this._javaObject.get${capitalizeFirstLetter(attribute.name)}() as string | undefined); return data ? JSON.parse(data) : data; }\n`
     );
   } else {
     fs.writeSync(
