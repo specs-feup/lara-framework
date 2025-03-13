@@ -75,13 +75,8 @@ public class DefaultWeaver extends ADefaultWeaver {
         return true;
     }
 
-    /**
-     * Returns the program root to be used by the weaver for the selects
-     *
-     * @return interface implementation for the join point root/program
-     */
     @Override
-    public JoinPoint select() {
+    public JoinPoint getRootJp() {
         return root;
     }
 

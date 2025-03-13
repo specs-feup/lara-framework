@@ -80,7 +80,6 @@ task generateDefaultWeaver(type: Exec) {
         "-p", "org.lara.interpreter.weaver.defaultweaver",
         "-o", "${rootProject.projectDir}/src",
         "-x", "${rootProject.projectDir}/resources/org/lara/interpreter/weaver/defaultweaver/specification",
-        "-e",
         "-j"
     ]
 }

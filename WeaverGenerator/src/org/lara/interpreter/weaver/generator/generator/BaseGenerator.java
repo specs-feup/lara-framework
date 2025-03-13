@@ -27,7 +27,6 @@ public abstract class BaseGenerator {
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
-    private boolean events;
     private boolean implMode;
     // If nodeGenerics is null, the code is not generated with generics
     // If nodeGenerics is Object, the code is generated with <T>
@@ -85,7 +84,6 @@ public abstract class BaseGenerator {
         setOutDir(GenConstants.getDefaultOutputDir());
         setWeaverName(GenConstants.getDefaultWeaverName());
         setAbstractGetters(GenConstants.getDefaultAbstractGetters());
-        setEvents(GenConstants.getDefaultEvents());
         setImplMode(GenConstants.getDefaultImplMode());
         setNodeType(GenConstants.getDefaultNodeType());
         setShowGraph(GenConstants.getDefaultShowGraph());
@@ -110,7 +108,6 @@ public abstract class BaseGenerator {
         setOutDir(baseGenerator.getOutDir());
         setWeaverName(baseGenerator.getWeaverName());
         setAbstractGetters(baseGenerator.isAbstractGetters());
-        setEvents(baseGenerator.hasEvents());
         setImplMode(baseGenerator.hasImplMode());
         setNodeType(baseGenerator.getNodeType());
         setShowGraph(baseGenerator.isShowGraph());
@@ -133,11 +130,6 @@ public abstract class BaseGenerator {
 
     public BaseGenerator abstractGetters(boolean abstractGetters) {
         setAbstractGetters(abstractGetters);
-        return this;
-    }
-
-    public BaseGenerator events(boolean events) {
-        setEvents(events);
         return this;
     }
 
@@ -241,15 +233,6 @@ public abstract class BaseGenerator {
      */
     public boolean isAbstractGetters() {
         return abstractGetters;
-    }
-
-    /**
-     * Should the generated code have events or not
-     *
-     * @return
-     */
-    public boolean hasEvents() {
-        return events;
     }
 
     /**
@@ -369,10 +352,6 @@ public abstract class BaseGenerator {
 
     public boolean isJson() {
         return json;
-    }
-
-    public void setEvents(boolean events) {
-        this.events = events;
     }
 
     public void setImplMode(boolean implMode) {

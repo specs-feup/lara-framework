@@ -18,7 +18,6 @@ import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.NamedEnum;
-import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.ArrayType;
@@ -31,7 +30,6 @@ import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.enums.Privacy;
 import org.specs.generators.java.members.*;
-import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
@@ -492,7 +490,6 @@ public class GeneratorUtils {
 
         String actionName = action.getName();
         String returnType = action.getReturnType();
-        boolean hasEvents = generator.hasEvents();
 
         JavaType actionReturn = getJavaType(action.getReturnType(), action.getName(), action, "ActionParam", generator);
 
@@ -518,34 +515,11 @@ public class GeneratorUtils {
 
         cloned.appendCodeln("try {");
         cloned.appendCode("\t");
-        // System.out.println("JOINED ARGS '" + joinedArgs + "': " + original.getParams());
-        if (hasEvents) {
-            targetClass.addImport(Stage.class);
-            targetClass.addImport(Optional.class);
-            // if (hasListeners()) {
-            // eventTrigger().triggerAction(Stage.BEGIN, "insert", this, position, code);
-            // }
-            cloned.appendCodeln("if(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAction(Stage.BEGIN, \"" + actionName
-                    + "\", this, Optional.empty()");
 
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-
-            cloned.appendCodeln(");");
-
-            cloned.appendCodeln("\t}");
-            cloned.appendCode("\t");
-            if (!returnType.equals("void")) {
-                cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
-            }
-        } else {
-            // TODO: Not sure when this is called, and if it should also have code to convert null to undefined
-            if (!returnType.equals("void")) {
-                cloned.appendCode("return ");
-            }
-        }
+        // TODO: Not sure when this is called, and if it should also have code to convert null to undefined
+        if (!returnType.equals("void")) {
+            cloned.appendCode("return ");
+        }    
 
         List<Argument> arguments = cloned.getParams();
         List<String> newArgs = new ArrayList<>(arguments.size());
@@ -568,31 +542,6 @@ public class GeneratorUtils {
 
         // System.out.println(actionName + ": " + newArgs);
         cloned.appendCodeln("this." + original.getName() + "(" + StringUtils.join(newArgs, ", ") + ");");
-        if (hasEvents) {
-
-            cloned.appendCodeln("\tif(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAction(Stage.END, \"" + actionName + "\", this, ");
-            if (returnType.equals("void")) {
-                cloned.appendCode("Optional.empty()");
-            } else {
-                cloned.appendCode("Optional.ofNullable(result)");
-            }
-
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-
-            if (!returnType.equals("void")) {
-                if (actionReturn.isPrimitive()) {
-                    cloned.appendCodeln("\treturn result;");
-                } else {
-                    cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
-                }
-            }
-        }
 
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + ActionException.class.getSimpleName());
@@ -703,44 +652,8 @@ public class GeneratorUtils {
         cloned.appendCodeln("try {");
         cloned.appendCode("\t");
 
-        if (generator.hasEvents()) {
-            targetClass.addImport(Stage.class);
-            targetClass.addImport(Optional.class);
-            // if (hasListeners()) {
-            // eventTrigger().triggerAction(Stage.BEGIN, "insert", this, position, code);
-            // }
-            cloned.appendCodeln("if(hasListeners()) {");
-            cloned.appendCode("\t\teventTrigger().triggerAttribute(Stage.BEGIN, this, \"" + attribute.getName()
-                    + "\", Optional.empty()");
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-            cloned.appendCode("\t");
-            cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
-        } else {
-
-            cloned.appendCode("return ");
-        }
+        cloned.appendCode("return ");
         cloned.appendCodeln("this." + original.getName() + "(" + joinedArgs + ");");
-        if (generator.hasEvents()) {
-
-            cloned.appendCodeln("\tif(hasListeners()) {");
-            cloned.appendCode(
-                    "\t\teventTrigger().triggerAttribute(Stage.END, this, \"" + attribute.getName()
-                            + "\", Optional.ofNullable(result)");
-
-            if (!joinedArgs.isEmpty()) {
-                cloned.appendCode(", " + joinedArgs);
-            }
-            cloned.appendCodeln(");");
-            cloned.appendCodeln("\t}");
-            // cloned.appendCodeln("\treturn result;");
-            cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();"); // return Undefined if result ==
-            // null
-
-        }
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
         cloned.appendCodeln("(" + GenConstants.getClassName() + "(), \"" + attribute.getName() + "\", e);");

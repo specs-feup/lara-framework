@@ -1,10 +1,9 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import org.lara.interpreter.weaver.interf.events.Stage;
-import java.util.Optional;
 import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
@@ -29,14 +28,7 @@ public abstract class AFunction extends ADefaultWeaverJoinPoint {
      */
     public final Object getName() {
         try {
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.BEGIN, this, "name", Optional.empty());
-        	}
-        	String result = this.getNameImpl();
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.END, this, "name", Optional.ofNullable(result));
-        	}
-        	return result!=null?result:getUndefinedValue();
+        	return this.getNameImpl();
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "name", e);
         }

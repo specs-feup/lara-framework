@@ -46,7 +46,6 @@ class WeaverGeneratorOptions extends Options {
         P("p", "package"),
         // A("a", "abstractGetters"), //replaced with -f
         F("f", "fields"),
-        E("e", "events"),
         // I("i", "implMode"),
         // G("g", "graph"),
         N("n", "nodeType"),
@@ -92,8 +91,6 @@ class WeaverGeneratorOptions extends Options {
         final Option fields = newOption(null, GeneratorOption.F, ArgOption.NO_ARGS,
                 "use fields for attributes");
 
-        final Option events = newOption(null, GeneratorOption.E, ArgOption.NO_ARGS,
-                "add code that trigger events such as action execution and attributes access");
         // final Option implMode = newOption(null, GeneratorOption.I, ArgOption.NO_ARGS,
         // "Wrap use of attributes with \"Impl\" methods");
 
@@ -117,7 +114,6 @@ class WeaverGeneratorOptions extends Options {
         addOption(packDir);
         // addOption(abstractGetters);
         addOption(fields);
-        addOption(events);
         // addOption(implMode);
         addOption(nodeType);
         addOption(toJson);

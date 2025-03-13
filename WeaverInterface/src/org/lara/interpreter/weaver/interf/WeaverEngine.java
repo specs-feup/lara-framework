@@ -141,14 +141,6 @@ public abstract class WeaverEngine {
     public abstract boolean close();
 
     /**
-     *
-     * Return a JoinPoint instance of the language root
-     *
-     * @return interface implementation for the join point root/program
-     */
-    public abstract JoinPoint select();
-
-    /**
      * Returns the name of the join point model root
      *
      * @return then name of the join point model root
@@ -160,9 +152,7 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    public JoinPoint getRootJp() {
-        return select();
-    }
+    public abstract JoinPoint getRootJp();
 
     public Object getRootNode() {
         return getRootJp().getNode();
@@ -284,8 +274,6 @@ public abstract class WeaverEngine {
     public boolean hasListeners() {
         return eventTrigger != null && eventTrigger.hasListeners();
     }
-
-    public abstract boolean implementsEvents();
 
     public WeaverProfiler getWeaverProfiler() {
         return weaverProfiler;

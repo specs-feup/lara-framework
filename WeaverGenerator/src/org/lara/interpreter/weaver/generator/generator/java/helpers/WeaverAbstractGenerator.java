@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
-import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -76,21 +75,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         addGetActionMethod(java);
         addGetRootMethod(java);
         addGetAllImportableClassesMethod(java);
-        addImplementsEventsMethod(java);
 
         return java;
-    }
-
-    private void addImplementsEventsMethod(JavaClass java) {
-        final Method getActions = new Method(JavaTypeFactory.getBooleanType(), "implementsEvents");
-        // getActions.addModifier(Modifier.ABSTRACT);
-        getActions.add(Annotation.OVERRIDE);
-        getActions.add(Modifier.FINAL);
-        getActions.appendComment("Does the generated code implements events?" + ln());
-        getActions.addJavaDocTag(JDocTag.RETURN, "true if implements events, false otherwise");
-
-        getActions.appendCode("return " + javaGenerator.hasEvents() + ";");
-        java.add(getActions);
     }
 
     /**

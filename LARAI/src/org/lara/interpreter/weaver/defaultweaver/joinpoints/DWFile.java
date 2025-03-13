@@ -13,37 +13,14 @@
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
-import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
-import org.lara.interpreter.weaver.defaultweaver.report.Report;
 
 public class DWFile extends AFile {
 
-    private final Report report;
     private final File file;
 
     public DWFile(File f) {
         file = f;
-        // setName(file.getName());
-        // setAbsolutePath(file.getAbsolutePath());
-        report = new Report();
-    }
-
-    @Override
-    public List<? extends AFunction> selectFunction() {
-        final List<DWFunction> functions = new ArrayList<>();
-        // report.extract(getAbsolutePath());
-        final Iterator<String> itr = report.AttributeValues.iterator();
-        while (itr.hasNext()) {
-            final String element = itr.next();
-            final DWFunction function = new DWFunction(element);
-            functions.add(function);
-        }
-        return functions;
     }
 
     @Override
@@ -53,7 +30,6 @@ public class DWFile extends AFile {
 
     @Override
     public String getAbsolutePathImpl() {
-        // TODO Auto-generated method stub
         return file.getAbsolutePath();
     }
 
@@ -61,10 +37,4 @@ public class DWFile extends AFile {
     public Object getNode() {
         return getName();
     }
-    // @Override
-    // public boolean same(JoinPoint iJoinPoint) {
-    // if (!(iJoinPoint instanceof DWFile))
-    // return false;
-    // return this.getName().equals(((DWFile) iJoinPoint).getName());
-    // }
 }

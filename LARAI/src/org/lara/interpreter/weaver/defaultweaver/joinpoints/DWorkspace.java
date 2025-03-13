@@ -16,13 +16,10 @@
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AWorkspace;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -37,16 +34,6 @@ public class DWorkspace extends AWorkspace {
 
     public DWorkspace() {
         folders = new HashMap<>();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see defaultweaver.joinpoints.abstracts.AProgramRoot#selectFolder()
-     */
-    @Override
-    public List<? extends AFolder> selectFolder() {
-        return new ArrayList<AFolder>(folders.values());
     }
 
     public void addFolder(File dir) {

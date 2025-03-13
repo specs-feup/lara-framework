@@ -1,11 +1,6 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts;
 
-import java.util.List;
-
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AJoinPoint;
-import org.lara.interpreter.weaver.interf.SelectOp;
-
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 /**
  * Abstract class which can be edited by the developer. This class will not be overwritten.
@@ -25,10 +20,4 @@ public abstract class ADefaultWeaverJoinPoint extends AJoinPoint {
     public boolean compareNodes(AJoinPoint aJoinPoint) {
         return getNode().equals(aJoinPoint.getNode());
     }
-
-    
-    public <T extends AJoinPoint> List<? extends T> select(Class<T> joinPointClass, SelectOp op) {
-        throw new NotImplementedException(this);
-    }
-
 }

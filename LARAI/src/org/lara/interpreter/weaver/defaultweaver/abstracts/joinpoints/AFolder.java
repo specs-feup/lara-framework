@@ -1,11 +1,9 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import org.lara.interpreter.weaver.interf.events.Stage;
-import java.util.Optional;
 import org.lara.interpreter.exception.AttributeException;
-import java.util.List;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
@@ -30,14 +28,7 @@ public abstract class AFolder extends ADefaultWeaverJoinPoint {
      */
     public final Object getPath() {
         try {
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.BEGIN, this, "path", Optional.empty());
-        	}
-        	String result = this.getPathImpl();
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.END, this, "path", Optional.ofNullable(result));
-        	}
-        	return result!=null?result:getUndefinedValue();
+        	return this.getPathImpl();
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "path", e);
         }

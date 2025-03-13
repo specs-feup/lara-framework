@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 
 public class DWFolder extends AFolder {
@@ -29,11 +28,6 @@ public class DWFolder extends AFolder {
         path = source.getAbsolutePath();
         files = new ArrayList<>();
         createFiles(source);
-    }
-
-    @Override
-    public List<? extends AFile> selectFile() {
-        return files;
     }
 
     public void createFiles(File folder) {
@@ -49,20 +43,11 @@ public class DWFolder extends AFolder {
 
     @Override
     public Object getNode() {
-        // TODO Auto-generated method stub
         return path;
     }
 
-    // @Override
-    // public boolean same(JoinPoint iJoinPoint) {
-    // if (!(iJoinPoint instanceof DWFolder))
-    // return false;
-    // return this.path.equals(((DWFolder) iJoinPoint).path);
-    // }
-
     @Override
     public String getPathImpl() {
-        // TODO Auto-generated method stub
         return path;
     }
 }

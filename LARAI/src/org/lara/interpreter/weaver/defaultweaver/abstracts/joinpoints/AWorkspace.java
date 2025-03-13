@@ -1,11 +1,8 @@
 package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
-import java.util.List;
-import org.lara.interpreter.weaver.interf.SelectOp;
-import org.lara.interpreter.weaver.interf.events.Stage;
-import java.util.Optional;
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
+import java.util.List;
 
 /**
  * Auto-Generated class for join point AWorkspace
@@ -28,13 +25,7 @@ public abstract class AWorkspace extends ADefaultWeaverJoinPoint {
      */
     public final void report() {
         try {
-        	if(hasListeners()) {
-        		eventTrigger().triggerAction(Stage.BEGIN, "report", this, Optional.empty());
-        	}
         	this.reportImpl();
-        	if(hasListeners()) {
-        		eventTrigger().triggerAction(Stage.END, "report", this, Optional.empty());
-        	}
         } catch(Exception e) {
         	throw new ActionException(get_class(), "report", e);
         }
