@@ -2,10 +2,10 @@ package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
 import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Auto-Generated class for join point AFunction
@@ -32,14 +32,6 @@ public abstract class AFunction extends ADefaultWeaverJoinPoint {
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "name", e);
         }
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithActions(List<String> actions) {
-        super.fillWithActions(actions);
     }
 
     /**

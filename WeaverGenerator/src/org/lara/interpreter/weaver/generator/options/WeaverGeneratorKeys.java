@@ -25,7 +25,6 @@ public interface WeaverGeneratorKeys {
     DataKey<File> LANGUAGE_SPECIFICATION_FOLDER = KeyFactory.folder("Language Specification Folder")
             .setDefault(() -> GenConstants.getDefaultXMLDir());
     DataKey<Boolean> ABSTRACT_GETTERS = KeyFactory.bool("Abstract Getters");
-    DataKey<Boolean> ADD_EVENTS = KeyFactory.bool("Add weaving events");
     DataKey<Boolean> IMPL_MODE = KeyFactory.bool("Create \"<attr>Impl\" methods");
     DataKey<Boolean> DEF_MODE = KeyFactory.bool("Create methods for def action");
     DataKey<ClassProvider> NODE_TYPE = WeaverGeneratorKeyFactory.classProvider("Node Class")

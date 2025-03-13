@@ -104,8 +104,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         // If join point is not extended by any other join point, it is final
         boolean isFinal = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
 
-        GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, isFinal);
-
         generateGet_Class(javaC, isFinal);
 
         if (superTypeName != null) {

@@ -37,10 +37,6 @@ public class GenConstants {
     private static final String GET_CLASS_NAME = "get_class";
     private static final String INSTANCE_OF_NAME = "instanceOf";
     private static final String WITH_TRY_PREFIX = "WithTryCatch";
-    private static final String SELECT_BY_NAME_METHOD_NAME = "select";
-    private static final String FILL_WITH_ATTRIBUTES_METHOD_NAME = "fillWithAttributes";
-    private static final String FILL_WITH_ACTIONS_METHOD_NAME = "fillWithActions";
-    private static final String FILL_WITH_SELECTS_METHOD_NAME = "fillWithSelects";
     private static final String LINK_TAG = "[[LINK]]";
     private static final String WEAVER_NAME_TAG = "[[WEAVERNAME]]";
     private static final String WEAVER_TEXT_HEADER_LOCATION = "org/lara/interpreter/weaver/generator/generator/utils/WeaverTextHeader.txt";
@@ -63,18 +59,6 @@ public class GenConstants {
 
     public static String getClassName() {
         return GenConstants.GET_CLASS_NAME;
-    }
-
-    public static String fillWAttrMethodName() {
-        return GenConstants.FILL_WITH_ATTRIBUTES_METHOD_NAME;
-    }
-
-    public static String fillWActMethodName() {
-        return GenConstants.FILL_WITH_ACTIONS_METHOD_NAME;
-    }
-
-    public static String fillWSelMethodName() {
-        return GenConstants.FILL_WITH_SELECTS_METHOD_NAME;
     }
 
     public static String linkTag() {
@@ -158,10 +142,6 @@ public class GenConstants {
 
     public static String getImplementationSufix() {
         return GenConstants.IMPLEMENTATION_SUFIX;
-    }
-
-    public static String getSelectByNameMethodName() {
-        return SELECT_BY_NAME_METHOD_NAME;
     }
 
     public static String getInstanceOfName() {

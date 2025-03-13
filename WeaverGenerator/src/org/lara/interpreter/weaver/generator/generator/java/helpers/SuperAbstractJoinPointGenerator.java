@@ -186,50 +186,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
 
-        final Method fillWithAttributes = new Method(JavaTypeFactory.getVoidType(),
-                GenConstants.fillWAttrMethodName(),
-                Privacy.PROTECTED);
-        fillWithAttributes.add(Annotation.OVERRIDE);
-        fillWithAttributes.addArgument(JavaTypeFactory.getListStringJavaType(), "attributes");
-        fillWithAttributes.appendCode("// Default attributes" + ln());
-        fillWithAttributes.appendCode("super.fillWithAttributes(attributes);" + ln() + ln());
-        fillWithAttributes.appendCode("//Attributes available for all join points" + ln());
-        abstJPClass.add(fillWithAttributes);
-
         for (var attr : globalAttrs) {
-            final String name = attr.getName();
-            fillWithAttributes.appendCode("attributes.add(\"" + name);
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);
-            final List<Argument> arguments = method.getParams();
-            if (!arguments.isEmpty()) {
-                fillWithAttributes.appendCode("(");
-
-                final String argsList = StringUtils.join(arguments, ", ");
-                fillWithAttributes.appendCode(argsList);
-                // Argument arg = arguments.get(0);
-                // fillWithAttributes.appendCode(arg.getClassType() + " " +
-                // arg.getName());
-                //
-                // for (int i = 1; i < arguments.size(); i++) {
-                //
-                // arg = arguments.get(i);
-                // fillWithAttributes.appendCode("," + arg.getClassType() +
-                // " " + arg.getName());
-                // }
-                fillWithAttributes.appendCode(")");
-            }
-
-            fillWithAttributes.appendCode("\");" + ln());
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
                     abstJPClass, javaGenerator);
 
             abstJPClass.add(methodImpl);
-
         }
-
-        // Then add default attributes -> already in JoinPoint class!
-        // addDefaultAttributes(abstJPClass, fillWithAttributes);
     }
 
     /**
@@ -246,31 +210,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             return;
         }
 
-
-        final Method fillWithActions = new Method(JavaTypeFactory.getVoidType(), GenConstants.fillWActMethodName(),
-                Privacy.PROTECTED);
-        fillWithActions.add(Annotation.OVERRIDE);
-        abstJPClass.add(fillWithActions);
-        abstJPClass.addImport(List.class);
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        fillWithActions.addArgument(listStringType, "actions");
-
         for (var action : actions) {
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
             abstJPClass.add(m);
-
-            fillWithActions.appendCode("actions.add(\"" + action.getName() + "(");
-            // Function<Argument, String> mapper = arg -> arg.getClassType() + "
-            // " + arg.getName();
-            String joinedArgs = StringUtils.join(m.getParams(), ", ");
-            fillWithActions.appendCode(joinedArgs);
-            fillWithActions.appendCode(")\");" + ln());
 
             Method cloned = GeneratorUtils.generateActionImplMethod(m, action,
                     abstJPClass, javaGenerator);
             abstJPClass.add(cloned);
         }
-        // addDefaultActions(abstJPClass, fillWithActions);
     }
 
 }

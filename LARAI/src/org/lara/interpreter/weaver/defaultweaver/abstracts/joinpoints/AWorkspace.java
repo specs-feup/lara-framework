@@ -2,7 +2,6 @@ package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
-import java.util.List;
 
 /**
  * Auto-Generated class for join point AWorkspace
@@ -29,15 +28,6 @@ public abstract class AWorkspace extends ADefaultWeaverJoinPoint {
         } catch(Exception e) {
         	throw new ActionException(get_class(), "report", e);
         }
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithActions(List<String> actions) {
-        super.fillWithActions(actions);
-        actions.add("void report()");
     }
 
     /**

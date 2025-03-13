@@ -45,38 +45,6 @@ public class GeneratorUtils {
         return Utils.ln();
     }
 
-    public static void createListOfAvailableActions(JavaClass javaC, JoinPointClass joinPoint, String superName, boolean isFinal) {
-
-        final String fillActionsName = GenConstants.fillWActMethodName();
-
-        final Method listActions = new Method(JavaTypeFactory.getVoidType(), fillActionsName, Privacy.PROTECTED);
-        listActions.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            listActions.add(Modifier.FINAL);
-        }
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        listActions.addArgument(listStringType, "actions");
-
-        if (superName != null) {
-
-            listActions.appendCode("this." + superName);
-        } else {
-
-            listActions.appendCode("super");
-        }
-        listActions.appendCode("." + fillActionsName + "(actions);" + ln());
-
-        for (var act : joinPoint.getActionsSelf()) {
-            listActions.appendCode("actions.add(\"" + act.getReturnType() + " " + act.getName() + "(");
-            final String joinedParams = StringUtils.join(act.getParameters(), org.lara.language.specification.dsl.Parameter::getType, ", ");
-            listActions.appendCode(joinedParams);
-            listActions.appendCode(")\");" + ln());
-        }
-
-
-        javaC.add(listActions);
-    }
-
     /**
      * Add methods of the super join point to the java class
      *
