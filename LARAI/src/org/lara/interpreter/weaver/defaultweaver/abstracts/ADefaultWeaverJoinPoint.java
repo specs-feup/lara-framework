@@ -26,7 +26,7 @@ public abstract class ADefaultWeaverJoinPoint extends AJoinPoint {
         return getNode().equals(aJoinPoint.getNode());
     }
 
-    @Override
+    
     public <T extends AJoinPoint> List<? extends T> select(Class<T> joinPointClass, SelectOp op) {
         throw new NotImplementedException(this);
     }

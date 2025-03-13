@@ -6,7 +6,6 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import java.util.Optional;
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 
 /**
  * Auto-Generated class for join point AWorkspace
@@ -16,14 +15,6 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
  * @author Lara Weaver Generator
  */
 public abstract class AWorkspace extends ADefaultWeaverJoinPoint {
-
-    /**
-     * Default implementation of the method used by the lara interpreter to select folders
-     * @return 
-     */
-    public List<? extends AFolder> selectFolder() {
-        return select(org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder.class, SelectOp.DESCENDANTS);
-    }
 
     /**
      * 
@@ -47,40 +38,6 @@ public abstract class AWorkspace extends ADefaultWeaverJoinPoint {
         } catch(Exception e) {
         	throw new ActionException(get_class(), "report", e);
         }
-    }
-
-    /**
-     * 
-     */
-    @Override
-    public final List<? extends JoinPoint> select(String selectName) {
-        List<? extends JoinPoint> joinPointList;
-        switch(selectName) {
-        	case "folder": 
-        		joinPointList = selectFolder();
-        		break;
-        	default:
-        		joinPointList = super.select(selectName);
-        		break;
-        }
-        return joinPointList;
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithAttributes(List<String> attributes) {
-        super.fillWithAttributes(attributes);
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithSelects(List<String> selects) {
-        super.fillWithSelects(selects);
-        selects.add("folder");
     }
 
     /**

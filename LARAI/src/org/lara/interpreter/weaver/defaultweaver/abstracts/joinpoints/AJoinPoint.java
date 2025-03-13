@@ -2,8 +2,6 @@ package org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import java.util.List;
-import org.lara.interpreter.weaver.interf.SelectOp;
 
 /**
  * Abstract class containing the global attributes and default action exception.
@@ -60,9 +58,4 @@ public abstract class AJoinPoint extends JoinPoint {
     public DefaultWeaver getWeaverEngine() {
         return DefaultWeaver.getDefaultWeaver();
     }
-
-    /**
-     * Generic select function, used by the default select implementations.
-     */
-    public abstract <T extends AJoinPoint> List<? extends T> select(Class<T> joinPointClass, SelectOp op);
 }

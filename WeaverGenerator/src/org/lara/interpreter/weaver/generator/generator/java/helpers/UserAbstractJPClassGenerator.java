@@ -79,10 +79,6 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         compareNodes.add(Annotation.OVERRIDE);
         abstJPClass.add(compareNodes);
 
-        abstJPClass.add(GeneratorUtils.generateSelectGeneric(javaGenerator.getAJoinPointClass()));
-        // abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass));
-        abstJPClass.addImport(SelectOp.class);
-
         // abstJPClass.add(method)
         return abstJPClass;
     }

@@ -6,7 +6,6 @@ import org.lara.interpreter.exception.AttributeException;
 import java.util.List;
 import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
@@ -18,31 +17,6 @@ import java.util.Arrays;
  * @author Lara Weaver Generator
  */
 public abstract class AFile extends ADefaultWeaverJoinPoint {
-
-    /**
-     * Get value on attribute name
-     * @return the attribute's value
-     */
-    public abstract String getNameImpl();
-
-    /**
-     * Get value on attribute name
-     * @return the attribute's value
-     */
-    public final Object getName() {
-        try {
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.BEGIN, this, "name", Optional.empty());
-        	}
-        	String result = this.getNameImpl();
-        	if(hasListeners()) {
-        		eventTrigger().triggerAttribute(Stage.END, this, "name", Optional.ofNullable(result));
-        	}
-        	return result!=null?result:getUndefinedValue();
-        } catch(Exception e) {
-        	throw new AttributeException(get_class(), "name", e);
-        }
-    }
 
     /**
      * Get value on attribute absolutePath
@@ -70,47 +44,28 @@ public abstract class AFile extends ADefaultWeaverJoinPoint {
     }
 
     /**
-     * Default implementation of the method used by the lara interpreter to select functions
-     * @return 
+     * Get value on attribute name
+     * @return the attribute's value
      */
-    public List<? extends AFunction> selectFunction() {
-        return select(org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction.class, SelectOp.DESCENDANTS);
-    }
+    public abstract String getNameImpl();
 
     /**
-     * 
+     * Get value on attribute name
+     * @return the attribute's value
      */
-    @Override
-    public final List<? extends JoinPoint> select(String selectName) {
-        List<? extends JoinPoint> joinPointList;
-        switch(selectName) {
-        	case "function": 
-        		joinPointList = selectFunction();
-        		break;
-        	default:
-        		joinPointList = super.select(selectName);
-        		break;
+    public final Object getName() {
+        try {
+        	if(hasListeners()) {
+        		eventTrigger().triggerAttribute(Stage.BEGIN, this, "name", Optional.empty());
+        	}
+        	String result = this.getNameImpl();
+        	if(hasListeners()) {
+        		eventTrigger().triggerAttribute(Stage.END, this, "name", Optional.ofNullable(result));
+        	}
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "name", e);
         }
-        return joinPointList;
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithAttributes(List<String> attributes) {
-        super.fillWithAttributes(attributes);
-        attributes.add("name");
-        attributes.add("absolutePath");
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithSelects(List<String> selects) {
-        super.fillWithSelects(selects);
-        selects.add("function");
     }
 
     /**
@@ -133,8 +88,8 @@ public abstract class AFile extends ADefaultWeaverJoinPoint {
      * 
      */
     protected enum FileAttributes {
-        NAME("name"),
-        ABSOLUTEPATH("absolutePath");
+        ABSOLUTEPATH("absolutePath"),
+        NAME("name");
         private String name;
 
         /**

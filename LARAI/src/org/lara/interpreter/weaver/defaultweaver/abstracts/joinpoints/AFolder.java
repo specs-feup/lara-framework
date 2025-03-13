@@ -6,7 +6,6 @@ import org.lara.interpreter.exception.AttributeException;
 import java.util.List;
 import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.ADefaultWeaverJoinPoint;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
@@ -42,49 +41,6 @@ public abstract class AFolder extends ADefaultWeaverJoinPoint {
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "path", e);
         }
-    }
-
-    /**
-     * Default implementation of the method used by the lara interpreter to select files
-     * @return 
-     */
-    public List<? extends AFile> selectFile() {
-        return select(org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile.class, SelectOp.DESCENDANTS);
-    }
-
-    /**
-     * 
-     */
-    @Override
-    public final List<? extends JoinPoint> select(String selectName) {
-        List<? extends JoinPoint> joinPointList;
-        switch(selectName) {
-        	case "file": 
-        		joinPointList = selectFile();
-        		break;
-        	default:
-        		joinPointList = super.select(selectName);
-        		break;
-        }
-        return joinPointList;
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithAttributes(List<String> attributes) {
-        super.fillWithAttributes(attributes);
-        attributes.add("path");
-    }
-
-    /**
-     * 
-     */
-    @Override
-    protected final void fillWithSelects(List<String> selects) {
-        super.fillWithSelects(selects);
-        selects.add("file");
     }
 
     /**

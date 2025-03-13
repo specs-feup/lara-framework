@@ -17,9 +17,7 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.NamedEnum;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
@@ -37,7 +35,6 @@ import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
-import pt.up.fe.specs.util.SpecsCollections;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -48,102 +45,6 @@ public class GeneratorUtils {
 
     private static String ln() {
         return Utils.ln();
-        //return SpecsIo.getNewline();
-    }
-
-
-    public static void createListOfAvailableAttributes(JavaClass javaC, JoinPointClass joinPoint, String superName, boolean isFinal) {
-
-        final String fillAttributesName = GenConstants.fillWAttrMethodName();
-        final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillAttributesName, Privacy.PROTECTED);
-        listSelects.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            listSelects.add(Modifier.FINAL);
-        }
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        listSelects.addArgument(listStringType, "attributes");
-
-        if (superName != null) {
-
-            listSelects.appendCode("this." + superName + "." + fillAttributesName + "(attributes);" + ln());
-        } else {
-            listSelects.appendCode("super." + fillAttributesName + "(attributes);" + ln());
-        }
-
-        for (var attribute : joinPoint.getAttributesSelf()) {
-            listSelects.appendCode("attributes.add(\"" + attribute.getName() + "\");" + ln());
-        }
-
-        javaC.add(listSelects);
-    }
-
-    public static void createListOfAvailableSelects(JavaClass javaC, JoinPointClass joinPoint, String superName,
-                                                    boolean isFinal) {
-
-        final String fillSelectsName = GenConstants.fillWSelMethodName();
-        final Method listSelects = new Method(JavaTypeFactory.getVoidType(), fillSelectsName, Privacy.PROTECTED);
-        listSelects.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            listSelects.add(Modifier.FINAL);
-        }
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        listSelects.addArgument(listStringType, "selects");
-
-        if (superName != null) {
-
-            listSelects.appendCode("this." + superName + "." + fillSelectsName + "(selects);" + ln());
-        } else {
-
-            listSelects.appendCode("super." + fillSelectsName + "(selects);" + ln());
-        }
-
-        for (var sel : joinPoint.getSelectsSelf()) {
-            listSelects.appendCode("selects.add(\"" + sel.getSelectName() + "\");" + ln());
-        }
-
-        javaC.add(listSelects);
-    }
-
-
-    public static void createSelectByName(JavaClass javaC, JoinPointClass joinPoint, String superName,
-                                          boolean isFinal) {
-
-        final String selectMethodName = GenConstants.getSelectByNameMethodName();
-
-        JavaType joinPointType = JavaTypeFactory.convert(JoinPoint.class);
-        JavaType joinPointListType = JavaTypeFactory.convert(List.class);
-        JavaGenericType joinPointWildCardType = JavaTypeFactory.getWildExtendsType(joinPointType);
-        joinPointListType.addGeneric(joinPointWildCardType);
-
-        final Method selectByName = new Method(joinPointListType, selectMethodName, Privacy.PUBLIC);
-        selectByName.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            selectByName.add(Modifier.FINAL);
-        }
-        selectByName.addArgument(JavaTypeFactory.getStringType(), "selectName");
-
-        selectByName.appendCodeln(joinPointListType.getSimpleType() + " joinPointList;");
-        selectByName.appendCodeln("switch(selectName) {");
-
-        for (var sel : joinPoint.getSelects()) {
-            var alias = sel.getSelectName();
-            selectByName.appendCodeln("\tcase \"" + alias + "\": ");
-            selectByName.appendCodeln("\t\tjoinPointList = select" + StringUtils.firstCharToUpper(alias) + "();");
-            selectByName.appendCodeln("\t\tbreak;");
-        }
-
-        selectByName.appendCode("\tdefault:" + ln() + "\t\tjoinPointList = ");
-
-        String superCall = superName != null ? ("this." + superName) : "super"; // if super exists use the "super" field
-
-        selectByName
-                .appendCodeln(superCall + "." + selectMethodName + "(selectName);" + ln() + "\t\tbreak;" + ln() + "}");
-        // selectByName.appendCodeln("if(joinPointList != null && !joinPointList.isEmpty()){");
-        // selectByName.appendCodeln("\tjoinPointList.forEach(jp -> jp.setWeaverEngine(this));");
-        // selectByName.appendCodeln("}");
-        selectByName.appendCodeln("return joinPointList;");
-        javaC.add(selectByName);
-
     }
 
     public static void createListOfAvailableActions(JavaClass javaC, JoinPointClass joinPoint, String superName, boolean isFinal) {
@@ -195,26 +96,9 @@ public class GeneratorUtils {
         }
 
         addSuperGetters(javaC, fieldName, generator, parent);
-        addSuperSelect(javaC, fieldName, generator, parent);
         addSuperMethods(javaC, fieldName, generator, parent);
-        addSuperDefs(javaC, fieldName, generator, parent);
     }
 
-    /**
-     * @param javaC
-     * @param fieldName
-     * @param parent
-     */
-    public static void addSuperSelect(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                      JoinPointClass parent) {
-        for (var sel : parent.getSelectsSelf()) {
-
-            final Method selectMethod = generateSelectMethod(sel, generator.getJoinPointClassPackage(), false);
-            selectMethod.add(Annotation.OVERRIDE);
-            selectMethod.appendCode("return this." + fieldName + "." + selectMethod.getName() + "();");
-            javaC.add(selectMethod);
-        }
-    }
 
     /**
      * @param javaC
@@ -724,61 +608,6 @@ public class GeneratorUtils {
 
     }
 
-
-    /**
-     * @param selectName
-     * @param type
-     * @return
-     */
-    public static Method generateSelectMethod(org.lara.language.specification.dsl.Select sel, String _package, boolean isAbstract) {
-        final String selectName = sel.getSelectName();
-        final String type = sel.getClazz().getName();
-        //final String type = JoinPointModelConstructor.getJoinPointClass(sel);
-        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
-        final String methodName = "select" + firstCharToUpper;
-        final JavaType baseType = generateJoinPointBaseType(_package, type);
-        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
-        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
-        // Method selectMethod = new Method("List<? extends A" +
-        // typeFirstCharToUpper + ">", methodName);
-        final Method selectMethod = new Method(listType, methodName);
-        selectMethod.addJavaDocTag(JDocTag.RETURN);
-        if (isAbstract) {
-            selectMethod.add(Modifier.ABSTRACT);
-        }
-        String comment = sel.getToolTip().orElse("Method used by the lara interpreter to select " + selectName + "s");
-        selectMethod.appendComment(comment);
-        return selectMethod;
-    }
-
-
-    /**
-     * Generic implementation of the select method which uses the select() function in the global join point class.
-     *
-     * @param selectName
-     * @param type
-     * @return
-     */
-    public static Method generateSelectMethodGeneric(org.lara.language.specification.dsl.Select sel, String _package) {
-        final String selectName = sel.getSelectName();
-        final String type = sel.getClazz().getName();
-        final String firstCharToUpper = Utils.firstCharToUpper(selectName);
-        final String methodName = "select" + firstCharToUpper;
-        final JavaType baseType = generateJoinPointBaseType(_package, type);
-        final JavaGenericType genType = JavaTypeFactory.getWildExtendsType(baseType);
-        final JavaType listType = JavaTypeFactory.getListJavaType(genType);
-        // Method selectMethod = new Method("List<? extends A" +
-        // typeFirstCharToUpper + ">", methodName);
-        final Method selectMethod = new Method(listType, methodName);
-        selectMethod.addJavaDocTag(JDocTag.RETURN);
-        String comment = sel.getToolTip().orElse("Default implementation of the method used by the lara interpreter to select " + selectName + "s");
-        selectMethod.appendComment(comment);
-
-        selectMethod.appendCode("return select(" + baseType + ".class, SelectOp.DESCENDANTS);");
-
-        return selectMethod;
-    }
-
     /**
      * @param _package
      * @param typeFirstCharToUpper
@@ -1037,40 +866,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * Generate the default implementation of the generic selection method.
-     *
-     * @param superClass
-     * @return
-     */
-    public static Method generateSelectGeneric(JavaClass globalJpClass) {
-        return generateSelectGeneric(globalJpClass, false);
-    }
-
-    public static Method generateSelectGeneric(JavaClass globalJpClass, boolean isAbstract) {
-
-        // Select returns a List
-        globalJpClass.addImport(List.class);
-
-        JavaType returnType = new JavaType("<T extends " + globalJpClass.getName() + "> List<? extends T>");
-
-        final Method method = new Method(returnType, "select");
-        method.appendComment("Generic select function, used by the default select implementations.");
-
-        method.addArgument(new JavaType("Class<T>"), "joinPointClass");
-        method.addArgument(SelectOp.class, "op");
-
-        if (isAbstract) {
-            method.add(Modifier.ABSTRACT);
-        } else {
-            method.add(Annotation.OVERRIDE);
-            method.appendCode(
-                    "throw new RuntimeException(\"Generic select function not implemented yet. Implement it in order to use the default implementations of select\");");
-        }
-
-        return method;
-    }
-
-    /**
      * Defines if this joinpoint is an instanceof joinpointclass
      *
      * @param javaC
@@ -1111,138 +906,5 @@ public class GeneratorUtils {
                                                   Function<T, String> mapper) {
         final String joinedElements = StringUtils.join(elements, mapper, ", ");
         return array2ListCode(baseType, listName, joinedElements);
-        // StringBuffer arrayCode = new StringBuffer();
-        // arrayCode.append(baseType + "[] " + listName + "= {");
-        // if (!elements.isEmpty()) {
-        // String joinedElements = StringUtils.join(elements, mapper, ", ");
-        // arrayCode.append(joinedElements);
-        // }
-        // arrayCode.append("};\nreturn Arrays.asList(" + listName + ");");
-        // return arrayCode;
     }
-
-
-    public static void generateDefMethods(org.lara.language.specification.dsl.Attribute attribute, JavaType returnType, JavaClass javaC,
-                                          JavaAbstractsGenerator javaGenerator) {
-
-        Function<String, String> codeProvider = t -> UnsupActionExceptionCode(
-                "def " + attribute.getName() + " with type " + t);
-        generateDefForType(attribute, returnType, javaC, javaGenerator, codeProvider);
-
-    }
-
-    public static void generateDefForType(org.lara.language.specification.dsl.Attribute attribute, JavaType returnType, JavaClass javaC,
-                                          JavaAbstractsGenerator javaGenerator, Function<String, String> codeProvider) {
-        var defs = attribute.getDefs();
-        if (defs.isEmpty()) {
-            return;
-        }
-        List<String> processedTypes = SpecsCollections.newArrayList();
-        for (var defType : defs) {
-            String type = defType.getType();
-            if (processedTypes.contains(type)) {
-                continue;
-            }
-            JavaType defJavaType;
-            if (type == null) {
-                defJavaType = returnType.clone();
-            } else {
-                defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
-            }
-            Method defAttrImpl = new Method(JavaTypeFactory.getVoidType(),
-                    GenConstants.getDefAttributeImplName(attribute.getName()));
-            defAttrImpl.setPrivacy(Privacy.PUBLIC);
-            defAttrImpl.addArgument(defJavaType, "value");
-            defAttrImpl.appendCode(codeProvider.apply(defJavaType.getName()));
-
-            processedTypes.add(type);
-            javaC.add(defAttrImpl);
-        }
-    }
-
-    public static void addSuperDefs(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-                                    JoinPointClass parent) {
-
-        //for (var attribute : parent.getAttributesSelf().stream().sorted((attribute, t1) -> attribute.getName().compareTo(t1.getName())).toList()) {
-        for (var attribute : parent.getAttributesSelf()) {
-
-            var defs = attribute.getDefs();
-            if (defs.isEmpty()) {
-                continue;
-            }
-            String attrClassStr = attribute.getReturnType().trim();
-
-            if (attrClassStr.startsWith("{")) { // then it is an enumerator
-                attrClassStr = String.class.getSimpleName();
-            }
-            String defMethodName = GenConstants.getDefAttributeImplName(attribute.getName());
-            JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
-
-            Function<String, String> codeProvider = t -> "this." + fieldName + "." + defMethodName + "(value);";
-            generateDefForType(attribute, type, javaC, generator, codeProvider);
-        }
-
-    }
-
-
-    public static void createDefImpl(JavaClass javaC, boolean isFinal,
-                                     List<org.lara.language.specification.dsl.Attribute> attributes, JavaAbstractsGenerator javaGenerator) {
-
-        Method defMethod = new Method(JavaTypeFactory.getVoidType(), GenConstants.withImpl("def"));
-        defMethod.add(Annotation.OVERRIDE);
-        if (isFinal) {
-            defMethod.add(Modifier.FINAL);
-        }
-        defMethod.addArgument(String.class, "attribute");
-        defMethod.addArgument(Object.class, "value");
-        defMethod.appendCodeln("switch(attribute){");
-
-        for (var attribute : attributes) {
-            // System.out.println("CREATING DEF FOR " + attribute.getN);
-            var def = attribute.getDefs();
-            JavaType returnType = ConvertUtils.getAttributeConvertedType(attribute.getReturnType(), javaGenerator);
-            defMethod.appendCodeln("case \"" + attribute.getName() + "\": {");
-            List<String> processedTypes = SpecsCollections.newArrayList();
-            for (var defType : def) {
-                String type = defType.getType();
-                // System.out.println("\tFOR DEF: " + type);
-                if (processedTypes.contains(type)) {
-                    continue;
-                }
-                JavaType defJavaType;
-                if (type == null) {
-                    defJavaType = returnType.clone();
-                } else {
-                    defJavaType = ConvertUtils.getAttributeConvertedType(type, javaGenerator);
-                }
-                javaC.addImport(defJavaType);
-                defMethod.appendCodeln("\tif(value instanceof " + defJavaType.getSimpleType() + "){");
-                defMethod.appendCode("\t\tthis.");
-                defMethod.appendCode(GenConstants.getDefAttributeImplName(attribute.getName()));
-                defMethod.appendCode("((");
-                defMethod.appendCode(defJavaType.getSimpleType());
-                defMethod.appendCodeln(")value);");
-                defMethod.appendCodeln("\t\treturn;");
-                defMethod.appendCodeln("\t}");
-                processedTypes.add(type);
-            }
-
-            defMethod.appendCodeln("\tthis.unsupportedTypeForDef(attribute, value);");
-            // \tString valueType = value.getClass().getSimpleName();");
-            // defMethod.appendCodeln("\tif(value instanceof JoinPoint){");
-            // defMethod.appendCodeln("\t\tvalueType = ((JoinPoint)value).getJoinPointType();");
-            // defMethod.appendCodeln("\t}");
-            // defMethod.appendCodeln("\t" +
-            // GeneratorUtils.UnsupDefTypeExceptionCode(attribute.getName(), "valueType"));
-            defMethod.appendCodeln("}");
-        }
-
-        defMethod.appendCode("default: ");
-        defMethod.appendCodeln(
-                GeneratorUtils.UnsupDefExceptionCode("attribute"));
-        defMethod.appendCodeln("}");
-        javaC.add(defMethod);
-        javaC.addImport(JoinPoint.class);
-    }
-
 }

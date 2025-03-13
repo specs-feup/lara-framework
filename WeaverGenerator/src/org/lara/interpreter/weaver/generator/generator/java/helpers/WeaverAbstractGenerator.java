@@ -233,19 +233,6 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generates the method that selects the root join point
-     *
-     * @param java
-     */
-    @Deprecated
-    protected void addSelectMethod(JavaClass java) {
-        final Method select = new Method(GenConstants.getJoinPointInterfaceType(), "select", Modifier.ABSTRACT);
-        select.appendComment(" Returns the program root to be used by the weaver for the selects");
-        select.addJavaDocTag(JDocTag.RETURN, "interface implementation for the join point root/program");
-        java.add(select);
-    }
-
-    /**
      * Generates the method that closes the weaving process
      *
      * @param java

@@ -3,16 +3,20 @@
 
 plugins {
  	id 'distribution'
+	id 'application' // Executable
+	id 'java' // Java project
 }
-
-// Java project
-apply plugin: 'java'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
+	withSourcesJar()
 }
 
+application {
+	mainClass.set("org.lara.interpreter.weaver.generator.commandline.WeaverGenerator")
+}
 
 // Repositories providers
 repositories {
@@ -36,12 +40,6 @@ dependencies {
 	implementation group: 'commons-cli', name: 'commons-cli', version: '1.3.1'	
 }
 
-
-java {
-	withSourcesJar()
-}
-
-
 // Project sources
 sourceSets {
    main {
@@ -63,4 +61,12 @@ sourceSets {
          srcDir 'resources'
 	  }
    }      
+}
+
+task WeaverGenerator(type: JavaExec) {
+    group = "Execution"
+    description = "Launches WeaverGenerator"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
+    args = []
 }
