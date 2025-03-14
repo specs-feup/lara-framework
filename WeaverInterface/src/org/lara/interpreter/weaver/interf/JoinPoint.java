@@ -52,9 +52,6 @@ public abstract class JoinPoint {
         LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
                 new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.VOID, "def",
-                new Parameter(PrimitiveClasses.STRING, "attribute"),
-                new Parameter(PrimitiveClasses.OBJECT, "value"));
         LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
         LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "equals",
                 new Parameter(JPType.of(LARA_JOIN_POINT), "jp"));
