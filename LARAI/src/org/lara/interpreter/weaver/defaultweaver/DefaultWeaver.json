@@ -27,11 +27,6 @@
 										"type": "String",
 										"name": "name"
 									}]
-					},
-					{
-						"type": "select",
-						"clazz": "function",
-						"alias": ""
 					}]
 		},
 		{
@@ -47,11 +42,6 @@
 										"type": "String",
 										"name": "path"
 									}]
-					},
-					{
-						"type": "select",
-						"clazz": "file",
-						"alias": ""
 					}]
 		},
 		{
@@ -74,11 +64,6 @@
 			"name": "workspace",
 			"extends": "joinpoint"		,
 			"children": [
-					{
-						"type": "select",
-						"clazz": "folder",
-						"alias": ""
-					},
 					{
 						"type": "action",
 						"children": [

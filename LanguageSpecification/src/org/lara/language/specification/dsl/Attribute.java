@@ -28,7 +28,6 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
 
     private Declaration declaration;
     private List<Parameter> parameters;
-    private List<Def> defs;
 
     public Attribute(IType type, String name) {
         this(type, name, new ArrayList<>());
@@ -37,7 +36,6 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
     public Attribute(IType type, String name, List<Parameter> parameters) {
         declaration = new Declaration(type, name);
         this.parameters = parameters;
-        this.defs = new ArrayList<>();
     }
 
     public void addParameter(IType type, String name) {
@@ -46,14 +44,6 @@ public class Attribute extends BaseNode implements Comparable<Attribute> {
 
     public void addParameter(IType type, String name, String defaultValue) {
         parameters.add(new Parameter(type, name, defaultValue));
-    }
-
-    public void addDef(Def def) {
-        defs.add(def);
-    }
-
-    public List<Def> getDefs() {
-        return defs;
     }
 
     public IType getType() {

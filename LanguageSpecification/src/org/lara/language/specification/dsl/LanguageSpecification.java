@@ -189,18 +189,7 @@ public class LanguageSpecification {
      * @return true if the given name is a valid join point (considering alias)
      */
     public boolean hasJoinPointName(String name) {
-        if (hasJoinPoint(name)) {
-            return true;
-        }
-
-        // Alias
-        for (var jp : joinPoints.values()) {
-            if (jp.hasSelect(name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return hasJoinPoint(name);
     }
 
     public IType getType(String type) {
@@ -448,25 +437,5 @@ public class LanguageSpecification {
         dot.append("}\n");
 
         return dot.toString();
-    }
-
-    /**
-     * Get selects in which the given join point is selected
-     *
-     * @return
-     */
-    public List<Select> getSelectedBy(JoinPointClass jp) {
-        List<Select> selectedBy = new ArrayList<>();
-
-        // Get
-        JoinPointClass global = getGlobal();
-        global.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(jp)).forEach(selectedBy::add);
-
-        Collection<JoinPointClass> allJPs = getJoinPoints().values();
-        for (JoinPointClass joinPointClass : allJPs) {
-            joinPointClass.getSelectsSelf().stream().filter(sel -> sel.getClazz().equals(jp))
-                    .forEach(selectedBy::add);
-        }
-        return selectedBy;
     }
 }
