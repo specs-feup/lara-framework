@@ -64,7 +64,6 @@ export namespace JavaClasses {
     toString(obj: any): string;
   }
   export interface Object extends JavaClass {}
-  export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
   export interface CsvWriter extends JavaClasses.JavaClass {}
   export interface CsvField extends JavaClasses.JavaClass {}
@@ -262,12 +261,6 @@ export default class JavaTypes {
 
   static get Object() {
     return JavaTypes.getType("java.lang.Object") as JavaClasses.Object;
-  }
-
-  static get ReplacerHelper() {
-    return JavaTypes.getType(
-      "pt.up.fe.specs.lara.util.ReplacerHelper"
-    ) as JavaClasses.ReplacerHelper;
   }
 
   static get CsvReader() {
