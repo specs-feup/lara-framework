@@ -26,14 +26,6 @@ import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.*;
-
 public class LaraIUtils {
 
     public final static String SPACE = "\t";

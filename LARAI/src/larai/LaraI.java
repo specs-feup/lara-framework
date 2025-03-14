@@ -46,7 +46,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-import pt.up.fe.specs.util.utilities.Replacer;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import java.io.File;
 import java.io.OutputStream;
@@ -492,7 +491,6 @@ public class LaraI {
                 // If aspect arguments present, load them to object laraArgs
                 loadAspectArguments();
                 interpreter.executeMainAspect(options.getLaraFile());
-                postMainJsExecution();
 
                 // Close weaver
                 weaver.close();
@@ -521,18 +519,6 @@ public class LaraI {
         var init = jsonArgs.isEmpty() ? "{}" : jsonArgs;
 
         interpreter.evaluate("laraArgs = " + init + ";", "LARAI Preamble");
-    }
-
-    private void postMainJsExecution() {
-
-        // If report file enabled, eval writing the outputs using weaver.Script
-        var outputJsonFile = options.getReportFile();
-        if (outputJsonFile.isUsed()) {
-            var template = new Replacer(() -> "org/lara/interpreter/outputResult.js.template");
-            template.replace("<OUTPUT_JSON_PATH>", SpecsIo.normalizePath(outputJsonFile.getFile()));
-            interpreter.evaluate(template.toString(), JsFileType.NORMAL, "LaraI.postMainJsExecution() - output json");
-        }
-
     }
 
     private void finish(JsEngine engine) {
