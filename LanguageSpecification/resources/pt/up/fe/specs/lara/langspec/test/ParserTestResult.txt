@@ -115,7 +115,7 @@ joinpoint loop {
 	int num_children
 	int num_iterations
 	int num_levels
-	{for,while,do-while} type
+	[for| while| do-while] type
 	selects {
 
 	}
@@ -171,8 +171,8 @@ joinpoint var {
 	int num_read
 	int num_writes
 	Float rate
-	{read,write,all,declaration} reference
-    {local,global} scope
+	[read| write| all| declaration] reference
+	[local| global] scope
 	String shape
 	int size
 	String type
