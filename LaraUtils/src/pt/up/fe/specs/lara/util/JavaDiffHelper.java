@@ -44,19 +44,4 @@ public class JavaDiffHelper {
 
         return builder.toString();
     }
-
-    // public static void main(String[] args) {
-    // // build simple lists of the lines of the two testfiles
-    // List<String> original = StringLines.getLines(new File("C:\\Users\\jbispo\\Desktop\\expected.txt"));
-    // List<String> revised = StringLines.getLines(new File("C:\\Users\\jbispo\\Desktop\\current.txt"));
-    //
-    // // compute the patch: this is the diffutils part
-    // var patch = DiffUtils.diff(original, revised);
-    //
-    // // simple output the computed patch to console
-    // // System.out.println("PATCH: " + patch);
-    // for (AbstractDelta<String> delta : patch.getDeltas()) {
-    // System.out.println(delta);
-    // }
-    // }
 }

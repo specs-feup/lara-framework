@@ -19,7 +19,9 @@ repositories {
 dependencies {
 	testImplementation "junit:junit:4.13.1"     
 	implementation ':SpecsUtils'
-	implementation ':tdrcLibrary'		
+	implementation ':tdrcLibrary'
+
+   implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.7'
 }
 
 java {

@@ -68,5 +68,3 @@ public class LaraSystemTools {
     }
 
 }
-
-// cmd("sh dsfklsd fskld fsdkl fsjkl ") > "log.txt";

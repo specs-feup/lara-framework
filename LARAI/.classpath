@@ -17,7 +17,6 @@
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GitPlus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonsLangPlus"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry kind="src" path="/LanguageSpecification"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>

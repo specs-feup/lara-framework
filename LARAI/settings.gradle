@@ -8,7 +8,6 @@ includeBuild("../../specs-java-libs/SpecsUtils")
 includeBuild("../../specs-java-libs/tdrcLibrary")
 
 includeBuild("../../lara-framework/LanguageSpecification")
-includeBuild("../../lara-framework/LaraApi")
 includeBuild("../../lara-framework/LARAC")
 includeBuild("../../lara-framework/LaraUtils")
 includeBuild("../../lara-framework/WeaverInterface")

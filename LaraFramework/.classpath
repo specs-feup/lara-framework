@@ -11,7 +11,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JsEngine"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jOptions"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LanguageSpecification"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LaraApi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LARAI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverGenerator"/>
