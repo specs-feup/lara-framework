@@ -30,7 +30,6 @@ import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
 import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.MasterWeaver;
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -68,7 +67,6 @@ import java.util.stream.Collectors;
 public class LaraI {
     public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
-    public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
     private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
 

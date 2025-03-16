@@ -68,21 +68,6 @@ sourceSets {
    }   
 }
 
-task generateDefaultWeaver(type: Exec) {
-    group = "Execution"
-    description = "Launches WeaverGenerator to regenerate the DefaultWeaver"
-
-    executable "./../../lara-framework/WeaverGenerator/build/install/WeaverGenerator/bin/WeaverGenerator"
-
-    args = [   
-        "-w", "DefaultWeaver",
-        "-p", "org.lara.interpreter.weaver.defaultweaver",
-        "-o", "${rootProject.projectDir}/src",
-        "-x", "${rootProject.projectDir}/resources/org/lara/interpreter/weaver/defaultweaver/specification",
-        "-j"
-    ]
-}
-
 task json(type: JavaExec) {
     group = "Execution"
     description = "Generates the LaraJoinPointSpecification.json file for Lara-JS"

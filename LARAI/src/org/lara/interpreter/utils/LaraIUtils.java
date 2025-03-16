@@ -12,17 +12,11 @@
  */
 package org.lara.interpreter.utils;
 
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import larai.LaraI;
-import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
 
@@ -193,16 +187,6 @@ public class LaraIUtils {
 
     public static String getJarFoldername() {
         return JarPathHolder.instance;
-    }
-
-    /**
-     * Creates the default language specification
-     *
-     * @return
-     */
-    public static LanguageSpecification createDefaultLanguageSpecification() {
-        // TODO: Why validate is false?
-        return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
     }
 
 }

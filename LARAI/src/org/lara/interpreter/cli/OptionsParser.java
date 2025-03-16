@@ -97,13 +97,6 @@ public class OptionsParser {
                 .addOption(jsengine)
                 .addOption(jarpaths);
 
-        // final Option weaver = newOption(CLIOption.weaver, "className", ArgOption.ONE_ARG,
-        // "change the target weaver (default: " + LaraI.DEFAULT_WEAVER + ")");
-        // final Option xml = newOption(CLIOption.XMLspec, "dir", ArgOption.ONE_ARG,
-        // "location of the target language specification");
-        // .addOption(weaver)
-        // .addOption(xml)
-
         ArrayList<Option> arrayList = new ArrayList<>();
         arrayList.addAll(options.getOptions());
         return arrayList;

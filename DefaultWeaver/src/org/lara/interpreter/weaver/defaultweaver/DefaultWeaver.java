@@ -12,7 +12,14 @@
  */
 package org.lara.interpreter.weaver.defaultweaver;
 
-import org.lara.interpreter.utils.LaraIUtils;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
+import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.gears.TestGear;
 import org.lara.interpreter.weaver.defaultweaver.joinpoints.DWorkspace;
@@ -23,9 +30,7 @@ import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver. The implementation of the abstract methods is mandatory!
@@ -111,9 +116,19 @@ public class DefaultWeaver extends ADefaultWeaver {
         return options;
     }
 
+    /**
+     * Creates the default language specification
+     *
+     * @return
+     */
+    public static LanguageSpecification createDefaultLanguageSpecification() {
+        // TODO: Why validate is false?
+        return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
+    }
+
     @Override
     protected LanguageSpecification buildLangSpecs() {
-        return LaraIUtils.createDefaultLanguageSpecification();
+        return DefaultWeaver.createDefaultLanguageSpecification();
     }
 
     public void ensureThatContains(File appFolder) {
