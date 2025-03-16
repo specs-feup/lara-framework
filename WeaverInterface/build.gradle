@@ -30,7 +30,7 @@ dependencies {
 	implementation ':LanguageSpecification'
 	implementation ':LaraUtils'
 	
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'	
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'	
 }
 
 java {

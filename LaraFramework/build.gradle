@@ -40,7 +40,7 @@ dependencies {
 
 		
 	implementation group: 'org.gearman.jgs', name: 'java-gearman-service', version: '0.7.0-SNAPSHOT'		
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'			
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'			
 }
 
 java {
