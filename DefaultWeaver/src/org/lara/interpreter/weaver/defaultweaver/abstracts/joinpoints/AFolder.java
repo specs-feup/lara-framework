@@ -28,7 +28,8 @@ public abstract class AFolder extends ADefaultWeaverJoinPoint {
      */
     public final Object getPath() {
         try {
-        	return this.getPathImpl();
+        	String result = this.getPathImpl();
+        	return result!=null?result:getUndefinedValue();
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "path", e);
         }

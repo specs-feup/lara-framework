@@ -28,7 +28,8 @@ public abstract class AFile extends ADefaultWeaverJoinPoint {
      */
     public final Object getAbsolutePath() {
         try {
-        	return this.getAbsolutePathImpl();
+        	String result = this.getAbsolutePathImpl();
+        	return result!=null?result:getUndefinedValue();
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "absolutePath", e);
         }
@@ -46,7 +47,8 @@ public abstract class AFile extends ADefaultWeaverJoinPoint {
      */
     public final Object getName() {
         try {
-        	return this.getNameImpl();
+        	String result = this.getNameImpl();
+        	return result!=null?result:getUndefinedValue();
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "name", e);
         }

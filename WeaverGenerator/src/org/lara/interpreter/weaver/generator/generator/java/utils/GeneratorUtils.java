@@ -484,10 +484,9 @@ public class GeneratorUtils {
         cloned.appendCodeln("try {");
         cloned.appendCode("\t");
 
-        // TODO: Not sure when this is called, and if it should also have code to convert null to undefined
         if (!returnType.equals("void")) {
-            cloned.appendCode("return ");
-        }    
+            cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
+        }
 
         List<Argument> arguments = cloned.getParams();
         List<String> newArgs = new ArrayList<>(arguments.size());
@@ -510,6 +509,14 @@ public class GeneratorUtils {
 
         // System.out.println(actionName + ": " + newArgs);
         cloned.appendCodeln("this." + original.getName() + "(" + StringUtils.join(newArgs, ", ") + ");");
+
+        if (!returnType.equals("void")) {
+            if (actionReturn.isPrimitive()) {
+                cloned.appendCodeln("\treturn result;");
+            } else {
+                cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
+            }
+        }
 
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + ActionException.class.getSimpleName());
@@ -620,8 +627,9 @@ public class GeneratorUtils {
         cloned.appendCodeln("try {");
         cloned.appendCode("\t");
 
-        cloned.appendCode("return ");
+        cloned.appendCode(original.getReturnType().getSimpleType() + " result = ");
         cloned.appendCodeln("this." + original.getName() + "(" + joinedArgs + ");");
+        cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
         cloned.appendCodeln("(" + GenConstants.getClassName() + "(), \"" + attribute.getName() + "\", e);");
