@@ -89,9 +89,6 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const CxxWeaverOptions = java.import(
-      "pt.up.fe.specs.clava.weaver.options.CxxWeaverOption"
-    );
     const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
@@ -150,21 +147,18 @@ export class Weaver {
         LaraiKeys.WORKSPACE_FOLDER,
         JavaFileList.newInstance(fileList)
       );
-      datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
-      datastore.set(CxxWeaverOptions.DISABLE_CLAVA_INFO, true);
     }
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
     JavaSpecsSystem.programStandardInit();
 
+    Weaver.javaWeaver = javaWeaver;
+    Weaver.datastore = datastore;
 
     for (const file of config.importForSideEffects ?? []) {
       await import(file);
     }
-
-    Weaver.javaWeaver = javaWeaver;
-    Weaver.datastore = datastore;
     /* eslint-enable */
   }
 
