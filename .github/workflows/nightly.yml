@@ -91,6 +91,11 @@ jobs:
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+      - name: Build and test DefaultWeaver
+        working-directory: lara-framework/DefaultWeaver
+        run: gradle installDist
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
@@ -99,11 +104,11 @@ jobs:
             report_paths: './**/build/test-results/test/TEST-*.xml'
             summary: true
 
-      #- name: Upload lara-framework artifacts
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: java-binaries
-      #    path: lara-framework/LaraFramework/build/install/LaraFramework
+      - name: Upload java binary artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-binaries
+          path: lara-framework/DefaultWeaver/build/install/DefaultWeaver
 
 
   build-js:
@@ -146,17 +151,16 @@ jobs:
           cd lara-framework/Lara-JS
           npm run build
 
-      #- name: Pull java-binaries
-      #  uses: actions/download-artifact@v4
-      #  with:
-      #    name: java-binaries
-      #    path: lara-framework/Lara-JS/java-binaries
+      - name: Pull java binary artifacts from previous job
+        uses: actions/download-artifact@v4
+        with:
+          name: java-binaries
+          path: lara-framework/DefaultWeaver/build/install/DefaultWeaver
 
-      # Not working yet, missing connection to Java classes
-      #- name: Test JS
-      #  run: |
-      #    cd lara-framework/Lara-JS
-      #    npm run test
+      - name: Test JS
+        run: |
+          cd lara-framework/Lara-JS
+          npm run test
 
       # Only on ubuntu-latest
       - name: Publish JS
