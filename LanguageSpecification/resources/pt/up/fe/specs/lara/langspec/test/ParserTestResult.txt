@@ -15,9 +15,6 @@ joinpoint joinpoint {
     int num_oper
     int num_pointer_refs
     int size
-    selects {
-        
-    }
     actions {
         void def(String attribute, Object value)
         void insert(String position = before, String code)
@@ -31,23 +28,11 @@ joinpoint body extends section {
     int num_loops
     int num_statements
     int num_while
-    selects {
-        statement as first
-        statement as last
-        statement
-        var
-        if
-        if as otherIf
-    }
     actions {
         
     }
 }
 joinpoint elseif {
-    
-    selects {
-        
-    }
     actions {
         
     }
@@ -58,18 +43,12 @@ joinpoint expr {
     int num_levels
     int num_oper
     int num_pointer_refs
-    selects {
-        
-    }
     actions {
         
     }
 }
 joinpoint file {
     String name
-    selects {
-        function
-    }
     actions {
         
     }
@@ -84,22 +63,12 @@ joinpoint function {
     int num_lines
     int resources
     String return_type
-    selects {
-        var as input
-        var as output
-        body
-    }
     actions {
         void map(String to, String id = 0, String mode = default)
     }
 }
 joinpoint if {
     int num_branches
-    selects {
-        expr as condition
-        body as then
-        elseif
-    }
     actions {
         void optimize(String kind, Json args = {})
     }
@@ -116,9 +85,6 @@ joinpoint loop {
     int num_iterations
     int num_levels
     [for| while| do-while] type
-    selects {
-        
-    }
     actions {
         void optimize(String kind, Json args = {})
     }
@@ -130,27 +96,16 @@ joinpoint section {
     String label
     int latency
     int resources
-    selects {
-        test
-    }
     actions {
         void testbody(String attribute, Object value)
     }
 }
 joinpoint statement {
-    
-    selects {
-        
-    }
     actions {
         
     }
 }
 joinpoint test {
-    
-    selects {
-        
-    }
     actions {
         
     }
@@ -177,18 +132,11 @@ joinpoint var {
     int size
     String type
     Object value
-    selects {
-        
-    }
     actions {
         void optimize(String kind, Json args = {})
     }
 }
 joinpoint weaver {
-    
-    selects {
-        
-    }
     actions {
         
     }
