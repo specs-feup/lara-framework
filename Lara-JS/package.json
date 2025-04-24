@@ -27,7 +27,7 @@
     "typedoc.json"
   ],
   "scripts": {
-    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
+    "build": "npx tsc -b src-api src-code",
     "build:api": "npx tsc -b src-api",
     "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "chokidar": "^4.0.3",
+    "cytoscape": "^3.0.0",
     "debug": "^4.4.0",
     "java": "^0.14.0",
     "supports-color": "^10.0.0",
