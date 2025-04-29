@@ -247,22 +247,6 @@ public abstract class WeaverEngine {
 
     }
 
-    /**
-     * @return the base name for the weaver API. By default returns the weaver name.
-     */
-    public String getWeaverApiName() {
-        return getName();
-    }
-
-    /**
-     * Return a list of hand-made resources that point to lara/js resources.
-     *
-     * @return
-     */
-    public List<ResourceProvider> getAspectsAPI() {
-        return Collections.emptyList();
-    }
-
     public EventTrigger getEventTrigger() {
         return eventTrigger;
     }
@@ -396,17 +380,4 @@ public abstract class WeaverEngine {
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
     }
-
-    public List<ResourceProvider> getLaraApis() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
-    public List<ResourceProvider> getLaraCore() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
-    public List<LaraResourceProvider> getNpmResources() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
 }

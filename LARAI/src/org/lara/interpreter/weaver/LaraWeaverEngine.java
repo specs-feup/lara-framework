@@ -14,7 +14,6 @@
 package org.lara.interpreter.weaver;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,29 +21,12 @@ import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
-
-    private static final String API_NAME = "@specs-feup/lara";
-
-    private final List<ResourceProvider> laraApis;
-    private final List<ResourceProvider> laraCore;
-
     private LaraWeaverState state;
 
     public LaraWeaverEngine() {
-        laraApis = buildLaraApis();
-        laraCore = buildLaraCore();
         state = null;
-
-        // Add LARA APIs
-        addApis(API_NAME, laraApis);
-
-        // Add weaver-specific APIs
-        var weaverApis = new ArrayList<ResourceProvider>();
-        weaverApis.addAll(getAspectsAPI());
-        addApis(getWeaverApiName(), weaverApis);
     }
 
     @Override
@@ -94,24 +76,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      * @return true if executed without errors
      */
     public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
-
-    @Override
-    public List<ResourceProvider> getLaraApis() {
-        return laraApis;
-    }
-
-    private List<ResourceProvider> buildLaraApis() {
-        return new ArrayList<ResourceProvider>();
-    }
-
-    @Override
-    public List<ResourceProvider> getLaraCore() {
-        return laraCore;
-    }
-
-    private List<ResourceProvider> buildLaraCore() {
-        return new ArrayList<ResourceProvider>(getImportableScripts());
-    }
 
     /**
      *

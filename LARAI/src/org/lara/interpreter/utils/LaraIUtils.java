@@ -22,137 +22,13 @@ import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
 
-    public final static String SPACE = "\t";
-
-    public static enum Statements {
-        VARDECL,
-        FNDECL,
-        GFNDECL,
-        EXPR,
-        BLOCK,
-        IF,
-        LOOP,
-        CONTINUE,
-        BREAK,
-        RETURN,
-        YIELD,
-        YIELD_STAR,
-        WITH,
-        SWITCH,
-        THROW,
-        TRY,
-        EXIT,
-        SELECT,
-        APPLY,
-        SCRIPTIMPORT,
-        JSIMPORT,
-        LARAIMPORT;
-    }
+    public static final String SPACE = "\t";
 
     public static String getSpace(int depth) {
         if (depth <= 0) {
             return "";
         }
         return String.format(String.format("%%0%dd", depth), 0).replace("0", LaraIUtils.SPACE);
-    }
-
-    public static enum Operators {
-        UNION_JOIN("+"),
-        NATURAL_JOIN("::"),
-        BITAND_JOIN("&"),
-        ADD("+"),
-        SUB("-"),
-        MULT("*"),
-        DIV("/"),
-        MOD("%"),
-        SHL(
-                "<<"),
-        SHR(">>"),
-        USHR(">>>"),
-        OR("||"),
-        AND("&&"),
-        LT("<"),
-        LTE("<="),
-        GT(">"),
-        GTE(">="),
-        INSTANCEOF(
-                "instanceof"),
-        IN("in"),
-        EQ("=="),
-        NEQ("!="),
-        SEQ("==="),
-        NSEQ("!=="),
-        MATCH("~="),
-        BITAND("&"),
-        BITXOR("^"),
-        BITOR("|"),
-        COMMA(","),
-        POS("+"),
-        NEG("-"),
-        NOT("!"),
-        INV("~"),
-        INCP(
-                "++"),
-        DECP("--"),
-        ASSIGN("="),
-        ASSIGN_ADD("+="),
-        ASSIGN_SUB("-="),
-        ASSIGN_MULT(
-                "*="),
-        ASSIGN_DIV("/="),
-        ASSIGN_MOD("%="),
-        ASSIGN_SHL(
-                "<<="),
-        ASSIGN_SHR(">>="),
-        ASSIGN_USHR(">>>="),
-        ASSIGN_BITAND(
-                "&="),
-        ASSIGN_BITXOR("^="),
-        ASSIGN_BITOR("|="),
-        TYPEOF(
-                "typeof "),
-        DELETE("delete "),
-        VOID("void ");
-
-        private String op;
-
-        Operators(String op) {
-            setOp(op);
-        }
-
-        public void setOp(String op) {
-            this.op = op;
-        }
-
-        public String getOp() {
-            return op;
-        }
-
-        public static String getOpString(String operEnum) {
-            return valueOf(operEnum.toUpperCase()).op;
-        }
-
-        public static Operators getOpTag(String text) {
-            if (text != null) {
-                for (final Operators b : Operators.values()) {
-                    if (text.equalsIgnoreCase(b.op)) {
-                        return b;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public static boolean contains(String text) {
-            if (text != null) {
-                for (final Operators b : Operators.values()) {
-                    if (text.equalsIgnoreCase(b.op)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
     }
 
     public static boolean printHelp(CommandLine cmd, Options options) {

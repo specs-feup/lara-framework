@@ -28,7 +28,6 @@ import pt.up.fe.specs.util.logging.MultiOutputStream;
 public class Output {
 
     private Message msg = new NormalMsg();
-    private Message error = new ErrorMsg();
     private Message warning = new WarningMsg();
     private final MessageDef def;
     private PrintStream stream;
@@ -53,18 +52,6 @@ public class Output {
         setStream(System.out);
     }
 
-    public void error(String message) {
-        if (this.def.error) {
-            this.error.print(message);
-        }
-    }
-
-    public void errorln(String message) {
-        if (this.def.error) {
-            this.error.println(message);
-        }
-    }
-
     public void warn(String message) {
         if (this.def.warning) {
             this.warning.print(message);
@@ -77,47 +64,12 @@ public class Output {
         }
     }
 
-    public void print(String message) {
-        if (this.def.normal) {
-            this.msg.print(message);
-        }
-    }
-
     public void println(String message) {
         if (this.def.normal) {
             this.msg.println(message);
         }
     }
 
-    public void error(Object obj) {
-        if (this.def.error) {
-            this.error.print(obj.toString());
-        }
-    }
-
-    public void errorln(Object obj) {
-        if (this.def.error) {
-            this.error.println(obj.toString());
-        }
-    }
-
-    public void warn(Object obj) {
-        if (this.def.warning) {
-            this.warning.print(obj.toString());
-        }
-    }
-
-    public void warnln(Object obj) {
-        if (this.def.warning) {
-            this.warning.println(obj.toString());
-        }
-    }
-
-    public void print(Object obj) {
-        if (this.def.normal) {
-            this.msg.print(obj.toString());
-        }
-    }
 
     public void println(Object obj) {
         if (this.def.normal) {
@@ -128,7 +80,6 @@ public class Output {
     public void setStream(PrintStream stream) {
         this.stream = stream;
         this.msg = new NormalMsg(stream);
-        this.error = new ErrorMsg(stream);
         this.warning = new WarningMsg(stream);
     }
 
@@ -139,7 +90,6 @@ public class Output {
 
         this.stream = new PrintStream(multiStream);
         this.msg = new NormalMsg(this.stream);
-        this.error = new ErrorMsg(this.stream);
         this.warning = new WarningMsg(this.stream);
     }
 
