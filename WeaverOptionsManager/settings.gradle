@@ -6,3 +6,5 @@ includeBuild("../../specs-java-libs/SpecsUtils")
 
 includeBuild("../../lara-framework/LARAI")
 includeBuild("../../lara-framework/WeaverInterface")
+
+includeBuild("../../lara-framework/DefaultWeaver")
