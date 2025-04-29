@@ -24,10 +24,8 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
@@ -72,30 +70,6 @@ public class EventTrigger {
                 aspectFile);
         final Event event = new SimpleEvent(LaraIEvent.OnWeaver, data);
         eventController.notifyEvent(event);
-    }
-
-    public static final String TRIGGER_ASPECT_EVENT = "triggerAspect";
-
-    /**
-     * Trigger an aspect event
-     * 
-     * @param stage
-     * @param aspect_name
-     * @param called_by
-     * @param params
-     * @param objects
-     */
-    // public void triggerAspect(Object stage, Object aspect_name, Object called_by, Object[] params, Object[] objects,
-    // Object exception) {
-    public void triggerAspect(Stage stage, String aspect_name, String called_by, String[] params, Object[] objects,
-            Object exception) {
-        // System.out.println("TRIGGER ASPECT:" + aspect_name);
-        final AspectEvent data = new AspectEvent(stage, aspect_name, called_by, params, objects, exception);
-        // final AspectEvent data = new AspectEvent((Stage) stage, (String) aspect_name, (String) called_by,
-        // (String[]) params, objects, exception);
-        final Event event = new SimpleEvent(LaraIEvent.OnAspect, data);
-        eventController.notifyEvent(event);
-        // System.out.println("TRIGGER ASPECT END:" + aspect_name);
     }
 
     public static final String TRIGGER_ACTION_EVENT = "triggerAction";
@@ -162,26 +136,6 @@ public class EventTrigger {
         final Event event = new SimpleEvent(LaraIEvent.OnApply, data);
         eventController.notifyEvent(event);
         // System.out.println("TRIGGER APPLY[] END:" + aspect_name);
-    }
-
-    /**
-     * Trigger a select event
-     * 
-     * @param stage
-     * @param aspect_name
-     * @param selectLable
-     * @param pointcutChain
-     * @param aliases
-     * @param filters
-     * @param pointcut
-     */
-    public void triggerSelect(Stage stage, String aspect_name, String selectLable, String[] pointcutChain,
-            String[] aliases, FilterExpression[][] filters, Optional<LaraJoinPoint> pointcut) {
-
-        final SelectEvent data = new SelectEvent(stage, aspect_name, selectLable, pointcutChain, aliases, filters,
-                pointcut);
-        final Event event = new SimpleEvent(LaraIEvent.OnSelect, data);
-        eventController.notifyEvent(event);
     }
 
     public void triggerJoinPoint(Stage stage, String joinPointClass, String alias,

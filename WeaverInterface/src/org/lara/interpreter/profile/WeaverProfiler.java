@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.profile;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -23,14 +22,10 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-
-import pt.up.fe.specs.util.utilities.StringLines;
 
 /**
  * Abstract profiler providing basic metrics:<br>
@@ -87,20 +82,6 @@ public abstract class WeaverProfiler extends AGear {
     protected abstract void onWeaverImpl(WeaverEvent data);
 
     /**
-     * Triggers at the beginning and end of an aspect call
-     * 
-     * @param data
-     */
-    protected abstract void onAspectImpl(AspectEvent data);
-
-    /**
-     * Triggers before and after a select is executed
-     * 
-     * @param data
-     */
-    protected abstract void onSelectImpl(SelectEvent data);
-
-    /**
      * Triggers when a join point is created
      * 
      * @param data
@@ -128,41 +109,6 @@ public abstract class WeaverProfiler extends AGear {
     @Override
     public final void onWeaver(WeaverEvent data) {
         onWeaverImpl(data);
-    }
-
-    @Override
-    public final void onAspect(AspectEvent data) {
-        onAspectImpl(data);
-        if (data.getStage().equals(Stage.BEGIN)) {
-            report.aspectCalled(data.getAspectCallee());
-        }
-        if (data.getStage().equals(Stage.END)) {
-            // report.aspectCalled(data.getAspectCallee());
-        }
-    }
-
-    @Override
-    public final void onSelect(SelectEvent data) {
-        onSelectImpl(data);
-
-        switch (data.getStage()) {
-
-        case BEGIN:
-            break;
-        case END:
-            Optional<LaraJoinPoint> pointcut = data.getPointcut();
-            if (pointcut.isPresent()) {
-                LaraJoinPoint laraJoinPoint = pointcut.get();
-                // String key = data.getAspect_name() + data.getLabel();
-                // iterateJPs(laraJoinPoint, jp -> filteredSelects.addNode(key, jp));
-                int total = countJPs(laraJoinPoint, 0);
-                report.inc(ReportField.FILTERED_JOIN_POINTS, total);
-                // report.incFilteredJoinPoints(total);
-            }
-            break;
-        default:
-            break;
-        }
     }
 
     protected int countJPs(LaraJoinPoint laraJoinPoint, int acc) {
@@ -248,13 +194,11 @@ public abstract class WeaverProfiler extends AGear {
                     .report("initTime", report.get(ReportField.INIT_TIME))
                     .report("weavingTime", report.get(ReportField.WEAVING_TIME))
                     .report("totalTime", report.get(ReportField.TOTAL_TIME))
-                    .report("aspects", report.getNumAspectCalls())
                     .report("joinPoints", report.get(ReportField.JOIN_POINTS))
                     .report("filteredJoinPoints", report.get(ReportField.FILTERED_JOIN_POINTS))
                     .report("actions", report.getNumActions())
                     .report("attributes", report.get(ReportField.ATTRIBUTES))
                     .report("runs", report.get(ReportField.RUNS))
-                    .report("aspectsCalled", report.getAspectsMap())
                     .report("actionsPerformed", report.getActionsMap())
             /**/;
             buildReport(jsonWriter);

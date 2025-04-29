@@ -19,10 +19,8 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 
 import pt.up.fe.specs.util.events.ActionsMap;
@@ -57,8 +55,6 @@ public abstract class AGear extends EventReceiverTemplate {
         // actionsMap.putAction(LaraIEvent.OnWeaver, newOnWeaver());
         // actionsMap.putAction(LaraIEvent.OnWeaver, this::performAction);
         actionsMap.putAction(LaraIEvent.OnWeaver, event -> weaverEvent(event.getData()));
-        actionsMap.putAction(LaraIEvent.OnAspect, event -> aspectEvent(event.getData()));
-        actionsMap.putAction(LaraIEvent.OnSelect, event -> selectEvent(event.getData()));
         actionsMap.putAction(LaraIEvent.OnJoinPoint, event -> joinPointEvent(event.getData()));
         actionsMap.putAction(LaraIEvent.OnApply, event -> applyEvent(event.getData()));
         actionsMap.putAction(LaraIEvent.OnAction, event -> actionEvent(event.getData()));
@@ -70,18 +66,6 @@ public abstract class AGear extends EventReceiverTemplate {
     private void weaverEvent(Object data) {
         if (active) {
             onWeaver((WeaverEvent) data);
-        }
-    }
-
-    private void aspectEvent(Object data) {
-        if (active) {
-            onAspect((AspectEvent) data);
-        }
-    }
-
-    private void selectEvent(Object data) {
-        if (active) {
-            onSelect((SelectEvent) data);
         }
     }
 
@@ -127,27 +111,6 @@ public abstract class AGear extends EventReceiverTemplate {
      *            the event data
      */
     public void onWeaver(WeaverEvent data) {
-        // Do nothing as default
-    }
-
-    /**
-     * Handler to execute when an aspect is called ({@link Stage#BEGIN}, {@link Stage#AFTER} and {@link Stage#EXCEPTION}
-     * )
-     * 
-     * @param data
-     *            the event data
-     */
-    public void onAspect(AspectEvent data) {
-        // Do nothing as default
-    }
-
-    /**
-     * Handler to execute when a select occurs({@link Stage#BEGIN} and {@link Stage#AFTER})
-     * 
-     * @param data
-     *            the event data
-     */
-    public void onSelect(SelectEvent data) {
         // Do nothing as default
     }
 
@@ -201,83 +164,6 @@ public abstract class AGear extends EventReceiverTemplate {
     public void onAttribute(AttributeEvent data) {
         // Do nothing as default
     }
-
-    // private void performAction(Event event) {
-    // onWeaver((WeaverEvent) event.getData());
-    // }
-
-    // private EventAction newOnWeaver() {
-    // return event -> onWeaver((WeaverEvent) event.getData());
-    //
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // WeaverEvent data = (WeaverEvent) event.getData();
-    // onWeaver(data);
-    // }
-    // };
-    //
-    // }
-
-    // private void performAction(Event event) {
-    // onWeaver((WeaverEvent) event.getData());
-    // }
-    //
-    // private EventAction newOnAspect() {
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // AspectEvent data = (AspectEvent) event.getData();
-    // onAspect(data);
-    // }
-    // };
-    // }
-    //
-    // private EventAction newOnSelect() {
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // SelectEvent data = (SelectEvent) event.getData();
-    // onSelect(data);
-    // }
-    // };
-    // }
-    //
-    // private EventAction newOnJoinPoint() {
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // JoinPointEvent data = (JoinPointEvent) event.getData();
-    // onJoinPoint(data);
-    // }
-    // };
-    // }
-    //
-    // private EventAction newOnApply() {
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // ApplyEvent data = (ApplyEvent) event.getData();
-    // onApply(data);
-    // }
-    // };
-    // }
-    //
-    // private EventAction newOnAction() {
-    // return new EventAction() {
-    //
-    // @Override
-    // public void performAction(Event event) {
-    // ActionEvent data = (ActionEvent) event.getData();
-    // onAction(data);
-    // }
-    // };
-    // }
 
     /*
      * (non-Javadoc)

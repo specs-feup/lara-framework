@@ -15,13 +15,11 @@ package org.lara.interpreter.weaver.generator.generator.utils;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.specs.generators.java.types.JavaType;
-import tdrc.utils.StringUtils;
 
 import java.io.File;
 
 public class GenConstants {
 
-    private static final String DEF_PREFIX = "def";
     private static final String IMPLEMENTATION_SUFIX = "Impl";
     private static final File defaultXmlDir = new File(".");
     private static final File defaultOutputDir = new File(".");
@@ -154,16 +152,6 @@ public class GenConstants {
 
     public static String setWeaverEngineMethodName() {
         return GenConstants.SET_WEAVER_ENGINE_NAME;
-    }
-
-    public static String getDefPrefix() {
-
-        return GenConstants.DEF_PREFIX;
-    }
-
-    public static String getDefAttributeImplName(String attribute) {
-        return getDefPrefix()
-                + StringUtils.firstCharToUpper(attribute) + getImplementationSufix();
     }
 
     public static String withImpl(String string) {

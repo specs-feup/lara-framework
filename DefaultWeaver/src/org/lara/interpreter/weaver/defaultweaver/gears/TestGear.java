@@ -17,9 +17,7 @@ import org.lara.interpreter.weaver.defaultweaver.options.DefaulWeaverKeys;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
@@ -60,35 +58,6 @@ public class TestGear extends AGear {
 	if (debug) {
 	    System.out.println("On Weaver - " + data.toString());
 	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lara.interpreter.weaver.interf.AGear#onAspect(org.lara.interpreter.
-     * weaver.interf.events.data.AspectEvent)
-     */
-    @Override
-    public void onAspect(AspectEvent data) {
-	if (debug) {
-	    System.out.println("On Aspect - " + data.toString());
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lara.interpreter.weaver.interf.AGear#onSelect(org.lara.interpreter.
-     * weaver.interf.events.data.SelectEvent)
-     */
-    @Override
-    public void onSelect(SelectEvent data) {
-	if (debug) {
-	    System.out.println("On Select - " + data.toString());
-	}
-
     }
 
     /*

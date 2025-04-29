@@ -25,8 +25,6 @@ public class ApplyEvent extends BaseEvent {
     private String select_label;
     private Optional<LaraJoinPoint> jpset;
 
-    // private JoinPoint currentJoinPoint;
-
     /**
      * @param stage
      * @param label
@@ -53,20 +51,6 @@ public class ApplyEvent extends BaseEvent {
 	}
 	return ret;
     }
-
-    // /**
-    // * @param stage
-    // * @param applyName
-    // * @param selectName
-    // * @param select
-    // */
-    // public ApplyEvent(Stage stage, String applyName, String selectName,
-    // JoinPoint currentJoinPoint) {
-    // super(stage);
-    // this.applyName = applyName;
-    // this.selectName = selectName;
-    // this.currentJoinPoint = currentJoinPoint;
-    // }
 
     /**
      * @return the applyName
@@ -95,52 +79,6 @@ public class ApplyEvent extends BaseEvent {
      */
     protected void setApplyName(String applyName) {
 	label = applyName;
-    }
-
-    /**
-     * @param selectName
-     *            the selectName to set
-     */
-    protected void setSelectName(String selectName) {
-	select_label = selectName;
-    }
-
-    /**
-     * @param select
-     *            the select to set
-     */
-    protected void setSelect(Optional<LaraJoinPoint> select) {
-	jpset = select;
-    }
-
-    // /**
-    // * @return the currentJoinPoint
-    // */
-    // public JoinPoint getCurrentJoinPoint() {
-    // return currentJoinPoint;
-    // }
-    //
-    // /**
-    // * @param currentJoinPoint
-    // * the currentJoinPoint to set
-    // */
-    // protected void setCurrentJoinPoint(JoinPoint currentJoinPoint) {
-    // this.currentJoinPoint = currentJoinPoint;
-    // }
-
-    /**
-     * @return the aspect_name
-     */
-    public String getAspect_name() {
-	return aspect_name;
-    }
-
-    /**
-     * @param aspect_name
-     *            the aspect_name to set
-     */
-    protected void setAspect_name(String aspect_name) {
-	this.aspect_name = aspect_name;
     }
 
 }
