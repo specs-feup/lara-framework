@@ -120,14 +120,14 @@ export default abstract class LoggerBase<T extends LaraJoinPoint> {
    * Override this method if you need to specialize the insertion.
    */
   // TODO: This function should receive LaraJoinPoints but they do not have the insertAfter method
-  _insertCode($jp: any, insertBefore: boolean, code: string) {
+  _insertCode($jp: T, insertBefore: boolean, code: string) {
     const insertBeforeString = insertBefore ? "before" : "after";
 
     if (insertBefore) {
       $jp.insert(insertBeforeString, code);
       this.afterJp = $jp;
     } else {
-      this.afterJp = $jp.insertAfter(code);
+      this.afterJp = $jp.insert("after", code) as T;
     }
   }
 
