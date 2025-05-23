@@ -178,10 +178,6 @@ export class Weaver {
       Weaver.debug("No script file provided.");
     }
 
-    for (const file of config.importForSideEffects ?? []) {
-      await import(file);
-    }
-
     if (typeof args.scriptFile !== "string") {
       throw new Error(
         "Script file '" +
