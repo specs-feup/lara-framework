@@ -5,6 +5,7 @@ import DataStore from "../lara/util/DataStore.js";
 import JavaTypes from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
+import Io from "../lara/Io.js";
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
  */
@@ -200,6 +201,9 @@ export default class Weaver {
         let jsonString = datastore.get(JavaTypes.LaraiKeys.ASPECT_ARGS);
         jsonString ??= "";
         jsonString.trim();
+        if (jsonString.endsWith(".json")) {
+            return Io.readJson(jsonString);
+        }
         // Fix curly braces
         if (!jsonString.startsWith("{")) {
             jsonString = "{" + jsonString;
