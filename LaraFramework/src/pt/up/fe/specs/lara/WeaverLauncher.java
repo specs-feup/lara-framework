@@ -1,11 +1,11 @@
 /**
  * Copyright 2019 SPeCS.
- * 
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -13,29 +13,10 @@
 
 package pt.up.fe.specs.lara;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
+import com.google.gson.Gson;
+import larai.LaraI;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-
-import com.google.gson.Gson;
-
-import larai.LaraI;
 import pt.up.fe.specs.lara.doc.LaraDocLauncher;
 import pt.up.fe.specs.lara.unit.LaraUnitLauncher;
 import pt.up.fe.specs.util.SpecsIo;
@@ -44,11 +25,21 @@ import pt.up.fe.specs.util.SpecsStrings;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.CachedValue;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
 /**
  * Utility methods what weavers can use to bootstrap execution.
- * 
- * @author JoaoBispo
  *
+ * @author JoaoBispo
  */
 public class WeaverLauncher {
 
@@ -276,13 +267,12 @@ public class WeaverLauncher {
     }
 
     /**
-     * 
      * @param args
      * @param threads
      * @param weaverCommand
      * @param workingDir
      * @return an array with the same size as the number if args, with strings representing JSON objects that represent
-     *         the outputs of the execution. The order of the results is the same as the args
+     * the outputs of the execution. The order of the results is the same as the args
      */
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand, String workingDir) {
 
@@ -344,7 +334,7 @@ public class WeaverLauncher {
 
                 // If there is an exception, look for the results file and write an error json
                 try (StringWriter stringWriter = new StringWriter();
-                        PrintWriter printWriter = new PrintWriter(stringWriter)) {
+                     PrintWriter printWriter = new PrintWriter(stringWriter)) {
 
                     e.printStackTrace(printWriter);
                     var stackTrace = stringWriter.toString();
@@ -455,8 +445,23 @@ public class WeaverLauncher {
         }
     }
 
+    public static String[] executeParallelStatic(Object[] args, int threads, List<String> weaverCommand,
+                                                 String workingDir) {
+
+        String[][] argsJava = new String[args.length][];
+
+        int index = 0;
+        for (Object arg : args) {
+            var argCast = (String[]) arg;
+            argsJava[index] = argCast;
+            index++;
+        }
+
+        return executeParallelStatic(argsJava, threads, weaverCommand, workingDir);
+    }
+
     public static String[] executeParallelStatic(String[][] args, int threads, List<String> weaverCommand,
-            String workingDir) {
+                                                 String workingDir) {
 
         return new WeaverLauncher(WeaverEngine.getThreadLocalWeaver()).executeParallel(args, threads, weaverCommand,
                 workingDir);

@@ -102,6 +102,7 @@ public abstract class JoinPoint {
      * @return
      */
     public abstract boolean same(JoinPoint iJoinPoint); // {
+
     // throw new UnsupportedOperationException("The 'same' method is not
     // implemented for the join point "
     // + get_class());
