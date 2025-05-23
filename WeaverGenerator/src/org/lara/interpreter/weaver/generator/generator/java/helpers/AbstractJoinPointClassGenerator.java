@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
@@ -79,7 +78,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
         addFieldsAndConstructors(javaC);
-        addSelects(javaC);
         addActions(javaC);
 
         String superTypeName = null;
@@ -104,21 +102,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         // If join point is not extended by any other join point, it is final
         boolean isFinal = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
-
-        GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal);
-
-        if (javaGenerator.hasDefs()) {
-
-            var attrsWithDefs = joinPoint.getAttributes().stream()
-                    .filter(attr -> !attr.getDefs().isEmpty())
-                    .toList();
-
-            GeneratorUtils.createDefImpl(javaC, isFinal, attrsWithDefs, javaGenerator);
-
-        }
-        GeneratorUtils.createListOfAvailableAttributes(javaC, joinPoint, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, isFinal);
 
         generateGet_Class(javaC, isFinal);
 
@@ -159,23 +142,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             Method generateAttributeImpl = GeneratorUtils.generateAttributeImpl(generateAttribute, attribute,
                     javaC, javaGenerator);
             javaC.add(generateAttributeImpl);
-            GeneratorUtils.generateDefMethods(attribute, generateAttribute.getReturnType(), javaC,
-                    javaGenerator);
-            // if(!def.isEmpty())
-        }
-
-    }
-
-    /**
-     * Add selects for each join point child
-     *
-     * @param joinPoint
-     * @param javaC
-     */
-    private void addSelects(JavaClass javaC) {
-
-        for (var sel : joinPoint.getSelectsSelf()) {
-            addSelect(sel, javaC);
         }
 
     }
@@ -197,22 +163,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             javaC.add(cloned);
         }
 
-    }
-
-    /**
-     * Create a new select method for a joinpoint
-     *
-     * @param selectName
-     * @param type
-     * @param javaC
-     */
-    private void addSelect(org.lara.language.specification.dsl.Select sel, JavaClass javaC) {
-
-        final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
-        final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(sel, joinPointPackage);
-
-        javaC.add(selectMethod);
-        javaC.addImport(SelectOp.class);
     }
     
     /**

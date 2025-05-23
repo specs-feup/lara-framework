@@ -1,9 +1,7 @@
-laraImport("LaraImportFromJsLara")
+import { laraImport } from "@specs-feup/lara/api/lara/core/LaraCore.js";
+
 laraImport("LaraImportFromJsJs")
 laraImport("LaraImportFromJsMjs")
-
-var fromLara = new LaraImportFromJsLara()
-fromLara.print()
 
 var fromJs = new LaraImportFromJsJs()
 fromJs.print()

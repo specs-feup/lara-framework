@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -91,9 +90,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         generateGlobalJoinPointData(abstJPClass);
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
         addWeaverEngineField(abstJPClass);
-
-        // Add abstract version of generic select
-        abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass, true));
 
         return abstJPClass;
     }
@@ -171,8 +167,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         // Add actions to the abstract join point class
         generateGlobalActionsAsMethods(abstJPClass);
 
-        generateGlobalSelects(abstJPClass);
-
         generateGlobalAttributes(abstJPClass);
 
     }
@@ -192,85 +186,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
 
-        final Method fillWithAttributes = new Method(JavaTypeFactory.getVoidType(),
-                GenConstants.fillWAttrMethodName(),
-                Privacy.PROTECTED);
-        fillWithAttributes.add(Annotation.OVERRIDE);
-        fillWithAttributes.addArgument(JavaTypeFactory.getListStringJavaType(), "attributes");
-        fillWithAttributes.appendCode("// Default attributes" + ln());
-        fillWithAttributes.appendCode("super.fillWithAttributes(attributes);" + ln() + ln());
-        fillWithAttributes.appendCode("//Attributes available for all join points" + ln());
-        abstJPClass.add(fillWithAttributes);
-
         for (var attr : globalAttrs) {
-            final String name = attr.getName();
-            fillWithAttributes.appendCode("attributes.add(\"" + name);
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);
-            final List<Argument> arguments = method.getParams();
-            if (!arguments.isEmpty()) {
-                fillWithAttributes.appendCode("(");
-
-                final String argsList = StringUtils.join(arguments, ", ");
-                fillWithAttributes.appendCode(argsList);
-                // Argument arg = arguments.get(0);
-                // fillWithAttributes.appendCode(arg.getClassType() + " " +
-                // arg.getName());
-                //
-                // for (int i = 1; i < arguments.size(); i++) {
-                //
-                // arg = arguments.get(i);
-                // fillWithAttributes.appendCode("," + arg.getClassType() +
-                // " " + arg.getName());
-                // }
-                fillWithAttributes.appendCode(")");
-            }
-
-            fillWithAttributes.appendCode("\");" + ln());
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
                     abstJPClass, javaGenerator);
 
-            GeneratorUtils.generateDefMethods(attr, method.getReturnType(), abstJPClass, javaGenerator);
             abstJPClass.add(methodImpl);
-
         }
-
-        // Then add default attributes -> already in JoinPoint class!
-        // addDefaultAttributes(abstJPClass, fillWithAttributes);
-    }
-
-    /**
-     * Generate the global selects as abstract methods
-     *
-     * @param actionModel
-     * @param abstJPClass
-     */
-    private void generateGlobalSelects(JavaClass abstJPClass) {
-
-        var selects = javaGenerator.getLanguageSpecification().getGlobal().getSelectsSelf();
-
-        if (selects.isEmpty()) {
-            return;
-        }
-
-        final Method fillWithSelects = new Method(JavaTypeFactory.getVoidType(), GenConstants.fillWSelMethodName(),
-                Privacy.PROTECTED);
-        abstJPClass.add(fillWithSelects);
-        fillWithSelects.add(Annotation.OVERRIDE);
-        fillWithSelects.addArgument(JavaTypeFactory.getListStringJavaType(), "selects");
-        fillWithSelects.appendCode("//Selects available for all join points" + ln());
-
-        for (var select : selects) {
-
-
-            final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(select,
-                    javaGenerator.getJoinPointClassPackage());
-            abstJPClass.add(selectMethod);
-            abstJPClass.addImport(SelectOp.class);
-
-            fillWithSelects.appendCode("selects.add(\"" + select + "\");" + ln());
-        }
-
     }
 
     /**
@@ -281,91 +204,20 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      */
     private void generateGlobalActionsAsMethods(JavaClass abstJPClass) {
 
-        if (javaGenerator.hasDefs()) {
-
-            var attrs = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf().stream()
-                    .filter(a -> !a.getDefs().isEmpty())
-                    .toList();
-
-            GeneratorUtils.createDefImpl(abstJPClass, false, attrs, javaGenerator);
-        }
-
         var actions = javaGenerator.getLanguageSpecification().getGlobal().getActionsSelf();
 
         if (actions.isEmpty()) {
             return;
         }
 
-
-        final Method fillWithActions = new Method(JavaTypeFactory.getVoidType(), GenConstants.fillWActMethodName(),
-                Privacy.PROTECTED);
-        fillWithActions.add(Annotation.OVERRIDE);
-        abstJPClass.add(fillWithActions);
-        abstJPClass.addImport(List.class);
-        final JavaType listStringType = JavaTypeFactory.getListStringJavaType();
-        fillWithActions.addArgument(listStringType, "actions");
-
         for (var action : actions) {
             final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
             abstJPClass.add(m);
-
-            fillWithActions.appendCode("actions.add(\"" + action.getName() + "(");
-            // Function<Argument, String> mapper = arg -> arg.getClassType() + "
-            // " + arg.getName();
-            String joinedArgs = StringUtils.join(m.getParams(), ", ");
-            fillWithActions.appendCode(joinedArgs);
-            fillWithActions.appendCode(")\");" + ln());
 
             Method cloned = GeneratorUtils.generateActionImplMethod(m, action,
                     abstJPClass, javaGenerator);
             abstJPClass.add(cloned);
         }
-        // addDefaultActions(abstJPClass, fillWithActions);
     }
-
-
-    /**
-     * Add the default attributes to the abstract join point representation <br>
-     * Already in JoinPoint class!
-     *
-     * @param abstJPClass
-     */
-    // private static void addDefaultAttributes(JavaClass abstJPClass, Method fillWithAttributes) {
-    // fillWithAttributes.appendCode("attributes.add(\"selects\");\n");
-    // fillWithAttributes.appendCode("attributes.add(\"attributes\");\n");
-    // fillWithAttributes.appendCode("attributes.add(\"actions\");\n");
-    //
-    // }
-
-    /**
-     * Add the default actions to the abstract join point representation <br>
-     * already in JoinPoint class!
-     *
-     * @param abstJPClass
-     */
-    // private static void addDefaultActions(JavaClass abstJPClass, Method fillWithActions) {
-    // final JavaType voidType = JavaTypeFactory.getVoidType();
-    // final Method insertMethod = new Method(voidType, "insert");
-    // final JavaType stringType = JavaTypeFactory.getStringType();
-    // insertMethod.addArgument(stringType, "position");
-    // insertMethod.addArgument(stringType, "code");
-    // insertMethod.appendCode(GeneratorUtils.UnsupActionExceptionCode("insert"));
-    // abstJPClass.add(insertMethod);
-    //
-    // Method cloned = GeneratorUtils.generateActionImplMethod(insertMethod, "insert", "void", abstJPClass);
-    // abstJPClass.add(cloned);
-    //
-    // final Method defMethod = new Method(voidType, "def");
-    // defMethod.addArgument(stringType, "attribute");
-    // defMethod.addArgument(JavaTypeFactory.getObjectType(), "value");
-    // defMethod.appendCode(GeneratorUtils.UnsupActionExceptionCode("def"));
-    // abstJPClass.add(defMethod);
-    //
-    // cloned = GeneratorUtils.generateActionImplMethod(defMethod, "def", "void", abstJPClass);
-    // abstJPClass.add(cloned);
-    //
-    // fillWithActions.appendCode("actions.add(\"insert(String position, String code)\");\r\n");
-    // fillWithActions.appendCode("actions.add(\"def(String attribute, Object value)\");\r\n");
-    // }
 
 }

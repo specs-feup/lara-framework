@@ -14,13 +14,9 @@
 package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
-import pt.up.fe.specs.tools.lara.exception.LARAExceptionBuilder;
 
 public class EvaluationException extends BaseException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public EvaluationException(Throwable e) {
@@ -35,10 +31,4 @@ public class EvaluationException extends BaseException {
     protected String generateMessage() {
         return "Exception " + generateSimpleMessage();
     }
-
-    @Override
-    protected String generateSimpleMessage() {
-        return LARAExceptionBuilder.getEvaluationExceptionMessage();
-    }
-
 }

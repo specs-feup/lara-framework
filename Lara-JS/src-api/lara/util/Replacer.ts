@@ -5,15 +5,15 @@ import JavaTypes, { JavaClasses } from "./JavaTypes.js";
  * Replaces strings inside a larger string.
  */
 export default class Replacer {
-  javaReplacer: JavaClasses.ReplacerHelper;
+  _contents: string;
 
-  constructor(contentsOrFile: any) {
+  constructor(contentsOrFile: string | JavaClasses.File) {
     // If a file, read the contents
     if (JavaTypes.instanceOf(contentsOrFile, "java.io.File")) {
       contentsOrFile = Io.readFile(contentsOrFile);
     }
 
-    this.javaReplacer = new JavaTypes.ReplacerHelper(contentsOrFile);
+    this._contents = contentsOrFile as string;
   }
 
   static fromFilename(filename: string) {
@@ -21,11 +21,11 @@ export default class Replacer {
   }
 
   replaceAll(target: string, replacement: string) {
-    this.javaReplacer.replaceAll(target, replacement);
+    this._contents.replaceAll(target, replacement);
     return this;
   }
 
   getString(): string {
-    return this.javaReplacer.getString();
+    return this._contents;
   }
 }

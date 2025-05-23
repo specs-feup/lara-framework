@@ -155,9 +155,6 @@ public class LangSpecsXmlParser {
             // Add attributes
             jp.setAttributes(convertAttributes(attributeNodes, langSpecV2));
 
-            // Add selects
-            jp.setSelects(convertSelects(langSpecV2, jpNode.getElementsByName("select")));
-
             // Add actions
             jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass)));
 
@@ -245,21 +242,7 @@ public class LangSpecsXmlParser {
                     parameterNode.getAttribute("name"), parameterNode.getAttribute("default"));
         }
 
-        var defNodes = attributeNode.getElementsByName("def");
-
-        for (var defNode : defNodes) {
-            // If def does not have a type, use the attribute type
-            newAttribute.addDef(parseDef(defNode, type));
-        }
-
         return newAttribute;
-    }
-
-    private static Def parseDef(XmlElement defNode, String attributeType) {
-        // Check if it has an optional 'type'
-        var type = defNode.getAttribute("type", attributeType);
-
-        return new Def(type);
     }
 
     private static String getType(XmlElement node) {
@@ -288,29 +271,5 @@ public class LangSpecsXmlParser {
 
         Collections.sort(newActions);
         return newActions;
-    }
-
-    private static List<Select> convertSelects(LanguageSpecification langSpecV2,
-                                               List<XmlElement> selectNodes) {
-
-        List<Select> selects = new ArrayList<>();
-
-        for (var selectNode : selectNodes) {
-            String selectClassName = selectNode.getAttribute("class");
-            JoinPointClass selectJP = langSpecV2.getJoinPoint(selectClassName);
-
-            // Validation: selectJP must not be null
-            if (selectJP == null) {
-                throw new RuntimeException("Select has invalid join point name as class: " + selectClassName);
-            }
-
-            String alias = selectNode.getAttribute("alias");
-            alias = alias.equals(selectClassName) ? "" : alias; // Is this necessary?
-            Select newSelect = new Select(selectJP, alias);
-            newSelect.setToolTip(selectNode.getAttribute("tooltip", null));
-            selects.add(newSelect);
-        }
-
-        return selects;
     }
 }

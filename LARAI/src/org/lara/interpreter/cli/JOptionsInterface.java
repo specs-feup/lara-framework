@@ -41,29 +41,17 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace_extra, LaraiKeys.WORKSPACE_EXTRA);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.output, LaraiKeys.OUTPUT_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.debug, LaraiKeys.DEBUG_MODE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.stack, LaraiKeys.TRACE_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.log, LaraiKeys.LOG_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.javascript, LaraiKeys.LOG_JS_OUTPUT);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.includes, LaraiKeys.INCLUDES_FOLDER);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.autoimport, LaraiKeys.AUTOMATICALLY_IMPORT_JS);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.dependencies, LaraiKeys.EXTERNAL_DEPENDENCIES);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.report, LaraiKeys.REPORT_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.metrics, LaraiKeys.METRICS_FILE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.loc, LaraiKeys.LARA_LOC);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.bundle_tags, LaraiKeys.BUNDLE_TAGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.tools, LaraiKeys.TOOLS_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.restrict, LaraiKeys.RESTRICT_MODE);
         // Setting custom decoder because Properties use numbers instead of names for the verbose level
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,
                 LaraiKeys.VERBOSE.setDecoder(s -> VerboseLevel.values()[Integer.parseInt(s)]));
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.call, LaraiKeys.CALL_ARGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jsengine, LaraiKeys.JS_ENGINE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jarpaths, LaraiKeys.JAR_PATHS);
-
-
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.unit, LaraiKeys.UNIT_TEST_MODE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.doc, LaraiKeys.GENERATE_DOCUMENTATION);
-
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.help, LaraiKeys.SHOW_HELP);
 
     }

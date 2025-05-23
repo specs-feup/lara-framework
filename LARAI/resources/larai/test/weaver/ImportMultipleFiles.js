@@ -1,1 +1,1 @@
-println("Importing .js");
+console.log("Importing .js");

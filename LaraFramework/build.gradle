@@ -17,7 +17,7 @@ java {
 // Repositories providers
 repositories {
 	// Gearman
-	maven { url "https://oss.sonatype.org/content/repositories/snapshots"}
+	maven { url="https://oss.sonatype.org/content/repositories/snapshots"}
 	
     mavenCentral()
 }
@@ -30,23 +30,17 @@ dependencies {
 	implementation ':JsEngine'
 	implementation ':SpecsUtils'	
 
-	implementation ':LanguageSpecification'	
-	implementation ':LaraCommonLanguage'
-	implementation ':LaraCommonLanguageApi'
-	implementation ':LaraApi'	
-	implementation ':LARAC'	
-	implementation ':LaraDoc'	
-	implementation ':LARAI'	
-	implementation ':LaraLoc'	
-	implementation ':LaraUnit'	
+	implementation ':LanguageSpecification'
 	implementation ':LaraUtils'	
+	implementation ':LARAC'	
+	implementation ':LARAI'	
 	implementation ':WeaverGenerator'	
 	implementation ':WeaverInterface'	
 
 
 		
 	implementation group: 'org.gearman.jgs', name: 'java-gearman-service', version: '0.7.0-SNAPSHOT'		
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'			
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'			
 }
 
 java {

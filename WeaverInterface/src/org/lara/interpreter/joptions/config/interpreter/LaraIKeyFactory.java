@@ -25,15 +25,11 @@ import javax.swing.JFileChooser;
 
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
-import org.lara.interpreter.joptions.panels.configpanel.EnumRadioButtonPanel;
-import org.lara.interpreter.joptions.panels.configpanel.FileListPanel;
-import org.lara.interpreter.joptions.panels.configpanel.FileWithCheckBoxPanel;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Datakey.CustomGetter;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.Utils.EnumCodec;
 import org.suikasoft.jOptions.gui.panels.option.FilePanel;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -67,12 +63,9 @@ public class LaraIKeyFactory {
     public static DataKey<FileList> fileList(String id, int selectionMode, Collection<String> extensions) {
         Optional<Boolean> isFolder = isFolder(selectionMode);
 
-        var fileKey = LaraIKeyFactory.file("", selectionMode, false, extensions);
         DataKey<FileList> fileListKey = KeyFactory.object(id, FileList.class)
                 .setDecoder(FileList::newInstance)
-                .setDefault(() -> FileList.newInstance())
-                .setKeyPanelProvider((key, data) -> new FileListPanel(key, fileKey, data, selectionMode,
-                        extensions));
+                .setDefault(() -> FileList.newInstance());
 
         if (isFolder.isPresent()) {
             fileListKey = fileListKey.setCustomGetter(customGetterFileList(isFolder.get(), !isFolder.get(), false));
@@ -265,18 +258,10 @@ public class LaraIKeyFactory {
 
     public static DataKey<OptionalFile> optionalFile(String id, boolean isFolder, boolean create, boolean exists,
             Collection<String> extensions) {
-        int fileChooser;
-        if (isFolder) {
-            fileChooser = JFileChooser.DIRECTORIES_ONLY;
-        } else {
-            fileChooser = JFileChooser.FILES_ONLY;
-        }
-
         return KeyFactory.object(id, OptionalFile.class)
                 // .setDecoder(OptionalFile::newInstance) // .setDecoder(s -> new OptionalFile(new File(s), false))
                 .setDecoder(OptionalFile.getCodec()) // .setDecoder(s -> new OptionalFile(new File(s), false))
                 .setDefault(() -> OptionalFile.newInstance(null))
-                .setKeyPanelProvider((key, data) -> new FileWithCheckBoxPanel(key, data, fileChooser, extensions))
                 .setCustomGetter((optFile, dataStore) -> {
                     File file = optFile.getFile();
                     if (file != null) {
@@ -285,14 +270,6 @@ public class LaraIKeyFactory {
                     }
                     return optFile;
                 });
-
-    }
-
-    public static <T extends Enum<T>> DataKey<T> radioEnum(String id, Class<T> anEnum) {
-        return KeyFactory.object(id, anEnum)
-                .setDefault(() -> anEnum.getEnumConstants()[0])
-                .setDecoder(new EnumCodec<>(anEnum))
-                .setKeyPanelProvider((key, data) -> new EnumRadioButtonPanel<>(key, data));
     }
 
     public static String customGetterLaraArgs(String args, DataStore dataStore) {

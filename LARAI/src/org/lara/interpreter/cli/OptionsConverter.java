@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
@@ -31,14 +30,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.providers.ResourceProvider;
-import pt.up.fe.specs.util.utilities.Replacer;
-
 public class OptionsConverter {
-
-    private static final ResourceProvider COMMAND_LINE_CALL = ResourceProvider
-            .newInstance("org/lara/interpreter/cli/CommandLineCall.lara");
 
     /**
      * Adds the commandline options into an existing datastore, using the Mapping in {@link JOptionsInterface}
@@ -121,75 +113,7 @@ public class OptionsConverter {
             }
         }
 
-        // Process option CALL_ARGS, which can interpret LARA_FILE as the a fully-qualified aspect
-        processCallArgs(dataStore);
-
         return dataStore;
-
-    }
-
-    private static void processCallArgs(DataStore dataStore) {
-        // Check if CALL_ARGS is present
-        if (!dataStore.hasValue(LaraiKeys.CALL_ARGS)) {
-            return;
-        }
-
-        // Extract aspect to call
-        String aspectQualifiedName = dataStore.get(LaraiKeys.LARA_FILE).toString();
-
-        // If main aspect is defined, use it as aspect name. Otherwise, use the last part of the qualified name
-        String aspectName = getAspectName(aspectQualifiedName, dataStore);
-
-        String args = dataStore.get(LaraiKeys.CALL_ARGS);
-
-        // Build file to call
-        Replacer replacer = new Replacer(COMMAND_LINE_CALL);
-        replacer.replace("<QUALIFIED_ASPECT>", aspectQualifiedName);
-        replacer.replace("<ASPECT_NAME>", aspectName);
-        replacer.replace("<ARGS>", args);
-
-        /*
-        StringBuilder aspectContents = new StringBuilder();
-        aspectContents.append("import ").append(aspectQualifiedName).append(";\n\n");
-        aspectContents.append("aspectdef CommandLineCall\n");
-        aspectContents.append("result = call " + aspectName + "(" + args + ");\n");
-        // aspectContents.append("var noOutput = result.__is_aspect__ && result.__called_by__ === 'CommandLineCall';");
-        aspectContents.append(
-                "println('Output of aspect "
-                        + aspectName + ":'); printObject(result);\n");
-        aspectContents.append("end\n");
-        */
-        // Write temporary file
-        String filename = "clava/command_line_call_" + UUID.randomUUID().toString() + ".lara";
-        File tempFile = new File(SpecsIo.getTempFolder(), filename);
-        SpecsIo.write(tempFile, replacer.toString());
-
-        // Schedule file for deletion
-        tempFile.deleteOnExit();
-
-        // Replace LARA_FILE value
-        dataStore.put(LaraiKeys.LARA_FILE, tempFile);
-        // System.out.println("ASPECT:" + dataStore.get(LaraiKeys.LARA_FILE));
-        // System.out.println("CALL ARGS:" + dataStore.get(LaraiKeys.CALL_ARGS));
-
-    }
-
-    private static String getAspectName(String aspectQualifiedName, DataStore dataStore) {
-        if (dataStore.hasValue(LaraiKeys.MAIN_ASPECT)) {
-            String aspectName = dataStore.get(LaraiKeys.MAIN_ASPECT);
-
-            // Unset main aspect
-            dataStore.remove(LaraiKeys.MAIN_ASPECT);
-
-            return aspectName;
-        }
-
-        int dotIndex = aspectQualifiedName.lastIndexOf('.');
-        if (dotIndex == -1) {
-            return aspectQualifiedName;
-        }
-
-        return aspectQualifiedName.substring(dotIndex + 1);
     }
 
     private static void processLaraIOption(DataStore dataStore, Map<WeaverOption, DataKey<?>> conversionMap,
@@ -202,9 +126,6 @@ public class OptionsConverter {
         }
         DataKey<?> dataKey = conversionMap.get(cliOpt);
 
-        // if (opt.hasArgs()) {
-        // TODO: See this!
-        // } else
         setValue(dataStore, dataKey, opt);
     }
 

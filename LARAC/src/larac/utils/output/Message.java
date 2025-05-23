@@ -38,7 +38,7 @@ public class Message {
 	}
 
 	public void print(String s) {
-		output.print(MessageConstants.space + tag + s);
+		output.print(tag + s);
 		/*
 		 * if (showStackTrace) { LoggingUtils.msgWarn(s); }
 		 */

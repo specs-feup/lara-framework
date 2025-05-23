@@ -15,22 +15,13 @@ package org.lara.interpreter.profile;
 
 public enum ReportField {
 
-    CALLED_ASPECTS,
-    ACTIONS,
     ITERATED_JOIN_POINTS,
-    INSERTS,
-    SELECTS,
-    APPLIES,
     ATTRIBUTES,
-    NATIVE_LOCS,
-    TOTAL_LOCS,
     RUNS,
     JOIN_POINTS,
     FILTERED_JOIN_POINTS,
     INIT_TIME,
-    LARA_TO_JS_TIME,
     WEAVING_TIME,
-    TOTAL_TIME,
-    TOKENS;
+    TOTAL_TIME;
 
 }

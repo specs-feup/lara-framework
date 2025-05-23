@@ -74,23 +74,6 @@ public class WeavingReport {
         return actions.getSum();
     }
 
-    /**
-     * @return the aspectCalls
-     */
-    public long getNumAspectCalls() {
-        return calledAspects.getSum();
-    }
-
-    // public void reset() {
-    // metrics = new AccumulatorMap<>();
-    // calledAspects = new AccumulatorMap<>();
-    // actions = new AccumulatorMap<>();
-    // }
-
-    public Map<String, Integer> getAspectsMap() {
-        return calledAspects.getAccMap();
-    }
-
     public Map<String, Integer> getActionsMap() {
         return actions.getAccMap();
     }

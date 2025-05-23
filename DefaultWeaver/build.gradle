@@ -1,0 +1,62 @@
+plugins {
+    id 'distribution'
+    id 'application' // Executable
+    id 'java' // Java project
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    withSourcesJar()
+}
+
+// Repositories providers
+repositories {
+    // Gearman
+    maven { url="https://oss.sonatype.org/content/repositories/snapshots" }
+
+    mavenCentral()
+}
+
+dependencies {
+    implementation "junit:junit:4.13.1"
+
+    implementation ":jOptions"
+    implementation ":SpecsUtils"
+
+    implementation ":LanguageSpecification"
+    implementation ":LARAI"
+    implementation ":LaraUtils"
+    implementation ":WeaverGenerator"
+    implementation ":WeaverInterface"
+}
+
+// Project sources
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+
+        resources {
+            srcDir 'resources'	  
+	    }
+    }
+}
+
+// Re-run the weaver generator
+task generateWeaver(type: Exec) {
+    group = "Execution"
+    description = "Generates the Weaver Abstracts"
+
+    executable "./../../lara-framework/WeaverGenerator/build/install/WeaverGenerator/bin/WeaverGenerator"
+
+    args = [
+        "-w", "DefaultWeaver",
+        "-x", "${rootProject.projectDir}/resources/specification",
+        "-o", "${rootProject.projectDir}/src/",
+        "-p", "org.lara.interpreter.weaver.defaultweaver",
+        "-j"
+    ]
+}
