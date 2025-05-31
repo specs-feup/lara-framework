@@ -1,6 +1,6 @@
 {
   "name": "@specs-feup/lara",
-  "version": "3.0.8",
+  "version": "3.0.9",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
@@ -64,14 +64,13 @@
   "dependencies": {
     "chokidar": "^4.0.3",
     "debug": "^4.4.0",
-    "java": "^0.14.0",
+    "java": "^0.16.1",
     "supports-color": "^10.0.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/debug": "^4.1.12",
-    "@types/java": "^0.9.6",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.14.10",
     "@types/yargs": "^17.0.33",
