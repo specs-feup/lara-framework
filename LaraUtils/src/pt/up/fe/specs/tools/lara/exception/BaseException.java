@@ -13,8 +13,6 @@
 
 package pt.up.fe.specs.tools.lara.exception;
 
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
-
 /**
  * Abstract exception of a LARA exception. These type of exceptions are used to encapsulate other thrown exceptions
  *
@@ -49,52 +47,19 @@ public abstract class BaseException extends RuntimeException {
      *
      * @return
      */
-    protected abstract String generateSimpleMessage();
+    protected String generateSimpleMessage() {
+        return LARAExceptionBuilder.getEvaluationExceptionMessage();
+    }
 
     @Override
     public String getMessage() {
-        // return generateMessage();
-        String message = generateMessage();
-
-        // Throwable primaryCause = this;
-        // while (primaryCause.getCause() != null) {
-        // primaryCause = primaryCause.getCause();
-        // }
-        //
-        // if (primaryCause != this) {
-        // StringBuilder cause = new StringBuilder();
-        // cause.append("Primary cause:");
-        // for (var element : primaryCause.getStackTrace()) {
-        // cause.append("\n").append(element);
-        // }
-        //
-        // message += "\n" + cause.toString();
-        // }
-
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        return message;
+        return generateMessage();
     }
 
     public String getSimpleMessage() {
         return generateSimpleMessage();
-        // String message = generateSimpleMessage();
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        // return message;
     }
 
-    /**
-     * Generate a Runtime exception and use a specific stack trace instead of the one generated based on the chained
-     * exceptions
-     *
-     * @param stackStrace
-     * @return
-     */
-    public RuntimeException generateRuntimeException(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = generateExceptionBuilder(stackStrace);
-        throw builder.getRuntimeException();
-    }
 
     public RuntimeException generateRuntimeException() {
         LARAExceptionBuilder builder = generateExceptionBuilder();
@@ -107,11 +72,6 @@ public abstract class BaseException extends RuntimeException {
         return builder;
     }
 
-    public LARAExceptionBuilder generateExceptionBuilder(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = new LARAExceptionBuilder(stackStrace);
-        generateException(builder);
-        return builder;
-    }
 
     protected void generateException(LARAExceptionBuilder builder) {
         String thisMessage = generateSimpleMessage();

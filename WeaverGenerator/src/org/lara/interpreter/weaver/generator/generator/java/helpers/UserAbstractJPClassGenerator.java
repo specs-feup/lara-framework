@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -78,10 +77,6 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         final Method compareNodes = GeneratorUtils.generateCompareNodes(javaGenerator.getaJoinPointType());
         compareNodes.add(Annotation.OVERRIDE);
         abstJPClass.add(compareNodes);
-
-        abstJPClass.add(GeneratorUtils.generateSelectGeneric(javaGenerator.getAJoinPointClass()));
-        // abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass));
-        abstJPClass.addImport(SelectOp.class);
 
         // abstJPClass.add(method)
         return abstJPClass;

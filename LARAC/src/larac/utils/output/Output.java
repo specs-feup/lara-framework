@@ -21,7 +21,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Optional;
 
-import larac.exceptions.LARACompilerException;
 import pt.up.fe.specs.compress.ZipFormat;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.logging.MultiOutputStream;
@@ -29,7 +28,6 @@ import pt.up.fe.specs.util.logging.MultiOutputStream;
 public class Output {
 
     private Message msg = new NormalMsg();
-    private Message error = new ErrorMsg();
     private Message warning = new WarningMsg();
     private final MessageDef def;
     private PrintStream stream;
@@ -54,18 +52,6 @@ public class Output {
         setStream(System.out);
     }
 
-    public void error(String message) {
-        if (this.def.error) {
-            this.error.print(message);
-        }
-    }
-
-    public void errorln(String message) {
-        if (this.def.error) {
-            this.error.println(message);
-        }
-    }
-
     public void warn(String message) {
         if (this.def.warning) {
             this.warning.print(message);
@@ -78,47 +64,12 @@ public class Output {
         }
     }
 
-    public void print(String message) {
-        if (this.def.normal) {
-            this.msg.print(message);
-        }
-    }
-
     public void println(String message) {
         if (this.def.normal) {
             this.msg.println(message);
         }
     }
 
-    public void error(Object obj) {
-        if (this.def.error) {
-            this.error.print(obj.toString());
-        }
-    }
-
-    public void errorln(Object obj) {
-        if (this.def.error) {
-            this.error.println(obj.toString());
-        }
-    }
-
-    public void warn(Object obj) {
-        if (this.def.warning) {
-            this.warning.print(obj.toString());
-        }
-    }
-
-    public void warnln(Object obj) {
-        if (this.def.warning) {
-            this.warning.println(obj.toString());
-        }
-    }
-
-    public void print(Object obj) {
-        if (this.def.normal) {
-            this.msg.print(obj.toString());
-        }
-    }
 
     public void println(Object obj) {
         if (this.def.normal) {
@@ -129,7 +80,6 @@ public class Output {
     public void setStream(PrintStream stream) {
         this.stream = stream;
         this.msg = new NormalMsg(stream);
-        this.error = new ErrorMsg(stream);
         this.warning = new WarningMsg(stream);
     }
 
@@ -140,7 +90,6 @@ public class Output {
 
         this.stream = new PrintStream(multiStream);
         this.msg = new NormalMsg(this.stream);
-        this.error = new ErrorMsg(this.stream);
         this.warning = new WarningMsg(this.stream);
     }
 
@@ -157,7 +106,7 @@ public class Output {
             try {
                 fileOutputStream = new FileOutputStream(outFile);
             } catch (FileNotFoundException e) {
-                throw new LARACompilerException("Could not use file '" + outFile + "' for zipped output: ", e);
+                throw new RuntimeException("Could not use file '" + outFile + "' for zipped output: ", e);
             }
 
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
@@ -173,7 +122,7 @@ public class Output {
             return new PrintStream(outFile);
         } catch (FileNotFoundException e) {
 
-            throw new LARACompilerException("Could not create output file: ", e);
+            throw new RuntimeException("Could not create output file: ", e);
         }
 
     }

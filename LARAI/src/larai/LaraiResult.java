@@ -20,9 +20,8 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 public class LaraiResult extends ADataClass<LaraiResult> {
 
     public final static DataKey<Boolean> IS_SUCCESS = KeyFactory.bool("isSuccess");
-    public final static DataKey<Boolean> IS_RUNNING_GUI = KeyFactory.bool("isRunningGui");
 
-    public static LaraiResult newInstance(boolean isSuccess, boolean isRunningGui) {
-        return new LaraiResult().set(IS_SUCCESS, isSuccess).set(IS_RUNNING_GUI, isRunningGui);
+    public static LaraiResult newInstance(boolean isSuccess) {
+        return new LaraiResult().set(IS_SUCCESS, isSuccess);
     }
 }

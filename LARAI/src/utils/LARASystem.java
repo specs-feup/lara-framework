@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.ToolExecutionException;
 import org.lara.interpreter.utils.LaraIUtils;
@@ -32,7 +30,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import larac.objects.Enums.Types;
 import larac.utils.output.ErrorMsg;
 import larac.utils.output.WarningMsg;
 import larai.LaraI;
@@ -564,33 +561,6 @@ public class LARASystem {
         }
         return code;
 
-    }
-
-    /**
-     * @deprecated
-     * @param arr
-     * @return
-     */
-    @Deprecated
-    public static Object[] toJavaArray(Object arr) {
-        throw new RuntimeException("Deprecated method, is this necessary?");
-
-        // if (!NashornUtils.isJSArray(arr)) {
-        // return new Object[] { arr };
-        // }
-        //
-        // return NashornUtils.getValues(arr).toArray(new Object[0]);
-    }
-
-    public static String decode(String encoded, String encoder) {
-
-        if (encoder.equals(Types.Base64.toString())) {
-
-            final byte[] decodedDuke = DatatypeConverter.parseBase64Binary(encoded);
-            return new String(decodedDuke);
-        }
-        // else
-        throw new RuntimeException("Decoder not available: " + encoder);
     }
 
     /**

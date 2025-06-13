@@ -217,9 +217,6 @@ public class WeaverGenerator {
         if (cmdLine.hasOption(GeneratorOption.F.getOption())) {
             generator.setAbstractGetters(false);
         }
-        if (cmdLine.hasOption(GeneratorOption.E.getOption())) {
-            generator.setEvents(true);
-        }
         // if (cmdLine.hasOption(GeneratorOption.I.getOption())) {
         // generator.setImplMode(true);
         // }
@@ -295,12 +292,12 @@ public class WeaverGenerator {
 
     private static void printReport(BaseGenerator generator) {
         printReport(generator.getWeaverName(), generator.getOutPackage(), null, generator.getOutDir(),
-                generator.isAbstractGetters(), generator.hasEvents(), generator.hasImplMode(), generator.getNodeType(),
+                generator.isAbstractGetters(), generator.hasImplMode(), generator.getNodeType(),
                 generator.isJson(), generator.isShowGraph(), generator.getConcreteClassesPrefix());
     }
 
     private static void printReport(String weaverName, String outPackage, File xMLSpecDir, File outDir,
-                                    boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
+                                    boolean abstractGetters, boolean usesImpl, String generics, boolean json,
                                     boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
         report.append("Weaver name:   " + weaverName + "\n");
@@ -309,7 +306,6 @@ public class WeaverGenerator {
             report.append("Lang. Spec:    " + xMLSpecDir + "\n");
         }
         report.append("Output Dir.:   " + outDir + "\n");
-        report.append("Add Events: " + hasEvents + "\n");
         report.append("Uses Impl Methods: " + usesImpl + "\n");
         report.append("Abst. Getters: " + abstractGetters + "\n");
         report.append("Node type:     " + (generics == null ? "N/A" : generics) + "\n");

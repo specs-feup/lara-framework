@@ -16,10 +16,8 @@ package org.lara.interpreter.profile;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 
 public abstract class BasicWeaverProfiler extends WeaverProfiler {
@@ -32,16 +30,6 @@ public abstract class BasicWeaverProfiler extends WeaverProfiler {
 
     @Override
     protected void onWeaverImpl(WeaverEvent data) {
-
-    }
-
-    @Override
-    protected void onAspectImpl(AspectEvent data) {
-
-    }
-
-    @Override
-    protected void onSelectImpl(SelectEvent data) {
 
     }
 

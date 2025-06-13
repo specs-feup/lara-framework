@@ -224,7 +224,7 @@ export default class Io {
       pattern.toString(),
       isRecursive,
       "FILES"
-    );
+    ).toArray();
     const files: JavaClasses.File[] = [];
 
     for (const file of list) {

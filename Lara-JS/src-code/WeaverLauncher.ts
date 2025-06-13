@@ -15,7 +15,6 @@ import WeaverConfiguration from "./WeaverConfiguration.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 
 import { Weaver } from "./Weaver.js";
-import { SourceTextModule } from "vm";
 
 listenForTerminationSignals();
 
@@ -148,7 +147,7 @@ export default class WeaverLauncher {
       ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
       : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.js");
 
-    console.debug("Launcher weaver using the script '" + weaverScript + "'");
+    this.debug("Launcher weaver using the script '" + weaverScript + "'");
 
     const child = fork(weaverScript);
     child.send({

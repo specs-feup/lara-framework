@@ -14,7 +14,6 @@
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.utils.Utils;
 

@@ -16,8 +16,6 @@ package pt.up.fe.specs.tools.lara.exception;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
-import pt.up.fe.specs.tools.lara.trace.Trace;
 import pt.up.fe.specs.util.SpecsLogs;
 import tdrc.utils.StringUtils;
 
@@ -40,7 +38,6 @@ public class LARAExceptionBuilder {
     private StackTraceElement[] lastTrace;
     private BaseException lastLARAException;
     private Throwable lastException;
-    private CallStackTrace stackTrace;
 
     private static final List<String> ignoredPackages;
 
@@ -50,11 +47,6 @@ public class LARAExceptionBuilder {
         LARAExceptionBuilder.ignoredPackages.add("java.lang.reflect.");
         LARAExceptionBuilder.ignoredPackages.add("org.mozilla.javascript.");
         LARAExceptionBuilder.ignoredPackages.add("java.util.");
-    }
-
-    public LARAExceptionBuilder(CallStackTrace stacktrace) {
-        this();
-        this.stackTrace = stacktrace;
     }
 
     public LARAExceptionBuilder() {
@@ -93,44 +85,7 @@ public class LARAExceptionBuilder {
         String separator = LARAExceptionBuilder.SEPARATOR;
         int predefinedSpace = LARAExceptionBuilder.PREDEFINED_SPACE;
         String indentStr = LARAExceptionBuilder.INDENT;
-        if (stackTrace != null) {
-            // completeMessage.append(indentStr + messages.get(0));
-            // int i = 1;
-            List<String> locations = new ArrayList<>();
-            Trace trace = stackTrace.pop();
-            while (trace != null) {
-                locations.add(trace.toString());
-                trace = stackTrace.pop();
-            }
-
-            int size = locations.size() - 1;
-            for (int i = size; i >= 0; i--) {
-                int repeatValue = (size - i) + 1;
-                if (repeatValue > 15) {
-                    repeatValue = 15;
-                }
-                String indentation = StringUtils.repeat(" ", predefinedSpace)
-                        + StringUtils.repeat(indentStr, repeatValue);
-                String finalMessage = indentation + locations.get(i);
-                completeMessage.append(separator + finalMessage);
-            }
-            int repeatValue = size + 2;
-            if (repeatValue > 16) {
-                repeatValue = 16;
-            }
-            String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, repeatValue);
-
-            // for (String message : messages) {
-            // completeMessage.append(separator + indentation + message);
-            // }
-
-            // String lastMessage = messages.get(messages.size() - 1);
-            String lastMessage = getLastMessage();
-
-            completeMessage.append(separator + indentation + lastMessage);
-            // String firstMessage = messages.get(0);
-            // completeMessage.append(separator + indentation + firstMessage);
-        } else if (!messages.isEmpty()) {
+        if (!messages.isEmpty()) {
 
             completeMessage.append(indentStr + messages.get(0));
             for (int i = 1; i < messages.size(); i++) {
@@ -142,49 +97,7 @@ public class LARAExceptionBuilder {
             }
         }
 
-        // Class<? extends Throwable> type;
-        // if (lastException != null) {
-        // type = lastException.getClass();
-        // } else {
-        // type = lastLARAException.getClass();
-        // }
-        // String lastSpace = StringUtils.repeat(indentStr, messages.size() +
-        // 2);
-        // completeMessage.append(separator + StringUtils.repeat(" ",
-        // predefinedSpace) + lastSpace + "Exception type: "
-        // + type.toString().replaceAll("class", "").trim());
-        // String string = message.toString().isEmpty() ? "" :
-        // message.toString();
-        // String separator = causeClass.isEmpty() || string.isEmpty() ? "" : ":
-        // ";
-        // String completeMessage = causeClass + separator + string;
-        // RuntimeException re = new RuntimeException(completeMessage.toString());// ,
-        // lastException);
-
-        RuntimeException re = new RuntimeException(completeMessage.toString(), lastException);
-
-        // re.setStackTrace(cleanTrace());
-        return re;
-    }
-
-    private String getLastMessage() {
-
-        // If user exception, return last message
-        if (lastException instanceof BaseException && ((BaseException) lastException).useLastMessage()) {
-            return messages.get(messages.size() - 1);
-        }
-
-        for (String message : messages) {
-            if (EVALUATION_EXCEPTION_MESSAGE.equals(message)) {
-                continue;
-            }
-
-            return message;
-        }
-
-        return "<no message>";
-        // return messages.get(messages.size() - 1);
-
+        return new RuntimeException(completeMessage.toString(), lastException);
     }
 
     /**
