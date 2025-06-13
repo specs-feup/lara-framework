@@ -157,23 +157,23 @@ public class LangSpecsXmlParser {
 
             // Add actions
             jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass)));
+        }
 
-            // Set default attributes
-            for (var artifact : attributeModelNode.getElementsByName("artifact")) {
-                var defaultValue = artifact.getAttribute("default");
-                if (defaultValue.isEmpty()) {
-                    continue;
-                }
-
-                var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
-
-                if (artifactJp == null) {
-                    SpecsLogs.info("Artifact without join point: " + artifact.getAttribute("class"));
-                    continue;
-                }
-
-                artifactJp.setDefaultAttribute(defaultValue);
+        // Set default attributes
+        for (var artifact : attributeModelNode.getElementsByName("artifact")) {
+            var defaultValue = artifact.getAttribute("default");
+            if (defaultValue.isEmpty()) {
+                continue;
             }
+
+            var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
+
+            if (artifactJp == null) {
+                SpecsLogs.info("Artifact without join point: " + artifact.getAttribute("class"));
+                continue;
+            }
+
+            artifactJp.setDefaultAttribute(defaultValue);
         }
 
         return langSpecV2;
