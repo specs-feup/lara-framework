@@ -311,15 +311,6 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Set the language specification for this generation
-     *
-     * @param languageSpecification
-     */
-    private void setLanguageSpecification(LanguageSpecification languageSpecification) {
-        this.languageSpecification = languageSpecification;
-    }
-
-    /**
      * Create a language specification using the models defined in the given directory
      *
      * @param langSpecDirStr the input folder

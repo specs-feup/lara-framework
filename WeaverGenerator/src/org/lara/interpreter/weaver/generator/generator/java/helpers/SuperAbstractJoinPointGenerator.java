@@ -20,14 +20,9 @@ import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
-import org.specs.generators.java.enums.Privacy;
-import org.specs.generators.java.members.Argument;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-import tdrc.utils.StringUtils;
-
-import java.util.List;
 
 /**
  * Generates the base Join Point abstract class, containing the global attributes and actions

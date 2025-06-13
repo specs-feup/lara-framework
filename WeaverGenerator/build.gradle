@@ -1,21 +1,18 @@
-// This project should use JavaCC plugin in order to compile the .jjt file
-// However, LARA language is in maintenance mode, no changes are currently planned
-
 plugins {
- 	id 'distribution'
-	id 'application' // Executable
-	id 'java' // Java project
+    id 'distribution'
+    id 'application' // Executable
+    id 'java' // Java project
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 
-	withSourcesJar()
+    withSourcesJar()
 }
 
 application {
-	mainClass.set("org.lara.interpreter.weaver.generator.commandline.WeaverGenerator")
+    mainClass.set("org.lara.interpreter.weaver.generator.commandline.WeaverGenerator")
 }
 
 // Repositories providers
@@ -23,44 +20,32 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-	testImplementation "junit:junit:4.13.1"     
+dependencies {  
+    implementation ':GuiHelper'
+    implementation ':JavaGenerator'
+    implementation ':jOptions'
+    implementation ':SpecsUtils'
+    implementation ':tdrcLibrary'
 
-	implementation ':GuiHelper'
-	implementation ':JavaGenerator'
-	implementation ':jOptions'
-	implementation ':SpecsUtils'
-	implementation ':tdrcLibrary'
+    implementation ':LanguageSpecification'
+    implementation ':LARAI'
+    implementation ':LaraUtils'	
+    implementation ':WeaverInterface'	
 
-	implementation ':LanguageSpecification'
-	implementation ':LARAI'
-	implementation ':LaraUtils'	
-	implementation ':WeaverInterface'	
-
-	implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'	
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'	
 }
 
 // Project sources
 sourceSets {
-   main {
-      java {
-         srcDir 'src'
-      }
-	  
-	  resources {
-         srcDir 'resources'
-	  }
-   }   
-
-   test {
-      java {
-         srcDir 'test'
-      }
-	  
-	  resources {
-         srcDir 'resources'
-	  }
-   }      
+    main {
+        java {
+            srcDir 'src'
+        }
+        
+        resources {
+            srcDir 'resources'
+        }
+    } 
 }
 
 task WeaverGenerator(type: JavaExec) {

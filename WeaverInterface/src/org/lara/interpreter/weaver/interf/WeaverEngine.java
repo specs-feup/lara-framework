@@ -44,9 +44,6 @@ import java.util.stream.Collectors;
  * @author Tiago D.R. Carvalho
  */
 public abstract class WeaverEngine {
-
-    private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
-
     private EventTrigger eventTrigger;
     private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;

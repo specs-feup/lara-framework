@@ -31,7 +31,6 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      branch-exists-lara-framework: ${{ steps.Branch-lara-framework.outputs.value }}
       branch-exists-specs-java-libs: ${{ steps.Branch-specs-java-libs.outputs.value }}
 
     steps:
@@ -78,11 +77,6 @@ jobs:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test LARAI
         working-directory: lara-framework/LARAI
-        run: gradle build test
-        env:
-          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-      - name: Build and test WeaverGenerator
-        working-directory: lara-framework/WeaverGenerator
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
