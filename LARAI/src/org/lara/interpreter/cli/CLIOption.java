@@ -42,8 +42,6 @@ public enum CLIOption implements WeaverOption {
             "outputs to a log file. If file ends in .zip, compresses the file", LaraiKeys.LOG_FILE),
     restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restrict mode (some Java classes are not allowed)",
             LaraiKeys.RESTRICT_MODE),
-    jsengine("js", OptionArguments.ONE_ARG, "engine name",
-            "JS Engine to use. Available: GRAALVM_COMPAT, GRAALVM", LaraiKeys.JS_ENGINE),
 
     jarpaths("jp", OptionArguments.ONE_ARG, "dir1/file1[;dir2/file2]*", "JAR files that will be added to a separate classpath and will be accessible in scripts", LaraiKeys.JAR_PATHS);
 

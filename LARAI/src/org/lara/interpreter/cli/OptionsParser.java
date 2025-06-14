@@ -70,7 +70,6 @@ public class OptionsParser {
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
 
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
-        final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
         final Option jarpaths = OptionsBuilderUtils.newOption(CLIOption.jarpaths);
 
         Options options = new Options()
@@ -87,7 +86,6 @@ public class OptionsParser {
                 .addOption(javascript)
                 .addOption(log)
                 .addOption(restrict)
-                .addOption(jsengine)
                 .addOption(jarpaths);
 
         ArrayList<Option> arrayList = new ArrayList<>();

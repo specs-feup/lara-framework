@@ -23,7 +23,6 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.JOptionsUtils;
-import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
@@ -148,25 +147,10 @@ public class LaraIDataStore implements LaraiKeys {
             throw new LaraIException(
                     "The lara aspect file is mandatory! Please define the input lara file (e.g.: aspect.lara)");
         }
-        if (dataStore.hasValue(LaraiKeys.LOG_FILE)) {
-            OptionalFile logFile = dataStore.get(LaraiKeys.LOG_FILE);
-            if (larai != null && logFile.isUsed()) {
-                larai.out.addFileStream(logFile.getFile());
-            }
-        }
-
-        if (dataStore.hasValue(LaraiKeys.VERBOSE)) {
-            int level = dataStore.get(LaraiKeys.VERBOSE).ordinal();
-            if (larai != null) {
-                larai.out.setLevel(level);
-            }
-        }
-
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {
             File output = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
             SpecsIo.mkdir(output);
         }
-
     }
 
     /**
@@ -312,13 +296,6 @@ public class LaraIDataStore implements LaraiKeys {
 
     public boolean disableWithKeywordInLaraJs() {
         return dataStore.get(LaraiKeys.DISABLE_WITH_KEYWORD_IN_LARA_JS);
-    }
-
-    public JsEngineType getJsEngine() {
-        if (dataStore.hasValue(LaraiKeys.JS_ENGINE)) {
-            return dataStore.get(LaraiKeys.JS_ENGINE);
-        }
-        return JS_ENGINE.getDefault().get();
     }
 
     @Override

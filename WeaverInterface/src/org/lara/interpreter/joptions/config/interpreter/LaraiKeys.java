@@ -19,7 +19,6 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-import pt.up.fe.specs.jsengine.JsEngineType;
 
 import javax.swing.*;
 import java.io.File;
@@ -69,13 +68,6 @@ public interface LaraiKeys {
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restrict mode (some Java classes are not allowed)");
 
-    DataKey<JsEngineType> JS_ENGINE = KeyFactory.enumeration("jsEngine", JsEngineType.class)
-            .setLabel("JavaScript Engine")
-            // TODO: Change to GraalVM when transition is done
-            .setDefault(() -> JsEngineType.GRAALVM_COMPAT);
-    // .setDefault(() -> JsEngineType.GRAALVM);
-
-
     DataKey<FileList> JAR_PATHS = LaraIKeyFactory.fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
             .setLabel("Paths to JARs")
             .setDefault(() -> FileList.newInstance());
@@ -110,7 +102,7 @@ public interface LaraiKeys {
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
                     VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, RESTRICT_MODE, JS_ENGINE, JAR_PATHS, SHOW_HELP)
+                    DEBUG_MODE, RESTRICT_MODE, JAR_PATHS, SHOW_HELP)
             .build();
 
 }
