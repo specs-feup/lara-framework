@@ -70,7 +70,6 @@ public class LaraI {
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
     private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
 
-    // TODO: Put LARASystem.class eventually
     private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
             LaraSystemTools.class, Runtime.class);
 

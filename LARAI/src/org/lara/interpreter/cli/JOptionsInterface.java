@@ -21,7 +21,6 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.util.SpecsEnums;
 import pt.up.fe.specs.util.SpecsLogs;
-import utils.LARASystem;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -29,6 +28,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class JOptionsInterface {
+
+    private static final String LARAPATH = "$LARAI";
 
     private static final Map<WeaverOption, DataKey<?>> CONVERSION_MAP;
 
@@ -83,7 +84,7 @@ public class JOptionsInterface {
             }
 
             String property = properties.getProperty(key.toString());
-            property.replace(LARASystem.LARAPATH, LaraIUtils.getJarFoldername());
+            property.replace(LARAPATH, LaraIUtils.getJarFoldername());
             data.setString(datakey, property);
         }
 

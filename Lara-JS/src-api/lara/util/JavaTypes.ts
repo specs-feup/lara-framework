@@ -80,7 +80,6 @@ export namespace JavaClasses {
   export interface HashMap extends JavaClass {}
   export interface SpecsPlatforms extends JavaClass {}
   export interface Runtime extends JavaClass {}
-  export interface LARASystem extends JavaClass {}
   export interface ProcessOutputAsString extends JavaClass {
     getOutput(): string;
   }
@@ -351,10 +350,6 @@ export default class JavaTypes {
 
   static get Runtime() {
     return JavaTypes.getType("java.lang.Runtime") as JavaClasses.Runtime;
-  }
-
-  static get LARASystem() {
-    return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
   }
 
   static get ProcessOutputAsString() {
