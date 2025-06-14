@@ -20,7 +20,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies {  
+dependencies {
     implementation ':GuiHelper'
     implementation ':JavaGenerator'
     implementation ':jOptions'
@@ -29,10 +29,10 @@ dependencies {
 
     implementation ':LanguageSpecification'
     implementation ':LARAI'
-    implementation ':LaraUtils'	
-    implementation ':WeaverInterface'	
+    implementation ':LaraUtils'
+    implementation ':WeaverInterface'
 
-    implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'	
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
 }
 
 // Project sources
@@ -41,11 +41,11 @@ sourceSets {
         java {
             srcDir 'src'
         }
-        
+
         resources {
             srcDir 'resources'
         }
-    } 
+    }
 }
 
 task WeaverGenerator(type: JavaExec) {

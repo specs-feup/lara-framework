@@ -1,15 +1,14 @@
 plugins {
     id 'distribution'
+    id 'java' // Java project
 }
 
-// Java project
-apply plugin: 'java'
-
 java {
+    withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
 
 // Repositories providers
 repositories {
@@ -23,16 +22,7 @@ dependencies {
     implementation ':tdrcLibrary'
     implementation ':LaraUtils'
 
-
-    implementation group: 'org.antlr', name: 'antlr4', version: '4.13.2'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
-    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '4.0.2'
-    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.5'
-    implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
-}
-
-java {
-    withSourcesJar()
 }
 
 // Project sources
@@ -47,7 +37,6 @@ sourceSets {
         }
     }
 
-
     test {
         java {
             srcDir 'test'
@@ -57,5 +46,4 @@ sourceSets {
             srcDir 'resources'
         }
     }
-
 }
