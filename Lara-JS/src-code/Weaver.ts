@@ -5,7 +5,6 @@ import java from "java";
 import Debug from "debug";
 import { fileURLToPath, pathToFileURL } from "url";
 import { isJavaError } from "./JavaError.js";
-import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 import assert from "assert";
@@ -21,8 +20,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 java.asyncOptions = {
   asyncSuffix: "Async",
   syncSuffix: "",
-  promiseSuffix: "P",
-  promisify: promisify,
+  promiseSuffix: "P"
 };
 
 export class Weaver {
@@ -173,10 +171,6 @@ export class Weaver {
   ): Promise<boolean> {
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
-    }
-
-    for (const file of config.importForSideEffects ?? []) {
-      await import(file);
     }
 
     if (typeof args.scriptFile !== "string") {

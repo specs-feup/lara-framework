@@ -227,8 +227,8 @@ export default class Io {
     ).toArray();
     const files: JavaClasses.File[] = [];
 
-    for (const file of list) {
-      files.push(file);
+    for (let i = 0; i < list.size(); i++) {
+      files.push(list.get(i));
     }
 
     return files;
