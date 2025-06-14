@@ -14,7 +14,6 @@
 package org.lara.interpreter.cli;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.config.interpreter.VerboseLevel;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
@@ -44,10 +43,6 @@ public class JOptionsInterface {
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.log, LaraiKeys.LOG_FILE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.javascript, LaraiKeys.LOG_JS_OUTPUT);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.restrict, LaraiKeys.RESTRICT_MODE);
-        // Setting custom decoder because Properties use numbers instead of names for
-        // the verbose level
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.verbose,
-                LaraiKeys.VERBOSE.setDecoder(s -> VerboseLevel.values()[Integer.parseInt(s)]));
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jarpaths, LaraiKeys.JAR_PATHS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.help, LaraiKeys.SHOW_HELP);
 

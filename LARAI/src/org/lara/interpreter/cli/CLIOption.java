@@ -35,7 +35,6 @@ public enum CLIOption implements WeaverOption {
     output("o", OptionArguments.ONE_ARG, "dir", "change output dir", LaraiKeys.OUTPUT_FOLDER),
     workspace("p", OptionArguments.ONE_ARG, "dir", "change the working directory", LaraiKeys.WORKSPACE_FOLDER),
     workspace_extra("pe", OptionArguments.ONE_ARG, "sources", "extra sources", LaraiKeys.WORKSPACE_EXTRA),
-    verbose("b", OptionArguments.ONE_ARG, "level", "verbose level", LaraiKeys.VERBOSE),
     main("m", OptionArguments.ONE_ARG, "aspect", "select main aspect", LaraiKeys.MAIN_ASPECT),
     log("l", OptionArguments.OPTIONAL_ARG, "fileName",
             "outputs to a log file. If file ends in .zip, compresses the file", LaraiKeys.LOG_FILE),

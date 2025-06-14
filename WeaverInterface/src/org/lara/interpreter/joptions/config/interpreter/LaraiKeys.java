@@ -49,9 +49,6 @@ public interface LaraiKeys {
             // According to LaraIDataStore
             .setDefault(() -> new File("."));
 
-    DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
-            .setDefault(() -> VerboseLevel.warnings);
-
     DataKey<OptionalFile> LOG_FILE = LaraIKeyFactory.optionalFile("log", false).setLabel("Use Log File");
 
     DataKey<Boolean> LOG_JS_OUTPUT = KeyFactory.bool("javascript").setLabel("Log JavaScript Output");
@@ -76,8 +73,7 @@ public interface LaraiKeys {
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
-                    VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
-                    DEBUG_MODE, RESTRICT_MODE, JAR_PATHS, SHOW_HELP)
+                    LOG_FILE, LOG_JS_OUTPUT, DEBUG_MODE, RESTRICT_MODE, JAR_PATHS, SHOW_HELP)
             .build();
 
 }

@@ -60,7 +60,6 @@ public class OptionsParser {
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
         final Option workDir = OptionsBuilderUtils.newOption(CLIOption.workspace);
         final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
-        final Option verbose = OptionsBuilderUtils.newOption(CLIOption.verbose);
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
         final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
 
@@ -78,7 +77,6 @@ public class OptionsParser {
                 .addOption(outDir)
                 .addOption(workDir)
                 .addOption(workDirExtra)
-                .addOption(verbose)
                 .addOption(javascript)
                 .addOption(log)
                 .addOption(restrict)
