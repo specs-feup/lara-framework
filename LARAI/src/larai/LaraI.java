@@ -12,46 +12,22 @@
  */
 package larai;
 
-import larac.utils.output.Output;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.lara.interpreter.Interpreter;
 import org.lara.interpreter.cli.LaraCli;
 import org.lara.interpreter.cli.OptionsConverter;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.cli.OptionsParser.ExecutionMode;
-import org.lara.interpreter.exception.LaraIException;
-import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.profile.BasicWeaverProfiler;
-import org.lara.interpreter.profile.ReportField;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.LaraIUtils;
-import org.lara.interpreter.utils.MessageConstants;
-import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.interpreter.weaver.interf.events.Stage;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.JOptionKeys;
-import org.suikasoft.jOptions.app.AppPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.jsengine.JsEngineType;
-import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.lara.LaraSystemTools;
-import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * An interpreter for the LARA language, which converts the Aspect-IR into a javascript representation and runs that
@@ -67,27 +43,8 @@ public class LaraI {
     public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
-    private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
 
-    private static final Collection<Class<?>> FORBIDDEN_CLASSES = Arrays.asList(ProcessBuilder.class,
-            LaraSystemTools.class, Runtime.class);
-
-    public static boolean isServerMode() {
-        return SERVER_MODE.get();
-    }
-
-    public static void setServerMode() {
-        SERVER_MODE.set(true);
-    }
-
-    /**
-     * Thread-scope DataStore
-     */
-    private static final SpecsThreadLocal<DataStore> THREAD_LOCAL_WEAVER_DATA = new SpecsThreadLocal<>(DataStore.class);
-
-    public static DataStore getThreadLocalData() {
-        return THREAD_LOCAL_WEAVER_DATA.get();
-    }
+    private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
     /**
      * Thread-scope LaraC
@@ -98,174 +55,13 @@ public class LaraI {
         return THREAD_LOCAL_LARAI.get();
     }
 
-    private LaraIDataStore options;
-    private MasterWeaver weaver;
-    public Output out = new Output();
-    private boolean quit = false;
-
-    private Interpreter interpreter;
-    private WeaverProfiler weavingProfile;
-
-    private final WeaverEngine weaverEngine;
-
-    private static Supplier<Long> timeProvider = System::currentTimeMillis;
-
     /**
      * Create a new LaraI with the input datastore
      *
      * @param dataStore
      * @param weaverEngine
      */
-    private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {
-        this.weaverEngine = weaverEngine;
-        setOptions(new LaraIDataStore(this, dataStore, weaverEngine));
-
-        // final boolean continueRun = LaraIOptionsSetter.setOptions(this, jarLoc, dataStore);
-        quit = false;
-        weavingProfile = weaverEngine.getWeaverProfiler();
-
-        if (weavingProfile == null) {
-            weavingProfile = BasicWeaverProfiler.emptyProfiler();
-        }
-    }
-
-    public static LaraI newInstance(DataStore dataStore, WeaverEngine weaverEngine) {
-        return new LaraI(dataStore, weaverEngine);
-    }
-
-    public static LaraI newInstance(WeaverEngine weaverEngine) {
-        DataStore data = DataStore.newInstance("EmptyLarai");
-        data.add(LaraiKeys.LARA_FILE, new File(""));
-        return LaraI.newInstance(data, weaverEngine);
-    }
-
-    public WeaverEngine getWeaverEngine() {
-        return weaverEngine;
-    }
-
-    public JsEngine getScriptEngine() {
-        return weaverEngine.getScriptEngine();
-    }
-
-    /**
-     * Executes larai with a Weaving engine implementing {@link WeaverEngine}, and the language specification language
-     * specification. The datastore must contain the options available in {@link LaraiKeys}
-     *
-     * @param dataStore
-     * @param weaverEngine
-     * @param langSpec
-     * @return
-     */
-    // public static boolean exec(DataStore dataStore, Class<? extends WeaverEngine> weaverEngine) {
-    // try {
-    // return exec(dataStore, weaverEngine.newInstance());
-    // } catch (Exception e) {
-    // throw new RuntimeException(
-    // "Could not instantiate weaver engine with class '" + weaverEngine.getClass() + "'", e);
-    // }
-    // }
-
-    /**
-     * Executes larai with a Weaving engine implementing {@link WeaverEngine}.
-     * <p>
-     * The datastore contains the options available in {@link LaraiKeys} and the options given by
-     * {@link WeaverEngine#getOptions()}.
-     *
-     * @param dataStore
-     * @param weaverEngine
-     * @return
-     */
-    public static boolean exec(DataStore dataStore, WeaverEngine weaverEngine) {
-
-        // Create new instance of the weaver engine, to avoid reuse of information between consecutive runs
-        var newWeaverEngine = SpecsSystem.newInstance(weaverEngine.getClass());
-
-        // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        // var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, weaverEngine));
-        var result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(dataStore, newWeaverEngine));
-        return result == null ? false : result;
-    }
-
-
-    private static boolean execPrivate(DataStore dataStore, WeaverEngine weaverEngine) {
-
-        prepareDataStore(dataStore, weaverEngine);
-
-        MessageConstants.order = 1;
-
-        LaraI larai = null;
-        try {
-
-            if (dataStore == null) {
-                throw new NullPointerException("The DataStore cannot be null");
-            }
-
-            long start = getCurrentTime();
-            THREAD_LOCAL_WEAVER_DATA.setWithWarning(dataStore);
-
-            // Check if unit-testing mode
-            if (dataStore.get(LaraiKeys.UNIT_TEST_MODE)) {
-                return weaverEngine.executeUnitTestMode(dataStore);
-            }
-
-            larai = new LaraI(dataStore, weaverEngine);
-
-            if (larai.options.isDebug()) {
-                larai.out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, ". LARA Options"));
-                larai.out.println(dataStore);
-            }
-
-            if (!larai.quit) {
-                THREAD_LOCAL_LARAI.setWithWarning(larai);
-                larai.interpret(weaverEngine);
-            }
-
-            long end = getCurrentTime() - start;
-
-            larai.getWeavingProfile().report(ReportField.TOTAL_TIME, (int) end);
-            larai.out.println(MessageConstants.getElapsedTimeMessage(end, "LARA total time"));
-            larai.out.close();
-            return true;
-
-            // } catch (final Throwable e) {
-        } catch (Exception e) {
-            throw new RuntimeException("Exception during interpretation", e);
-            // throw new RuntimeException(e);
-
-            // throw treatExceptionInInterpreter(larai, e);
-
-            // var finalException = treatExceptionInInterpreter(larai, e);
-            // System.out.println(finalException);
-        } finally {
-            if (WeaverEngine.isWeaverSet()) {
-                WeaverEngine.removeWeaver();
-            }
-
-            THREAD_LOCAL_WEAVER_DATA.removeWithWarning();
-            if (larai != null) {
-                THREAD_LOCAL_LARAI.removeWithWarning();
-            }
-
-        }
-
-        // return false;
-    }
-
-    private static void prepareDataStore(DataStore dataStore, WeaverEngine weaverEngine) {
-
-        // Set store definition
-
-        StoreDefinition weaverKeys = getStoreDefinition(weaverEngine);
-
-        dataStore.setStoreDefinition(weaverKeys);
-
-        // Set persistence, if not set
-        if (dataStore.getPersistence().isEmpty()) {
-            AppPersistence persistence = OptionsParser.getXmlPersistence(weaverKeys);
-            dataStore.setPersistence(persistence);
-        }
-
-    }
+    private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {}
 
     public static StoreDefinition getStoreDefinition(WeaverEngine weaverEngine) {
         String weaverName = weaverEngine.getName();
@@ -275,24 +71,6 @@ public class LaraI {
                 // Add weaver custom keys
                 .addDefinition(weaverEngine.getStoreDefinition())
                 .build();
-    }
-
-    // public static boolean exec(String[] args, Class<? extends WeaverEngine> weaverEngine) {
-    // return exec(args, weaverEngine.newInstance());
-    // }
-
-    /**
-     * Executes larai with a Weaving engine implementing {@link WeaverEngine}. The varargs are converted into a
-     * DataStore
-     *
-     * @param args
-     * @param weaverEngine
-     * @return
-     */
-    public static boolean exec(String[] args, WeaverEngine weaverEngine) {
-        // Launch weaver on another thread, to guarantee that there are no conflicts in ThreadLocal variables
-        LaraiResult result = SpecsSystem.executeOnThreadAndWait(() -> execPrivate(args, weaverEngine));
-        return result.get(LaraiResult.IS_SUCCESS);
     }
 
 
@@ -342,234 +120,6 @@ public class LaraI {
             case CONFIG_OPTIONS ->
                     Optional.of(OptionsConverter.configExtraOptions2DataStore(mainScript, cmd, weaverEngine));
         };
-    }
-
-    private static LaraiResult execPrivate(String[] args, WeaverEngine weaverEngine) {
-        SpecsLogs.debug(() -> "Weaver command-line arguments: " + Arrays.stream(args).collect(Collectors.joining(" ")));
-
-        // Set weaver (e.g. for help message to access name and build number)
-        weaverEngine.setWeaver();
-
-        // Reset global state
-        MessageConstants.order = 1;
-
-        try {
-            // Collection<Option> configOptions = OptionsParser.buildConfigOptions();
-            // Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
-            // OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
-            //
-            // Options finalOptions = new Options();
-            //
-            // configOptions.forEach(finalOptions::addOption); // So the config options appear on the top
-            // mainOptions.forEach(finalOptions::addOption);
-
-            Options finalOptions = LaraCli.getCliOptions(weaverEngine);
-
-            CommandLine cmd = OptionsParser.parse(args, finalOptions);
-            if (LaraIUtils.printHelp(cmd, finalOptions)) {
-                // return true;
-                return LaraiResult.newInstance(true);
-            }
-
-            // ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, mainOptions, finalOptions);
-            ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
-            DataStore dataStore;
-            boolean success;
-
-            SpecsLogs.debug("Launching weaver in mode " + mode);
-
-            switch (mode) {
-                // case UNIT_TEST:
-                // return weaverEngine.executeUnitTestMode(Arrays.asList(args));
-                case CONFIG: // convert configuration file to data store and run
-                    // System.out.println("CONFIG ARGS:" + Arrays.toString(args));
-                    dataStore = OptionsConverter.configFile2DataStore(weaverEngine, cmd);
-                    success = execPrivate(dataStore, weaverEngine);
-                    break;
-                case OPTIONS: // convert options to data store and run
-                    // SpecsLogs.debug("Received args: " + Arrays.toString(args));
-
-                    dataStore = OptionsConverter.commandLine2DataStore(args[0], cmd, weaverEngine.getOptions());
-
-                    // return execPrivate(dataStore, weaverEngine);
-                    success = execPrivate(dataStore, weaverEngine);
-                    break;
-                case CONFIG_OPTIONS: // convert configuration file to data store, override with extra options and run
-                    dataStore = OptionsConverter.configExtraOptions2DataStore(args[0], cmd, weaverEngine);
-                    // return execPrivate(dataStore, weaverEngine);
-                    success = execPrivate(dataStore, weaverEngine);
-                    break;
-                default:
-                    throw new NotImplementedException(mode);
-            }
-
-            return LaraiResult.newInstance(success);
-
-        } catch (final Exception e) {
-            throw new RuntimeException("Exception while executing LARA script", e);
-            // throw prettyRuntimeException(e);
-        } finally {
-            if (WeaverEngine.isWeaverSet()) {
-                WeaverEngine.removeWeaver();
-            }
-        }
-        // return true;
-    }
-
-
-    private void interpret(WeaverEngine weaverEngine) throws Exception {
-        String engineWorkingDir = SpecsIo.getWorkingDir().getAbsolutePath();
-        var configFolder = getThreadLocalData().get(JOptionKeys.CURRENT_FOLDER_PATH);
-        if (!configFolder.isEmpty()) {
-            engineWorkingDir = configFolder.get();
-        }
-
-        Path path = Paths.get(engineWorkingDir);
-
-        // JsEngine engine = createJsEngine(options.getJsEngine(), path, weaverEngine.getApisFolder());
-        JsEngine engine = createJsEngine(options.getJsEngine(), path, null);
-
-        // Set javascript engine in WeaverEngine
-        weaverEngine.setScriptEngine(engine);
-
-        // weaverEngine.setScriptEngine(engine);
-        // try {
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Initializing Interpreter"));
-        // final ImporterTopLevel scope = new ImporterTopLevel(cx);
-
-
-        // final FileList folderApplication = options.getWorkingDir();
-
-        // if (!folderApplication.exists()) {
-        // throw new LaraIException(options.getLaraFile().getName(), "application folder does not exist",
-        // new FileNotFoundException(folderApplication.getAbsolutePath()));
-        // }
-        out.println(MessageConstants.getHeaderMessage(MessageConstants.order++, "Loading Weaver"));
-        long begin = getCurrentTime();
-        weaver = new MasterWeaver(this, weaverEngine, engine);
-
-        try {
-            // Create interpreter
-            interpreter = new Interpreter(this, engine);
-        } catch (Exception e) {
-            throw new LaraIException(options.getLaraFile().getName(), "Problem creating the interpreter", e);
-        }
-
-        try {
-            boolean isWorking = weaver.begin();
-            long end = getCurrentTime() - begin;
-            getWeavingProfile().report(ReportField.INIT_TIME, (int) end);
-            out.println(MessageConstants.getElapsedTimeMessage(end));
-
-            if (!isWorking) {
-                finish(engine);
-                return;
-            }
-
-        } catch (Exception e) {
-            finish(engine);
-            throw new LaraIException(options.getLaraFile().getName(), "Exception while calling weaver begin() method",
-                    e);
-            // SpecsLogs.info("Exception while calling weaver begin(): " + e.getMessage());
-            // finish(engine);
-            // return;
-        }
-
-        try {
-            // Start interpretation
-
-            final String extension = SpecsIo.getExtension(options.getLaraFile());
-
-            // If JS file
-            if (Arrays.stream(JsFileType.values()).anyMatch(type -> type.getExtension().equals(extension))) {
-
-                // If aspect arguments present, load them to object laraArgs
-                loadAspectArguments();
-                interpreter.executeMainAspect(options.getLaraFile());
-
-                // Close weaver
-                weaver.close();
-            }
-
-            String main = options.getMainAspect();
-
-            weaver.eventTrigger().triggerWeaver(Stage.END, getWeaverArgs(), main,
-                    options.getLaraFile().getPath());
-            finish(engine);
-        } catch (Exception e) {
-
-            // Close weaver
-            weaver.close();
-
-            // Rethrow exception
-            throw e;
-            // throw new RuntimeException("Exception during weaving:", e);
-        }
-
-    }
-
-    private void loadAspectArguments() {
-        var jsonArgs = options.getAspectArgumentsStr();
-
-        var init = jsonArgs.isEmpty() ? "{}" : jsonArgs;
-
-        interpreter.evaluate("laraArgs = " + init + ";", "LARAI Preamble");
-    }
-
-    private void finish(JsEngine engine) {
-        // if cleaning is needed
-    }
-
-    private JsEngine createJsEngine(JsEngineType engineType, Path engineWorkingDirectory, File nodeModulesFolder) {
-
-        OutputStream engineOutputStream = System.out;
-        if (getOptions().isJavaScriptStream()) {
-            engineOutputStream = this.out.getOutStream();
-        }
-
-        Collection<Class<?>> engineForbiddenClasses = Collections.emptyList();
-        if (getOptions().isRestricMode()) {
-            engineForbiddenClasses = FORBIDDEN_CLASSES;
-        }
-
-        return engineType.newEngine(engineType, engineForbiddenClasses, engineWorkingDirectory, nodeModulesFolder,
-                engineOutputStream);
-    }
-
-    public DataStore getWeaverArgs() {
-        return options.getWeaverArgs();
-    }
-
-    /**
-     * @return the weaver
-     */
-    public MasterWeaver getWeaver() {
-        return weaver;
-    }
-
-    /**
-     * @param weaver the weaver to set
-     */
-    public void setWeaver(MasterWeaver weaver) {
-        this.weaver = weaver;
-    }
-
-    /**
-     * @return the options
-     */
-    public LaraIDataStore getOptions() {
-        return options;
-    }
-
-    /**
-     * @param laraIDataStore the options to set
-     */
-    private void setOptions(LaraIDataStore laraIDataStore) {
-        options = laraIDataStore;
-    }
-
-    public WeaverProfiler getWeavingProfile() {
-        return weavingProfile;
     }
 
     public static long getCurrentTime() {
