@@ -16,26 +16,20 @@ import java.io.File;
 import javax.script.ScriptException;
 
 import org.lara.interpreter.exception.EvaluationException;
-import org.lara.interpreter.joptions.config.interpreter.LaraIDataStore;
-import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.profile.ReportField;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.MessageConstants;
 
 import larac.utils.output.Output;
 import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.jsengine.JsFileType;
-import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
 
     public static final String ARGS_PREFIX = "";
     public static final String ATTRIBUTES = "attributes";
-    public static final String TOOLS_CONTEXT = "tools";
 
     private final LaraI laraInterp;
-    private final LaraIDataStore options;
     private Output out = new Output();
     private final JsEngine engine;
 
@@ -52,7 +46,6 @@ public class Interpreter {
      */
     public Interpreter(LaraI laraInt, JsEngine engine) {
         laraInterp = laraInt;
-        options = laraInterp.getOptions();
         out = laraInterp.out;
         this.engine = engine;
     }
@@ -78,20 +71,6 @@ public class Interpreter {
         laraInterp.getWeavingProfile().report(ReportField.WEAVING_TIME, (int) end);
         // exportMetrics();
         out.println(MessageConstants.getElapsedTimeMessage(end));
-    }
-
-    /**
-     * Export the weaver metrics to the given file
-     */
-    public void exportMetrics() {
-        OptionalFile reportFile = options.getMetricsFile();
-        if (!reportFile.isUsed()) {
-            return;
-        }
-
-        File file = reportFile.getFile();
-        WeaverProfiler weavingProfile = laraInterp.getWeavingProfile();
-        SpecsIo.write(file, weavingProfile.buildJsonReport());
     }
 
     /**

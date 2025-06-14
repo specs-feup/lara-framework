@@ -87,15 +87,10 @@ public class MasterWeaver {
     }
 
     public void addGears(List<AGear> gears) {
-        if (larai.getOptions().getMetricsFile().isUsed()) {
-            eventTrigger.registerReceiver(larai.getWeavingProfile());
-        }
-
         if (gears == null) {
             return;
         }
         eventTrigger.registerReceivers(gears);
-
     }
 
     /**

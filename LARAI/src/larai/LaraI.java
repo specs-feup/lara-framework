@@ -28,7 +28,6 @@ import org.lara.interpreter.profile.ReportField;
 import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.utils.MessageConstants;
-import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.MasterWeaver;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
@@ -225,7 +224,6 @@ public class LaraI {
 
             larai.getWeavingProfile().report(ReportField.TOTAL_TIME, (int) end);
             larai.out.println(MessageConstants.getElapsedTimeMessage(end, "LARA total time"));
-            larai.interpreter.exportMetrics();
             larai.out.close();
             return true;
 
@@ -540,10 +538,6 @@ public class LaraI {
 
     public DataStore getWeaverArgs() {
         return options.getWeaverArgs();
-    }
-
-    public Tools getTools() {
-        return options.getTools();
     }
 
     /**

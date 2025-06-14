@@ -43,43 +43,9 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
 
         StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiKeys.STORE_DEFINITION.getName());
         builder.addDefinition(LaraiKeys.STORE_DEFINITION);
-
-        /*
-        StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.DEFINITION_NAME);
-        
-        builder.addKey(LaraiKeys.LARA_FILE);
-        
-        builder.addKey(LaraiKeys.MAIN_ASPECT);
-        builder.addKey(LaraiKeys.ASPECT_ARGS);
-        // builder.addKey(LaraiKeys.WEAVER_ARGS);
-        // builder.addKey(LaraiKeys.LANGUAGE_SPECIFICATION_FOLDER);
-        builder.addKey(LaraiKeys.WORKSPACE_FOLDER);
-        builder.addKey(LaraiKeys.OUTPUT_FOLDER);
-        builder.addKey(LaraiKeys.INCLUDES_FOLDER);
-        builder.addKey(LaraiKeys.EXTERNAL_DEPENDENCIES);
-        // DataKey<ClassProvider> weaverClass = LaraiKeys.WEAVER_CLASS.setDefault(ClassProvider.newInstance(weaver));
-        // builder.addKey(weaverClass);
-        builder.addKey(LaraiKeys.VERBOSE);
-        builder.addKey(LaraiKeys.REPORT_FILE);
-        builder.addKey(LaraiKeys.METRICS_FILE);
-        builder.addKey(LaraiKeys.TOOLS_FILE);
-        builder.addKey(LaraiKeys.LOG_FILE);
-        builder.addKey(LaraiKeys.LOG_JS_OUTPUT);
-        builder.addKey(LaraiKeys.DEBUG_MODE);
-        builder.addKey(LaraiKeys.TRACE_MODE);
-        builder.addKey(LaraiKeys.BUNDLE_TAGS);
-        // builder.addKey(LaraiKeys.SHOW_HELP);
-        */
         final StoreDefinitionBuilder finalBuilder = builder.setDefaultValues(getDefaultValues());
 
         extraKeys.forEach(finalBuilder::addKey);
-        // List<WeaverOption> engineOptions;
-        // try {
-        // engineOptions = this.weaver.newInstance().getOptions();
-        // engineOptions.forEach(opt -> finalBuilder.addKey(opt.dataKey()));
-        // } catch (InstantiationException | IllegalAccessException e) {
-        // LoggingUtils.msgWarn("Error message:\n", e);
-        // }
         return finalBuilder.build();
 
     }

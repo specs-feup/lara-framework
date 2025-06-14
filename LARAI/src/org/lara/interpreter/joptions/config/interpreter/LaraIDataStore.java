@@ -17,22 +17,17 @@ import larai.LaraI;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
-import org.lara.interpreter.utils.Tools;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.JOptionsUtils;
-import org.xml.sax.SAXException;
 import pt.up.fe.specs.jsengine.JsEngineType;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.properties.SpecsProperties;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -59,7 +54,6 @@ public class LaraIDataStore implements LaraiKeys {
 
     private final DataStore dataStore;
     private final LaraI larai;
-    private Tools tools = null;
 
 
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
@@ -175,38 +169,6 @@ public class LaraIDataStore implements LaraiKeys {
 
     }
 
-    public Tools getTools() {
-        if (tools == null) {
-            setTools(createTools(dataStore, larai));
-        }
-        return tools;
-    }
-
-    private static Tools createTools(DataStore dataStore, LaraI larai) {
-        try {
-
-            if (dataStore.hasValue(LaraiKeys.TOOLS_FILE)) {
-
-                OptionalFile optionalFile = dataStore.get(LaraiKeys.TOOLS_FILE);
-
-                if (optionalFile.isUsed()) {
-                    return new Tools(optionalFile.getFile());
-                }
-
-            }
-
-        } catch (final FileNotFoundException e) {
-            larai.out.warn("Could not find tools.xml in the given path");
-        } catch (final ParserConfigurationException | SAXException | IOException e) {
-            larai.out.warn("Could not parse tools.xml: " + e.getLocalizedMessage());
-        }
-        return null;
-    }
-
-    public void setTools(Tools tools) {
-        this.tools = tools;
-    }
-
     /**
      * Right now the arguments are going as a single String!
      *
@@ -264,28 +226,7 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private FileList getTrySources(DataKey<FileList> folder) {
-
         return dataStore.get(folder);
-        /*
-        if (dataStore.hasValue(folder)) {
-            return dataStore.get(folder);
-        }
-        return FileList.newInstance(new File("."));
-        */
-    }
-
-    public OptionalFile getReportFile() {
-        if (dataStore.hasValue(LaraiKeys.REPORT_FILE)) {
-            return dataStore.get(LaraiKeys.REPORT_FILE);
-        }
-        return OptionalFile.newInstance(null);
-    }
-
-    public OptionalFile getMetricsFile() {
-        if (dataStore.hasValue(LaraiKeys.METRICS_FILE)) {
-            return dataStore.get(LaraiKeys.METRICS_FILE);
-        }
-        return OptionalFile.newInstance(null);
     }
 
     /**

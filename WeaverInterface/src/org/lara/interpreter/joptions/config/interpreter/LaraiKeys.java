@@ -56,12 +56,6 @@ public interface LaraiKeys {
             // According to LaraIDataStore
             .setDefault(() -> new File("."));
 
-    DataKey<OptionalFile> TOOLS_FILE = LaraIKeyFactory.optionalFile("tools", true, "xml").setLabel("Tools File");
-
-    DataKey<OptionalFile> REPORT_FILE = LaraIKeyFactory.optionalFile("report", false, "js").setLabel("Report File");
-
-    DataKey<OptionalFile> METRICS_FILE = LaraIKeyFactory.optionalFile("metrics", false, "js").setLabel("Metrics File");
-
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
             .setDefault(() -> VerboseLevel.warnings);
     // .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
@@ -115,8 +109,7 @@ public interface LaraiKeys {
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
-                    TOOLS_FILE, REPORT_FILE,
-                    METRICS_FILE, VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
+                    VERBOSE, LOG_FILE, LOG_JS_OUTPUT,
                     DEBUG_MODE, RESTRICT_MODE, JS_ENGINE, JAR_PATHS, SHOW_HELP)
             .build();
 

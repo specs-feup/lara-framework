@@ -66,12 +66,8 @@ public class OptionsParser {
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
         // final Option argw = OptionsBuilderUtils.newOption(CLIOption.argw);
         final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
-        final Option tools = OptionsBuilderUtils.newOption(CLIOption.tools);
-        final Option report = OptionsBuilderUtils.newOption(CLIOption.report);
 
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
-
-        final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
 
         final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
         final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
@@ -88,11 +84,8 @@ public class OptionsParser {
                 .addOption(workDir)
                 .addOption(workDirExtra)
                 .addOption(verbose)
-                .addOption(tools)
-                .addOption(report)
                 .addOption(javascript)
                 .addOption(log)
-                .addOption(metrics)
                 .addOption(restrict)
                 .addOption(jsengine)
                 .addOption(jarpaths);
