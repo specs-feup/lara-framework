@@ -29,7 +29,6 @@ public class WeavingReport {
         metrics = new AccumulatorMap<>();
         calledAspects = new AccumulatorMap<>();
         actions = new AccumulatorMap<>();
-        // reset();
     }
 
     public void aspectCalled(String aspectName) {
@@ -38,25 +37,14 @@ public class WeavingReport {
 
     public void actionPerformed(String actionName, JoinPoint joinPoint) {
         actions.add(actionName);
-        // advisedJPs.add(joinPoint.getNode());
     }
 
     public void inc(ReportField field) {
         metrics.add(field);
-        //
-        // // When incrementing native locs, increment also total locs
-        // if (field == ReportField.NATIVE_LOCS) {
-        // metrics.add(ReportField.TOTAL_LOCS);
-        // }
     }
 
     public void inc(ReportField field, int amount) {
         metrics.add(field, amount);
-        //
-        // // When incrementing native locs, increment also total locs
-        // if (field == ReportField.NATIVE_LOCS) {
-        // metrics.add(ReportField.TOTAL_LOCS, amount);
-        // }
     }
 
     public int get(ReportField field) {
@@ -77,42 +65,4 @@ public class WeavingReport {
     public Map<String, Integer> getActionsMap() {
         return actions.getAccMap();
     }
-
-    /* 
-       public void incJoinPoints() {
-        joinPoints++;
-    }
-    
-    public void incFilteredJoinPoints() {
-        filteredJoinPoints++;
-    }
-    
-    public void incFilteredJoinPoints(int value) {
-        filteredJoinPoints += value;
-    }
-    
-    public int getJoinPoints() {
-        return joinPoints;
-    }
-    
-    public void setJoinPoints(int joinPoints) {
-        this.joinPoints = joinPoints;
-    }
-    
-    public int getFilteredJoinPoints() {
-        return filteredJoinPoints;
-    }
-    
-    public void setFilteredJoinPoints(int filteredJoinPoints) {
-        this.filteredJoinPoints = filteredJoinPoints;
-    }
-    
-    public void setNumTokens(int numMainLaraTokens) {
-        this.numTokens = numMainLaraTokens;
-    }
-    
-    public int getNumTokens() {
-        return this.numTokens;
-    }
-    */
 }

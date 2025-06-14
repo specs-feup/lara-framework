@@ -19,67 +19,64 @@ import java.util.Set;
 
 public class Args {
 
-	private final Map<String, Object> arguments;
+    private final Map<String, Object> arguments;
 
-	public Args() {
-		arguments = new LinkedHashMap<>();
-	}
+    public Args() {
+        arguments = new LinkedHashMap<>();
+    }
 
-	public Args(String[] params, Object[] args) {
-		arguments = new LinkedHashMap<>();
-		allAll(params, args);
-	}
+    public Args(String[] params, Object[] args) {
+        arguments = new LinkedHashMap<>();
+        allAll(params, args);
+    }
 
-	/**
-	 * Add all input arguments
-	 * 
-	 * @param params
-	 *            the parameter associated to the name
-	 * @param args
-	 *            the arguments related to the parameters
-	 * @return true if successfully added, false if the number of parameters is
-	 *         less than the number of arguments
-	 */
-	private boolean allAll(String[] params, Object[] args) {
-		if (params.length < params.length) {
-			return false;
-		}
+    /**
+     * Add all input arguments
+     * 
+     * @param params
+     *               the parameter associated to the name
+     * @param args
+     *               the arguments related to the parameters
+     * @return true if successfully added, false if the number of parameters is
+     *         less than the number of arguments
+     */
+    private boolean allAll(String[] params, Object[] args) {
+        if (params.length < params.length) {
+            return false;
+        }
 
-		for (int i = 0; i < params.length; i++) {
-			final String param = params[i];
-			Object arg = null;
-			if (i < args.length) {
-				arg = args[i];
-			}
-			arguments.put(param, arg);
-		}
-		return true;
-	}
+        for (int i = 0; i < params.length; i++) {
+            final String param = params[i];
+            Object arg = null;
+            if (i < args.length) {
+                arg = args[i];
+            }
+            arguments.put(param, arg);
+        }
+        return true;
+    }
 
-	/**
-	 * Returns the list of
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public Object getArgument(String param) {
-		return arguments.get(param);
-	}
+    /**
+     * Returns the list of
+     * 
+     * @param param
+     * @return
+     */
+    public Object getArgument(String param) {
+        return arguments.get(param);
+    }
 
-	public Object[] getArguments() {
-		// List<Object> args = new ArrayList<Object>();
-		// args.addAll(arguments.values());
-		return arguments.values().toArray();
-	}
+    public Object[] getArguments() {
+        return arguments.values().toArray();
+    }
 
-	public String[] getParameters() {
-		final Set<String> keySet = arguments.keySet();
-		final String[] params = new String[keySet.size()];
-		return keySet.toArray(params);
-	}
+    public String[] getParameters() {
+        final Set<String> keySet = arguments.keySet();
+        final String[] params = new String[keySet.size()];
+        return keySet.toArray(params);
+    }
 
-	public boolean isEmpty() {
-
-		return arguments.isEmpty();
-	}
+    public boolean isEmpty() {
+        return arguments.isEmpty();
+    }
 }

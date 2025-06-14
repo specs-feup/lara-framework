@@ -72,32 +72,28 @@ public class JoinPointEvent extends BaseEvent {
     }
 
     /**
-     * @param joinPointClass
-     *            the joinPointClass to set
+     * @param joinPointClass the joinPointClass to set
      */
     protected void setJoinPointClass(String joinPointClass) {
         this.joinPointClass = joinPointClass;
     }
 
     /**
-     * @param alias
-     *            the alias to set
+     * @param alias the alias to set
      */
     protected void setAlias(String alias) {
         this.alias = alias;
     }
 
     /**
-     * @param filter
-     *            the filter to set
+     * @param filter the filter to set
      */
     protected void setFilter(FilterExpression[] filter) {
         this.filter = filter;
     }
 
     /**
-     * @param joinPoint
-     *            the joinPoint to set
+     * @param joinPoint the joinPoint to set
      */
     protected void setJoinPoint(JoinPoint joinPoint) {
         this.joinPoint = joinPoint;

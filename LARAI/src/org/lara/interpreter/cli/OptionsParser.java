@@ -10,9 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
-/**
- *
- */
+
 package org.lara.interpreter.cli;
 
 import java.io.File;
@@ -64,7 +62,6 @@ public class OptionsParser {
         final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
         final Option verbose = OptionsBuilderUtils.newOption(CLIOption.verbose);
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
-        // final Option argw = OptionsBuilderUtils.newOption(CLIOption.argw);
         final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
 
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
@@ -76,7 +73,6 @@ public class OptionsParser {
                 .addOption(help)
                 .addOption(version)
                 .addOption(argv)
-                // .addOption(argw)
                 .addOption(main)
                 .addOption(debug)
                 .addOption(outDir)
@@ -113,7 +109,8 @@ public class OptionsParser {
     }
 
     /**
-     * Verifies if the given extra options does not exist in the current larai options {@link CLIOption} and adds them
+     * Verifies if the given extra options does not exist in the current larai
+     * options {@link CLIOption} and adds them
      * to the options collection
      *
      * @param mainOptions
@@ -152,11 +149,6 @@ public class OptionsParser {
         }
     }
 
-    /*
-    public void help() {
-    	this.formatter.printHelp("java -jar larai.jar (<larafile>.lara|<aspIR>.xml) [options]", this.opts);
-    }
-    */
     public static String getHelp(Options options) {
         return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
     }
@@ -184,11 +176,6 @@ public class OptionsParser {
 
         return output;
     }
-    /*
-    public static String getHelp() {
-    	return getHelp(buildLaraIOptions());
-    }
-    */
 
     public static Collection<Option> buildConfigOptions() {
 
@@ -198,13 +185,7 @@ public class OptionsParser {
         return options;
     }
 
-    // public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Collection<Option> mainOptions,
-    // Options finalOptions) {
     public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Options finalOptions) {
-        // validateExclusiveOptions(cmd, configOptions, options);
-        // Optional<CLIConfigOption> configOption = Arrays.asList(CLIConfigOption.values()).stream()
-        // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
-        // .findFirst();
 
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
 
@@ -242,14 +223,6 @@ public class OptionsParser {
          * Execute Weaver with the given config file and the overriding options
          */
         CONFIG_OPTIONS,
-        /**
-         * Open GUI with the overriding options (means creating a temporary config file)
-         */
-        // OPTIONS_GUI //FUTURE WORK!
-        /**
-         * Unit testing mode
-         */
-        // UNIT_TEST
     }
 
     /**
@@ -276,37 +249,16 @@ public class OptionsParser {
     }
 
     /**
-     * The 'public' StoreDefinition that will be used for the user interface. It is a subset of the complete definition.
+     * The 'public' StoreDefinition that will be used for the user interface. It is
+     * a subset of the complete definition.
      *
      * @param engine
      * @return
      */
     public static StoreDefinition getLaraStoreDefinition(WeaverEngine engine) {
         return new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName())
-            .addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition())
-            .addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition())
-            .build();
+                .addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition())
+                .addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition())
+                .build();
     }
-
-    // /**
-    // *
-    // * @param engine
-    // * @return
-    // */
-    // public static StoreDefinition getLaraStoreDefinitionComplete(WeaverEngine engine) {
-    // return getLaraStoreDefinition(engine, true);
-    // }
-    //
-    // private static StoreDefinition getLaraStoreDefinition(WeaverEngine engine, boolean isComplete) {
-    // StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
-    // builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
-    // builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
-    //
-    // if (isComplete) {
-    // builder.addDefinition(LaraiKeys.STORE_DEFINITION_EXTRA);
-    // }
-    //
-    // StoreDefinition laraiDefinition = builder.build();
-    // return laraiDefinition;
-    // }
 }

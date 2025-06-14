@@ -20,7 +20,8 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 /**
- * Abstract implementation of AstMethods. It takes into account conversions that might be needed to communicate more
+ * Abstract implementation of AstMethods. It takes into account conversions that
+ * might be needed to communicate more
  * seamlessly between Java and the JavaScript engine.
  * 
  * @author Joao Bispo
@@ -89,11 +90,11 @@ public abstract class AAstMethods<T> implements AstMethods {
             getDescendantsPrivate(getNodeClass().cast(child), descendants);
         }
     }
-    
-	@Override
+
+    @Override
     public Object getRoot() {
-    	return toJs(getRootImpl());
-	}
+        return toJs(getRootImpl());
+    }
 
     public abstract Class<T> getNodeClass();
 
@@ -106,14 +107,14 @@ public abstract class AAstMethods<T> implements AstMethods {
     protected abstract Object[] getScopeChildrenImpl(T node);
 
     protected abstract Object getParentImpl(T node);
-    
+
     // protected abstract Integer getNumChildrenImpl(T node);
 
     protected Integer getNumChildrenImpl(T node) {
         return getChildrenImpl(node).length;
     }
-    
+
     public Object getRootImpl() {
-    	return weaverEngine.getRootNode();
- 	}
+        return weaverEngine.getRootNode();
+    }
 }

@@ -164,7 +164,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         }
 
     }
-    
+
     /**
      * Add code that calls to the super methods
      *
@@ -174,7 +174,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     private String addSuperMethods(JavaClass javaC) {
 
-        var superType = joinPoint.getExtendExplicit().orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
+        var superType = joinPoint.getExtendExplicit()
+                .orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
 
         final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
@@ -188,22 +189,13 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             constructor.appendCode("super(" + fieldName + ");" + ln());
         }
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
-        // System.out.println("addSuperMethods: " + joinPoint.getClazz());
         GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
 
         // Add global methods for global attributes
         var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
 
         GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
-        // GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, superType.getClazz());
-        // addSuperGetters(javaC, fieldName, javaGenerator, parent);
-        // System.out.println("ABS JP: " + superType.getClazz());
-        // Update also here for actionImpl
-//        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getName(), fieldName);
         GeneratorUtils.addSuperActions(javaGenerator, javaC, superType, fieldName);
-        // GeneratorUtils.addSuperToString(javaC, fieldName); // Do not add toString(), JoinPoint already implements it,
-        // and this one has bugs (e.g., param shows 'decl')
-        // addSuperWeaverEngineSetter(javaC, fieldName);
         addGetSuperMethod(javaC, joinPointType, fieldName);
         return fieldName;
     }

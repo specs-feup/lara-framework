@@ -18,31 +18,27 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 public class LanguageSpecificationException extends BaseException {
 
     private static final String DEFAULT_TEXT = "while building language specification";
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private String message;
 
     public LanguageSpecificationException(Throwable e) {
-	super(e);
+        super(e);
     }
 
     public LanguageSpecificationException(String message, Throwable e) {
-	super(e);
-	this.message = message;
+        super(e);
+        this.message = message;
     }
 
     @Override
     protected String generateMessage() {
-
-	return "Exception on ";
+        return "Exception on ";
     }
 
     @Override
     protected String generateSimpleMessage() {
-	// TODO Auto-generated method stub
-	return this.message != null ? this.message : LanguageSpecificationException.DEFAULT_TEXT;
+        // TODO Auto-generated method stub
+        return this.message != null ? this.message : LanguageSpecificationException.DEFAULT_TEXT;
     }
 
 }

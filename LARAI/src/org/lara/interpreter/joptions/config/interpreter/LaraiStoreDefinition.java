@@ -36,7 +36,6 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     private static final String DEFINITION_NAME = "LaraI Options";
 
     private final List<DataKey<?>> extraKeys = new ArrayList<>();
-    // private final List<DataKey<?>> extraKeys = new ArrayList<>(Arrays.asList(LaraiKeys.CONFIGURATION_FILE));
 
     @Override
     public StoreDefinition getStoreDefinition() {
@@ -69,7 +68,8 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     }
 
     /**
-     * Loads the properties from a given file. It does not load/given an exception if the file does not exist!
+     * Loads the properties from a given file. It does not load/given an exception
+     * if the file does not exist!
      *
      * @param properties
      * @param globalFile

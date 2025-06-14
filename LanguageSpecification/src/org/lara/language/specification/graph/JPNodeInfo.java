@@ -15,21 +15,20 @@ package org.lara.language.specification.graph;
 
 public class JPNodeInfo {
 
-	// Just some changes, let's see if this changes the hash of the file and
-	// there is not a collision again
-	// Some kind of collision is happening when pulling from master (f6427c4) to
-	// pass-system-2 (9370d65)
-	// Git tries to merge this file with file NodeTransformRule
+    // Just some changes, let's see if this changes the hash of the file and there
+    // is not a collision again
+    // Some kind of collision is happening when pulling from master (f6427c4) to
+    // pass-system-2 (9370d65)
+    // Git tries to merge this file with file NodeTransformRule
 
-	private final String label;
+    private final String label;
 
-	public JPNodeInfo(String label) {
-		this.label = label;
-	}
+    public JPNodeInfo(String label) {
+        this.label = label;
+    }
 
-	@Override
-	public String toString() {
-		// return "[label=\"" + label + "\"]";
-		return label;
-	}
+    @Override
+    public String toString() {
+        return label;
+    }
 }

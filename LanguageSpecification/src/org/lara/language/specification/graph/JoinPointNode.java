@@ -20,42 +20,30 @@ import pt.up.fe.specs.util.graphs.GraphNode;
 
 public class JoinPointNode extends GraphNode<JoinPointNode, JPNodeInfo, JPEdgeInfo> {
 
-	public JoinPointNode(String id, JPNodeInfo nodeInfo) {
-		super(id, nodeInfo);
-	}
+    public JoinPointNode(String id, JPNodeInfo nodeInfo) {
+        super(id, nodeInfo);
+    }
 
-	@Override
-	protected JoinPointNode getThis() {
-		return this;
-	}
+    @Override
+    protected JoinPointNode getThis() {
+        return this;
+    }
 
-	/**
-	 * Return a list of {@link JPEdgeInfo} connecting to a target Node.
-	 * 
-	 * @param targetId
-	 *            the target node
-	 * @return a list of {@link JPEdgeInfo}
-	 */
-	public List<JPEdgeInfo> getEdges(String targetId) {
+    /**
+     * Return a list of {@link JPEdgeInfo} connecting to a target Node.
+     * 
+     * @param targetId the target node
+     * @return a list of {@link JPEdgeInfo}
+     */
+    public List<JPEdgeInfo> getEdges(String targetId) {
 
-		final List<JPEdgeInfo> edges = new ArrayList<>();
-		for (final JPEdgeInfo jpEdgeInfo : getChildrenConnections()) {
+        final List<JPEdgeInfo> edges = new ArrayList<>();
+        for (final JPEdgeInfo jpEdgeInfo : getChildrenConnections()) {
 
-			if (jpEdgeInfo.getTargetId().equals(targetId)) {
-				edges.add(jpEdgeInfo);
-			}
-		}
-		return edges;
-	}
-	/*
-	 * @Override public void addChild(JoinPointNode childNode, JPEdgeInfo
-	 * connectionInfo) {
-	 * 
-	 * if (!getChildren().contains(childNode)) getChildren().add(childNode);
-	 * getChildrenConnections().add(connectionInfo);
-	 * 
-	 * // Add parent to child if (!childNode.parents.contains(getThis()))
-	 * childNode.parents.add(getThis());
-	 * childNode.parentConnections.add(connectionInfo); }
-	 */
+            if (jpEdgeInfo.getTargetId().equals(targetId)) {
+                edges.add(jpEdgeInfo);
+            }
+        }
+        return edges;
+    }
 }

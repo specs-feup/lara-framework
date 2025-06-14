@@ -34,6 +34,4 @@ public interface WeaverGeneratorKeys {
             .setDefault(() -> GenConstants.getDefaultOutputDir());
 
     DataKey<Boolean> SHOW_HELP = KeyFactory.bool("show_help");
-    // DataKey<OptionsParser> CLI_PARSER = KeyFactory.object("cli_parser", OptionsParser.class);
-
 }

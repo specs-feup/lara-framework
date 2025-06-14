@@ -171,8 +171,6 @@ public class JsonReportWriter implements ReportWriter, Closeable {
 
     private String prettyJSON() {
         try {
-            // JSONObject jsonObj = new JSONObject(writer.toString());
-            // String prettyJSON = jsonObj.toString(2);
             return writer.toString();
         } catch (Exception e) {
             throw new ReportException("Could not write the report", e);

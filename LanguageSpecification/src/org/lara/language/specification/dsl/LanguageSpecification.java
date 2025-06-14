@@ -72,10 +72,13 @@ public class LanguageSpecification {
     }
 
     /**
-     * Creates a language specification instance with the files contained in the folder 'specDir'
+     * Creates a language specification instance with the files contained in the
+     * folder 'specDir'
      *
-     * @param specDir  the source folder of the language specification, should include 3 files:
-     *                 {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME} and {@value #ACTIONS_FILENAME}
+     * @param specDir  the source folder of the language specification, should
+     *                 include 3 files:
+     *                 {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME}
+     *                 and {@value #ACTIONS_FILENAME}
      * @param validate
      * @return
      */
@@ -100,15 +103,16 @@ public class LanguageSpecification {
     }
 
     public static LanguageSpecification newInstance(InputStream joinPointModel, InputStream attributeModel,
-                                                    InputStream actionModel) {
+            InputStream actionModel) {
 
         return LangSpecsXmlParser.parse(joinPointModel, attributeModel, actionModel, true);
     }
 
     public static LanguageSpecification newInstance(ResourceProvider joinPointModel, ResourceProvider attributeModel,
-                                                    ResourceProvider actionModel) {
+            ResourceProvider actionModel) {
 
-        return LangSpecsXmlParser.parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
+        return LangSpecsXmlParser.parse(SpecsIo.resourceToStream(joinPointModel),
+                SpecsIo.resourceToStream(attributeModel),
                 SpecsIo.resourceToStream(actionModel), true);
     }
 
@@ -168,7 +172,8 @@ public class LanguageSpecification {
 
     /**
      * @param name
-     * @return true if the given name corresponds to an existing join point (not considering alias)
+     * @return true if the given name corresponds to an existing join point (not
+     *         considering alias)
      */
     public boolean hasJoinPoint(String name) {
         // Join Points
@@ -350,7 +355,8 @@ public class LanguageSpecification {
 
     /**
      * @param name
-     * @return the actions with the given name. Since overloading is supported, several actions can have the same name
+     * @return the actions with the given name. Since overloading is supported,
+     *         several actions can have the same name
      */
     public List<Action> getAction(String name) {
         return getAllJoinPoints().stream()
@@ -371,8 +377,9 @@ public class LanguageSpecification {
 
     /**
      * @param name
-     * @return the attributes with the given name. Since overloading is supported, several attributes can have the same
-     * name
+     * @return the attributes with the given name. Since overloading is supported,
+     *         several attributes can have the same
+     *         name
      */
     public List<Attribute> getAttribute(String name) {
         return getAllJoinPoints().stream()
@@ -404,7 +411,8 @@ public class LanguageSpecification {
     /**
      * Builds a hierarchy diagram in DOT format.
      *
-     * @return a string with the Language Specification hierarchy diagram in DOT format
+     * @return a string with the Language Specification hierarchy diagram in DOT
+     *         format
      */
     public String toHierarchyDiagram() {
         return toHierarchyDiagram("");
@@ -414,7 +422,8 @@ public class LanguageSpecification {
      * Builds a hierarchy diagram in DOT format.
      *
      * @param langSpecName the name of the language specification.
-     * @return a string with the Language Specification hierarchy diagram in DOT format
+     * @return a string with the Language Specification hierarchy diagram in DOT
+     *         format
      */
     public String toHierarchyDiagram(String langSpecName) {
 
@@ -425,12 +434,10 @@ public class LanguageSpecification {
 
         dot.append("digraph " + langSpecName + "join_point_hierarchy {\n"
                 + "node [color=lightblue2, style=filled];\n"
-                // + "rankdir=\"LR\"\n"
                 + "rankdir=\"RL\"\n"
                 + "node [fontsize=10, shape=box, height=0.25]\n"
                 + "edge [fontsize=10]\n");
         for (var jp : getAllJoinPoints()) {
-            // jp.getExtend().map(parent -> dot.append("\"" + parent.getName() + "\"->\"" + jp.getName() + "\"\n"));
             // "Invert" arrow direction
             jp.getExtend().map(parent -> dot.append("\"" + jp.getName() + "\"->\"" + parent.getName() + "\"\n"));
         }

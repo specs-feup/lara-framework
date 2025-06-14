@@ -67,7 +67,8 @@ public abstract class WeaverProfiler extends AGear {
     protected abstract void resetImpl();
 
     /**
-     * Create a report by means of a {@link ReportWriter}. When invoked, the {@link ReportWriter} instance already
+     * Create a report by means of a {@link ReportWriter}. When invoked, the
+     * {@link ReportWriter} instance already
      * contains some metrics (see {@link WeaverProfiler})
      * 
      * @param data
@@ -133,16 +134,16 @@ public abstract class WeaverProfiler extends AGear {
         onJoinPointImpl(data);
         switch (data.getStage()) {
 
-        case BEGIN:
-            report.inc(ReportField.JOIN_POINTS);
-            break;
-        case END:
-            if (data.isApprovedByFilter()) {
-                report.inc(ReportField.FILTERED_JOIN_POINTS);
-            }
-            break;
-        default:
-            break;
+            case BEGIN:
+                report.inc(ReportField.JOIN_POINTS);
+                break;
+            case END:
+                if (data.isApprovedByFilter()) {
+                    report.inc(ReportField.FILTERED_JOIN_POINTS);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -174,7 +175,6 @@ public abstract class WeaverProfiler extends AGear {
 
     @Override
     public final void reset() {
-        // report.reset();
         report = new WeavingReport();
         resetImpl();
     }

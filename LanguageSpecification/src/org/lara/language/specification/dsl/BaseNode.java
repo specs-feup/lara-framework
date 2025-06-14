@@ -33,7 +33,8 @@ public abstract class BaseNode {
     }
 
     /**
-     * If true, this is a default node that is already implemented and should not be generated.
+     * If true, this is a default node that is already implemented and should not be
+     * generated.
      * 
      * @return
      */

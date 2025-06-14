@@ -49,7 +49,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     @Override
     public Optional<DataStore> getData() {
-        if(state == null) {
+        if (state == null) {
             return Optional.empty();
         }
 
@@ -67,12 +67,9 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     /**
      * This method will be called at the end of method run()
      *
-     * @param sources
-     *            the file/directory with the source code
-     * @param outputDir
-     *            output directory for the generated file(s)
-     * @param dataStore
-     *            the dataStore containing the options for the weaver
+     * @param sources   the file/directory with the source code
+     * @param outputDir output directory for the generated file(s)
+     * @param dataStore the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
     public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
@@ -84,8 +81,8 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      */
     public Class<?> getClass(String name) {
         try {
-            return  getLaraWeaverState().getClassLoader().loadClass(name);
-            //return classLoader.loadClass(name);
+            return getLaraWeaverState().getClassLoader().loadClass(name);
+            // return classLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find class", e);
         }

@@ -33,7 +33,8 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 public class OptionsConverter {
 
     /**
-     * Adds the commandline options into an existing datastore, using the Mapping in {@link JOptionsInterface}
+     * Adds the commandline options into an existing datastore, using the Mapping in
+     * {@link JOptionsInterface}
      *
      * @param laraFileName
      * @param cmd
@@ -50,7 +51,8 @@ public class OptionsConverter {
         Map<WeaverOption, DataKey<?>> conversionMap = JOptionsInterface.getConversionMap();
 
         /**
-         * Maybe it is better to deal with each option, see if it exists and put it in the datakey, this way we can
+         * Maybe it is better to deal with each option, see if it exists and put it in
+         * the datakey, this way we can
          * control better the multiple arguments
          */
         Map<String, WeaverOption> map = engine.getOptions().stream()
@@ -78,7 +80,8 @@ public class OptionsConverter {
     }
 
     /**
-     * Convert the commandline into a datastore, using the Mapping in {@link JOptionsInterface}
+     * Convert the commandline into a datastore, using the Mapping in
+     * {@link JOptionsInterface}
      *
      * @param laraFileName
      * @param cmd
@@ -87,13 +90,14 @@ public class OptionsConverter {
     public static DataStore commandLine2DataStore(String laraFileName, CommandLine cmd,
             List<WeaverOption> weaverOptions) {
         DataStore dataStore = getDataStoreFromArgs(); // This way the data store contains at least the values defined
-                                                         // in the properties files
+                                                      // in the properties files
         dataStore.add(LaraiKeys.LARA_FILE, new File(laraFileName));
 
         Map<WeaverOption, DataKey<?>> conversionMap = JOptionsInterface.getConversionMap();
 
         /**
-         * Maybe it is better to deal with each option, see if it exists and put it in the datakey, this way we can
+         * Maybe it is better to deal with each option, see if it exists and put it in
+         * the datakey, this way we can
          * control better the multiple arguments
          */
         Map<String, WeaverOption> map = weaverOptions.stream()
@@ -121,7 +125,8 @@ public class OptionsConverter {
         CLIOption cliOpt = CLIOption.valueOf(opt.getLongOpt());
         if (!conversionMap.containsKey(cliOpt)) {
             throw new LaraIException("Option " + cliOpt + "does not exist in LARAI.");
-            // When the weaver is working with WeaverOption this condition must change to verify if WeaverOptionList
+            // When the weaver is working with WeaverOption this condition must change to
+            // verify if WeaverOptionList
             // contains the option
         }
         DataKey<?> dataKey = conversionMap.get(cliOpt);
@@ -144,9 +149,8 @@ public class OptionsConverter {
      * @param args
      */
     private static DataStore getDataStoreFromArgs() {
-    //    private static DataStore getDataStoreFromArgs(CommandLine cmd) {        
-
-        // Create a DataStore with the default values (i.e., values that are defined in the properties files
+        // Create a DataStore with the default values (i.e., values that are defined in
+        // the properties files
         StoreDefinition definition = new LaraiStoreDefinition().getStoreDefinition();
         DataStore dataStore = definition.getDefaultValues();
 

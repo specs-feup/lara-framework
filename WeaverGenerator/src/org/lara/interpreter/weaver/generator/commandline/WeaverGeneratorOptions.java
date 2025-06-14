@@ -19,16 +19,8 @@ import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 class WeaverGeneratorOptions extends Options {
     private static HelpFormatter formatter = new HelpFormatter();
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -7738963410049098076L;
 
-    /**
-     * Arguments for options
-     *
-     * @author Tiago Carvalho
-     */
     private enum ArgOption {
         NO_ARGS,
         ONE_ARG,
@@ -40,19 +32,14 @@ class WeaverGeneratorOptions extends Options {
     protected enum GeneratorOption {
         H("h", "help"),
         W("w", "weaver"),
-
         X("x", "XMLspec"),
         O("o", "output"),
         P("p", "package"),
-        // A("a", "abstractGetters"), //replaced with -f
         F("f", "fields"),
-        // I("i", "implMode"),
-        // G("g", "graph"),
         N("n", "nodeType"),
         D("d", "defs"),
         J("j", "json"),
-        C("c", "concrete"),
-        ;
+        C("c", "concrete");
 
         private String option;
         private String longOption;
@@ -87,12 +74,9 @@ class WeaverGeneratorOptions extends Options {
 
         final Option packDir = newOption("packageName", GeneratorOption.P, ArgOption.ONE_ARG,
                 "define the package for the java files");
-        
+
         final Option fields = newOption(null, GeneratorOption.F, ArgOption.NO_ARGS,
                 "use fields for attributes");
-
-        // final Option implMode = newOption(null, GeneratorOption.I, ArgOption.NO_ARGS,
-        // "Wrap use of attributes with \"Impl\" methods");
 
         final Option nodeType = newOption("base", GeneratorOption.N, ArgOption.OPTIONAL_ARG,
                 "use generics for the Join points, extending the given class (optional)");
@@ -104,22 +88,16 @@ class WeaverGeneratorOptions extends Options {
         final Option concreteClasses = newOption("concreteClasses", GeneratorOption.C, ArgOption.ONE_ARG,
                 "Generate the concrete classes, using a linear hierarchy");
 
-        // final Option showGraph = newOption(null, GeneratorOption.G, ArgOption.NO_ARGS,
-        // "Show a graph of the join point hierarchy (default: " + GenConstants.getDefaultShowGraph() + ")");
-
         addOption(help);
         addOption(weaver);
         addOption(xmlDir);
         addOption(outDir);
         addOption(packDir);
-        // addOption(abstractGetters);
         addOption(fields);
-        // addOption(implMode);
         addOption(nodeType);
         addOption(toJson);
         addOption(useDefs);
         addOption(concreteClasses);
-        // addOption(showGraph);
     }
 
     protected CommandLine parse(String[] args) {
@@ -131,7 +109,6 @@ class WeaverGeneratorOptions extends Options {
             return parser.parse(this, args);
 
         } catch (final ParseException e) {
-            // System.out.println(e.getMessage());
             help();
             throw new RuntimeException(e);
         }
@@ -153,7 +130,7 @@ class WeaverGeneratorOptions extends Options {
      * @return
      */
     protected static Option newOption(String argName, GeneratorOption shortOpt, ArgOption argOption,
-                                      String description) {
+            String description) {
 
         Builder builder = Option.builder(shortOpt.getOption());
 

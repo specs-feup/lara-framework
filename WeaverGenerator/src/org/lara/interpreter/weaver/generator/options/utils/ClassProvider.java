@@ -20,24 +20,24 @@ public interface ClassProvider {
     Class<?> getCustomClass();
 
     static ClassProvider newInstance(Class<?> aClass) {
-	return new GenericClassProvider(aClass);
+        return new GenericClassProvider(aClass);
     }
 
     static ClassProvider newInstance(String s) {
-	if (s == null) {
-	    return newInstance();
-	}
+        if (s == null) {
+            return newInstance();
+        }
 
-	try {
-	    return new GenericClassProvider(Class.forName(s));
-	} catch (ClassNotFoundException e) {
-	    SpecsLogs.warn("Error message:\n", e);
-	    SpecsLogs.warn("Using Object instead");
-	    return new GenericClassProvider(Object.class);
-	}
+        try {
+            return new GenericClassProvider(Class.forName(s));
+        } catch (ClassNotFoundException e) {
+            SpecsLogs.warn("Error message:\n", e);
+            SpecsLogs.warn("Using Object instead");
+            return new GenericClassProvider(Object.class);
+        }
     }
 
     static ClassProvider newInstance() {
-	return new GenericClassProvider(Object.class);
+        return new GenericClassProvider(Object.class);
     }
 }

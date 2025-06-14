@@ -46,25 +46,18 @@ public class LaraSystemTools {
     public static ProcessOutputAsString runCommand(List<String> commandList, String workingDir,
             boolean printToConsole, Long timeoutNanos) {
 
-    	// Adjust long value
+        // Adjust long value
         if (timeoutNanos != null && timeoutNanos <= 0) {
             timeoutNanos = null;
         }
 
-        // System.out.println("CURRENT FOLDER:" + SpecsIo.getWorkingDir().getAbsolutePath());
         try {
             return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole, timeoutNanos);
         } catch (Exception e) {
             String command = commandList.stream().collect(Collectors.joining(" "));
 
-            // if (stopOnError) {
-            // throw new RuntimeException("Problems while running command '" + command + "':" + e.getMessage(), e);
-            // }
-
             SpecsLogs.msgInfo("Problems while running command '" + command + "':" + e.getMessage());
             return new ProcessOutputAsString(-1, "", e.getMessage());
         }
-
     }
-
 }

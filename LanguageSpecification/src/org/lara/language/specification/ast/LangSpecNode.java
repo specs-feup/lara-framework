@@ -58,9 +58,6 @@ public abstract class LangSpecNode extends ATreeNode<LangSpecNode> {
         String childrenString = getChildren().stream()
                 .map(child -> child.toJson(new BuilderWithIndentation(indentation - 1)))
                 .collect(Collectors.joining(",\n"));
-        // for (ClangNode child : children) {
-        // childrenBuilder.append(JsonWriter.toJson((GenericAstNode) child, builder.getCurrentIdentation() + 1));
-        // }
         childrenBuilder.append(childrenString);
         childrenBuilder.append("]");
         return childrenBuilder.toString();
@@ -77,8 +74,4 @@ public abstract class LangSpecNode extends ATreeNode<LangSpecNode> {
     public String toHtml() {
         throw new RuntimeException("Not yet implemented");
     }
-
-    // public Optional<BaseNode> getComment() {
-    // return getChildrenStream().filter(predicate)
-    // }
 }

@@ -113,7 +113,8 @@ public class ExceptionGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate a field that can be used by the weaver developer to inform in which event the exception occurred
+     * Generate a field that can be used by the weaver developer to inform in which
+     * event the exception occurred
      * 
      * @param eC
      * @return

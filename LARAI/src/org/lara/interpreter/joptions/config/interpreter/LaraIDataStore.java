@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import larai.LaraI;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.joptions.keys.OptionalFile;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
@@ -31,14 +30,12 @@ import java.util.*;
 
 /**
  * TODO: Should deprecate and just use DataStore directly?
- * TODO: Also, the "ifs" in the getters interfere with the default values set in the DataKey
+ * TODO: Also, the "ifs" in the getters interfere with the default values set in
+ * the DataKey
  *
  * @author JoaoBispo
  */
 public class LaraIDataStore implements LaraiKeys {
-
-    // private static final String GIT_QUERY_FOLDER = "folder";
-    // private static final Set<String> GIT_URL_QUERIES = new HashSet<>(Arrays.asList(GIT_QUERY_FOLDER));
 
     public static final String CONFIG_FILE_NAME = "larai.properties";
     private static final String SYSTEM_OPTIONS_FILENAME = "system_options.xml";
@@ -52,11 +49,8 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private final DataStore dataStore;
-    private final LaraI larai;
-
 
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
-        larai = lara;
 
         // Merge system-wise options with local options
         var mergedDataStore = mergeSystemAndLocalOptions(weaverEngine, dataStore);
@@ -68,15 +62,10 @@ public class LaraIDataStore implements LaraiKeys {
             DataKey<?> key = option.dataKey();
             Optional<?> value = this.dataStore.getTry(key);
             if (value.isPresent()) {
-                // weaverDataStore.setRaw(key, value.get());
                 this.dataStore.setRaw(key, value.get());
             }
         }
         setLaraProperties();
-        // System.out.println("\n\n" + this.dataStore);
-        // System.out.println(".........................");
-        // System.out.println("\n\n" + dataStore);
-
     }
 
     private DataStore mergeSystemAndLocalOptions(WeaverEngine weaverEngine, DataStore localArgs) {
@@ -135,7 +124,8 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     /**
-     * Set an option on lara according to the value given, if the option exists on the enum {@link Argument}
+     * Set an option on lara according to the value given, if the option exists on
+     * the enum {@link Argument}
      *
      * @param option
      * @param value
@@ -159,8 +149,6 @@ public class LaraIDataStore implements LaraiKeys {
      * @return
      */
     public DataStore getWeaverArgs() {
-
-        // return weaverDataStore;
         return dataStore;
     }
 
@@ -214,7 +202,8 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     /**
-     * Returns a JSON string representing the aspect arguments. If the value represents a json file, reads it before
+     * Returns a JSON string representing the aspect arguments. If the value
+     * represents a json file, reads it before
      * returning.
      *
      * @return the aspect arguments as a JSON string
@@ -224,10 +213,11 @@ public class LaraIDataStore implements LaraiKeys {
 
             String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
 
-            // [Old] Can return directly, custom getter of ASPECT_ARGS already parses files and sanitizes JSON
-            // [New] Disabled this, because if a json file is given as input, this prevents storing again the path
-            // to the JSON file (instead, it stores the contents of the json file itself
-            // return aspectArgs;
+            // [Old] Can return directly, custom getter of ASPECT_ARGS already parses files
+            // and sanitizes JSON
+            // [New] Disabled this, because if a json file is given as input, this prevents
+            // storing again the path to the JSON file (instead, it stores the contents of
+            // the json file itself)
 
             // Parse aspect args (e.g., in case it is a file, sanitize)
             return parseAspectArgs(aspectArgs);
@@ -237,7 +227,8 @@ public class LaraIDataStore implements LaraiKeys {
     }
 
     private String parseAspectArgs(String aspectArgs) {
-        // Moved logic from customGetter of ASPECT_ARGS to here, to preserve storing the arguments as a JSON file
+        // Moved logic from customGetter of ASPECT_ARGS to here, to preserve storing the
+        // arguments as a JSON file
 
         // In the end, we want to return a JSON string
         var jsonString = aspectArgs;
@@ -292,10 +283,6 @@ public class LaraIDataStore implements LaraiKeys {
             return dataStore.get(LaraiKeys.LOG_JS_OUTPUT);
         }
         return false;
-    }
-
-    public boolean disableWithKeywordInLaraJs() {
-        return dataStore.get(LaraiKeys.DISABLE_WITH_KEYWORD_IN_LARA_JS);
     }
 
     @Override

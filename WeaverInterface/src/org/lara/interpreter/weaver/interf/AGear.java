@@ -104,62 +104,68 @@ public abstract class AGear extends EventReceiverTemplate {
     }
 
     /**
-     * Handler to execute when the weaver is initialized, and its execution is finalized ({@link Stage#BEGIN} and
+     * Handler to execute when the weaver is initialized, and its execution is
+     * finalized ({@link Stage#BEGIN} and
      * {@link Stage#AFTER})
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onWeaver(WeaverEvent data) {
         // Do nothing as default
     }
 
     /**
-     * Method to execute when a join point is created({@link Stage#BEGIN} and {@link Stage#AFTER})
+     * Method to execute when a join point is created({@link Stage#BEGIN} and
+     * {@link Stage#AFTER})
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onJoinPoint(JoinPointEvent data) {
         // Do nothing as default
     }
 
     /**
-     * Method to execute when an apply occurs({@link Stage#BEGIN}, and {@link Stage#AFTER})
+     * Method to execute when an apply occurs({@link Stage#BEGIN}, and
+     * {@link Stage#AFTER})
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onApply(ApplyEvent data) {
         // Do nothing as default
     }
 
     /**
-     * Method to execute when an iteration of an apply occurs( {@link Stage#BEGIN_ITERATION} and
+     * Method to execute when an iteration of an apply occurs(
+     * {@link Stage#BEGIN_ITERATION} and
      * {@link Stage#END_ITERATION} )
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onApply(ApplyIterationEvent data) {
         // Do nothing as default
     }
 
     /**
-     * Method to execute when an action is executed ({@link Stage#BEGIN} and {@link Stage#AFTER})
+     * Method to execute when an action is executed ({@link Stage#BEGIN} and
+     * {@link Stage#AFTER})
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onAction(ActionEvent data) {
         // Do nothing as default
     }
 
     /**
-     * Method to execute when an attribute is accessed ({@link Stage#BEGIN} and {@link Stage#AFTER})
+     * Method to execute when an attribute is accessed ({@link Stage#BEGIN} and
+     * {@link Stage#AFTER})
      * 
      * @param data
-     *            the event data
+     *             the event data
      */
     public void onAttribute(AttributeEvent data) {
         // Do nothing as default
@@ -185,7 +191,8 @@ public abstract class AGear extends EventReceiverTemplate {
     }
 
     /**
-     * This method will be invoked every time {@link WeaverEngine#run} is invoked. By default it does nothing.
+     * This method will be invoked every time {@link WeaverEngine#run} is invoked.
+     * By default it does nothing.
      */
     public void reset() {
 

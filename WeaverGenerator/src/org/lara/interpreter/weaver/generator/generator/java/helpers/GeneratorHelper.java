@@ -26,7 +26,8 @@ public abstract class GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
      * @param javaGenerator
      * @param sanitizedOutPackage
@@ -37,7 +38,5 @@ public abstract class GeneratorHelper {
 
     protected static String ln() {
         return Utils.ln();
-        //return "\n";
-        //return SpecsIo.getNewline();
     }
 }

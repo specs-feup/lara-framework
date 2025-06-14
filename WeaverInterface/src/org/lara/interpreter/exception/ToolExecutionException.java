@@ -20,9 +20,6 @@ import tdrc.utils.StringUtils;
 
 public class ToolExecutionException extends BaseException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private String tool;
     private String[] args;

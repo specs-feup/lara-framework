@@ -14,7 +14,8 @@
 package pt.up.fe.specs.tools.lara.exception;
 
 /**
- * Abstract exception of a LARA exception. These type of exceptions are used to encapsulate other thrown exceptions
+ * Abstract exception of a LARA exception. These type of exceptions are used to
+ * encapsulate other thrown exceptions
  *
  * @author Tiago
  *
@@ -35,14 +36,16 @@ public abstract class BaseException extends RuntimeException {
     }
 
     /**
-     * Generate a complete message to present to the user, usually containing 'Exception on' + generateSimpleMessage()
+     * Generate a complete message to present to the user, usually containing
+     * 'Exception on' + generateSimpleMessage()
      *
      * @return
      */
     protected abstract String generateMessage();
 
     /**
-     * Generate the concrete message to present to the user. Usually this method does not contain the 'Exception on'
+     * Generate the concrete message to present to the user. Usually this method
+     * does not contain the 'Exception on'
      * stuff, just get to the point!
      *
      * @return
@@ -60,7 +63,6 @@ public abstract class BaseException extends RuntimeException {
         return generateSimpleMessage();
     }
 
-
     public RuntimeException generateRuntimeException() {
         LARAExceptionBuilder builder = generateExceptionBuilder();
         throw builder.getRuntimeException();
@@ -71,7 +73,6 @@ public abstract class BaseException extends RuntimeException {
         generateException(builder);
         return builder;
     }
-
 
     protected void generateException(LARAExceptionBuilder builder) {
         String thisMessage = generateSimpleMessage();

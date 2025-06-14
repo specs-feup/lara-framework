@@ -42,10 +42,6 @@ public class ConvertUtils {
         final JavaType objectType = JavaTypeFactory.getObjectType();
         ConvertUtils.InterpreterTypes.put("Object", objectType);
 
-        // objectType = JavaTypeFactory.getObjectType();
-        // objectType.setArrayDimension(1);
-        // InterpreterTypes.put("Array", objectType);
-
         final JavaType mapType = new JavaType(Map.class);
         mapType.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
         mapType.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
@@ -65,7 +61,6 @@ public class ConvertUtils {
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
-        // String original = type;
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
         type = splittedType.getLeft();
@@ -89,7 +84,8 @@ public class ConvertUtils {
     }
 
     /**
-     * Get the correct type for the return of an attribute. This method converts a primitive type into its wrapper
+     * Get the correct type for the return of an attribute. This method converts a
+     * primitive type into its wrapper
      * <p>
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
@@ -106,8 +102,7 @@ public class ConvertUtils {
         if (type.contains("[") && type.contains("|") && type.contains("]")) {
             type = String.class.getSimpleName();
         }
-        
-        // String original = type;
+
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
         type = splittedType.getLeft();
@@ -137,7 +132,7 @@ public class ConvertUtils {
     }
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
-                                                final int arrayDimension) {
+            final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);
 
         if (generator.getLanguageSpecification().hasEnumDef(type)) {
@@ -177,8 +172,7 @@ public class ConvertUtils {
         }
 
         // If it does not exist, throw an exception with the error message and
-        // the possible
-        // types that can be used
+        // the possible types that can be used
         final StringBuilder message = new StringBuilder(
                 "Could not convert type '" + type + "'. Available types in the Language Specification: ");
 
@@ -214,7 +208,5 @@ public class ConvertUtils {
 
     public static String ln() {
         return Utils.ln();
-        //return "\n";
-        //return SpecsIo.getNewline();
     }
 }

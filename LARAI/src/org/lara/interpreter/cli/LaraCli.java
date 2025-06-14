@@ -26,10 +26,12 @@ import org.lara.interpreter.weaver.options.WeaverOptions;
 public class LaraCli {
 
     /**
-     * Builds the list of command-line interface options available to the given weaver.
+     * Builds the list of command-line interface options available to the given
+     * weaver.
      * 
      * <p>
-     * This is a super-set of getWeaverOptions(), which includes launch-specific flags, and returns an instance of the
+     * This is a super-set of getWeaverOptions(), which includes launch-specific
+     * flags, and returns an instance of the
      * Apache Commons CLI package.
      * 
      * @param weaverEngine

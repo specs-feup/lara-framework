@@ -27,78 +27,78 @@ public class WeaverEvent extends BaseEvent {
     private String aspectFile;
 
     public WeaverEvent(Stage stage, DataStore args, String mainAspect, String aspectFile) {
-	super(stage);
-	setArgs(args);
-	setFolder(args.get(LaraiKeys.WORKSPACE_FOLDER).getFiles());
-	setMainAspect(mainAspect);
-	setAspectFile(aspectFile);
+        super(stage);
+        setArgs(args);
+        setFolder(args.get(LaraiKeys.WORKSPACE_FOLDER).getFiles());
+        setMainAspect(mainAspect);
+        setAspectFile(aspectFile);
     }
 
     /**
      * @return the folder
      */
     public List<File> getSources() {
-	return sources;
+        return sources;
     }
 
     /**
      * @param sources
-     *            the folder to set
+     *                the folder to set
      */
     protected void setFolder(List<File> sources) {
-	this.sources = sources;
+        this.sources = sources;
     }
 
     /**
      * @return the args
      */
     public DataStore getArgs() {
-	return args;
+        return args;
     }
 
     /**
      * @param args
-     *            the args to set
+     *             the args to set
      */
     protected void setArgs(DataStore args) {
-	this.args = args;
+        this.args = args;
     }
 
     public String getMainAspect() {
-	return mainAspect;
+        return mainAspect;
     }
 
     public void setMainAspect(String mainAspect) {
-	this.mainAspect = mainAspect;
+        this.mainAspect = mainAspect;
     }
 
     public String getAspectFile() {
-	return aspectFile;
+        return aspectFile;
     }
 
     public void setAspectFile(String aspectFile) {
-	this.aspectFile = aspectFile;
+        this.aspectFile = aspectFile;
     }
 
     @Override
     public String toString() {
-	String ret = super.toString();
-	ret += ", args: ";
-	// {";
-	// if (args.length != 0) {
-	// ret += args[0];
-	// for (int i = 1; i < args.length; i++) {
-	// ret += ", " + args[i];
-	// }
-	// }
-	// ret += "},";
-	ret += args.toString();
-	ret += ", folder: ";
-	ret += sources;
-	ret += ", mainAspect: ";
-	ret += mainAspect;
-	ret += ", aspectFile: ";
-	ret += aspectFile;
-	return ret;
+        String ret = super.toString();
+        ret += ", args: ";
+        // {";
+        // if (args.length != 0) {
+        // ret += args[0];
+        // for (int i = 1; i < args.length; i++) {
+        // ret += ", " + args[i];
+        // }
+        // }
+        // ret += "},";
+        ret += args.toString();
+        ret += ", folder: ";
+        ret += sources;
+        ret += ", mainAspect: ";
+        ret += mainAspect;
+        ret += ", aspectFile: ";
+        ret += aspectFile;
+        return ret;
     }
 }

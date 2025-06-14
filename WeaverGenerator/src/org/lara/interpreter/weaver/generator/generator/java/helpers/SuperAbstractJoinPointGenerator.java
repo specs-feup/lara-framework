@@ -25,7 +25,8 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 
 /**
- * Generates the base Join Point abstract class, containing the global attributes and actions
+ * Generates the base Join Point abstract class, containing the global
+ * attributes and actions
  */
 public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
@@ -34,7 +35,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
      * @param javaGenerator
      * @param sanitizedOutPackage
@@ -48,7 +50,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
      * @param sanitizedOutPackage
      * @param enums
@@ -60,7 +63,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate an abstract class for the join points, containing the global attributes and actions. It also generates
+     * Generate an abstract class for the join points, containing the global
+     * attributes and actions. It also generates
      * the code for listing the available attributes and actions.
      *
      * @param langSpec
@@ -100,7 +104,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.addImport(qualifiedName);
         JavaType weavingEngineClass = new JavaType(weaverName);
 
-        // Override getWeavingEngine to return the engine with the specific <qualifiedName> class
+        // Override getWeavingEngine to return the engine with the specific
+        // <qualifiedName> class
         Method getWE = new Method(weavingEngineClass, GenConstants.getWeaverEngineMethodName());
         getWE.add(Annotation.OVERRIDE);
         getWE.appendComment("Returns the Weaving Engine this join point pertains to.");
@@ -109,7 +114,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the default methods com comparing two joinpoints: same, compareNodes and getNode()
+     * Generate the default methods com comparing two joinpoints: same, compareNodes
+     * and getNode()
      *
      * @param abstJPClass target class
      */
@@ -134,7 +140,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the default "same" method, that verifies if the argument has the same join point class as "this" and
+     * Generate the default "same" method, that verifies if the argument has the
+     * same join point class as "this" and
      * calls the compareNodes method to compare the join point nodes
      *
      * @param abstJPClass
@@ -151,7 +158,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate fields and methods for the attributes and actions global to all join points
+     * Generate fields and methods for the attributes and actions global to all join
+     * points
      *
      * @param abstJPClass the target join point abstraction class
      * @return
@@ -179,7 +187,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         if (globalAttrs.isEmpty()) {
             return;
         }
-
 
         for (var attr : globalAttrs) {
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);

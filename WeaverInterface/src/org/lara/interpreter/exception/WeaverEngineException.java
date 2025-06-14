@@ -29,14 +29,13 @@ public class WeaverEngineException extends BaseException {
 
     /**
      * 
-     * @param situation
-     *            the situation in which the exception was throwned. e.g.: initializing, closing
-     * @param e
-     *            the cause of this exception
+     * @param situation the situation in which the exception was throwned. e.g.:
+     *                  initializing, closing
+     * @param e the cause of this exception
      */
     public WeaverEngineException(String situation, Throwable e) {
-	super(e);
-	this.situation = situation;
+        super(e);
+        this.situation = situation;
     }
 
     /**
@@ -44,7 +43,7 @@ public class WeaverEngineException extends BaseException {
      */
     @Override
     protected String generateMessage() {
-	return "exception " + generateSimpleMessage();
+        return "exception " + generateSimpleMessage();
     }
 
     /**
@@ -52,7 +51,7 @@ public class WeaverEngineException extends BaseException {
      */
     @Override
     protected String generateSimpleMessage() {
-	return "when " + this.situation + " the weaver";
+        return "when " + this.situation + " the weaver";
     }
 
 }

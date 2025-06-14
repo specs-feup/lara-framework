@@ -37,9 +37,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Interface for connecting the lara interpreter with the target language weaver. A Weaver can be associated to an
- * application folder or to only one file. The interpreter creates a new weaver instance for the application folder or
- * an instance for each file. The begin(File) function must return if the File argument is a valid File/Folder.
+ * Interface for connecting the lara interpreter with the target language
+ * weaver. A Weaver can be associated to an
+ * application folder or to only one file. The interpreter creates a new weaver
+ * instance for the application folder or
+ * an instance for each file. The begin(File) function must return if the File
+ * argument is a valid File/Folder.
  *
  * @author Tiago D.R. Carvalho
  */
@@ -64,7 +67,6 @@ public abstract class WeaverEngine {
 
         apis = new HashMap<>();
     }
-
 
     public Optional<DataStore> getData() {
         throw new NotImplementedException(this);
@@ -130,7 +132,8 @@ public abstract class WeaverEngine {
     public abstract List<String> getActions();
 
     /**
-     * Closes the weaver and specifies the output directory location if the weaver generates new file(s)
+     * Closes the weaver and specifies the output directory location if the weaver
+     * generates new file(s)
      *
      * @return if close was successful
      */
@@ -170,7 +173,6 @@ public abstract class WeaverEngine {
         return storeDefinition.get();
     }
 
-
     public LanguageSpecification getLanguageSpecificationV2() {
         return langSpec.get();
     }
@@ -181,13 +183,12 @@ public abstract class WeaverEngine {
      * @return
      */
     protected abstract LanguageSpecification buildLangSpecs();
-//        return LangSpecsXmlParser.parse(ClavaWeaverResource.JOINPOINTS, ClavaWeaverResource.ARTIFACTS,
-//                ClavaWeaverResource.ACTIONS, true);
 
     /**
      * Returns a list of Gears associated to this weaver engine
      *
-     * @return a list of implementations of {@link AGear} or null if no gears are available
+     * @return a list of implementations of {@link AGear} or null if no gears are
+     *         available
      */
     public abstract List<AGear> getGears();
 
@@ -201,7 +202,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Returns a list of classes that may be imported and used in LARA, including the ones from the auto-generated code
+     * Returns a list of classes that may be imported and used in LARA, including
+     * the ones from the auto-generated code
      * and the weaver-developer-defined.
      *
      * @return
@@ -220,7 +222,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * @return the name of the Weaver. By default, returns the simple name of the class
+     * @return the name of the Weaver. By default, returns the simple name of the
+     *         class
      */
     public String getName() {
         return getClass().getSimpleName();
@@ -260,20 +263,18 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Use this method if you intend to use your own weaver profiler by extending class {@link WeaverProfiler}
+     * Use this method if you intend to use your own weaver profiler by extending
+     * class {@link WeaverProfiler}
      *
      * @return
      */
     protected void setWeaverProfiler(WeaverProfiler weaverProfiler) {
         this.weaverProfiler = weaverProfiler;
     }
-    //
-    // protected void associateJoinPoint(JoinPoint joinPoint) {
-    // joinPoint.setWeaverEngine(this);
-    // }
 
     /**
-     * An image representing the icon of the program, that will appear in the upper-left corner.
+     * An image representing the icon of the program, that will appear in the
+     * upper-left corner.
      *
      * @return by default, returns null
      */
@@ -282,7 +283,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * The languages supported by the weaver. These strings will be used to process folders for LARA bundles.
+     * The languages supported by the weaver. These strings will be used to process
+     * folders for LARA bundles.
      *
      * @return the languages supported by the weaver. By default, returns empty.
      */
@@ -358,7 +360,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Pairs of labels-values that will populate the predefined list of the option "External Dependencies".
+     * Pairs of labels-values that will populate the predefined list of the option
+     * "External Dependencies".
      * <p>
      * Default implementation returns a list with experimental LARA packages.
      *

@@ -36,7 +36,7 @@ public class Launcher {
         AppKernel kernel = new WeaverGeneratorKernel();
 
         StoreDefinition definition = new WeaverGeneratorStoreDefinition().getStoreDefinition();
-        // StoreDefinition definition = StoreDefinition.newInstance("test", WeaverGeneratorKeys.NODE_TYPE);
+
         if (args.length == 0) {
 
             AppPersistence persistence = new XmlPersistence(definition);
@@ -44,9 +44,6 @@ public class Launcher {
             List<TabProvider> xmlTabs = new ArrayList<>();
             xmlTabs.add(data -> new GuiTab(data) {
 
-                /**
-                 * 
-                 */
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -72,17 +69,6 @@ public class Launcher {
 
             gui.execute();
 
-        } else {
-            /*
-            OptionsParser parser = new OptionsParser();
-            DataStore store = parser.parse(args, definition);
-            
-            store.set(AntarexKeys.CLI_PARSER, parser);
-            
-            store.setSetupFile(new File(IoUtils.getWorkingDir().getAbsolutePath(), "dummy.xml"));
-            
-            kernel.execute(store);
-            */
         }
     }
 }

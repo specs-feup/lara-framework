@@ -25,60 +25,52 @@ public class ApplyEvent extends BaseEvent {
     private String select_label;
     private Optional<LaraJoinPoint> jpset;
 
-    /**
-     * @param stage
-     * @param label
-     * @param select_label
-     * @param root
-     */
     public ApplyEvent(Stage stage, String aspect_name, String label, String select_label,
-	    Optional<LaraJoinPoint> root) {
-	super(stage);
-	this.aspect_name = aspect_name;
-	this.label = label;
-	this.select_label = select_label;
-	jpset = root;
+            Optional<LaraJoinPoint> root) {
+        super(stage);
+        this.aspect_name = aspect_name;
+        this.label = label;
+        this.select_label = select_label;
+        jpset = root;
     }
 
     @Override
     public String toString() {
-	String ret = super.toString();
-	ret += ", aspect " + aspect_name;
-	ret += ", apply label " + label;
-	ret += ", select " + select_label;
-	if (jpset != null) {
-	    ret += ", join point set: " + jpset;
-	}
-	return ret;
+        String ret = super.toString();
+        ret += ", aspect " + aspect_name;
+        ret += ", apply label " + label;
+        ret += ", select " + select_label;
+        if (jpset != null) {
+            ret += ", join point set: " + jpset;
+        }
+        return ret;
     }
 
     /**
      * @return the applyName
      */
     public String getLabel() {
-	return label;
+        return label;
     }
 
     /**
      * @return the selectName
      */
     public String getSelect_label() {
-	return select_label;
+        return select_label;
     }
 
     /**
      * @return the select
      */
     public Optional<LaraJoinPoint> getJpset() {
-	return jpset;
+        return jpset;
     }
 
     /**
-     * @param applyName
-     *            the applyName to set
+     * @param applyName the applyName to set
      */
     protected void setApplyName(String applyName) {
-	label = applyName;
+        label = applyName;
     }
-
 }

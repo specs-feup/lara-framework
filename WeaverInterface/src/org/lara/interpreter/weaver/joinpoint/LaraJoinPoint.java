@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
 /**
- * Encapsulation of a {@link JoinPoint} to define a selection, containing the current {@link JoinPoint} reference,
- * alias, children, parent and a boolean defining if this join point is a leaf (has no childs, i.e., end of chain)
+ * Encapsulation of a {@link JoinPoint} to define a selection, containing the
+ * current {@link JoinPoint} reference,
+ * alias, children, parent and a boolean defining if this join point is a leaf
+ * (has no childs, i.e., end of chain)
  *
  * @author Tiago
  *
@@ -74,7 +76,8 @@ public class LaraJoinPoint {
     }
 
     /**
-     * Constructor based on a existing join point, containing the attributes and the Object reference
+     * Constructor based on a existing join point, containing the attributes and the
+     * Object reference
      */
     public LaraJoinPoint(JoinPoint jp) {
         leaf = false;
@@ -86,8 +89,7 @@ public class LaraJoinPoint {
     /**
      * Add a child to the join point children
      *
-     * @param jp
-     *            the child to add
+     * @param jp the child to add
      */
     public void addChild(LaraJoinPoint jp) {
         children.add(jp);
@@ -98,8 +100,7 @@ public class LaraJoinPoint {
     /**
      * Add all children in the collection to the join point children
      *
-     * @param jp
-     *            the collection of children to add
+     * @param jp the collection of children to add
      */
     public void addChildren(Collection<LaraJoinPoint> jpC) {
         for (final LaraJoinPoint jp : jpC) {
@@ -110,8 +111,7 @@ public class LaraJoinPoint {
     /**
      * Remove a child from the join point children
      *
-     * @param jp
-     *            the child to remove
+     * @param jp the child to remove
      * @return true if this list contained the specified join point
      */
     public boolean removeChild(LaraJoinPoint jp) {
@@ -121,8 +121,7 @@ public class LaraJoinPoint {
     /**
      * Removes the child in the specific position
      *
-     * @param index
-     *            the position of the child to be removed
+     * @param index the position of the child to be removed
      * @return the join point at the specified position
      */
     public LaraJoinPoint removeChild(int index) {
@@ -132,8 +131,7 @@ public class LaraJoinPoint {
     /**
      * Returns the join point in the specific position
      *
-     * @param index
-     *            index of the join point to return
+     * @param index index of the join point to return
      * @return the join point at the specified position in the children list
      */
     public LaraJoinPoint getChild(int index) {
@@ -148,8 +146,7 @@ public class LaraJoinPoint {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setClassAlias(String classAlias) {
         this.classAlias = classAlias;
@@ -163,8 +160,7 @@ public class LaraJoinPoint {
     }
 
     /**
-     * @param parent
-     *            the parent to set
+     * @param parent the parent to set
      */
     public void setParent(LaraJoinPoint parent) {
         _jp_parent_ = parent;
@@ -189,16 +185,14 @@ public class LaraJoinPoint {
     }
 
     /**
-     * @param children
-     *            the children to set
+     * @param children the children to set
      */
     public void setChildren(List<LaraJoinPoint> children) {
         this.children = children;
     }
 
     /**
-     * @param isLeaf
-     *            the isLeaf to set
+     * @param isLeaf the isLeaf to set
      */
     public void setLeaf(boolean isLeaf) {
         leaf = isLeaf;
@@ -215,13 +209,13 @@ public class LaraJoinPoint {
      * @return the reference
      */
     public JoinPoint getReference() {
-        // TODO: In Graal mode, return a JavaScript object which emulates nashorn behaviour when accessing attributes
+        // TODO: In Graal mode, return a JavaScript object which emulates nashorn
+        // behaviour when accessing attributes
         return _jp_reference_;
     }
 
     /**
-     * @param reference
-     *            the reference to set
+     * @param reference the reference to set
      */
     public void setReference(JoinPoint reference) {
         _jp_reference_ = reference;
@@ -301,8 +295,7 @@ public class LaraJoinPoint {
     /**
      * Auxiliary function that complements the getLeaves() function
      *
-     * @param leaves
-     *            the list to use to add leaves
+     * @param leaves the list to use to add leaves
      */
     private void getLeaves(List<LaraJoinPoint> leaves) {
         if (isLeaf()) {
@@ -335,12 +328,4 @@ public class LaraJoinPoint {
     public boolean isEmpty() {
         return children.isEmpty();
     }
-
-    // public LaraJoinPoint getLaraJoinPoint() {
-    // return laraJoinPoint;
-    // }
-    //
-    // public void setLaraJoinPoint(LaraJoinPoint laraJoinPoint) {
-    // this.laraJoinPoint = laraJoinPoint;
-    // }
 }

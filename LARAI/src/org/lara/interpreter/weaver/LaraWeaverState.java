@@ -55,8 +55,7 @@ public class LaraWeaverState {
                 })
                 .toArray(s -> new URL[s]);
 
-        classLoader = new URLClassLoader(urls, getClass().getClassLoader()
-        );
+        classLoader = new URLClassLoader(urls, getClass().getClassLoader());
     }
 
     private List<File> getJarFiles() {

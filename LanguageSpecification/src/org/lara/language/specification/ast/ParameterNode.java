@@ -26,7 +26,8 @@ public class ParameterNode extends LangSpecNode {
     private final String type;
 
     /**
-     * Create a new instance of an action with a declaration child that defines its name and return type
+     * Create a new instance of an action with a declaration child that defines its
+     * name and return type
      * 
      * @param declaration
      */

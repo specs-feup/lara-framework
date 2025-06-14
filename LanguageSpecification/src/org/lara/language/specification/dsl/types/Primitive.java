@@ -33,33 +33,33 @@ public enum Primitive implements IType {
 
     public static Primitive get(String name) {
 
-	for (final Primitive primitive : values()) {
+        for (final Primitive primitive : values()) {
 
-	    if (primitive.name().toLowerCase().equals(name)) {
-		return primitive;
-	    }
-	}
-	throw new RuntimeException("The type '" + name + "' is not a primitive.");
+            if (primitive.name().toLowerCase().equals(name)) {
+                return primitive;
+            }
+        }
+        throw new RuntimeException("The type '" + name + "' is not a primitive.");
     }
 
     public static boolean contains(String name) {
 
-	for (final Primitive primitive : values()) {
+        for (final Primitive primitive : values()) {
 
-	    if (primitive.name().toLowerCase().equals(name)) {
-		return true;
-	    }
-	}
-	return false;
+            if (primitive.name().toLowerCase().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public String getType() {
-	return name().toLowerCase();
+        return name().toLowerCase();
     }
 
     @Override
     public String toString() {
-	return getType();
+        return getType();
     }
 }

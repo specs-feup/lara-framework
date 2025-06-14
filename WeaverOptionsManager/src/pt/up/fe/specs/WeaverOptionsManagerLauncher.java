@@ -9,7 +9,6 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.suikasoft.jOptions.persistence.XmlPersistence;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
-
 import pt.up.fe.specs.util.SpecsSystem;
 import larai.LaraI;
 

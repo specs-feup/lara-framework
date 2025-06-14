@@ -31,71 +31,10 @@ public class WeaverGenerator {
     /**
      * Generate a new weaver, according to the input language specification.
      *
-     * @param weaverName
-     *            The name for the new Weaver
-     * @param languageSpecification
-     *            The language specification
-     * @param outputDir
-     *            The output directory
-     * @param outputPackage
-     *            The package for the generated classes
-     * @param abstractGetters
-     *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
-     * @param nodeType
-     *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
-     * @return true if generated successfully, false otherwise.
-     */
-    /*
-    public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
-            String outputPackage, boolean abstractGetters, Class<?> nodeType) {
-
-        final BaseGenerator generator = new JavaAbstractsGenerator(langSpec)
-                .weaverName(weaverName).outputDir(outputDir)
-                .setPackage(outputPackage).abstractGetters(abstractGetters).nodeType(nodeType);
-        printReport(generator);
-        generator.generate();
-        generator.print();
-    }
-     */
-
-    /**
-     * Generate a new weaver, according to the input language specification.
-     *
-     * @param weaverName
-     *            The name for the new Weaver
-     * @param langSpec
-     *            The language specification
-     * @param outputDir
-     *            The output directory
-     * @param outputPackage
-     *            The package for the generated classes
-     * @param abstractGetters
-     *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
-     * @param nodeType
-     *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
-     * @return true if generated successfully, false otherwise.
-     */
-    /*
-    public static void generateJava2CPP(String weaverName, LanguageSpecification langSpec, File outputDir,
-            String outputPackage, boolean abstractGetters, Class<?> nodeType) {
-
-        final BaseGenerator generator = new JavaImplGenerator(langSpec, "C").weaverName(weaverName).outputDir(outputDir)
-                .setPackage(outputPackage).abstractGetters(abstractGetters).nodeType(nodeType);
-        printReport(generator);
-        generator.generate();
-        generator.print();
-    }
-     */
-
-    /**
-     * Generate a new weaver, according to the input language specification.
-     *
      * @param generator the generator that will generate the weaver implementation
      * @return true if generated successfully, false otherwise.
      */
     private static boolean generate(BaseGenerator generator) {
-
-        // String xmlLocation = languageSpecificationDir.getAbsolutePath();
         try {
             generator.generate();
             return true;
@@ -162,7 +101,8 @@ public class WeaverGenerator {
      *             <tr>
      *             <td>-x</td>
      *             <td>--XMLspec &ltdir&gt</td>
-     *             <td>Location of the target language specification (default: .)</td>
+     *             <td>Location of the target language specification (default:
+     *             .)</td>
      *             </tr>
      *             </tbody>
      *             </table>
@@ -189,7 +129,8 @@ public class WeaverGenerator {
         final BaseGenerator generator;
         String optionValue;
         if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
-            System.out.println("Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
+            System.out.println(
+                    "Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
             generator = new TemplatedGenerator(XMLSpecDir);
         } else {
             // Create the JavaAbstractGenerator
@@ -211,15 +152,9 @@ public class WeaverGenerator {
             generator.setOutDir(file);
         }
 
-        // if (cmdLine.hasOption(GeneratorOption.A.getOption())) {
-        // generator.setAbstractGetters(true);
-        // }
         if (cmdLine.hasOption(GeneratorOption.F.getOption())) {
             generator.setAbstractGetters(false);
         }
-        // if (cmdLine.hasOption(GeneratorOption.I.getOption())) {
-        // generator.setImplMode(true);
-        // }
 
         if (cmdLine.hasOption(GeneratorOption.N.getOption())) {
             optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
@@ -241,14 +176,8 @@ public class WeaverGenerator {
             generator.setConcreteClassesPrefix(cmdLine.getOptionValue(GeneratorOption.C.getOption()));
         }
 
-        // if (cmdLine.hasOption(GeneratorOption.G.getOption())) {
-        // generator.setShowGraph(true);
-        // }
-
         printReport(generator);
 
-        // boolean generated = generate(weaverName, XMLSpecDir, outDir,
-        // outPackage, abstractGetters, showGraph);
         final boolean generated = generate(generator);
         if (!generated) {
             System.err.println("The Weaver was not created!");
@@ -286,7 +215,6 @@ public class WeaverGenerator {
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
 
-        // String json = jw.toJson(languageSpecification);
         SpecsIo.write(jsonOutFile, json);
     }
 
@@ -297,8 +225,8 @@ public class WeaverGenerator {
     }
 
     private static void printReport(String weaverName, String outPackage, File xMLSpecDir, File outDir,
-                                    boolean abstractGetters, boolean usesImpl, String generics, boolean json,
-                                    boolean showGraph, String concreteClassesPrefix) {
+            boolean abstractGetters, boolean usesImpl, String generics, boolean json,
+            boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
         report.append("Weaver name:   " + weaverName + "\n");
         report.append("Package:       " + outPackage + "\n");
@@ -314,7 +242,7 @@ public class WeaverGenerator {
         if (concreteClassesPrefix != null) {
             report.append("Concrete classes with prefix:   " + concreteClassesPrefix + "\n");
         }
-        // report.append("Show Graph: " + showGraph + "\n");
+
         System.out.println(report);
     }
 }

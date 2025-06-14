@@ -18,11 +18,10 @@ public class GenericClass {
     private final Class<?> aClass;
 
     public GenericClass(Class<?> aClass) {
-
-	this.aClass = aClass;
+        this.aClass = aClass;
     }
 
     public Class<?> getGenericClass() {
-	return aClass;
+        return aClass;
     }
 }

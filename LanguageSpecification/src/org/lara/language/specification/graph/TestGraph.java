@@ -39,8 +39,7 @@ public class TestGraph {
         graph.addSelect(null, "body", "binExpr");
         graph.addExtend("binExpr", "expr");
         graph.addExtend("arrayAcc", "expr");
-        // graph.addSelect(null,"expr", "arrayAcc");
-        // System.out.println(graph);
+
         final String graphviz = graph.toGraphviz();
         System.out.println(graphviz);
         SpecsIo.write(new File("test.dot"), graphviz);

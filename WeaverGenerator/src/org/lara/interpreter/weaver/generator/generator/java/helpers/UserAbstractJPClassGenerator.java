@@ -23,7 +23,8 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 
 /**
- * Generates an abstract class that can be edited by the developer. This class can be used for changes/extensions that
+ * Generates an abstract class that can be edited by the developer. This class
+ * can be used for changes/extensions that
  * are global to the join points.
  *
  */
@@ -39,7 +40,8 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate an abstract class that can be edited by the developer. This class can be used for changes/extensions
+     * Generate an abstract class that can be edited by the developer. This class
+     * can be used for changes/extensions
      * that are global to the join points
      * 
      * @param javaGenerator
@@ -53,7 +55,8 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate an abstract class that can be edited by the developer. This class can be used for changes/extensions
+     * Generate an abstract class that can be edited by the developer. This class
+     * can be used for changes/extensions
      * that are global to the join points
      * 
      * @return
@@ -78,7 +81,6 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         compareNodes.add(Annotation.OVERRIDE);
         abstJPClass.add(compareNodes);
 
-        // abstJPClass.add(method)
         return abstJPClass;
     }
 }

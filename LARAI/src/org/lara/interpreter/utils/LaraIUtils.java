@@ -64,5 +64,4 @@ public class LaraIUtils {
     public static String getJarFoldername() {
         return JarPathHolder.instance;
     }
-
 }

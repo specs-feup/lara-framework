@@ -16,28 +16,29 @@ package org.lara.language.specification.resources;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public enum LanguageSpecificationResources implements ResourceProvider {
-	ActionModelSchema("actionModel.xsd"), ArtifactsModelSchema("artifacts.xsd"), JoinPointModelSchema(
-			"joinPointModel.xsd"),;
+    ActionModelSchema("actionModel.xsd"),
+    ArtifactsModelSchema("artifacts.xsd"),
+    JoinPointModelSchema("joinPointModel.xsd");
 
-	private final String resource;
+    private final String resource;
 
-	private static final String basePackage = "schemas/";
+    private static final String basePackage = "schemas/";
 
-	/**
-	 * @param resource
-	 */
-	private LanguageSpecificationResources(String resource) {
-		this.resource = LanguageSpecificationResources.basePackage + resource;
-	}
+    /**
+     * @param resource
+     */
+    private LanguageSpecificationResources(String resource) {
+        this.resource = LanguageSpecificationResources.basePackage + resource;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * pt.up.fe.specs.util.Interfaces.ResourceProvider#getResource()
-	 */
-	@Override
-	public String getResource() {
-		return resource;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * pt.up.fe.specs.util.Interfaces.ResourceProvider#getResource()
+     */
+    @Override
+    public String getResource() {
+        return resource;
+    }
 }

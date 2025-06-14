@@ -29,16 +29,6 @@ import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * An interpreter for the LARA language, which converts the Aspect-IR into a javascript representation and runs that
- * script. This is used in REFLECT as an outer-loop for the project-flow and also for design-space exploration.
- * Furthermore, one can have a weaver which can be used with this interpreter. For that, one should implement the
- * interface org.reflect.larai.IWeaver, available in this project, and follow its instructions, and change the weaver
- * with the -w/--weaver option with the name of that implementation (E.g.: -weaver org.specs.Matisse) OR invoke
- * LARAI.exec(2)/LARAI.exec(5)
- *
- * @author Tiago
- */
 public class LaraI {
     public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
@@ -61,7 +51,8 @@ public class LaraI {
      * @param dataStore
      * @param weaverEngine
      */
-    private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {}
+    private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {
+    }
 
     public static StoreDefinition getStoreDefinition(WeaverEngine weaverEngine) {
         String weaverName = weaverEngine.getName();
@@ -73,13 +64,13 @@ public class LaraI {
                 .build();
     }
 
-
     /**
      * Converts an array of strings to the corresponding DataStore.
      *
      * @param objArgs
      * @param weaverEngine
-     * @return A DataStore that corresponds to the given arguments, or empty if the arguments represent a GUI execution mode.
+     * @return A DataStore that corresponds to the given arguments, or empty if the
+     *         arguments represent a GUI execution mode.
      */
     public static Optional<DataStore> convertArgsToDataStore(Object[] objArgs, WeaverEngine weaverEngine) {
 
@@ -107,18 +98,19 @@ public class LaraI {
         return dataStore;
     }
 
-    private static Optional<DataStore> buildDataStore(WeaverEngine weaverEngine, ExecutionMode mode, CommandLine cmd, String mainScript) {
+    private static Optional<DataStore> buildDataStore(WeaverEngine weaverEngine, ExecutionMode mode, CommandLine cmd,
+            String mainScript) {
         return switch (mode) {
             // convert configuration file to data store and run
             case CONFIG -> Optional.of(OptionsConverter.configFile2DataStore(weaverEngine, cmd));
 
             // convert options to data store and run
             case OPTIONS ->
-                    Optional.of(OptionsConverter.commandLine2DataStore(mainScript, cmd, weaverEngine.getOptions()));
+                Optional.of(OptionsConverter.commandLine2DataStore(mainScript, cmd, weaverEngine.getOptions()));
 
             // convert configuration file to data store, override with extra options and run
             case CONFIG_OPTIONS ->
-                    Optional.of(OptionsConverter.configExtraOptions2DataStore(mainScript, cmd, weaverEngine));
+                Optional.of(OptionsConverter.configExtraOptions2DataStore(mainScript, cmd, weaverEngine));
         };
     }
 

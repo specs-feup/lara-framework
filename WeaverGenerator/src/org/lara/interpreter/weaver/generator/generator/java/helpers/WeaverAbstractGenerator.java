@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Generate the weaver abstract class, containing the four methods to implement: handlesApplicationFolder, begin, select
- * and close. The getActions method (list of available actions) will be automatically generated. The getRoot method
+ * Generate the weaver abstract class, containing the four methods to implement:
+ * handlesApplicationFolder, begin, select
+ * and close. The getActions method (list of available actions) will be
+ * automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
  *
  * @author tiago
@@ -47,7 +49,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
      * @param enums
      * @return
@@ -58,7 +61,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
      * @return
      */
@@ -74,7 +78,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the Weaver abstract class with name : A + the weaver name, in the given package and
+     * Generate the Weaver abstract class with name : A + the weaver name, in the
+     * given package and
      *
      * @param weaverName
      * @param weaverPackage
@@ -99,7 +104,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generates the method that returns a list of the available actions in the weaver
+     * Generates the method that returns a list of the available actions in the
+     * weaver
      *
      * @param actionModel
      * @param java
@@ -115,8 +121,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
         // Using linked hashset to have deterministic order
         var uniqueActions = new LinkedHashSet<>(javaGenerator.getLanguageSpecification().getAllActions());
-        var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions, a -> '"' + a.getName() + '"');
-
+        var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions,
+                a -> '"' + a.getName() + '"');
 
         getActions.appendCode(generatedCode);
         java.add(getActions);

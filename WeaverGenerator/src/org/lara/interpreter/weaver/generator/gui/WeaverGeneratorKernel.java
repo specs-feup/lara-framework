@@ -22,13 +22,13 @@ public class WeaverGeneratorKernel implements AppKernel {
     @Override
     public int execute(DataStore options) {
 
-	System.out.println("NODE TYPE:" + options.get(WeaverGeneratorKeys.NODE_TYPE));
+        System.out.println("NODE TYPE:" + options.get(WeaverGeneratorKeys.NODE_TYPE));
 
-	System.out.println("SPEC FOLDER:" + options.get(WeaverGeneratorKeys.LANGUAGE_SPECIFICATION_FOLDER));
+        System.out.println("SPEC FOLDER:" + options.get(WeaverGeneratorKeys.LANGUAGE_SPECIFICATION_FOLDER));
 
-	// Process options and/or
-	// Execute application
-	return 0;
+        // Process options and/or
+        // Execute application
+        return 0;
     }
 
 }

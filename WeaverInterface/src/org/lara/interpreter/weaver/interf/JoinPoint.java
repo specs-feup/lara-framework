@@ -70,7 +70,8 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Function used by the lara interpreter to verify if a join point is the same (equals) as another join point
+     * Function used by the lara interpreter to verify if a join point is the same
+     * (equals) as another join point
      *
      * @param iJoinPoint
      * @return
@@ -114,7 +115,8 @@ public abstract class JoinPoint {
 
     /**
      * @param type
-     * @return true, if this join point is an instance of the given type, false otherwise
+     * @return true, if this join point is an instance of the given type, false
+     *         otherwise
      */
     public boolean instanceOf(String type) {
 
@@ -132,7 +134,8 @@ public abstract class JoinPoint {
 
     /**
      * @param type
-     * @return true, if this join point is an instance of any of the given types, false otherwise
+     * @return true, if this join point is an instance of any of the given types,
+     *         false otherwise
      */
     public boolean instanceOf(String[] types) {
         for (var type : types) {
@@ -147,7 +150,8 @@ public abstract class JoinPoint {
     /**
      * @see JoinPoint#insert(String, JoinPoint)
      */
-    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T JoinPoint) {
+    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T
+    // JoinPoint) {
     public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");
@@ -221,7 +225,8 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Action insert that accepts a string containing the code snippet to inject as far as possible from the join point
+     * Action insert that accepts a string containing the code snippet to inject as
+     * far as possible from the join point
      * based on other insertions over the targeted join point
      *
      * @param position before|after|replace|around
@@ -243,13 +248,16 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Action insert that accepts a join point to inject and a boolean to indicate if the insertion must be as close as
-     * possible to the join point (false) or as far as possible to the join point (true) based on other insertions over
+     * Action insert that accepts a join point to inject and a boolean to indicate
+     * if the insertion must be as close as
+     * possible to the join point (false) or as far as possible to the join point
+     * (true) based on other insertions over
      * the targeted join point
      *
      * @param position          before|after|replace|around
      * @param code              the code to inject
-     * @param farthestInsertion if true will insert the code as far as possible from the join point, based on the other insertions
+     * @param farthestInsertion if true will insert the code as far as possible from
+     *                          the join point, based on the other insertions
      *                          over this targeted join point
      */
     public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
@@ -284,9 +292,7 @@ public abstract class JoinPoint {
     }
 
     public static Object getUndefinedValue() {
-        // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
         return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
-        // return Undefined.getUndefined();
     }
 
     public Object getChildren() {
@@ -302,7 +308,8 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Implement this method and getJpParent() in order to obtain tree-like functionality (descendants, etc).
+     * Implement this method and getJpParent() in order to obtain tree-like
+     * functionality (descendants, etc).
      *
      * @return
      */
@@ -312,7 +319,8 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Implement this method and getJpChildrenStream() in order to obtain tree-like functionality (descendants, etc).
+     * Implement this method and getJpChildrenStream() in order to obtain tree-like
+     * functionality (descendants, etc).
      *
      * @return
      */
@@ -339,7 +347,6 @@ public abstract class JoinPoint {
     @Override
     public String toString() {
         return "Joinpoint '" + getJoinPointType() + "'";
-        // return "'" + getJoinPointType() + "'";
     }
 
     public String getDump() {

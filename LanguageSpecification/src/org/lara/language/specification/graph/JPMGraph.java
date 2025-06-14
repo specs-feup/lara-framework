@@ -27,100 +27,99 @@ import pt.up.fe.specs.util.graphs.Graph;
  */
 public class JPMGraph extends Graph<JoinPointNode, JPNodeInfo, JPEdgeInfo> {
 
-	private String name;
+    private String name;
 
-	/**
-	 * Create a join point model graph Representation
-	 * 
-	 * @param graphName
-	 *            the name of the graph
-	 */
-	public JPMGraph(String graphName) {
-		name = graphName;
-	}
+    /**
+     * Create a join point model graph Representation
+     * 
+     * @param graphName the name of the graph
+     */
+    public JPMGraph(String graphName) {
+        name = graphName;
+    }
 
-	private JPMGraph(List<JoinPointNode> nodeList, Map<String, JoinPointNode> graphNodes) {
-		super(nodeList, graphNodes);
-	}
+    private JPMGraph(List<JoinPointNode> nodeList, Map<String, JoinPointNode> graphNodes) {
+        super(nodeList, graphNodes);
+    }
 
-	@Override
-	public JPMGraph getUnmodifiableGraph() {
-		return new JPMGraph(Collections.unmodifiableList(getNodeList()), Collections.unmodifiableMap(getGraphNodes()));
-	}
+    @Override
+    public JPMGraph getUnmodifiableGraph() {
+        return new JPMGraph(Collections.unmodifiableList(getNodeList()), Collections.unmodifiableMap(getGraphNodes()));
+    }
 
-	@Override
-	protected JoinPointNode newNode(String operationId, JPNodeInfo nodeInfo) {
-		return new JoinPointNode(operationId, nodeInfo);
-	}
+    @Override
+    protected JoinPointNode newNode(String operationId, JPNodeInfo nodeInfo) {
+        return new JoinPointNode(operationId, nodeInfo);
+    }
 
-	/**
-	 * Add a new node with default {@link JPNodeInfo}.
-	 * 
-	 * @param sourceId
-	 * @param targetId
-	 */
-	public JoinPointNode addNode(String operationId) {
-		return addNode(operationId, new JPNodeInfo(operationId));
-	}
+    /**
+     * Add a new node with default {@link JPNodeInfo}.
+     * 
+     * @param sourceId
+     * @param targetId
+     */
+    public JoinPointNode addNode(String operationId) {
+        return addNode(operationId, new JPNodeInfo(operationId));
+    }
 
-	/**
-	 * Add a new select between a source join point and a target join point.
-	 * 
-	 * @param alias
-	 * @param sourceId
-	 * @param targetId
-	 */
-	public void addSelect(String label, String sourceId, String targetId) {
-		addConnection(sourceId, targetId, JPEdgeInfo.newSelects(label, sourceId, targetId));
-	}
+    /**
+     * Add a new select between a source join point and a target join point.
+     * 
+     * @param alias
+     * @param sourceId
+     * @param targetId
+     */
+    public void addSelect(String label, String sourceId, String targetId) {
+        addConnection(sourceId, targetId, JPEdgeInfo.newSelects(label, sourceId, targetId));
+    }
 
-	/**
-	 * Add a new select between a source join point and a target join point.
-	 * 
-	 * @param sourceId
-	 * @param targetId
-	 */
-	public void addSelect(String sourceId, String targetId) {
-		addConnection(sourceId, targetId, JPEdgeInfo.newSelects(null, sourceId, targetId));
-	}
+    /**
+     * Add a new select between a source join point and a target join point.
+     * 
+     * @param sourceId
+     * @param targetId
+     */
+    public void addSelect(String sourceId, String targetId) {
+        addConnection(sourceId, targetId, JPEdgeInfo.newSelects(null, sourceId, targetId));
+    }
 
-	/**
-	 * Add a new extend between a source join point and a target join point.
-	 * 
-	 * @param sourceId
-	 * @param targetId
-	 */
-	public void addExtend(String sourceId, String targetId) {
-		addConnection(sourceId, targetId, JPEdgeInfo.newExtends(sourceId, targetId));
-	}
+    /**
+     * Add a new extend between a source join point and a target join point.
+     * 
+     * @param sourceId
+     * @param targetId
+     */
+    public void addExtend(String sourceId, String targetId) {
+        addConnection(sourceId, targetId, JPEdgeInfo.newExtends(sourceId, targetId));
+    }
 
-	/**
-	 * Convert this graph into the graphviz 'DSL' format
-	 * 
-	 * @return a string representing the graph in the graphviz form
-	 */
-	public String toGraphviz() {
-		final String lineSeparator = System.lineSeparator();
-		final StringBuilder graphStr = new StringBuilder("digraph ");
-		graphStr.append(name);
-		graphStr.append("{");
-		graphStr.append(lineSeparator);
+    /**
+     * Convert this graph into the graphviz 'DSL' format
+     * 
+     * @return a string representing the graph in the graphviz form
+     */
+    public String toGraphviz() {
+        final String lineSeparator = System.lineSeparator();
+        final StringBuilder graphStr = new StringBuilder("digraph ");
+        graphStr.append(name);
+        graphStr.append("{");
+        graphStr.append(lineSeparator);
 
-		for (final JoinPointNode joinPointNode : getNodeList()) {
-			final String thisNode = joinPointNode.getId();
+        for (final JoinPointNode joinPointNode : getNodeList()) {
+            final String thisNode = joinPointNode.getId();
 
-			joinPointNode.getChildren().forEach(node -> {
-				final String targetId = node.getId();
-				final String edgeStr = "\t" + thisNode + "->" + targetId;
-				joinPointNode.getEdges(targetId).forEach(edge -> {
-					graphStr.append(edgeStr);
-					graphStr.append(edge.toString());
-					graphStr.append(";\n");
-				});
-			});
+            joinPointNode.getChildren().forEach(node -> {
+                final String targetId = node.getId();
+                final String edgeStr = "\t" + thisNode + "->" + targetId;
+                joinPointNode.getEdges(targetId).forEach(edge -> {
+                    graphStr.append(edgeStr);
+                    graphStr.append(edge.toString());
+                    graphStr.append(";\n");
+                });
+            });
 
-		}
-		graphStr.append("}");
-		return graphStr.toString();
-	}
+        }
+        graphStr.append("}");
+        return graphStr.toString();
+    }
 }

@@ -15,13 +15,9 @@ package org.lara.language.specification.exception;
 
 public class SchemaValidationException extends RuntimeException {
 
-	public SchemaValidationException(String errorMsg) {
-		super(errorMsg);
-	}
+    public SchemaValidationException(String errorMsg) {
+        super(errorMsg);
+    }
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8105032078507198496L;
-
+    private static final long serialVersionUID = -8105032078507198496L;
 }

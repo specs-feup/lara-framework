@@ -227,7 +227,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * See if the getters should be generated as abstract, and thus no field is generated
+     * See if the getters should be generated as abstract, and thus no field is
+     * generated
      *
      * @return
      */
@@ -236,7 +237,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Set if the getters should be generated as abstract, and thus no field is generated
+     * Set if the getters should be generated as abstract, and thus no field is
+     * generated
      *
      * @return
      */
@@ -311,7 +313,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Create a language specification using the models defined in the given directory
+     * Create a language specification using the models defined in the given
+     * directory
      *
      * @param langSpecDirStr the input folder
      */
@@ -320,7 +323,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Create a language specification using the models defined in the given directory name
+     * Create a language specification using the models defined in the given
+     * directory name
      *
      * @param langSpecDirStr name of the input folder
      */

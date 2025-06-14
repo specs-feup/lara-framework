@@ -17,9 +17,6 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 
 public class AttributeException extends BaseException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private String joinPointName;
     private String attribute;
@@ -48,8 +45,7 @@ public class AttributeException extends BaseException {
     }
 
     /**
-     * @param actionName
-     *            the actionName to set
+     * @param actionName the actionName to set
      */
     public void setAttributeName(String attribute) {
         this.attribute = attribute;
@@ -63,8 +59,7 @@ public class AttributeException extends BaseException {
     }
 
     /**
-     * @param joinPointName
-     *            the joinPointName to set
+     * @param joinPointName the joinPointName to set
      */
     public void setJoinPointName(String joinPointName) {
         this.joinPointName = joinPointName;

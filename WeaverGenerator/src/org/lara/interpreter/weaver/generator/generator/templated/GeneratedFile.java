@@ -52,7 +52,9 @@ public class GeneratedFile {
         return packagePrefix;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override

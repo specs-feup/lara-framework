@@ -62,8 +62,9 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     /**
      * @param name
-     * @return the attributes corresponding to the given name, or empty list if none exists. Considers all available
-     * attributes of this join point, including hierarchy
+     * @return the attributes corresponding to the given name, or empty list if none
+     *         exists. Considers all available
+     *         attributes of this join point, including hierarchy
      */
     public List<Attribute> getAttribute(String name) {
         List<Attribute> attribute = new ArrayList<>();
@@ -94,7 +95,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     /**
      * @param name
-     * @return the actions corresponding to the given name, or empty list if none exists.
+     * @return the actions corresponding to the given name, or empty list if none
+     *         exists.
      */
     public List<Action> getActionSelf(String name) {
         return actionsMap.get().get(name);
@@ -109,7 +111,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     /**
-     * Which join point class this join point extends. All join points extends 'joinpoint', except for joinpoint itself.
+     * Which join point class this join point extends. All join points extends
+     * 'joinpoint', except for joinpoint itself.
      * <p>
      * TODO: Should return empty if extends 'joinpoint'?
      *
@@ -120,7 +123,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     /**
-     * @return the join point class it explicitly extends, or Optional.empty() if does not extend a class or extends 'joinpoint'
+     * @return the join point class it explicitly extends, or Optional.empty() if
+     *         does not extend a class or extends 'joinpoint'
      */
     public Optional<JoinPointClass> getExtendExplicit() {
         return getExtend().filter(jp -> !jp.getName().equals(getGlobalName()));
@@ -217,8 +221,9 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
 
     /**
      * @param name
-     * @return the actions corresponding to the given name, or empty list if none exists. Considers all available
-     * actions of this join point, including hierarchy
+     * @return the actions corresponding to the given name, or empty list if none
+     *         exists. Considers all available
+     *         actions of this join point, including hierarchy
      */
     public List<Action> getAction(String name) {
         List<Action> action = new ArrayList<>();
@@ -249,19 +254,20 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     public static JoinPointClass globalJoinPoint() {
         JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME);
 
-        // TODO: Handle this in another way, it is here for compatibility reasons with the weaver generator
+        // TODO: Handle this in another way, it is here for compatibility reasons with
+        // the weaver generator
         // Add default define (def) action
-        //var defAction = new Action(new GenericType("Object", false), "def");
-        //globalNode.add(defAction);
-/*
-        globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
-                List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-                        new Parameter(PrimitiveClasses.STRING, "code"))));
-
-        globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
-                List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-                        new Parameter(new GenericType("Joinpoint", false), "code"))));
-*/
+        // var defAction = new Action(new GenericType("Object", false), "def");
+        // globalNode.add(defAction);
+        /*
+         * globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
+         * List.of(new Parameter(PrimitiveClasses.STRING, "position"),
+         * new Parameter(PrimitiveClasses.STRING, "code"))));
+         * 
+         * globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
+         * List.of(new Parameter(PrimitiveClasses.STRING, "position"),
+         * new Parameter(new GenericType("Joinpoint", false), "code"))));
+         */
         return globalNode;
     }
 

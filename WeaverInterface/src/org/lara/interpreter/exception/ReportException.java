@@ -17,9 +17,6 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 
 public class ReportException extends BaseException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private String when;
     private String attribute;

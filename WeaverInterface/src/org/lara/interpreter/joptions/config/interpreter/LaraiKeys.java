@@ -37,18 +37,12 @@ public interface LaraiKeys {
     DataKey<String> ASPECT_ARGS = KeyFactory.string("argv").setLabel("Aspect Arguments")
             .setCustomGetter(LaraIKeyFactory::customGetterLaraArgs);
 
-    // DataKey<DataStore> WEAVER_ARGS = KeyFactory.dataStore("argw", new StoreDefinitionBuilder("Weaver Options"))
-    // .setLabel("Weaver Options");
-
-    // DataKey<File> WORKSPACE_FOLDER = KeyFactory.folder("workspace", false).setLabel("Source Folder");
-    // DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.folderList("workspace").setLabel(
     DataKey<FileList> WORKSPACE_FOLDER = LaraIKeyFactory.fileList("workspace", JFileChooser.FILES_AND_DIRECTORIES,
-                    Collections.emptyList())
+            Collections.emptyList())
             .setLabel("Sources");
-    // .setDefault(() -> new FileList(Collections.emptyList()));
 
     DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
-                    .setLabel("Additional Sources (separated by ;)");
+            .setLabel("Additional Sources (separated by ;)");
 
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false)
             .setLabel("Output Folder")
@@ -57,8 +51,6 @@ public interface LaraiKeys {
 
     DataKey<VerboseLevel> VERBOSE = KeyFactory.enumeration("verbose", VerboseLevel.class).setLabel("Verbose Level")
             .setDefault(() -> VerboseLevel.warnings);
-    // .setDecoder(StringCodec.newInstance(level -> Integer.toString(level.ordinal()),
-    // string->VerboseLevel.values()[Integer.parseInt(string)]));
 
     DataKey<OptionalFile> LOG_FILE = LaraIKeyFactory.optionalFile("log", false).setLabel("Use Log File");
 
@@ -68,36 +60,19 @@ public interface LaraiKeys {
     DataKey<Boolean> RESTRICT_MODE = KeyFactory.bool("restrict mode")
             .setLabel("Restrict mode (some Java classes are not allowed)");
 
-    DataKey<FileList> JAR_PATHS = LaraIKeyFactory.fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
+    DataKey<FileList> JAR_PATHS = LaraIKeyFactory
+            .fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
             .setLabel("Paths to JARs")
             .setDefault(() -> FileList.newInstance());
 
     // No GUI, only CLI
     DataKey<Boolean> UNIT_TEST_MODE = KeyFactory.bool("unit_test_mode").setLabel("Unit-testing mode");
-    // DataKey<StringList> UNIT_TEST_ARGS = KeyFactory.stringList("unit_test_args").setLabel("Unit-testing arguments");
-    // .setLabel("Unit-testing arguments");
     DataKey<List<String>> UNIT_TEST_ARGS = KeyFactory.generic("unit_test_args", new ArrayList<>());
 
     // No GUI, only CLI
     DataKey<Boolean> GENERATE_DOCUMENTATION = KeyFactory.bool("generateDoc").setLabel("Generate Documentation");
 
-    // No GUI or CLI
-    // When generating JS from LARA, disables use of 'with' keyword.
-    // Disabling 'with' breaks LARA files that use the keyword 'output', since output variables do not get automatically
-    // associated with 'this'. For LARA files to work, they need to be changed to add 'this' to each output variable
-    // use.
-    // E.g., 'output var1 end' implies that uses must be something like 'this.var1'.
-    DataKey<Boolean> DISABLE_WITH_KEYWORD_IN_LARA_JS = KeyFactory.bool("disableWithKeywordInLaraJs")
-            .setLabel("Disable 'with' keyword in Lara JS");
-
     DataKey<Boolean> SHOW_HELP = KeyFactory.bool("help").setLabel("Show Help");
-
-    // DataKey<WeaverEngine> WEAVER_INSTANCE = KeyFactory.object("weaver instance", WeaverEngine.class);
-
-    /// Keys outside of the definition
-
-    // If DataStore comes from a configuration file, stores the path to the file
-    // DataKey<Optional<File>> CONFIGURATION_FILE = KeyFactory.optional("configurationFile");
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
             .addKeys(LARA_FILE, MAIN_ASPECT, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,

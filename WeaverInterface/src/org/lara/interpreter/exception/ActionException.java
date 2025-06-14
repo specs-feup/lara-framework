@@ -17,56 +17,51 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 
 public class ActionException extends BaseException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String joinPointName;
-	private String actionName;
+    private static final long serialVersionUID = 1L;
+    private String joinPointName;
+    private String actionName;
 
-	public ActionException(String joinPointName, String actionName, Throwable e) {
-		super(e);
-		setJoinPointName(joinPointName);
-		setActionName(actionName);
-	}
+    public ActionException(String joinPointName, String actionName, Throwable e) {
+        super(e);
+        setJoinPointName(joinPointName);
+        setActionName(actionName);
+    }
 
-	@Override
-	protected String generateMessage() {
-		return "Exception " + generateSimpleMessage();
-	}
+    @Override
+    protected String generateMessage() {
+        return "Exception " + generateSimpleMessage();
+    }
 
-	@Override
-	protected String generateSimpleMessage() {
-		return "in action " + joinPointName + "." + actionName + "";
-	}
+    @Override
+    protected String generateSimpleMessage() {
+        return "in action " + joinPointName + "." + actionName + "";
+    }
 
-	/**
-	 * @return the actionName
-	 */
-	public String getActionName() {
-		return actionName;
-	}
+    /**
+     * @return the actionName
+     */
+    public String getActionName() {
+        return actionName;
+    }
 
-	/**
-	 * @param actionName
-	 *            the actionName to set
-	 */
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
-	}
+    /**
+     * @param actionName the actionName to set
+     */
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
+    }
 
-	/**
-	 * @return the joinPointName
-	 */
-	public String getJoinPointName() {
-		return joinPointName;
-	}
+    /**
+     * @return the joinPointName
+     */
+    public String getJoinPointName() {
+        return joinPointName;
+    }
 
-	/**
-	 * @param joinPointName
-	 *            the joinPointName to set
-	 */
-	public void setJoinPointName(String joinPointName) {
-		this.joinPointName = joinPointName;
-	}
+    /**
+     * @param joinPointName the joinPointName to set
+     */
+    public void setJoinPointName(String joinPointName) {
+        this.joinPointName = joinPointName;
+    }
 }

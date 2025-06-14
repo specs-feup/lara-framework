@@ -28,7 +28,8 @@ public class JsGear extends AGear {
     /**
      * 
      * @param jsOnAction
-     * @return true if the given object is a function and could be set, false otherwise
+     * @return true if the given object is a function and could be set, false
+     *         otherwise
      */
     public boolean setJsOnAction(Object jsOnAction) {
         var engine = WeaverEngine.getThreadLocalWeaver().getScriptEngine();
