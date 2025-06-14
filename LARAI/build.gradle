@@ -17,14 +17,10 @@ repositories {
 }
 
 dependencies {
-    implementation ':CommonsLangPlus'
-    implementation ':GitPlus'
     implementation ':jOptions'
     implementation ':JsEngine'
     implementation ':SpecsUtils'
-    implementation ':tdrcLibrary'
 
-    implementation ':LanguageSpecification'
     implementation ':LaraUtils'
     implementation ':WeaverInterface'
 

@@ -1,6 +1,5 @@
 rootProject.name = 'WeaverOptionsManager'
 
-includeBuild("../../specs-java-libs/GuiHelper")
 includeBuild("../../specs-java-libs/jOptions")
 includeBuild("../../specs-java-libs/SpecsUtils")
 

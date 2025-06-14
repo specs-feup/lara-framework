@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-    implementation ':GuiHelper'
     implementation ':JavaGenerator'
     implementation ':jOptions'
     implementation ':SpecsUtils'

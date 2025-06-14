@@ -19,7 +19,7 @@ dependencies {
     implementation ':SpecsUtils'
     implementation ':tdrcLibrary'
 
-   implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.15'
+    implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.15'
 }
 
 // Project sources

@@ -90,6 +90,11 @@ jobs:
         run: gradle installDist
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+      - name: Build and test WeaverOptionsManager
+        working-directory: lara-framework/WeaverOptionsManager
+        run: gradle build test
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
