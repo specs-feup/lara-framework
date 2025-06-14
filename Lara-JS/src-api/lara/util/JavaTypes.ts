@@ -70,7 +70,6 @@ export namespace JavaClasses {
   export interface DataStore extends JavaClass {}
   export interface JOptionsUtils extends JavaClass {}
   export interface WeaverEngine extends JavaClass {}
-  export interface VerboseLevel extends JavaClass {}
   export interface LaraiKeys extends JavaClass {}
   export interface FileList extends JavaClass {}
   export interface OptionalFile extends JavaClass {}
@@ -296,12 +295,6 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "org.lara.interpreter.weaver.interf.WeaverEngine"
     ) as JavaClasses.WeaverEngine;
-  }
-
-  static get VerboseLevel() {
-    return JavaTypes.getType(
-      "org.lara.interpreter.joptions.config.interpreter.VerboseLevel"
-    ) as JavaClasses.VerboseLevel;
   }
 
   static get LaraiKeys() {
