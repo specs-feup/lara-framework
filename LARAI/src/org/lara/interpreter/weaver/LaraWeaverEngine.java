@@ -14,53 +14,19 @@
 package org.lara.interpreter.weaver;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import pt.up.fe.specs.lara.LaraApiJsResource;
-import pt.up.fe.specs.lara.LaraApis;
-import pt.up.fe.specs.lara.commonlang.LaraCommonLang;
-import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
-
-    private static final String API_NAME = "@specs-feup/lara";
-
-    private final List<ResourceProvider> laraApis;
-    private final List<ResourceProvider> laraCore;
-
     private LaraWeaverState state;
 
     public LaraWeaverEngine() {
-        laraApis = buildLaraApis();
-        laraCore = buildLaraCore();
         state = null;
-
-        // Add LARA APIs
-        // System.out.println("Adding to " + API_NAME + "\n" + laraApis);
-        addApis(API_NAME, laraApis);
-
-        // Add weaver-specific APIs
-        // addWeaverApis();
-        var weaverApis = new ArrayList<ResourceProvider>();
-        weaverApis.addAll(getAspectsAPI());
-        // weaverApis.addAll(getNpmResources());
-        weaverApis.addAll(getWeaverNpmResources());
-        // System.out.println("Adding to " + getWeaverApiName() + "\n" + weaverApis);
-        addApis(getWeaverApiName(), weaverApis);
     }
 
     @Override
@@ -83,7 +49,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     @Override
     public Optional<DataStore> getData() {
-        if(state == null) {
+        if (state == null) {
             return Optional.empty();
         }
 
@@ -101,67 +67,12 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     /**
      * This method will be called at the end of method run()
      *
-     * @param sources
-     *            the file/directory with the source code
-     * @param outputDir
-     *            output directory for the generated file(s)
-     * @param dataStore
-     *            the dataStore containing the options for the weaver
+     * @param sources   the file/directory with the source code
+     * @param outputDir output directory for the generated file(s)
+     * @param dataStore the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
     public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
-
-    @Override
-    public List<ResourceProvider> getLaraApis() {
-        return laraApis;
-    }
-
-    private List<ResourceProvider> buildLaraApis() {
-        var laraAPIs = new ArrayList<ResourceProvider>();
-
-        laraAPIs.addAll(LaraApis.getApis());
-        laraAPIs.addAll(LaraCommonLang.getLaraCommonLangApi());
-        // laraAPIs.addAll(getAspectsAPI());
-        return laraAPIs;
-    }
-
-    @Override
-    public List<ResourceProvider> getLaraCore() {
-        return laraCore;
-    }
-
-    private List<ResourceProvider> buildLaraCore() {
-        return new ArrayList<ResourceProvider>(getImportableScripts());
-    }
-
-    @Override
-    public List<LaraResourceProvider> getNpmResources() {
-        var npmResources = new ArrayList<LaraResourceProvider>();
-
-        // LARA standard API
-        npmResources.addAll(getLaraNpmResources());
-        // npmResources.addAll(Arrays.asList(LaraApiJsResource.values()));
-
-        // Weaver API
-        npmResources.addAll(getWeaverNpmResources());
-
-        return npmResources;
-    }
-
-    public List<LaraResourceProvider> getLaraNpmResources() {
-        return Arrays.asList(LaraApiJsResource.values());
-    }
-
-    /**
-     * The preferred way of distributing APIs is now through NPM modules, for that override this method.
-     *
-     * @return the APIs specific for this weaver implementation, excluding the standard LARA API. By default returns an
-     *         empty list
-     */
-    protected List<LaraResourceProvider> getWeaverNpmResources() {
-        return List.of();
-    }
-
 
     /**
      *
@@ -170,8 +81,8 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      */
     public Class<?> getClass(String name) {
         try {
-            return  getLaraWeaverState().getClassLoader().loadClass(name);
-            //return classLoader.loadClass(name);
+            return getLaraWeaverState().getClassLoader().loadClass(name);
+            // return classLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find class", e);
         }

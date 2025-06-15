@@ -1,5 +1,0 @@
-Original verbose level: 2
-New verbose level: 3
-Original output folder: .
-New output folder: subfolder
-Supported languages: []

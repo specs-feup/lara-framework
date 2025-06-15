@@ -24,7 +24,6 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
-import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 
@@ -54,7 +53,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     private JavaType superClass;
 
     /**
-     * These fields will contain the generated Java code for the given language specification
+     * These fields will contain the generated Java code for the given language
+     * specification
      */
     private JavaClass aJoinPointClass;
     private JavaClass userClass;
@@ -82,24 +82,13 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
 
     /**
      * Create the default JavaGenerator.<br>
-     * <b>NOTE:</b> Please define the language specification before using {@link TemplatedGenerator#generate()},
+     * <b>NOTE:</b> Please define the language specification before using
+     * {@link TemplatedGenerator#generate()},
      * otherwise it will not work!
      */
     public TemplatedGenerator() {
         this((BaseGenerator) null);
     }
-
-    /**
-     * Create a JavaGenerator with the given language specification
-     *
-     * @param langSpec the language specification
-     */
-    /*
-    public TemplatedGenerator(LanguageSpecification langSpec) {
-        this();
-        this.languageSpec(langSpec);
-    }
-     */
 
     /**
      * Create a JavaGenerator with the given language specification folder
@@ -175,23 +164,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
 
         // Generate concrete classes
         if (isTemplatedGenerator()) {
-
             concreteJoinPoints = concreteGenerator.generate();
-
-            // for (var javaC : abstractJoinPoints) {
-            // var className = getConcreteClassname(javaC);
-            // var concreteClass = generateConcreteClass(javaC);
-            // concreteJoinPoints.put(className, concreteClass);
-            // }
         }
-    }
-
-    private String getConcreteClassname(JavaClass abstractClass) {
-        var abstractName = abstractClass.getName();
-        SpecsCheck.checkArgument(abstractName.startsWith("A"),
-                () -> "Expected abstract class name to start with A: " + abstractName);
-
-        return getConcreteClassesPrefix() + abstractName.substring(1);
     }
 
     private void setJavaTypes() {
@@ -215,34 +189,16 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
         setEntitiesPackage(basePackageName + GenConstants.entity());
         setEnumsPackage(basePackageName + GenConstants.enums());
         setLiteralEnumsPackage(joinPointPackage + ".enums");
-
-        /**
-         * return javaC.getClassPackage() + ".enums"
-         */
     }
-
-    // protected void printCode() {
-    // generateFiles();
-    // /*this.definedObjects, this.aJoinPointClass, this.userClass, this.abstractJoinPoints,
-    // this.weaverAbstractClass,
-    // this.weaverImplClass, this.weaverExceptionClass);*/
-    // }
-    // * @param definedObjects
-    // * @param abstrJPClass
-    // * @param userClass
-    // * @param classes
-    // * @param weaverAbstractClass
-    // * @param weaverImplClass
 
     /**
      * Write the java class files in the defined output directory
      */
     @Override
-    public void printCode() {// List<String> definedObjects, JavaClass abstrJPClass, JavaClass userClass,
+    public void printCode() {
         SpecsLogs.info(
                 "Make sure to make this project import the following projects in order to work: jOptions, LanguageSpecification, LaraFramework, LARAI, SpecsUtils and WeaverInterface");
 
-        // List<JavaClass> classes, JavaClass weaverAbstractClass, JavaClass weaverImplClass) {
         final File outDir = getOutDir();
 
         Utils.generateToFile(outDir, weaverAbstractClass, true);
@@ -275,18 +231,12 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
         }
     }
 
-    /**
-     * @param weaverName
-     * @param outPackage
-     * @return
-     */
     public static String getWeaverText(String weaverName, JavaType aJoinPointType) {
         String text = SpecsIo.getResource(GenConstants.weaverTextHeaderLocation());
         text = text.replace(GenConstants.weaverNameTag(), weaverName);
         text = text.replace(GenConstants.linkTag(), aJoinPointType.getCanonicalName());
         return text;
     }
-
 
     protected List<JavaClass> generateClasses() {
 
@@ -301,7 +251,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     }
 
     /**
-     * Generate Java Classes defined by the user in the artifacts model, such as <object name="Symbol">
+     * Generate Java Classes defined by the user in the artifacts model, such as
+     * <object name="Symbol">
      * <attribute name="name" type="String"/> </object>
      *
      * @param newObjects the map containing the objects mapped to the field elements
@@ -323,7 +274,7 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
             userDefinedClasses.add(newEnum.getName());
             Utils.generateToFile(getOutDir(), userEnum, true);
         }
-        // System.out.println("USER DEFINED CLASSES: " + userDefinedClasses);
+
         return userDefinedClasses;
     }
 
@@ -332,7 +283,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     }
 
     /**
-     * This package will contain the abstract join points, including the super type AJoinPoint
+     * This package will contain the abstract join points, including the super type
+     * AJoinPoint
      *
      * @return
      */
@@ -359,7 +311,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     }
 
     /**
-     * This package is the one containing the abstract class that can be edited by the use
+     * This package is the one containing the abstract class that can be edited by
+     * the use
      *
      * @return
      */

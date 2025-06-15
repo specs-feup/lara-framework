@@ -18,8 +18,7 @@ import org.lara.interpreter.weaver.options.OptionArguments;
 
 public enum CLIConfigOption {
 
-    config("c", OptionArguments.ONE_ARG, "file", "configuration file with defined options"),
-    gui("g", "open in GUI mode");
+    config("c", OptionArguments.ONE_ARG, "file", "configuration file with defined options");
 
     public static boolean ALLOW_GUI = true;
     private String shortOpt;

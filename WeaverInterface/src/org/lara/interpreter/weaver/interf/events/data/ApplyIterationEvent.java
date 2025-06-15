@@ -27,65 +27,58 @@ public class ApplyIterationEvent extends BaseEvent {
     private String select_label;
     private List<JoinPoint> pointcutChain;
 
-    /**
-     * @param stage
-     * @param label
-     * @param select_label
-     * @param root
-     */
     public ApplyIterationEvent(Stage stage, String aspect_name, String label, String select_label,
-	    List<JoinPoint> pointcutChain) {
-	super(stage);
-	this.aspect_name = aspect_name;
-	this.label = label;
-	this.select_label = select_label;
-	this.pointcutChain = pointcutChain;
+            List<JoinPoint> pointcutChain) {
+        super(stage);
+        this.aspect_name = aspect_name;
+        this.label = label;
+        this.select_label = select_label;
+        this.pointcutChain = pointcutChain;
     }
 
     @Override
     public String toString() {
-	String ret = super.toString();
-	ret += ", aspect " + aspect_name;
-	ret += ", apply label " + label;
-	ret += ", select " + select_label;
-	ret += ", pointcut chain: " + StringUtils.join(pointcutChain, JoinPoint::get_class, ",");
-	return ret;
+        String ret = super.toString();
+        ret += ", aspect " + aspect_name;
+        ret += ", apply label " + label;
+        ret += ", select " + select_label;
+        ret += ", pointcut chain: " + StringUtils.join(pointcutChain, JoinPoint::get_class, ",");
+        return ret;
     }
 
     /**
      * @return the applyName
      */
     public String getLabel() {
-	return label;
+        return label;
     }
 
     /**
      * @return the selectName
      */
     public String getSelect_label() {
-	return select_label;
+        return select_label;
     }
 
     /**
      * @return the select
      */
     public List<JoinPoint> getPointcutChain() {
-	return pointcutChain;
+        return pointcutChain;
     }
 
     /**
      * @return the aspect_name
      */
     public String getAspect_name() {
-	return aspect_name;
+        return aspect_name;
     }
 
     /**
-     * @param aspect_name
-     *            the aspect_name to set
+     * @param aspect_name the aspect_name to set
      */
     protected void setAspect_name(String aspect_name) {
-	this.aspect_name = aspect_name;
+        this.aspect_name = aspect_name;
     }
 
 }

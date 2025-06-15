@@ -40,7 +40,8 @@ public interface ReportWriter {
     public ReportWriter endArray();
 
     /**
-     * This method serializes the specified object into an equivalent report representation
+     * This method serializes the specified object into an equivalent report
+     * representation
      * 
      */
     public ReportWriter report(String name, Object obj);
@@ -62,7 +63,8 @@ public interface ReportWriter {
     public ReportWriter report(String name, boolean value);
 
     /**
-     * Add a field in the report with the given name and a Number value. This method does not allow NaN or Infinity
+     * Add a field in the report with the given name and a Number value. This method
+     * does not allow NaN or Infinity
      */
     public ReportWriter report(String name, Number number);
 

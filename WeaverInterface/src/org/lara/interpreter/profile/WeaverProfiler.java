@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.profile;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.lara.interpreter.exception.LaraIException;
@@ -23,14 +22,10 @@ import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
 import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
 import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-
-import pt.up.fe.specs.util.utilities.StringLines;
 
 /**
  * Abstract profiler providing basic metrics:<br>
@@ -72,7 +67,8 @@ public abstract class WeaverProfiler extends AGear {
     protected abstract void resetImpl();
 
     /**
-     * Create a report by means of a {@link ReportWriter}. When invoked, the {@link ReportWriter} instance already
+     * Create a report by means of a {@link ReportWriter}. When invoked, the
+     * {@link ReportWriter} instance already
      * contains some metrics (see {@link WeaverProfiler})
      * 
      * @param data
@@ -85,20 +81,6 @@ public abstract class WeaverProfiler extends AGear {
      * @param data
      */
     protected abstract void onWeaverImpl(WeaverEvent data);
-
-    /**
-     * Triggers at the beginning and end of an aspect call
-     * 
-     * @param data
-     */
-    protected abstract void onAspectImpl(AspectEvent data);
-
-    /**
-     * Triggers before and after a select is executed
-     * 
-     * @param data
-     */
-    protected abstract void onSelectImpl(SelectEvent data);
 
     /**
      * Triggers when a join point is created
@@ -130,43 +112,6 @@ public abstract class WeaverProfiler extends AGear {
         onWeaverImpl(data);
     }
 
-    @Override
-    public final void onAspect(AspectEvent data) {
-        onAspectImpl(data);
-        if (data.getStage().equals(Stage.BEGIN)) {
-            report.aspectCalled(data.getAspectCallee());
-        }
-        if (data.getStage().equals(Stage.END)) {
-            // report.aspectCalled(data.getAspectCallee());
-        }
-    }
-
-    @Override
-    public final void onSelect(SelectEvent data) {
-        onSelectImpl(data);
-
-        switch (data.getStage()) {
-
-        case BEGIN:
-            report.inc(ReportField.SELECTS);
-
-            break;
-        case END:
-            Optional<LaraJoinPoint> pointcut = data.getPointcut();
-            if (pointcut.isPresent()) {
-                LaraJoinPoint laraJoinPoint = pointcut.get();
-                // String key = data.getAspect_name() + data.getLabel();
-                // iterateJPs(laraJoinPoint, jp -> filteredSelects.addNode(key, jp));
-                int total = countJPs(laraJoinPoint, 0);
-                report.inc(ReportField.FILTERED_JOIN_POINTS, total);
-                // report.incFilteredJoinPoints(total);
-            }
-            break;
-        default:
-            break;
-        }
-    }
-
     protected int countJPs(LaraJoinPoint laraJoinPoint, int acc) {
         acc++;
         if (!laraJoinPoint.isLeaf()) {
@@ -189,16 +134,16 @@ public abstract class WeaverProfiler extends AGear {
         onJoinPointImpl(data);
         switch (data.getStage()) {
 
-        case BEGIN:
-            report.inc(ReportField.JOIN_POINTS);
-            break;
-        case END:
-            if (data.isApprovedByFilter()) {
-                report.inc(ReportField.FILTERED_JOIN_POINTS);
-            }
-            break;
-        default:
-            break;
+            case BEGIN:
+                report.inc(ReportField.JOIN_POINTS);
+                break;
+            case END:
+                if (data.isApprovedByFilter()) {
+                    report.inc(ReportField.FILTERED_JOIN_POINTS);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -210,10 +155,6 @@ public abstract class WeaverProfiler extends AGear {
     @Override
     public final void onApply(ApplyIterationEvent data) {
         onApplyImpl(data);
-        if (data.getStage().equals(Stage.BEGIN)) {
-            report.inc(ReportField.APPLIES);
-            // report.addApplyIteration(data.getPointcutChain());
-        }
     }
 
     @Override
@@ -229,45 +170,13 @@ public abstract class WeaverProfiler extends AGear {
         onActionImpl(data);
         if (data.getStage().equals(Stage.END)) {
             report.actionPerformed(data.getActionName(), data.getJoinPoint());
-            // System.out.println("[DEBUG] ACTION " + data.getActionName());
-            if (data.getActionName().equals("insert")) {
-                // System.out.println("[DEBUG] INSERT" + report.getInserts());
-                report.inc(ReportField.INSERTS);
-                // reportNativeLoc(data.getArguments().get(1), true);
-            }
         }
     }
 
     @Override
     public final void reset() {
-        // report.reset();
         report = new WeavingReport();
         resetImpl();
-    }
-
-    /**
-     * Increment the LOCs that were injected in the code
-     * 
-     * @param locs
-     *            the lines of code that were injected
-     * @param insertAction
-     *            was the code injected by means of insertAction?
-     */
-    public final void reportLOCs(int locs, boolean insertAction) {
-
-        // if (insertAction) {
-        // report.incNativeLOCs(locs);
-        // } else {
-        // report.incTotalLOCs(locs);
-        // }
-
-        if (insertAction) {
-            report.inc(ReportField.NATIVE_LOCS, locs);
-        }
-
-        // Always increase total locs
-        report.inc(ReportField.TOTAL_LOCS, locs);
-
     }
 
     public final void report(ReportField field, int value) {
@@ -283,22 +192,13 @@ public abstract class WeaverProfiler extends AGear {
         try (JsonReportWriter jsonWriter = new JsonReportWriter();) {
             jsonWriter.beginObject()
                     .report("initTime", report.get(ReportField.INIT_TIME))
-                    .report("laraToJsTime", report.get(ReportField.LARA_TO_JS_TIME))
                     .report("weavingTime", report.get(ReportField.WEAVING_TIME))
                     .report("totalTime", report.get(ReportField.TOTAL_TIME))
-                    .report("tokens", report.get(ReportField.TOKENS))
-                    .report("aspects", report.getNumAspectCalls())
-                    .report("selects", report.get(ReportField.SELECTS))
                     .report("joinPoints", report.get(ReportField.JOIN_POINTS))
                     .report("filteredJoinPoints", report.get(ReportField.FILTERED_JOIN_POINTS))
-                    .report("applies", report.get(ReportField.APPLIES))
                     .report("actions", report.getNumActions())
-                    .report("inserts", report.get(ReportField.INSERTS))
                     .report("attributes", report.get(ReportField.ATTRIBUTES))
-                    .report("insertNativeLOCs", report.get(ReportField.NATIVE_LOCS))
-                    .report("totalNativeLOCs", report.get(ReportField.TOTAL_LOCS))
                     .report("runs", report.get(ReportField.RUNS))
-                    .report("aspectsCalled", report.getAspectsMap())
                     .report("actionsPerformed", report.getActionsMap())
             /**/;
             buildReport(jsonWriter);
@@ -308,32 +208,4 @@ public abstract class WeaverProfiler extends AGear {
             throw new LaraIException("Problems creating the report", e);
         }
     }
-
-    //////////////////////////////////////////////////////////
-    /// Utility methods for WeaverProfile implementations
-
-    /**
-     * Helper method which receives a list of arguments. Only reports native lines-of-code if it has a single argument
-     * of type String.
-     * 
-     * @param arguments
-     */
-    protected void reportNativeLoc(Object insertObject, boolean isInsert) {
-        if (!(insertObject instanceof String)) {
-            return;
-        }
-
-        reportNativeLoc((String) insertObject, isInsert);
-    }
-
-    protected void reportNativeLoc(String code, boolean isInsert) {
-        // Count lines of code
-        int numLines = StringLines.getLines(code).size();
-        reportLOCs(numLines, isInsert);
-    }
-
-    public void reportLaraNumTokens(int numMainLaraTokens) {
-        report.set(ReportField.TOKENS, numMainLaraTokens);
-    }
-
 }

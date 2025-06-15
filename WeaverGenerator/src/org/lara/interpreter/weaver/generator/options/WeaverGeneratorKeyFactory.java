@@ -21,8 +21,8 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 public class WeaverGeneratorKeyFactory {
 
     public static DataKey<ClassProvider> classProvider(String id) {
-	return KeyFactory.object(id, ClassProvider.class)
-		.setDecoder(ClassProvider::newInstance)
-		.setKeyPanelProvider((key, data) -> new ClassProviderPanel(key, data));
+        return KeyFactory.object(id, ClassProvider.class)
+                .setDecoder(ClassProvider::newInstance)
+                .setKeyPanelProvider((key, data) -> new ClassProviderPanel(key, data));
     }
 }

@@ -1,3 +1,2 @@
-LaraImportFromMjsLara.print()
 LaraImportFromMjsJs.print()
 LaraImportFromMjsMjs.print()

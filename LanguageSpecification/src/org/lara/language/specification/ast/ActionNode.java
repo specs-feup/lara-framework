@@ -20,7 +20,8 @@ import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 public class ActionNode extends LangSpecNode {
 
     /**
-     * Create a new instance of an action with a declaration child that defines its name and return type
+     * Create a new instance of an action with a declaration child that defines its
+     * name and return type
      * 
      * @param declaration
      */

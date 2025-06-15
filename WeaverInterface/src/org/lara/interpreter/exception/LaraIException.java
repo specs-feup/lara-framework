@@ -19,9 +19,6 @@ import pt.up.fe.specs.tools.lara.exception.BaseException;
 
 public class LaraIException extends BaseException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private final String inputName;
     private final String problem;

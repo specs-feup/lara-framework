@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
@@ -79,7 +78,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
         addFieldsAndConstructors(javaC);
-        addSelects(javaC);
         addActions(javaC);
 
         String superTypeName = null;
@@ -104,21 +102,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         // If join point is not extended by any other join point, it is final
         boolean isFinal = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
-
-        GeneratorUtils.createSelectByName(javaC, joinPoint, superTypeName, isFinal);
-
-        if (javaGenerator.hasDefs()) {
-
-            var attrsWithDefs = joinPoint.getAttributes().stream()
-                    .filter(attr -> !attr.getDefs().isEmpty())
-                    .toList();
-
-            GeneratorUtils.createDefImpl(javaC, isFinal, attrsWithDefs, javaGenerator);
-
-        }
-        GeneratorUtils.createListOfAvailableAttributes(javaC, joinPoint, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableSelects(javaC, joinPoint, superTypeName, isFinal);
-        GeneratorUtils.createListOfAvailableActions(javaC, joinPoint, superTypeName, isFinal);
 
         generateGet_Class(javaC, isFinal);
 
@@ -159,23 +142,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             Method generateAttributeImpl = GeneratorUtils.generateAttributeImpl(generateAttribute, attribute,
                     javaC, javaGenerator);
             javaC.add(generateAttributeImpl);
-            GeneratorUtils.generateDefMethods(attribute, generateAttribute.getReturnType(), javaC,
-                    javaGenerator);
-            // if(!def.isEmpty())
-        }
-
-    }
-
-    /**
-     * Add selects for each join point child
-     *
-     * @param joinPoint
-     * @param javaC
-     */
-    private void addSelects(JavaClass javaC) {
-
-        for (var sel : joinPoint.getSelectsSelf()) {
-            addSelect(sel, javaC);
         }
 
     }
@@ -200,22 +166,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Create a new select method for a joinpoint
-     *
-     * @param selectName
-     * @param type
-     * @param javaC
-     */
-    private void addSelect(org.lara.language.specification.dsl.Select sel, JavaClass javaC) {
-
-        final String joinPointPackage = javaGenerator.getJoinPointClassPackage();
-        final Method selectMethod = GeneratorUtils.generateSelectMethodGeneric(sel, joinPointPackage);
-
-        javaC.add(selectMethod);
-        javaC.addImport(SelectOp.class);
-    }
-    
-    /**
      * Add code that calls to the super methods
      *
      * @param joinPoint
@@ -224,7 +174,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      */
     private String addSuperMethods(JavaClass javaC) {
 
-        var superType = joinPoint.getExtendExplicit().orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
+        var superType = joinPoint.getExtendExplicit()
+                .orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
 
         final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
@@ -238,22 +189,13 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             constructor.appendCode("super(" + fieldName + ");" + ln());
         }
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
-        // System.out.println("addSuperMethods: " + joinPoint.getClazz());
         GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
 
         // Add global methods for global attributes
         var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
 
         GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
-        // GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, superType.getClazz());
-        // addSuperGetters(javaC, fieldName, javaGenerator, parent);
-        // System.out.println("ABS JP: " + superType.getClazz());
-        // Update also here for actionImpl
-//        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType.getName(), fieldName);
         GeneratorUtils.addSuperActions(javaGenerator, javaC, superType, fieldName);
-        // GeneratorUtils.addSuperToString(javaC, fieldName); // Do not add toString(), JoinPoint already implements it,
-        // and this one has bugs (e.g., param shows 'decl')
-        // addSuperWeaverEngineSetter(javaC, fieldName);
         addGetSuperMethod(javaC, joinPointType, fieldName);
         return fieldName;
     }

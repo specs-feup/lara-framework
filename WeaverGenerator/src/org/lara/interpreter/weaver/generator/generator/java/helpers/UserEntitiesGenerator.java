@@ -74,8 +74,8 @@ public class UserEntitiesGenerator extends GeneratorHelper {
             final Field field = new Field(jType, sanitizedName, Privacy.PRIVATE);
             final Pair<Method, Method> getSet = GeneratorUtils.createGetterAndSetter(field, fieldName, false);
             uDClass.add(field);
-            uDClass.add(getSet.getLeft());
-            uDClass.add(getSet.getRight());
+            uDClass.add(getSet.left());
+            uDClass.add(getSet.right());
         }
         uDClass.createOrGetEmptyConstructor().clearCode();
         uDClass.createFullConstructor();

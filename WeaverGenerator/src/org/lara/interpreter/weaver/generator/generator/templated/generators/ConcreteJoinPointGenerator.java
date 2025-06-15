@@ -68,11 +68,6 @@ public class ConcreteJoinPointGenerator {
 
         var filename = classname + ".java";
 
-        // var abstractName = abstractClass.getName();
-        // SpecsCheck.checkArgument(abstractName.startsWith("A"),
-        // () -> "Expected abstract class name to start with A: " + abstractName);
-
-        // return getConcreteClassesPrefix() + abstractName.substring(1);
         return new GeneratedFile(filename, template.toString(), Arrays.asList(getPackage().split("\\.")));
     }
 

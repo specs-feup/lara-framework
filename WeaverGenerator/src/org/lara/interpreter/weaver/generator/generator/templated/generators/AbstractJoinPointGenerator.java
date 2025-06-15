@@ -56,11 +56,6 @@ public class AbstractJoinPointGenerator {
 
         var filename = classname + ".java";
         System.out.println("CLAZZ: " + getClassname(joinPoint));
-        // var abstractName = abstractClass.getName();
-        // SpecsCheck.checkArgument(abstractName.startsWith("A"),
-        // () -> "Expected abstract class name to start with A: " + abstractName);
-
-        // return getConcreteClassesPrefix() + abstractName.substring(1);
         System.out.println("PACK: " + getPackage());
         return new GeneratedFile(filename, template.toString(), Arrays.asList(getPackage().split("\\.")));
     }

@@ -1,7 +1,7 @@
 class LaraImportFromMjsJs {
 	
 	print() {
-		println("LaraImportFromMjsJs.print()");
+		console.log("LaraImportFromMjsJs.print()");
 	}
 }
 

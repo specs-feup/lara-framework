@@ -79,10 +79,6 @@ public class NodeFactory {
             AttributeNode attrNode = toNode(attribute);
             jpNode.addChild(attrNode);
         }
-        for (Select select : joinPoint.getSelects()) {
-            SelectNode attrNode = toNode(select);
-            jpNode.addChild(attrNode);
-        }
         for (Action action : joinPoint.getActions()) {
             ActionNode attrNode = toNode(action);
             jpNode.addChild(attrNode);
@@ -102,12 +98,6 @@ public class NodeFactory {
             attrNode.addChild(paramNode);
         }
         return attrNode;
-    }
-
-    private static SelectNode toNode(Select select) {
-        SelectNode selectNode = new SelectNode(select.getClazz().getName(), select.getAlias().orElse(""));
-        select.getToolTip().ifPresent(selectNode::setToolTip);
-        return selectNode;
     }
 
     private static ActionNode toNode(Action action) {
