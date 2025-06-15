@@ -63,8 +63,8 @@ public class ConvertUtils {
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.getLeft();
-        final int arrayDimension = splittedType.getRight();
+        type = splittedType.left();
+        final int arrayDimension = splittedType.right();
         // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
         // Integer)
         if (JavaTypeFactory.isPrimitive(type)) {
@@ -105,8 +105,8 @@ public class ConvertUtils {
 
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.getLeft();
-        final int arrayDimension = splittedType.getRight();
+        type = splittedType.left();
+        final int arrayDimension = splittedType.right();
         // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
         // Integer)
         if (JavaTypeFactory.isPrimitive(type)) {

@@ -322,7 +322,7 @@ public class GeneratorUtils {
     }
 
     public static String encapsulateBasedOnDimension(String baseType, String valueName, int dimension, int position) {
-        final String spaceStr = StringUtils.repeat("\t", position);
+        final String spaceStr = "\t".repeat(position);
         final String nativeArrayVarName = GenConstants.getNativeArrayVarName();
         if (dimension == 1) {
             // return spaceStr + "Bindings " + nativeArrayVarName + position + " =
@@ -343,7 +343,7 @@ public class GeneratorUtils {
         converted += spaceStr + "Object " + currentBinding + " = Converter.newNativeArray();" + ln();
         String iNa = "i" + currentNa;
         converted += spaceStr + "for (int " + iNa + " = 0; i < " + valueName + currentNa + ".length; i++) {" + ln();
-        converted += spaceStr + "\t" + baseType + StringUtils.repeat("[]", dimension - 1);
+        converted += spaceStr + "\t" + baseType + "[]".repeat(dimension - 1);
         converted += " " + valueName + nextNa + " = " + valueName + currentNa + "[ " + iNa + "];" + ln();
         converted += encapsulateBasedOnDimension(baseType, valueName, dimension - 1, position + 1);
         converted += spaceStr + "\t" + currentBinding + ".put(\"\"+" + iNa + ", " + nativeArrayVarName + nextNa
@@ -523,7 +523,7 @@ public class GeneratorUtils {
         }
 
         // System.out.println(actionName + ": " + newArgs);
-        cloned.appendCodeln("this." + original.getName() + "(" + StringUtils.join(newArgs, ", ") + ");");
+        cloned.appendCodeln("this." + original.getName() + "(" + String.join(", ", newArgs) + ");");
 
         if (!returnType.equals("void")) {
             if (actionReturn.isPrimitive()) {
@@ -691,7 +691,7 @@ public class GeneratorUtils {
 
             final Pair<Method, Method> get_set = createGetterAndSetter(attributeField, name,
                     generator.isAbstractGetters());
-            final Method getter = get_set.getLeft();
+            final Method getter = get_set.left();
             if (isEnum) {
                 defineEnumReturnType(getter, enumerator, attributeField, generator.isAbstractGetters());
             } else if (javaType.isArray()) {

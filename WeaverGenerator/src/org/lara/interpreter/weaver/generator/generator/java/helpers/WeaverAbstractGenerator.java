@@ -25,7 +25,6 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-import tdrc.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +164,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         List<String> joined = new ArrayList<>();
         entities.stream().map(mapper).forEach(joined::add);
         enums.stream().map(enumMapper).forEach(joined::add);
-        String joinedClasses = StringUtils.join(joined, ", ");
+        String joinedClasses = String.join(", ", joined);
         getImportableClasses.appendCode("Class<?>[] defaultClasses = {");
         getImportableClasses.appendCode(joinedClasses);
         getImportableClasses.appendCodeln("};");
