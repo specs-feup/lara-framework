@@ -13,8 +13,6 @@
 
 package org.lara.language.specification.dsl.types;
 
-import tdrc.utils.StringUtils;
-
 public class ArrayType implements IType {
 
     IType baseType;
@@ -35,7 +33,7 @@ public class ArrayType implements IType {
 
     @Override
     public String getType() {
-        return baseType.getType() + StringUtils.repeat("[]", dimension);
+        return baseType.getType() + "[]".repeat(dimension);
     }
 
     @Override

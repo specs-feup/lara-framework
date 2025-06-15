@@ -39,8 +39,6 @@ public enum PrimitiveClasses implements IType {
     public static PrimitiveClasses get(String name) {
         name = name.toUpperCase();
         for (final PrimitiveClasses primitive : values()) {
-
-            // String primName = StringUtils.firstCharToUpper(primitive.name());
             if (primitive.name().equals(name)) {
                 return primitive;
             }
@@ -51,8 +49,6 @@ public enum PrimitiveClasses implements IType {
     public static boolean contains(String name) {
         name = name.toUpperCase();
         for (final PrimitiveClasses primitive : values()) {
-
-            // String primName = StringUtils.firstCharToUpper(primitive.name());
             if (primitive.name().equals(name)) {
                 return true;
             }

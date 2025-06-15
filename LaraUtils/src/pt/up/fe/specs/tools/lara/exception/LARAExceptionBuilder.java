@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.up.fe.specs.util.SpecsLogs;
-import tdrc.utils.StringUtils;
 
 public class LARAExceptionBuilder {
 
@@ -76,7 +75,7 @@ public class LARAExceptionBuilder {
 
             completeMessage.append(indentStr + messages.get(0));
             for (int i = 1; i < messages.size(); i++) {
-                String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, i + 1);
+                String indentation = " ".repeat(predefinedSpace) + indentStr.repeat(i + 1);
                 String message = messages.get(i);
                 message = message.replaceAll("\n", "\n" + indentation);
                 String finalMessage = indentation + message;
