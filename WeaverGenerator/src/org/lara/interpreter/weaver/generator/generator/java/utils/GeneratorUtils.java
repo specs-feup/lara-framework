@@ -330,8 +330,7 @@ public class GeneratorUtils {
             // + position + ");\n";
             // return spaceStr + "Bindings " + nativeArrayVarName + position
             return spaceStr + "Object " + nativeArrayVarName + position
-                    + " = getWeaverEngine().getScriptEngine().toNativeArray(" + valueName
-                    + position + ");" + ln();
+                    + " = " + valueName + position + ";" + ln();
         }
         String converted = "";
         final int currentNa = position;
