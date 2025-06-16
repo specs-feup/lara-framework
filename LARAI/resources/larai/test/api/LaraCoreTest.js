@@ -9,16 +9,16 @@ function arrayFromArgsAfterOneTest() {
 }
 
 // Single element
-console.log(arrayFromArgsTest("Hello").length);
+console.log("len:", arrayFromArgsTest("Hello").length);
 
 // Several elements
-console.log(arrayFromArgsTest("Hello", "World").length);
+console.log("len:", arrayFromArgsTest("Hello", "World").length);
 
 // Single array
-console.log(arrayFromArgsTest(["Hello", "World"]).length);
+console.log("len:", arrayFromArgsTest(["Hello", "World"]).length);
 
 // Single element after 1
-console.log(arrayFromArgsAfterOneTest("Hello").length);
+console.log("len:", arrayFromArgsAfterOneTest("Hello").length);
 
 // Several elements after 1
-console.log(arrayFromArgsAfterOneTest("Hello", "World").length);
+console.log("len:", arrayFromArgsAfterOneTest("Hello", "World").length);

@@ -12,7 +12,7 @@ console.log(randSeed1.next());
 console.log(randSeed1.next());
 
 
-const randSeed2 = new Random(1678485728385);
+const randSeed2 = new Random(1678485728);
 console.log(randSeed2.next());
 console.log(randSeed2.next());
 console.log(randSeed2.next());

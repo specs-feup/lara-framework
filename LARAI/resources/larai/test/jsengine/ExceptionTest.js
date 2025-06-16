@@ -3,7 +3,7 @@ function foo() {
 }
 
 function bar() {
-    throw "throwing exception in bar()";
+    throw new Error("throwing exception in bar()");
 }
 
 foo();

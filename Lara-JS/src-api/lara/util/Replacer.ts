@@ -9,11 +9,13 @@ export default class Replacer {
 
   constructor(contentsOrFile: string | JavaClasses.File) {
     // If a file, read the contents
-    if (JavaTypes.instanceOf(contentsOrFile, "java.io.File")) {
-      contentsOrFile = Io.readFile(contentsOrFile);
+    if (typeof contentsOrFile === "string") {
+      this._contents = contentsOrFile;
+    } else if (JavaTypes.instanceOf(contentsOrFile, "java.io.File")) {
+      this._contents = Io.readFile(contentsOrFile);
+    } else {
+      throw new Error("Replacer constructor expects a string or a java.io.File instance.");
     }
-
-    this._contents = contentsOrFile as string;
   }
 
   static fromFilename(filename: string) {
@@ -21,7 +23,7 @@ export default class Replacer {
   }
 
   replaceAll(target: string, replacement: string) {
-    this._contents.replaceAll(target, replacement);
+    this._contents = this._contents.replaceAll(target, replacement);
     return this;
   }
 

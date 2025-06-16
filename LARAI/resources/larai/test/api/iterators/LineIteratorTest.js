@@ -49,4 +49,4 @@ checkTrue(
     "Expected file to be the same as stringContents: " + stringTest
 );
 
-Io.deleteFile(file);
+checkTrue(Io.deleteFile(file), "Unable to delete file: " + filename);
