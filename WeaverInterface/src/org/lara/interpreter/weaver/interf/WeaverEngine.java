@@ -12,8 +12,6 @@
  */
 package org.lara.interpreter.weaver.interf;
 
-import org.lara.interpreter.profile.BasicWeaverProfiler;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
@@ -48,7 +46,6 @@ import java.util.stream.Collectors;
  */
 public abstract class WeaverEngine {
     private EventTrigger eventTrigger;
-    private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecification> langSpec;
@@ -256,20 +253,6 @@ public abstract class WeaverEngine {
 
     public boolean hasListeners() {
         return eventTrigger != null && eventTrigger.hasListeners();
-    }
-
-    public WeaverProfiler getWeaverProfiler() {
-        return weaverProfiler;
-    }
-
-    /**
-     * Use this method if you intend to use your own weaver profiler by extending
-     * class {@link WeaverProfiler}
-     *
-     * @return
-     */
-    protected void setWeaverProfiler(WeaverProfiler weaverProfiler) {
-        this.weaverProfiler = weaverProfiler;
     }
 
     /**

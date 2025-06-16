@@ -13,7 +13,6 @@
 package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.exception.ActionException;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
@@ -285,10 +284,6 @@ public abstract class JoinPoint {
 
     protected boolean hasListeners() {
         return getWeaverEngine().hasListeners();
-    }
-
-    public WeaverProfiler getWeaverProfiler() {
-        return getWeaverEngine().getWeaverProfiler();
     }
 
     public static Object getUndefinedValue() {
