@@ -82,10 +82,6 @@ export namespace JavaClasses {
   export interface ProcessOutputAsString extends JavaClass {
     getOutput(): string;
   }
-  export interface JsGear extends JavaClass {
-    setJsOnAction(onActionCallback: (d: Record<string, any>) => void): boolean;
-    onAction(actionEvent: any): void;
-  }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
   /* eslint-enable @typescript-eslint/no-empty-interface */
@@ -349,12 +345,6 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.system.ProcessOutputAsString"
     ) as JavaClasses.ProcessOutputAsString;
-  }
-
-  static get JsGear() {
-    return JavaTypes.getType("org.lara.interpreter.utils.JsGear") as {
-      new (...args: any[]): JavaClasses.JsGear;
-    };
   }
 
   static get ProgressCounter() {
