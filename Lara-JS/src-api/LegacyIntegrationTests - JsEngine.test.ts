@@ -1,6 +1,5 @@
 import { ClavaWeaverTester } from "./LegacyIntegrationTestsHelpers.test.js";
 import path from "path";
-import "@specs-feup/clava/api/Joinpoints.js";
 
 /* eslint-disable jest/expect-expect */
 describe("JsEngine", () => {
