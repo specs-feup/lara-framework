@@ -1,2 +1,0 @@
-LaraImportFromMjsJs.print()
-LaraImportFromMjsMjs.print()
