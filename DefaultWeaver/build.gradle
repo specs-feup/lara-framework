@@ -19,8 +19,12 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    weaverGeneratorRuntime
+}
+
 dependencies {
-    implementation "junit:junit:4.13.1"
+    testImplementation "junit:junit:4.13.1"
 
     implementation ":jOptions"
     implementation ":SpecsUtils"
@@ -28,8 +32,9 @@ dependencies {
     implementation ":LanguageSpecification"
     implementation ":LARAI"
     implementation ":LaraUtils"
-    implementation ":WeaverGenerator"
     implementation ":WeaverInterface"
+
+    weaverGeneratorRuntime ':WeaverGenerator'
 }
 
 // Project sources
@@ -46,12 +51,11 @@ sourceSets {
 }
 
 // Re-run the weaver generator
-task generateWeaver(type: Exec) {
+task generateWeaver(type: JavaExec) {
     group = "Execution"
     description = "Generates the Weaver Abstracts"
-
-    executable "./../../lara-framework/WeaverGenerator/build/install/WeaverGenerator/bin/WeaverGenerator"
-
+    classpath = configurations.weaverGeneratorRuntime
+    mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
     args = [
         "-w", "DefaultWeaver",
         "-x", "${rootProject.projectDir}/resources/specification",
@@ -60,3 +64,5 @@ task generateWeaver(type: Exec) {
         "-j"
     ]
 }
+
+compileJava.dependsOn generateWeaver
