@@ -9,6 +9,7 @@ import DataStore from "../lara/util/DataStore.js";
 import JavaTypes, { JavaClasses } from "../lara/util/JavaTypes.js";
 import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
+import Io from "../lara/Io.js";
 
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
@@ -36,23 +37,6 @@ export default class Weaver {
    */
   static getWeaverEngine(): JavaClasses.WeaverEngine {
     return JavaTypes.WeaverEngine.getThreadLocalWeaver();
-  }
-
-  static getLaraLoc() {
-    return JavaTypes.LaraIUtils.getLaraLoc(
-      Weaver.getWeaverEngine(),
-      Weaver.getWeaverEngine().getData().get()
-    );
-  }
-
-  static getLaraLocTotals() {
-    var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
-    return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
-      .getLaraLoc(
-        Weaver.getWeaverEngine(),
-        Weaver.getWeaverEngine().getData().get()
-      )
-      .get(laraLoc.getTotalsKey());
   }
 
   static writeCode(outputFolder: any) {
@@ -287,11 +271,14 @@ export default class Weaver {
     jsonString ??= "";
     jsonString.trim();
 
+    if (jsonString.endsWith(".json")) {
+      return Io.readJson(jsonString);
+    }
+
     // Fix curly braces
     if (!jsonString.startsWith("{")) {
       jsonString = "{" + jsonString;
     }
-
     if (!jsonString.endsWith("}")) {
       jsonString = jsonString + "}";
     }

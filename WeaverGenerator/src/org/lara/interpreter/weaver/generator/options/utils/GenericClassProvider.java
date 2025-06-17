@@ -18,17 +18,17 @@ class GenericClassProvider implements ClassProvider {
     private final Class<?> aClass;
 
     public GenericClassProvider(Class<?> aClass) {
-	this.aClass = aClass;
+        this.aClass = aClass;
     }
 
     @Override
     public Class<?> getCustomClass() {
-	return aClass;
+        return aClass;
     }
 
     @Override
     public String toString() {
-	return aClass.toString();
+        return aClass.toString();
     }
 
 }

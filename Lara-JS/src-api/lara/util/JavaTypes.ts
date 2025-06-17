@@ -55,6 +55,7 @@ export namespace JavaClasses {
   }
   export interface List<T> extends JavaClass {
     [Symbol.iterator](): IterableIterator<T>;
+    toArray(): T[];
   }
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
@@ -63,14 +64,12 @@ export namespace JavaClasses {
     toString(obj: any): string;
   }
   export interface Object extends JavaClass {}
-  export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
   export interface CsvWriter extends JavaClasses.JavaClass {}
   export interface CsvField extends JavaClasses.JavaClass {}
   export interface DataStore extends JavaClass {}
   export interface JOptionsUtils extends JavaClass {}
   export interface WeaverEngine extends JavaClass {}
-  export interface VerboseLevel extends JavaClass {}
   export interface LaraiKeys extends JavaClass {}
   export interface FileList extends JavaClass {}
   export interface OptionalFile extends JavaClass {}
@@ -80,13 +79,8 @@ export namespace JavaClasses {
   export interface HashMap extends JavaClass {}
   export interface SpecsPlatforms extends JavaClass {}
   export interface Runtime extends JavaClass {}
-  export interface LARASystem extends JavaClass {}
   export interface ProcessOutputAsString extends JavaClass {
     getOutput(): string;
-  }
-  export interface JsGear extends JavaClass {
-    setJsOnAction(onActionCallback: (d: Record<string, any>) => void): boolean;
-    onAction(actionEvent: any): void;
   }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
@@ -263,12 +257,6 @@ export default class JavaTypes {
     return JavaTypes.getType("java.lang.Object") as JavaClasses.Object;
   }
 
-  static get ReplacerHelper() {
-    return JavaTypes.getType(
-      "pt.up.fe.specs.lara.util.ReplacerHelper"
-    ) as JavaClasses.ReplacerHelper;
-  }
-
   static get CsvReader() {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.csv.CsvReader"
@@ -303,12 +291,6 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "org.lara.interpreter.weaver.interf.WeaverEngine"
     ) as JavaClasses.WeaverEngine;
-  }
-
-  static get VerboseLevel() {
-    return JavaTypes.getType(
-      "org.lara.interpreter.joptions.config.interpreter.VerboseLevel"
-    ) as JavaClasses.VerboseLevel;
   }
 
   static get LaraiKeys() {
@@ -359,20 +341,10 @@ export default class JavaTypes {
     return JavaTypes.getType("java.lang.Runtime") as JavaClasses.Runtime;
   }
 
-  static get LARASystem() {
-    return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
-  }
-
   static get ProcessOutputAsString() {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.system.ProcessOutputAsString"
     ) as JavaClasses.ProcessOutputAsString;
-  }
-
-  static get JsGear() {
-    return JavaTypes.getType("org.lara.interpreter.utils.JsGear") as {
-      new (...args: any[]): JavaClasses.JsGear;
-    };
   }
 
   static get ProgressCounter() {

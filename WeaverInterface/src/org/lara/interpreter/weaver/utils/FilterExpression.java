@@ -30,7 +30,8 @@ public class FilterExpression {
     private boolean isMatch;
 
     /**
-     * Create new filter with the attribute, the boolean operator and the expected value
+     * Create new filter with the attribute, the boolean operator and the expected
+     * value
      * 
      * @param attribute
      * @param operator

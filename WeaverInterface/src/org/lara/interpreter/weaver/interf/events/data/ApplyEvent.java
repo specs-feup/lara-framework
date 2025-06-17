@@ -25,122 +25,52 @@ public class ApplyEvent extends BaseEvent {
     private String select_label;
     private Optional<LaraJoinPoint> jpset;
 
-    // private JoinPoint currentJoinPoint;
-
-    /**
-     * @param stage
-     * @param label
-     * @param select_label
-     * @param root
-     */
     public ApplyEvent(Stage stage, String aspect_name, String label, String select_label,
-	    Optional<LaraJoinPoint> root) {
-	super(stage);
-	this.aspect_name = aspect_name;
-	this.label = label;
-	this.select_label = select_label;
-	jpset = root;
+            Optional<LaraJoinPoint> root) {
+        super(stage);
+        this.aspect_name = aspect_name;
+        this.label = label;
+        this.select_label = select_label;
+        jpset = root;
     }
 
     @Override
     public String toString() {
-	String ret = super.toString();
-	ret += ", aspect " + aspect_name;
-	ret += ", apply label " + label;
-	ret += ", select " + select_label;
-	if (jpset != null) {
-	    ret += ", join point set: " + jpset;
-	}
-	return ret;
+        String ret = super.toString();
+        ret += ", aspect " + aspect_name;
+        ret += ", apply label " + label;
+        ret += ", select " + select_label;
+        if (jpset != null) {
+            ret += ", join point set: " + jpset;
+        }
+        return ret;
     }
-
-    // /**
-    // * @param stage
-    // * @param applyName
-    // * @param selectName
-    // * @param select
-    // */
-    // public ApplyEvent(Stage stage, String applyName, String selectName,
-    // JoinPoint currentJoinPoint) {
-    // super(stage);
-    // this.applyName = applyName;
-    // this.selectName = selectName;
-    // this.currentJoinPoint = currentJoinPoint;
-    // }
 
     /**
      * @return the applyName
      */
     public String getLabel() {
-	return label;
+        return label;
     }
 
     /**
      * @return the selectName
      */
     public String getSelect_label() {
-	return select_label;
+        return select_label;
     }
 
     /**
      * @return the select
      */
     public Optional<LaraJoinPoint> getJpset() {
-	return jpset;
+        return jpset;
     }
 
     /**
-     * @param applyName
-     *            the applyName to set
+     * @param applyName the applyName to set
      */
     protected void setApplyName(String applyName) {
-	label = applyName;
+        label = applyName;
     }
-
-    /**
-     * @param selectName
-     *            the selectName to set
-     */
-    protected void setSelectName(String selectName) {
-	select_label = selectName;
-    }
-
-    /**
-     * @param select
-     *            the select to set
-     */
-    protected void setSelect(Optional<LaraJoinPoint> select) {
-	jpset = select;
-    }
-
-    // /**
-    // * @return the currentJoinPoint
-    // */
-    // public JoinPoint getCurrentJoinPoint() {
-    // return currentJoinPoint;
-    // }
-    //
-    // /**
-    // * @param currentJoinPoint
-    // * the currentJoinPoint to set
-    // */
-    // protected void setCurrentJoinPoint(JoinPoint currentJoinPoint) {
-    // this.currentJoinPoint = currentJoinPoint;
-    // }
-
-    /**
-     * @return the aspect_name
-     */
-    public String getAspect_name() {
-	return aspect_name;
-    }
-
-    /**
-     * @param aspect_name
-     *            the aspect_name to set
-     */
-    protected void setAspect_name(String aspect_name) {
-	this.aspect_name = aspect_name;
-    }
-
 }

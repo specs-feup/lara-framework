@@ -1,0 +1,38 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    // This dependency is used by the application.
+    implementation ':jOptions'
+	implementation ':SpecsUtils'
+
+    implementation ':LARAI'
+    implementation ':WeaverInterface'
+
+    implementation ':DefaultWeaver'
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'pt.up.fe.specs.WeaverOptionsManagerLauncher'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}

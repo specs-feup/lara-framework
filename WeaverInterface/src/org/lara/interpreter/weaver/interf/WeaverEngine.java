@@ -12,13 +12,10 @@
  */
 package org.lara.interpreter.weaver.interf;
 
-import org.lara.interpreter.profile.BasicWeaverProfiler;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -38,18 +35,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Interface for connecting the lara interpreter with the target language weaver. A Weaver can be associated to an
- * application folder or to only one file. The interpreter creates a new weaver instance for the application folder or
- * an instance for each file. The begin(File) function must return if the File argument is a valid File/Folder.
+ * Interface for connecting the lara interpreter with the target language
+ * weaver. A Weaver can be associated to an
+ * application folder or to only one file. The interpreter creates a new weaver
+ * instance for the application folder or
+ * an instance for each file. The begin(File) function must return if the File
+ * argument is a valid File/Folder.
  *
  * @author Tiago D.R. Carvalho
  */
 public abstract class WeaverEngine {
-
-    private final static String MSG_WRONG_WEAVER_EXTENDED = "Your weaver should extend LaraWeaverEngine instead of WeaverEngine. If you are using WeaverGenerator, make sure it is updated and run it again";
-
     private EventTrigger eventTrigger;
-    private WeaverProfiler weaverProfiler = BasicWeaverProfiler.emptyProfiler();
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecification> langSpec;
@@ -57,8 +53,6 @@ public abstract class WeaverEngine {
     private JsEngine scriptEngine;
 
     private final Map<String, List<ResourceProvider>> apis;
-
-    private final Lazy<WeaverApiManager> apiManager;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
@@ -69,9 +63,7 @@ public abstract class WeaverEngine {
         langSpec = Lazy.newInstance(this::buildLangSpecs);
 
         apis = new HashMap<>();
-        apiManager = Lazy.newInstance(() -> WeaverApiManager.newInstance(this));
     }
-
 
     public Optional<DataStore> getData() {
         throw new NotImplementedException(this);
@@ -83,25 +75,9 @@ public abstract class WeaverEngine {
                 () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
     }
 
-//    /**
-//     * By default, uses the weaver name as key, and the aspect APIs. If a custom name is needed, override this method
-//     *
-//     * @deprecated should only use getAspectAPU(), getNpmResources() and getWeaverApiName()
-//     */
-//    @Deprecated
-//    protected void addWeaverApis() {
-//        SpecsLogs.debug(() -> "Adding aspect APIs using the default method and the weaver name");
-//        addApis(getName(), getAspectsAPI());
-//    }
-
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
     }
-
-    public WeaverApiManager getApiManager() {
-        return apiManager.get();
-    }
-
 
     public JsEngine getScriptEngine() {
         if (scriptEngine == null) {
@@ -136,17 +112,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time
-     *
-     * @return true if the weaver is able to work with several files, false if only works with one file
-     * @deprecated this method is not called anymore as LaraI now assumes that the weaver always accepts a folder
-     */
-    @Deprecated
-    public boolean handlesApplicationFolder() {
-        return true;
-    }
-
-    /**
      * Starts execution of the weaver, for the given arguments
      *
      * @param sources   the files/directories with the source code
@@ -164,24 +129,12 @@ public abstract class WeaverEngine {
     public abstract List<String> getActions();
 
     /**
-     * Closes the weaver and specifies the output directory location if the weaver generates new file(s)
+     * Closes the weaver and specifies the output directory location if the weaver
+     * generates new file(s)
      *
      * @return if close was successful
      */
     public abstract boolean close();
-
-    /**
-     *
-     *
-     * @return an instance of the join point root/program
-     */
-
-    /**
-     * Return a JoinPoint instance of the language root
-     *
-     * @return interface implementation for the join point root/program
-     */
-    public abstract JoinPoint select();
 
     /**
      * Returns the name of the join point model root
@@ -195,9 +148,7 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    public JoinPoint getRootJp() {
-        return select();
-    }
+    public abstract JoinPoint getRootJp();
 
     public Object getRootNode() {
         return getRootJp().getNode();
@@ -208,12 +159,7 @@ public abstract class WeaverEngine {
      *
      * @return
      */
-    // default
-    public abstract List<WeaverOption> getOptions()
-    // {
-    // return Collections.emptyList();
-    // }
-    ;
+    public abstract List<WeaverOption> getOptions();
 
     /**
      * The store definition for the options specific to this weaver
@@ -223,7 +169,6 @@ public abstract class WeaverEngine {
     public StoreDefinition getStoreDefinition() {
         return storeDefinition.get();
     }
-
 
     public LanguageSpecification getLanguageSpecificationV2() {
         return langSpec.get();
@@ -235,13 +180,12 @@ public abstract class WeaverEngine {
      * @return
      */
     protected abstract LanguageSpecification buildLangSpecs();
-//        return LangSpecsXmlParser.parse(ClavaWeaverResource.JOINPOINTS, ClavaWeaverResource.ARTIFACTS,
-//                ClavaWeaverResource.ACTIONS, true);
 
     /**
      * Returns a list of Gears associated to this weaver engine
      *
-     * @return a list of implementations of {@link AGear} or null if no gears are available
+     * @return a list of implementations of {@link AGear} or null if no gears are
+     *         available
      */
     public abstract List<AGear> getGears();
 
@@ -255,7 +199,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Returns a list of classes that may be imported and used in LARA, including the ones from the auto-generated code
+     * Returns a list of classes that may be imported and used in LARA, including
+     * the ones from the auto-generated code
      * and the weaver-developer-defined.
      *
      * @return
@@ -274,7 +219,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * @return the name of the Weaver. By default, returns the simple name of the class
+     * @return the name of the Weaver. By default, returns the simple name of the
+     *         class
      */
     public String getName() {
         return getClass().getSimpleName();
@@ -297,22 +243,6 @@ public abstract class WeaverEngine {
 
     }
 
-    /**
-     * @return the base name for the weaver API. By default returns the weaver name.
-     */
-    public String getWeaverApiName() {
-        return getName();
-    }
-
-    /**
-     * Return a list of hand-made resources that point to lara/js resources.
-     *
-     * @return
-     */
-    public List<ResourceProvider> getAspectsAPI() {
-        return Collections.emptyList();
-    }
-
     public EventTrigger getEventTrigger() {
         return eventTrigger;
     }
@@ -325,27 +255,9 @@ public abstract class WeaverEngine {
         return eventTrigger != null && eventTrigger.hasListeners();
     }
 
-    public abstract boolean implementsEvents();
-
-    public WeaverProfiler getWeaverProfiler() {
-        return weaverProfiler;
-    }
-
     /**
-     * Use this method if you intend to use your own weaver profiler by extending class {@link WeaverProfiler}
-     *
-     * @return
-     */
-    protected void setWeaverProfiler(WeaverProfiler weaverProfiler) {
-        this.weaverProfiler = weaverProfiler;
-    }
-    //
-    // protected void associateJoinPoint(JoinPoint joinPoint) {
-    // joinPoint.setWeaverEngine(this);
-    // }
-
-    /**
-     * An image representing the icon of the program, that will appear in the upper-left corner.
+     * An image representing the icon of the program, that will appear in the
+     * upper-left corner.
      *
      * @return by default, returns null
      */
@@ -354,22 +266,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * The names of the weaver. These strings will be used to process folders for LARA bundles.
-     *
-     * @return the names of the weaver. By default, returns the class name in lower-case, and without the suffix
-     *         "weaver", if one is present
-     */
-    // public Set<String> getWeaverNames() {
-    // String weaverName = getClass().getSimpleName().toLowerCase();
-    // if (weaverName.endsWith("weaver")) {
-    // weaverName = weaverName.substring(0, weaverName.length() - "weaver".length());
-    // }
-    //
-    // return new HashSet<>(Arrays.asList(weaverName));
-    // }
-
-    /**
-     * The languages supported by the weaver. These strings will be used to process folders for LARA bundles.
+     * The languages supported by the weaver. These strings will be used to process
+     * folders for LARA bundles.
      *
      * @return the languages supported by the weaver. By default, returns empty.
      */
@@ -436,16 +334,6 @@ public abstract class WeaverEngine {
     }
 
     public String getDefaultAttribute(String joinPointType) {
-        // var langSpec = getLanguageSpecification();
-        //
-        // var artifact = langSpec.getArtifacts().getArtifact(joinPointType);
-        // System.out.println(
-        // "ART TYPE: " + artifact.getClazz() + "; " + artifact.getTooltip() + "; " + artifact.getDefault());
-        // for (var art : artifact.getAttribute()) {
-        // System.out.println("ATTR NAME: " + art.getName());
-        // }
-        // return getLanguageSpecification().getArtifacts().getArtifact(joinPointType).getDefault();
-
         var jp = getLanguageSpecificationV2().getJoinPoint(joinPointType);
         if (jp == null) {
             throw new RuntimeException("Used unsupported join point '" + joinPointType + "'");
@@ -455,7 +343,8 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Pairs of labels-values that will populate the predefined list of the option "External Dependencies".
+     * Pairs of labels-values that will populate the predefined list of the option
+     * "External Dependencies".
      * <p>
      * Default implementation returns a list with experimental LARA packages.
      *
@@ -473,17 +362,4 @@ public abstract class WeaverEngine {
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
     }
-
-    public List<ResourceProvider> getLaraApis() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
-    public List<ResourceProvider> getLaraCore() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
-    public List<LaraResourceProvider> getNpmResources() {
-        throw new RuntimeException(MSG_WRONG_WEAVER_EXTENDED);
-    }
-
 }

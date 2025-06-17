@@ -16,7 +16,8 @@ package org.lara.language.specification.ast;
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
 /**
- * Internal representation of the LanguageSpecification, which uses the TreeNode interface underneath.
+ * Internal representation of the LanguageSpecification, which uses the TreeNode
+ * interface underneath.
  * 
  * @author jbispo
  *

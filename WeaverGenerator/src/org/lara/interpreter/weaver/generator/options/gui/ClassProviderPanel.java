@@ -26,22 +26,22 @@ public class ClassProviderPanel extends GenericStringPanel<ClassProvider> {
     private static final long serialVersionUID = 1L;
 
     public ClassProviderPanel(DataKey<ClassProvider> key, DataStore data) {
-	super(key, data);
+        super(key, data);
     }
 
     @Override
     public ClassProvider getValue() {
-	String stringValue = getText().trim();
-	if (stringValue.isEmpty()) {
-	    return ClassProvider.newInstance();
-	}
+        String stringValue = getText().trim();
+        if (stringValue.isEmpty()) {
+            return ClassProvider.newInstance();
+        }
 
-	return getKey().getDecoder().get().decode(stringValue);
+        return getKey().getDecoder().get().decode(stringValue);
     }
 
     @Override
     public <ET extends ClassProvider> void setValue(ET value) {
-	setText(value.getCustomClass().getName());
+        setText(value.getCustomClass().getName());
     }
 
 }

@@ -1,6 +1,9 @@
 const config = {
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
+  moduleNameMapper: {
+    "(.+)\\.js": "$1",
+  },
   notify: true,
   notifyMode: "always",
   //verbose: true,
@@ -9,9 +12,6 @@ const config = {
   coverageReporters: ["text", "lcov"],
   collectCoverageFrom: ["**/*[^.d].(t|j)s"],
   coverageProvider: "v8",
-  moduleNameMapper: {
-    "(.+)\\.js": "$1",
-  },
   projects: ["src-api", "src-code"],
 };
 

@@ -22,24 +22,6 @@ export default class WeaverDataStore extends DataStore {
   }
 
   /**
-   * @returns a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
-   */
-  getVerboseLevel() {
-    return this.get("verbose").ordinal();
-  }
-
-  /**
-   * @param verboseLevel - a number between 0 and 3, representing the verbose level (0 - less information, 3 - more information)
-   */
-  setVerboseLevel(verboseLevel: number) {
-    if (!(verboseLevel >= 0 && verboseLevel <= 3)) {
-      throw "WeaverDataStore.setVerboseLevel: expected a number  between 0 and 3";
-    }
-
-    this.put("verbose", JavaTypes.VerboseLevel.values()[verboseLevel]);
-  }
-
-  /**
    * @returns a java.io.File representing the current output folder of the weaver
    */
   getOutputFolder() {
@@ -86,11 +68,6 @@ export default class WeaverDataStore extends DataStore {
   setIncludeFolders(includeFolders: any) {
     const fileList = JavaTypes.FileList.newInstance(includeFolders);
     this.put("include", fileList);
-  }
-
-  setTools(toolsPath: any) {
-    const toolsFile = JavaTypes.OptionalFile.newInstance(toolsPath);
-    this.put("tools", toolsFile);
   }
 
   setLogFile(logPath: any) {
