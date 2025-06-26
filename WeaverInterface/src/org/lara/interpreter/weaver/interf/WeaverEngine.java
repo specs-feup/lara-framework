@@ -20,7 +20,6 @@ import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
@@ -50,15 +49,11 @@ public abstract class WeaverEngine {
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecification> langSpec;
 
-    private JsEngine scriptEngine;
-
     private final Map<String, List<ResourceProvider>> apis;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
-
-        scriptEngine = null;
 
         langSpec = Lazy.newInstance(this::buildLangSpecs);
 
@@ -77,22 +72,6 @@ public abstract class WeaverEngine {
 
     public Map<String, List<ResourceProvider>> getApis() {
         return apis;
-    }
-
-    public JsEngine getScriptEngine() {
-        if (scriptEngine == null) {
-            throw new RuntimeException("Java script engine has not been set for weaver: " + getName());
-        }
-
-        return scriptEngine;
-    }
-
-    public void setScriptEngine(JsEngine scriptEngine) {
-        this.scriptEngine = scriptEngine;
-    }
-
-    public boolean hasScriptEngine() {
-        return this.scriptEngine != null;
     }
 
     private static File createTemporaryWeaverFolder() {

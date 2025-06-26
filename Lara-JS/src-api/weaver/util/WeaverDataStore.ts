@@ -42,7 +42,7 @@ export default class WeaverDataStore extends DataStore {
    */
   getSourceFolders() {
     const sourcesFileList = this.get("workspace");
-    return Weaver.toJs(sourcesFileList.getFiles());
+    return sourcesFileList.getFiles().toArray();
   }
 
   /**
@@ -58,8 +58,7 @@ export default class WeaverDataStore extends DataStore {
    */
   getIncludeFolders() {
     const includesFileList = this.get("include");
-
-    return Weaver.toJs(includesFileList.getFiles());
+    return includesFileList.getFiles().toArray();
   }
 
   /**

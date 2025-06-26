@@ -87,7 +87,6 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
     const JavaEventTrigger = java.import(
       "org.lara.interpreter.weaver.events.EventTrigger"
     );
@@ -97,7 +96,6 @@ export class Weaver {
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
-    javaWeaver.setScriptEngine(new NodeJsEngine());
     javaWeaver.setEventTrigger(new JavaEventTrigger());
 
     const isClassicCli =

@@ -22,6 +22,8 @@ import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
+
+import pt.up.fe.specs.jsengine.node.UndefinedValue;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
 import java.util.*;
@@ -287,7 +289,7 @@ public abstract class JoinPoint {
     }
 
     public static Object getUndefinedValue() {
-        return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
+        return UndefinedValue.getUndefined();
     }
 
     public Object getChildren() {

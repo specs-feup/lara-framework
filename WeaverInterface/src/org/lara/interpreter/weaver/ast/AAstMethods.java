@@ -39,40 +39,32 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     @Override
     public Object toJavaJoinPoint(Object node) {
-        return toJs(toJavaJoinPointImpl(getNodeClass().cast(node)));
+        return toJavaJoinPointImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getJoinPointName(Object node) {
-        return toJs(getJoinPointNameImpl(getNodeClass().cast(node)));
+        return getJoinPointNameImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getChildren(Object node) {
-        var children = getChildrenImpl(getNodeClass().cast(node));
-        return toJs(children);
+        return getChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getNumChildren(Object node) {
-        var numChildren = getNumChildrenImpl(getNodeClass().cast(node));
-        return toJs(numChildren);
+        return getNumChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getScopeChildren(Object node) {
-        var scopeChildren = getScopeChildrenImpl(getNodeClass().cast(node));
-        return toJs(scopeChildren);
+        return getScopeChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getParent(Object node) {
-        var scopeChildren = getParentImpl(getNodeClass().cast(node));
-        return toJs(scopeChildren);
-    }
-
-    private Object toJs(Object object) {
-        return weaverEngine.getScriptEngine().toJs(object);
+        return getParentImpl(getNodeClass().cast(node));
     }
 
     @Override
@@ -80,7 +72,7 @@ public abstract class AAstMethods<T> implements AstMethods {
         var descendants = new ArrayList<Object>();
         getDescendantsPrivate(getNodeClass().cast(node), descendants);
 
-        return toJs(descendants);
+        return descendants;
     }
 
     private void getDescendantsPrivate(T node, List<Object> descendants) {
@@ -93,7 +85,7 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     @Override
     public Object getRoot() {
-        return toJs(getRootImpl());
+        return getRootImpl();
     }
 
     public abstract Class<T> getNodeClass();
