@@ -191,17 +191,22 @@ export default class Weaver {
   static AST_METHODS = Weaver.getWeaverEngine().getAstMethods();
 
   /**
-   * @deprecated Does nothing.
+   * @deprecated Should not be used. Here for a short period to allow for code migration.
    * 
    * Adapts a Java object to JavaScript. Currently converts:
    *
-   * - Null to undefined;
-   * - Java array to JS array;
-   * - List to array;
+   * - ~Null to undefined~;
+   * - ~Java array to JS array~;
+   * - Java List to array;
    *
    */
-  static toJs<T>(javaObject: T): T {
-    return javaObject;
+  static toJs<T>(javaObject: JavaClasses.List<T> | T[]): T[] {
+    // if is list call toArray
+    if (JavaTypes.instanceOf(javaObject, "java.util.List")) {
+      // Convert Java List to JS array
+      return (javaObject as JavaClasses.List<T>).toArray();
+    }
+    return javaObject as T[];
   }
 
   /**
