@@ -16,6 +16,13 @@ The LARA Framework is a sophisticated **source-to-source compiler framework** de
 - Tool developers building code analysis and transformation systems
 - Academic researchers in programming languages and compilers
 
+## Development Environment & Setup
+
+- **Java Version:** 17+ (required for all Java components)
+- **Node.js Version:** 20 or 22 (minimum 20.0.0 for JavaScript components)
+- **Build System:** Gradle for Java modules, npm for TypeScript/JavaScript
+- **IDE:** VSCode is recommended for development
+
 ## Architecture Overview
 
 The LARA framework follows a modular architecture with clear separation of concerns:
@@ -34,10 +41,15 @@ lara-framework/
 
 ### Technology Stack
 - **Backend**: Java 17+ with Gradle build system
-- **Frontend**: TypeScript/JavaScript with Node.js 18+
+- **Frontend**: TypeScript/JavaScript with Node.js 20 or 22
 - **Specification**: XML with XSD schema validation
 - **Testing**: Jest (JS), JUnit (Java)
 - **Interoperability**: Java-JavaScript bridge via `java` npm package
+
+### Related Projects
+- **clava**: C/C++ source-to-source compiler built on LARA framework
+- **kadabra**: Java source-to-source compiler built on LARA framework
+- **specs-java-libs**: Core Java utility libraries (SpecsUtils, jOptions, etc.)
 
 ## Core Concepts
 
@@ -255,8 +267,8 @@ const defaultAttr = Weaver.getDefaultAttribute('function');
 ## Dependencies and Requirements
 
 ### Runtime Requirements
-- **Java**: JDK 8 or higher
-- **Node.js**: Version 18.18 or higher
+- **Java**: JDK 17 or higher
+- **Node.js**: Version 20 or 22 (minimum 20.0.0)
 - **Build**: Gradle 6.0+ for Java modules
 
 ### Key Dependencies
@@ -298,3 +310,12 @@ When working with this codebase:
 5. **Document new join point types** and transformation capabilities
 
 The LARA framework is designed for extensibility - most common development tasks involve extending existing patterns rather than creating entirely new architectures.
+
+---
+
+**For LLMs:**
+- Follow established patterns for join point definitions and weaver implementations
+- Update specifications when adding new AST node types
+- Maintain compatibility between Java and JavaScript APIs
+- Add comprehensive tests for new functionality
+- Document new join point types and transformation capabilities
