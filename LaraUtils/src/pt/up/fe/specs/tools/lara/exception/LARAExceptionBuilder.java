@@ -50,8 +50,10 @@ public class LARAExceptionBuilder {
     }
 
     public RuntimeException getRuntimeException() {
-        SpecsLogs.info("Last exception type: " + lastException.getClass());
-        if (lastException != lastLARAException) {
+        if (lastException != null) {
+            SpecsLogs.info("Last exception type: " + lastException.getClass());
+        }
+        if (lastException != null && lastException != lastLARAException) {
             Throwable last = lastException;
             while (last != null) {
 

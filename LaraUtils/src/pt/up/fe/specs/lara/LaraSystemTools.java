@@ -26,12 +26,12 @@ public class LaraSystemTools {
 
     public static ProcessOutputAsString runCommand(String command, String workingDir, boolean printToConsole,
             Integer timeoutNanos) {
-        return runCommand(command, workingDir, printToConsole, timeoutNanos.longValue());
+        return runCommand(command, workingDir, printToConsole, timeoutNanos != null ? timeoutNanos.longValue() : null);
     }
 
     public static ProcessOutputAsString runCommand(List<String> commandList, String workingDir,
             boolean printToConsole, Integer timeoutNanos) {
-        return runCommand(commandList, workingDir, printToConsole, timeoutNanos.longValue());
+        return runCommand(commandList, workingDir, printToConsole, timeoutNanos != null ? timeoutNanos.longValue() : null);
     }
 
     public static ProcessOutputAsString runCommand(String command, String workingDir, boolean printToConsole,
