@@ -88,10 +88,10 @@ public class GeneratorUtils {
             List<org.lara.language.specification.dsl.Attribute> attributes) {
 
         // TODO: Remove sort
-        Collections.sort(attributes, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
-        // System.out.println("JP: " + javaC.getName());
-        // for (final Attribute attribute : attributes) {
-        for (var attribute : attributes) {
+        var mutableAttributes = new ArrayList<>(attributes);
+        Collections.sort(mutableAttributes, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
+
+        for (var attribute : mutableAttributes) {
 
             // System.out.println("ATTR:" + attribute.getName());
             String attrClassStr = attribute.getReturnType().trim();

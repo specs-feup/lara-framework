@@ -100,7 +100,7 @@ public class NodeFactory {
         return attrNode;
     }
 
-    private static ActionNode toNode(Action action) {
+    public static ActionNode toNode(Action action) {
         DeclarationNode declNode = toNode(action.getDeclaration());
 
         ActionNode actionNode = new ActionNode(declNode);
@@ -112,11 +112,11 @@ public class NodeFactory {
         return actionNode;
     }
 
-    private static DeclarationNode toNode(Declaration parameter) {
+    public static DeclarationNode toNode(Declaration parameter) {
         return new DeclarationNode(parameter.getName(), parameter.getType().toString());
     }
 
-    private static ParameterNode toNode(Parameter parameter) {
+    public static ParameterNode toNode(Parameter parameter) {
         Declaration declaration = parameter.getDeclaration();
         return new ParameterNode(declaration.getType().toString(), declaration.getName(), parameter.getDefaultValue());
     }

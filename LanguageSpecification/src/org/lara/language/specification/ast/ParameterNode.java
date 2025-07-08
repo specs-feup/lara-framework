@@ -62,4 +62,16 @@ public class ParameterNode extends LangSpecNode {
         builder.add("}");
         return builder.toString();
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 }

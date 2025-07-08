@@ -33,8 +33,11 @@ public class ActionNode extends LangSpecNode {
         return getChild(DeclarationNode.class, 0);
     }
 
-    public List<DeclarationNode> getParameters() {
-        return getChildren(DeclarationNode.class).subList(1, getNumChildren());
+    public List<ParameterNode> getParameters() {
+        // Get all children except the first one (which is DeclarationNode), and filter for ParameterNode
+        return getChildren().subList(1, getNumChildren()).stream()
+                .map(ParameterNode.class::cast)
+                .toList();
     }
 
     @Override
