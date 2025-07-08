@@ -181,12 +181,12 @@ public class WeaverGenerator {
         final boolean generated = generate(generator);
         if (!generated) {
             System.err.println("The Weaver was not created!");
-            return;
+            System.exit(1);
         }
         final boolean printed = print(generator);
         if (!printed) {
             System.err.println("The Weaver was not created!");
-            return;
+            System.exit(1);
         }
         if (generator.isJson()) {
             String packagePath = generator.getOutPackage().replace(".", "/");
