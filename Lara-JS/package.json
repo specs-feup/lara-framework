@@ -1,6 +1,6 @@
 {
   "name": "@specs-feup/lara",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
