@@ -20,7 +20,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 java.asyncOptions = {
   asyncSuffix: "Async",
   syncSuffix: "",
-  promiseSuffix: "P"
+  promiseSuffix: "P",
 };
 
 export class Weaver {
@@ -98,7 +98,10 @@ export class Weaver {
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
     javaWeaver.setScriptEngine(new NodeJsEngine());
-    javaWeaver.setEventTrigger(new JavaEventTrigger());
+
+    const eventTrigger = new JavaEventTrigger();
+    eventTrigger.registerReceivers(javaWeaver.getGears());
+    javaWeaver.setEventTrigger(eventTrigger);
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;
