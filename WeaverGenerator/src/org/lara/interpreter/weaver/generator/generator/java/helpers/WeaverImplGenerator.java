@@ -16,21 +16,28 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.language.specification.dsl.LanguageSpecification;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
+import org.specs.generators.java.enums.Modifier;
+import org.specs.generators.java.enums.Privacy;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Generate the weaver abstract class, containing the four methods to implement: handlesApplicationFolder, begin, select
+ * Generate the weaver abstract class, containing the three methods to implement: begin, select
  * and close. The getActions method (list of available actions) will be automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
  *
@@ -62,25 +69,29 @@ public class WeaverImplGenerator extends GeneratorHelper {
     public JavaClass generate() {
         final JavaClass java = generateWeaverClass();
 
-        addHandlesApplicationFolderMethod(java);
         addBeginMethod(java);
         addSelectMethod(java);
         addCloseMethod(java);
         addGetGearsMethod(java);
+        addGetOptionsMethod(java);
         addGetWeaver(java);
+        addBuildLanguageSpecification(java);
 
         return java;
     }
+
 
     private void addGetWeaver(JavaClass java) {
         String weaverName = java.getName();
         JavaType weavingEngineClass = new JavaType(weaverName);
 
         Method getWE = new Method(weavingEngineClass, "get" + weaverName);
-        getWE.add(Annotation.OVERRIDE);
-        getWE.appendComment("Returns Weaving Engine as a " + weaverName);
-        getWE.appendCode("return (" + weaverName + ")getWeaverStatic();");
+        getWE.add(Modifier.STATIC);
+        getWE.appendComment("Returns thread-local instance of weaver engine.");
+        getWE.appendCode("return (" + weaverName + ") WeaverEngine.getThreadLocalWeaver();");
         java.add(getWE);
+
+        java.addImport("org.lara.interpreter.weaver.interf.WeaverEngine");
     }
 
     /**
@@ -104,24 +115,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
         return java;
     }
 
-    /**
-     * Generates the method that defines if the weaver can deal with a folder as the application, or only one file at
-     * the time
-     *
-     * @param java
-     */
-    private static void addHandlesApplicationFolderMethod(JavaClass java) {
-        final Method handleFiles = new Method(JavaTypeFactory.getBooleanType(), "handlesApplicationFolder");
-        handleFiles
-                .appendComment(
-                        "Warns the lara interpreter if the weaver accepts a folder as the application or only one file at a time."
-                                + ln());
-        handleFiles.addJavaDocTag(JDocTag.RETURN,
-                "true if the weaver is able to work with several files, false if only works with one file");
-        handleFiles.appendCode("//Can the weaver handle an application folder?" + ln());
-        handleFiles.appendCode("return true/false;");
-        java.add(handleFiles);
-    }
 
     /**
      * Generates the method that starts the weaving process
@@ -136,16 +129,17 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
         JavaTypeFactory.addGenericType(listType, fileType);
 
+        begin.add(Annotation.OVERRIDE);
         begin.addArgument(listType, "sources");
         begin.addArgument(fileType, "outputDir");
         final JavaType stringType = JavaTypeFactory.getStringType();
         stringType.setArray(true);
         begin.addArgument(dataStoreType, "args");
-        begin.appendComment("Set a file/folder in the weaver if it is valid file/folder type for the weaver." + ln());
-        begin.addJavaDocTag(JDocTag.PARAM, "source the file with the source code");
-        begin.addJavaDocTag(JDocTag.PARAM, "outputDir output directory for the generated file(s)");
-        begin.addJavaDocTag(JDocTag.PARAM, "args arguments to start the weaver");
-        begin.addJavaDocTag(JDocTag.RETURN, "true if the file type is valid");
+        begin.appendComment("Setups the weaver with inputs sources, an output folder and the provided options." + ln());
+        begin.addJavaDocTag(JDocTag.PARAM, "sources the sources with the code (files/folders)");
+        begin.addJavaDocTag(JDocTag.PARAM, "outputDir output folder for the generated file(s)");
+        begin.addJavaDocTag(JDocTag.PARAM, "args options for the weaver");
+        begin.addJavaDocTag(JDocTag.RETURN, "true if initialization occurred without problems, false otherwise");
         begin.appendCode("//Initialize weaver with the input file/folder" + ln());
         begin.appendCode("throw new UnsupportedOperationException(\"Method begin for " + java.getName()
                 + " is not yet implemented\");");
@@ -162,7 +156,8 @@ public class WeaverImplGenerator extends GeneratorHelper {
         String rootName = javaGenerator.getLanguageSpecification().getRoot().getName();
 
         rootName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(rootName);
-        select.appendComment(" Return a JoinPoint instance of the language root, i.e., an instance of " + rootName);
+        select.add(Annotation.OVERRIDE);
+        select.appendComment(" Return a JoinPoint instance of the sources root, i.e., an instance of " + rootName);
         select.addJavaDocTag(JDocTag.RETURN, "an instance of the join point root/program");
         select.appendCode("//return new <" + rootName + " implementation>;" + ln());
         select.appendCode("throw new UnsupportedOperationException(\"Method select for " + java.getName()
@@ -177,8 +172,10 @@ public class WeaverImplGenerator extends GeneratorHelper {
      */
     private static void addCloseMethod(JavaClass java) {
         final Method close = new Method(JavaTypeFactory.getBooleanType(), "close");
+
+        close.add(Annotation.OVERRIDE);
         close.appendComment(
-                " Closes the weaver to the specified output directory location, if the weaver generates new file(s)"
+                " Performs operations needed when closing the weaver (e.g., generates new version of source file(s) to the specified output folder)."
                         + ln());
         close.addJavaDocTag(JDocTag.RETURN, "if close was successful");
         close.appendCode("//Terminate weaver execution with final steps required and writing output files" + ln());
@@ -195,15 +192,103 @@ public class WeaverImplGenerator extends GeneratorHelper {
     private static void addGetGearsMethod(JavaClass java) {
         final JavaGenericType genGearType = new JavaGenericType(new JavaType(AGear.class));
         final JavaType listType = JavaTypeFactory.getListJavaType(genGearType);
-        // String listGearType = List.class.getSimpleName() + "<";
-        // listGearType += AGear.class.getSimpleName() + ">";
+
         final Method getGears = new Method(listType, "getGears");
-        // close.addModifier(Modifier.ABSTRACT);
+
+        getGears.add(Annotation.OVERRIDE);
         getGears.appendComment(" Returns a list of Gears associated to this weaver engine" + ln());
         getGears.addJavaDocTag(JDocTag.RETURN,
                 "a list of implementations of {@link AGear} or null if no gears are available");
-        getGears.appendCode("return null; //i.e., no gears currently being used");
+        getGears.appendCode("return List.of(); //i.e., no gears currently being used");
         java.add(getGears);
     }
+
+    /**
+     * Generates the default code for method getOptions
+     *
+     * @param java
+     */
+    private static void addGetOptionsMethod(JavaClass java) {
+        final JavaGenericType genWeaverOptionType = new JavaGenericType(new JavaType(WeaverOption.class));
+        final JavaType listType = JavaTypeFactory.getListJavaType(genWeaverOptionType);
+
+        final Method getOptions = new Method(listType, "getOptions");
+
+        getOptions.add(Annotation.OVERRIDE);
+        getOptions.appendComment(" Returns a list of options specific to this weaver engine." + ln());
+        getOptions.addJavaDocTag(JDocTag.RETURN,
+                "a list of {@link WeaverOption} representing additional options provided by this weaver");
+        getOptions.appendCode("return List.of(); //i.e., no additional options");
+        java.add(getOptions);
+    }
+
+    private void addBuildLanguageSpecification(JavaClass java) {
+        // Build static method
+        final Method buildLangSpecStatic = new Method(new JavaType(LanguageSpecification.class), "buildLanguageSpecification");
+
+        buildLangSpecStatic.add(Modifier.STATIC);
+        buildLangSpecStatic.appendComment(" Builds the language specification, based on the input XML files." + ln());
+        buildLangSpecStatic.addJavaDocTag(JDocTag.RETURN,
+                "a new {@link LanguageSpecification} instance for this weaver");
+
+        var code = """
+                return LanguageSpecification.newInstance(() -> "<BASE_RESOURCE_FOLDER>" + LanguageSpecification.getJoinPointsFilename(),
+                 () -> "<BASE_RESOURCE_FOLDER>" + LanguageSpecification.getAttributesFilename(),
+                 () -> "<BASE_RESOURCE_FOLDER>" + LanguageSpecification.getActionsFilename());      
+                """;
+
+        var langSpecFolder = javaGenerator.getLanguageSpecificationDir();
+        if (langSpecFolder == null) {
+            throw new RuntimeException("Could not determine language specification folder");
+        }
+
+        // Assume first level of the folder should be removed
+        // TODO: parameterize this
+
+
+        var resourcesPath = new ArrayList<String>();
+        boolean first = true;
+        for (var parentName : SpecsIo.getParentNames(langSpecFolder)) {
+
+            // Ignore .
+            if (parentName.equals(".")) {
+                continue;
+            }
+
+            // Ignore first
+            if (first) {
+                first = false;
+                continue;
+            }
+
+            // Add others
+            resourcesPath.add(parentName);
+        }
+
+        var path = resourcesPath.stream().collect(Collectors.joining("/", "", "/"));
+
+        //System.out.println("LANG SPEC FOLDER: " + langSpecFolder);
+        //System.out.println("PARENT NAMES: " + SpecsIo.getParentNames(langSpecFolder));
+        //System.out.println("PATH: " + path);
+
+        buildLangSpecStatic.appendCode(code.replace("<BASE_RESOURCE_FOLDER>", path));
+
+        java.addImport(LanguageSpecification.class);
+        java.add(buildLangSpecStatic);
+
+
+        final Method buildLangSpec = new Method(new JavaType(LanguageSpecification.class), "buildLangSpecs");
+
+        buildLangSpec.add(Annotation.OVERRIDE);
+        buildLangSpec.setPrivacy(Privacy.PROTECTED);
+        buildLangSpec.appendComment(" Builds the language specification, based on the input XML files." + ln());
+        buildLangSpec.addJavaDocTag(JDocTag.RETURN,
+                "a new {@link LanguageSpecification} instance for this weaver");
+        buildLangSpec.appendCode("return buildLanguageSpecification();");
+
+        java.add(buildLangSpec);
+
+    }
+
 
 }
