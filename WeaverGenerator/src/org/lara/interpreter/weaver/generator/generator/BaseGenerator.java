@@ -24,6 +24,7 @@ public abstract class BaseGenerator {
 
     private String outPackage;
     private LanguageSpecification languageSpecification;
+    private File languageSpecificationDir;
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
@@ -327,6 +328,10 @@ public abstract class BaseGenerator {
         return languageSpecification;
     }
 
+    public File getLanguageSpecificationDir() {
+        return languageSpecificationDir;
+    }
+
     /**
      * Set the language specification for this generation
      *
@@ -343,6 +348,7 @@ public abstract class BaseGenerator {
      */
     public void setLanguageSpecification(File langSpecDir) {
         languageSpecification = LanguageSpecification.newInstance(langSpecDir);
+        this.languageSpecificationDir = langSpecDir;
     }
 
     /**
