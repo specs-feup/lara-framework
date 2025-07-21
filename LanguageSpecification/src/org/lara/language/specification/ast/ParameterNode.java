@@ -15,7 +15,7 @@ package org.lara.language.specification.ast;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 

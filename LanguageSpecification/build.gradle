@@ -21,15 +21,15 @@ dependencies {
     implementation ':tdrcLibrary'
     implementation ':LaraUtils'
 
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
-    
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.13.0'
+
     // Testing dependencies (matching LaraUtils)
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
-    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.5.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0' // For static mocking
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }
 
 // Project sources
@@ -38,7 +38,6 @@ sourceSets {
         java {
             srcDir 'src'
         }
-
         resources {
             srcDir 'resources'
         }
@@ -48,7 +47,6 @@ sourceSets {
         java {
             srcDir 'test'
         }
-
         resources {
             srcDir 'resources'
             srcDir 'test-resources'
@@ -58,13 +56,11 @@ sourceSets {
 
 // Test coverage configuration (matching LaraUtils)
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
-    
     reports {
         xml.required = true
         html.required = true
     }
-    
+
     finalizedBy jacocoTestCoverageVerification
 }
 
@@ -81,17 +77,8 @@ jacocoTestCoverageVerification {
 // Make sure jacoco report is generated after tests
 test {
     useJUnitPlatform()
-    
-    testLogging {
-        exceptionFormat "full"
-        showStandardStreams = false
-    }
-    
-    // Generate test reports
-    reports {
-        html.required = true
-        junitXml.required = true
-    }
-    
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+
     finalizedBy jacocoTestReport
 }

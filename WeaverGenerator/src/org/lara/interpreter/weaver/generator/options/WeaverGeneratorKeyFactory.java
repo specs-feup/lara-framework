@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.weaver.generator.options;
 
-import org.lara.interpreter.weaver.generator.options.gui.ClassProviderPanel;
 import org.lara.interpreter.weaver.generator.options.utils.ClassProvider;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
@@ -22,7 +21,6 @@ public class WeaverGeneratorKeyFactory {
 
     public static DataKey<ClassProvider> classProvider(String id) {
         return KeyFactory.object(id, ClassProvider.class)
-                .setDecoder(ClassProvider::newInstance)
-                .setKeyPanelProvider((key, data) -> new ClassProviderPanel(key, data));
+                .setDecoder(ClassProvider::newInstance);
     }
 }

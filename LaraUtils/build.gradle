@@ -20,14 +20,14 @@ dependencies {
     implementation ':SpecsUtils'
 
     implementation group: 'io.github.java-diff-utils', name: 'java-diff-utils', version: '4.15'
-    
+
     // Testing dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
-    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.5.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0' // For static mocking
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }
 
 // Project sources
@@ -49,13 +49,11 @@ sourceSets {
 
 // Test coverage configuration
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
-    
     reports {
         xml.required = true
         html.required = true
     }
-    
+
     finalizedBy jacocoTestCoverageVerification
 }
 
@@ -72,18 +70,8 @@ jacocoTestCoverageVerification {
 // Make sure jacoco report is generated after tests
 test {
     useJUnitPlatform()
-    
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-        showStandardStreams = false
-    }
-    
-    // Generate test reports
-    reports {
-        html.required = true
-        junitXml.required = true
-    }
-    
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+
     finalizedBy jacocoTestReport
 }
