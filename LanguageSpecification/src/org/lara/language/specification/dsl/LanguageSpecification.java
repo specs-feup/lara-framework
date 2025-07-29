@@ -34,9 +34,23 @@ import java.util.stream.Collectors;
  */
 public class LanguageSpecification {
 
-    private static final String ACTIONS_FILENAME = "actionModel.xml";
     private static final String JOIN_POINTS_FILENAME = "joinPointModel.xml";
     private static final String ATTRIBUTES_FILENAME = "artifacts.xml";
+    private static final String ACTIONS_FILENAME = "actionModel.xml";
+
+
+    public static String getJoinPointsFilename() {
+        return JOIN_POINTS_FILENAME;
+    }
+
+    public static String getAttributesFilename() {
+        return ATTRIBUTES_FILENAME;
+    }
+
+    public static String getActionsFilename() {
+        return ACTIONS_FILENAME;
+    }
+
 
     private static final String BASE_JOINPOINT_CLASS = "joinpoint";
 

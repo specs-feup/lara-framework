@@ -96,7 +96,10 @@ export class Weaver {
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
-    javaWeaver.setEventTrigger(new JavaEventTrigger());
+
+    const eventTrigger = new JavaEventTrigger();
+    eventTrigger.registerReceivers(javaWeaver.getGears());
+    javaWeaver.setEventTrigger(eventTrigger);
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;

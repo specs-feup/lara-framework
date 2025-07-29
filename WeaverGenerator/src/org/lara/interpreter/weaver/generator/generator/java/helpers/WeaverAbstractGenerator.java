@@ -33,10 +33,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Generate the weaver abstract class, containing the four methods to implement:
- * handlesApplicationFolder, begin, select
- * and close. The getActions method (list of available actions) will be
- * automatically generated. The getRoot method
+ * Generate the weaver abstract class. The getActions method (list of available
+ * actions) will be automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
  *
  * @author tiago
