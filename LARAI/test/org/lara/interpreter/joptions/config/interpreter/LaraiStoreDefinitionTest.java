@@ -65,7 +65,6 @@ class LaraiStoreDefinitionTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getKeys()).contains(LaraiKeys.LARA_FILE);
-        assertThat(result.getKeys()).contains(LaraiKeys.MAIN_ASPECT);
         assertThat(result.getKeys()).contains(LaraiKeys.OUTPUT_FOLDER);
         assertThat(result.getKeys()).contains(LaraiKeys.WORKSPACE_FOLDER);
     }

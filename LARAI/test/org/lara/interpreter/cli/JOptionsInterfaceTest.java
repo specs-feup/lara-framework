@@ -29,7 +29,6 @@ class JOptionsInterfaceTest {
         // Then
         assertThat(conversionMap).isNotNull();
         assertThat(conversionMap).isNotEmpty();
-        assertThat(conversionMap).containsKey(CLIOption.main);
         assertThat(conversionMap).containsKey(CLIOption.argv);
         assertThat(conversionMap).containsKey(CLIOption.workspace);
         assertThat(conversionMap).containsKey(CLIOption.output);

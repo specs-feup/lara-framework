@@ -54,32 +54,26 @@ public class OptionsParser {
     public static Collection<Option> buildLaraIOptionGroup() {
         final Option help = OptionsBuilderUtils.newOption(CLIOption.help);
         final Option version = OptionsBuilderUtils.newOption(CLIOption.version);
-        final Option javascript = OptionsBuilderUtils.newOption(CLIOption.javascript);
         final Option debug = OptionsBuilderUtils.newOption(CLIOption.debug);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
         final Option workDir = OptionsBuilderUtils.newOption(CLIOption.workspace);
         final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
-        final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
 
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
 
-        final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
         final Option jarpaths = OptionsBuilderUtils.newOption(CLIOption.jarpaths);
 
         Options options = new Options()
                 .addOption(help)
                 .addOption(version)
                 .addOption(argv)
-                .addOption(main)
                 .addOption(debug)
                 .addOption(outDir)
                 .addOption(workDir)
                 .addOption(workDirExtra)
-                .addOption(javascript)
                 .addOption(log)
-                .addOption(restrict)
                 .addOption(jarpaths);
 
         ArrayList<Option> arrayList = new ArrayList<>();

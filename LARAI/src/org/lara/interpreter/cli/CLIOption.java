@@ -25,8 +25,6 @@ public enum CLIOption implements WeaverOption {
 
     help("h", "print this message", LaraiKeys.SHOW_HELP),
     version("v", "print version information and exit", null),
-    javascript("j", "show the javascript output in the same stream as the application's output",
-            LaraiKeys.LOG_JS_OUTPUT),
     debug("d", "show all process information", LaraiKeys.DEBUG_MODE),
     argv("av", OptionArguments.ONE_ARG, "arguments",
             "arguments for the main aspect. Supports passing a .properties file with the arguments",
@@ -35,11 +33,8 @@ public enum CLIOption implements WeaverOption {
     output("o", OptionArguments.ONE_ARG, "dir", "change output dir", LaraiKeys.OUTPUT_FOLDER),
     workspace("p", OptionArguments.ONE_ARG, "dir", "change the working directory", LaraiKeys.WORKSPACE_FOLDER),
     workspace_extra("pe", OptionArguments.ONE_ARG, "sources", "extra sources", LaraiKeys.WORKSPACE_EXTRA),
-    main("m", OptionArguments.ONE_ARG, "aspect", "select main aspect", LaraiKeys.MAIN_ASPECT),
     log("l", OptionArguments.OPTIONAL_ARG, "fileName",
             "outputs to a log file. If file ends in .zip, compresses the file", LaraiKeys.LOG_FILE),
-    restrict("rm", OptionArguments.NO_ARGS, "restrict", "Restrict mode (some Java classes are not allowed)",
-            LaraiKeys.RESTRICT_MODE),
 
     jarpaths("jp", OptionArguments.ONE_ARG, "dir1/file1[;dir2/file2]*",
             "JAR files that will be added to a separate classpath and will be accessible in scripts",

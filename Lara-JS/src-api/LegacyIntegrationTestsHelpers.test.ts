@@ -127,8 +127,6 @@ export class ClavaWeaverTester {
             out += "\n";
         });
 
-        this.set(JavaTypes.LaraiKeys.LOG_JS_OUTPUT);
-
         try {
             await import(path.join(this.basePackage, laraResource));
         } finally {

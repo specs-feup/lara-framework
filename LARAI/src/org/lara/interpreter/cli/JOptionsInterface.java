@@ -34,15 +34,12 @@ public class JOptionsInterface {
 
     static {
         CONVERSION_MAP = new HashMap<>();
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.main, LaraiKeys.MAIN_ASPECT);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.argv, LaraiKeys.ASPECT_ARGS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace, LaraiKeys.WORKSPACE_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.workspace_extra, LaraiKeys.WORKSPACE_EXTRA);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.output, LaraiKeys.OUTPUT_FOLDER);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.debug, LaraiKeys.DEBUG_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.log, LaraiKeys.LOG_FILE);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.javascript, LaraiKeys.LOG_JS_OUTPUT);
-        JOptionsInterface.CONVERSION_MAP.put(CLIOption.restrict, LaraiKeys.RESTRICT_MODE);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.jarpaths, LaraiKeys.JAR_PATHS);
         JOptionsInterface.CONVERSION_MAP.put(CLIOption.help, LaraiKeys.SHOW_HELP);
 

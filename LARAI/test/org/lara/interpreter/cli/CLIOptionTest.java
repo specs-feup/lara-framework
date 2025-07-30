@@ -49,21 +49,6 @@ class CLIOptionTest {
     }
 
     @Test
-    @DisplayName("javascript option should have correct properties")
-    void testJavascriptOption() {
-        // Given
-        CLIOption jsOption = CLIOption.javascript;
-
-        // Then
-        assertThat(jsOption.shortOption()).isEqualTo("j");
-        assertThat(jsOption.description())
-                .isEqualTo("show the javascript output in the same stream as the application's output");
-        assertThat(jsOption.args()).isEqualTo(OptionArguments.NO_ARGS);
-        assertThat(jsOption.longOption()).isEqualTo("javascript");
-        assertThat(jsOption.dataKey()).isNotNull();
-    }
-
-    @Test
     @DisplayName("debug option should have correct properties")
     void testDebugOption() {
         // Given
@@ -140,33 +125,16 @@ class CLIOptionTest {
     }
 
     @Test
-    @DisplayName("restrict option should have correct properties")
-    void testRestrictOption() {
-        // Given
-        CLIOption restrictOption = CLIOption.restrict;
-
-        // Then
-        assertThat(restrictOption.shortOption()).isEqualTo("rm");
-        assertThat(restrictOption.description()).isEqualTo("Restrict mode (some Java classes are not allowed)");
-        assertThat(restrictOption.args()).isEqualTo(OptionArguments.NO_ARGS);
-        assertThat(restrictOption.longOption()).isEqualTo("restrict");
-        assertThat(restrictOption.argName()).isEqualTo("restrict");
-        assertThat(restrictOption.dataKey()).isNotNull();
-    }
-
-    @Test
     @DisplayName("getArgumentByShortName should return correct option")
     void testGetArgumentByShortName() {
         // When/Then
         assertThat(CLIOption.getArgumentByShortName("h")).isEqualTo(CLIOption.help);
         assertThat(CLIOption.getArgumentByShortName("v")).isEqualTo(CLIOption.version);
-        assertThat(CLIOption.getArgumentByShortName("j")).isEqualTo(CLIOption.javascript);
         assertThat(CLIOption.getArgumentByShortName("d")).isEqualTo(CLIOption.debug);
         assertThat(CLIOption.getArgumentByShortName("o")).isEqualTo(CLIOption.output);
         assertThat(CLIOption.getArgumentByShortName("p")).isEqualTo(CLIOption.workspace);
         assertThat(CLIOption.getArgumentByShortName("l")).isEqualTo(CLIOption.log);
         assertThat(CLIOption.getArgumentByShortName("av")).isEqualTo(CLIOption.argv);
-        assertThat(CLIOption.getArgumentByShortName("rm")).isEqualTo(CLIOption.restrict);
         assertThat(CLIOption.getArgumentByShortName("jp")).isEqualTo(CLIOption.jarpaths);
     }
 
@@ -185,15 +153,12 @@ class CLIOptionTest {
         // When/Then
         assertThat(CLIOption.contains("help")).isTrue();
         assertThat(CLIOption.contains("version")).isTrue();
-        assertThat(CLIOption.contains("javascript")).isTrue();
         assertThat(CLIOption.contains("debug")).isTrue();
         assertThat(CLIOption.contains("argv")).isTrue();
         assertThat(CLIOption.contains("output")).isTrue();
         assertThat(CLIOption.contains("workspace")).isTrue();
         assertThat(CLIOption.contains("workspace_extra")).isTrue();
-        assertThat(CLIOption.contains("main")).isTrue();
         assertThat(CLIOption.contains("log")).isTrue();
-        assertThat(CLIOption.contains("restrict")).isTrue();
         assertThat(CLIOption.contains("jarpaths")).isTrue();
     }
 
@@ -214,15 +179,12 @@ class CLIOptionTest {
         // When/Then
         assertThat(CLIOption.containsShort("h")).isTrue();
         assertThat(CLIOption.containsShort("v")).isTrue();
-        assertThat(CLIOption.containsShort("j")).isTrue();
         assertThat(CLIOption.containsShort("d")).isTrue();
         assertThat(CLIOption.containsShort("av")).isTrue();
         assertThat(CLIOption.containsShort("o")).isTrue();
         assertThat(CLIOption.containsShort("p")).isTrue();
         assertThat(CLIOption.containsShort("pe")).isTrue();
-        assertThat(CLIOption.containsShort("m")).isTrue();
         assertThat(CLIOption.containsShort("l")).isTrue();
-        assertThat(CLIOption.containsShort("rm")).isTrue();
         assertThat(CLIOption.containsShort("jp")).isTrue();
     }
 

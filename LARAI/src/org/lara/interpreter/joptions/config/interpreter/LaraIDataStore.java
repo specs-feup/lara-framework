@@ -156,13 +156,6 @@ public class LaraIDataStore implements LaraiKeys {
         return dataStore.get(LaraiKeys.LARA_FILE);
     }
 
-    public String getMainAspect() {
-        if (dataStore.hasValue(LaraiKeys.MAIN_ASPECT)) {
-            return dataStore.get(LaraiKeys.MAIN_ASPECT);
-        }
-        return "";
-    }
-
     public FileList getWorkingDir() {
         return getTrySources(LaraiKeys.WORKSPACE_FOLDER);
     }
@@ -180,10 +173,6 @@ public class LaraIDataStore implements LaraiKeys {
             return dataStore.get(LaraiKeys.DEBUG_MODE);
         }
         return false;
-    }
-
-    public boolean isRestricMode() {
-        return dataStore.get(LaraiKeys.RESTRICT_MODE);
     }
 
     public File getOutputDir() {
@@ -276,13 +265,6 @@ public class LaraIDataStore implements LaraiKeys {
             throw new RuntimeException("Passed invalid JSON as argument: '" + aspectArgs + "'", e);
         }
 
-    }
-
-    public boolean isJavaScriptStream() {
-        if (dataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)) {
-            return dataStore.get(LaraiKeys.LOG_JS_OUTPUT);
-        }
-        return false;
     }
 
     @Override

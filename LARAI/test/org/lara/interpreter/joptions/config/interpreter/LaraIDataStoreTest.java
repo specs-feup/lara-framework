@@ -139,36 +139,6 @@ class LaraIDataStoreTest {
     }
 
     @Test
-    @DisplayName("getMainAspect() should delegate to DataStore")
-    void testGetMainAspect() {
-        // Given
-        String expectedAspect = "TestAspect";
-        when(mockDataStore.hasValue(LaraiKeys.MAIN_ASPECT)).thenReturn(true);
-        when(mockDataStore.get(LaraiKeys.MAIN_ASPECT)).thenReturn(expectedAspect);
-        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
-
-        // When
-        String result = dataStore.getMainAspect();
-
-        // Then
-        assertThat(result).isEqualTo(expectedAspect);
-    }
-
-    @Test
-    @DisplayName("getMainAspect() should return empty string when not set")
-    void testGetMainAspect_NotSet() {
-        // Given
-        when(mockDataStore.hasValue(LaraiKeys.MAIN_ASPECT)).thenReturn(false);
-        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
-
-        // When
-        String result = dataStore.getMainAspect();
-
-        // Then
-        assertThat(result).isEqualTo("");
-    }
-
-    @Test
     @DisplayName("getWorkingDir() should delegate to DataStore")
     void testGetWorkingDir() {
         // Given
@@ -320,49 +290,6 @@ class LaraIDataStoreTest {
 
         // When
         boolean result = dataStore.isDebug();
-
-        // Then
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    @DisplayName("isRestricMode() should delegate to DataStore")
-    void testIsRestricMode() {
-        // Given
-        when(mockDataStore.get(LaraiKeys.RESTRICT_MODE)).thenReturn(true);
-        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
-
-        // When
-        boolean result = dataStore.isRestricMode();
-
-        // Then
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    @DisplayName("isJavaScriptStream() should return false when not set")
-    void testIsJavaScriptStream_NotSet() {
-        // Given
-        when(mockDataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)).thenReturn(false);
-        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
-
-        // When
-        boolean result = dataStore.isJavaScriptStream();
-
-        // Then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    @DisplayName("isJavaScriptStream() should return true when enabled")
-    void testIsJavaScriptStream_Enabled() {
-        // Given
-        when(mockDataStore.hasValue(LaraiKeys.LOG_JS_OUTPUT)).thenReturn(true);
-        when(mockDataStore.get(LaraiKeys.LOG_JS_OUTPUT)).thenReturn(true);
-        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
-
-        // When
-        boolean result = dataStore.isJavaScriptStream();
 
         // Then
         assertThat(result).isTrue();
