@@ -234,6 +234,8 @@ public abstract class WeaverEngine {
         return eventTrigger != null && eventTrigger.hasListeners();
     }
 
+    public abstract boolean implementsEvents();
+
     /**
      * An image representing the icon of the program, that will appear in the
      * upper-left corner.

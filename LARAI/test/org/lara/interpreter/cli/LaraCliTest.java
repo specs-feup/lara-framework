@@ -97,6 +97,11 @@ class LaraCliTest {
         public List<WeaverOption> getOptions() {
             return options;
         }
+
+        @Override
+        public boolean implementsEvents() {
+            return true;
+        }
     }
 
     @BeforeEach

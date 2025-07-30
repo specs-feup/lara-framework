@@ -84,6 +84,11 @@ class LaraITest {
             public String getName() {
                 return "TestWeaver";
             }
+
+            @Override
+            public boolean implementsEvents() {
+                return true;
+            }
         };
     }
 

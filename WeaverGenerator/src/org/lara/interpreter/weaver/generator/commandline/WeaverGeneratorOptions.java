@@ -36,6 +36,7 @@ class WeaverGeneratorOptions extends Options {
         O("o", "output"),
         P("p", "package"),
         F("f", "fields"),
+        E("e", "events"),
         N("n", "nodeType"),
         D("d", "defs"),
         J("j", "json"),
@@ -78,6 +79,9 @@ class WeaverGeneratorOptions extends Options {
         final Option fields = newOption(null, GeneratorOption.F, ArgOption.NO_ARGS,
                 "use fields for attributes");
 
+        final Option events = newOption(null, GeneratorOption.E, ArgOption.NO_ARGS,
+                "add code that trigger events such as action execution and attributes access");
+
         final Option nodeType = newOption("base", GeneratorOption.N, ArgOption.OPTIONAL_ARG,
                 "use generics for the Join points, extending the given class (optional)");
 
@@ -94,6 +98,7 @@ class WeaverGeneratorOptions extends Options {
         addOption(outDir);
         addOption(packDir);
         addOption(fields);
+        addOption(events);
         addOption(nodeType);
         addOption(toJson);
         addOption(useDefs);

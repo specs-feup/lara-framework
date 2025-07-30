@@ -62,6 +62,7 @@ task generateWeaver(type: JavaExec) {
         "-x", "${rootProject.projectDir}/resources/specification",
         "-o", "${rootProject.projectDir}/src/",
         "-p", "org.lara.interpreter.weaver.defaultweaver",
+        "-e",
         "-j"
     ]
 }

@@ -113,6 +113,11 @@ class LaraWeaverEngineTest {
         public List<WeaverOption> getOptions() {
             return Arrays.asList(); // Empty list for testing
         }
+
+        @Override
+        public boolean implementsEvents() {
+            return true; // Simplified for testing
+        }
     }
 
     @BeforeEach
