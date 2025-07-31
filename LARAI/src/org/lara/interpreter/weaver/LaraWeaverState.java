@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class LaraWeaverState {
 
+    private final File outputDir;
     private final DataStore data;
 
     private URLClassLoader classLoader;
@@ -25,7 +26,8 @@ public class LaraWeaverState {
     /**
      * @param dataStore DataStore that supports LaraIKeys
      */
-    public LaraWeaverState(DataStore dataStore) {
+    public LaraWeaverState(File outputDir, DataStore dataStore) {
+        this.outputDir = outputDir;
         this.data = dataStore;
 
         // Load JARs to classloader
@@ -36,6 +38,10 @@ public class LaraWeaverState {
         return data;
     }
 
+    public File getOutputDir() {
+        return outputDir;
+    }
+    
     public URLClassLoader getClassLoader() {
         return classLoader;
     }
