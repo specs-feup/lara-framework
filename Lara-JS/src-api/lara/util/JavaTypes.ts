@@ -1,19 +1,6 @@
 import java from "java";
 
-export enum Engine {
-  GraalVM = "GraalVM",
-  NodeJS = "NodeJS",
-}
-
 export const NodeJavaPrefix = "nodeJava_";
-
-export let engine: Engine = Engine.GraalVM;
-
-if ("Java" in globalThis) {
-  engine = Engine.GraalVM;
-} else {
-  engine = Engine.NodeJS;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JavaClasses {
@@ -23,7 +10,7 @@ export namespace JavaClasses {
     [key: string]: any;
   }
 
-  /* eslint-disable @typescript-eslint/no-empty-interface */
+  /* eslint-disable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
   export interface LaraSystemTools extends JavaClass {
@@ -84,7 +71,7 @@ export namespace JavaClasses {
   }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
-  /* eslint-enable @typescript-eslint/no-empty-interface */
+  /* eslint-enable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
 }
 
 export default class JavaTypes {
@@ -101,15 +88,7 @@ export default class JavaTypes {
       return JavaTypes.typeMap.get(javaTypeName);
     }
 
-    let javaType: unknown;
-    switch (engine) {
-      case Engine.GraalVM:
-        javaType = Java.type(javaTypeName);
-        break;
-      case Engine.NodeJS:
-        javaType = java.import(javaTypeName);
-        break;
-    }
+    const javaType = java.import(javaTypeName);
 
     JavaTypes.typeMap.set(javaTypeName, javaType);
 
@@ -117,36 +96,17 @@ export default class JavaTypes {
   }
 
   static instanceOf<T>(value: T, javaTypeName: string): boolean {
-    switch (engine) {
-      case Engine.GraalVM:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        if (Java.isJavaObject(value)) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return Java.type(javaTypeName).class.isInstance(value);
-        }
-        return Java.typeName(value) === javaTypeName;
-      case Engine.NodeJS:
-        return java.instanceOf(value, javaTypeName);
-    }
+    return java.instanceOf(value, javaTypeName);
   }
 
   static isJavaObject<T>(value: T): boolean {
-    if (engine == Engine.NodeJS) {
-        return (
-            typeof value === "object" &&
-            value !== null &&
-            Object.getPrototypeOf(value).constructor.name.startsWith(
-                NodeJavaPrefix
-            )
-        );
-    }
-
-    try {
-      (value as any).getClass().getName();
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        Object.getPrototypeOf(value).constructor.name.startsWith(
+            NodeJavaPrefix
+        )
+    );
   }
 
   static get LaraI() {
@@ -229,10 +189,6 @@ export default class JavaTypes {
 
   static get File() {
     return JavaTypes.getType("java.io.File") as JavaClasses.File;
-  }
-
-  static get List() {
-    return JavaTypes.getType("java.util.List") as JavaClasses.List<any>;
   }
 
   static get Collections() {
@@ -324,7 +280,7 @@ export default class JavaTypes {
   }
 
   static get ArrayList() {
-    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.ArrayList;
+    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.List<any>;
   }
 
   static get HashMap() {
