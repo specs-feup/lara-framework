@@ -22,15 +22,6 @@ import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
 
-    public static final String SPACE = "\t";
-
-    public static String getSpace(int depth) {
-        if (depth <= 0) {
-            return "";
-        }
-        return String.format(String.format("%%0%dd", depth), 0).replace("0", LaraIUtils.SPACE);
-    }
-
     public static boolean printHelp(CommandLine cmd, Options options) {
         if (cmd.hasOption(CLIOption.help.shortOption())) {
             System.out.println(OptionsParser.getHelp(options));

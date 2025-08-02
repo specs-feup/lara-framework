@@ -20,7 +20,6 @@ public enum CLIConfigOption {
 
     config("c", OptionArguments.ONE_ARG, "file", "configuration file with defined options");
 
-    public static boolean ALLOW_GUI = true;
     private String shortOpt;
     private String description;
     private OptionArguments args;

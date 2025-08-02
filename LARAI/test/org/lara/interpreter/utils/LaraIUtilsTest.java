@@ -56,36 +56,6 @@ class LaraIUtilsTest {
     }
 
     @Test
-    @DisplayName("getSpace should return empty string for zero or negative depth")
-    void testGetSpace_ZeroOrNegativeDepth() {
-        assertThat(LaraIUtils.getSpace(0)).isEmpty();
-        assertThat(LaraIUtils.getSpace(-1)).isEmpty();
-        assertThat(LaraIUtils.getSpace(-5)).isEmpty();
-    }
-
-    @Test
-    @DisplayName("getSpace should return correct indentation for positive depth")
-    void testGetSpace_PositiveDepth() {
-        assertThat(LaraIUtils.getSpace(1)).isEqualTo(LaraIUtils.SPACE);
-        assertThat(LaraIUtils.getSpace(2)).isEqualTo(LaraIUtils.SPACE + LaraIUtils.SPACE);
-        assertThat(LaraIUtils.getSpace(3)).isEqualTo(LaraIUtils.SPACE + LaraIUtils.SPACE + LaraIUtils.SPACE);
-    }
-
-    @Test
-    @DisplayName("getSpace should handle large depth values")
-    void testGetSpace_LargeDepth() {
-        int depth = 10;
-        String expected = LaraIUtils.SPACE.repeat(depth);
-        assertThat(LaraIUtils.getSpace(depth)).isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("SPACE constant should be tab character")
-    void testSpaceConstant() {
-        assertThat(LaraIUtils.SPACE).isEqualTo("\t");
-    }
-
-    @Test
     @DisplayName("printHelp should return true and print help when help option is present")
     void testPrintHelp_WithHelpOption() {
         // Given

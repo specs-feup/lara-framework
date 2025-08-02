@@ -151,9 +151,6 @@ public class OptionsParser {
         StringWriter sw = new StringWriter();
         String usageSyntax = "<aspect.lara> [options] [-c <file>]  | -c <file>";
         PrintWriter pw = new PrintWriter(sw);
-        if (CLIConfigOption.ALLOW_GUI) {
-            usageSyntax += " [-g]";
-        }
         formatter.printHelp(pw, HELP_MAX_WIDTH,
                 usageSyntax,
                 "", options, leftPadding, formatter.getDescPadding(), "", false);

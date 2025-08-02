@@ -116,13 +116,6 @@ class CLIConfigOptionTest {
     }
 
     @Test
-    @DisplayName("ALLOW_GUI should be accessible")
-    void testAllowGui() {
-        // Then
-        assertThat(CLIConfigOption.ALLOW_GUI).isTrue();
-    }
-
-    @Test
     @DisplayName("enum should have all expected values")
     void testEnumValues() {
         // When

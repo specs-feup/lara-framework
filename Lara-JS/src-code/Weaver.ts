@@ -115,11 +115,11 @@ export class Weaver {
         ).get();
 
         // Arguments parser has shown help, exit
-        if (datastore.get("help")) {
+        if (datastore.get(LaraiKeys.SHOW_HELP)) {
           process.exit(0);
         }
 
-        args.scriptFile = datastore.get("aspect").toString();
+        args.scriptFile = datastore.get(LaraiKeys.LARA_FILE).toString();
       } catch (error) {
         throw new Error(
           "Failed to parse 'Classic' weaver arguments:\n" + error
