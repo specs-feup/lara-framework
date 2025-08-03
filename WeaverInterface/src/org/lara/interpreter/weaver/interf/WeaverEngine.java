@@ -163,12 +163,7 @@ public abstract class WeaverEngine {
      */
     public abstract List<String> getActions();
 
-    /**
-     * Closes the weaver and specifies the output directory location if the weaver generates new file(s)
-     *
-     * @return if close was successful
-     */
-    public abstract boolean close();
+
 
     /**
      *

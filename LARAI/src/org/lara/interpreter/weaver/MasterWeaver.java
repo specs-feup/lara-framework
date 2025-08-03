@@ -12,12 +12,12 @@
  */
 /**
  * Copyright 2012 SPeCS Research Group.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
@@ -25,19 +25,12 @@
 
 package org.lara.interpreter.weaver;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import larai.LaraI;
 import org.lara.interpreter.exception.LaraIException;
 import org.lara.interpreter.exception.PointcutExprException;
 import org.lara.interpreter.exception.SelectException;
 import org.lara.interpreter.exception.WeaverEngineException;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.utils.SelectUtils;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.events.EventTrigger;
@@ -47,14 +40,19 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 import org.lara.interpreter.weaver.utils.FilterExpression;
-
-import larai.LaraI;
 import pt.up.fe.specs.jsengine.JsEngine;
 import pt.up.fe.specs.lara.loc.LaraLoc;
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 import pt.up.fe.specs.tools.lara.logging.LaraLog;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Weaver that controls all the instances of Weavers created for controlling a specific file
@@ -78,7 +76,7 @@ public class MasterWeaver {
     // private boolean handlesApplicationFolder;
     private final LaraI larai;
     private final EventTrigger eventTrigger;
-    private final WeaverEngine weaverEngine;
+    private final LaraWeaverEngine weaverEngine;
     private long initialTime;
 
     /**
@@ -98,7 +96,12 @@ public class MasterWeaver {
         this.larai = larai;
         jpUtils = new JoinpointUtils(engine);
 
-        this.weaverEngine = weaverEngine;
+        // Temporary measure while lara-dsl-deprecatin is not merged
+        if (!(weaverEngine instanceof LaraWeaverEngine laraWeaverEngine)) {
+            throw new RuntimeException("WeaverEngine must be an instance");
+        }
+
+        this.weaverEngine = laraWeaverEngine;
         //this.sources = sources.getFiles();
         this.sources = larai.getOptions().getWorkingDir().getFiles();
     }
@@ -141,7 +144,7 @@ public class MasterWeaver {
                 weaverEngine.getAllImportableClasses()
                         .forEach(larai.getInterpreter().getImportProcessor()::importClassWithSimpleName);
             }
-            
+
             final List<AGear> gears = weaverEngine.getGears();
             addGears(gears);
 
@@ -222,8 +225,8 @@ public class MasterWeaver {
      * @throws IOException
      */
     public LaraJoinPoint select(String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            String aspect_name, Object localScope, int lineNumber) throws IOException {
+                                FilterExpression[][] filterChain,
+                                String aspect_name, Object localScope, int lineNumber) throws IOException {
 
         // System.out.println("SELECT 2");
 
@@ -275,7 +278,7 @@ public class MasterWeaver {
     }
 
     private static PointcutExprException processSelectException(String selectName, String[] jpChain, Exception e,
-            int lineNumber) {
+                                                                int lineNumber) {
 
         Throwable cause = e.getCause();
         if (cause != null) {
@@ -289,8 +292,8 @@ public class MasterWeaver {
 
     // private void selectByWeaver(WeaverEngine currentWeaver, String[] jpChain, String[] aliasChain,
     private void selectWithWeaver(String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            Object localScope, LaraJoinPoint root, String aspect_name, String selectName)
+                                  FilterExpression[][] filterChain,
+                                  Object localScope, LaraJoinPoint root, String aspect_name, String selectName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final JoinPoint rootSelect = weaverEngine.select();
         // TRIGGER SELECT BEGIN EVENT
@@ -316,8 +319,8 @@ public class MasterWeaver {
     }
 
     private void selectWithDefaultWeaver(String[] jpChain, String[] aliasChain, FilterExpression[][] filterChain,
-            Object localScope,
-            LaraJoinPoint root)
+                                         Object localScope,
+                                         LaraJoinPoint root)
             throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         DefaultWeaver defWeaver = (DefaultWeaver) weaverEngine;
         if (!filterChain[0][0].isEmpty()) {
@@ -380,7 +383,7 @@ public class MasterWeaver {
      * @throws IOException
      */
     public LaraJoinPoint select(Object joinPointReferences, String selectName, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain, String aspect_name, Object localScope, int lineNumber)
+                                FilterExpression[][] filterChain, String aspect_name, Object localScope, int lineNumber)
             throws IOException {
 
         // System.out.println("SELECT 1");
@@ -457,7 +460,7 @@ public class MasterWeaver {
     }
 
     private void generateSelectFromArbitraryIJoinPoint(JoinPoint joinPointReferences, String[] jpChain,
-            String[] aliasChain, FilterExpression[][] filterChain, LaraJoinPoint root, Object localScope)
+                                                       String[] aliasChain, FilterExpression[][] filterChain, LaraJoinPoint root, Object localScope)
             throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
         final JoinPoint ijp = joinPointReferences;
@@ -489,8 +492,8 @@ public class MasterWeaver {
      * @throws IllegalAccessException
      */
     private void generateSelect(LaraJoinPoint current, String[] jpChain, String[] aliasChain,
-            FilterExpression[][] filterChain,
-            int pos, Object localScope) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+                                FilterExpression[][] filterChain,
+                                int pos, Object localScope) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException {
 
         if (pos == jpChain.length) {
