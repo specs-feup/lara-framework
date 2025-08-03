@@ -16,9 +16,6 @@ package org.lara.interpreter.weaver.interf.events;
 import pt.up.fe.specs.util.events.EventId;
 
 public enum LaraIEvent implements EventId {
-    OnWeaver,
-    OnJoinPoint,
-    OnApply,
     OnAction,
     OnAttribute;
 }

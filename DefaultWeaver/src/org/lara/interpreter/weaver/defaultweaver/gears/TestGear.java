@@ -13,13 +13,8 @@
 
 package org.lara.interpreter.weaver.defaultweaver.gears;
 
-import org.lara.interpreter.weaver.defaultweaver.options.DefaulWeaverKeys;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
-import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
-import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
-import org.suikasoft.jOptions.Interfaces.DataStore;
 
 /**
  * @author Tiago
@@ -30,64 +25,7 @@ public class TestGear extends AGear {
     private boolean debug;
 
     public TestGear() {
-	setDebug(false);
-    }
-
-    private void parseArgs(DataStore args) {
-	// for (final String string : args) {
-	// if (string.equals("/d") || string.endsWith("/debug")) {
-	// }}
-	if (args.hasValue(DefaulWeaverKeys.TEST_BOOLEAN)) {
-	    setDebug(args.get(DefaulWeaverKeys.TEST_BOOLEAN));
-	}
-	if (debug) {
-	    System.out.println("TestGear - Debug mode ON");
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lara.interpreter.weaver.interf.AGear#onWeaver(org.lara.interpreter.
-     * weaver.interf.events.data.WeaverEvent)
-     */
-    @Override
-    public void onWeaver(WeaverEvent data) {
-	parseArgs(data.getArgs());
-	if (debug) {
-	    System.out.println("On Weaver - " + data.toString());
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lara.interpreter.weaver.interf.AGear#onJoinPoint(org.lara.interpreter
-     * .weaver.interf.events.data.JoinPointEvent)
-     */
-    @Override
-    public void onJoinPoint(JoinPointEvent data) {
-	if (debug) {
-	    System.out.println("On JoinPoint - " + data.toString());
-	}
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lara.interpreter.weaver.interf.AGear#onApply(org.lara.interpreter.
-     * weaver.interf.events.data.ApplyEvent)
-     */
-    @Override
-    public void onApply(ApplyEvent data) {
-	if (debug) {
-	    System.out.println("On Apply - " + data.toString());
-	}
-
+        setDebug(false);
     }
 
     /*
@@ -99,9 +37,9 @@ public class TestGear extends AGear {
      */
     @Override
     public void onAction(ActionEvent data) {
-	if (debug) {
-	    System.out.println("On Action - " + data.toString());
-	}
+        if (debug) {
+            System.out.println("On Action - " + data.toString());
+        }
 
     }
 
@@ -109,15 +47,15 @@ public class TestGear extends AGear {
      * @return the debug
      */
     public boolean isDebug() {
-	return debug;
+        return debug;
     }
 
     /**
      * @param debug
-     *            the debug to set
+     *              the debug to set
      */
     public void setDebug(boolean debug) {
-	this.debug = debug;
+        this.debug = debug;
     }
 
 }
