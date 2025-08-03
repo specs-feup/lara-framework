@@ -19,8 +19,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation "junit:junit:4.13.1"
-
     implementation ':jOptions'
     implementation ':SpecsUtils'
     implementation ':tdrcLibrary'
@@ -35,12 +33,6 @@ sourceSets {
     main {
         java {
             srcDir 'src'
-        }
-    }
-
-    test {
-        java {
-            srcDir 'test'
         }
     }
 }

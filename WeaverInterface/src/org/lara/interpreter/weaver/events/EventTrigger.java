@@ -23,7 +23,6 @@ import org.lara.interpreter.weaver.interf.events.LaraIEvent;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
-import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
 
 import pt.up.fe.specs.util.events.Event;
 import pt.up.fe.specs.util.events.EventController;

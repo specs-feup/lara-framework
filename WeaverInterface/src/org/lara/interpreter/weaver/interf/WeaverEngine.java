@@ -20,9 +20,7 @@ import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-import pt.up.fe.specs.util.SpecsCheck;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
@@ -49,29 +47,15 @@ public abstract class WeaverEngine {
     private final Lazy<StoreDefinition> storeDefinition;
     private final Lazy<LanguageSpecification> langSpec;
 
-    private final Map<String, List<ResourceProvider>> apis;
-
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
 
         langSpec = Lazy.newInstance(this::buildLangSpecs);
-
-        apis = new HashMap<>();
     }
 
     public Optional<DataStore> getData() {
         throw new NotImplementedException(this);
-    }
-
-    protected void addApis(String key, List<ResourceProvider> resources) {
-        var previousValue = apis.put(key, resources);
-        SpecsCheck.checkArgument(previousValue == null,
-                () -> "API name '" + key + "' already defined, current names: " + apis.keySet());
-    }
-
-    public Map<String, List<ResourceProvider>> getApis() {
-        return apis;
     }
 
     private static File createTemporaryWeaverFolder() {
@@ -87,7 +71,6 @@ public abstract class WeaverEngine {
                 // Add weaver custom keys
                 .addKeys(getOptions().stream().map(WeaverOption::dataKey).collect(Collectors.toList()))
                 .build();
-
     }
 
     /**
@@ -237,16 +220,6 @@ public abstract class WeaverEngine {
     public abstract boolean implementsEvents();
 
     /**
-     * An image representing the icon of the program, that will appear in the
-     * upper-left corner.
-     *
-     * @return by default, returns null
-     */
-    public ResourceProvider getIcon() {
-        return null;
-    }
-
-    /**
      * The languages supported by the weaver. These strings will be used to process
      * folders for LARA bundles.
      *
@@ -303,11 +276,6 @@ public abstract class WeaverEngine {
 
     public static void removeWeaver() {
         THREAD_LOCAL_WEAVER.remove();
-    }
-
-    public boolean executeUnitTestMode(DataStore dataStore) {
-        SpecsLogs.msgInfo("Unit testing mode not implemented yet for this weaver");
-        return false;
     }
 
     public void writeCode(File outputFolder) {
