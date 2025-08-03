@@ -214,7 +214,7 @@ export class Weaver {
   static shutdown() {
     Weaver.debug("Exiting...");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    Weaver.javaWeaver.close();
+    Weaver.javaWeaver.end();
   }
 }
 

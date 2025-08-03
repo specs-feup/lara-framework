@@ -24,7 +24,7 @@ export function registerSourceCodes(codes: Record<string, string>): void {
   });
 
   afterEach(() => {
-    Weaver.getWeaverEngine().close();
+    Weaver.getWeaverEngine().end();
   });
 
   afterAll(() => {

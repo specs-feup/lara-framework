@@ -68,7 +68,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
         dataStore.set(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(files));
 
-        // Call restart
         return run(dataStore);
     }
 
@@ -87,10 +86,15 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     }
 
     /**
-     * TODO: Needs similar treatement as begin()/run()
+     * Closes the weaver and ends execution.
      */
-    public void closeTop() {
-        state.close();
+    public boolean end() {
+        if (state != null) {
+            state.close();
+        }
+
+        // Close weaver
+        return close();
     }
 
     @Override
@@ -118,7 +122,14 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      * @param dataStore the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
-    public abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
+    protected abstract boolean begin(List<File> sources, File outputDir, DataStore dataStore);
+
+    /**
+     * Closes the weaver and specifies the output directory location if the weaver generates new file(s)
+     *
+     * @return if close was successful
+     */
+    protected abstract boolean close();
 
     /**
      * @param name
