@@ -75,8 +75,8 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         // Initialize state
         state = new LaraWeaverState(outputDir, dataStore);
 
-        var sucess = begin(sources, outputDir, dataStore);
-        if (!sucess) {
+        var success = begin(sources, outputDir, dataStore);
+        if (!success) {
             return false;
         }
 
