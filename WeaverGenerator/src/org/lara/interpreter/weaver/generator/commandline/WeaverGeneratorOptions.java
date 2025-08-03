@@ -38,7 +38,6 @@ class WeaverGeneratorOptions extends Options {
         F("f", "fields"),
         E("e", "events"),
         N("n", "nodeType"),
-        D("d", "defs"),
         J("j", "json"),
         C("c", "concrete");
 
@@ -87,8 +86,6 @@ class WeaverGeneratorOptions extends Options {
 
         final Option toJson = newOption(null, GeneratorOption.J, ArgOption.NO_ARGS,
                 "Output a json file of the language specification");
-        final Option useDefs = newOption(null, GeneratorOption.D, ArgOption.NO_ARGS,
-                "Create methods for def action");
         final Option concreteClasses = newOption("concreteClasses", GeneratorOption.C, ArgOption.ONE_ARG,
                 "Generate the concrete classes, using a linear hierarchy");
 
@@ -101,7 +98,6 @@ class WeaverGeneratorOptions extends Options {
         addOption(events);
         addOption(nodeType);
         addOption(toJson);
-        addOption(useDefs);
         addOption(concreteClasses);
     }
 

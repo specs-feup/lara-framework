@@ -31,7 +31,6 @@ import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.enums.Privacy;
 import org.specs.generators.java.members.*;
-import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
@@ -165,10 +164,6 @@ public class GeneratorUtils {
             // for (var action :
             // joinPointSuperType.getActionsSelf().stream().sorted((attribute, t1) ->
             // attribute.getName().compareTo(t1.getName())).toList()) {
-
-            if (javaGenerator.hasDefs() && action.getName().equals("def")) {
-                continue;
-            }
 
             final Method m = generateActionMethod(action, javaGenerator);
             m.setName(m.getName() + GenConstants.getImplementationSufix());
@@ -351,30 +346,6 @@ public class GeneratorUtils {
                 + ");" + ln();
         converted += spaceStr + "}" + ln();
         return converted;
-    }
-
-    /**
-     * Generates code for the actions that throws an
-     * {@link UnsupportedOperationException}. This code already captures
-     * the correct join point name.
-     *
-     * @param action
-     * @return
-     */
-    public static String UnsupActionExceptionCode(String action) {
-        return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
-                + "()+\": Action " + action + " not implemented \");";
-    }
-
-    public static String UnsupDefExceptionCode(String attribute) {
-        return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
-                + "()+\": attribute '\"+" + attribute + "+\"' cannot be defined\");";
-    }
-
-    public static String UnsupDefTypeExceptionCode(String attribute, String valueType) {
-        return "throw new UnsupportedOperationException(\"Join point \"+" + GenConstants.getClassName()
-                + "()+\": attribute '" + attribute + "' cannot be defined with the input type \"+" + valueType
-                + ");";
     }
 
     /**
