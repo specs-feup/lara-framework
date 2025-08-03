@@ -14,6 +14,8 @@
 package org.lara.interpreter.weaver;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.joptions.keys.FileList;
+import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.utils.LaraResourceProvider;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -73,7 +75,21 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         // Initialize state
         state = new LaraWeaverState(outputDir, dataStore);
 
-        return begin(sources, outputDir, dataStore);
+        var sucess = begin(sources, outputDir, dataStore);
+        if (!sucess) {
+            return false;
+        }
+
+        // Register gears
+        registerGears();
+
+        return true;
+    }
+
+    private void registerGears() {
+        var eventTrigger = new EventTrigger();
+        eventTrigger.registerReceivers(getGears());
+        setEventTrigger(eventTrigger);
     }
 
     /**
@@ -96,7 +112,18 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         // Close weaver
         close();
 
-        return begin(sources, outputDir, dataStore);
+        // Update workspace
+        dataStore.set(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(sources));
+
+        var success = begin(sources, outputDir, dataStore);
+        if (!success) {
+            return false;
+        }
+
+        // Re-apply gears
+        registerGears();
+
+        return true;
     }
 
     /**
