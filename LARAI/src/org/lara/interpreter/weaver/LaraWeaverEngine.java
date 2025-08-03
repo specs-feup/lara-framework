@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
+import org.lara.interpreter.joptions.keys.FileList;
+import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
@@ -26,61 +28,18 @@ import pt.up.fe.specs.util.SpecsIo;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
     private LaraWeaverState state;
-    private boolean hasRun;
 
     public LaraWeaverEngine() {
         state = null;
-        hasRun = false;
     }
 
     @Override
     public boolean run(DataStore dataStore) {
-        File outputDir = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
+        // FIXME: This should not be necessary, as run/begin() already receives the sources list. We have 2 sources of truth.
         List<File> sources = dataStore.get(LaraiKeys.WORKSPACE_FOLDER).getFiles();
+        File outputDir = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
 
         return run(sources, outputDir, dataStore);
-    }
-
-    private boolean run(List<File> sources, File outputDir, DataStore dataStore) {
-        hasRun = true;
-
-        // Initialize state
-        state = new LaraWeaverState(outputDir, dataStore);
-
-        return begin(sources, outputDir, dataStore);
-    }
-
-    /**
-     * After the weaver has run at least once, can restart the weaver with the given files, outputdir and options.
-     *
-     * @param sources
-     * @param outputDir
-     * @param dataStore
-     * @return
-     */
-    public boolean restart(List<File> sources, File outputDir, DataStore dataStore) {
-        if (!hasRun) {
-            return run(sources, outputDir, dataStore);
-        }
-
-        // Re-initialize state
-        state.close();
-        state = new LaraWeaverState(outputDir, dataStore);
-
-        // Close weaver
-        close();
-
-        return begin(sources, outputDir, dataStore);
-    }
-
-    /**
-     * Overload that receives only the sources.
-     *
-     * @param sources
-     * @return
-     */
-    public boolean restart(List<File> sources) {
-        return restart(sources, getLaraWeaverState().getOutputDir(), getLaraWeaverState().getData());
     }
 
     /**
@@ -90,10 +49,11 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      * @param codes
      * @return
      */
-    public boolean restart(String[] filenames, String[] codes) {
+    public boolean run(String[] filenames, String[] codes, DataStore dataStore) {
 
         if (filenames.length != codes.length) {
-            throw new RuntimeException("Expected length of filenames and codes to be the same: " + filenames.length + " vs " + codes.length);
+            throw new RuntimeException("Expected length of filenames and codes to be the same: " + filenames.length
+                    + " vs " + codes.length);
         }
 
         // Create files in temporary folder
@@ -103,10 +63,27 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
             var tempFile = new File(tempFolder, filenames[i]);
             SpecsIo.write(tempFile, codes[i]);
             tempFile.deleteOnExit();
+            files.add(tempFile);
         }
 
+        dataStore.set(LaraiKeys.WORKSPACE_FOLDER, FileList.newInstance(files));
+
         // Call restart
-        return restart(files);
+        return run(dataStore);
+    }
+
+    private boolean run(List<File> sources, File outputDir, DataStore dataStore) {
+        // Initialize state
+        if (state != null) {
+            state.close(); // Close previous state
+        }
+        state = new LaraWeaverState(outputDir, dataStore);
+
+        var eventTrigger = new EventTrigger();
+        eventTrigger.registerReceivers(getGears());
+        setEventTrigger(eventTrigger);
+
+        return begin(sources, outputDir, dataStore);
     }
 
     /**

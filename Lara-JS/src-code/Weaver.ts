@@ -87,19 +87,12 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const JavaEventTrigger = java.import(
-      "org.lara.interpreter.weaver.events.EventTrigger"
-    );
     const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
-
-    const eventTrigger = new JavaEventTrigger();
-    eventTrigger.registerReceivers(javaWeaver.getGears());
-    javaWeaver.setEventTrigger(eventTrigger);
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;
