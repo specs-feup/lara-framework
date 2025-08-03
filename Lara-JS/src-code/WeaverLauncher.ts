@@ -64,7 +64,6 @@ export default class WeaverLauncher {
 
   protected main(args: Arguments): void {
     this.debug(`${this.config.weaverPrettyName} execution arguments: %O`, args);
-    void this.executeWeaver(args);
 
     if (args.watch) {
       for (const directory of args.watch as string[]) {
@@ -85,6 +84,8 @@ export default class WeaverLauncher {
             console.error(error);
           }
         });
+    } else {
+      void this.executeWeaver(args);
     }
   }
 
