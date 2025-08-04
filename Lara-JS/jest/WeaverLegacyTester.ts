@@ -19,9 +19,8 @@ afterAll(() => {
     javaWeaver.run(javaDatastore);
 });
 
-// eslint-disable-next-line
 export class WeaverLegacyTester {
-    private static readonly WORK_FOLDER: string = "weaver_test_output";
+    protected readonly WORK_FOLDER: string = "weaver_test_output";
 
     private readonly basePackage: string;
 
@@ -30,7 +29,11 @@ export class WeaverLegacyTester {
      */
     private readonly modifiedDatastoreSettings: Map<string, unknown> =
         new Map();
-    private checkWovenCodeSyntax: boolean;
+    /**
+     * Whether to check the syntax of the woven code. Default is true.
+     * TODO: This should be handled on the LARA level, but it is currently a Clava-specific setting.
+     */
+    protected checkWovenCodeSyntax: boolean;
     private _checkExpectedOutput: boolean;
     private srcPackage: string | null;
     private resultPackage: string | null;
@@ -199,13 +202,12 @@ export class WeaverLegacyTester {
             throw new Error("Expected outputs not found");
         }
 
-        // eslint-disable-next-line
         expect(WeaverLegacyTester.normalize(out)).toEqual(
             WeaverLegacyTester.normalize(
                 fs
                     .readFileSync(expectedResource, "utf8")
                     .replaceAll(
-                        `/**** File '${WeaverLegacyTester.WORK_FOLDER}/`,
+                        `/**** File '${this.WORK_FOLDER}/`,
                         "/**** File '"
                     )
             )
