@@ -76,7 +76,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         if (state != null) {
             state.close(); // Close previous state
         }
-        state = new LaraWeaverState(outputDir, dataStore);
+        state = new LaraWeaverState(dataStore);
 
         var eventTrigger = new EventTrigger();
         eventTrigger.registerReceivers(getGears());
