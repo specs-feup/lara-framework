@@ -7,12 +7,6 @@ import util from "util";
 import { jest } from "@jest/globals";
 import path from "path";
 
-describe("Dummy", () => {
-    it("Dummy", () => {
-        expect(true).toBe(true);
-    });
-});
-
 afterAll(() => {
     const javaWeaver = Weaver.getWeaverEngine();
     const javaDatastore = javaWeaver.getData().get();
@@ -25,7 +19,7 @@ afterAll(() => {
     javaWeaver.run(javaDatastore);
 });
 
-// eslint-disable-next-line jest/no-export
+// eslint-disable-next-line
 export class WeaverLegacyTester {
     private static readonly WORK_FOLDER: string = "weaver_test_output";
 
@@ -205,7 +199,7 @@ export class WeaverLegacyTester {
             throw new Error("Expected outputs not found");
         }
 
-        // eslint-disable-next-line jest/no-standalone-expect
+        // eslint-disable-next-line
         expect(WeaverLegacyTester.normalize(out)).toEqual(
             WeaverLegacyTester.normalize(
                 fs

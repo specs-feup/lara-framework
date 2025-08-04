@@ -1,4 +1,4 @@
-import { WeaverLegacyTester } from "./LegacyIntegrationTestsHelpers.test.js";
+import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.js";
 import path from "path";
 
 /* eslint-disable jest/expect-expect */

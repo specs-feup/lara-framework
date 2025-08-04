@@ -1,4 +1,4 @@
-import { WeaverLegacyTester } from "./LegacyIntegrationTestsHelpers.test.js";
+import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.js";
 import path from "path";
 
 /* eslint-disable jest/expect-expect */
@@ -6,8 +6,7 @@ describe("JsEngine", () => {
     function newTester() {
         return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/jsengine")
-        )
-            .setResultPackage("results");
+        ).setResultPackage("results");
     }
 
     it("Arrow", async () => {
