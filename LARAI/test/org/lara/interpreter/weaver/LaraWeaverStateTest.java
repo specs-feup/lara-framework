@@ -214,4 +214,70 @@ class LaraWeaverStateTest {
         assertThat(state.getClassLoader()).isNotNull();
         assertThat(state.getClassLoader().getURLs()).hasSize(2);
     }
+
+    @Test
+    @DisplayName("constructor should handle deeply nested JAR directories")
+    void testConstructor_DeeplyNestedJars() throws IOException {
+        // Given
+        Path rootJarDir = tempDir.resolve("root");
+        Path nestedDir1 = rootJarDir.resolve("level1");
+        Path nestedDir2 = nestedDir1.resolve("level2");
+        Files.createDirectories(nestedDir2);
+        
+        Path jarFile1 = rootJarDir.resolve("root.jar");
+        Path jarFile2 = nestedDir1.resolve("level1.jar");
+        Path jarFile3 = nestedDir2.resolve("level2.jar");
+        Files.createFile(jarFile1);
+        Files.createFile(jarFile2);
+        Files.createFile(jarFile3);
+
+        when(mockFileList.iterator()).thenReturn(Arrays.asList(rootJarDir.toFile()).iterator());
+
+        // When
+        LaraWeaverState state = new LaraWeaverState(mockDataStore);
+
+        // Then
+        assertThat(state.getClassLoader()).isNotNull();
+        assertThat(state.getClassLoader().getURLs()).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("constructor should handle empty JAR directories")
+    void testConstructor_EmptyJarDirectories() throws IOException {
+        // Given
+        Path emptyJarDir = tempDir.resolve("empty");
+        Files.createDirectories(emptyJarDir);
+
+        when(mockFileList.iterator()).thenReturn(Arrays.asList(emptyJarDir.toFile()).iterator());
+
+        // When
+        LaraWeaverState state = new LaraWeaverState(mockDataStore);
+
+        // Then
+        assertThat(state.getClassLoader()).isNotNull();
+        assertThat(state.getClassLoader().getURLs()).isEmpty();
+    }
+
+    @Test  
+    @DisplayName("constructor should handle directory with only non-JAR files")
+    void testConstructor_DirectoryWithOnlyNonJarFiles() throws IOException {
+        // Given
+        Path dir = tempDir.resolve("nonjars");
+        Files.createDirectories(dir);
+        Path txtFile = dir.resolve("readme.txt");
+        Path classFile = dir.resolve("Test.class");
+        Path xmlFile = dir.resolve("config.xml");
+        Files.createFile(txtFile);
+        Files.createFile(classFile);
+        Files.createFile(xmlFile);
+
+        when(mockFileList.iterator()).thenReturn(Arrays.asList(dir.toFile()).iterator());
+
+        // When
+        LaraWeaverState state = new LaraWeaverState(mockDataStore);
+
+        // Then
+        assertThat(state.getClassLoader()).isNotNull();
+        assertThat(state.getClassLoader().getURLs()).isEmpty();
+    }
 }

@@ -64,11 +64,6 @@ class LaraCliTest {
         }
 
         @Override
-        public boolean close() {
-            return true;
-        }
-
-        @Override
         public List<String> getActions() {
             return Arrays.asList("testAction");
         }

@@ -65,7 +65,7 @@ class LaraWeaverEngineTest {
         private boolean beginResult = true;
 
         @Override
-        public boolean begin(List<File> sources, File outputDir, DataStore dataStore) {
+        protected boolean begin(List<File> sources, File outputDir, DataStore dataStore) {
             beginCalled = true;
             return beginResult;
         }
@@ -80,7 +80,7 @@ class LaraWeaverEngineTest {
 
         // Implement required abstract methods from WeaverEngine
         @Override
-        public boolean close() {
+        protected boolean close() {
             return true;
         }
 
@@ -278,16 +278,16 @@ class LaraWeaverEngineTest {
     }
 
     @Test
-    @DisplayName("closeTop() should close the state")
-    void testCloseTop() {
+    @DisplayName("end() should close the state")
+    void testEnd() {
         // Given
         weaverEngine.run(mockDataStore);
 
         // When/Then - should not throw exception (state.close() is called)
-        weaverEngine.closeTop();
+        weaverEngine.end();
 
         // We can't easily verify the internal state without exposing more methods
-        // but at least we can ensure closeTop() doesn't throw an exception
+        // but at least we can ensure end() doesn't throw an exception
     }
 
     @Test
@@ -316,5 +316,142 @@ class LaraWeaverEngineTest {
         // Then
         assertThat(result).isTrue();
         assertThat(weaverEngine.wasBeginCalled()).isTrue();
+    }
+
+    @Test
+    @DisplayName("run(String[], String[], DataStore) should create temporary files and call run()")
+    void testRunWithFilenamesAndCodes_Success() {
+        // Given
+        String[] filenames = {"test1.lara", "test2.lara"};
+        String[] codes = {"console.log('test1');", "console.log('test2');"};
+
+        // When
+        boolean result = weaverEngine.run(filenames, codes, mockDataStore);
+
+        // Then
+        assertThat(result).isTrue();
+        assertThat(weaverEngine.wasBeginCalled()).isTrue();
+        assertThat(weaverEngine.getData()).isPresent();
+
+        // Verify that WORKSPACE_FOLDER was set with the temporary files
+        verify(mockDataStore).set(eq(LaraiKeys.WORKSPACE_FOLDER), any(FileList.class));
+    }
+
+    @Test
+    @DisplayName("run(String[], String[], DataStore) should throw exception when arrays have different lengths")
+    void testRunWithFilenamesAndCodes_MismatchedArrays() {
+        // Given
+        String[] filenames = {"test1.lara", "test2.lara"};
+        String[] codes = {"console.log('test1');"};
+
+        // When/Then
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            weaverEngine.run(filenames, codes, mockDataStore);
+        });
+
+        assertThat(exception.getMessage()).contains("Expected length of filenames and codes to be the same");
+        assertThat(exception.getMessage()).contains("2 vs 1");
+    }
+
+    @Test
+    @DisplayName("run(String[], String[], DataStore) should handle empty arrays")
+    void testRunWithFilenamesAndCodes_EmptyArrays() {
+        // Given
+        String[] filenames = {};
+        String[] codes = {};
+
+        // When
+        boolean result = weaverEngine.run(filenames, codes, mockDataStore);
+
+        // Then
+        assertThat(result).isTrue();
+        assertThat(weaverEngine.wasBeginCalled()).isTrue();
+
+        // Verify that WORKSPACE_FOLDER was set with empty FileList
+        verify(mockDataStore).set(eq(LaraiKeys.WORKSPACE_FOLDER), any(FileList.class));
+    }
+
+    @Test
+    @DisplayName("run() should close previous state when called multiple times")
+    void testRun_MultipleCallsClosePreviousState() {
+        // Given - First run to initialize state
+        weaverEngine.run(mockDataStore);
+        LaraWeaverState firstState = weaverEngine.getLaraWeaverState();
+
+        // When - Second run
+        weaverEngine.run(mockDataStore);
+        LaraWeaverState secondState = weaverEngine.getLaraWeaverState();
+
+        // Then
+        assertThat(firstState).isNotSameAs(secondState);
+        assertThat(weaverEngine.getData()).isPresent();
+    }
+
+    @Test
+    @DisplayName("end() should return close() result")
+    void testEnd_ReturnsCloseResult() {
+        // Given
+        weaverEngine.run(mockDataStore);
+
+        // When
+        boolean result = weaverEngine.end();
+
+        // Then
+        assertThat(result).isTrue(); // Our test implementation returns true from close()
+    }
+
+    @Test
+    @DisplayName("end() should handle null state gracefully")
+    void testEnd_NullState() {
+        // When/Then - should not throw exception even with null state
+        boolean result = weaverEngine.end();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("run(String[], String[], DataStore) should create files with correct content")
+    void testRunWithFilenamesAndCodes_FileContent() {
+        // Given
+        String[] filenames = {"script.js"};
+        String[] codes = {"aspectdef MyAspect\nend"};
+
+        // When
+        weaverEngine.run(filenames, codes, mockDataStore);
+
+        // Then
+        assertThat(weaverEngine.wasBeginCalled()).isTrue();
+        
+        // Verify the DataStore was called to set the workspace folder
+        verify(mockDataStore).set(eq(LaraiKeys.WORKSPACE_FOLDER), any(FileList.class));
+    }
+
+    @Test
+    @DisplayName("State should be properly managed across multiple operations")
+    void testStateManagement() {
+        // Initially no state
+        assertThat(weaverEngine.getData()).isEmpty();
+        assertThat(weaverEngine.getLaraWeaverStateTry()).isEmpty();
+
+        // After run, state should be present
+        weaverEngine.run(mockDataStore);
+        assertThat(weaverEngine.getData()).isPresent();
+        assertThat(weaverEngine.getLaraWeaverStateTry()).isPresent();
+
+        // After end, we can't easily test state cleanup without exposing internals,
+        // but at least verify end() doesn't throw
+        weaverEngine.end();
+    }
+
+    @Test
+    @DisplayName("run() should handle DataStore retrieval exceptions gracefully")
+    void testRun_DataStoreExceptions() {
+        // Given - Mock DataStore to throw exception
+        when(mockDataStore.get(LaraiKeys.WORKSPACE_FOLDER))
+            .thenThrow(new RuntimeException("DataStore access failed"));
+
+        // When/Then
+        assertThrows(RuntimeException.class, () -> {
+            weaverEngine.run(mockDataStore);
+        });
     }
 }

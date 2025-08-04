@@ -3,6 +3,7 @@ package org.lara.interpreter.joptions.config.interpreter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
 import java.util.Arrays;
@@ -308,5 +309,66 @@ class LaraIDataStoreTest {
 
         // Then
         assertThat(result).isEqualTo(expectedString);
+    }
+
+    @Test
+    @DisplayName("constructor should handle mergeSystemAndLocalOptions debug paths")
+    void testConstructor_MergeSystemOptionsDebugPaths() {
+        // Given - Enable debug logging to trigger lambdas
+        // Need to set up persistence and store definition to reach the debug paths
+        StoreDefinition mockStoreDef = mock(StoreDefinition.class);
+        when(mockStoreDef.hasKey(any())).thenReturn(true);
+        
+        // Mock persistence to trigger the debug logging paths
+        when(mockDataStore.getStoreDefinitionTry()).thenReturn(Optional.of(mockStoreDef));
+        when(mockDataStore.getPersistence()).thenReturn(Optional.empty()); // This triggers lambda$2
+        
+        when(mockWeaverEngine.getOptions()).thenReturn(Arrays.asList());
+        when(mockWeaverEngine.getName()).thenReturn("TestWeaver");
+
+        // When - This should trigger the lambda functions for debug logging
+        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
+
+        // Then
+        assertThat(dataStore).isNotNull();
+    }
+
+    @Test
+    @DisplayName("constructor should handle mergeSystemAndLocalOptions when storeDef is null")
+    void testConstructor_MergeSystemOptionsNullStoreDef() {
+        // Given - No store definition to trigger lambda$0
+        when(mockDataStore.getStoreDefinitionTry()).thenReturn(Optional.empty());
+        when(mockDataStore.getPersistence()).thenReturn(Optional.empty());
+        
+        when(mockWeaverEngine.getOptions()).thenReturn(Arrays.asList());
+        when(mockWeaverEngine.getName()).thenReturn("TestWeaver");
+
+        // When - This should trigger lambda$0
+        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
+
+        // Then
+        assertThat(dataStore).isNotNull();
+    }
+
+    @Test
+    @DisplayName("getExtraSources() should return sources when extra sources exist")
+    void testGetExtraSources_WithSources() {
+        // Given
+        File sourceFile1 = new File("source1.lara");
+        File sourceFile2 = new File("source2.lara");
+        java.util.Map<File, File> extraWorkspaceMap = new java.util.HashMap<>();
+        extraWorkspaceMap.put(sourceFile1, sourceFile1);
+        extraWorkspaceMap.put(sourceFile2, sourceFile2);
+        
+        when(mockDataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)).thenReturn(true);
+        when(mockDataStore.get(LaraiKeys.WORKSPACE_EXTRA)).thenReturn(extraWorkspaceMap);
+        LaraIDataStore dataStore = new LaraIDataStore(mockLaraI, mockDataStore, mockWeaverEngine);
+
+        // When
+        var result = dataStore.getExtraSources();
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result).contains(sourceFile1, sourceFile2);
     }
 }

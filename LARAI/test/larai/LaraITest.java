@@ -51,11 +51,6 @@ class LaraITest {
             }
 
             @Override
-            public boolean close() {
-                return true;
-            }
-
-            @Override
             public String getRoot() {
                 return "testRoot";
             }
