@@ -1,10 +1,10 @@
-import { ClavaWeaverTester } from "./LegacyIntegrationTestsHelpers.test.js";
+import { WeaverLegacyTester } from "./LegacyIntegrationTestsHelpers.test.js";
 import path from "path";
 
 /* eslint-disable jest/expect-expect */
 describe("ApiTest", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api")
         ).setResultPackage("results");
     }
@@ -52,7 +52,7 @@ describe("ApiTest", () => {
 
 describe("ApiTest - DSE", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api/dse")
         ).setResultPackage("../results/dse");
     }
@@ -64,7 +64,7 @@ describe("ApiTest - DSE", () => {
 
 describe("ApiTest - Graphs", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api/graphs")
         ).setResultPackage("../results/graphs");
     }
@@ -76,7 +76,7 @@ describe("ApiTest - Graphs", () => {
 
 describe("ApiTest - Iterators", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api/iterators")
         ).setResultPackage("../results/iterators");
     }
@@ -90,7 +90,7 @@ describe("ApiTest - Iterators", () => {
 
 describe("ApiTest - Units", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api/units")
         ).setResultPackage("../results/units");
     }
@@ -106,7 +106,7 @@ describe("ApiTest - Units", () => {
 
 describe("ApiTest - Util", () => {
     function newTester() {
-        return new ClavaWeaverTester(
+        return new WeaverLegacyTester(
             path.resolve("../LARAI/resources/larai/test/api/util")
         ).setResultPackage("../results/util");
     }

@@ -1,4 +1,6 @@
-import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.js";
+import JavaTypes, {
+    JavaClasses,
+} from "@specs-feup/lara/api/lara/util/JavaTypes.js";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 import fs from "fs";
 import util from "util";
@@ -11,9 +13,21 @@ describe("Dummy", () => {
     });
 });
 
+afterAll(() => {
+    const javaWeaver = Weaver.getWeaverEngine();
+    const javaDatastore = javaWeaver.getData().get();
+
+    javaDatastore.set(
+        JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
+        JavaTypes.FileList.newInstance()
+    );
+
+    javaWeaver.run(javaDatastore);
+});
+
 // eslint-disable-next-line jest/no-export
-export class ClavaWeaverTester {
-    private static readonly WORK_FOLDER: string = "cxx_weaver_output";
+export class WeaverLegacyTester {
+    private static readonly WORK_FOLDER: string = "weaver_test_output";
 
     private readonly basePackage: string;
 
@@ -111,7 +125,8 @@ export class ClavaWeaverTester {
     }
 
     public async test(
-        laraResource: string
+        laraResource: string,
+        ...codeResources: string[]
     ): Promise<void> {
         if (!this.run) {
             console.info("Ignoring test, 'run' flag is not set");
@@ -128,7 +143,32 @@ export class ClavaWeaverTester {
         });
 
         try {
+            const javaFiles: JavaClasses.List<JavaClasses.File> =
+                new JavaTypes.ArrayList();
+
+            for (const codeResource of codeResources) {
+                const javaFile = new JavaTypes.File(
+                    this.buildCodeResource(codeResource)
+                );
+                if (!fs.existsSync(javaFile.getAbsolutePath())) {
+                    throw new Error(
+                        `Code resource '${codeResource}' does not exist at '${javaFile.getAbsolutePath()}'.`
+                    );
+                }
+                javaFiles.add(javaFile);
+            }
+
+            const javaWeaver = Weaver.getWeaverEngine();
+            const javaDatastore = javaWeaver.getData().get();
+
+            javaDatastore.set(
+                JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
+                JavaTypes.FileList.newInstance(javaFiles)
+            );
+
+            javaWeaver.run(javaDatastore);
             await import(path.join(this.basePackage, laraResource));
+            javaWeaver.end();
         } finally {
             log.mockRestore();
 
@@ -166,12 +206,12 @@ export class ClavaWeaverTester {
         }
 
         // eslint-disable-next-line jest/no-standalone-expect
-        expect(ClavaWeaverTester.normalize(out)).toEqual(
-            ClavaWeaverTester.normalize(
+        expect(WeaverLegacyTester.normalize(out)).toEqual(
+            WeaverLegacyTester.normalize(
                 fs
                     .readFileSync(expectedResource, "utf8")
                     .replaceAll(
-                        `/**** File '${ClavaWeaverTester.WORK_FOLDER}/`,
+                        `/**** File '${WeaverLegacyTester.WORK_FOLDER}/`,
                         "/**** File '"
                     )
             )
