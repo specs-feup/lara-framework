@@ -35,18 +35,6 @@ public class WeaverOptions {
     }
 
     private static Map<String, WeaverOption> buildMap(List<WeaverOption> options) {
-        // Map<String, WeaverOption> optionsMap = new HashMap<>();
-        //
-        // for (WeaverOption option : options) {
-        // if (option.dataKey() == null) {
-        // System.out.println("OPTION " + option.shortOption() + " has no DataKey");
-        // continue;
-        // }
-        //
-        // optionsMap.put(option.dataKey().getName(), option);
-        // }
-        //
-        // return optionsMap;
         return options.stream()
                 // Only options that have a DataKey
                 .filter(option -> option.dataKey() != null)
@@ -144,6 +132,5 @@ public class WeaverOptions {
         } else {
             arguments.add(position, argument);
         }
-
     }
 }

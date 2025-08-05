@@ -32,28 +32,17 @@ public class FileList implements Iterable<File> {
     }
 
     /**
-     * Creates a StringList with the file names from the files on the list passed as parameter.
+     * Creates a StringList with the file names from the files on the list passed as
+     * parameter.
      * 
      * @param files
-     *            - the list of files
+     *              - the list of files
      * @return a new StringList instance
      */
     public FileList(Collection<File> stringFile) {
         fileList = new ArrayList<>();
         fileList.addAll(stringFile);
     }
-
-    /**
-     * Creates a StringList with the file names from the files on the list passed as parameter.
-     * 
-     * @param files
-     *            - the list of files
-     * @return a new StringList instance
-     */
-    // public static FileList newInstance(List<File> files) {
-    //
-    // return new FileList(files);
-    // }
 
     /**
      * Helper constructor with variadic inputs.

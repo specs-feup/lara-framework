@@ -33,4 +33,9 @@ public class GenericType implements IType {
         return isArray;
     }
 
+    @Override
+    public String toString() {
+        return type != null ? type : "null";
+    }
+
 }

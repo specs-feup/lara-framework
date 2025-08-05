@@ -20,7 +20,8 @@ import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 public class ActionNode extends LangSpecNode {
 
     /**
-     * Create a new instance of an action with a declaration child that defines its name and return type
+     * Create a new instance of an action with a declaration child that defines its
+     * name and return type
      * 
      * @param declaration
      */
@@ -32,8 +33,11 @@ public class ActionNode extends LangSpecNode {
         return getChild(DeclarationNode.class, 0);
     }
 
-    public List<DeclarationNode> getParameters() {
-        return getChildren(DeclarationNode.class).subList(1, getNumChildren());
+    public List<ParameterNode> getParameters() {
+        // Get all children except the first one (which is DeclarationNode), and filter for ParameterNode
+        return getChildren().subList(1, getNumChildren()).stream()
+                .map(ParameterNode.class::cast)
+                .toList();
     }
 
     @Override

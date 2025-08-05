@@ -24,6 +24,7 @@ public abstract class BaseGenerator {
 
     private String outPackage;
     private LanguageSpecification languageSpecification;
+    private File languageSpecificationDir;
     private File outDir;
     private String weaverName;
     private boolean abstractGetters;
@@ -36,11 +37,9 @@ public abstract class BaseGenerator {
     private boolean showGraph;
     private boolean generated;
     private boolean json;
-    private boolean defs;
     private String concreteClassesPrefix;
 
     public BaseGenerator() {
-
         init();
     }
 
@@ -91,7 +90,6 @@ public abstract class BaseGenerator {
         setShowGraph(GenConstants.getDefaultShowGraph());
         setGenerated(false);
         setJson(false);
-        setDefs(false);
         setConcreteClassesPrefix(null);
     }
 
@@ -235,7 +233,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * See if the getters should be generated as abstract, and thus no field is generated
+     * See if the getters should be generated as abstract, and thus no field is
+     * generated
      *
      * @return
      */
@@ -253,7 +252,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Set if the getters should be generated as abstract, and thus no field is generated
+     * Set if the getters should be generated as abstract, and thus no field is
+     * generated
      *
      * @return
      */
@@ -327,26 +327,24 @@ public abstract class BaseGenerator {
         return languageSpecification;
     }
 
-    /**
-     * Set the language specification for this generation
-     *
-     * @param languageSpecification
-     */
-    private void setLanguageSpecification(LanguageSpecification languageSpecification) {
-        this.languageSpecification = languageSpecification;
+    public File getLanguageSpecificationDir() {
+        return languageSpecificationDir;
     }
 
     /**
-     * Create a language specification using the models defined in the given directory
+     * Create a language specification using the models defined in the given
+     * directory
      *
      * @param langSpecDirStr the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
         languageSpecification = LanguageSpecification.newInstance(langSpecDir);
+        this.languageSpecificationDir = langSpecDir;
     }
 
     /**
-     * Create a language specification using the models defined in the given directory name
+     * Create a language specification using the models defined in the given
+     * directory name
      *
      * @param langSpecDirStr name of the input folder
      */
@@ -381,14 +379,6 @@ public abstract class BaseGenerator {
 
     public boolean hasImplMode() {
         return implMode;
-    }
-
-    public void setDefs(boolean b) {
-        this.defs = b;
-    }
-
-    public boolean hasDefs() {
-        return defs;
     }
 
     /**

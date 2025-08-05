@@ -2,7 +2,7 @@ import DotFormatter from "./DotFormatter.js";
 import EdgeData from "./EdgeData.js";
 import NodeData from "./NodeData.js";
 
-import cytoscape from "../../libs/cytoscape-3.26.0.js";
+import cytoscape from "cytoscape";
 
 /**
  * Utility class related with graph creation and manipulation.

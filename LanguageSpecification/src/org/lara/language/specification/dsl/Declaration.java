@@ -28,31 +28,31 @@ public class Declaration {
     private String name;
 
     public Declaration(IType type, String name) {
-	setType(type);
-	setName(name);
+        setType(type);
+        setName(name);
     }
 
     public IType getType() {
-	return type;
+        return type;
     }
 
     public void setType(IType type) {
-	this.type = type;
+        this.type = type;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     @Override
     public String toString() {
-	if (type instanceof LiteralEnum) {
-	    return type.getType();
-	}
-	return type.getType() + " " + name;
+        if (type instanceof LiteralEnum) {
+            return type.getType();
+        }
+        return type.getType() + " " + name;
     }
 }

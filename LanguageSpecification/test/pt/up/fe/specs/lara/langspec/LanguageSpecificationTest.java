@@ -13,13 +13,13 @@
 
 package pt.up.fe.specs.lara.langspec;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ACTION_MODEL;
 import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.ATTRIBUTE_MODEL;
 import static pt.up.fe.specs.lara.langspec.LanguageSpecificationTestResource.JOIN_POINT_MODEL;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.lara.language.specification.dsl.Action;
 
 import pt.up.fe.specs.util.SpecsStrings;
@@ -29,7 +29,7 @@ import pt.up.fe.specs.util.xml.XmlDocument;
 
 public class LanguageSpecificationTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         SpecsSystem.programStandardInit();
     }
@@ -84,10 +84,4 @@ public class LanguageSpecificationTest {
                 SpecsStrings.normalizeFileContents(actual.toString(), true));
 
     }
-
-    //
-    // private static void testActionModel() throws JAXBException, SAXException, XMLParseException, IOException {
-
-    // }
-
 }

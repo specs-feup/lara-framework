@@ -114,8 +114,8 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
   );
 
   fs.writeSync(
-    outputFile,
-    `\nexport function wrapJoinPoint(obj: any): any {
+      outputFile,
+      `\nexport function wrapJoinPoint(obj: any): any {
   if (JoinpointMappers.length === 0) {
     return obj;
   }
@@ -151,6 +151,12 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
   }
 
   if (
+    JavaTypes.instanceOf(obj, "java.util.ArrayList")
+  ) {
+    return obj.toArray().map(wrapJoinPoint);
+  }
+
+  if (
     JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
     !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")
   ) {
@@ -169,13 +175,15 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  // Get join point class from name of the Java class, since getJoinPointType() might
+  // not always correspond to the actual join point class (e.g., anyweaver)
+  const jpClass: string = obj.get_class();
   for (const mapper of JoinpointMappers) {
-    if (mapper[jpType]) {
-      return new mapper[jpType](obj);
+    if (mapper[jpClass]) {
+      return new mapper[jpClass](obj);
     }
   }
-  throw new Error("No mapper found for join point type: " + jpType);
+  throw new Error("No mapper found for join point type: " + jpClass);
 }\n`
   );
 
@@ -187,30 +195,6 @@ export function getJoinpointMappers(): JoinpointMapperType[] {
   }
 
   if (Array.isArray(obj)) {
-    if (engine == Engine.NodeJS) {
-      const isJpArray = obj.reduce((prev, curr) => {
-          return prev && curr instanceof LaraJoinPoint;
-      }, true);
-
-      const getClassName = (jp: LaraJoinPoint) =>
-          Object.getPrototypeOf(jp._javaObject).constructor.name;
-
-      if (isJpArray) {
-        const clazz = (
-            obj.map(getClassName).reduce((prev, curr) => {
-                if (prev != curr) {
-                    return undefined;
-                }
-                return prev;
-            }) ?? "java.lang.Object"
-        )
-            .replace(NodeJavaPrefix, "")
-            .replaceAll("_", ".");
-        
-        return java.newArray(clazz, obj.map(unwrapJoinPoint));
-      }
-    }
-
     return obj.map(unwrapJoinPoint);
   }
 
