@@ -16,7 +16,7 @@ package org.lara.interpreter.weaver.options;
 import org.suikasoft.jOptions.Datakey.DataKey;
 
 /**
- * Interface used to map options between {@link Option} and {@link DataKey}
+ * Interface used to map options between {@link WeaverOption} and {@link DataKey}
  * 
  * @author tiago
  *
