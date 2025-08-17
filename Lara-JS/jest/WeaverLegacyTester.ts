@@ -195,7 +195,7 @@ export class WeaverLegacyTester {
             console.info(
                 "Could not find resource '" +
                     expectedResource +
-                    "', skipping verification. Actual output:\n" +
+                    "'. Actual output:\n" +
                     out
             );
 
