@@ -84,8 +84,8 @@ public class LaraCOptions {
      */
     private void setDefaultOptions() {
         showAspectIR = debug = false;
-        language = MessageConstants.LANGUAGE_DEFAULT;
-        xmlSpecDir = outputDir = new File(MessageConstants.HOME_DIR);
+        language = MessageConstants.getLanguageDefault();
+        xmlSpecDir = outputDir = new File(MessageConstants.getHomeDir());
         includeFolders = new ArrayList<>();
         includeResources = new ArrayList<>();
         includeResourcesMap = Lazy.newInstance(() -> buildIncludeResourcesMap());
@@ -109,7 +109,7 @@ public class LaraCOptions {
         // LaraC requires at least one input: the aspect file
         if ((args.length < 1)) {
 
-            OptionUtils.help(MessageConstants.LARAC_HELP_EXEC, options);
+            OptionUtils.help(MessageConstants.getLaracHelpExec(), options);
             return false;
         }
 
@@ -121,7 +121,7 @@ public class LaraCOptions {
 
         setLaraFile(larac, laraFileName);
 
-        command = OptionUtils.parseOptions(options, args, MessageConstants.LARAC_HELP_EXEC);
+        command = OptionUtils.parseOptions(options, args, MessageConstants.getLaracHelpExec());
         if (command == null) {
             return false;
         }
@@ -226,7 +226,7 @@ public class LaraCOptions {
         }
         switch (arg) {
         case help:
-            OptionUtils.help(MessageConstants.LARAC_HELP_EXEC, options);
+            OptionUtils.help(MessageConstants.getLaracHelpExec(), options);
             return false;
         case version:
             larac.println(MessageConstants.getLaraVersion() + "\n" + LaraC.getFrontEndVersion());

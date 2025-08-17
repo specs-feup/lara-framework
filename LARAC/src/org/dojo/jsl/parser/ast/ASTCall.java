@@ -82,7 +82,7 @@ public class ASTCall extends SimpleNode {
                     path = "";
                     // Concatenate the path to the aspect
                     for (final Node child : filePath.getChildren()) {
-                        path += ((ASTIdentifier) child).value.toString() + MessageConstants.NAME_SEPARATOR;
+                        path += ((ASTIdentifier) child).value.toString() + MessageConstants.getNameSeparator();
                     }
                     path += aspName;
                     pos++;

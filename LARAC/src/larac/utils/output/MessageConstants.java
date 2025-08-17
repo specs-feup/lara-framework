@@ -52,15 +52,44 @@ public class MessageConstants {
     public static String getShowxmlDesc() {
         return SHOWXML_DESC;
     }
-    public static final String OUTPUT_DESC = "Change Output directory of resulting files. Default: ." + File.separator;
-    public static final String XMLSPEC_DESC = "Change language specification directory. Default: ." + File.separator;
-    public static final String LANGUAGE_DESC = "Change the concerning programming language. Default: C";
-    public static final String VERBOSE_DESC = "Change the message level from 0(none) to 3(all). Default: 3";
-    public static final String STREAM_DESC = "Change the output stream. Default: java.lang.System.out";
-    public static final String INCLUDE_DESC = "Include a list of folders containing lara aspect files. Separate paths with ';'";
-    public static final String RESOURCE_DESC = "Include a list of resources that reference lara aspect files. Separate paths with ';'";
+    
+    private static final String OUTPUT_DESC = "Change Output directory of resulting files. Default: ." + File.separator;
+    private static final String XMLSPEC_DESC = "Change language specification directory. Default: ." + File.separator;
+    private static final String LANGUAGE_DESC = "Change the concerning programming language. Default: C";
+    private static final String VERBOSE_DESC = "Change the message level from 0(none) to 3(all). Default: 3";
+    private static final String STREAM_DESC = "Change the output stream. Default: java.lang.System.out";
+    private static final String INCLUDE_DESC = "Include a list of folders containing lara aspect files. Separate paths with ';'";
+    private static final String RESOURCE_DESC = "Include a list of resources that reference lara aspect files. Separate paths with ';'";
 
-    public static final String USAGE = "usage: java -jar larac.jar (<file.lara> | -gen <WeaverName>) [-<option> <optionParam>+] | -h"
+    public static String getOutputDesc() {
+        return OUTPUT_DESC;
+    }
+
+    public static String getXmlspecDesc() {
+        return XMLSPEC_DESC;
+    }
+
+    public static String getLanguageDesc() {
+        return LANGUAGE_DESC;
+    }
+
+    public static String getVerboseDesc() {
+        return VERBOSE_DESC;
+    }
+
+    public static String getStreamDesc() {
+        return STREAM_DESC;
+    }
+
+    public static String getIncludeDesc() {
+        return INCLUDE_DESC;
+    }
+
+    public static String getResourceDesc() {
+        return RESOURCE_DESC;
+    }
+
+    private static final String USAGE = "usage: java -jar larac.jar (<file.lara> | -gen <WeaverName>) [-<option> <optionParam>+] | -h"
             + "\noptions:" + "\n Option\t\tShort\tInput\t\tDescription" + "\n -help \t\t-h \t\t\tShows this message"
             + "\n -version  \t-v \t\t\tShows the version of the LARA language and the Front-End"
             + "\n -gen  \t\t-g  \t<WeaverName>\tGenerate a weaver interface implementation for the Language Specification"
@@ -71,6 +100,10 @@ public class MessageConstants {
             + "\n -xmldir \t-xd \t<path>\t\tChange source of the XML input files. Default: ." + File.separator
             + "\n -lang \t\t-l \t<language>\tChange the concerning programming language. Default: C"
             + "\n -verbose \t-vb \t<level>\t\tChange the message level from 0(none) to 3(all). Default: 3" + "\n";
+
+    public static String getUsage() {
+        return USAGE;
+    }
 
     private static final String FILE_WRITEN = "Files created successfully for ";
     private static final String FILE_WRITING = "Writing file to ";
@@ -114,13 +147,41 @@ public class MessageConstants {
     public static String getLanguageDefault() {
         return LANGUAGE_DEFAULT;
     }
-    public static final String HOME_DIR = "." + File.separator;
-    public static final String PARENT_HOME_DIR = "." + MessageConstants.HOME_DIR;
-    public static final String OUT_DIR = MessageConstants.PARENT_HOME_DIR + "out" + File.separator;
-    public static final String XML_DIR = MessageConstants.PARENT_HOME_DIR + "resources" + File.separator;
-    public static final String WORK_DIR = MessageConstants.PARENT_HOME_DIR + "program" + File.separator;
-    public static final String DEFAULT_TARGET = "__DEFAULT__";
-    public static final int INDENT = 2;
+    private static final String HOME_DIR = "." + File.separator;
+    private static final String PARENT_HOME_DIR = "." + HOME_DIR;
+    private static final String OUT_DIR = PARENT_HOME_DIR + "out" + File.separator;
+    private static final String XML_DIR = PARENT_HOME_DIR + "resources" + File.separator;
+    private static final String WORK_DIR = PARENT_HOME_DIR + "program" + File.separator;
+    private static final String DEFAULT_TARGET = "__DEFAULT__";
+    private static final int INDENT = 2;
+
+    public static String getHomeDir() {
+        return HOME_DIR;
+    }
+
+    public static String getParentHomeDir() {
+        return PARENT_HOME_DIR;
+    }
+
+    public static String getOutDir() {
+        return OUT_DIR;
+    }
+
+    public static String getXmlDir() {
+        return XML_DIR;
+    }
+
+    public static String getWorkDir() {
+        return WORK_DIR;
+    }
+
+    public static String getDefaultTarget() {
+        return DEFAULT_TARGET;
+    }
+
+    public static int getIndent() {
+        return INDENT;
+    }
     public static String space = "";
     private static String spaceStep = "    ";
 
@@ -147,5 +208,9 @@ public class MessageConstants {
         MessageConstants.space = MessageConstants.space.replace(MessageConstants.spaceStep, "");
     }
 
-    public static final String LARAC_HELP_EXEC = "java -jar larac.jar <larafile> [options]";
+    private static final String LARAC_HELP_EXEC = "java -jar larac.jar <larafile> [options]";
+
+    public static String getLaracHelpExec() {
+        return LARAC_HELP_EXEC;
+    }
 }

@@ -35,19 +35,19 @@ public enum LaraOptionProvider implements OptionProvider, KeyProvider<Descriptor
 
     /* Options with one argument */
     // Target Language
-    language(OptionUtils.newDescriptor("language", "l", ArgOption.ONE_ARG, "language", MessageConstants.LANGUAGE_DESC)),
+    language(OptionUtils.newDescriptor("language", "l", ArgOption.ONE_ARG, "language", MessageConstants.getLanguageDesc())),
     // Specification Directory
-    xmlspec(OptionUtils.newDescriptor("xmlspec", "x", ArgOption.ONE_ARG, "dir", MessageConstants.XMLSPEC_DESC)),
+    xmlspec(OptionUtils.newDescriptor("xmlspec", "x", ArgOption.ONE_ARG, "dir", MessageConstants.getXmlspecDesc())),
     // Output directory for the created files
-    output(OptionUtils.newDescriptor("output", "o", ArgOption.ONE_ARG, "dir", MessageConstants.OUTPUT_DESC)),
+    output(OptionUtils.newDescriptor("output", "o", ArgOption.ONE_ARG, "dir", MessageConstants.getOutputDesc())),
     // Outputs to a file with the given name
-    stream(OptionUtils.newDescriptor("stream", "s", ArgOption.ONE_ARG, "file", MessageConstants.STREAM_DESC)),
+    stream(OptionUtils.newDescriptor("stream", "s", ArgOption.ONE_ARG, "file", MessageConstants.getStreamDesc())),
     // Verbose level
-    verbose(OptionUtils.newDescriptor("verbose", "b", ArgOption.ONE_ARG, "level", MessageConstants.VERBOSE_DESC)),
+    verbose(OptionUtils.newDescriptor("verbose", "b", ArgOption.ONE_ARG, "level", MessageConstants.getVerboseDesc())),
     // include aspects in the given directories (separated by ';')
-    include(OptionUtils.newDescriptor("include", "i", ArgOption.ONE_ARG, "dir(;dir)*", MessageConstants.INCLUDE_DESC)),
+    include(OptionUtils.newDescriptor("include", "i", ArgOption.ONE_ARG, "dir(;dir)*", MessageConstants.getIncludeDesc())),
     resource(OptionUtils.newDescriptor("resource", "r", ArgOption.ONE_ARG, "resource(;resource)*",
-            MessageConstants.RESOURCE_DESC)),;
+            MessageConstants.getResourceDesc())),;
 
     private Descriptor descriptor;
 

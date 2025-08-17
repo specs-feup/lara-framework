@@ -205,7 +205,7 @@ public class ASTCompositeReference extends SimpleNode {
         }
         String methodID = "";
         for (int i = 0; i < length; i++) {
-            methodID += MessageConstants.NAME_SEPARATOR + ((SimpleNode) children[i]).getMethodId();
+            methodID += MessageConstants.getNameSeparator() + ((SimpleNode) children[i]).getMethodId();
         }
         astAlloc.setMethodID(methodID.substring(1));
     }
@@ -214,7 +214,7 @@ public class ASTCompositeReference extends SimpleNode {
     public String getMethodId() {
         String methodId = "";
         for (final Node child : children) {
-            methodId += MessageConstants.NAME_SEPARATOR + ((SimpleNode) child).getMethodId();
+            methodId += MessageConstants.getNameSeparator() + ((SimpleNode) child).getMethodId();
         }
         return methodId.substring(1);
     }
