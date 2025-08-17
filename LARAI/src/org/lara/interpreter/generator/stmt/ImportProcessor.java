@@ -158,7 +158,7 @@ public class ImportProcessor {
         final File jarDir = new File(LaraIUtils.getJarFoldername());
         final String laraPath = "var " + LARASystem.LARAPATH + "  = '" + jarDir.getAbsolutePath().replace('\\', '/')
                 + "';\n";
-        final String attribute = "var " + Interpreter.ATTRIBUTES
+        final String attribute = "var " + Interpreter.getAttributes()
                 + " = { set: function(newReport){ mergeObjects(this,newReport);}};\n";
         interpreter.evaluate(laraPath, "import_and_initialize");
         interpreter.evaluate(attribute, "import_and_initialize");

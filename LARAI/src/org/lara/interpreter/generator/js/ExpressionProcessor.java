@@ -33,7 +33,7 @@ public class ExpressionProcessor {
     // ================================================================================//
     public static StringBuilder getJavascriptString(ExprId id, int depth) {
         return new StringBuilder(LaraIUtils.getSpace(depth)
-                + (id.name.startsWith("@") ? Interpreter.ATTRIBUTES + "." + id.name.substring(1) : id.name));
+                + (id.name.startsWith("@") ? Interpreter.getAttributes() + "." + id.name.substring(1) : id.name));
     }
 
     public static String pushToStack(String callee, String position) {

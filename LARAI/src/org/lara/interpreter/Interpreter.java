@@ -71,12 +71,28 @@ import pt.up.fe.specs.util.SpecsIo;
 
 public class Interpreter {
 
-    public static final String ARGS_PREFIX = "";
-    public static final String ATTRIBUTES = "attributes";
-    public static final String TOOLS_CONTEXT = "tools";
+    private static final String ARGS_PREFIX = "";
+    private static final String ATTRIBUTES = "attributes";
+    private static final String TOOLS_CONTEXT = "tools";
     // public static final String PROPERTY_GETTER = "laraGetter";
 
-    public static final String JPUTILS_NAME = "__jpUtils";
+    private static final String JPUTILS_NAME = "__jpUtils";
+
+    public static String getArgsPrefix() {
+        return ARGS_PREFIX;
+    }
+
+    public static String getAttributes() {
+        return ATTRIBUTES;
+    }
+
+    public static String getToolsContext() {
+        return TOOLS_CONTEXT;
+    }
+
+    public static String getJputilsName() {
+        return JPUTILS_NAME;
+    }
     private final LaraI laraInterp;
     private final LaraIDataStore options;
     private Output out = new Output();
@@ -282,7 +298,7 @@ public class Interpreter {
     // ================================================================================//
     public StringBuilder getJavascriptString(Parameter param, int depth) {
         final StringBuilder ret = new StringBuilder(LaraIUtils.getSpace(depth) + "this." + param.name + " = ("
-                + Interpreter.ARGS_PREFIX + param.name + "!=undefined)?" + Interpreter.ARGS_PREFIX + param.name + ":");
+                + Interpreter.getArgsPrefix() + param.name + "!=undefined)?" + Interpreter.getArgsPrefix() + param.name + ":");
         if (!param.exprs.isEmpty()) {
             ret.append(getJavascriptString(param.exprs.get(0), 0));
         } else {
@@ -1012,7 +1028,7 @@ public class Interpreter {
         StringBuilder right = getJavascriptString(op.exprs.get(1), 0);
 
         if (op.name.equals("ASSIGN")) {
-            if (left.indexOf("(" + Interpreter.ATTRIBUTES + ".") == 0) {
+            if (left.indexOf("(" + Interpreter.getAttributes() + ".") == 0) {
                 return getAttributesMerge(op.exprs.get(0), right, depth);
             }
         }
@@ -1144,7 +1160,7 @@ public class Interpreter {
 
     private StringBuilder getAttributesMerge(Expression expression, StringBuilder right, int depth) {
         final StringBuilder merging = new StringBuilder(
-                LaraIUtils.getSpace(depth) + Interpreter.ATTRIBUTES + ".set( {" + getAMObject(expression));
+                LaraIUtils.getSpace(depth) + Interpreter.getAttributes() + ".set( {" + getAMObject(expression));
         amBrackets++;
         merging.append(right);
         merging.append(" ");

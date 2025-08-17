@@ -268,10 +268,10 @@ public class AspectClassProcessor {
         if (hasInput) {
 
             for (final Parameter param : asp.parameters.input.parameters) {
-                arguments.append(Interpreter.ARGS_PREFIX + param.name + ",");
+                arguments.append(Interpreter.getArgsPrefix() + param.name + ",");
                 callArgs.append(
-                        LaraIUtils.getSpace(1) + "if(" + Interpreter.ARGS_PREFIX + param.name + " != undefined)\n");
-                callArgs.append(LaraIUtils.getSpace(2) + "this." + param.name + " = " + Interpreter.ARGS_PREFIX
+                        LaraIUtils.getSpace(1) + "if(" + Interpreter.getArgsPrefix() + param.name + " != undefined)\n");
+                callArgs.append(LaraIUtils.getSpace(2) + "this." + param.name + " = " + Interpreter.getArgsPrefix()
                         + param.name + ";\n");
                 inputInit.append(interpreter.getJavascriptString(param, 2));
                 inputInit.append(";\n");
