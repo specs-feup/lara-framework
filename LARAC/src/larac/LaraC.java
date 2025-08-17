@@ -55,9 +55,17 @@ public class LaraC {
     /**
      * The current version of the Lara compiler
      */
-    public static final String FRONT_END_VERSION = "Lara compiler version: 2.51";
+    private static final String FRONT_END_VERSION = "Lara compiler version: 2.51";
 
-    public static final String PROPERTY_JAR_PATH = "lara.jarpath";
+    private static final String PROPERTY_JAR_PATH = "lara.jarpath";
+
+    public static String getFrontEndVersion() {
+        return FRONT_END_VERSION;
+    }
+
+    public static String getPropertyJarPath() {
+        return PROPERTY_JAR_PATH;
+    }
 
     private static final Collection<String> SUPPORTED_LARA_EXT = new LinkedHashSet<>(Arrays.asList("lara"));
     // private static final Collection<String> SUPPORTED_SCRIPT_EXT = new LinkedHashSet<>(Arrays.asList("js", "mjs"));

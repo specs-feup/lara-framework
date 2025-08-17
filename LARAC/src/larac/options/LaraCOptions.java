@@ -132,7 +132,7 @@ public class LaraCOptions {
             setOption(option, larac);
         }
 
-        larac.setJarPath(new JarPath(LaraC.class, LaraC.PROPERTY_JAR_PATH).buildJarPath());
+        larac.setJarPath(new JarPath(LaraC.class, LaraC.getPropertyJarPath()).buildJarPath());
         getIncludeFolders().add(larac.getLaraFile().getParentFile());
         return true;
     }
@@ -229,7 +229,7 @@ public class LaraCOptions {
             OptionUtils.help(MessageConstants.LARAC_HELP_EXEC, options);
             return false;
         case version:
-            larac.println(MessageConstants.LARA_VERSION + "\n" + LaraC.FRONT_END_VERSION);
+            larac.println(MessageConstants.LARA_VERSION + "\n" + LaraC.getFrontEndVersion());
             return false;
         case debug:
             setDebug(true);

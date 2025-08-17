@@ -87,7 +87,7 @@ public class LaraI {
     public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
-    public static final String PROPERTY_JAR_PATH = LaraC.PROPERTY_JAR_PATH;
+    public static final String PROPERTY_JAR_PATH = LaraC.getPropertyJarPath();
 
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
     private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
