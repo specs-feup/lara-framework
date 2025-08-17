@@ -131,7 +131,7 @@ public class AspectClassProcessor {
             code = generateAspects(asps, evaluate);
         }
 
-        code.append(MasterWeaver.WEAVER_NAME);
+        code.append(MasterWeaver.getWeaverName());
         code.append(".close();\n");
 
         return code;

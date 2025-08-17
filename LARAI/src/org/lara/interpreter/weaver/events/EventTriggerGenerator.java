@@ -45,7 +45,7 @@ public class EventTriggerGenerator {
 
     public static void triggerAspect(Stage stage, String aspName, List<Parameter> params,
             StringBuilder aspectConstructor, int indentLevel) {
-        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);
+        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.getGetEventTrigger());
         aspectConstructor.append("." + EventTrigger.getTriggerAspectEvent());
         aspectConstructor.append("(" + stage.toCode());
         aspectConstructor.append(", '" + aspName + "'");
@@ -69,7 +69,7 @@ public class EventTriggerGenerator {
 
     public static void triggerAction(Stage stage, String actionName, String target,
             List<Argument> params, StringBuilder aspectConstructor, int indentLevel, Interpreter interp) {
-        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);
+        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.getGetEventTrigger());
         aspectConstructor.append("." + EventTrigger.getTriggerActionEvent());
         aspectConstructor.append("(" + stage.toCode());
         aspectConstructor.append(", '" + actionName + "'");
@@ -109,7 +109,7 @@ public class EventTriggerGenerator {
      */
     public static void triggerApply(Stage stage, String aspect_name, String label, String select_label, int indentLevel,
             StringBuilder aspectConstructor, List<String> pointcutChainNames) {
-        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);
+        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.getGetEventTrigger());
         aspectConstructor.append("." + EventTrigger.getTriggerApplyEvent());
         aspectConstructor.append("(" + stage.toCode());
         aspectConstructor.append(", '" + aspect_name + "'");
@@ -132,7 +132,7 @@ public class EventTriggerGenerator {
      */
     public static void triggerApply(Stage stage, String aspect_name, String label, String select_label, int indentLevel,
             StringBuilder aspectConstructor, String rootName) {
-        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.GET_EVENT_TRIGGER);
+        aspectConstructor.append(LaraIUtils.getSpace(indentLevel) + MasterWeaver.getGetEventTrigger());
         aspectConstructor.append("." + EventTrigger.getTriggerApplyEvent());
         aspectConstructor.append("(" + stage.toCode());
         aspectConstructor.append(", '" + aspect_name + "'");

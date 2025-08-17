@@ -279,7 +279,7 @@ public class WeaverStatementProcessor {
         jpChain.append("], ");
         aliasChain.append("], ");
         filterChain.append("]");
-        final StringBuilder ret = new StringBuilder(MasterWeaver.WEAVER_NAME);
+        final StringBuilder ret = new StringBuilder(MasterWeaver.getWeaverName());
         ret.append(".select( ");
         if (userDeclaredVariable != null) {
             ret.append(UNWRAP_JOINPOINT + "(" + userDeclaredVariable + "), ");
@@ -311,7 +311,7 @@ public class WeaverStatementProcessor {
      */
     private StringBuilder generateJoin(ExprOp exprOp) {
 
-        final StringBuilder ret = new StringBuilder(MasterWeaver.WEAVER_NAME);
+        final StringBuilder ret = new StringBuilder(MasterWeaver.getWeaverName());
         final String joinFunctionName = exprOp.name.toLowerCase();
         try {
             MasterWeaver.class.getMethod(joinFunctionName, String.class, LaraJoinPoint.class, String.class,

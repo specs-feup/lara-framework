@@ -167,11 +167,11 @@ public class ImportProcessor {
         if (laraI.getOptions().useStackTrace()) {
             interpreter.put(CallStackTrace.STACKTRACE_NAME, interpreter.getStackStrace());
         }
-        interpreter.put(MasterWeaver.WEAVER_NAME, laraI.getWeaver());
+        interpreter.put(MasterWeaver.getWeaverName(), laraI.getWeaver());
         interpreter.put(LARASystem.LARA_SYSTEM_NAME, new LARASystem(laraI));
         WeaverEngine engine = laraI.getWeaver().getEngine();
         LanguageSpecification ls = engine.getLanguageSpecificationV2();
-        interpreter.put(MasterWeaver.LANGUAGE_SPECIFICATION_NAME,
+        interpreter.put(MasterWeaver.getLanguageSpecificationName(),
                 WeaverSpecification.newInstance(ls, engine.getScriptEngine()));
     }
 

@@ -63,10 +63,26 @@ import java.util.Optional;
 public class MasterWeaver {
     // public class MasterWeaver implements AutoCloseable {
 
-    public static final String WEAVER_NAME = "__weaver";
-    public static final String GET_EVENT_TRIGGER = MasterWeaver.WEAVER_NAME + ".eventTrigger()";
-    public static final String JPWEAVER_NAME = "__myWeaver";
-    public static final String LANGUAGE_SPECIFICATION_NAME = "Weaver";
+    private static final String WEAVER_NAME = "__weaver";
+    private static final String GET_EVENT_TRIGGER = WEAVER_NAME + ".eventTrigger()";
+    private static final String JPWEAVER_NAME = "__myWeaver";
+    private static final String LANGUAGE_SPECIFICATION_NAME = "Weaver";
+
+    public static String getWeaverName() {
+        return WEAVER_NAME;
+    }
+
+    public static String getGetEventTrigger() {
+        return GET_EVENT_TRIGGER;
+    }
+
+    public static String getJpweaverName() {
+        return JPWEAVER_NAME;
+    }
+
+    public static String getLanguageSpecificationName() {
+        return LANGUAGE_SPECIFICATION_NAME;
+    }
     private List<File> sources;
     // private Class<? extends WeaverEngine> weaverClass;
     // private final Map<File, WeaverEngine> weavers;
