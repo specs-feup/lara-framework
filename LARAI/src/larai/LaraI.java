@@ -84,10 +84,26 @@ import java.util.stream.Collectors;
  * @author Tiago
  */
 public class LaraI {
-    public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
-    public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
-    public static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
-    public static final String PROPERTY_JAR_PATH = LaraC.getPropertyJarPath();
+    private static final double LARA_VERSION = 3.1; // Since we are using GraalVM
+    private static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LARA_VERSION;
+    private static final String DEFAULT_WEAVER = DefaultWeaver.class.getName();
+    private static final String PROPERTY_JAR_PATH = LaraC.getPropertyJarPath();
+
+    public static double getLaraVersion() {
+        return LARA_VERSION;
+    }
+
+    public static String getLaraiVersionText() {
+        return LARAI_VERSION_TEXT;
+    }
+
+    public static String getDefaultWeaver() {
+        return DEFAULT_WEAVER;
+    }
+
+    public static String getPropertyJarPath() {
+        return PROPERTY_JAR_PATH;
+    }
 
     private static final ThreadLocal<Boolean> RUNNING_GUI = ThreadLocal.withInitial(() -> false);
     private static final ThreadLocal<Boolean> SERVER_MODE = ThreadLocal.withInitial(() -> false);
@@ -935,7 +951,7 @@ public class LaraI {
     }
 
     public static String getVersion() {
-        return LaraI.LARAI_VERSION_TEXT;
+        return LaraI.getLaraiVersionText();
     }
 
     /**

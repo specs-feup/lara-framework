@@ -104,7 +104,7 @@ public class WeaverStatementProcessor {
 
     private static void processDynamicApply(Statement stat, int depth, final StringBuilder ret) {
         throw new NotImplementedException(
-                "Dynamic applies are not supported in current interpreter version (" + LaraI.LARA_VERSION + ")");
+                "Dynamic applies are not supported in current interpreter version (" + LaraI.getLaraVersion() + ")");
     }
 
     private void processStaticApply(Statement stat, int depth, final StringBuilder ret) {

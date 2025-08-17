@@ -179,7 +179,7 @@ public class LaraIUtils {
             return true;
         }
         if (cmd.hasOption(CLIOption.version.shortOption())) {
-            System.out.println(LaraI.LARAI_VERSION_TEXT);
+            System.out.println(LaraI.getLaraiVersionText());
 
             var implVersion = SpecsSystem.getBuildNumber();
             if (implVersion == null) {
@@ -199,7 +199,7 @@ public class LaraIUtils {
      * @author Joao Bispo
      */
     private static class JarPathHolder {
-        public static final String instance = new JarPath(LaraI.class, LaraI.PROPERTY_JAR_PATH).buildJarPath();
+        public static final String instance = new JarPath(LaraI.class, LaraI.getPropertyJarPath()).buildJarPath();
 
     }
 
