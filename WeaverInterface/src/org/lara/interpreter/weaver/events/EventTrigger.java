@@ -58,7 +58,11 @@ public class EventTrigger {
         // }
     }
 
-    public static final String TRIGGER_WEAVER_EVENT = "triggerWeaver";
+    private static final String TRIGGER_WEAVER_EVENT = "triggerWeaver";
+
+    public static String getTriggerWeaverEvent() {
+        return TRIGGER_WEAVER_EVENT;
+    }
 
     /**
      * Trigger a weaver event
@@ -124,7 +128,11 @@ public class EventTrigger {
         eventController.notifyEvent(event);
     }
 
-    public static final String TRIGGER_APPLY_EVENT = "triggerApply";
+    private static final String TRIGGER_APPLY_EVENT = "triggerApply";
+
+    public static String getTriggerApplyEvent() {
+        return TRIGGER_APPLY_EVENT;
+    }
 
     /**
      * Trigger an apply event
@@ -217,4 +225,5 @@ public class EventTrigger {
     public boolean hasListeners() {
         return eventController.hasListeners();
     }
+}
 }
