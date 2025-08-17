@@ -174,15 +174,15 @@ public class AspectIR {
             return asp;
         }
         String lastName = "";
-        final String endingName = MessageConstants.NAME_SEPARATOR + name;
+        final String endingName = MessageConstants.getNameSeparator() + name;
         for (final String key : importedAspectDefs.keySet()) {
             if (key.endsWith(endingName)) {
                 if (asp != null) {
                     // String error = "Found more than one aspect with the same
                     // name in different files for '" + name
                     final String error = "Found more than one aspect with name '" + name + "' in different files.\n"
-                            + "\tTwo of them are \"" + lastName.replace(MessageConstants.NAME_SEPARATOR, ".")
-                            + "\" and \"" + key.replace(MessageConstants.NAME_SEPARATOR, ".")
+                            + "\tTwo of them are \"" + lastName.replace(MessageConstants.getNameSeparator(), ".")
+                            + "\" and \"" + key.replace(MessageConstants.getNameSeparator(), ".")
                             + "\".\n\tPlease refine which is the intended aspect.";
                     throw new LARACompilerException(error);
                 }

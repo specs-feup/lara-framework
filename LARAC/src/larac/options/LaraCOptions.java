@@ -229,7 +229,7 @@ public class LaraCOptions {
             OptionUtils.help(MessageConstants.LARAC_HELP_EXEC, options);
             return false;
         case version:
-            larac.println(MessageConstants.LARA_VERSION + "\n" + LaraC.getFrontEndVersion());
+            larac.println(MessageConstants.getLaraVersion() + "\n" + LaraC.getFrontEndVersion());
             return false;
         case debug:
             setDebug(true);

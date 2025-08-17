@@ -41,23 +41,23 @@ public class MessageConstants {
 	}
 
 	public static final String getElapsedTimeMessage(long timeMillis, String text) {
-		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.UNDERLINE + "\n");
+		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.getUnderline() + "\n");
 		sb.append("  " + text + ": " + timeMillis + "ms\n");
-		sb.append(larac.utils.output.MessageConstants.OVERLINE + "");
+		sb.append(larac.utils.output.MessageConstants.getOverline() + "");
 		return sb.toString();
 	}
 
 	public static final String getHeaderMessage(int order, String text) {
-		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.UNDERLINE + "\n");
+		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.getUnderline() + "\n");
 		sb.append("  " + order + ". " + text + "\n");
-		sb.append(larac.utils.output.MessageConstants.OVERLINE + "");
+		sb.append(larac.utils.output.MessageConstants.getOverline() + "");
 		return sb.toString();
 	}
 
 	public static final String getMessage(String text) {
-		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.UNDERLINE + "\n");
+		StringBuilder sb = new StringBuilder(larac.utils.output.MessageConstants.getUnderline() + "\n");
 		sb.append("   " + text + "\n");
-		sb.append(larac.utils.output.MessageConstants.OVERLINE + "");
+		sb.append(larac.utils.output.MessageConstants.getOverline() + "");
 		return sb.toString();
 	}
 }

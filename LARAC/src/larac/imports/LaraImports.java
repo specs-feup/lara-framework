@@ -88,8 +88,8 @@ public class LaraImports {
 
     private static void rearrangeImportedLaraAndImportAspects(final LaraC lara, String filePath,
             final LaraC importingLara) {
-        String prefix = filePath.replace(".lara", MessageConstants.NAME_SEPARATOR);
-        prefix = prefix.replace(File.separator, MessageConstants.NAME_SEPARATOR);
+        String prefix = filePath.replace(".lara", MessageConstants.getNameSeparator());
+        prefix = prefix.replace(File.separator, MessageConstants.getNameSeparator());
 
         importingLara.setPrefix(prefix);
         lara.println("Organizing imported aspects from " + filePath);
@@ -125,7 +125,7 @@ public class LaraImports {
         if (!recursiveImport.isEmpty()) {
             lara.aspectIR().getImportedAspectDefs().putAll(recursiveImport);
             String importedFromImporting = StringUtils.join(recursiveImport.keySet(),
-                    s -> s.replace(MessageConstants.NAME_SEPARATOR, "."), ",");
+                    s -> s.replace(MessageConstants.getNameSeparator(), "."), ",");
             lara.println(" Recursive import: " + importedFromImporting);
         }
     }

@@ -27,11 +27,31 @@ public class MessageConstants {
     // Ai ai, this should not be a global
     public static int order = 1;
 
-    public static final String HELP_DESC = "Shows this message";
-    public static final String DEBUG_DESC = "Enter debug mode, i.e., reply all the possible information";
-    public static final String DOC_DESC = "Compiles in documentation mode (e.g., does not process imports)";
-    public static final String VERSION_DESC = "Shows the version of the LARA language and the Front-End";
-    public static final String SHOWXML_DESC = "Show Aspect-IR in the console";
+    private static final String HELP_DESC = "Shows this message";
+    private static final String DEBUG_DESC = "Enter debug mode, i.e., reply all the possible information";
+    private static final String DOC_DESC = "Compiles in documentation mode (e.g., does not process imports)";
+    private static final String VERSION_DESC = "Shows the version of the LARA language and the Front-End";
+    private static final String SHOWXML_DESC = "Show Aspect-IR in the console";
+
+    public static String getHelpDesc() {
+        return HELP_DESC;
+    }
+
+    public static String getDebugDesc() {
+        return DEBUG_DESC;
+    }
+
+    public static String getDocDesc() {
+        return DOC_DESC;
+    }
+
+    public static String getVersionDesc() {
+        return VERSION_DESC;
+    }
+
+    public static String getShowxmlDesc() {
+        return SHOWXML_DESC;
+    }
     public static final String OUTPUT_DESC = "Change Output directory of resulting files. Default: ." + File.separator;
     public static final String XMLSPEC_DESC = "Change language specification directory. Default: ." + File.separator;
     public static final String LANGUAGE_DESC = "Change the concerning programming language. Default: C";
@@ -52,16 +72,48 @@ public class MessageConstants {
             + "\n -lang \t\t-l \t<language>\tChange the concerning programming language. Default: C"
             + "\n -verbose \t-vb \t<level>\t\tChange the message level from 0(none) to 3(all). Default: 3" + "\n";
 
-    public static final String FILE_WRITEN = "Files created successfully for ";
-    public static final String FILE_WRITING = "Writing file to ";
-    public static final String FILE_READ = "Reading: ";
-    public static final String NAME_SEPARATOR = "$";// "_";
-    public static final String OVERLINE = " -==================================================-";
-    public static final String UNDERLINE = MessageConstants.OVERLINE;
+    private static final String FILE_WRITEN = "Files created successfully for ";
+    private static final String FILE_WRITING = "Writing file to ";
+    private static final String FILE_READ = "Reading: ";
+    private static final String NAME_SEPARATOR = "$";// "_";
+    private static final String OVERLINE = " -==================================================-";
+    private static final String UNDERLINE = OVERLINE;
 
-    public static final String LARA_VERSION = "Lara language version: 2.0";
+    private static final String LARA_VERSION = "Lara language version: 2.0";
 
-    public static final String LANGUAGE_DEFAULT = "C";
+    private static final String LANGUAGE_DEFAULT = "C";
+
+    public static String getFileWriten() {
+        return FILE_WRITEN;
+    }
+
+    public static String getFileWriting() {
+        return FILE_WRITING;
+    }
+
+    public static String getFileRead() {
+        return FILE_READ;
+    }
+
+    public static String getNameSeparator() {
+        return NAME_SEPARATOR;
+    }
+
+    public static String getOverline() {
+        return OVERLINE;
+    }
+
+    public static String getUnderline() {
+        return UNDERLINE;
+    }
+
+    public static String getLaraVersion() {
+        return LARA_VERSION;
+    }
+
+    public static String getLanguageDefault() {
+        return LANGUAGE_DEFAULT;
+    }
     public static final String HOME_DIR = "." + File.separator;
     public static final String PARENT_HOME_DIR = "." + MessageConstants.HOME_DIR;
     public static final String OUT_DIR = MessageConstants.PARENT_HOME_DIR + "out" + File.separator;

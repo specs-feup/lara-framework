@@ -299,7 +299,7 @@ public class LaraC {
         // laraFile = new File(laraPath + laraSimpleName);
 
         // And then parse the input LARA file, if exists
-        println(MessageConstants.FILE_READ + laraPath);
+        println(MessageConstants.getFileRead() + laraPath);
         // if (laraFile == null) {
         // LoggingUtils.msgInfo("!Terminating program");
         // return false;
@@ -473,13 +473,13 @@ public class LaraC {
      * @param larac the current instance of LaraC
      */
     public void printTopic(String topic) {
-        final StringBuffer buf = new StringBuffer(MessageConstants.UNDERLINE);
+        final StringBuffer buf = new StringBuffer(MessageConstants.getUnderline());
         buf.append("\n  ");
         buf.append(MessageConstants.order++);
         buf.append(". ");
         buf.append(topic);
         buf.append("\n");
-        buf.append(MessageConstants.OVERLINE);
+        buf.append(MessageConstants.getOverline());
         println(buf.toString());
     }
 
@@ -490,11 +490,11 @@ public class LaraC {
      * @param larac the current instance of LaraC
      */
     public void printSubTopic(String topic) {
-        final StringBuffer buf = new StringBuffer(MessageConstants.UNDERLINE);
+        final StringBuffer buf = new StringBuffer(MessageConstants.getUnderline());
         buf.append("\n");
         buf.append(topic);
         buf.append("\n");
-        buf.append(MessageConstants.OVERLINE);
+        buf.append(MessageConstants.getOverline());
         println(buf.toString());
     }
 
