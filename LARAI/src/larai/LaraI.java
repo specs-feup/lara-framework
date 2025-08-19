@@ -13,8 +13,8 @@
 package larai;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.lara.interpreter.cli.LaraCli;
 import org.lara.interpreter.cli.OptionsConverter;
 import org.lara.interpreter.cli.OptionsParser;
 import org.lara.interpreter.cli.OptionsParser.ExecutionMode;
@@ -25,34 +25,15 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 import java.util.*;
 import java.util.function.Supplier;
 
 public class LaraI {
-    public static final double LARA_VERSION = 3.1; // Since we are using GraalVM
+    private static final double LARA_VERSION = 3.1; // Since we are using GraalVM
     public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
 
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
-
-    /**
-     * Thread-scope LaraC
-     */
-    private static final SpecsThreadLocal<LaraI> THREAD_LOCAL_LARAI = new SpecsThreadLocal<>(LaraI.class);
-
-    public static LaraI getThreadLocalLarai() {
-        return THREAD_LOCAL_LARAI.get();
-    }
-
-    /**
-     * Create a new LaraI with the input datastore
-     *
-     * @param dataStore
-     * @param weaverEngine
-     */
-    private LaraI(DataStore dataStore, WeaverEngine weaverEngine) {
-    }
 
     public static StoreDefinition getStoreDefinition(WeaverEngine weaverEngine) {
         String weaverName = weaverEngine.getName();
@@ -79,7 +60,7 @@ public class LaraI {
             args[i] = objArgs[i].toString();
         }
 
-        Options finalOptions = LaraCli.getCliOptions(weaverEngine);
+        Options finalOptions = getCliOptions(weaverEngine);
 
         CommandLine cmd = OptionsParser.parse(args, finalOptions);
 
@@ -96,6 +77,31 @@ public class LaraI {
         }
 
         return dataStore;
+    }
+
+    /**
+     * Builds the list of command-line interface options available to the given
+     * weaver.
+     * 
+     * <p>
+     * This is a super-set of getWeaverOptions(), which includes launch-specific
+     * flags, and returns an instance of the
+     * Apache Commons CLI package.
+     * 
+     * @param weaverEngine
+     * @return
+     */
+    private static Options getCliOptions(WeaverEngine weaverEngine) {
+        Collection<Option> configOptions = OptionsParser.buildConfigOptions();
+        Collection<Option> mainOptions = OptionsParser.buildLaraIOptionGroup();
+        OptionsParser.addExtraOptions(mainOptions, weaverEngine.getOptions());
+
+        Options completeOptions = new Options();
+
+        configOptions.forEach(completeOptions::addOption); // So the config options appear on the top
+        mainOptions.forEach(completeOptions::addOption);
+
+        return completeOptions;
     }
 
     private static Optional<DataStore> buildDataStore(WeaverEngine weaverEngine, ExecutionMode mode, CommandLine cmd,

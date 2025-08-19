@@ -15,7 +15,6 @@ package org.lara.interpreter.joptions.config.interpreter;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
@@ -38,9 +37,6 @@ public interface LaraiKeys {
             Collections.emptyList())
             .setLabel("Sources");
 
-    DataKey<Map<File, File>> WORKSPACE_EXTRA = KeyFactory.filesWithBaseFolders("workspace_extra")
-            .setLabel("Additional Sources (separated by ;)");
-
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("output", false)
             .setLabel("Output Folder")
             // According to LaraIDataStore
@@ -58,7 +54,7 @@ public interface LaraiKeys {
     DataKey<Boolean> SHOW_HELP = KeyFactory.bool("help").setLabel("Show Help");
 
     StoreDefinition STORE_DEFINITION = new StoreDefinitionBuilder("LaraI Options")
-            .addKeys(LARA_FILE, ASPECT_ARGS, WORKSPACE_FOLDER, WORKSPACE_EXTRA, OUTPUT_FOLDER,
+            .addKeys(LARA_FILE, ASPECT_ARGS, WORKSPACE_FOLDER, OUTPUT_FOLDER,
                     LOG_FILE, DEBUG_MODE, JAR_PATHS, SHOW_HELP)
             .build();
 

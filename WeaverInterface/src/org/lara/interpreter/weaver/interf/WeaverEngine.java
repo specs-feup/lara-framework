@@ -24,7 +24,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
-import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
 import java.io.File;
@@ -164,15 +163,6 @@ public abstract class WeaverEngine {
     }
 
     /**
-     * Returns a list with the resources for javascript files.
-     *
-     * @return
-     */
-    public List<ResourceProvider> getImportableScripts() {
-        return Collections.emptyList();
-    }
-
-    /**
      * @return the name of the Weaver. By default, returns the simple name of the
      *         class
      */
@@ -293,8 +283,7 @@ public abstract class WeaverEngine {
      * @return
      */
     public List<String> getPredefinedExternalDependencies() {
-        return Arrays.asList("Experimental - SourceAction",
-                "https://github.com/specs-feup/lara-framework.git?folder=experimental/SourceAction");
+        return Arrays.asList();
     }
 
     /**

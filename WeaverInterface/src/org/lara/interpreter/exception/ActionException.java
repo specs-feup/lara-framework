@@ -23,8 +23,8 @@ public class ActionException extends BaseException {
 
     public ActionException(String joinPointName, String actionName, Throwable e) {
         super(e);
-        setJoinPointName(joinPointName);
-        setActionName(actionName);
+        this.joinPointName = joinPointName;
+        this.actionName = actionName;
     }
 
     @Override
@@ -35,33 +35,5 @@ public class ActionException extends BaseException {
     @Override
     protected String generateSimpleMessage() {
         return "in action " + joinPointName + "." + actionName + "";
-    }
-
-    /**
-     * @return the actionName
-     */
-    public String getActionName() {
-        return actionName;
-    }
-
-    /**
-     * @param actionName the actionName to set
-     */
-    public void setActionName(String actionName) {
-        this.actionName = actionName;
-    }
-
-    /**
-     * @return the joinPointName
-     */
-    public String getJoinPointName() {
-        return joinPointName;
-    }
-
-    /**
-     * @param joinPointName the joinPointName to set
-     */
-    public void setJoinPointName(String joinPointName) {
-        this.joinPointName = joinPointName;
     }
 }

@@ -157,7 +157,6 @@ class CLIOptionTest {
         assertThat(CLIOption.contains("argv")).isTrue();
         assertThat(CLIOption.contains("output")).isTrue();
         assertThat(CLIOption.contains("workspace")).isTrue();
-        assertThat(CLIOption.contains("workspace_extra")).isTrue();
         assertThat(CLIOption.contains("log")).isTrue();
         assertThat(CLIOption.contains("jarpaths")).isTrue();
     }
@@ -183,7 +182,6 @@ class CLIOptionTest {
         assertThat(CLIOption.containsShort("av")).isTrue();
         assertThat(CLIOption.containsShort("o")).isTrue();
         assertThat(CLIOption.containsShort("p")).isTrue();
-        assertThat(CLIOption.containsShort("pe")).isTrue();
         assertThat(CLIOption.containsShort("l")).isTrue();
         assertThat(CLIOption.containsShort("jp")).isTrue();
     }

@@ -12,19 +12,15 @@
  */
 package org.lara.interpreter.joptions.config.interpreter;
 
-import com.google.gson.Gson;
 import larai.LaraI;
 import org.lara.interpreter.exception.LaraIException;
-import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.JOptionsUtils;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
-import pt.up.fe.specs.util.properties.SpecsProperties;
 import java.io.File;
 import java.util.*;
 
@@ -141,130 +137,6 @@ public class LaraIDataStore implements LaraiKeys {
             File output = dataStore.get(LaraiKeys.OUTPUT_FOLDER);
             SpecsIo.mkdir(output);
         }
-    }
-
-    /**
-     * Right now the arguments are going as a single String!
-     *
-     * @return
-     */
-    public DataStore getWeaverArgs() {
-        return dataStore;
-    }
-
-    public File getLaraFile() {
-        return dataStore.get(LaraiKeys.LARA_FILE);
-    }
-
-    public FileList getWorkingDir() {
-        return getTrySources(LaraiKeys.WORKSPACE_FOLDER);
-    }
-
-    public List<File> getExtraSources() {
-        if (dataStore.hasValue(LaraiKeys.WORKSPACE_EXTRA)) {
-            return new ArrayList<>(dataStore.get(WORKSPACE_EXTRA).keySet());
-        }
-
-        return Collections.emptyList();
-    }
-
-    public boolean isDebug() {
-        if (dataStore.hasValue(LaraiKeys.DEBUG_MODE)) {
-            return dataStore.get(LaraiKeys.DEBUG_MODE);
-        }
-        return false;
-    }
-
-    public File getOutputDir() {
-        return getTryFolder(LaraiKeys.OUTPUT_FOLDER);
-    }
-
-    private File getTryFolder(DataKey<File> folder) {
-        if (dataStore.hasValue(folder)) {
-            return dataStore.get(folder);
-        }
-        return new File(".");
-    }
-
-    private FileList getTrySources(DataKey<FileList> folder) {
-        return dataStore.get(folder);
-    }
-
-    /**
-     * Returns a JSON string representing the aspect arguments. If the value
-     * represents a json file, reads it before
-     * returning.
-     *
-     * @return the aspect arguments as a JSON string
-     */
-    public String getAspectArgumentsStr() {
-        if (dataStore.hasValue(LaraiKeys.ASPECT_ARGS)) {
-
-            String aspectArgs = dataStore.get(LaraiKeys.ASPECT_ARGS);
-
-            // [Old] Can return directly, custom getter of ASPECT_ARGS already parses files
-            // and sanitizes JSON
-            // [New] Disabled this, because if a json file is given as input, this prevents
-            // storing again the path to the JSON file (instead, it stores the contents of
-            // the json file itself)
-
-            // Parse aspect args (e.g., in case it is a file, sanitize)
-            return parseAspectArgs(aspectArgs);
-
-        }
-        return "";
-    }
-
-    private String parseAspectArgs(String aspectArgs) {
-        // Moved logic from customGetter of ASPECT_ARGS to here, to preserve storing the
-        // arguments as a JSON file
-
-        // In the end, we want to return a JSON string
-        var jsonString = aspectArgs;
-
-        // Check if an existing file was given as argument
-        var file = JOptionKeys.getContextPath(aspectArgs, dataStore);
-
-        if (file.isFile()) {
-
-            var extension = SpecsIo.getExtension(file).toLowerCase();
-
-            // Check if JSON
-            if (extension.equals("json")) {
-                jsonString = SpecsIo.read(file);
-            }
-
-            // Check if properties
-            else if (extension.equals("properties")) {
-                jsonString = SpecsProperties.newInstance(file).toJson();
-            } else {
-                // Throw exception
-                throw new RuntimeException("Invalid file format (" + aspectArgs
-                        + ") for aspect arguments. Supported formats: .json, .properties");
-            }
-
-        }
-
-        // String json before testing for curly braces
-        jsonString = jsonString.strip();
-
-        // Fix curly braces
-        if (!jsonString.startsWith("{")) {
-            jsonString = "{" + jsonString;
-        }
-
-        if (!jsonString.endsWith("}")) {
-            jsonString = jsonString + "}";
-        }
-
-        // Sanitize
-        var gson = new Gson();
-        try {
-            return gson.toJson(gson.fromJson(jsonString, Object.class));
-        } catch (Exception e) {
-            throw new RuntimeException("Passed invalid JSON as argument: '" + aspectArgs + "'", e);
-        }
-
     }
 
     @Override

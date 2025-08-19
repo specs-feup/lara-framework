@@ -29,7 +29,6 @@ public class WeaverEngineStoreDefinition implements StoreDefinitionProvider {
 
     public WeaverEngineStoreDefinition(WeaverEngine weaver) {
         this.weaver = weaver;
-        // TODO Auto-generated constructor stub
     }
 
     @Override

@@ -1,7 +1,6 @@
 package larai;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,13 +87,6 @@ class LaraITest {
     }
 
     @Test
-    @DisplayName("LARA_VERSION should be defined")
-    void testLaraVersion() {
-        // When/Then
-        assertThat(LaraI.LARA_VERSION).isEqualTo(3.1);
-    }
-
-    @Test
     @DisplayName("LARAI_VERSION_TEXT should contain version")
     void testLaraiVersionText() {
         // When/Then
@@ -125,16 +117,6 @@ class LaraITest {
         // This is a basic smoke test to verify the class is accessible
         assertThat(LaraI.class).isNotNull();
         assertThat(LaraI.class.getDeclaredMethods()).isNotEmpty();
-    }
-
-    @Test
-    @DisplayName("getThreadLocalLarai() should handle thread-local state")
-    void testGetThreadLocalLarai() {
-        // This test verifies that the method exists and handles uninitialized state
-        // The method throws NPE when not initialized, which is expected behavior
-        assertThatThrownBy(() -> LaraI.getThreadLocalLarai())
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("Tried to get larai.LaraI");
     }
 
     @Test
