@@ -14,7 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.weaver.options.OptionArguments;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.suikasoft.jOptions.Datakey.DataKey;
+import org.suikasoft.jOptions.Datakey.KeyFactory;
 
 /**
  * Unit tests for OptionsConverter class.
@@ -200,13 +203,40 @@ class OptionsConverterTest {
             when(mockCmd.getOptionValue("c")).thenReturn(tempConfigFile.getAbsolutePath());
             when(mockCmd.getOptions()).thenReturn(new org.apache.commons.cli.Option[0]);
 
+            // Create a concrete DataKey instance with proper generic type
+            DataKey<String> testDataKey = KeyFactory.string("testKey").setLabel("Test Key label");
 
-            WeaverOption mockOption = mock(WeaverOption.class);
-            when(mockOption.longOption()).thenReturn("testOption");
+            // Create a simple WeaverOption implementation
+            WeaverOption testOption = new WeaverOption() {
+                @Override
+                public String longOption() {
+                    return "testOption";
+                }
+                @Override
+                public DataKey<?> dataKey() {
+                    return testDataKey;
+                }
+                @Override
+                public String shortOption() {
+                    throw new UnsupportedOperationException("Unimplemented method 'shortOption'");
+                }
+                @Override
+                public String description() {
+                    throw new UnsupportedOperationException("Unimplemented method 'description'");
+                }
+                @Override
+                public OptionArguments args() {
+                    throw new UnsupportedOperationException("Unimplemented method 'args'");
+                }
+                @Override
+                public String argName() {
+                    throw new UnsupportedOperationException("Unimplemented method 'argName'");
+                }
+            };
 
             // Create a simple mock weaver engine
             WeaverEngine mockEngine = mock(WeaverEngine.class);
-            when(mockEngine.getOptions()).thenReturn(Arrays.asList(mockOption));
+            when(mockEngine.getOptions()).thenReturn(Arrays.asList(testOption));
             when(mockEngine.getName()).thenReturn("TestWeaver");
 
             // When
