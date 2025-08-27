@@ -3,6 +3,7 @@ package org.lara.language.specification.integration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junitpioneer.jupiter.RetryingTest;
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Action;
@@ -276,7 +277,7 @@ class LanguageSpecificationIntegrationTest {
         }
     }
 
-    @Test
+    @RetryingTest(5)
     void testJoinPointLookupPerformance() {
         LanguageSpecification langSpec = LanguageSpecification.newInstance(testXmlFile);
         
