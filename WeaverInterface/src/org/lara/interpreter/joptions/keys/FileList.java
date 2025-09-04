@@ -28,16 +28,12 @@ public class FileList implements Iterable<File> {
     private final List<File> fileList;
 
     private FileList() {
-        this(new ArrayList<File>());
+        this(new ArrayList<>());
     }
 
     /**
      * Creates a StringList with the file names from the files on the list passed as
      * parameter.
-     * 
-     * @param files
-     *              - the list of files
-     * @return a new StringList instance
      */
     public FileList(Collection<File> stringFile) {
         fileList = new ArrayList<>();
@@ -46,10 +42,7 @@ public class FileList implements Iterable<File> {
 
     /**
      * Helper constructor with variadic inputs.
-     * 
-     * @param string
-     * @param string2
-     * @return
+     *
      */
     public static FileList newInstance(File... values) {
         return new FileList(Arrays.asList(values));
@@ -91,11 +84,9 @@ public class FileList implements Iterable<File> {
 
     @Override
     public String toString() {
-        String string = fileList.stream()
-                .map(file -> file.toString())
+        return fileList.stream()
+                .map(File::toString)
                 .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
-
-        return string;
     }
 
     @Override
@@ -119,13 +110,10 @@ public class FileList implements Iterable<File> {
         }
         FileList other = (FileList) obj;
         if (fileList == null) {
-            if (other.fileList != null) {
-                return false;
-            }
-        } else if (!fileList.equals(other.fileList)) {
-            return false;
+            return other.fileList == null;
+        } else {
+            return fileList.equals(other.fileList);
         }
-        return true;
     }
 
     public List<File> getFiles() {

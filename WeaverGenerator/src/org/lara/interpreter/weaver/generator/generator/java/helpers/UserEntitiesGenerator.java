@@ -34,8 +34,6 @@ public class UserEntitiesGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     protected UserEntitiesGenerator(JavaAbstractsGenerator javaGenerator, TypeDef object) {
         super(javaGenerator);
@@ -45,8 +43,6 @@ public class UserEntitiesGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator, TypeDef object) {
         final UserEntitiesGenerator gen = new UserEntitiesGenerator(javaGenerator, object);
@@ -56,7 +52,6 @@ public class UserEntitiesGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @return
      */
     @Override
     public JavaClass generate() {
@@ -86,7 +81,6 @@ public class UserEntitiesGenerator extends GeneratorHelper {
     /**
      * Generate the toString method based on a json format
      *
-     * @param uDClass
      */
     private static void generateToString(JavaClass uDClass) {
         final Method toString = new Method(JavaTypeFactory.getStringType(), "toString");

@@ -70,14 +70,14 @@ class ITypeTest {
         IType enumDefType = new EnumDef("TestEnumDef");
         IType literalEnumType = new LiteralEnum("TestLiteralEnum");
         
-        assertEquals("int", primitiveType.getType());
-        assertEquals("String", primitiveClassType.getType());
-        assertEquals("TestType", jpType.getType());
-        assertEquals("int[]", arrayType.getType());
-        assertEquals("TestGeneric", genericType.getType());
-        assertEquals("TestTypeDef", typeDefType.getType());
-        assertEquals("TestEnumDef", enumDefType.getType());
-        assertNotNull(literalEnumType.getType()); // Returns string representation
+        assertEquals("int", primitiveType.type());
+        assertEquals("String", primitiveClassType.type());
+        assertEquals("TestType", jpType.type());
+        assertEquals("int[]", arrayType.type());
+        assertEquals("TestGeneric", genericType.type());
+        assertEquals("TestTypeDef", typeDefType.type());
+        assertEquals("TestEnumDef", enumDefType.type());
+        assertNotNull(literalEnumType.type()); // Returns string representation
     }
 
     @Test
@@ -107,7 +107,7 @@ class ITypeTest {
         // Create a simple implementation to test interface methods directly
         IType testType = new IType() {
             @Override
-            public String getType() {
+            public String type() {
                 return "TestType";
             }
 
@@ -117,7 +117,7 @@ class ITypeTest {
             }
         };
 
-        assertEquals("TestType", testType.getType());
+        assertEquals("TestType", testType.type());
         assertEquals("TestType", testType.toString());
         assertFalse(testType.isArray()); // Default implementation
     }
@@ -127,7 +127,7 @@ class ITypeTest {
         // Create a simple implementation that overrides isArray()
         IType testArrayType = new IType() {
             @Override
-            public String getType() {
+            public String type() {
                 return "TestArrayType";
             }
 
@@ -142,7 +142,7 @@ class ITypeTest {
             }
         };
 
-        assertEquals("TestArrayType", testArrayType.getType());
+        assertEquals("TestArrayType", testArrayType.type());
         assertEquals("TestArrayType", testArrayType.toString());
         assertTrue(testArrayType.isArray()); // Overridden implementation
     }
@@ -162,7 +162,7 @@ class ITypeTest {
         };
 
         for (IType type : types) {
-            assertNotNull(type.getType());
+            assertNotNull(type.type());
             assertNotNull(type.toString());
             // isArray() varies depending on implementation
         }
@@ -173,7 +173,7 @@ class ITypeTest {
         // Test that default method can be overridden
         class CustomType implements IType {
             @Override
-            public String getType() {
+            public String type() {
                 return "CustomType";
             }
 
@@ -197,7 +197,7 @@ class ITypeTest {
         // Test that default method is inherited when not overridden
         class SimpleType implements IType {
             @Override
-            public String getType() {
+            public String type() {
                 return "SimpleType";
             }
 

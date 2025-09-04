@@ -203,7 +203,7 @@ class LiteralEnumTest {
         literalEnum.addValue("value1");
         literalEnum.addValue("value2");
         
-        String type = literalEnum.getType();
+        String type = literalEnum.type();
         assertEquals(literalEnum.toString(), type);
     }
 
@@ -244,7 +244,7 @@ class LiteralEnumTest {
     void testITypeInterface() {
         assertTrue(literalEnum instanceof IType);
         assertFalse(literalEnum.isArray()); // Default implementation from IType interface
-        assertNotNull(literalEnum.getType());
+        assertNotNull(literalEnum.type());
     }
 
     @Test

@@ -49,7 +49,7 @@ public interface LaraiKeys {
     DataKey<FileList> JAR_PATHS = LaraIKeyFactory
             .fileList("jarPaths", JFileChooser.FILES_AND_DIRECTORIES, Set.of("jar"))
             .setLabel("Paths to JARs")
-            .setDefault(() -> FileList.newInstance());
+            .setDefault(FileList::newInstance);
 
     DataKey<Boolean> SHOW_HELP = KeyFactory.bool("help").setLabel("Show Help");
 

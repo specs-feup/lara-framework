@@ -17,5 +17,5 @@ import pt.up.fe.specs.util.events.EventId;
 
 public enum LaraIEvent implements EventId {
     OnAction,
-    OnAttribute;
+    OnAttribute
 }

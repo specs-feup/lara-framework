@@ -195,11 +195,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     }
 
-    /**
-     * @param weaverName
-     * @param outPackage
-     * @return
-     */
     public static String getWeaverText(String weaverName, JavaType aJoinPointType) {
         String text = SpecsIo.getResource(GenConstants.weaverTextHeaderLocation());
         text = text.replace(GenConstants.weaverNameTag(), weaverName);
@@ -225,8 +220,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      * <object name="Symbol">
      * <attribute name="name" type="String"/> </object>
      *
-     * @param newObjects the map containing the objects mapped to the field elements
-     * @param outPackage the class package (will append '.entities')
      */
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
@@ -254,7 +247,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      * This package will contain the abstract join points, including the super type
      * AJoinPoint
      *
-     * @return
      */
     public String getJoinPointClassPackage() {
         return joinPointPackage;
@@ -263,7 +255,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the package for the Weaver implementation
      *
-     * @return
      */
     public String getWeaverPackage() {
         return weaverPackage;
@@ -272,7 +263,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the package for the abstract representation of the weaver
      *
-     * @return
      */
     public String getAbstractWeaverPackage() {
         return abstractWeaverPackage;
@@ -282,7 +272,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
      * This package is the one containing the abstract class that can be edited by
      * the use
      *
-     * @return
      */
     public String getAbstractUserJoinPointClassPackage() {
         return abstractUserJoinPointPackage;
@@ -291,7 +280,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the name of the (uneditable) abstract join point
      *
-     * @return
      */
     public static String getAbstractJoinPointClassName() {
 
@@ -314,7 +302,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This package will contain the user defined entities
      *
-     * @return
      */
     public String getEntitiesPackage() {
         return entitiesPackage;

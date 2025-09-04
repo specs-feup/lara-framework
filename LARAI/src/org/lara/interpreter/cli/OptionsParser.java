@@ -74,8 +74,7 @@ public class OptionsParser {
                 .addOption(log)
                 .addOption(jarpaths);
 
-        ArrayList<Option> arrayList = new ArrayList<>();
-        arrayList.addAll(options.getOptions());
+        ArrayList<Option> arrayList = new ArrayList<>(options.getOptions());
         return arrayList;
     }
 
@@ -103,8 +102,6 @@ public class OptionsParser {
      * options {@link CLIOption} and adds them
      * to the options collection
      *
-     * @param mainOptions
-     * @param extraOptions
      */
     public static void addExtraOptions(Collection<Option> mainOptions, List<WeaverOption> extraOptions) {
         for (WeaverOption weaverOption : extraOptions) {
@@ -215,8 +212,6 @@ public class OptionsParser {
     /**
      * Returns a configuration file or an exception if the file does not exist
      *
-     * @param cmd
-     * @return
      */
     public static File getConfigFile(CommandLine cmd) {
         File file = new File(cmd.getOptionValue(CLIConfigOption.config.getShortOpt()));
@@ -239,8 +234,6 @@ public class OptionsParser {
      * The 'public' StoreDefinition that will be used for the user interface. It is
      * a subset of the complete definition.
      *
-     * @param engine
-     * @return
      */
     public static StoreDefinition getLaraStoreDefinition(WeaverEngine engine) {
         return new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName())

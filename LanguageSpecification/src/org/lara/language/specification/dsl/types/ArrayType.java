@@ -32,8 +32,8 @@ public class ArrayType implements IType {
     }
 
     @Override
-    public String getType() {
-        return baseType.getType() + "[]".repeat(dimension);
+    public String type() {
+        return baseType.type() + "[]".repeat(dimension);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ArrayType implements IType {
 
     @Override
     public String toString() {
-        return getType();
+        return type();
     }
 
 }

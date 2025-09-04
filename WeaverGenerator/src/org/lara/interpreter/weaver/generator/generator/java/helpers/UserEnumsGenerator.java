@@ -36,8 +36,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     protected UserEnumsGenerator(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
         super(javaGenerator);
@@ -47,8 +45,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     public static JavaEnum generate(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
         var gen = new UserEnumsGenerator(javaGenerator, enumDef);
@@ -58,7 +54,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @return
      */
     @Override
     public JavaEnum generate() {

@@ -25,7 +25,6 @@ dependencies {
     implementation ':WeaverInterface'
 
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'
 
     // Testing dependencies
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
@@ -33,7 +32,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0' // For static mocking
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.0'
 }
 
 // Project sources
@@ -85,7 +84,7 @@ test {
     finalizedBy jacocoTestReport
 }
 
-task json(type: JavaExec) {
+tasks.register('json', JavaExec) {
     group = "Execution"
     description = "Generates the LaraJoinPointSpecification.json file for Lara-JS"
     classpath = sourceSets.main.runtimeClasspath

@@ -46,7 +46,7 @@ public class EnumDef extends BaseNode implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return getName();
     }
 

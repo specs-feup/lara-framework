@@ -129,7 +129,7 @@ class EnumDefTest {
     void testGetType() {
         enumDef = new EnumDef("TestEnum");
         
-        assertEquals("TestEnum", enumDef.getType());
+        assertEquals("TestEnum", enumDef.type());
     }
 
     @Test
@@ -137,7 +137,7 @@ class EnumDefTest {
         enumDef = new EnumDef("TestEnum");
         enumDef.setName(null);
         
-        assertNull(enumDef.getType());
+        assertNull(enumDef.type());
     }
 
     @Test
@@ -191,7 +191,7 @@ class EnumDefTest {
         enumDef = new EnumDef("TestEnum");
         
         assertTrue(enumDef instanceof IType);
-        assertEquals("TestEnum", enumDef.getType());
+        assertEquals("TestEnum", enumDef.type());
         assertFalse(enumDef.isArray()); // Default implementation from IType interface
     }
 

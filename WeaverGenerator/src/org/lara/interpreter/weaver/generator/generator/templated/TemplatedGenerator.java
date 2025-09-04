@@ -30,7 +30,6 @@ import pt.up.fe.specs.util.SpecsLogs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // public class TemplatedGenerator extends BaseGenerator {
 public class TemplatedGenerator extends JavaAbstractsGenerator {
@@ -220,8 +219,8 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
         if (isTemplatedGenerator()) {
             var generatedConcreteJps = concreteJoinPoints.stream()
                     .filter(genFile -> genFile.write(outDir, false))
-                    .map(genFile -> genFile.getFilename())
-                    .collect(Collectors.toList());
+                    .map(GeneratedFile::filename)
+                    .toList();
 
             if (generatedConcreteJps.isEmpty()) {
                 SpecsLogs.info("No concrete join points generated.");
@@ -255,8 +254,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
      * <object name="Symbol">
      * <attribute name="name" type="String"/> </object>
      *
-     * @param newObjects the map containing the objects mapped to the field elements
-     * @param outPackage the class package (will append '.entities')
      */
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
@@ -286,7 +283,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
      * This package will contain the abstract join points, including the super type
      * AJoinPoint
      *
-     * @return
      */
     public String getJoinPointClassPackage() {
         return joinPointPackage;
@@ -295,7 +291,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     /**
      * This is the package for the Weaver implementation
      *
-     * @return
      */
     public String getWeaverPackage() {
         return weaverPackage;
@@ -304,7 +299,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     /**
      * This is the package for the abstract representation of the weaver
      *
-     * @return
      */
     public String getAbstractWeaverPackage() {
         return abstractWeaverPackage;
@@ -314,7 +308,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
      * This package is the one containing the abstract class that can be edited by
      * the use
      *
-     * @return
      */
     public String getAbstractUserJoinPointClassPackage() {
         return abstractUserJoinPointPackage;
@@ -323,7 +316,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     /**
      * This is the name of the (uneditable) abstract join point
      *
-     * @return
      */
     public static String getAbstractJoinPointClassName() {
 
@@ -346,7 +338,6 @@ public class TemplatedGenerator extends JavaAbstractsGenerator {
     /**
      * This package will contain the user defined entities
      *
-     * @return
      */
     public String getEntitiesPackage() {
         return entitiesPackage;

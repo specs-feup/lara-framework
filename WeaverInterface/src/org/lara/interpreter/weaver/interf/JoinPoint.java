@@ -74,8 +74,6 @@ public abstract class JoinPoint {
      * Function used by the lara interpreter to verify if a join point is the same
      * (equals) as another join point
      *
-     * @param iJoinPoint
-     * @return
      */
     public abstract boolean same(JoinPoint iJoinPoint);
 
@@ -89,7 +87,6 @@ public abstract class JoinPoint {
     /**
      * Returns the join point class
      *
-     * @return
      */
     public String get_class() {
         // return BASE_JOINPOINT_CLASS;
@@ -99,7 +96,6 @@ public abstract class JoinPoint {
     /**
      * Returns the join point type
      *
-     * @return
      */
     public String getJoinPointType() {
         return get_class();
@@ -108,14 +104,12 @@ public abstract class JoinPoint {
     /**
      * Returns the super type of this joinPoint or empty if no super exists
      *
-     * @return
      */
     public Optional<? extends JoinPoint> getSuper() {
         return Optional.empty();
     }
 
     /**
-     * @param type
      * @return true, if this join point is an instance of the given type, false
      *         otherwise
      */
@@ -130,11 +124,10 @@ public abstract class JoinPoint {
             return true;
         }
         Optional<? extends JoinPoint> superType = getSuper();
-        return superType.isPresent() ? superType.get().instanceOf(type) : false;
+        return superType.isPresent() && superType.get().instanceOf(type);
     }
 
     /**
-     * @param type
      * @return true, if this join point is an instance of any of the given types,
      *         false otherwise
      */
@@ -308,7 +301,6 @@ public abstract class JoinPoint {
      * Implement this method and getJpParent() in order to obtain tree-like
      * functionality (descendants, etc).
      *
-     * @return
      */
 
     public Stream<JoinPoint> getJpChildrenStream() {
@@ -319,7 +311,6 @@ public abstract class JoinPoint {
      * Implement this method and getJpChildrenStream() in order to obtain tree-like
      * functionality (descendants, etc).
      *
-     * @return
      */
     public JoinPoint getJpParent() {
         throw new NotImplementedException(this);
@@ -334,7 +325,7 @@ public abstract class JoinPoint {
     }
 
     public Stream<JoinPoint> getJpDescendantsStream() {
-        return getJpChildrenStream().flatMap(c -> c.getJpDescendantsAndSelfStream());
+        return getJpChildrenStream().flatMap(JoinPoint::getJpDescendantsAndSelfStream);
     }
 
     public Stream<JoinPoint> getJpDescendantsAndSelfStream() {

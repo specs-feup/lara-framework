@@ -15,8 +15,11 @@ package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class AttributeException extends BaseException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private String joinPointName;
     private String attribute;
@@ -34,6 +37,6 @@ public class AttributeException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        return "in attribute " + joinPointName + "." + attribute + "";
+        return "in attribute " + joinPointName + "." + attribute;
     }
 }

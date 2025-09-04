@@ -41,7 +41,7 @@ public class ArrayTypeTest {
             
             assertEquals(baseType, arrayType.getBaseType());
             assertEquals(1, arrayType.getDimension());
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
         }
 
         @Test
@@ -51,7 +51,7 @@ public class ArrayTypeTest {
             
             assertEquals(baseType, arrayType.getBaseType());
             assertEquals(3, arrayType.getDimension());
-            assertEquals("int[][][]", arrayType.getType());
+            assertEquals("int[][][]", arrayType.type());
         }
 
         @Test
@@ -71,7 +71,7 @@ public class ArrayTypeTest {
             
             assertEquals(baseType, arrayType.getBaseType());
             assertEquals(0, arrayType.getDimension());
-            assertEquals("int", arrayType.getType()); // No brackets for 0 dimension
+            assertEquals("int", arrayType.type()); // No brackets for 0 dimension
         }
 
         @Test
@@ -96,7 +96,7 @@ public class ArrayTypeTest {
             assertNotNull(arrayType);
             assertEquals(baseType, arrayType.getBaseType());
             assertEquals(1, arrayType.getDimension());
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
         }
 
         @Test
@@ -117,7 +117,7 @@ public class ArrayTypeTest {
             
             assertEquals(arrayType1.getBaseType(), arrayType2.getBaseType());
             assertEquals(arrayType1.getDimension(), arrayType2.getDimension());
-            assertEquals(arrayType1.getType(), arrayType2.getType());
+            assertEquals(arrayType1.type(), arrayType2.type());
         }
     }
 
@@ -129,21 +129,21 @@ public class ArrayTypeTest {
         @DisplayName("Should return correct type string for single dimension")
         void testGetTypeSingleDimension() {
             ArrayType arrayType = new ArrayType(baseType, 1);
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
         }
 
         @Test
         @DisplayName("Should return correct type string for multiple dimensions")
         void testGetTypeMultipleDimensions() {
             ArrayType arrayType = new ArrayType(baseType, 3);
-            assertEquals("int[][][]", arrayType.getType());
+            assertEquals("int[][][]", arrayType.type());
         }
 
         @Test
         @DisplayName("Should return correct type string for zero dimensions")
         void testGetTypeZeroDimensions() {
             ArrayType arrayType = new ArrayType(baseType, 0);
-            assertEquals("int", arrayType.getType());
+            assertEquals("int", arrayType.type());
         }
 
         @Test
@@ -163,7 +163,7 @@ public class ArrayTypeTest {
             ArrayType arrayType = new ArrayType(baseType);
             
             assertTrue(arrayType instanceof IType);
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
             assertTrue(arrayType.isArray());
         }
     }
@@ -182,7 +182,7 @@ public class ArrayTypeTest {
             
             arrayType.setBaseType(newBaseType);
             assertEquals(newBaseType, arrayType.getBaseType());
-            assertEquals("double[]", arrayType.getType());
+            assertEquals("double[]", arrayType.type());
         }
 
         @Test
@@ -194,7 +194,7 @@ public class ArrayTypeTest {
             
             arrayType.setDimension(5);
             assertEquals(5, arrayType.getDimension());
-            assertEquals("int[][][][][]", arrayType.getType());
+            assertEquals("int[][][][][]", arrayType.type());
         }
 
         @Test
@@ -210,20 +210,20 @@ public class ArrayTypeTest {
         @DisplayName("Should update type when base type changes")
         void testTypeUpdateOnBaseTypeChange() {
             ArrayType arrayType = new ArrayType(baseType);
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
             
             arrayType.setBaseType(Primitive.DOUBLE);
-            assertEquals("double[]", arrayType.getType());
+            assertEquals("double[]", arrayType.type());
         }
 
         @Test
         @DisplayName("Should update type when dimension changes")
         void testTypeUpdateOnDimensionChange() {
             ArrayType arrayType = new ArrayType(baseType);
-            assertEquals("int[]", arrayType.getType());
+            assertEquals("int[]", arrayType.type());
             
             arrayType.setDimension(3);
-            assertEquals("int[][][]", arrayType.getType());
+            assertEquals("int[][][]", arrayType.type());
         }
     }
 
@@ -237,7 +237,7 @@ public class ArrayTypeTest {
             ArrayType arrayType = new ArrayType(baseType, 2);
             
             assertEquals("int[][]", arrayType.toString());
-            assertEquals(arrayType.getType(), arrayType.toString());
+            assertEquals(arrayType.type(), arrayType.toString());
         }
 
         @Test
@@ -272,7 +272,7 @@ public class ArrayTypeTest {
             for (Primitive primitive : Primitive.values()) {
                 ArrayType arrayType = new ArrayType(primitive, 2);
                 String expected = primitive.toString().toLowerCase() + "[][]";
-                assertEquals(expected, arrayType.getType());
+                assertEquals(expected, arrayType.type());
             }
         }
 
@@ -285,7 +285,7 @@ public class ArrayTypeTest {
             assertEquals(innerArray, outerArray.getBaseType());
             assertEquals(3, outerArray.getDimension());
             // int[][] + [][][] = int[][][][][]
-            assertEquals("int[][][][][]", outerArray.getType());
+            assertEquals("int[][][][][]", outerArray.type());
         }
 
         @Test
@@ -293,18 +293,18 @@ public class ArrayTypeTest {
         void testCustomITypeImplementations() {
             IType customType = new IType() {
                 @Override
-                public String getType() {
+                public String type() {
                     return "CustomType";
                 }
                 
                 @Override
                 public String toString() {
-                    return getType();
+                    return type();
                 }
             };
             
             ArrayType arrayType = new ArrayType(customType, 2);
-            assertEquals("CustomType[][]", arrayType.getType());
+            assertEquals("CustomType[][]", arrayType.type());
         }
     }
 
@@ -319,14 +319,14 @@ public class ArrayTypeTest {
             
             assertEquals(100, arrayType.getDimension());
             String expected = "int" + "[]".repeat(100);
-            assertEquals(expected, arrayType.getType());
+            assertEquals(expected, arrayType.type());
         }
 
         @Test
         @DisplayName("Should handle dimension changes from positive to negative")
         void testDimensionChangeToNegative() {
             ArrayType arrayType = new ArrayType(baseType, 3);
-            assertEquals("int[][][]", arrayType.getType());
+            assertEquals("int[][][]", arrayType.type());
             
             arrayType.setDimension(-1);
             assertEquals(-1, arrayType.getDimension());
@@ -336,13 +336,13 @@ public class ArrayTypeTest {
         @DisplayName("Should handle multiple base type changes")
         void testMultipleBaseTypeChanges() {
             ArrayType arrayType = new ArrayType(baseType, 2);
-            assertEquals("int[][]", arrayType.getType());
+            assertEquals("int[][]", arrayType.type());
             
             arrayType.setBaseType(Primitive.BOOLEAN);
-            assertEquals("boolean[][]", arrayType.getType());
+            assertEquals("boolean[][]", arrayType.type());
             
             arrayType.setBaseType(Primitive.FLOAT);
-            assertEquals("float[][]", arrayType.getType());
+            assertEquals("float[][]", arrayType.type());
         }
 
         @Test
@@ -362,7 +362,7 @@ public class ArrayTypeTest {
             // Should be back to original state
             assertEquals(originalBase, arrayType.getBaseType());
             assertEquals(originalDimension, arrayType.getDimension());
-            assertEquals("int[][]", arrayType.getType());
+            assertEquals("int[][]", arrayType.type());
         }
     }
 
@@ -378,8 +378,8 @@ public class ArrayTypeTest {
                 
                 assertEquals(primitive, arrayType.getBaseType());
                 assertTrue(arrayType.isArray());
-                assertTrue(arrayType.getType().contains("[]"));
-                assertEquals(arrayType.getType(), arrayType.toString());
+                assertTrue(arrayType.type().contains("[]"));
+                assertEquals(arrayType.type(), arrayType.toString());
             }
         }
 
@@ -391,7 +391,7 @@ public class ArrayTypeTest {
             
             assertTrue(innerArray.isArray());
             assertTrue(outerArray.isArray());
-            assertEquals("int[][][]", outerArray.getType());
+            assertEquals("int[][][]", outerArray.type());
         }
 
         @Test
@@ -402,7 +402,7 @@ public class ArrayTypeTest {
             ArrayType level3 = new ArrayType(level2);               // char[][][]
             ArrayType level4 = new ArrayType(level3);               // char[][][][]
             
-            assertEquals("char[][][][]", level4.getType());
+            assertEquals("char[][][][]", level4.type());
             assertEquals(1, level4.getDimension());
             assertEquals(level3, level4.getBaseType());
         }

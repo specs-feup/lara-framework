@@ -15,8 +15,11 @@ package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class ActionException extends BaseException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private String joinPointName;
     private String actionName;
@@ -34,6 +37,6 @@ public class ActionException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        return "in action " + joinPointName + "." + actionName + "";
+        return "in action " + joinPointName + "." + actionName;
     }
 }

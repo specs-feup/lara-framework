@@ -51,7 +51,7 @@ public abstract class LangSpecNode extends ATreeNode<LangSpecNode> {
     protected String childrenToJson(int indentation) {
         StringBuilder childrenBuilder = new StringBuilder();
         if (toolTip != null) {
-            childrenBuilder.append("\"tooltip\": \"" + toolTip + "\",\n"); // TODO - stringify
+            childrenBuilder.append("\"tooltip\": \"").append(toolTip).append("\",\n"); // TODO - stringify
         }
         childrenBuilder.append("\"children\": [\n");
 

@@ -19,6 +19,8 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.NamedEnum;
 import org.lara.interpreter.weaver.interf.events.Stage;
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.ArrayType;
@@ -49,10 +51,6 @@ public class GeneratorUtils {
     /**
      * Add methods of the super join point to the java class
      *
-     * @param javaC
-     * @param fieldName
-     * @param langSpec
-     * @param current
      */
     public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
             JoinPointClass current) {
@@ -67,9 +65,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * @param javaC
-     * @param fieldName
-     * @param parent
      */
     public static void addSuperToString(JavaClass javaC, String fieldName) {
 
@@ -90,7 +85,7 @@ public class GeneratorUtils {
 
         // TODO: Remove sort
         var mutableAttributes = new ArrayList<>(attributes);
-        Collections.sort(mutableAttributes, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
+        mutableAttributes.sort(Comparator.comparing(Attribute::getName));
 
         for (var attribute : mutableAttributes) {
 
@@ -128,9 +123,6 @@ public class GeneratorUtils {
     /**
      * Create the action methods calling the super class method
      *
-     * @param javaGenerator
-     * @param javaC
-     * @param fieldName
      */
     public static void addSuperActions(JavaAbstractsGenerator javaGenerator, JavaClass javaC,
             JoinPointClass joinPointSuperType,
@@ -155,7 +147,7 @@ public class GeneratorUtils {
         jps.add(insertActionWithJp);
 
         // Sort with the insert actions inside
-        Collections.sort(jps, (attribute, t1) -> attribute.getName().compareTo(t1.getName()));
+        jps.sort(Comparator.comparing(Action::getName));
 
         // getJoinPointOwnActions(joinPointSuperType); // These two lines makes
         // the same thing as the code above
@@ -183,10 +175,6 @@ public class GeneratorUtils {
 
     }
 
-    /**
-     * @param attribute
-     * @return
-     */
     public static String extractEnumName(String jpName, String attribute) {
         return Utils.firstCharToUpper(jpName) + Utils.firstCharToUpper(attribute) + "Enum";
     }
@@ -194,10 +182,6 @@ public class GeneratorUtils {
     /**
      * Create Methods based on the fields
      *
-     * @param originalName
-     * @param abstractGetters
-     * @param attributes
-     * @return
      */
     public static Pair<Method, Method> createGetterAndSetter(Field field, String originalName,
             boolean abstractGetters) {
@@ -213,12 +197,6 @@ public class GeneratorUtils {
         return new Pair<>(getAttribute, setAttribute);
     }
 
-    /**
-     * @param attr
-     * @param attrClassStr
-     * @param attrClassStr2
-     * @return
-     */
     private static Method createSetter(String attr, String originalName, JavaType attrClassStr) {
         // Generate a get for the attribute
         final String setName = "set" + Utils.firstCharToUpper(originalName);
@@ -231,13 +209,6 @@ public class GeneratorUtils {
         return setAttribute;
     }
 
-    /**
-     * @param attr
-     * @param getAttrType
-     * @param getAttrType
-     * @param abstractGetters
-     * @return
-     */
     private static Method createGetter(String attr, String originalName, JavaType getAttrType,
             boolean abstractGetters) {
         final String getName = "get" + Utils.firstCharToUpper(originalName);
@@ -258,12 +229,6 @@ public class GeneratorUtils {
         return getAttribute;
     }
 
-    /**
-     * @param attr
-     * @param getAttrType
-     * @param list
-     * @return
-     */
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
             List<org.lara.language.specification.dsl.Parameter> list,
             JavaAbstractsGenerator generator) {
@@ -352,17 +317,13 @@ public class GeneratorUtils {
      * Generates the method with the name and parameters of the action
      *
      * @param action the action used to generate its method
-     * @return
      */
     public static Method generateActionMethod(org.lara.language.specification.dsl.Action action,
             JavaAbstractsGenerator generator) {
 
         JavaType actionReturn = getJavaType(action.getReturnType(), action.getName(), action, "ActionParam", generator);
         final Method m = new Method(actionReturn, action.getName());
-        String comment = action.getToolTip().orElse(null);
-        if (comment != null) {
-            m.appendComment(comment);
-        }
+        action.getToolTip().ifPresent(m::appendComment);
         for (var param : action.getParameters()) {
 
             String paramName = param.getName();
@@ -391,7 +352,6 @@ public class GeneratorUtils {
             // if (!generator.isAbstractGetters())
             // javaC.addImport(enumerator.getClassPackage() + "." +
             // enumerator.getName());
-            type = enumerator.getName();
             jType = JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
         } else {
             jType = ConvertUtils.getConvertedType(type, generator);
@@ -407,8 +367,6 @@ public class GeneratorUtils {
      * JavaScript layer.
      * </p>
      *
-     * @param arguments
-     * @return
      */
     public static List<Argument> convertParamArrayToObjArray(List<Argument> arguments) {
         var newArgs = new ArrayList<Argument>(arguments.size());
@@ -431,8 +389,6 @@ public class GeneratorUtils {
      * implement, and generate the action
      * implementation that invokes this new actionImpl
      *
-     * @param original
-     * @return
      */
     public static Method generateActionImplMethod(Method original, org.lara.language.specification.dsl.Action action,
             JavaClass targetClass, JavaAbstractsGenerator generator) {
@@ -497,7 +453,7 @@ public class GeneratorUtils {
         List<String> newArgs = new ArrayList<>(arguments.size());
         JavaType stringType = JavaTypeFactory.getStringType();
         for (Argument arg : arguments) {
-            String argStr = "";
+            String argStr;
             if (arg.getClassType().isEnum()) {
                 targetClass.addImport(NamedEnum.class);
                 targetClass.addImport(arg.getClassType());
@@ -556,11 +512,6 @@ public class GeneratorUtils {
 
     }
 
-    /**
-     * @param _package
-     * @param typeFirstCharToUpper
-     * @return
-     */
     public static JavaType generateJoinPointBaseType(String _package, String type) {
         if (type.equals("joinpoint")) {
             type = "joinPoint"; // otherwise it will generate code with an error
@@ -571,11 +522,10 @@ public class GeneratorUtils {
     /**
      * Generate a java enum with the given name and collection of items
      *
-     * @param String          the base for the name
-     * @param attribute       the name of the attribute
      * @param itemsCollection the collection of items, i.e., a string with items
      *                        separated by a comma
-     * @return
+     * @param attributeName   the name of the attribute
+     * @param baseName        the base for the name
      */
     public static JavaEnum generateEnum(String itemsCollection, String attributeName, String baseName,
             JavaAbstractsGenerator generator) {
@@ -610,13 +560,9 @@ public class GeneratorUtils {
     }
 
     /**
-     * Define the return type for the use of an enum. TODO: DECIDE BETWEEN RETURN OF
-     * STRING OR THE ENUM
+     * Define the return type for the use of an enum.
+     * TODO: DECIDE BETWEEN RETURN OF STRING OR THE ENUM
      *
-     * @param getter
-     * @param enumerator
-     * @param attributeField
-     * @param abstractGetters
      */
     public static void defineEnumReturnType(Method getter, JavaEnum enumerator, Field attributeField,
             boolean abstractGetters) {
@@ -632,11 +578,6 @@ public class GeneratorUtils {
     /**
      * Generate code for a given attribute
      *
-     * @param javaC
-     * @param enums
-     * @param abstractGetters
-     * @param langSpec
-     * @param attribute
      */
     public static Method generateAttributeImpl(Method original, org.lara.language.specification.dsl.Attribute attribute,
             JavaClass targetClass,
@@ -709,7 +650,6 @@ public class GeneratorUtils {
             // if (!generator.isAbstractGetters())
             // javaC.addImport(enumerator.getClassPackage() + "." +
             // enumerator.getName());
-            attrClassStr = enumerator.getName();
             javaType = new JavaType(enumerator.getName(), enumerator.getClassPackage());
         } else {
             // Any primitive type for attributes are now converted into their wrapper
@@ -742,10 +682,7 @@ public class GeneratorUtils {
             // // NativeArray!
             // encapsulateArrayAttribute(javaC, getter);
             // }
-            String comment = attribute.getToolTip().orElse(null);
-            if (comment != null) {
-                getter.setJavaDocComment(new JavaDoc(comment));
-            }
+            attribute.getToolTip().ifPresent(comment -> getter.setJavaDocComment(new JavaDoc(comment)));
             javaC.add(getter);
 
             return getter;
@@ -790,8 +727,6 @@ public class GeneratorUtils {
     /**
      * Generate the default code that compares the nodes of the join points
      *
-     * @param superClass
-     * @return
      */
     public static Method generateCompareNodes(JavaType superClass) {
         final Method method = new Method(JavaTypeFactory.getBooleanType(), "compareNodes");
@@ -812,8 +747,6 @@ public class GeneratorUtils {
     /**
      * Defines if this joinpoint is an instanceof joinpointclass
      *
-     * @param javaC
-     * @param isFinal
      */
     public static void generateInstanceOf(JavaClass javaC, String superNameStr, boolean isFinal) {
 

@@ -15,8 +15,11 @@ package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class LaraIException extends BaseException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final String problem;
 

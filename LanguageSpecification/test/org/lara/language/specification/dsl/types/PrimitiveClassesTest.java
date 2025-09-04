@@ -106,19 +106,19 @@ class PrimitiveClassesTest {
 
     @Test
     void testGetType() {
-        assertEquals("Void", PrimitiveClasses.VOID.getType());
-        assertEquals("Byte", PrimitiveClasses.BYTE.getType());
-        assertEquals("Short", PrimitiveClasses.SHORT.getType());
-        assertEquals("Integer", PrimitiveClasses.INTEGER.getType());
-        assertEquals("Long", PrimitiveClasses.LONG.getType());
-        assertEquals("Float", PrimitiveClasses.FLOAT.getType());
-        assertEquals("Double", PrimitiveClasses.DOUBLE.getType());
-        assertEquals("Boolean", PrimitiveClasses.BOOLEAN.getType());
-        assertEquals("Char", PrimitiveClasses.CHAR.getType());
-        assertEquals("String", PrimitiveClasses.STRING.getType());
-        assertEquals("Object", PrimitiveClasses.OBJECT.getType());
-        assertEquals("Map", PrimitiveClasses.MAP.getType());
-        assertEquals("JoinpointInterface", PrimitiveClasses.JOINPOINT_INTERFACE.getType());
+        assertEquals("Void", PrimitiveClasses.VOID.type());
+        assertEquals("Byte", PrimitiveClasses.BYTE.type());
+        assertEquals("Short", PrimitiveClasses.SHORT.type());
+        assertEquals("Integer", PrimitiveClasses.INTEGER.type());
+        assertEquals("Long", PrimitiveClasses.LONG.type());
+        assertEquals("Float", PrimitiveClasses.FLOAT.type());
+        assertEquals("Double", PrimitiveClasses.DOUBLE.type());
+        assertEquals("Boolean", PrimitiveClasses.BOOLEAN.type());
+        assertEquals("Char", PrimitiveClasses.CHAR.type());
+        assertEquals("String", PrimitiveClasses.STRING.type());
+        assertEquals("Object", PrimitiveClasses.OBJECT.type());
+        assertEquals("Map", PrimitiveClasses.MAP.type());
+        assertEquals("JoinpointInterface", PrimitiveClasses.JOINPOINT_INTERFACE.type());
     }
 
     @Test
@@ -141,7 +141,7 @@ class PrimitiveClassesTest {
     @Test
     void testGetTypeEqualsToString() {
         for (PrimitiveClasses primitiveClass : PrimitiveClasses.values()) {
-            assertEquals(primitiveClass.getType(), primitiveClass.toString());
+            assertEquals(primitiveClass.type(), primitiveClass.toString());
         }
     }
 
@@ -150,14 +150,14 @@ class PrimitiveClassesTest {
         for (PrimitiveClasses primitiveClass : PrimitiveClasses.values()) {
             assertTrue(primitiveClass instanceof IType);
             assertFalse(primitiveClass.isArray()); // Default implementation from IType interface
-            assertNotNull(primitiveClass.getType());
+            assertNotNull(primitiveClass.type());
         }
     }
 
     @Test
     void testSpecialJoinpointInterfaceCase() {
         // Test the special case for JOINPOINT_INTERFACE
-        assertEquals("JoinpointInterface", PrimitiveClasses.JOINPOINT_INTERFACE.getType());
+        assertEquals("JoinpointInterface", PrimitiveClasses.JOINPOINT_INTERFACE.type());
         assertEquals("JoinpointInterface", PrimitiveClasses.JOINPOINT_INTERFACE.toString());
     }
 
@@ -171,7 +171,7 @@ class PrimitiveClassesTest {
     @Test
     void testAllPrimitiveClassesHaveValidTypes() {
         for (PrimitiveClasses primitiveClass : PrimitiveClasses.values()) {
-            String type = primitiveClass.getType();
+            String type = primitiveClass.type();
             assertNotNull(type);
             assertFalse(type.isEmpty());
             // Type should be capitalized version of name (except for special cases)

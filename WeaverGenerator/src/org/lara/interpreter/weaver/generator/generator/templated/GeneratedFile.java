@@ -15,46 +15,38 @@ package org.lara.interpreter.weaver.generator.generator.templated;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsIo;
 
-public class GeneratedFile {
-
-    private final String filename;
-    private final String code;
-    private final List<String> packagePrefix;
-
-    public GeneratedFile(String filename, String code, List<String> packagePrefix) {
-        this.filename = filename;
-        this.code = code;
-        this.packagePrefix = packagePrefix;
-    }
+public record GeneratedFile(String filename, String code, List<String> packagePrefix) {
 
     /**
      * @return the filename
      */
-    public String getFilename() {
+    @Override
+    public String filename() {
         return filename;
     }
 
     /**
      * @return the code
      */
-    public String getCode() {
+    @Override
+    public String code() {
         return code;
     }
 
     /**
      * @return the packagePrefix
      */
-    public List<String> getPackagePrefix() {
+    @Override
+    public List<String> packagePrefix() {
         return packagePrefix;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -63,7 +55,7 @@ public class GeneratedFile {
     }
 
     public String getRelativePath() {
-        return packagePrefix.stream().collect(Collectors.joining("/")) + "/" + filename;
+        return String.join("/", packagePrefix) + "/" + filename;
     }
 
     public boolean write(File outputDir, boolean replace) {

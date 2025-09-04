@@ -26,6 +26,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
 import java.io.File;
+import java.util.Objects;
 
 public class WeaverGenerator {
     /**
@@ -162,11 +163,7 @@ public class WeaverGenerator {
 
         if (cmdLine.hasOption(GeneratorOption.N.getOption())) {
             optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
-            if (optionValue != null) {
-                generator.setNodeType(optionValue);
-            } else {
-                generator.setNodeType(GenConstants.getDefaultNodeType());
-            }
+            generator.setNodeType(Objects.requireNonNullElseGet(optionValue, GenConstants::getDefaultNodeType));
         }
 
         if (cmdLine.hasOption(GeneratorOption.J.getOption())) {

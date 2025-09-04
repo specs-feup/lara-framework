@@ -70,18 +70,16 @@ public class LARAExceptionBuilder {
 
         String str = "\n";// + LARAExceptionBuilder.EXCEPTION_HEADER + ":\n";
         StringBuilder completeMessage = new StringBuilder(str);
-        String separator = LARAExceptionBuilder.SEPARATOR;
-        int predefinedSpace = LARAExceptionBuilder.PREDEFINED_SPACE;
         String indentStr = LARAExceptionBuilder.INDENT;
         if (!messages.isEmpty()) {
 
-            completeMessage.append(indentStr + messages.get(0));
+            completeMessage.append(indentStr).append(messages.get(0));
             for (int i = 1; i < messages.size(); i++) {
-                String indentation = " ".repeat(predefinedSpace) + indentStr.repeat(i + 1);
+                String indentation = " ".repeat(LARAExceptionBuilder.PREDEFINED_SPACE) + indentStr.repeat(i + 1);
                 String message = messages.get(i);
                 message = message.replaceAll("\n", "\n" + indentation);
                 String finalMessage = indentation + message;
-                completeMessage.append(separator + finalMessage);
+                completeMessage.append(LARAExceptionBuilder.SEPARATOR).append(finalMessage);
             }
         }
 
@@ -90,8 +88,7 @@ public class LARAExceptionBuilder {
 
     /**
      * Remove unnecessary Elements, such as package org.mozilla.javascript
-     * 
-     * @return
+     *
      */
     private StackTraceElement[] cleanTrace() {
         List<StackTraceElement> newTraceList = new ArrayList<>();
@@ -124,7 +121,7 @@ public class LARAExceptionBuilder {
     }
 
     /**
-     * @param message the message to set
+     * @param messages the messages to set
      */
     public void setMessages(List<String> messages) {
         this.messages = messages;

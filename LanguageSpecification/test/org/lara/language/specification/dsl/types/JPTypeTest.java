@@ -42,7 +42,7 @@ public class JPTypeTest {
             
             assertNotNull(jpType);
             assertEquals(testJoinPoint, jpType.getJointPoint());
-            assertEquals("TestJoinPoint", jpType.getType());
+            assertEquals("TestJoinPoint", jpType.type());
         }
 
         @Test
@@ -66,7 +66,7 @@ public class JPTypeTest {
             
             assertNotNull(jpType);
             assertEquals(testJoinPoint, jpType.getJointPoint());
-            assertEquals("TestJoinPoint", jpType.getType());
+            assertEquals("TestJoinPoint", jpType.type());
         }
 
         @Test
@@ -85,7 +85,7 @@ public class JPTypeTest {
             JPType jpType2 = JPType.of(testJoinPoint);
             
             assertEquals(jpType1.getJointPoint(), jpType2.getJointPoint());
-            assertEquals(jpType1.getType(), jpType2.getType());
+            assertEquals(jpType1.type(), jpType2.type());
             assertEquals(jpType1.toString(), jpType2.toString());
         }
     }
@@ -99,7 +99,7 @@ public class JPTypeTest {
         void testGetType() {
             JPType jpType = new JPType(testJoinPoint);
             
-            assertEquals("TestJoinPoint", jpType.getType());
+            assertEquals("TestJoinPoint", jpType.type());
         }
 
         @Test
@@ -108,7 +108,7 @@ public class JPTypeTest {
             JPType jpType = new JPType(null);
             
             assertThrows(NullPointerException.class, () -> {
-                jpType.getType();
+                jpType.type();
             });
         }
 
@@ -118,7 +118,7 @@ public class JPTypeTest {
             JPType jpType = new JPType(testJoinPoint);
             
             assertTrue(jpType instanceof IType);
-            assertEquals("TestJoinPoint", jpType.getType());
+            assertEquals("TestJoinPoint", jpType.type());
             assertFalse(jpType.isArray()); // Default implementation should return false
         }
 
@@ -128,7 +128,7 @@ public class JPTypeTest {
             JoinPointClass complexJoinPoint = new JoinPointClass("Complex_JoinPoint_123");
             JPType jpType = new JPType(complexJoinPoint);
             
-            assertEquals("Complex_JoinPoint_123", jpType.getType());
+            assertEquals("Complex_JoinPoint_123", jpType.type());
         }
     }
 
@@ -146,7 +146,7 @@ public class JPTypeTest {
             
             jpType.setJointPoint(newJoinPoint);
             assertEquals(newJoinPoint, jpType.getJointPoint());
-            assertEquals("NewJoinPoint", jpType.getType());
+            assertEquals("NewJoinPoint", jpType.type());
         }
 
         @Test
@@ -162,11 +162,11 @@ public class JPTypeTest {
         @DisplayName("Should update type when joint point changes")
         void testTypeUpdateOnJointPointChange() {
             JPType jpType = new JPType(testJoinPoint);
-            assertEquals("TestJoinPoint", jpType.getType());
+            assertEquals("TestJoinPoint", jpType.type());
             
             JoinPointClass newJoinPoint = new JoinPointClass("UpdatedJoinPoint");
             jpType.setJointPoint(newJoinPoint);
-            assertEquals("UpdatedJoinPoint", jpType.getType());
+            assertEquals("UpdatedJoinPoint", jpType.type());
         }
     }
 
@@ -180,7 +180,7 @@ public class JPTypeTest {
             JPType jpType = new JPType(testJoinPoint);
             
             assertEquals("TestJoinPoint", jpType.toString());
-            assertEquals(jpType.getType(), jpType.toString());
+            assertEquals(jpType.type(), jpType.toString());
         }
 
         @Test
@@ -223,7 +223,7 @@ public class JPTypeTest {
             JoinPointClass longJoinPoint = new JoinPointClass(longName);
             JPType jpType = new JPType(longJoinPoint);
             
-            assertEquals(longName, jpType.getType());
+            assertEquals(longName, jpType.type());
             assertEquals(longName, jpType.toString());
         }
 
@@ -233,7 +233,7 @@ public class JPTypeTest {
             JoinPointClass unicodeJoinPoint = new JoinPointClass("JoinPoint名前");
             JPType jpType = new JPType(unicodeJoinPoint);
             
-            assertEquals("JoinPoint名前", jpType.getType());
+            assertEquals("JoinPoint名前", jpType.type());
             assertEquals("JoinPoint名前", jpType.toString());
         }
 
@@ -245,7 +245,7 @@ public class JPTypeTest {
             
             // Should be different instances but same content
             assertNotSame(jpType1, jpType2);
-            assertEquals(jpType1.getType(), jpType2.getType());
+            assertEquals(jpType1.type(), jpType2.type());
             assertEquals(jpType1.toString(), jpType2.toString());
         }
     }
@@ -262,17 +262,17 @@ public class JPTypeTest {
             childJoinPoint.setExtend(parentJoinPoint);
             
             JPType childType = new JPType(childJoinPoint);
-            assertEquals("ChildJoinPoint", childType.getType());
+            assertEquals("ChildJoinPoint", childType.type());
             
             JPType parentType = new JPType(parentJoinPoint);
-            assertEquals("ParentJoinPoint", parentType.getType());
+            assertEquals("ParentJoinPoint", parentType.type());
         }
 
         @Test
         @DisplayName("Should maintain consistency after multiple operations")
         void testConsistencyAfterOperations() {
             JPType jpType = new JPType(testJoinPoint);
-            String originalType = jpType.getType();
+            String originalType = jpType.type();
             String originalString = jpType.toString();
             
             // Perform multiple operations
@@ -280,7 +280,7 @@ public class JPTypeTest {
             jpType.setJointPoint(temp);
             
             // Should remain consistent
-            assertEquals(originalType, jpType.getType());
+            assertEquals(originalType, jpType.type());
             assertEquals(originalString, jpType.toString());
         }
 
@@ -290,13 +290,13 @@ public class JPTypeTest {
             // Simple join point
             JoinPointClass simpleJP = new JoinPointClass("Simple");
             JPType simpleType = new JPType(simpleJP);
-            assertEquals("Simple", simpleType.getType());
+            assertEquals("Simple", simpleType.type());
             
             // Join point with attributes
             JoinPointClass complexJP = new JoinPointClass("Complex");
             // Add some attributes to make it more complex
             JPType complexType = new JPType(complexJP);
-            assertEquals("Complex", complexType.getType());
+            assertEquals("Complex", complexType.type());
         }
     }
 }

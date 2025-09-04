@@ -48,8 +48,6 @@ public class LaraI {
     /**
      * Converts an array of strings to the corresponding DataStore.
      *
-     * @param objArgs
-     * @param weaverEngine
      * @return A DataStore that corresponds to the given arguments, or empty if the
      *         arguments represent a GUI execution mode.
      */
@@ -87,9 +85,7 @@ public class LaraI {
      * This is a super-set of getWeaverOptions(), which includes launch-specific
      * flags, and returns an instance of the
      * Apache Commons CLI package.
-     * 
-     * @param weaverEngine
-     * @return
+     *
      */
     private static Options getCliOptions(WeaverEngine weaverEngine) {
         Collection<Option> configOptions = OptionsParser.buildConfigOptions();

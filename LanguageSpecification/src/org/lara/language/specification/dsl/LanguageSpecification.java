@@ -38,7 +38,6 @@ public class LanguageSpecification {
     private static final String ATTRIBUTES_FILENAME = "artifacts.xml";
     private static final String ACTIONS_FILENAME = "actionModel.xml";
 
-
     public static String getJoinPointsFilename() {
         return JOIN_POINTS_FILENAME;
     }
@@ -50,7 +49,6 @@ public class LanguageSpecification {
     public static String getActionsFilename() {
         return ACTIONS_FILENAME;
     }
-
 
     private static final String BASE_JOINPOINT_CLASS = "joinpoint";
 
@@ -89,12 +87,10 @@ public class LanguageSpecification {
      * Creates a language specification instance with the files contained in the
      * folder 'specDir'
      *
-     * @param specDir  the source folder of the language specification, should
-     *                 include 3 files:
-     *                 {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME}
-     *                 and {@value #ACTIONS_FILENAME}
-     * @param validate
-     * @return
+     * @param specDir the source folder of the language specification, should
+     *                include 3 files:
+     *                {@value #JOIN_POINTS_FILENAME}, {@value #ATTRIBUTES_FILENAME}
+     *                and {@value #ACTIONS_FILENAME}
      */
     public static LanguageSpecification newInstance(File specDir) {
 
@@ -185,7 +181,6 @@ public class LanguageSpecification {
     }
 
     /**
-     * @param name
      * @return true if the given name corresponds to an existing join point (not
      *         considering alias)
      */
@@ -196,15 +191,10 @@ public class LanguageSpecification {
         }
 
         // Global
-        if (getBaseJoinpointClass().equals(name)) {
-            return true;
-        }
-
-        return false;
+        return getBaseJoinpointClass().equals(name);
     }
 
     /**
-     * @param name
      * @return true if the given name is a valid join point (considering alias)
      */
     public boolean hasJoinPointName(String name) {
@@ -234,11 +224,11 @@ public class LanguageSpecification {
             return new ArrayType(baseType, arrayDimension);
         }
 
-        if (type.toLowerCase().equals("template")) {
+        if (type.equalsIgnoreCase("template")) {
             return PrimitiveClasses.STRING;
         }
 
-        if (type.toLowerCase().equals("joinpoint")) {
+        if (type.equalsIgnoreCase("joinpoint")) {
             return new JPType(global);
         }
 
@@ -337,18 +327,18 @@ public class LanguageSpecification {
     @Override
     public String toString() {
         String alias = rootAlias.isEmpty() ? "" : (" as " + rootAlias);
-        String string = "root " + root.getName() + alias + "\n";
+        StringBuilder string = new StringBuilder("root " + root.getName() + alias + "\n");
 
-        string += global.toDSLString();
+        string.append(global.toDSLString());
 
         for (JoinPointClass joinPoint : joinPoints.values()) {
-            string += "\n" + joinPoint.toDSLString();
+            string.append("\n").append(joinPoint.toDSLString());
         }
-        string += "\n";
+        string.append("\n");
         for (TypeDef type : typeDefs.values()) {
-            string += "\n" + type.toDSLString();
+            string.append("\n").append(type.toDSLString());
         }
-        return string;
+        return string.toString();
     }
 
     public Map<String, EnumDef> getEnumDefs() {
@@ -368,7 +358,6 @@ public class LanguageSpecification {
     }
 
     /**
-     * @param name
      * @return the actions with the given name. Since overloading is supported,
      *         several actions can have the same name
      */
@@ -384,13 +373,12 @@ public class LanguageSpecification {
      */
     public List<Action> getAllActions() {
         return getAllJoinPoints().stream()
-                .map(jp -> jp.getActions())
+                .map(JoinPointClass::getActions)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     /**
-     * @param name
      * @return the attributes with the given name. Since overloading is supported,
      *         several attributes can have the same
      *         name
@@ -408,8 +396,6 @@ public class LanguageSpecification {
      * <p>
      * TODO: Could be more efficient (e.g., using a tree to represent the hierarchy)
      *
-     * @param joinPoint
-     * @return
      */
     public boolean isSuper(JoinPointClass joinPoint) {
         for (var jp : getJoinPoints().values()) {
@@ -446,14 +432,15 @@ public class LanguageSpecification {
 
         var dot = new StringBuilder();
 
-        dot.append("digraph " + langSpecName + "join_point_hierarchy {\n"
-                + "node [color=lightblue2, style=filled];\n"
-                + "rankdir=\"RL\"\n"
-                + "node [fontsize=10, shape=box, height=0.25]\n"
-                + "edge [fontsize=10]\n");
+        dot.append("digraph ").append(langSpecName).append("join_point_hierarchy {\n")
+                .append("node [color=lightblue2, style=filled];\n")
+                .append("rankdir=\"RL\"\n")
+                .append("node [fontsize=10, shape=box, height=0.25]\n")
+                .append("edge [fontsize=10]\n");
         for (var jp : getAllJoinPoints()) {
             // "Invert" arrow direction
-            jp.getExtend().map(parent -> dot.append("\"" + jp.getName() + "\"->\"" + parent.getName() + "\"\n"));
+            jp.getExtend().map(parent -> dot.append("\"").append(jp.getName()).append("\"->\"").append(parent.getName())
+                    .append("\"\n"));
         }
         dot.append("}\n");
 

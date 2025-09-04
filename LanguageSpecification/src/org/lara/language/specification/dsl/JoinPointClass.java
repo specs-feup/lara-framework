@@ -46,8 +46,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         attributes = new ArrayList<>();
         actions = new ArrayList<>();
 
-        attributeMap = Lazy.newInstance(() -> buildMultiMap(getAttributesSelf(), attr -> attr.getName()));
-        actionsMap = Lazy.newInstance(() -> buildMultiMap(getActionsSelf(), action -> action.getName()));
+        attributeMap = Lazy.newInstance(() -> buildMultiMap(getAttributesSelf(), Attribute::getName));
+        actionsMap = Lazy.newInstance(() -> buildMultiMap(getActionsSelf(), Action::getName));
     }
 
     public String getName() {
@@ -113,7 +113,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         }
 
         // Check if super has default attribute
-        return getExtend().map(superJp -> superJp.getDefaultAttribute()).orElse(Optional.empty());
+        return getExtend().flatMap(JoinPointClass::getDefaultAttribute);
     }
 
     public void add(Attribute attribute) {
@@ -153,7 +153,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     /**
-     * @param name
      * @return the actions corresponding to the given name, or empty list if none
      *         exists.
      */
@@ -192,11 +191,9 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     /**
      * Get all attributes for this join point
      *
-     * @return
      */
     public List<Attribute> getAttributes() {
-        List<Attribute> attributes = new ArrayList<>();
-        attributes.addAll(this.attributes);
+        List<Attribute> attributes = new ArrayList<>(this.attributes);
         extend.ifPresent(superJp -> attributes.addAll(superJp.getAttributes()));
 
         return attributes;
@@ -205,41 +202,33 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     /**
      * Get all actions for this join point, included inherited.
      *
-     * @return
      */
     public List<Action> getActions() {
-        List<Action> actions = new ArrayList<>();
-        actions.addAll(this.actions);
+        List<Action> actions = new ArrayList<>(this.actions);
         extend.ifPresent(superJp -> actions.addAll(superJp.getActions()));
 
         return actions;
     }
 
     /**
-     * @param name
      * @return the attributes corresponding to the given name, or empty list if none
      *         exists. Considers all available
      *         attributes of this join point, including hierarchy
      */
     public List<Attribute> getAttribute(String name) {
-        List<Attribute> attribute = new ArrayList<>();
-        attributeMap.get().get(name).forEach(attribute::add);
-        extend.ifPresent(superJp -> superJp.getAttribute(name)
-                .forEach(attribute::add));
+        List<Attribute> attribute = new ArrayList<>(attributeMap.get().get(name));
+        extend.ifPresent(superJp -> attribute.addAll(superJp.getAttribute(name)));
         return attribute;
     }
 
     /**
-     * @param name
      * @return the actions corresponding to the given name, or empty list if none
      *         exists. Considers all available
      *         actions of this join point, including hierarchy
      */
     public List<Action> getAction(String name) {
-        List<Action> action = new ArrayList<>();
-        actionsMap.get().get(name).forEach(action::add);
-        extend.ifPresent(superJp -> superJp.getAction(name)
-                .forEach(action::add));
+        List<Action> action = new ArrayList<>(actionsMap.get().get(name));
+        extend.ifPresent(superJp -> action.addAll(superJp.getAction(name)));
         return action;
     }
 

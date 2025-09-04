@@ -23,7 +23,6 @@ public class AttributeNode extends LangSpecNode {
      * Create a new instance of an attribute with a child that defines its
      * declaration
      *
-     * @param declaration
      */
     public AttributeNode(DeclarationNode declaration) {
         addChild(declaration);

@@ -51,8 +51,8 @@ public class Declaration {
     @Override
     public String toString() {
         if (type instanceof LiteralEnum) {
-            return type.getType();
+            return type.type();
         }
-        return type.getType() + " " + name;
+        return type.type() + " " + name;
     }
 }

@@ -13,6 +13,7 @@
 
 package org.lara.interpreter.weaver.generator.gui;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,11 +45,11 @@ public class Launcher {
             List<TabProvider> xmlTabs = new ArrayList<>();
             xmlTabs.add(data -> new GuiTab(data) {
 
+                @Serial
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public String getTabName() {
-                    // TODO Auto-generated method stub
                     return "TestTab";
                 }
 

@@ -15,7 +15,9 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
@@ -55,9 +57,6 @@ public class ConvertUtils {
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
-     * @param type
-     * @param ls
-     * @return
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
@@ -90,9 +89,6 @@ public class ConvertUtils {
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
-     * @param type
-     * @param ls
-     * @return
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
@@ -167,8 +163,7 @@ public class ConvertUtils {
         // if it is a join point class
         if (generator.getLanguageSpecification().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
-            final JavaType jpType = new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
-            return jpType;
+            return new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
         }
 
         // If it does not exist, throw an exception with the error message and
@@ -184,7 +179,7 @@ public class ConvertUtils {
 
     private static StringBuilder reportAvailableTypes(LanguageSpecification langSpec) {
         final StringBuilder message = new StringBuilder(ln() + "\t Primitives: ");
-        String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
+        String join = StringUtils.join(Arrays.asList(Primitive.values()), Enum::name, ", ")
                 + ", Object, Array, Map, Template, Joinpoint";
         message.append(join);
 
@@ -192,7 +187,7 @@ public class ConvertUtils {
         if (!objects.isEmpty()) {
 
             message.append(ln() + "\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, t -> t.getName(), ", ");
+            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
             message.append(objectsString);
         }
 
@@ -200,7 +195,7 @@ public class ConvertUtils {
         if (!joinpoints.isEmpty()) {
 
             message.append(ln() + "\t Join point types: ");
-            final String jpsString = StringUtils.join(joinpoints, j -> j.getName(), ", ");
+            final String jpsString = StringUtils.join(joinpoints, JoinPointClass::getName, ", ");
             message.append(jpsString);
         }
         return message;

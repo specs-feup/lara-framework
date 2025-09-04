@@ -23,14 +23,14 @@ import org.suikasoft.jOptions.Datakey.KeyFactory;
 public interface WeaverGeneratorKeys {
     DataKey<String> WEAVER_NAME = KeyFactory.string("Weaver Name", GenConstants.getDefaultWeaverName());
     DataKey<File> LANGUAGE_SPECIFICATION_FOLDER = KeyFactory.folder("Language Specification Folder")
-            .setDefault(() -> GenConstants.getDefaultXMLDir());
+            .setDefault(GenConstants::getDefaultXMLDir);
     DataKey<Boolean> ABSTRACT_GETTERS = KeyFactory.bool("Abstract Getters");
     DataKey<Boolean> IMPL_MODE = KeyFactory.bool("Create \"<attr>Impl\" methods");
     DataKey<ClassProvider> NODE_TYPE = WeaverGeneratorKeyFactory.classProvider("Node Class")
             .setDefault(() -> ClassProvider.newInstance(Object.class.getName()));
     DataKey<String> PACKAGE = KeyFactory.string("Package", GenConstants.getDefaultPackage());
     DataKey<File> OUTPUT_FOLDER = KeyFactory.folder("Output Folder", true)
-            .setDefault(() -> GenConstants.getDefaultOutputDir());
+            .setDefault(GenConstants::getDefaultOutputDir);
 
     DataKey<Boolean> SHOW_HELP = KeyFactory.bool("show_help");
 }

@@ -36,9 +36,6 @@ public class OptionsConverter {
      * Adds the commandline options into an existing datastore, using the Mapping in
      * {@link JOptionsInterface}
      *
-     * @param laraFileName
-     * @param cmd
-     * @return
      */
     public static DataStore configExtraOptions2DataStore(String laraFileName, CommandLine cmd,
             WeaverEngine engine) {
@@ -58,7 +55,7 @@ public class OptionsConverter {
         Map<String, WeaverOption> map = engine.getOptions().stream()
                 .collect(Collectors.toMap(WeaverOption::longOption, value -> value));
 
-        for (Option opt : Arrays.asList(cmd.getOptions())) {
+        for (Option opt : cmd.getOptions()) {
 
             if (CLIConfigOption.contains(opt.getLongOpt())) {
                 continue; // Just ignore options for config file (such as -c and -g)
@@ -83,9 +80,6 @@ public class OptionsConverter {
      * Convert the commandline into a datastore, using the Mapping in
      * {@link JOptionsInterface}
      *
-     * @param laraFileName
-     * @param cmd
-     * @return
      */
     public static DataStore commandLine2DataStore(String laraFileName, CommandLine cmd,
             List<WeaverOption> weaverOptions) {
@@ -103,7 +97,7 @@ public class OptionsConverter {
         Map<String, WeaverOption> map = weaverOptions.stream()
                 .collect(Collectors.toMap(WeaverOption::longOption, value -> value));
 
-        for (Option opt : Arrays.asList(cmd.getOptions())) {
+        for (Option opt : cmd.getOptions()) {
 
             if (CLIOption.contains(opt.getLongOpt())) {
                 processLaraIOption(dataStore, conversionMap, opt);
@@ -126,8 +120,7 @@ public class OptionsConverter {
         if (!conversionMap.containsKey(cliOpt)) {
             throw new LaraIException("Option " + cliOpt + "does not exist in LARAI.");
             // When the weaver is working with WeaverOption this condition must change to
-            // verify if WeaverOptionList
-            // contains the option
+            // verify if WeaverOptionList contains the option
         }
         DataKey<?> dataKey = conversionMap.get(cliOpt);
 
@@ -145,16 +138,11 @@ public class OptionsConverter {
 
     /**
      * Convert the varargs into a DataStore
-     *
-     * @param args
      */
     private static DataStore getDataStoreFromArgs() {
         // Create a DataStore with the default values (i.e., values that are defined in
         // the properties files
-        StoreDefinition definition = new LaraiStoreDefinition().getStoreDefinition();
-        DataStore dataStore = definition.getDefaultValues();
-
-        return dataStore;
+        return new LaraiStoreDefinition().getStoreDefinition().getDefaultValues();
     }
 
     public static DataStore configFile2DataStore(WeaverEngine weaverEngine, CommandLine cmd) {

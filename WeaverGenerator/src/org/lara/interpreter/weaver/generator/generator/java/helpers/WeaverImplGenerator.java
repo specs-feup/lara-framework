@@ -54,8 +54,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         final WeaverImplGenerator gen = new WeaverImplGenerator(javaGenerator);
@@ -66,7 +64,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @return
      */
     @Override
     public JavaClass generate() {
@@ -99,9 +96,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
      * Generate the Weaver abstract class with name : A + the weaver name, in the
      * given package and
      *
-     * @param weaverName
-     * @param weaverPackage
-     * @param aJoinPointPackage
      * @return JavaClass java = new JavaClass(weaverName, outPackage); String text =
      *         getWeaverText(weaverName,
      *         outPackage); java.appendComment(text); java.add(JDocTag.AUTHOR, "Lara
@@ -123,7 +117,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
     /**
      * Generates the method that starts the weaving process
      *
-     * @param java
      */
     private static void addBeginMethod(JavaClass java) {
         final Method begin = new Method(JavaTypeFactory.getBooleanType(), "begin");
@@ -153,7 +146,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
     /**
      * Generates the method that closes the weaving process
      *
-     * @param java
      */
     private static void addCloseMethod(JavaClass java) {
         final Method close = new Method(JavaTypeFactory.getBooleanType(), "close");
@@ -172,7 +164,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
     /**
      * Generates the default code for method getGears
      *
-     * @param java
      */
     private static void addGetGearsMethod(JavaClass java) {
         final JavaGenericType genGearType = new JavaGenericType(new JavaType(AGear.class));
@@ -188,7 +179,6 @@ public class WeaverImplGenerator extends GeneratorHelper {
     /**
      * Generates the default code for method getOptions
      *
-     * @param java
      */
     private static void addGetOptionsMethod(JavaClass java) {
         final JavaGenericType genWeaverOptionType = new JavaGenericType(new JavaType(WeaverOption.class));

@@ -15,9 +15,12 @@ package org.lara.language.specification.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class LanguageSpecificationException extends BaseException {
 
     private static final String DEFAULT_TEXT = "while building language specification";
+    @Serial
     private static final long serialVersionUID = 1L;
     private String message;
 

@@ -13,6 +13,8 @@
 
 package pt.up.fe.specs.tools.lara.exception;
 
+import java.io.Serial;
+
 /**
  * Abstract exception of a LARA exception. These type of exceptions are used to
  * encapsulate other thrown exceptions
@@ -22,6 +24,7 @@ package pt.up.fe.specs.tools.lara.exception;
  */
 public abstract class BaseException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -39,7 +42,6 @@ public abstract class BaseException extends RuntimeException {
      * Generate a complete message to present to the user, usually containing
      * 'Exception on' + generateSimpleMessage()
      *
-     * @return
      */
     protected abstract String generateMessage();
 
@@ -48,7 +50,6 @@ public abstract class BaseException extends RuntimeException {
      * does not contain the 'Exception on'
      * stuff, just get to the point!
      *
-     * @return
      */
     protected String generateSimpleMessage() {
         return LARAExceptionBuilder.getEvaluationExceptionMessage();

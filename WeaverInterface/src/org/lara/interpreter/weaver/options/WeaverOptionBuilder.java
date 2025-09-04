@@ -30,10 +30,7 @@ public class WeaverOptionBuilder {
 
     /**
      * Build a WeaverOption that has no arguments
-     * 
-     * @param shortOption
-     * @param longOption
-     * @param dataKey
+     *
      */
     public static WeaverOption build(String shortOption, String longOption, String description,
             DataKey<?> dataKey) {
@@ -48,12 +45,7 @@ public class WeaverOptionBuilder {
 
     /**
      * Build a WeaverOption with the given information
-     * 
-     * @param shortOption
-     * @param longOption
-     * @param args
-     * @param argName
-     * @param dataKey
+     *
      */
     public static WeaverOption build(String shortOption, String longOption, OptionArguments args, String argName,
             String description,
@@ -102,7 +94,7 @@ public class WeaverOptionBuilder {
         return this;
     }
 
-    private class DefaultWeaverOption implements WeaverOption {
+    private static class DefaultWeaverOption implements WeaverOption {
 
         private String shortOption;
         private String longOption;

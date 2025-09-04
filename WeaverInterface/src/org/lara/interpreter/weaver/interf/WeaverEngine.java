@@ -58,7 +58,7 @@ public abstract class WeaverEngine {
     }
 
     private static File createTemporaryWeaverFolder() {
-        String folderName = "lara_weaver_" + UUID.randomUUID().toString();
+        String folderName = "lara_weaver_" + UUID.randomUUID();
         return SpecsIo.mkdir(SpecsIo.getTempFolder(), folderName);
     }
 
@@ -75,8 +75,6 @@ public abstract class WeaverEngine {
     /**
      * Starts execution of the weaver, for the given arguments
      *
-     * @param sources   the files/directories with the source code
-     * @param outputDir output directory for the generated file(s)
      * @param dataStore the dataStore containing the options for the weaver
      * @return true if executed without errors
      */
@@ -99,7 +97,6 @@ public abstract class WeaverEngine {
     /**
      * Function that can be called from LARA code to retrieve the root join point
      *
-     * @return
      */
     public abstract JoinPoint getRootJp();
 
@@ -110,14 +107,12 @@ public abstract class WeaverEngine {
     /**
      * Returns a list of options the weaver accepts
      *
-     * @return
      */
     public abstract List<WeaverOption> getOptions();
 
     /**
      * The store definition for the options specific to this weaver
      *
-     * @return
      */
     public StoreDefinition getStoreDefinition() {
         return storeDefinition.get();
@@ -130,7 +125,6 @@ public abstract class WeaverEngine {
     /**
      * Builds and returns the language specification for this weaver.
      *
-     * @return
      */
     protected abstract LanguageSpecification buildLangSpecs();
 
@@ -145,7 +139,6 @@ public abstract class WeaverEngine {
     /**
      * Returns a list of classes that may be imported and used in LARA.
      *
-     * @return
      */
     public List<Class<?>> getImportableClasses() {
         return Collections.emptyList();
@@ -156,7 +149,6 @@ public abstract class WeaverEngine {
      * the ones from the auto-generated code
      * and the weaver-developer-defined.
      *
-     * @return
      */
     public List<Class<?>> getAllImportableClasses() {
         return getImportableClasses();
@@ -173,7 +165,6 @@ public abstract class WeaverEngine {
     /**
      * The name of the weaver with the build number, if available.
      *
-     * @return
      */
     public String getNameAndBuild() {
         var appName = getName();
@@ -214,7 +205,6 @@ public abstract class WeaverEngine {
     /**
      * Returns a temporary unique folder that is live while the weaver is running.
      *
-     * @return
      */
     public File getTemporaryWeaverFolder() {
         return temporaryWeaverFolder.get();
@@ -279,11 +269,9 @@ public abstract class WeaverEngine {
      * <p>
      * Default implementation returns a list with experimental LARA packages.
      *
-     * @param labelValuePairs
-     * @return
      */
     public List<String> getPredefinedExternalDependencies() {
-        return Arrays.asList();
+        return List.of();
     }
 
     /**

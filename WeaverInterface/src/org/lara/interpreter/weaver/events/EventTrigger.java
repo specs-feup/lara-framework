@@ -47,11 +47,7 @@ public class EventTrigger {
 
     /**
      * Trigger an action event
-     * 
-     * @param stage
-     * @param name
-     * @param target
-     * @param params
+     *
      */
     public void triggerAction(Stage stage, String name, JoinPoint target, List<Object> params,
             Optional<Object> result) {
@@ -70,11 +66,7 @@ public class EventTrigger {
 
     /**
      * Trigger an attribute access event
-     * 
-     * @param stage
-     * @param target
-     * @param name
-     * @param args
+     *
      */
     public void triggerAttribute(Stage stage, JoinPoint target, String name, Optional<Object> result, Object... args) {
         triggerAttribute(stage, target, name, Arrays.asList(args), result);

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,6 @@ public class LaraIKeyFactory {
     /**
      * Default file selection is {@link JFileChooser#FILES_ONLY}.
      *
-     * @param id
-     * @param extensions
-     * @return
      */
     public static DataKey<FileList> fileList(String id, Collection<String> extensions) {
         return fileList(id, JFileChooser.FILES_ONLY, extensions);
@@ -53,20 +51,17 @@ public class LaraIKeyFactory {
 
     /**
      *
-     * @param id
      * @param selectionMode file selection mode, using constants:
      *                      {@link JFileChooser#FILES_AND_DIRECTORIES},
      *                      {@link JFileChooser#FILES_ONLY} or
      *                      {@link JFileChooser#DIRECTORIES_ONLY}
-     * @param extensions
-     * @return
      */
     public static DataKey<FileList> fileList(String id, int selectionMode, Collection<String> extensions) {
         Optional<Boolean> isFolder = isFolder(selectionMode);
 
         DataKey<FileList> fileListKey = KeyFactory.object(id, FileList.class)
                 .setDecoder(FileList::newInstance)
-                .setDefault(() -> FileList.newInstance());
+                .setDefault(FileList::newInstance);
 
         if (isFolder.isPresent()) {
             fileListKey = fileListKey.setCustomGetter(customGetterFileList(isFolder.get(), !isFolder.get(), false));
@@ -93,14 +88,11 @@ public class LaraIKeyFactory {
     }
 
     private static Optional<Boolean> isFolder(int selectionMode) {
-        switch (selectionMode) {
-            case JFileChooser.FILES_ONLY:
-                return Optional.of(false);
-            case JFileChooser.DIRECTORIES_ONLY:
-                return Optional.of(true);
-            default:
-                return Optional.empty();
-        }
+        return switch (selectionMode) {
+            case JFileChooser.FILES_ONLY -> Optional.of(false);
+            case JFileChooser.DIRECTORIES_ONLY -> Optional.of(true);
+            default -> Optional.empty();
+        };
 
     }
 
@@ -108,25 +100,16 @@ public class LaraIKeyFactory {
      * Based on {@link KeyFactory#file(String, String...)}
      *
      *
-     * @param id
      * @param selectionMode file selection mode, using constants:
      *                      {@link JFileChooser#FILES_AND_DIRECTORIES},
      *                      {@link JFileChooser#FILES_ONLY} or
      *                      {@link JFileChooser#DIRECTORIES_ONLY}
-     * @param create
-     * @param extensions
-     * @return
      */
     public static DataKey<File> file(String id, int selectionMode, boolean create, Collection<String> extensions) {
 
         return KeyFactory.object(id, File.class)
                 .setDefault(() -> new File(""))
-                .setDecoder(s -> {
-                    if (s == null) {
-                        return new File("");
-                    }
-                    return new File(s);
-                })
+                .setDecoder(s -> new File(Objects.requireNonNullElse(s, "")))
                 .setKeyPanelProvider((key, data) -> new FilePanel(key, data, selectionMode, extensions))
                 .setCustomGetter(customGetterFile(selectionMode, create));
     }
@@ -134,9 +117,6 @@ public class LaraIKeyFactory {
     /**
      * Based on {@link KeyFactory#customGetterFile(boolean, boolean)}
      *
-     * @param selectionMode
-     * @param create
-     * @return
      */
     private static CustomGetter<File> customGetterFile(int selectionMode, boolean create) {
         return (file, dataStore) -> {
@@ -179,10 +159,6 @@ public class LaraIKeyFactory {
      * File instance, even if it does not
      * exist.
      *
-     * @param id
-     * @param isFolder
-     * @param create
-     * @return
      */
     public static DataKey<OptionalFile> optionalFile(String id, boolean exists) {
         return optionalFile(id, false, false, exists, Collections.emptyList());

@@ -31,7 +31,7 @@ public class GenericTypeTest {
         void testConstructorWithTypeAndArrayFlag() {
             GenericType genericType = new GenericType("List<String>", false);
             
-            assertEquals("List<String>", genericType.getType());
+            assertEquals("List<String>", genericType.type());
             assertFalse(genericType.isArray());
         }
 
@@ -40,7 +40,7 @@ public class GenericTypeTest {
         void testConstructorAsArrayType() {
             GenericType genericType = new GenericType("Map<String, Integer>", true);
             
-            assertEquals("Map<String, Integer>", genericType.getType());
+            assertEquals("Map<String, Integer>", genericType.type());
             assertTrue(genericType.isArray());
         }
 
@@ -49,7 +49,7 @@ public class GenericTypeTest {
         void testConstructorWithNullType() {
             GenericType genericType = new GenericType(null, false);
             
-            assertNull(genericType.getType());
+            assertNull(genericType.type());
             assertFalse(genericType.isArray());
         }
 
@@ -58,7 +58,7 @@ public class GenericTypeTest {
         void testConstructorWithEmptyType() {
             GenericType genericType = new GenericType("", true);
             
-            assertEquals("", genericType.getType());
+            assertEquals("", genericType.type());
             assertTrue(genericType.isArray());
         }
     }
@@ -71,7 +71,7 @@ public class GenericTypeTest {
         @DisplayName("Should return correct type string")
         void testGetType() {
             GenericType genericType = new GenericType("ArrayList<Integer>", false);
-            assertEquals("ArrayList<Integer>", genericType.getType());
+            assertEquals("ArrayList<Integer>", genericType.type());
         }
 
         @Test
@@ -94,7 +94,7 @@ public class GenericTypeTest {
             GenericType genericType = new GenericType("HashMap<String, Object>", true);
             
             assertTrue(genericType instanceof IType);
-            assertEquals("HashMap<String, Object>", genericType.getType());
+            assertEquals("HashMap<String, Object>", genericType.type());
             assertTrue(genericType.isArray());
         }
     }
@@ -107,11 +107,11 @@ public class GenericTypeTest {
         @DisplayName("Should be immutable - type cannot be changed")
         void testTypeImmutability() {
             GenericType genericType = new GenericType("Vector<Double>", false);
-            String originalType = genericType.getType();
+            String originalType = genericType.type();
             
             // Multiple calls should return the same value
-            assertEquals(originalType, genericType.getType());
-            assertEquals("Vector<Double>", genericType.getType());
+            assertEquals(originalType, genericType.type());
+            assertEquals("Vector<Double>", genericType.type());
         }
 
         @Test
@@ -132,7 +132,7 @@ public class GenericTypeTest {
             
             // Multiple calls should be consistent
             for (int i = 0; i < 10; i++) {
-                assertEquals("TreeMap<Integer, String>", genericType.getType());
+                assertEquals("TreeMap<Integer, String>", genericType.type());
                 assertFalse(genericType.isArray());
             }
         }
@@ -146,7 +146,7 @@ public class GenericTypeTest {
         @DisplayName("Should handle simple generic types")
         void testSimpleGenericTypes() {
             GenericType listType = new GenericType("List<String>", false);
-            assertEquals("List<String>", listType.getType());
+            assertEquals("List<String>", listType.type());
             assertFalse(listType.isArray());
         }
 
@@ -154,7 +154,7 @@ public class GenericTypeTest {
         @DisplayName("Should handle nested generic types")
         void testNestedGenericTypes() {
             GenericType nestedType = new GenericType("Map<String, List<Integer>>", true);
-            assertEquals("Map<String, List<Integer>>", nestedType.getType());
+            assertEquals("Map<String, List<Integer>>", nestedType.type());
             assertTrue(nestedType.isArray());
         }
 
@@ -162,7 +162,7 @@ public class GenericTypeTest {
         @DisplayName("Should handle deeply nested generic types")
         void testDeeplyNestedGenericTypes() {
             GenericType deepType = new GenericType("Map<String, Map<Integer, List<Set<Object>>>>", false);
-            assertEquals("Map<String, Map<Integer, List<Set<Object>>>>", deepType.getType());
+            assertEquals("Map<String, Map<Integer, List<Set<Object>>>>", deepType.type());
             assertFalse(deepType.isArray());
         }
 
@@ -170,7 +170,7 @@ public class GenericTypeTest {
         @DisplayName("Should handle generic types with wildcards")
         void testGenericTypesWithWildcards() {
             GenericType wildcardType = new GenericType("List<? extends Number>", true);
-            assertEquals("List<? extends Number>", wildcardType.getType());
+            assertEquals("List<? extends Number>", wildcardType.type());
             assertTrue(wildcardType.isArray());
         }
 
@@ -178,7 +178,7 @@ public class GenericTypeTest {
         @DisplayName("Should handle generic types with bounded wildcards")
         void testGenericTypesWithBoundedWildcards() {
             GenericType boundedType = new GenericType("Map<? super String, ? extends Collection<Integer>>", false);
-            assertEquals("Map<? super String, ? extends Collection<Integer>>", boundedType.getType());
+            assertEquals("Map<? super String, ? extends Collection<Integer>>", boundedType.type());
             assertFalse(boundedType.isArray());
         }
     }
@@ -229,7 +229,7 @@ public class GenericTypeTest {
             String longType = "VeryLong" + "Type".repeat(100) + "<String>";
             GenericType genericType = new GenericType(longType, true);
             
-            assertEquals(longType, genericType.getType());
+            assertEquals(longType, genericType.type());
             assertTrue(genericType.isArray());
         }
 
@@ -238,7 +238,7 @@ public class GenericTypeTest {
         void testSpecialCharactersInTypeNames() {
             GenericType genericType = new GenericType("Type$With@Special#Chars<Value>", false);
             
-            assertEquals("Type$With@Special#Chars<Value>", genericType.getType());
+            assertEquals("Type$With@Special#Chars<Value>", genericType.type());
             assertFalse(genericType.isArray());
         }
 
@@ -247,7 +247,7 @@ public class GenericTypeTest {
         void testUnicodeInTypeNames() {
             GenericType genericType = new GenericType("Type名前<値>", true);
             
-            assertEquals("Type名前<値>", genericType.getType());
+            assertEquals("Type名前<値>", genericType.type());
             assertTrue(genericType.isArray());
         }
 
@@ -256,7 +256,7 @@ public class GenericTypeTest {
         void testTypeNamesWithNewlines() {
             GenericType genericType = new GenericType("Type\nWith\nNewlines<Value>", false);
             
-            assertEquals("Type\nWith\nNewlines<Value>", genericType.getType());
+            assertEquals("Type\nWith\nNewlines<Value>", genericType.type());
             assertFalse(genericType.isArray());
         }
 
@@ -265,7 +265,7 @@ public class GenericTypeTest {
         void testTypeNamesWithQuotes() {
             GenericType genericType = new GenericType("Type\"With\"Quotes<\"Value\">", true);
             
-            assertEquals("Type\"With\"Quotes<\"Value\">", genericType.getType());
+            assertEquals("Type\"With\"Quotes<\"Value\">", genericType.type());
             assertTrue(genericType.isArray());
         }
     }
@@ -284,7 +284,7 @@ public class GenericTypeTest {
             assertNotSame(type1, type2);
             
             // But should have same values
-            assertEquals(type1.getType(), type2.getType());
+            assertEquals(type1.type(), type2.type());
             assertEquals(type1.isArray(), type2.isArray());
         }
 
@@ -294,7 +294,7 @@ public class GenericTypeTest {
             GenericType arrayType = new GenericType("Set<Integer>", true);
             GenericType nonArrayType = new GenericType("Set<Integer>", false);
             
-            assertEquals(arrayType.getType(), nonArrayType.getType());
+            assertEquals(arrayType.type(), nonArrayType.type());
             assertNotEquals(arrayType.isArray(), nonArrayType.isArray());
         }
 
@@ -304,7 +304,7 @@ public class GenericTypeTest {
             GenericType upperType = new GenericType("LIST<STRING>", false);
             GenericType lowerType = new GenericType("list<string>", false);
             
-            assertNotEquals(upperType.getType(), lowerType.getType());
+            assertNotEquals(upperType.type(), lowerType.type());
         }
     }
 
@@ -330,8 +330,8 @@ public class GenericTypeTest {
                 GenericType arrayGeneric = new GenericType(type, true);
                 GenericType nonArrayGeneric = new GenericType(type, false);
                 
-                assertEquals(type, arrayGeneric.getType());
-                assertEquals(type, nonArrayGeneric.getType());
+                assertEquals(type, arrayGeneric.type());
+                assertEquals(type, nonArrayGeneric.type());
                 assertTrue(arrayGeneric.isArray());
                 assertFalse(nonArrayGeneric.isArray());
             }
@@ -344,7 +344,7 @@ public class GenericTypeTest {
             
             // Test as IType
             IType iType = genericType;
-            assertEquals("Stream<Map<String, List<Integer>>>", iType.getType());
+            assertEquals("Stream<Map<String, List<Integer>>>", iType.type());
             assertTrue(iType.isArray());
         }
 
@@ -355,7 +355,7 @@ public class GenericTypeTest {
             
             // Perform multiple operations and verify consistency
             for (int i = 0; i < 100; i++) {
-                assertEquals("ConcurrentHashMap<String, AtomicInteger>", genericType.getType());
+                assertEquals("ConcurrentHashMap<String, AtomicInteger>", genericType.type());
                 assertFalse(genericType.isArray());
                 assertTrue(genericType instanceof IType);
             }

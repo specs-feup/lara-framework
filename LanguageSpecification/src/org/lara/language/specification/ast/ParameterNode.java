@@ -28,8 +28,7 @@ public class ParameterNode extends LangSpecNode {
     /**
      * Create a new instance of an action with a declaration child that defines its
      * name and return type
-     * 
-     * @param declaration
+     *
      */
     public ParameterNode(String type, String name, String defaultValue) {
         this.type = type;

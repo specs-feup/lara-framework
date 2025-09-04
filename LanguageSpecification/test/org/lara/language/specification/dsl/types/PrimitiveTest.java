@@ -110,15 +110,15 @@ class PrimitiveTest {
 
     @Test
     void testGetType() {
-        assertEquals("void", Primitive.VOID.getType());
-        assertEquals("byte", Primitive.BYTE.getType());
-        assertEquals("short", Primitive.SHORT.getType());
-        assertEquals("int", Primitive.INT.getType());
-        assertEquals("long", Primitive.LONG.getType());
-        assertEquals("float", Primitive.FLOAT.getType());
-        assertEquals("double", Primitive.DOUBLE.getType());
-        assertEquals("boolean", Primitive.BOOLEAN.getType());
-        assertEquals("char", Primitive.CHAR.getType());
+        assertEquals("void", Primitive.VOID.type());
+        assertEquals("byte", Primitive.BYTE.type());
+        assertEquals("short", Primitive.SHORT.type());
+        assertEquals("int", Primitive.INT.type());
+        assertEquals("long", Primitive.LONG.type());
+        assertEquals("float", Primitive.FLOAT.type());
+        assertEquals("double", Primitive.DOUBLE.type());
+        assertEquals("boolean", Primitive.BOOLEAN.type());
+        assertEquals("char", Primitive.CHAR.type());
     }
 
     @Test
@@ -137,7 +137,7 @@ class PrimitiveTest {
     @Test
     void testGetTypeEqualsToString() {
         for (Primitive primitive : Primitive.values()) {
-            assertEquals(primitive.getType(), primitive.toString());
+            assertEquals(primitive.type(), primitive.toString());
         }
     }
 
@@ -146,7 +146,7 @@ class PrimitiveTest {
         for (Primitive primitive : Primitive.values()) {
             assertTrue(primitive instanceof IType);
             assertFalse(primitive.isArray()); // Default implementation from IType interface
-            assertNotNull(primitive.getType());
+            assertNotNull(primitive.type());
         }
     }
 
@@ -160,7 +160,7 @@ class PrimitiveTest {
     @Test
     void testAllPrimitivesHaveValidTypes() {
         for (Primitive primitive : Primitive.values()) {
-            String type = primitive.getType();
+            String type = primitive.type();
             assertNotNull(type);
             assertFalse(type.isEmpty());
             assertEquals(primitive.name().toLowerCase(), type);
@@ -171,7 +171,7 @@ class PrimitiveTest {
     void testGetAndContainsConsistency() {
         // For every primitive that contains() returns true, get() should work
         for (Primitive primitive : Primitive.values()) {
-            String typeName = primitive.getType();
+            String typeName = primitive.type();
             assertTrue(Primitive.contains(typeName));
             assertEquals(primitive, Primitive.get(typeName));
         }

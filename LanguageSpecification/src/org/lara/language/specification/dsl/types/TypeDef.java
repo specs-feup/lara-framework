@@ -55,7 +55,7 @@ public class TypeDef extends BaseNode implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return getName();
     }
 

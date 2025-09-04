@@ -47,9 +47,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * Generate the Join Point abstract class for the given join point type
      *
-     * @param javaGenerator
-     * @param joinPoint
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator, JoinPointClass joinPoint) {
         final AbstractJoinPointClassGenerator gen = new AbstractJoinPointClassGenerator(javaGenerator, joinPoint);
@@ -59,9 +56,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * Generate the Join Point abstract class for the given join point type
      *
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     @Override
     public JavaClass generate() {
@@ -71,10 +65,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(Modifier.ABSTRACT);
         javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
         javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator." + ln() + ln());
-        String comment = joinPoint.getToolTip().orElse(null);
-        if (comment != null) {
-            javaC.appendComment(comment);
-        }
+        joinPoint.getToolTip().ifPresent(javaC::appendComment);
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
         addFieldsAndConstructors(javaC);
@@ -129,11 +120,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * Add fields and constructors
      *
-     * @param defaultAttribute
-     * @param attributes
-     * @param javaC
-     * @param enums
-     * @param abstractGetters
      */
     private void addFieldsAndConstructors(JavaClass javaC) {
 
@@ -149,7 +135,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * Adds actions for the join point
      *
-     * @param javaC
      */
     private void addActions(JavaClass javaC) {
 
@@ -168,9 +153,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * Add code that calls to the super methods
      *
-     * @param joinPoint
-     * @param langSpec
-     * @param javaC
      */
     private String addSuperMethods(JavaClass javaC) {
 
@@ -203,9 +185,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     /**
      * E.g.: Optional&lt;? extends AExpression&gt;
      *
-     * @param javaC
-     * @param joinPointType
-     * @param fieldName
      */
     private void addGetSuperMethod(JavaClass javaC, JavaType joinPointType, String fieldName) {
         String GET_SUPER_NAME = "getSuper";

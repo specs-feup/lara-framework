@@ -49,17 +49,14 @@ public class LaraIDataStore implements LaraiKeys {
     public LaraIDataStore(LaraI lara, DataStore dataStore, WeaverEngine weaverEngine) {
 
         // Merge system-wise options with local options
-        var mergedDataStore = mergeSystemAndLocalOptions(weaverEngine, dataStore);
 
         // this.dataStore = dataStore;
-        this.dataStore = mergedDataStore;
+        this.dataStore = mergeSystemAndLocalOptions(weaverEngine, dataStore);
 
         for (WeaverOption option : weaverEngine.getOptions()) {
             DataKey<?> key = option.dataKey();
             Optional<?> value = this.dataStore.getTry(key);
-            if (value.isPresent()) {
-                this.dataStore.setRaw(key, value.get());
-            }
+            value.ifPresent(o -> this.dataStore.setRaw(key, o));
         }
         setLaraProperties();
     }
@@ -87,10 +84,8 @@ public class LaraIDataStore implements LaraiKeys {
         DataStore defaultOptions = JOptionsUtils.loadDataStore(systemOptionsFilename, getClass(),
                 storeDef, persistence);
 
-        var defaultOptionsFile = defaultOptions.getConfigFile().orElse(null);
-        if (defaultOptionsFile != null) {
-            SpecsLogs.debug("Loading default options in file '" + defaultOptionsFile.getAbsolutePath() + "'");
-        }
+        defaultOptions.getConfigFile().ifPresent(defaultOptionsFile -> SpecsLogs
+                .debug("Loading default options in file '" + defaultOptionsFile.getAbsolutePath() + "'"));
 
         SpecsLogs.debug(() -> "Loading system-wide options");
         SpecsLogs.debug(() -> "Original options: " + localArgs);
@@ -122,10 +117,6 @@ public class LaraIDataStore implements LaraiKeys {
     /**
      * Set an option on lara according to the value given, if the option exists on
      * the enum {@link Argument}
-     *
-     * @param option
-     * @param value
-     * @return
      */
     private void setLaraProperties() {
         if (!dataStore.hasValue(LaraiKeys.LARA_FILE)) {

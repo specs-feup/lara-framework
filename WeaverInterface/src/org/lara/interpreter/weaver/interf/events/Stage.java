@@ -30,8 +30,7 @@ public enum Stage {
 
     /**
      * Returns a string representation of the stage, such as 'Stage.BEFORE'
-     * 
-     * @return
+     *
      */
     public String toCode() {
         return Stage.class.getSimpleName() + "." + name();

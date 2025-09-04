@@ -29,10 +29,6 @@ public abstract class GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @param javaGenerator
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     public abstract JavaClass generate();
 

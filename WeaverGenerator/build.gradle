@@ -47,7 +47,7 @@ sourceSets {
     }
 }
 
-task WeaverGenerator(type: JavaExec) {
+tasks.register('WeaverGenerator', JavaExec) {
     group = "Execution"
     description = "Launches WeaverGenerator"
     classpath = sourceSets.main.runtimeClasspath

@@ -65,7 +65,7 @@ public class Action extends BaseNode implements Comparable<Action> {
     }
 
     public String getReturnType() {
-        return getType().getType();
+        return getType().type();
     }
 
     public List<Parameter> getParameters() {

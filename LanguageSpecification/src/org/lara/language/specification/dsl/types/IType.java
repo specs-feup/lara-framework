@@ -15,7 +15,7 @@ package org.lara.language.specification.dsl.types;
 
 public interface IType {
 
-    public String getType();
+    public String type();
 
     default public boolean isArray() {
         return false;

@@ -49,8 +49,6 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         final WeaverAbstractGenerator gen = new WeaverAbstractGenerator(javaGenerator);
@@ -61,7 +59,6 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @return
      */
     @Override
     public JavaClass generate() {
@@ -91,10 +88,6 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
      * Generate the Weaver abstract class with name : A + the weaver name, in the
      * given package and
      *
-     * @param weaverName
-     * @param weaverPackage
-     * @param aJoinPointPackage
-     * @return
      */
     private JavaClass generateWeaverAbstractClass() {
         final String weaverName = javaGenerator.getWeaverName();
@@ -117,8 +110,6 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
      * Generates the method that returns a list of the available actions in the
      * weaver
      *
-     * @param actionModel
-     * @param java
      */
     private void addGetActionMethod(JavaClass java) {
 

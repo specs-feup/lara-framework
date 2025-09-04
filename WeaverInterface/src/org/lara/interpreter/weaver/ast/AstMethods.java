@@ -24,7 +24,6 @@ public interface AstMethods {
     /**
      * Transforms the given AST node into a join point.
      * 
-     * @param node
      * @return the join point corresponding to this node
      */
     Object toJavaJoinPoint(Object node);
@@ -32,9 +31,7 @@ public interface AstMethods {
     /**
      * Maps an AST node to the corresponding Common Language Specification join
      * point name.
-     * 
-     * @param node
-     * @return
+     *
      */
     Object getJoinPointName(Object node);
 
@@ -66,7 +63,6 @@ public interface AstMethods {
 
     /**
      *
-     * @param node
      * @return a JavaScript array with the descendants of this AST node
      */
     Object getDescendants(Object node);

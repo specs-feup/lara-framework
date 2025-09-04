@@ -261,8 +261,8 @@ class LanguageSpecificationIntegrationTest {
         for (JoinPointClass jp : langSpec.getAllJoinPoints()) {
             for (Attribute attr : jp.getAttributes()) {
                 assertNotNull(attr.getType());
-                assertNotNull(attr.getType().getType());
-                assertFalse(attr.getType().getType().trim().isEmpty());
+                assertNotNull(attr.getType().type());
+                assertFalse(attr.getType().type().trim().isEmpty());
             }
             
             // Test that all actions have valid return types and parameter types

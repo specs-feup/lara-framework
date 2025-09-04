@@ -28,7 +28,7 @@ public class JPType implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return joinPoint.getName();
     }
 
@@ -42,7 +42,7 @@ public class JPType implements IType {
 
     @Override
     public String toString() {
-        return getType();
+        return type();
     }
 
 }

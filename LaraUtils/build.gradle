@@ -27,7 +27,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0' // For static mocking
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.0'
 }
 
 // Project sources

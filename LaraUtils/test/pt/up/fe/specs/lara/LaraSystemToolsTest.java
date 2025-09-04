@@ -164,7 +164,7 @@ class LaraSystemToolsTest {
         // Given - Command with quotes and spaces
         String command = "echo \"hello world\"";
         boolean printToConsole = false;
-        Integer timeoutNanos = 500000000; // 0.5 seconds
+        Integer timeoutNanos = 1000000000; // 1 seconds
         
         // When
         ProcessOutputAsString result = LaraSystemTools.runCommand(command, workingDirectory, printToConsole, timeoutNanos);

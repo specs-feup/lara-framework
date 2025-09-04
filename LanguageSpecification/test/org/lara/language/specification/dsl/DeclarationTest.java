@@ -279,7 +279,7 @@ class DeclarationTest {
             // Make it a LiteralEnum by creating an anonymous subclass
             LiteralEnum testLiteralEnum = new LiteralEnum("TestEnum") {
                 @Override
-                public String getType() {
+                public String type() {
                     return "TestEnumValue";
                 }
             };

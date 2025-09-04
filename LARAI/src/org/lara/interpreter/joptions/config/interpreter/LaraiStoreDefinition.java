@@ -71,12 +71,10 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
      * Loads the properties from a given file. It does not load/given an exception
      * if the file does not exist!
      *
-     * @param properties
-     * @param globalFile
      */
     private static void loadProperties(Properties properties, File globalFile) {
         if (globalFile.exists()) {
-            try (final InputStream inputConfigStream = new FileInputStream(globalFile);) {
+            try (final InputStream inputConfigStream = new FileInputStream(globalFile)) {
                 properties.load(inputConfigStream);
             } catch (IOException e) {
                 SpecsLogs.warn("Error message:\n", e);

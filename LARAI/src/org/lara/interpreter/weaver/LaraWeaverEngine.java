@@ -45,9 +45,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
     /**
      * Overload that creates temporary files, to ease integration with JS.
      *
-     * @param filenames
-     * @param codes
-     * @return
      */
     public boolean run(String[] filenames, String[] codes, DataStore dataStore) {
 
@@ -131,10 +128,6 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
      */
     protected abstract boolean close();
 
-    /**
-     * @param name
-     * @return
-     */
     public Class<?> getClass(String name) {
         try {
             return getLaraWeaverState().getClassLoader().loadClass(name);

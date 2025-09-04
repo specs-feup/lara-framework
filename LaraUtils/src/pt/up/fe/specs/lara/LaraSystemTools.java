@@ -15,7 +15,6 @@ package pt.up.fe.specs.lara;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -54,7 +53,7 @@ public class LaraSystemTools {
         try {
             return SpecsSystem.runProcess(commandList, new File(workingDir), true, printToConsole, timeoutNanos);
         } catch (Exception e) {
-            String command = commandList.stream().collect(Collectors.joining(" "));
+            String command = String.join(" ", commandList);
 
             SpecsLogs.msgInfo("Problems while running command '" + command + "':" + e.getMessage());
             return new ProcessOutputAsString(-1, "", e.getMessage());

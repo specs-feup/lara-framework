@@ -16,9 +16,12 @@ import org.apache.commons.cli.*;
 import org.apache.commons.cli.Option.Builder;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 
+import java.io.Serial;
+
 class WeaverGeneratorOptions extends Options {
     private static HelpFormatter formatter = new HelpFormatter();
 
+    @Serial
     private static final long serialVersionUID = -7738963410049098076L;
 
     private enum ArgOption {
@@ -26,7 +29,7 @@ class WeaverGeneratorOptions extends Options {
         ONE_ARG,
         SEVERAL_ARGS,
         OPTIONAL_ARG,
-        OPTIONAL_ARGS;
+        OPTIONAL_ARGS
     }
 
     protected enum GeneratorOption {
@@ -123,12 +126,6 @@ class WeaverGeneratorOptions extends Options {
     /**
      * Create a new Option with all the description
      *
-     * @param argName
-     * @param shortOpt
-     * @param longOpt
-     * @param argOption
-     * @param description
-     * @return
      */
     protected static Option newOption(String argName, GeneratorOption shortOpt, ArgOption argOption,
             String description) {

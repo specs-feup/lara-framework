@@ -57,7 +57,7 @@ public enum PrimitiveClasses implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         if (this == JOINPOINT_INTERFACE) {
             return "JoinpointInterface";
         }
@@ -66,7 +66,6 @@ public enum PrimitiveClasses implements IType {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return getType();
+        return type();
     }
 }

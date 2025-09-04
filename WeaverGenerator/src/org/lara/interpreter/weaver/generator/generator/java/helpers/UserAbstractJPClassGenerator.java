@@ -45,10 +45,6 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
      * can be used for changes/extensions
      * that are global to the join points
      *
-     * @param javaGenerator
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         final UserAbstractJPClassGenerator gen = new UserAbstractJPClassGenerator(javaGenerator);
@@ -60,7 +56,6 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
      * can be used for changes/extensions
      * that are global to the join points
      *
-     * @return
      */
     private JavaClass generateUserClass() {
         // Create the abstract class using the name of the weaver

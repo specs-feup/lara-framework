@@ -38,10 +38,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @param javaGenerator
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
 
@@ -53,9 +49,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * Generate the base Join Point abstract class, containing the global attributes
      * and actions
      *
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     @Override
     public JavaClass generate() {
@@ -67,11 +60,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * attributes and actions. It also generates
      * the code for listing the available attributes and actions.
      *
-     * @param langSpec
-     * @param sanitizedOutPackage
-     * @param interfaceName
-     * @param enums
-     * @return
      */
     private JavaClass generateAbstractJoinPointClass() {
 
@@ -129,7 +117,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * Generate default implementation of the getNode() method
      *
-     * @param abstJPClass
      */
     private void generateGetNodeMethod(JavaClass abstJPClass) {
         final Method getNode = new Method(javaGenerator.getNodeJavaType(), "getNode", Modifier.ABSTRACT);
@@ -144,7 +131,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * same join point class as "this" and
      * calls the compareNodes method to compare the join point nodes
      *
-     * @param abstJPClass
      */
     private static void generateSameMethod(JavaClass abstJPClass) {
         final Method same = new Method(JavaTypeFactory.getBooleanType(), "same");
@@ -162,7 +148,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * points
      *
      * @param abstJPClass the target join point abstraction class
-     * @return
      */
     private void generateGlobalJoinPointData(JavaClass abstJPClass) {
         // abstJPClass.addImport(List.class.getCanonicalName());
@@ -177,8 +162,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * Generate the global attributes as fields and/or getter methods
      *
-     * @param abstJPClass
-     * @param enums
      */
     private void generateGlobalAttributes(JavaClass abstJPClass) {
 
@@ -201,8 +184,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     /**
      * List all the actions as methods
      *
-     * @param actionModel
-     * @param abstJPClass
      */
     private void generateGlobalActionsAsMethods(JavaClass abstJPClass) {
 

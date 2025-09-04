@@ -54,12 +54,12 @@ public enum Primitive implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return name().toLowerCase();
     }
 
     @Override
     public String toString() {
-        return getType();
+        return type();
     }
 }

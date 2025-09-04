@@ -22,13 +22,7 @@ public class OptionsBuilderUtils {
 
     /**
      * Create a New Option
-     * 
-     * @param argName
-     * @param shortOpt
-     * @param longOpt
-     * @param argOption
-     * @param description
-     * @return
+     *
      */
     static Option newOption(String shortOpt, String longOpt, OptionArguments argOption, String argName,
             String description) {
@@ -72,10 +66,7 @@ public class OptionsBuilderUtils {
 
     /**
      * New Option using the CLIOptions enum
-     * 
-     * @param option
-     * @param description
-     * @return
+     *
      */
     static Option newOption(CLIOption option, String argName, OptionArguments argOption,
             String description) {
@@ -84,10 +75,7 @@ public class OptionsBuilderUtils {
 
     /**
      * New Option without arguments
-     * 
-     * @param option
-     * @param description
-     * @return
+     *
      */
     static Option newOption(CLIOption option, String description) {
         return newOption(option, "", OptionArguments.NO_ARGS, description);

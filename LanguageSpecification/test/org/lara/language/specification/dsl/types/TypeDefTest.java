@@ -119,7 +119,7 @@ class TypeDefTest {
     void testGetType() {
         typeDef = new TypeDef("TestType");
         
-        assertEquals("TestType", typeDef.getType());
+        assertEquals("TestType", typeDef.type());
     }
 
     @Test
@@ -127,7 +127,7 @@ class TypeDefTest {
         typeDef = new TypeDef("TestType");
         typeDef.setName(null);
         
-        assertNull(typeDef.getType());
+        assertNull(typeDef.type());
     }
 
     @Test
@@ -181,7 +181,7 @@ class TypeDefTest {
         typeDef = new TypeDef("TestType");
         
         assertTrue(typeDef instanceof IType);
-        assertEquals("TestType", typeDef.getType());
+        assertEquals("TestType", typeDef.type());
         assertFalse(typeDef.isArray()); // Default implementation from IType interface
     }
 

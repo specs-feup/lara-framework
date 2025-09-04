@@ -100,7 +100,7 @@ public class LangSpecsXmlParser {
             jps.add(jp);
         }
         Collections.sort(jps);
-        jps.stream().forEach(langSpecV2::add);
+        jps.forEach(langSpecV2::add);
 
         var joinpoints = joinPointModelNode.getElementsByName("joinpoints").get(0);
         langSpecV2.setRoot(joinpoints.getAttribute("root_class"));
@@ -146,7 +146,7 @@ public class LangSpecsXmlParser {
             // Obtain attribute nodes from artifacts
             List<XmlElement> artifactNodes = attributeModelNode.getElementsByName("artifact").stream()
                     .filter(attribute -> attribute.getAttribute("class").equals(jpClass))
-                    .collect(Collectors.toList());
+                    .toList();
 
             var attributeNodes = artifactNodes.stream()
                     .flatMap(art -> art.getElementsByName("attribute").stream())
@@ -211,7 +211,7 @@ public class LangSpecsXmlParser {
                     .forEach(global::add);
         }
 
-        convertActions(langSpecV2, globalActionNodes).stream()
+        convertActions(langSpecV2, globalActionNodes)
                 .forEach(global::add);
     }
 

@@ -69,7 +69,7 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     @Override
     public Object getDescendants(Object node) {
-        var descendants = new ArrayList<Object>();
+        var descendants = new ArrayList<>();
         getDescendantsPrivate(getNodeClass().cast(node), descendants);
 
         return descendants;
