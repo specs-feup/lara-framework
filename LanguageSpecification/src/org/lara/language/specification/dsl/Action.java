@@ -29,7 +29,6 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     private final Declaration declaration;
     private List<Parameter> parameters;
-    // private JoinPointClass joinPoint;
 
     public Action(IType returnType, String name) {
         this(returnType, name, new ArrayList<>());

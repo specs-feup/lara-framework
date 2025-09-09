@@ -173,7 +173,6 @@ public class LanguageSpecification {
     }
 
     public JoinPointClass getJoinPoint(String name) {
-        // if (name.equals("joinpoint")) {
         if (getBaseJoinpointClass().equals(name)) {
             return global;
         }
@@ -250,8 +249,6 @@ public class LanguageSpecification {
         }
 
         throw new RuntimeException("Type given does not exist: " + type);
-
-        // return null;
     }
 
     public JoinPointClass getRoot() {

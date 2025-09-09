@@ -40,7 +40,6 @@ public class LanguageSpecificationException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        // TODO Auto-generated method stub
         return this.message != null ? this.message : LanguageSpecificationException.DEFAULT_TEXT;
     }
 
