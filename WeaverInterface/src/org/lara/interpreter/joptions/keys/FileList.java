@@ -53,7 +53,7 @@ public class FileList implements Iterable<File> {
     }
 
     public static FileList newInstance(String fileListStrs) {
-        if (fileListStrs == null) {
+        if (fileListStrs == null || fileListStrs.trim().isEmpty()) {
             return new FileList();
         }
         List<File> files = decode(fileListStrs);

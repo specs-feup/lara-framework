@@ -8,7 +8,7 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
 import java.io.File;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -109,7 +109,7 @@ class LaraiKeysTest {
         assertThat(storeDefinition.getName()).isEqualTo("LaraI Options");
         
         // Get all keys in the store definition
-        Set<DataKey<?>> keys = storeDefinition.getKeys();
+        List<DataKey<?>> keys = storeDefinition.getKeys();
         
         // Verify all expected keys are present
         assertThat(keys).contains(
@@ -147,14 +147,14 @@ class LaraiKeysTest {
     @Test
     void testKeyTypes() {
         // Verify the types of all keys are as expected
-        assertThat(LaraiKeys.LARA_FILE.getKeyClass()).isEqualTo(File.class);
-        assertThat(LaraiKeys.ASPECT_ARGS.getKeyClass()).isEqualTo(String.class);
-        assertThat(LaraiKeys.WORKSPACE_FOLDER.getKeyClass()).isEqualTo(FileList.class);
-        assertThat(LaraiKeys.OUTPUT_FOLDER.getKeyClass()).isEqualTo(File.class);
-        assertThat(LaraiKeys.LOG_FILE.getKeyClass()).isEqualTo(OptionalFile.class);
-        assertThat(LaraiKeys.DEBUG_MODE.getKeyClass()).isEqualTo(Boolean.class);
-        assertThat(LaraiKeys.JAR_PATHS.getKeyClass()).isEqualTo(FileList.class);
-        assertThat(LaraiKeys.SHOW_HELP.getKeyClass()).isEqualTo(Boolean.class);
+        assertThat(LaraiKeys.LARA_FILE.getValueClass()).isEqualTo(File.class);
+        assertThat(LaraiKeys.ASPECT_ARGS.getValueClass()).isEqualTo(String.class);
+        assertThat(LaraiKeys.WORKSPACE_FOLDER.getValueClass()).isEqualTo(FileList.class);
+        assertThat(LaraiKeys.OUTPUT_FOLDER.getValueClass()).isEqualTo(File.class);
+        assertThat(LaraiKeys.LOG_FILE.getValueClass()).isEqualTo(OptionalFile.class);
+        assertThat(LaraiKeys.DEBUG_MODE.getValueClass()).isEqualTo(Boolean.class);
+        assertThat(LaraiKeys.JAR_PATHS.getValueClass()).isEqualTo(FileList.class);
+        assertThat(LaraiKeys.SHOW_HELP.getValueClass()).isEqualTo(Boolean.class);
     }
 
     @Test

@@ -62,7 +62,7 @@ class LaraIKeyFactoryTest {
         DataStore dataStore = TestDataStores.withWorkingFolder(tempDir, false);
         
         // Test custom getter processes files
-        FileList processed = fileListKey.getCustomGetter().get(testFileList, dataStore);
+        FileList processed = fileListKey.getCustomGetter().get().get(testFileList, dataStore);
         assertThat(processed).isNotNull();
         assertThat(processed.getFiles()).hasSameSizeAs(testFileList.getFiles());
     }
@@ -90,7 +90,7 @@ class LaraIKeyFactoryTest {
         File testDir = new File(tempDir, "newFolder");
         DataStore dataStore = TestDataStores.withWorkingFolder(tempDir, false);
         
-        File processed = folderKey.getCustomGetter().get(testDir, dataStore);
+        File processed = folderKey.getCustomGetter().get().get(testDir, dataStore);
         assertThat(processed).isNotNull();
         // Note: The actual directory creation depends on the custom getter implementation
     }
@@ -102,12 +102,12 @@ class LaraIKeyFactoryTest {
         
         // Test with relative paths enabled
         DataStore relativeDataStore = TestDataStores.withWorkingFolder(tempDir, true);
-        File processedRelative = fileKey.getCustomGetter().get(testFile, relativeDataStore);
+        File processedRelative = fileKey.getCustomGetter().get().get(testFile, relativeDataStore);
         assertThat(processedRelative).isNotNull();
         
         // Test with relative paths disabled (absolute)
         DataStore absoluteDataStore = TestDataStores.withWorkingFolder(tempDir, false);
-        File processedAbsolute = fileKey.getCustomGetter().get(testFile, absoluteDataStore);
+        File processedAbsolute = fileKey.getCustomGetter().get().get(testFile, absoluteDataStore);
         assertThat(processedAbsolute).isNotNull();
         
         // The behavior should be different based on the USE_RELATIVE_PATHS setting
@@ -159,7 +159,7 @@ class LaraIKeyFactoryTest {
         DataStore dataStore = TestDataStores.withWorkingFolder(tempDir, false);
         
         // Test custom getter processes underlying file when present
-        OptionalFile processed = optFileKey.getCustomGetter().get(testOptFile, dataStore);
+        OptionalFile processed = optFileKey.getCustomGetter().get().get(testOptFile, dataStore);
         assertThat(processed).isNotNull();
         assertThat(processed.isUsed()).isTrue();
         assertThat(processed.getFile()).isNotNull();
