@@ -1,7 +1,7 @@
 rootProject.name = 'LARAI'
 
-includeBuild("../../specs-java-libs/jOptions")
-includeBuild("../../specs-java-libs/SpecsUtils")
+includeBuild("../../../specs-java-libs/jOptions")
+includeBuild("../../../specs-java-libs/SpecsUtils")
 
 includeBuild("../../lara-framework/LaraUtils")
 includeBuild("../../lara-framework/LanguageSpecification")
