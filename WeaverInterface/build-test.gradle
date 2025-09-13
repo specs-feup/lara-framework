@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Core testing dependencies that should be available from Maven Central
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.5.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.0'
+    
+    // Add some basic implementations for missing dependencies
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+}
+
+// Simplified source sets just for our tests
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    // Only run our AST tests
+    include '**/weaver/ast/**Test.class'
+}
+
+// Basic jacoco configuration
+jacoco {
+    toolVersion = "0.8.7"
+}
