@@ -83,8 +83,8 @@ public class WeaverEngineTest {
         
         // Verify that all keys from getOptions() are in the store definition
         for (WeaverOption option : options) {
-            assertThat(storeDefinition.hasKey(option.dataKey()))
-                .as("Store definition should contain key: %s", option.dataKey())
+            assertThat(storeDefinition.hasKey(option.dataKey().getName()))
+                .as("Store definition should contain key: %s", option.dataKey().getName())
                 .isTrue();
         }
     }
