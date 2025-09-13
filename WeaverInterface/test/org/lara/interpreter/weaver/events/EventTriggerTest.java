@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestGear;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
@@ -50,7 +51,7 @@ class EventTriggerTest {
     void registerReceivers_shouldRegisterMultipleReceivers() {
         TestGear gear1 = new TestGear();
         TestGear gear2 = new TestGear();
-        List<TestGear> gears = Arrays.asList(gear1, gear2);
+        List<AGear> gears = Arrays.asList(gear1, gear2);
         
         eventTrigger.registerReceivers(gears);
         
