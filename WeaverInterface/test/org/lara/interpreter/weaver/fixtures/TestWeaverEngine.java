@@ -64,6 +64,9 @@ public class TestWeaverEngine extends WeaverEngine {
         JoinPointClass jp = new JoinPointClass("root");
         jp.setDefaultAttribute("dump");
         LanguageSpecification spec = new LanguageSpecification(jp, null);
+        // Register declared join point, otherwise getJoinPoint("root") returns null
+        spec.add(jp);
+        spec.setRoot(jp);
         spec.setGlobal(base);
         return spec;
     }

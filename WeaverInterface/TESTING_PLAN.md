@@ -214,10 +214,10 @@ WeaverInterface/
 ### How to run (fish shell)
 ```fish
 # From lara-framework/WeaverInterface
-gradle test
+gradle test -x jacocoTestReport -x jacocoTestCoverageVerification
 
 # With coverage report
-gradle test jacocoTestReport jacocoTestCoverageVerification
+gradle test
 
 # If JMH plugin is used
 gradle jmh
