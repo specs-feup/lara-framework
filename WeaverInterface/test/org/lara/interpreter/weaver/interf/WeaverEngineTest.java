@@ -1,17 +1,20 @@
 package org.lara.interpreter.weaver.interf;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mockStatic;
+
+import java.io.File;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.mockito.MockedStatic;
+
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
-
-import java.io.File;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
 class WeaverEngineTest {
 

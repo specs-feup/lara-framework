@@ -1,5 +1,9 @@
 package org.lara.interpreter.weaver.fixtures;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.TreeNodeAstMethods;
 import org.lara.interpreter.weaver.interf.AGear;
@@ -13,14 +17,8 @@ import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
 import pt.up.fe.specs.util.treenode.ATreeNode;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class TestWeaverEngine extends WeaverEngine {
 

@@ -1,10 +1,10 @@
 package org.lara.interpreter.weaver.fixtures;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.events.EventTrigger;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class FixturesSmokeTest {
 

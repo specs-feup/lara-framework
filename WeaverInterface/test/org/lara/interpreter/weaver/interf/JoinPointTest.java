@@ -1,14 +1,17 @@
 package org.lara.interpreter.weaver.interf;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 class JoinPointTest {
 
@@ -25,8 +28,8 @@ class JoinPointTest {
         var root = new TestJoinPoint("root");
         var child = new TestJoinPoint("child") {
             @Override
-            public java.util.Optional<? extends JoinPoint> getSuper() {
-                return java.util.Optional.of(root);
+            public Optional<? extends JoinPoint> getSuper() {
+                return Optional.of(root);
             }
         };
         root.addChild(child);
@@ -57,13 +60,13 @@ class JoinPointTest {
             }
 
             @Override
-            public java.util.Optional<? extends JoinPoint> getSuper() {
-                return java.util.Optional.of(child);
+            public Optional<? extends JoinPoint> getSuper() {
+                return Optional.of(child);
             }
 
             @Override
-            public java.util.stream.Stream<JoinPoint> getJpChildrenStream() {
-                return java.util.stream.Stream.empty();
+            public Stream<JoinPoint> getJpChildrenStream() {
+                return Stream.empty();
             }
 
             @Override

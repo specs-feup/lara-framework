@@ -1,16 +1,16 @@
 package org.lara.interpreter.weaver.events;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestGear;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class EventTriggerTest {
 

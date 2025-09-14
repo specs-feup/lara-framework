@@ -1,12 +1,12 @@
 package org.lara.interpreter.weaver.fixtures;
 
-import org.lara.interpreter.weaver.interf.AGear;
-import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
-import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
+import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
 
 public class TestGear extends AGear {
 

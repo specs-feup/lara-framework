@@ -1,11 +1,11 @@
 package org.lara.interpreter.weaver.fixtures;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.lara.interpreter.weaver.interf.JoinPoint;
 
 public class TestJoinPoint extends JoinPoint {
 

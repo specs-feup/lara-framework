@@ -1,12 +1,12 @@
 package org.lara.interpreter.weaver.fixtures;
 
-import org.suikasoft.jOptions.Interfaces.DataStore;
-import org.suikasoft.jOptions.JOptionKeys;
-import org.suikasoft.jOptions.storedefinition.StoreDefinition;
-import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
-
 import java.io.File;
 import java.util.Optional;
+
+import org.suikasoft.jOptions.JOptionKeys;
+import org.suikasoft.jOptions.Interfaces.DataStore;
+import org.suikasoft.jOptions.storedefinition.StoreDefinition;
+import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 public final class TestDataStores {
 

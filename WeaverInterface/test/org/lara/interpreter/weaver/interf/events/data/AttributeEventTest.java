@@ -1,13 +1,13 @@
 package org.lara.interpreter.weaver.interf.events.data;
 
-import org.junit.jupiter.api.Test;
-import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
-import org.lara.interpreter.weaver.interf.events.Stage;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.interf.events.Stage;
 
 class AttributeEventTest {
 
