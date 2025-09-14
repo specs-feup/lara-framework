@@ -23,7 +23,37 @@ import pt.up.fe.specs.util.treenode.ATreeNode;
 public class TestWeaverEngine extends WeaverEngine {
 
     private final List<AGear> gears = new ArrayList<>();
-    private final TestJoinPoint rootJp = new TestJoinPoint("root");
+
+    // Minimal Tree node model for AST bridge
+    private static class N extends ATreeNode<N> {
+        public N() {
+            super(null);
+        }
+
+        @Override
+        protected N copyPrivate() {
+            return new N();
+        }
+
+        @Override
+        public String toContentString() {
+            return "";
+        }
+    }
+
+    private final N astRoot;
+    private final N astChild;
+    private final TestJoinPoint rootJp;
+
+    public TestWeaverEngine() {
+        // Build a tiny AST
+        this.astRoot = new N();
+        this.astChild = new N();
+        this.astRoot.addChild(astChild);
+
+        // Root JP is backed by the AST root node
+        this.rootJp = new TestJoinPoint("root", this.astRoot);
+    }
 
     @Override
     public boolean run(DataStore dataStore) {
@@ -52,8 +82,7 @@ public class TestWeaverEngine extends WeaverEngine {
         DataKey<String> OPT_TARGET = KeyFactory.string("target").setLabel("Target");
         return List.of(
                 WeaverOptionBuilder.build("v", "verbose", OptionArguments.NO_ARGS, "", "Verbose flag", OPT_VERBOSE),
-                WeaverOptionBuilder.build("t", "target", OptionArguments.ONE_ARG, "name", "Target name", OPT_TARGET)
-        );
+                WeaverOptionBuilder.build("t", "target", OptionArguments.ONE_ARG, "name", "Target name", OPT_TARGET));
     }
 
     @Override
@@ -85,27 +114,10 @@ public class TestWeaverEngine extends WeaverEngine {
 
     @Override
     public AstMethods getAstMethods() {
-        // Minimal TreeNodeAstMethods using a dummy ATreeNode hierarchy
-        class N extends ATreeNode<N> {
-            public N() { super(null); }
-
-            @Override
-            protected N copyPrivate() {
-                return new N();
-            }
-
-            @Override
-            public String toContentString() {
-                // Minimal content representation for testing purposes
-                return "";
-            }
-        }
-        N root = new N();
-        N child = new N();
-        root.addChild(child);
+        // Minimal TreeNodeAstMethods using the persistent AST hierarchy
         return new TreeNodeAstMethods<>(this, N.class,
                 node -> rootJp,
                 node -> "root",
-                node -> node.getChildren());
+                node -> node == astRoot ? List.of(astChild) : node.getChildren());
     }
 }

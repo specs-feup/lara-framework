@@ -62,11 +62,21 @@ public class TestJoinPoint extends JoinPoint {
     @Override
     public JoinPoint[] insertImpl(String position, String code) {
         // For testing, return self in an array
-        return new JoinPoint[]{ this };
+        return new JoinPoint[] { this };
     }
 
     @Override
     public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
-        return new JoinPoint[]{ JoinPoint };
+        return new JoinPoint[] { JoinPoint };
+    }
+
+    @Override
+    public <T extends JoinPoint> void insertFarImpl(String position, T JoinPoint) {
+        // No-op for tests, just to allow event flow BEGIN -> END without exceptions
+    }
+
+    @Override
+    public void insertFarImpl(String position, String code) {
+        // No-op for tests, just to allow event flow BEGIN -> END without exceptions
     }
 }
