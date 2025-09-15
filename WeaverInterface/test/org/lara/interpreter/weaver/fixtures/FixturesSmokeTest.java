@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.events.EventTrigger;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 public class FixturesSmokeTest {
 
@@ -22,7 +23,7 @@ public class FixturesSmokeTest {
             assertThat(engine.implementsEvents()).isTrue();
         } finally {
             // Cleanup thread-local
-            engine.removeWeaver();
+            WeaverEngine.removeWeaver();
         }
     }
 }
