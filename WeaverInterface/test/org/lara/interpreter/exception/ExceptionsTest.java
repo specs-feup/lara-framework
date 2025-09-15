@@ -23,4 +23,13 @@ class ExceptionsTest {
         assertThat(ex.getMessage()).contains("in action MyJp.doIt");
         assertThat(ex.getCause()).isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    @DisplayName("AttributeException formats message including join point and attribute")
+    void attributeExceptionMessage() {
+        AttributeException ex = new AttributeException("MyJp", "theAttr", new RuntimeException("cause"));
+        assertThat(ex.getMessage()).contains("Exception");
+        assertThat(ex.getMessage()).contains("in attribute MyJp.theAttr");
+        assertThat(ex.getCause()).isInstanceOf(RuntimeException.class);
+    }
 }

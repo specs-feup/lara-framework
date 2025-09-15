@@ -50,6 +50,12 @@ sourceSets {
             srcDir 'test'
         }
     }
+
+    jmh {
+        java {
+            srcDir 'src-jmh'
+        }
+    }
 }
 
 test {
