@@ -1,0 +1,6 @@
+<joinpoints root_class="base">
+  <joinpoint class="base"/>
+  <joinpoint class="level1" extends="base"/>
+  <joinpoint class="level2" extends="level1"/>
+  <joinpoint class="reserved-keyword" extends="level2"/>
+</joinpoints>

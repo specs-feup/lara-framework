@@ -1,0 +1,4 @@
+<joinpoints root_class="A">
+  <joinpoint class="A"/>
+  <joinpoint class="B" extends="Nope"/>
+</joinpoints>

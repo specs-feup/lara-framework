@@ -59,7 +59,7 @@ sourceSets {
 test {
     useJUnitPlatform()
 
-    maxParallelForks = Math.max((double) 1, Runtime.runtime.availableProcessors() / 2)
+    maxParallelForks = Math.max(1, (int) (Runtime.getRuntime().availableProcessors() / 2))
 
     finalizedBy(jacocoTestReport)
 }

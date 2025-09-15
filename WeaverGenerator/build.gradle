@@ -62,6 +62,9 @@ sourceSets {
         java {
             srcDir 'test'
         }
+        resources {
+            srcDir 'test-resources'
+        }
     }
 
     jmh {
@@ -83,7 +86,8 @@ tasks.register('WeaverGenerator', JavaExec) {
 test {
     useJUnitPlatform()
 
-    maxParallelForks = Math.max((double) 1, Runtime.runtime.availableProcessors() / 2)
+    // Use up to half the available processors, minimum 1
+    maxParallelForks = Math.max(1, (int) (Runtime.getRuntime().availableProcessors() / 2))
 
     finalizedBy(jacocoTestReport)
 }
