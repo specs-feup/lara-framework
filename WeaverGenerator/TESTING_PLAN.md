@@ -73,7 +73,6 @@ Target JDK is 17. Dependencies include SpecsUtils, jOptions, and LanguageSpecifi
   - Selections: transitive closure computed; queries over model return stable, predictable sets
   - Actions: parameter lists fully resolved (names, types, default values), return types mapped
   - Invariants: no dangling references; all ids unique in scope; topological ordering reproducible
-  - Optional property-based checks (if jqwik enabled): generate tiny random trees/specs and assert invariants (acyclic, referential integrity)
 - Deliverables:
   - `test/.../model/ModelBuilderTest.java`
   - `test/.../model/ModelInvariantsPropertyTest.java` (optional)
