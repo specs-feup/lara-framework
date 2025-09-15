@@ -1,14 +1,16 @@
 plugins {
     id 'distribution'
-    id 'application' // Executable
-    id 'java' // Java project
+    id 'application'
+    id 'java'
+    id 'jacoco'
+    id 'me.champeau.jmh' version '0.7.2'
 }
 
 java {
+    withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-
-    withSourcesJar()
 }
 
 application {
@@ -32,6 +34,16 @@ dependencies {
     implementation ':WeaverInterface'
 
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
+
+    // Testing dependencies
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.5.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.5.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0' // For static mocking
+    testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '2.3.0' // For test retries
+    testImplementation group: 'com.github.stefanbirkner', name: 'system-lambda', version: '1.2.1'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.0'
 }
 
 // Project sources
@@ -45,6 +57,18 @@ sourceSets {
             srcDir 'resources'
         }
     }
+
+    test {
+        java {
+            srcDir 'test'
+        }
+    }
+
+    jmh {
+        java {
+            srcDir 'src-jmh'
+        }
+    }
 }
 
 tasks.register('WeaverGenerator', JavaExec) {
@@ -53,4 +77,64 @@ tasks.register('WeaverGenerator', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
     args = []
+}
+
+
+test {
+    useJUnitPlatform()
+
+    maxParallelForks = Math.max((double) 1, Runtime.runtime.availableProcessors() / 2)
+
+    finalizedBy(jacocoTestReport)
+}
+
+
+jacocoTestCoverageVerification {
+    executionData fileTree(dir: project.buildDir, includes: [
+            'jacoco/test.exec',
+            'jacoco/test.exec*',
+            'jacoco/test/*.exec'
+    ])
+    sourceSets sourceSets.main
+    violationRules {
+        // Overall rule
+        rule {
+            element = 'BUNDLE'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00 // TODO: raise to 0.92+ when tests are in place
+            }
+        }
+        // Package-specific stricter rules for parsing/validation and code generation
+        rule {
+            element = 'PACKAGE'
+            includes = ['org.lara.interpreter.weaver.generator*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00 // TODO: raise to 0.96 when tests cover generator packages
+            }
+        }
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    executionData fileTree(dir: project.buildDir, includes: [
+            'jacoco/test.exec',
+            'jacoco/test.exec*',
+            'jacoco/test/*.exec'
+    ])
+    sourceDirectories.from = sourceSets.main.allSource.srcDirs
+    classDirectories.from = sourceSets.main.output
+
+    finalizedBy(jacocoTestCoverageVerification)
+}
+
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
 }
