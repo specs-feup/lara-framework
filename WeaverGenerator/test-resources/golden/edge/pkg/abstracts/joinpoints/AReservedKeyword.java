@@ -1,0 +1,180 @@
+package golden.edge.pkg.abstracts.joinpoints;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.lara.interpreter.exception.AttributeException;
+import org.lara.interpreter.weaver.interf.JoinPoint;
+
+/**
+ * Auto-Generated class for join point AReservedKeyword
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class AReservedKeyword extends ALevel2 {
+
+    protected ALevel2 aLevel2;
+
+    /**
+     * 
+     */
+    public AReservedKeyword(ALevel2 aLevel2) {
+        super(aLevel2);
+        this.aLevel2 = aLevel2;
+    }
+
+    /**
+     * Get value on attribute _class
+     * 
+     * @return the attribute's value
+     */
+    public abstract String getClassImpl();
+
+    /**
+     * Get value on attribute _class
+     * 
+     * @return the attribute's value
+     */
+    public final Object getClass() {
+        try {
+            Object result =  (Object) this.getClassImpl();
+            return result != null ? result : getUndefinedValue();
+        } catch (Exception e) {
+            throw new AttributeException(get_class(), "class", e);
+        }
+    }
+
+    /**
+     * Get value on attribute c
+     * 
+     * @return the attribute's value
+     */
+    @Override
+    public Integer getCImpl() {
+        return this.aLevel2.getCImpl();
+    }
+
+    /**
+     * Get value on attribute a
+     * 
+     * @return the attribute's value
+     */
+    @Override
+    public Integer getAImpl() {
+        return this.aLevel2.getAImpl();
+    }
+
+    /**
+     * Get value on attribute b
+     * 
+     * @return the attribute's value
+     */
+    @Override
+    public Integer getBImpl() {
+        return this.aLevel2.getBImpl();
+    }
+
+    /**
+     * 
+     * @param position
+     * @param code
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, String code) {
+        return this.aLevel2.insertImpl(position, code);
+    }
+
+    /**
+     * 
+     * @param position
+     * @param code
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
+        return this.aLevel2.insertImpl(position, code);
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public void noopImpl() {
+        this.aLevel2.noopImpl();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Optional<? extends ALevel2> getSuper() {
+        return Optional.of(this.aLevel2);
+    }
+
+    /**
+     * Returns the join point type of this class
+     * 
+     * @return The join point type
+     */
+    @Override
+    public final String get_class() {
+        return "reservedKeyword";
+    }
+
+    /**
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * 
+     * @return True if this join point is an instanceof the given class
+     */
+    @Override
+    public final boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if (isInstance) {
+            return true;
+        }
+        return this.aLevel2.instanceOf(joinpointClass);
+    }
+
+    /**
+     * 
+     */
+    protected enum ReservedKeywordAttributes {
+        CLASS("class"),
+        C("c"),
+        A("a"),
+        B("b");
+
+        private String name;
+
+        /**
+         * 
+         */
+        private ReservedKeywordAttributes(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Return an attribute enumeration item from a given attribute name
+         */
+        public static Optional<ReservedKeywordAttributes> fromString(String name) {
+            return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
+        }
+
+        /**
+         * Return a list of attributes in String format
+         */
+        public static List<String> getNames() {
+            return Arrays.asList(values()).stream().map(ReservedKeywordAttributes::name).collect(Collectors.toList());
+        }
+
+        /**
+         * True if the enum contains the given attribute name, false otherwise.
+         */
+        public static boolean contains(String name) {
+            return fromString(name).isPresent();
+        }
+    }
+}

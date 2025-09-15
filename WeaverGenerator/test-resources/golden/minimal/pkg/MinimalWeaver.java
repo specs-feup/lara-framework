@@ -1,0 +1,92 @@
+package golden.minimal.pkg;
+
+import java.util.List;
+import java.io.File;
+import org.suikasoft.jOptions.Interfaces.DataStore;
+
+import golden.minimal.pkg.abstracts.weaver.AMinimalWeaver;
+
+import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.language.specification.dsl.LanguageSpecification;
+
+/**
+ * Weaver Implementation for MinimalWeaver<br>
+ * Since the generated abstract classes are always overwritten, their implementation should be done by extending those abstract classes with user-defined classes.<br>
+ * The abstract class {@link minimal.pkg.abstracts.AMinimalWeaverJoinPoint} contains attributes and actions common to all join points.
+ * @author Lara Weaver Generator
+ */
+public class MinimalWeaver extends AMinimalWeaver {
+
+    /**
+     * Setups the weaver with inputs sources, an output folder and the provided options.
+     * 
+     * @param sources the sources with the code (files/folders)
+     * @param outputDir output folder for the generated file(s)
+     * @param args options for the weaver
+     * @return true if initialization occurred without problems, false otherwise
+     */
+    @Override
+    public boolean begin(List<File> sources, File outputDir, DataStore args) {
+        //Initialize weaver with the input file/folder
+        throw new UnsupportedOperationException("Method begin for MinimalWeaver is not yet implemented");
+    }
+
+    /**
+     *  Performs operations needed when closing the weaver (e.g., generates new version of source file(s) to the specified output folder).
+     * 
+     * @return if close was successful
+     */
+    @Override
+    public boolean close() {
+        //Terminate weaver execution with final steps required and writing output files
+        throw new UnsupportedOperationException("Method close for MinimalWeaver is not yet implemented");
+    }
+
+    /**
+     *  Returns a list of Gears associated to this weaver engine
+     * 
+     * @return a list of implementations of {@link AGear} or null if no gears are available
+     */
+    public List<AGear> getGears() {
+        return List.of(); //i.e., no gears currently being used
+    }
+
+    /**
+     *  Returns a list of options specific to this weaver engine.
+     * 
+     * @return a list of {@link WeaverOption} representing additional options provided by this weaver
+     */
+    @Override
+    public List<WeaverOption> getOptions() {
+        return List.of(); //i.e., no additional options
+    }
+
+    /**
+     * Returns thread-local instance of weaver engine.
+     */
+    public static MinimalWeaver getMinimalWeaver() {
+        return (MinimalWeaver) WeaverEngine.getThreadLocalWeaver();
+    }
+
+    /**
+     *  Builds the language specification, based on the input XML files.
+     * 
+     * @return a new {@link LanguageSpecification} instance for this weaver
+     */
+    public static LanguageSpecification buildLanguageSpecification() {
+        return LanguageSpecification.newInstance(() -> "spec/valid/minimal/" + LanguageSpecification.getJoinPointsFilename(),
+         () -> "spec/valid/minimal/" + LanguageSpecification.getAttributesFilename(),
+         () -> "spec/valid/minimal/" + LanguageSpecification.getActionsFilename());
+    }
+
+    /**
+     *  Builds the language specification, based on the input XML files.
+     * 
+     * @return a new {@link LanguageSpecification} instance for this weaver
+     */
+    protected LanguageSpecification buildLangSpecs() {
+        return buildLanguageSpecification();
+    }
+}
