@@ -91,10 +91,7 @@ public class FileList implements Iterable<File> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((fileList == null) ? 0 : fileList.hashCode());
-        return result;
+        return fileList.hashCode();
     }
 
     @Override
@@ -109,11 +106,7 @@ public class FileList implements Iterable<File> {
             return false;
         }
         FileList other = (FileList) obj;
-        if (fileList == null) {
-            return other.fileList == null;
-        } else {
-            return fileList.equals(other.fileList);
-        }
+        return fileList.equals(other.fileList);
     }
 
     public List<File> getFiles() {

@@ -67,7 +67,7 @@ public abstract class AGear extends EventReceiverTemplate {
 
     /**
      * Method to execute when an action is executed ({@link Stage#BEGIN} and
-     * {@link Stage#AFTER})
+     * {@link Stage#END})
      * 
      * @param data
      *             the event data
@@ -78,7 +78,7 @@ public abstract class AGear extends EventReceiverTemplate {
 
     /**
      * Method to execute when an attribute is accessed ({@link Stage#BEGIN} and
-     * {@link Stage#AFTER})
+     * {@link Stage#END})
      * 
      * @param data
      *             the event data

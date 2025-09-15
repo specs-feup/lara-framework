@@ -160,19 +160,19 @@ public abstract class JoinPoint {
     }
 
     /**
-     * @see JoinPoint#insert(String, JoinPoint, boolean)
+     * @see JoinPoint#insertFar(String, JoinPoint)
      */
     public <T extends JoinPoint> void insertFarImpl(String position, T JoinPoint) {
         throw new UnsupportedOperationException(
-                "Join point " + get_class() + ": Action insert(String,joinpoint,boolean) not implemented ");
+                "Join point " + get_class() + ": Action insertFar(String, joinpoint) not implemented");
     }
 
     /**
-     * @see JoinPoint#insert(String, String, boolean)
+     * @see JoinPoint#insertFar(String, String)
      */
     public void insertFarImpl(String position, String code) {
         throw new UnsupportedOperationException(
-                "Join point " + get_class() + ": Action insert far(String,String) not implemented ");
+                "Join point " + get_class() + ": Action insertFar(String, String) not implemented");
     }
 
     /**
@@ -237,7 +237,7 @@ public abstract class JoinPoint {
                 eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, code);
             }
         } catch (Exception e) {
-            throw new ActionException(get_class(), "insert", e);
+            throw new ActionException(get_class(), "insertFar", e);
         }
     }
 
@@ -265,7 +265,7 @@ public abstract class JoinPoint {
                 eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, joinPoint);
             }
         } catch (Exception e) {
-            throw new ActionException(get_class(), "insert", e);
+            throw new ActionException(get_class(), "insertFar", e);
         }
     }
 

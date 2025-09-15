@@ -29,7 +29,7 @@ public enum Stage {
     }
 
     /**
-     * Returns a string representation of the stage, such as 'Stage.BEFORE'
+     * Returns a string representation of the stage, such as 'Stage.BEGIN'
      *
      */
     public String toCode() {
