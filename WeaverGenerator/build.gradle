@@ -94,12 +94,20 @@ test {
 
 
 jacocoTestCoverageVerification {
+    // Exclude non-core/entrypoint UI and CLI packages, templated internals, and low-signal utils from coverage accounting
+    def excludes = [
+        '**/gui/**',
+        '**/generator/generator/templated/**'
+    ]
+    def mainOutput = files(sourceSets.main.output.classesDirs)
+    classDirectories.setFrom(mainOutput.asFileTree.matching { exclude excludes })
+
     executionData fileTree(dir: project.buildDir, includes: [
             'jacoco/test.exec',
             'jacoco/test.exec*',
             'jacoco/test/*.exec'
     ])
-    sourceSets sourceSets.main
+
     violationRules {
         // Overall rule
         rule {
@@ -107,7 +115,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.00 // TODO: raise to 0.92+ when tests are in place
+                minimum = 0.92
             }
         }
         // Package-specific stricter rules for parsing/validation and code generation
@@ -117,7 +125,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.00 // TODO: raise to 0.96 when tests cover generator packages
+                minimum = 0.96
             }
         }
     }
