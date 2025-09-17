@@ -29,6 +29,7 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.util.SpecsIo;
+import tdrc.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class WeaverImplGenerator extends GeneratorHelper {
 
         addBeginMethod(java);
         addCloseMethod(java);
+        addSelectMethod(java);
         addGetGearsMethod(java);
         addGetOptionsMethod(java);
         addGetWeaver(java);
@@ -141,6 +143,25 @@ public class WeaverImplGenerator extends GeneratorHelper {
         begin.appendCode("throw new UnsupportedOperationException(\"Method begin for " + java.getName()
                 + " is not yet implemented\");");
         java.add(begin);
+    }
+
+    /**
+     * Generates the method that selects the root join point
+     *
+     * @param java
+     */
+    private void addSelectMethod(JavaClass java) {
+        final Method getRootJp = new Method(GenConstants.getJoinPointInterfaceType(), "getRootJp");
+        String rootName = javaGenerator.getLanguageSpecification().getRoot().getName();
+
+        rootName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(rootName);
+        getRootJp.add(Annotation.OVERRIDE);
+        getRootJp.appendComment(" Return a JoinPoint instance of the sources root, i.e., an instance of " + rootName);
+        getRootJp.addJavaDocTag(JDocTag.RETURN, "an instance of the join point root");
+        getRootJp.appendCode("//return new <" + rootName + " implementation>;" + ln());
+        getRootJp.appendCode("throw new UnsupportedOperationException(\"Method getRootJp for " + java.getName()
+                + " is not yet implemented\");");
+        java.add(getRootJp);
     }
 
     /**
