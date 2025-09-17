@@ -13,14 +13,8 @@
 
 package org.lara.interpreter.weaver.generator.generator.templated.generators;
 
-import org.lara.interpreter.weaver.generator.generator.templated.GeneratedFile;
 import org.lara.interpreter.weaver.generator.generator.templated.TemplatedGenerator;
 import org.lara.language.specification.dsl.JoinPointClass;
-import pt.up.fe.specs.util.utilities.Replacer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class AbstractJoinPointGenerator {
 
@@ -46,28 +40,5 @@ public class AbstractJoinPointGenerator {
 
     public String getQualifiedClassname(JoinPointClass jpType) {
         return getPackage() + "." + getClassname(jpType);
-    }
-
-    public GeneratedFile generate(JoinPointClass joinPoint) {
-
-        var classname = getClassname(joinPoint);
-
-        var template = new Replacer(GeneratorResource.ABSTRACT_JOINPOINT_TEMPLATE);
-
-        var filename = classname + ".java";
-        System.out.println("CLAZZ: " + getClassname(joinPoint));
-        System.out.println("PACK: " + getPackage());
-        return new GeneratedFile(filename, template.toString(), Arrays.asList(getPackage().split("\\.")));
-    }
-
-    public List<GeneratedFile> generate() {
-
-        var classes = new ArrayList<GeneratedFile>();
-
-        for (var joinPoint : baseGenerator.getLanguageSpecification().getDeclaredJoinPoints()) {
-            classes.add(generate(joinPoint));
-        }
-
-        return classes;
     }
 }

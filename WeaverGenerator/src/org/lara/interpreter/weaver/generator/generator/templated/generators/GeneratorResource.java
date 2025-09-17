@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.templated.generators;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 
 public enum GeneratorResource implements ResourceProvider {
-    ABSTRACT_JOINPOINT_TEMPLATE("AbstractClassTemplate.txt"),
     CONCRETE_JOINPOINT_TEMPLATE("ConcreteClassTemplate.txt");
 
     private final String resource;
