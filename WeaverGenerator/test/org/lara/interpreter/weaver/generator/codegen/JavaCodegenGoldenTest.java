@@ -22,9 +22,6 @@ import org.lara.interpreter.weaver.generator.fixtures.DiffUtils;
 /**
  * Golden tests for Java code generation.
  *
- * NOTE: The medium spec currently triggers known generator bugs (see BUGS_4.md)
- * so it is intentionally skipped until those issues are fixed. This test
- * focuses on minimal and edge scenarios.
  */
 public class JavaCodegenGoldenTest {
 
@@ -52,9 +49,13 @@ public class JavaCodegenGoldenTest {
     }
 
     @Test
-    @DisplayName("Edge spec generation currently skipped due to known identifier bugs (see BUGS_4.md)")
+    @DisplayName("Edge spec generation matches golden and is deterministic")
     void edgeGolden() throws Exception {
-        Assumptions.abort("Skipping edge scenario until identifier sanitization implemented (BUGS_4.md)");
+        runAndAssertGolden("edge", List.of(
+                "edge/pkg/abstracts/joinpoints/AJoinPoint.java",
+                "edge/pkg/abstracts/joinpoints/AReservedKeyword.java",
+                "edge/pkg/abstracts/weaver/AEdgeWeaver.java",
+                "edge/pkg/EdgeWeaver.java"));
     }
 
     // Medium scenario currently excluded due to known bugs (see BUGS_4.md). To
@@ -76,16 +77,11 @@ public class JavaCodegenGoldenTest {
         WeaverGenerator.main(args);
 
         // Determinism: run again into same folder should not change contents.
-        // If the generator exhibits non-idempotent behavior (known issue), skip this
-        // test rather than failing hard, and document under BUGS_8.md.
-        try {
-            List<String> before = snapshot(outDir);
-            WeaverGenerator.main(args);
-            List<String> after = snapshot(outDir);
-            assertThat(after).as("Idempotent generation (file listing)").containsExactlyElementsOf(before);
-        } catch (AssertionError ae) {
-            Assumptions.abort("Known non-idempotent file listing (see BUGS_8.md): " + ae.getMessage());
-        }
+        List<String> before = snapshot(outDir);
+        WeaverGenerator.main(args);
+        List<String> after = snapshot(outDir);
+        assertThat(after).as("Idempotent generation (file listing)").containsExactlyElementsOf(before);
+
 
         Path goldenRoot = projectRoot.resolve("test-resources/golden/" + scenario);
         for (String rel : sampleFiles) {

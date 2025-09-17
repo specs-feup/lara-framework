@@ -7,6 +7,7 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import golden.minimal.pkg.abstracts.weaver.AMinimalWeaver;
 
 import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.dsl.LanguageSpecification;
@@ -42,6 +43,17 @@ public class MinimalWeaver extends AMinimalWeaver {
     public boolean close() {
         //Terminate weaver execution with final steps required and writing output files
         throw new UnsupportedOperationException("Method close for MinimalWeaver is not yet implemented");
+    }
+
+    /**
+     *  Return a JoinPoint instance of the sources root, i.e., an instance of Root
+     * 
+     * @return an instance of the join point root
+     */
+    @Override
+    public JoinPoint getRootJp() {
+        // return new <Root implementation>;
+        throw new UnsupportedOperationException("Method getRootJp for MinimalWeaver is not yet implemented");
     }
 
     /**
