@@ -16,7 +16,6 @@ import org.apache.commons.cli.CommandLine;
 import org.lara.interpreter.weaver.generator.commandline.WeaverGeneratorOptions.GeneratorOption;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
-import org.lara.interpreter.weaver.generator.generator.templated.TemplatedGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
@@ -127,16 +126,8 @@ public class WeaverGenerator {
         } else {
             XMLSpecDir = GenConstants.getDefaultXMLDir();
         }
-        final BaseGenerator generator;
+        final BaseGenerator generator = new JavaAbstractsGenerator(XMLSpecDir);
         String optionValue;
-        if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
-            System.out.println(
-                    "Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
-            generator = new TemplatedGenerator(XMLSpecDir);
-        } else {
-            // Create the JavaAbstractGenerator
-            generator = new JavaAbstractsGenerator(XMLSpecDir);
-        }
 
         if (cmdLine.hasOption(GeneratorOption.W.getOption())) {
             optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
