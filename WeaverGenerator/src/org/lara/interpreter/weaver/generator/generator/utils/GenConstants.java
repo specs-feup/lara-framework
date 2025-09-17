@@ -37,7 +37,7 @@ public class GenConstants {
     private static final String WITH_TRY_PREFIX = "WithTryCatch";
     private static final String LINK_TAG = "[[LINK]]";
     private static final String WEAVER_NAME_TAG = "[[WEAVERNAME]]";
-    private static final String WEAVER_TEXT_HEADER_LOCATION = "org/lara/interpreter/weaver/generator/generator/utils/WeaverTextHeader.txt";
+    private static final String WEAVER_TEXT_HEADER_LOCATION = "org/lara/interpreter/weaver/generator/WeaverTextHeader.txt";
     // private static final String rootName = "ProgramRoot";
 
     private static final String interfaceName = JoinPoint.class.getSimpleName();

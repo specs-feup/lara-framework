@@ -21,7 +21,7 @@ public enum GeneratorResource implements ResourceProvider {
     private final String resource;
 
     private GeneratorResource(String filename) {
-        this.resource = "pt/up/fe/specs/lara/weaver/generator/" + filename;
+        this.resource = "org/lara/interpreter/weaver/generator/" + filename;
     }
 
     @Override
