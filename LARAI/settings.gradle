@@ -1,8 +1,10 @@
 rootProject.name = 'LARAI'
 
-includeBuild("../../specs-java-libs/jOptions")
-includeBuild("../../specs-java-libs/SpecsUtils")
+def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-java-libs'
 
-includeBuild("../../lara-framework/LaraUtils")
-includeBuild("../../lara-framework/LanguageSpecification")
-includeBuild("../../lara-framework/WeaverInterface")
+includeBuild("${specsJavaLibsRoot}/jOptions")
+includeBuild("${specsJavaLibsRoot}/SpecsUtils")
+
+includeBuild("../LaraUtils")
+includeBuild("../LanguageSpecification")
+includeBuild("../WeaverInterface")

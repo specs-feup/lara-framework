@@ -1,3 +1,5 @@
 rootProject.name = 'LaraUtils'
 
-includeBuild("../../specs-java-libs/SpecsUtils")
+def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-java-libs'
+
+includeBuild("${specsJavaLibsRoot}/SpecsUtils")

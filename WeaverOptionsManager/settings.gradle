@@ -1,9 +1,11 @@
 rootProject.name = 'WeaverOptionsManager'
 
-includeBuild("../../specs-java-libs/jOptions")
-includeBuild("../../specs-java-libs/SpecsUtils")
+def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-java-libs'
 
-includeBuild("../../lara-framework/LARAI")
-includeBuild("../../lara-framework/WeaverInterface")
+includeBuild("${specsJavaLibsRoot}/jOptions")
+includeBuild("${specsJavaLibsRoot}/SpecsUtils")
 
-includeBuild("../../lara-framework/DefaultWeaver")
+includeBuild("../LARAI")
+includeBuild("../WeaverInterface")
+
+includeBuild("../DefaultWeaver")
