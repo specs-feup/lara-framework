@@ -22,25 +22,32 @@ public class LanguageSpecificationException extends BaseException {
     private static final String DEFAULT_TEXT = "while building language specification";
     @Serial
     private static final long serialVersionUID = 1L;
-    private String message;
+
+    public LanguageSpecificationException(String message) {
+        super(message);
+    }
+
+    public LanguageSpecificationException(String message, Throwable e) {
+        super(message, e);
+    }
 
     public LanguageSpecificationException(Throwable e) {
         super(e);
     }
 
-    public LanguageSpecificationException(String message, Throwable e) {
-        super(e);
-        this.message = message;
-    }
-
     @Override
     protected String generateMessage() {
-        return "Exception on ";
+        return "Exception on " + this.generateSimpleMessage();
     }
 
     @Override
     protected String generateSimpleMessage() {
-        return this.message != null ? this.message : LanguageSpecificationException.DEFAULT_TEXT;
+        String message = this.getDetailMessage();
+        if (message != null && !message.isBlank()) {
+            return message;
+        }
+
+        return DEFAULT_TEXT;
     }
 
 }

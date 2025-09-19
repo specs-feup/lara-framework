@@ -2,6 +2,7 @@ package org.lara.interpreter.weaver.generator.spec;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 import java.io.ByteArrayInputStream;
@@ -51,7 +52,11 @@ class SemanticValidationTest {
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
-        assertThrows(RuntimeException.class, () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions)));
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Duplicate join point class 'A' while building language specification");
     }
 
     @Test

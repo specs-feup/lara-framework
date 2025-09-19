@@ -18,6 +18,7 @@ import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.TypeDef;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
@@ -138,7 +139,13 @@ public class LangSpecsXmlParser {
             JoinPointClass jp = langSpecV2.getJoinPoint(jpClass);
             String extendsType = jpNode.getAttribute("extends");
             if (!extendsType.isEmpty()) {
-                jp.setExtend(langSpecV2.getJoinPoint(extendsType));
+                JoinPointClass parent = langSpecV2.getJoinPoint(extendsType);
+                if (parent == null) {
+                    throw new LanguageSpecificationException(
+                            "Unknown extends target '" + extendsType + "' for join point '" + jpClass + "'");
+                }
+
+                jp.setExtend(parent);
             } else {
                 jp.setExtend(global);
             }

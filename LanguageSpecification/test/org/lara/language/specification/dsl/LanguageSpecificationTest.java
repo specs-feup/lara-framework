@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 import java.io.*;
@@ -174,6 +175,19 @@ class LanguageSpecificationTest {
         @DisplayName("Should handle empty join point name gracefully")
         void shouldHandleEmptyJoinPointNameGracefully() {
             assertNull(langSpec.getJoinPoint(""));
+        }
+
+        @Test
+        @DisplayName("Should reject duplicate join point definitions")
+        void shouldRejectDuplicateJoinPoints() {
+            LanguageSpecification spec = new LanguageSpecification();
+            spec.add(new JoinPointClass("dup"));
+
+            LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                    () -> spec.add(new JoinPointClass("dup")));
+
+            assertEquals("Duplicate join point class 'dup' while building language specification",
+                    thrown.getSimpleMessage());
         }
     }
 

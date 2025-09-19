@@ -50,7 +50,7 @@ public class LanguageSpecificationExceptionTest {
         @Test
         @DisplayName("Should handle null Throwable")
         void testConstructorWithNullThrowable() {
-            LanguageSpecificationException exception = new LanguageSpecificationException(null);
+            LanguageSpecificationException exception = new LanguageSpecificationException((Throwable) null);
             
             assertNull(exception.getCause());
             assertNotNull(exception.getMessage());

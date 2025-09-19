@@ -161,18 +161,46 @@ public class LanguageSpecification {
     }
 
     public void add(JoinPointClass node) {
-        joinPoints.put(node.getName(), node);
+        Objects.requireNonNull(node, "Join point class cannot be null");
+        String className = node.getName();
+
+        if (joinPoints.containsKey(className)) {
+            throw new LanguageSpecificationException(
+                    "Duplicate join point class '" + className + "' while building language specification");
+        }
+
+        joinPoints.put(className, node);
     }
 
     public void add(TypeDef type) {
-        typeDefs.put(type.getName(), type);
+        Objects.requireNonNull(type, "TypeDef cannot be null");
+        String typeName = type.getName();
+
+        if (typeDefs.containsKey(typeName)) {
+            throw new LanguageSpecificationException(
+                    "Duplicate typedef '" + typeName + "' while building language specification");
+        }
+
+        typeDefs.put(typeName, type);
     }
 
-    public void add(EnumDef type) {
-        enumDefs.put(type.getName(), type);
+    public void add(EnumDef enumType) {
+        Objects.requireNonNull(enumType, "EnumDef cannot be null");
+        String enumName = enumType.getName();
+
+        if (enumDefs.containsKey(enumName)) {
+            throw new LanguageSpecificationException(
+                    "Duplicate enumdef '" + enumName + "' while building language specification");
+        }
+
+        enumDefs.put(enumName, enumType);
     }
 
     public JoinPointClass getJoinPoint(String name) {
+        if (name == null) {
+            return null;
+        }
+
         if (getBaseJoinpointClass().equals(name)) {
             return global;
         }

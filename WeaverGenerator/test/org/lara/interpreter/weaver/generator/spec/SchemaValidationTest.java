@@ -6,6 +6,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 import java.io.ByteArrayInputStream;
@@ -71,7 +72,11 @@ class SchemaValidationTest {
         String actions = "<actions/>";
 
         // The parser links extends by name; unknown target should raise at some point when building model
-        assertThrows(RuntimeException.class, () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions)));
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Unknown extends target 'Nope' for join point 'B'");
     }
 
     @Test

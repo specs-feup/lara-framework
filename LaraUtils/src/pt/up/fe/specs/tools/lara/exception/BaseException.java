@@ -27,15 +27,16 @@ public abstract class BaseException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     *
-     */
-    public BaseException(Throwable e) {
-        super(e);
+    public BaseException(String message) {
+        super(message);
     }
 
     public BaseException(String message, Throwable e) {
         super(message, e);
+    }
+
+    public BaseException(Throwable e) {
+        super(e);
     }
 
     /**
@@ -47,8 +48,7 @@ public abstract class BaseException extends RuntimeException {
 
     /**
      * Generate the concrete message to present to the user. Usually this method
-     * does not contain the 'Exception on'
-     * stuff, just get to the point!
+     * does not contain the 'Exception on' stuff, just get to the point!
      *
      */
     protected String generateSimpleMessage() {
@@ -58,6 +58,10 @@ public abstract class BaseException extends RuntimeException {
     @Override
     public String getMessage() {
         return generateMessage();
+    }
+
+    protected String getDetailMessage() {
+        return super.getMessage();
     }
 
     public String getSimpleMessage() {
