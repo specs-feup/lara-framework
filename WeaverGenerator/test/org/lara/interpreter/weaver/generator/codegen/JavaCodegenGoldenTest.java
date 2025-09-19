@@ -43,19 +43,19 @@ public class JavaCodegenGoldenTest {
     @DisplayName("Minimal spec generation matches golden and is deterministic")
     void minimalGolden() throws Exception {
         runAndAssertGolden("minimal", List.of(
-                "minimal/pkg/abstracts/joinpoints/ARoot.java",
-                "minimal/pkg/abstracts/weaver/AMinimalWeaver.java",
-                "minimal/pkg/MinimalWeaver.java"));
+                "minimal/pkg/abstracts/joinpoints/ARoot.java.txt",
+                "minimal/pkg/abstracts/weaver/AMinimalWeaver.java.txt",
+                "minimal/pkg/MinimalWeaver.java.txt"));
     }
 
     @Test
     @DisplayName("Edge spec generation matches golden and is deterministic")
     void edgeGolden() throws Exception {
         runAndAssertGolden("edge", List.of(
-                "edge/pkg/abstracts/joinpoints/AJoinPoint.java",
-                "edge/pkg/abstracts/joinpoints/AReservedKeyword.java",
-                "edge/pkg/abstracts/weaver/AEdgeWeaver.java",
-                "edge/pkg/EdgeWeaver.java"));
+                "edge/pkg/abstracts/joinpoints/AJoinPoint.java.txt",
+                "edge/pkg/abstracts/joinpoints/AReservedKeyword.java.txt",
+                "edge/pkg/abstracts/weaver/AEdgeWeaver.java.txt",
+                "edge/pkg/EdgeWeaver.java.txt"));
     }
 
     // Medium scenario currently excluded due to known bugs (see BUGS_4.md). To
@@ -85,7 +85,7 @@ public class JavaCodegenGoldenTest {
 
         Path goldenRoot = projectRoot.resolve("test-resources/golden/" + scenario);
         for (String rel : sampleFiles) {
-            Path generatedFile = outDir.resolve(rel);
+            Path generatedFile = outDir.resolve(rel.replace(".txt", ""));
             Path goldenFile = goldenRoot.resolve(rel);
             // Goldens may omit the top-level scenario folder (e.g., "pkg/..." instead of
             // "minimal/pkg/..."). If the direct path doesn't exist, try trimming the
