@@ -72,6 +72,16 @@ public class LangSpecsXmlParser {
             langSpecV2.add(typeDef);
         }
 
+        for (var type : attributeModelNode.getElementsByName("enum")) {
+            var enumDef = new EnumDef(type.getAttribute("name"));
+            langSpecV2.add(enumDef);
+
+            setOptional(type.getAttribute("tooltip"), enumDef::setToolTip);
+
+            List<EnumValue> valuesList = toEnumValues(type.getElementsByName("value"), langSpecV2);
+            enumDef.setValues(valuesList);
+        }
+
         for (var type : attributeModelNode.getElementsByName("typedef")) {
             var typeDef = new TypeDef(type.getAttribute("name"));
 
@@ -82,16 +92,6 @@ public class LangSpecsXmlParser {
             setOptional(type.getAttribute("tooltip"), typeDef::setToolTip);
 
             langSpecV2.add(typeDef);
-        }
-
-        for (var type : attributeModelNode.getElementsByName("enum")) {
-            var enumDef = new EnumDef(type.getAttribute("name"));
-            langSpecV2.add(enumDef);
-
-            setOptional(type.getAttribute("tooltip"), enumDef::setToolTip);
-
-            List<EnumValue> valuesList = toEnumValues(type.getElementsByName("value"), langSpecV2);
-            enumDef.setValues(valuesList);
         }
 
         List<JoinPointClass> jps = new ArrayList<>();
@@ -145,6 +145,7 @@ public class LangSpecsXmlParser {
                             "Unknown extends target '" + extendsType + "' for join point '" + jpClass + "'");
                 }
 
+                validateNoInheritanceCycle(jp, parent);
                 jp.setExtend(parent);
             } else {
                 jp.setExtend(global);
@@ -278,5 +279,21 @@ public class LangSpecsXmlParser {
 
         Collections.sort(newActions);
         return newActions;
+    }
+
+    private static void validateNoInheritanceCycle(JoinPointClass child, JoinPointClass parent) {
+        if (parent == null) {
+            return;
+        }
+
+        JoinPointClass current = parent;
+        while (current != null) {
+            if (current == child) {
+                throw new LanguageSpecificationException(
+                        "Inheritance cycle detected for join point '" + child.getName() + "'");
+            }
+
+            current = current.getExtend().orElse(null);
+        }
     }
 }

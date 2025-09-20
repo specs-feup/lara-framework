@@ -42,6 +42,44 @@ class SchemaValidationTest {
     }
 
     @Test
+    @DisplayName("Artifacts schema accepts mixed enum/object/typedef ordering")
+    void mixedArtifactsOrderingAccepted() {
+        String jp = """
+            <joinpoints root_class=\"A\"> 
+                <joinpoint class=\"A\"/>
+            </joinpoints>
+            """;
+        String attrs = """
+            <artifacts>
+                <enum name=\"Color\">
+                    <value name=\"RED\"/>
+                    <value name=\"BLUE\"/>
+                </enum>
+                <typedef name=\"Alias\">
+                    <attribute name=\"color\" type=\"Color\"/>
+                </typedef>
+                <object name=\"Vec2\">
+                    <attribute name=\"x\" type=\"String\"/>
+                    <attribute name=\"y\" type=\"String\"/>
+                </object>
+                <artifact class=\"A\">
+                    <attribute name=\"position\" type=\"Vec2\"/>
+                    <attribute name=\"alias\" type=\"Alias\"/>
+                </artifact>
+            </artifacts>
+            """;
+        String actions = "<actions/>";
+
+        LanguageSpecification spec = LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions));
+
+        assertThat(spec.hasEnumDef("Color")).isTrue();
+        assertThat(spec.hasTypeDef("Vec2")).isTrue();
+        assertThat(spec.hasTypeDef("Alias")).isTrue();
+        assertThat(spec.getJoinPoint("A").hasAttribute("position")).isTrue();
+        assertThat(spec.getJoinPoint("A").hasAttribute("alias")).isTrue();
+    }
+
+    @Test
     @DisplayName("Malformed XML fails fast with a RuntimeException (schema + XML well-formedness)")
     void malformedXmlFails() {
         String bad = "<not-closed>";

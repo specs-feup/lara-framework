@@ -60,6 +60,24 @@ class SemanticValidationTest {
     }
 
     @Test
+    @DisplayName("Inheritance cycles are rejected with a descriptive error")
+    void inheritanceCyclesRejected() {
+        String jp = """
+            <joinpoints root_class=\"A\"> 
+                <joinpoint class=\"A\" extends=\"A\"/>
+            </joinpoints>
+            """;
+        String attrs = "<artifacts/>";
+        String actions = "<actions/>";
+
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Inheritance cycle detected for join point 'A'");
+    }
+
+    @Test
     @DisplayName("Attributes and actions are attached to correct joinpoints, and global ones propagate")
     void attributesAndActionsPropagate() {
         String jp = """
