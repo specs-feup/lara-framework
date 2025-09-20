@@ -60,6 +60,44 @@ class SemanticValidationTest {
     }
 
     @Test
+    @DisplayName("Hyphenated identifiers are rejected with a descriptive error")
+    void hyphenatedNamesRejected() {
+        String jp = """
+            <joinpoints root_class=\"Root\"> 
+                <joinpoint class=\"Root\"/>
+                <joinpoint class=\"bad-name\"/>
+            </joinpoints>
+            """;
+        String attrs = "<artifacts/>";
+        String actions = "<actions/>";
+
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Identifier 'bad-name' for join point name must match pattern [A-Za-z_$][A-Za-z0-9_$]*");
+    }
+
+    @Test
+    @DisplayName("Identifiers starting with digits are rejected")
+    void digitPrefixedNamesRejected() {
+        String jp = """
+            <joinpoints root_class=\"Root\"> 
+                <joinpoint class=\"Root\"/>
+                <joinpoint class=\"1bad\"/>
+            </joinpoints>
+            """;
+        String attrs = "<artifacts/>";
+        String actions = "<actions/>";
+
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Identifier '1bad' for join point name must match pattern [A-Za-z_$][A-Za-z0-9_$]*");
+    }
+
+    @Test
     @DisplayName("Inheritance cycles are rejected with a descriptive error")
     void inheritanceCyclesRejected() {
         String jp = """
@@ -75,6 +113,33 @@ class SemanticValidationTest {
 
         assertThat(thrown.getSimpleMessage())
                 .isEqualTo("Inheritance cycle detected for join point 'A'");
+    }
+
+    @Test
+    @DisplayName("Duplicate action signatures per joinpoint are rejected")
+    void duplicateActionSignaturesRejected() {
+        String jp = """
+            <joinpoints root_class=\"A\"> 
+                <joinpoint class=\"A\"/>
+            </joinpoints>
+            """;
+        String attrs = "<artifacts/>";
+        String actions = """
+            <actions>
+                <action name=\"dup\" class=\"A\">
+                    <parameter name=\"p\" type=\"String\"/>
+                </action>
+                <action name=\"dup\" class=\"A\">
+                    <parameter name=\"p\" type=\"String\"/>
+                </action>
+            </actions>
+            """;
+
+        LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
+                () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions)));
+
+        assertThat(thrown.getSimpleMessage())
+                .isEqualTo("Duplicate action signature 'dup(String)' for join point 'A'");
     }
 
     @Test

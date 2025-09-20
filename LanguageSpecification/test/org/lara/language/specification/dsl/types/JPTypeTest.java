@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.lara.language.specification.dsl.JoinPointClass;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -203,12 +204,10 @@ public class JPTypeTest {
         }
 
         @Test
-        @DisplayName("Should handle special characters in join point name")
-        void testToStringWithSpecialCharacters() {
-            JoinPointClass specialJoinPoint = new JoinPointClass("JoinPoint$With@Special#Chars");
-            JPType jpType = new JPType(specialJoinPoint);
-            
-            assertEquals("JoinPoint$With@Special#Chars", jpType.toString());
+        @DisplayName("Should reject special characters in join point name")
+        void testRejectSpecialCharactersInJoinPointName() {
+            assertThrows(LanguageSpecificationException.class,
+                    () -> new JoinPointClass("JoinPoint$With@Special#Chars"));
         }
     }
 

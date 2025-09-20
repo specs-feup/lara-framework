@@ -14,6 +14,7 @@
 package org.lara.language.specification.dsl.types;
 
 import org.lara.language.specification.dsl.BaseNode;
+import org.lara.language.specification.dsl.IdentifierValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class EnumDef extends BaseNode implements IType {
     }
 
     public EnumDef(String name, List<EnumValue> values) {
-        this.name = name;
+        setName(name);
         this.setValues(values);
     }
 
@@ -38,6 +39,7 @@ public class EnumDef extends BaseNode implements IType {
     }
 
     public void setName(String name) {
+        IdentifierValidator.requireValid(name, "enum name");
         this.name = name;
     }
 

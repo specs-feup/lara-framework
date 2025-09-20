@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -416,16 +417,20 @@ class ParameterTest {
         }
 
         @Test
-        @DisplayName("Should handle whitespace in names and defaults")
-        void shouldHandleWhitespaceInNamesAndDefaults() {
+        @DisplayName("Should reject whitespace in names but allow whitespace in defaults")
+        void shouldRejectWhitespaceInNamesButAllowWhitespaceInDefaults() {
             String nameWithSpaces = "param with spaces";
             String defaultWithSpaces = "  default value  ";
-            
-            Parameter parameter = new Parameter(stringType, nameWithSpaces, defaultWithSpaces);
 
-            assertThat(parameter.getName()).isEqualTo(nameWithSpaces);
+            assertThatThrownBy(() -> new Parameter(stringType, nameWithSpaces, defaultWithSpaces))
+                    .isInstanceOf(LanguageSpecificationException.class)
+                    .hasMessageContaining("declaration name");
+
+            Parameter parameter = new Parameter(stringType, "paramWithSpaces", defaultWithSpaces);
+
+            assertThat(parameter.getName()).isEqualTo("paramWithSpaces");
             assertThat(parameter.getDefaultValue()).isEqualTo(defaultWithSpaces);
-            assertThat(parameter.toString()).contains(nameWithSpaces).contains(defaultWithSpaces);
+            assertThat(parameter.toString()).contains("paramWithSpaces").contains(defaultWithSpaces);
         }
 
         @Test

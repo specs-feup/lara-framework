@@ -45,6 +45,7 @@ public class Declaration {
     }
 
     public void setName(String name) {
+        IdentifierValidator.requireValid(name, "declaration name");
         this.name = name;
     }
 

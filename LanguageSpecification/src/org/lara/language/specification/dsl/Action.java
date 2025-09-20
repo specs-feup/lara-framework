@@ -75,6 +75,17 @@ public class Action extends BaseNode implements Comparable<Action> {
         this.parameters = parameters;
     }
 
+    /**
+     * @return the method-like signature composed of the action name and its
+     *         parameter types.
+     */
+    public String getSignature() {
+        String parametersSignature = parameters.stream()
+                .map(Parameter::getType)
+                .collect(Collectors.joining(", "));
+        return getName() + "(" + parametersSignature + ")";
+    }
+
     @Override
     public String toString() {
         String parametersStr = parameters.stream().map(Parameter::toString)

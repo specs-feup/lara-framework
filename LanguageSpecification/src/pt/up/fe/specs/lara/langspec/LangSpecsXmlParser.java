@@ -13,25 +13,31 @@
 
 package pt.up.fe.specs.lara.langspec;
 
-import org.lara.language.specification.dsl.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.TypeDef;
 import org.lara.language.specification.exception.LanguageSpecificationException;
+
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
 import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.xml.XmlDocument;
 import pt.up.fe.specs.util.xml.XmlElement;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class LangSpecsXmlParser {
 
@@ -164,7 +170,7 @@ public class LangSpecsXmlParser {
             jp.setAttributes(convertAttributes(attributeNodes, langSpecV2));
 
             // Add actions
-            jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass)));
+            jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass), jpClass));
         }
 
         // Set default attributes
@@ -219,7 +225,7 @@ public class LangSpecsXmlParser {
                     .forEach(global::add);
         }
 
-        convertActions(langSpecV2, globalActionNodes)
+        convertActions(langSpecV2, globalActionNodes, JoinPointClass.getGlobalName())
                 .forEach(global::add);
     }
 
@@ -259,9 +265,14 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Action> convertActions(LanguageSpecification langSpecV2,
-            List<XmlElement> actionNodes) {
+            List<XmlElement> actionNodes, String ownerName) {
+
+        if (actionNodes == null || actionNodes.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         List<Action> newActions = new ArrayList<>();
+        var seenSignatures = new HashSet<String>();
         for (var action : actionNodes) {
             var parameterNodes = action.getElementsByName("parameter");
             List<Parameter> declarations = new ArrayList<>();
@@ -274,6 +285,11 @@ public class LangSpecsXmlParser {
             Action newAction = new Action(langSpecV2.getType(action.getAttribute("return", "void")),
                     action.getAttribute("name"), declarations);
             setOptional(action.getAttribute("tooltip"), newAction::setToolTip);
+            var signature = newAction.getSignature();
+            if (!seenSignatures.add(signature)) {
+                throw new LanguageSpecificationException(
+                        "Duplicate action signature '" + signature + "' for join point '" + ownerName + "'");
+            }
             newActions.add(newAction);
         }
 

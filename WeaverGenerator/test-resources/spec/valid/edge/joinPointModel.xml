@@ -2,5 +2,5 @@
   <joinpoint class="base"/>
   <joinpoint class="level1" extends="base"/>
   <joinpoint class="level2" extends="level1"/>
-  <joinpoint class="reserved-keyword" extends="level2"/>
+  <joinpoint class="reservedKeyword" extends="level2"/>
 </joinpoints>

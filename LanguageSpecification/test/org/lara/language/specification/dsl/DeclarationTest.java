@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
+import org.lara.language.specification.exception.LanguageSpecificationException;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -194,13 +195,14 @@ class DeclarationTest {
         }
 
         @Test
-        @DisplayName("Should handle names with special characters")
-        void shouldHandleNamesWithSpecialCharacters() {
+        @DisplayName("Should reject names with unsupported special characters")
+        void shouldRejectNamesWithUnsupportedSpecialCharacters() {
             String specialName = "test_name$123@#!";
             Declaration declaration = new Declaration(stringType, testName);
 
-            declaration.setName(specialName);
-            assertThat(declaration.getName()).isEqualTo(specialName);
+            assertThatThrownBy(() -> declaration.setName(specialName))
+                    .isInstanceOf(LanguageSpecificationException.class)
+                    .hasMessageContaining("declaration name");
         }
 
         @Test
@@ -224,13 +226,26 @@ class DeclarationTest {
         }
 
         @Test
-        @DisplayName("Should handle whitespace in names")
-        void shouldHandleWhitespaceInNames() {
+        @DisplayName("Should allow underscore and dollar in names")
+        void shouldAllowUnderscoreAndDollarInNames() {
+            Declaration declaration = new Declaration(stringType, testName);
+
+            declaration.setName("_leadingUnderscore");
+            assertThat(declaration.getName()).isEqualTo("_leadingUnderscore");
+
+            declaration.setName("dollar$Suffix");
+            assertThat(declaration.getName()).isEqualTo("dollar$Suffix");
+        }
+
+        @Test
+        @DisplayName("Should reject whitespace in names")
+        void shouldRejectWhitespaceInNames() {
             String nameWithSpaces = "declaration with spaces";
             Declaration declaration = new Declaration(stringType, testName);
 
-            declaration.setName(nameWithSpaces);
-            assertThat(declaration.getName()).isEqualTo(nameWithSpaces);
+            assertThatThrownBy(() -> declaration.setName(nameWithSpaces))
+                    .isInstanceOf(LanguageSpecificationException.class)
+                    .hasMessageContaining("declaration name");
         }
     }
 

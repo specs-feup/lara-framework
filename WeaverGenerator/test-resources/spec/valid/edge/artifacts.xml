@@ -9,7 +9,7 @@
   <artifact class="level2">
     <attribute name="c" type="Integer"/>
   </artifact>
-  <artifact class="reserved-keyword">
+  <artifact class="reservedKeyword">
     <attribute name="class" type="String"/>
   </artifact>
 </artifacts>

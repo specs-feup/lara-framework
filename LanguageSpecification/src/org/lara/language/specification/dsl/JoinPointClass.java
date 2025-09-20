@@ -13,13 +13,18 @@
 
 package org.lara.language.specification.dsl;
 
-import org.lara.language.specification.dsl.types.IType;
-import pt.up.fe.specs.util.collections.MultiMap;
-import pt.up.fe.specs.util.lazy.Lazy;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.lara.language.specification.dsl.types.IType;
+
+import pt.up.fe.specs.util.collections.MultiMap;
+import pt.up.fe.specs.util.lazy.Lazy;
 
 public class JoinPointClass extends BaseNode implements Comparable<JoinPointClass> {
 
@@ -55,6 +60,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     public void setName(String name) {
+        IdentifierValidator.requireValid(name, "join point name");
         this.name = name;
     }
 
@@ -76,7 +82,8 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      * Which join point class this join point extends. All join points extends
      * 'joinpoint', except for joinpoint itself.
      *
-     * @return the join point class it extends, or Optional.empty() if does not extend anything. 
+     * @return the join point class it extends, or Optional.empty() if does not
+     *         extend anything.
      */
     public Optional<JoinPointClass> getExtend() {
         return extend;
