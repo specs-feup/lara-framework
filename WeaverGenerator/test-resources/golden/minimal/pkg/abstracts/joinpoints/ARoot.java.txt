@@ -1,6 +1,6 @@
-package golden.minimal.pkg.abstracts.joinpoints;
+package minimal.pkg.abstracts.joinpoints;
 
-import golden.minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
+import minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
 
 /**
  * Auto-Generated class for join point ARoot

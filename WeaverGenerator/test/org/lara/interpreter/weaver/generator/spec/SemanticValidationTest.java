@@ -75,7 +75,7 @@ class SemanticValidationTest {
                 () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
 
         assertThat(thrown.getSimpleMessage())
-                .isEqualTo("Identifier 'bad-name' for join point name must match pattern [A-Za-z_$][A-Za-z0-9_$]*");
+                .isEqualTo("Identifier 'bad-name' for join point name must follow Java identifier rules");
     }
 
     @Test
@@ -94,7 +94,7 @@ class SemanticValidationTest {
                 () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
 
         assertThat(thrown.getSimpleMessage())
-                .isEqualTo("Identifier '1bad' for join point name must match pattern [A-Za-z_$][A-Za-z0-9_$]*");
+                .isEqualTo("Identifier '1bad' for join point name must follow Java identifier rules");
     }
 
     @Test

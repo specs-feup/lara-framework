@@ -8,67 +8,45 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Auto-Generated class for join point AReservedKeyword
+ * Auto-Generated class for join point ALevel1
  * This class is overwritten by the Weaver Generator.
  * 
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AReservedKeyword extends ALevel2 {
+public abstract class ALevel1 extends ABase {
 
-    protected ALevel2 aLevel2;
+    protected ABase aBase;
 
     /**
      * 
      */
-    public AReservedKeyword(ALevel2 aLevel2){
-        super(aLevel2);
-        this.aLevel2 = aLevel2;
+    public ALevel1(ABase aBase){
+        this.aBase = aBase;
     }
-    /**
-     * Get value on attribute _class
-     * @return the attribute's value
-     */
-    public abstract String getClassImpl();
-
-    /**
-     * Get value on attribute _class
-     * @return the attribute's value
-     */
-    public final Object getClass() {
-        try {
-        	String result = this.getClassImpl();
-        	return result!=null?result:getUndefinedValue();
-        } catch(Exception e) {
-        	throw new AttributeException(get_class(), "class", e);
-        }
-    }
-
-    /**
-     * Get value on attribute c
-     * @return the attribute's value
-     */
-    @Override
-    public Integer getCImpl() {
-        return this.aLevel2.getCImpl();
-    }
-
     /**
      * Get value on attribute a
      * @return the attribute's value
      */
-    @Override
-    public Integer getAImpl() {
-        return this.aLevel2.getAImpl();
-    }
+    public abstract Integer getAImpl();
 
     /**
      * Get value on attribute b
      * @return the attribute's value
      */
-    @Override
-    public Integer getBImpl() {
-        return this.aLevel2.getBImpl();
+    public abstract Integer getBImpl();
+
+    /**
+     * Get value on attribute b
+     * @return the attribute's value
+     */
+    public final Object getB() {
+        try {
+        	Integer result = this.getBImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "b", e);
+        }
     }
 
     /**
@@ -78,7 +56,7 @@ public abstract class AReservedKeyword extends ALevel2 {
      */
     @Override
     public AJoinPoint[] insertImpl(String position, String code) {
-        return this.aLevel2.insertImpl(position, code);
+        return this.aBase.insertImpl(position, code);
     }
 
     /**
@@ -88,7 +66,7 @@ public abstract class AReservedKeyword extends ALevel2 {
      */
     @Override
     public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return this.aLevel2.insertImpl(position, code);
+        return this.aBase.insertImpl(position, code);
     }
 
     /**
@@ -96,15 +74,15 @@ public abstract class AReservedKeyword extends ALevel2 {
      */
     @Override
     public void noopImpl() {
-        this.aLevel2.noopImpl();
+        this.aBase.noopImpl();
     }
 
     /**
      * 
      */
     @Override
-    public Optional<? extends ALevel2> getSuper() {
-        return Optional.of(this.aLevel2);
+    public Optional<? extends ABase> getSuper() {
+        return Optional.of(this.aBase);
     }
 
     /**
@@ -112,8 +90,8 @@ public abstract class AReservedKeyword extends ALevel2 {
      * @return The join point type
      */
     @Override
-    public final String get_class() {
-        return "reservedKeyword";
+    public String get_class() {
+        return "level1";
     }
 
     /**
@@ -121,19 +99,17 @@ public abstract class AReservedKeyword extends ALevel2 {
      * @return True if this join point is an instanceof the given class
      */
     @Override
-    public final boolean instanceOf(String joinpointClass) {
+    public boolean instanceOf(String joinpointClass) {
         boolean isInstance = get_class().equals(joinpointClass);
         if(isInstance) {
         	return true;
         }
-        return this.aLevel2.instanceOf(joinpointClass);
+        return this.aBase.instanceOf(joinpointClass);
     }
     /**
      * 
      */
-    protected enum ReservedKeywordAttributes {
-        CLASS("class"),
-        C("c"),
+    protected enum Level1Attributes {
         A("a"),
         B("b");
         private String name;
@@ -141,13 +117,13 @@ public abstract class AReservedKeyword extends ALevel2 {
         /**
          * 
          */
-        private ReservedKeywordAttributes(String name){
+        private Level1Attributes(String name){
             this.name = name;
         }
         /**
          * Return an attribute enumeration item from a given attribute name
          */
-        public static Optional<ReservedKeywordAttributes> fromString(String name) {
+        public static Optional<Level1Attributes> fromString(String name) {
             return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
         }
 
@@ -155,7 +131,7 @@ public abstract class AReservedKeyword extends ALevel2 {
          * Return a list of attributes in String format
          */
         public static List<String> getNames() {
-            return Arrays.asList(values()).stream().map(ReservedKeywordAttributes::name).collect(Collectors.toList());
+            return Arrays.asList(values()).stream().map(Level1Attributes::name).collect(Collectors.toList());
         }
 
         /**

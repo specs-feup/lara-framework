@@ -1,8 +1,9 @@
-package edge.pkg.abstracts.joinpoints;
+package medium.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.exception.ActionException;
-import edge.pkg.EdgeWeaver;
+import org.lara.interpreter.exception.AttributeException;
+import medium.pkg.MediumWeaver;
 
 /**
  * Abstract class containing the global attributes and default action exception.
@@ -41,19 +42,29 @@ public abstract class AJoinPoint extends JoinPoint {
 
     /**
      * 
+     * @param position 
+     * @param code 
      */
-    public void noopImpl() {
-        throw new UnsupportedOperationException(get_class()+": Action noop not implemented ");
+    public AJoinPoint[] insertImpl(String position, String code) {
+        throw new UnsupportedOperationException(get_class()+": Action insert not implemented ");
     }
 
     /**
-     * 
+     * Get value on attribute language
+     * @return the attribute's value
      */
-    public final void noop() {
+    public abstract String getLanguageImpl();
+
+    /**
+     * Get value on attribute language
+     * @return the attribute's value
+     */
+    public final Object getLanguage() {
         try {
-        	this.noopImpl();
+        	String result = this.getLanguageImpl();
+        	return result!=null?result:getUndefinedValue();
         } catch(Exception e) {
-        	throw new ActionException(get_class(), "noop", e);
+        	throw new AttributeException(get_class(), "language", e);
         }
     }
 
@@ -74,7 +85,7 @@ public abstract class AJoinPoint extends JoinPoint {
      * Returns the Weaving Engine this join point pertains to.
      */
     @Override
-    public EdgeWeaver getWeaverEngine() {
-        return EdgeWeaver.getEdgeWeaver();
+    public MediumWeaver getWeaverEngine() {
+        return MediumWeaver.getMediumWeaver();
     }
 }

@@ -1,4 +1,4 @@
-package minimal.pkg.abstracts.weaver;
+package edge.pkg.abstracts.weaver;
 
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import java.util.Arrays;
@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Abstract Weaver Implementation for MinimalWeaver<br>
+ * Abstract Weaver Implementation for EdgeWeaver<br>
  * Since the generated abstract classes are always overwritten, their implementation should be done by extending those abstract classes with user-defined classes.<br>
- * The abstract class {@link minimal.pkg.abstracts.AMinimalWeaverJoinPoint} contains attributes and actions common to all join points.
+ * The abstract class {@link edge.pkg.abstracts.AEdgeWeaverJoinPoint} contains attributes and actions common to all join points.
  * The implementation of the abstract methods is mandatory!
  * @author Lara C.
  */
-public abstract class AMinimalWeaver extends LaraWeaverEngine {
+public abstract class AEdgeWeaver extends LaraWeaverEngine {
 
     /**
      * Get the list of available actions in the weaver
@@ -21,7 +21,7 @@ public abstract class AMinimalWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {};
+        String[] weaverActions= {"noop"};
         return Arrays.asList(weaverActions);
     }
 
@@ -32,7 +32,7 @@ public abstract class AMinimalWeaver extends LaraWeaverEngine {
      */
     @Override
     public final String getRoot() {
-        return "root";
+        return "base";
     }
 
     /**

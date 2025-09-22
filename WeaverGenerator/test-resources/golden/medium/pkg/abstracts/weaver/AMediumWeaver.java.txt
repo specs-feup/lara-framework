@@ -1,18 +1,19 @@
-package minimal.pkg.abstracts.weaver;
+package medium.pkg.abstracts.weaver;
 
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import java.util.Arrays;
 import java.util.List;
+import medium.pkg.entities.Location;
 import java.util.ArrayList;
 
 /**
- * Abstract Weaver Implementation for MinimalWeaver<br>
+ * Abstract Weaver Implementation for MediumWeaver<br>
  * Since the generated abstract classes are always overwritten, their implementation should be done by extending those abstract classes with user-defined classes.<br>
- * The abstract class {@link minimal.pkg.abstracts.AMinimalWeaverJoinPoint} contains attributes and actions common to all join points.
+ * The abstract class {@link medium.pkg.abstracts.AMediumWeaverJoinPoint} contains attributes and actions common to all join points.
  * The implementation of the abstract methods is mandatory!
  * @author Lara C.
  */
-public abstract class AMinimalWeaver extends LaraWeaverEngine {
+public abstract class AMediumWeaver extends LaraWeaverEngine {
 
     /**
      * Get the list of available actions in the weaver
@@ -21,7 +22,7 @@ public abstract class AMinimalWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {};
+        String[] weaverActions= {"insert", "replaceWith"};
         return Arrays.asList(weaverActions);
     }
 
@@ -42,7 +43,7 @@ public abstract class AMinimalWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<Class<?>> getAllImportableClasses() {
-        Class<?>[] defaultClasses = {};
+        Class<?>[] defaultClasses = {Location.class};
         List<Class<?>> otherClasses = this.getImportableClasses();
         List<Class<?>> allClasses = new ArrayList<>(Arrays.asList(defaultClasses));
         allClasses.addAll(otherClasses);

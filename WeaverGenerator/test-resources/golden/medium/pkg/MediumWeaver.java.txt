@@ -1,6 +1,6 @@
-package minimal.pkg;
+package medium.pkg;
 
-import minimal.pkg.abstracts.weaver.AMinimalWeaver;
+import medium.pkg.abstracts.weaver.AMediumWeaver;
 import java.util.List;
 import java.io.File;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -11,12 +11,12 @@ import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.dsl.LanguageSpecification;
 
 /**
- * Weaver Implementation for MinimalWeaver<br>
+ * Weaver Implementation for MediumWeaver<br>
  * Since the generated abstract classes are always overwritten, their implementation should be done by extending those abstract classes with user-defined classes.<br>
- * The abstract class {@link minimal.pkg.abstracts.AMinimalWeaverJoinPoint} contains attributes and actions common to all join points.
+ * The abstract class {@link medium.pkg.abstracts.AMediumWeaverJoinPoint} contains attributes and actions common to all join points.
  * @author Lara Weaver Generator
  */
-public class MinimalWeaver extends AMinimalWeaver {
+public class MediumWeaver extends AMediumWeaver {
 
     /**
      * Setups the weaver with inputs sources, an output folder and the provided options.
@@ -29,7 +29,7 @@ public class MinimalWeaver extends AMinimalWeaver {
     @Override
     public boolean begin(List<File> sources, File outputDir, DataStore args) {
         //Initialize weaver with the input file/folder
-        throw new UnsupportedOperationException("Method begin for MinimalWeaver is not yet implemented");
+        throw new UnsupportedOperationException("Method begin for MediumWeaver is not yet implemented");
     }
 
     /**
@@ -40,17 +40,17 @@ public class MinimalWeaver extends AMinimalWeaver {
     @Override
     public boolean close() {
         //Terminate weaver execution with final steps required and writing output files
-        throw new UnsupportedOperationException("Method close for MinimalWeaver is not yet implemented");
+        throw new UnsupportedOperationException("Method close for MediumWeaver is not yet implemented");
     }
 
     /**
-     *  Return a JoinPoint instance of the sources root, i.e., an instance of ARoot
+     *  Return a JoinPoint instance of the sources root, i.e., an instance of AFile
      * @return an instance of the join point root
      */
     @Override
     public JoinPoint getRootJp() {
-        //return new <ARoot implementation>;
-        throw new UnsupportedOperationException("Method getRootJp for MinimalWeaver is not yet implemented");
+        //return new <AFile implementation>;
+        throw new UnsupportedOperationException("Method getRootJp for MediumWeaver is not yet implemented");
     }
 
     /**
@@ -75,8 +75,8 @@ public class MinimalWeaver extends AMinimalWeaver {
     /**
      * Returns thread-local instance of weaver engine.
      */
-    public static MinimalWeaver getMinimalWeaver() {
-        return (MinimalWeaver) WeaverEngine.getThreadLocalWeaver();
+    public static MediumWeaver getMediumWeaver() {
+        return (MediumWeaver) WeaverEngine.getThreadLocalWeaver();
     }
 
     /**
@@ -85,9 +85,9 @@ public class MinimalWeaver extends AMinimalWeaver {
      * @return a new {@link LanguageSpecification} instance for this weaver
      */
     public static LanguageSpecification buildLanguageSpecification() {
-        return LanguageSpecification.newInstance(() -> "spec/valid/minimal/" + LanguageSpecification.getJoinPointsFilename(),
-         () -> "spec/valid/minimal/" + LanguageSpecification.getAttributesFilename(),
-         () -> "spec/valid/minimal/" + LanguageSpecification.getActionsFilename());
+        return LanguageSpecification.newInstance(() -> "spec/valid/medium/" + LanguageSpecification.getJoinPointsFilename(),
+         () -> "spec/valid/medium/" + LanguageSpecification.getAttributesFilename(),
+         () -> "spec/valid/medium/" + LanguageSpecification.getActionsFilename());
     }
 
     /**

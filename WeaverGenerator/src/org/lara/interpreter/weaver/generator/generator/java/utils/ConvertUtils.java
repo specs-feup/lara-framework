@@ -60,6 +60,8 @@ public class ConvertUtils {
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
+        type = normalizeReferenceType(type);
+
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
         type = splittedType.left();
@@ -98,6 +100,8 @@ public class ConvertUtils {
         if (type.contains("[") && type.contains("|") && type.contains("]")) {
             type = String.class.getSimpleName();
         }
+
+        type = normalizeReferenceType(type);
 
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
@@ -199,6 +203,47 @@ public class ConvertUtils {
             message.append(jpsString);
         }
         return message;
+    }
+
+    private static String normalizeReferenceType(String rawType) {
+        String trimmed = rawType == null ? "" : rawType.trim();
+        if (trimmed.isEmpty()) {
+            return trimmed;
+        }
+
+        if (trimmed.startsWith("{")) {
+            return normalizeWrappedReference(rawType, trimmed, '}', "{", "}");
+        }
+
+        if (trimmed.startsWith("[") && trimmed.indexOf('|') < 0) {
+            return normalizeWrappedReference(rawType, trimmed, ']', "[", "]");
+        }
+
+        return trimmed;
+    }
+
+    private static String normalizeWrappedReference(String rawType, String trimmed, char closingChar, String openToken,
+            String closeToken) {
+        int closingIdx = trimmed.indexOf(closingChar);
+        if (closingIdx < 0) {
+            throw new RuntimeException("Malformed object reference type '" + rawType + "': missing closing '"
+                    + closeToken + "' character");
+        }
+
+        String referenceName = trimmed.substring(1, closingIdx).trim();
+        if (referenceName.isEmpty()) {
+            throw new RuntimeException("Malformed object reference type '" + rawType
+                    + "': expected a type name inside '" + openToken + "..." + closeToken + "'");
+        }
+
+        String remainder = trimmed.substring(closingIdx + 1);
+        String normalizedRemainder = remainder.replaceAll("\\s+", "");
+        if (!normalizedRemainder.isEmpty() && !normalizedRemainder.matches("(\\[\\])+$")) {
+            throw new RuntimeException("Malformed object reference type '" + rawType
+                    + "': only array suffixes are permitted after the closing '" + closeToken + "'");
+        }
+
+        return referenceName + normalizedRemainder;
     }
 
     public static String ln() {

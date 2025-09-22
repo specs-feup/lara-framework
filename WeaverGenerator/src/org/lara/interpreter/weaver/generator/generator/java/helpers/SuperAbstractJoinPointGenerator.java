@@ -13,9 +13,15 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Parameter;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -23,6 +29,7 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
+import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * Generates the base Join Point abstract class, containing the global
@@ -175,9 +182,11 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
-                    abstJPClass, javaGenerator);
+                    abstJPClass, javaGenerator, false);
 
-            abstJPClass.add(methodImpl);
+            if (methodImpl != null) {
+                abstJPClass.add(methodImpl);
+            }
         }
     }
 
@@ -194,13 +203,89 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
         for (var action : actions) {
-            final Method m = GeneratorUtils.generateActionMethod(action, javaGenerator);
+            ActionPlan plan = prepareGlobalAction(action);
+
+            final Method m = GeneratorUtils.generateActionMethod(plan.action(), javaGenerator);
             abstJPClass.add(m);
 
-            Method cloned = GeneratorUtils.generateActionImplMethod(m, action,
+            Method cloned = GeneratorUtils.generateActionImplMethod(m, plan.action(),
                     abstJPClass, javaGenerator);
-            abstJPClass.add(cloned);
+            if (!plan.skipWrapper()) {
+                abstJPClass.add(cloned);
+            }
         }
     }
+
+    private ActionPlan prepareGlobalAction(Action action) {
+        var baseMethod = findJoinPointBaseMethod(action);
+        boolean skipWrapper = false;
+
+        if (baseMethod.isPresent()) {
+            java.lang.reflect.Method method = baseMethod.get();
+
+            if (!hasSameReturnType(action, method)) {
+                String specTypeName = toSpecTypeName(method.getReturnType());
+                action.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
+                SpecsLogs.warn(String.format(
+                        "Global action '%s' redeclares inherited action with different return type. Using return type '%s'.",
+                        action.getName(), specTypeName));
+            }
+
+            if (java.lang.reflect.Modifier.isFinal(method.getModifiers())) {
+                skipWrapper = true;
+            }
+        }
+
+        return new ActionPlan(action, skipWrapper);
+    }
+
+    private Optional<java.lang.reflect.Method> findJoinPointBaseMethod(Action action) {
+        return Arrays.stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
+                .filter(method -> method.getName().equals(action.getName()))
+                .filter(method -> parametersMatch(method, action))
+                .findFirst();
+    }
+
+    private boolean parametersMatch(java.lang.reflect.Method method, Action action) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        List<Parameter> params = action.getParameters();
+        if (parameterTypes.length != params.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
+            String actual = normalizeType(params.get(i).getType());
+            if (!expected.equals(actual)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasSameReturnType(Action action, java.lang.reflect.Method method) {
+        String expected = normalizeType(toSpecTypeName(method.getReturnType()));
+        String actual = normalizeType(action.getReturnType());
+        return expected.equals(actual);
+    }
+
+    private String toSpecTypeName(Class<?> type) {
+        if (type.isArray()) {
+            return toSpecTypeName(type.getComponentType()) + "[]";
+        }
+
+        if (org.lara.interpreter.weaver.interf.JoinPoint.class.equals(type)) {
+            return "joinpoint";
+        }
+
+        return type.getSimpleName();
+    }
+
+    private String normalizeType(String type) {
+        return type.replace("java.lang.", "").trim();
+    }
+
+    private record ActionPlan(Action action, boolean skipWrapper) {}
 
 }

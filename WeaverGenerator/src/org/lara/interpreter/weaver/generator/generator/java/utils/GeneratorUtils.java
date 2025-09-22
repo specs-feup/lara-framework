@@ -99,21 +99,26 @@ public class GeneratorUtils {
             // if (ObjectOfPrimitives.contains(attrClassStr))
             // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
 
-            String name = attribute.getName();
-            // JavaType type = ConvertUtils.getConvertedType(attrClassStr, generator);
+            String sanitizedName = sanitizeAttributeName(attribute.getName());
+            String methodBase = attributeMethodBaseName(attribute.getName());
 
             JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
-            // type = JavaTypeFactory.primitiveUnwrap(type);
+            String effectiveMethodBase = methodBase;
             if (type.isArray()) {
-                name += GenConstants.getArrayMethodSufix();
+                effectiveMethodBase += GenConstants.getArrayMethodSufix();
             }
-            String sanitizedName = StringUtils.getSanitizedName(name);
             if (generator.hasImplMode() && !type.isArray()) {
-                name += GenConstants.getImplementationSufix();
+                effectiveMethodBase += GenConstants.getImplementationSufix();
             }
 
-            final Method getter = createSuperGetter(sanitizedName, name, type, fieldName, attribute.getParameters(),
+            final Method getter = createSuperGetter(sanitizedName, effectiveMethodBase, type, fieldName,
+                    attribute.getParameters(),
                     generator);
+
+            if (hasMethod(javaC, getter)) {
+                continue;
+            }
+
             getter.add(Annotation.OVERRIDE);
             javaC.add(getter);
         }
@@ -311,6 +316,39 @@ public class GeneratorUtils {
                 + ");" + ln();
         converted += spaceStr + "}" + ln();
         return converted;
+    }
+
+    private static boolean hasMethod(JavaClass javaClass, Method candidate) {
+        return javaClass.getMethods().stream().anyMatch(existing -> sameSignature(existing, candidate));
+    }
+
+    private static boolean sameSignature(Method first, Method second) {
+        if (!first.getName().equals(second.getName())) {
+            return false;
+        }
+        List<Argument> firstParams = first.getParams();
+        List<Argument> secondParams = second.getParams();
+        if (firstParams.size() != secondParams.size()) {
+            return false;
+        }
+        for (int i = 0; i < firstParams.size(); i++) {
+            JavaType leftType = firstParams.get(i).getClassType();
+            JavaType rightType = secondParams.get(i).getClassType();
+            if (!Objects.equals(leftType, rightType)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String sanitizeAttributeName(String attributeName) {
+        return StringUtils.getSanitizedName(attributeName);
+    }
+
+    private static String attributeMethodBaseName(String attributeName) {
+        String sanitized = StringUtils.getSanitizedName(attributeName);
+        String withoutPrefix = sanitized.replaceFirst("^_+", "");
+        return withoutPrefix.isEmpty() ? sanitized : withoutPrefix;
     }
 
     /**
@@ -581,10 +619,16 @@ public class GeneratorUtils {
      */
     public static Method generateAttributeImpl(Method original, org.lara.language.specification.dsl.Attribute attribute,
             JavaClass targetClass,
-            JavaAbstractsGenerator generator) {
+            JavaAbstractsGenerator generator,
+            boolean skipWrapper) {
 
         Method cloned = original.clone();
         original.setName(original.getName() + GenConstants.getImplementationSufix());
+
+        if (skipWrapper) {
+            return null;
+        }
+
         cloned.clearCode();
         cloned.add(Modifier.FINAL);
         cloned.remove(Modifier.ABSTRACT);
@@ -643,6 +687,9 @@ public class GeneratorUtils {
         JavaEnum enumerator = null;
         JavaType javaType;
         final String name = attribute.getName();
+        final String fieldName = sanitizeAttributeName(name);
+        final String methodBaseName = attributeMethodBaseName(name);
+
         if (attrClassStr.startsWith("{")) { // then it is an enumerator
             isEnum = true;
             enumerator = generateEnum(attrClassStr, name, javaC.getName(), generator);
@@ -655,8 +702,7 @@ public class GeneratorUtils {
             // Any primitive type for attributes are now converted into their wrapper
             javaType = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
         }
-        final String sanName = StringUtils.getSanitizedName(name);
-        final Field attributeField = new Field(javaType, sanName, Privacy.PROTECTED);
+        final Field attributeField = new Field(javaType, fieldName, Privacy.PROTECTED);
         // attributeField.setPrivacy(Privacy.PUBLIC);
         if (!generator.isAbstractGetters()) {
             javaC.add(attributeField);
@@ -666,7 +712,7 @@ public class GeneratorUtils {
                 .getParameters();
         if (parameters.isEmpty()) {
 
-            final Pair<Method, Method> get_set = createGetterAndSetter(attributeField, name,
+            final Pair<Method, Method> get_set = createGetterAndSetter(attributeField, methodBaseName,
                     generator.isAbstractGetters());
             final Method getter = get_set.left();
             if (isEnum) {
@@ -688,11 +734,6 @@ public class GeneratorUtils {
             return getter;
             // javaC.add(get_set.getRight());
         }
-        if (StringUtils.isJavaKeyword(name)) {
-            throw new RuntimeException("Could not create functional attribute with reserved keyword '" + name
-                    + "'. Please define a different name for the attribute");
-        }
-
         final Method methodForAttribute = new Method(javaType, name);
 
         methodForAttribute.add(Modifier.ABSTRACT);

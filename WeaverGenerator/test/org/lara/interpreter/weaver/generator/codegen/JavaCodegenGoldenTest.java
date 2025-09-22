@@ -8,10 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class JavaCodegenGoldenTest {
     void setupRoot() throws IOException {
         // Find WeaverGenerator module root by traversing upwards until we find
         // build.gradle
-        projectRoot = Path.of(".").toAbsolutePath();
+        projectRoot = Path.of(".");
         // heuristic: ensure we are inside WeaverGenerator
         assertThat(projectRoot.resolve("build.gradle")).exists();
     }
@@ -42,25 +43,22 @@ public class JavaCodegenGoldenTest {
     @Test
     @DisplayName("Minimal spec generation matches golden and is deterministic")
     void minimalGolden() throws Exception {
-        runAndAssertGolden("minimal", List.of(
-                "minimal/pkg/abstracts/joinpoints/ARoot.java.txt",
-                "minimal/pkg/abstracts/weaver/AMinimalWeaver.java.txt",
-                "minimal/pkg/MinimalWeaver.java.txt"));
+        runAndAssertGolden("minimal");
+    }
+
+    @Test
+    @DisplayName("Medium spec generation matches golden and is deterministic")
+    void mediumGolden() throws Exception {
+        runAndAssertGolden("medium");
     }
 
     @Test
     @DisplayName("Edge spec generation matches golden and is deterministic")
     void edgeGolden() throws Exception {
-        runAndAssertGolden("edge", List.of(
-                "edge/pkg/abstracts/joinpoints/AJoinPoint.java.txt",
-                "edge/pkg/abstracts/joinpoints/AReservedKeyword.java.txt",
-                "edge/pkg/abstracts/weaver/AEdgeWeaver.java.txt",
-                "edge/pkg/EdgeWeaver.java.txt"));
+        runAndAssertGolden("edge");
     }
 
-    // Medium scenario currently excluded due to known bugs (see BUGS_4.md). To
-    // enable later, call runAndAssertGolden("medium", ...)
-    private void runAndAssertGolden(String scenario, List<String> sampleFiles) throws Exception {
+    private void runAndAssertGolden(String scenario) throws Exception {
         Path specDir = projectRoot.resolve("test-resources/spec/valid/" + scenario);
         Path outDir = temp.resolve("gen-" + scenario);
 
@@ -84,35 +82,22 @@ public class JavaCodegenGoldenTest {
 
 
         Path goldenRoot = projectRoot.resolve("test-resources/golden/" + scenario);
-        for (String rel : sampleFiles) {
-            Path generatedFile = outDir.resolve(rel.replace(".txt", ""));
-            Path goldenFile = goldenRoot.resolve(rel);
-            // Goldens may omit the top-level scenario folder (e.g., "pkg/..." instead of
-            // "minimal/pkg/..."). If the direct path doesn't exist, try trimming the
-            // scenario prefix.
-            if (!Files.isRegularFile(goldenFile)) {
-                String trimmedRel = rel.replaceFirst("^" + scenario + "/", "");
-                Path alt = goldenRoot.resolve(trimmedRel);
-                assertThat(alt).as("Golden file exists for (alt path): " + trimmedRel).isRegularFile();
-                goldenFile = alt;
-            }
-            assertThat(generatedFile).as("Generated file exists: " + rel).isRegularFile();
+        Map<String, Path> generatedFiles = snapshotFiles(outDir);
+        Map<String, Path> goldenFiles = snapshotGolden(goldenRoot, scenario);
+
+        assertThat(generatedFiles.keySet())
+                .as("Generated file set for scenario '%s'", scenario)
+                .containsExactlyElementsOf(goldenFiles.keySet());
+
+        for (Map.Entry<String, Path> entry : goldenFiles.entrySet()) {
+            String relative = entry.getKey();
+            Path generatedFile = generatedFiles.get(relative);
+            assertThat(generatedFile).as("Generated file exists: " + relative).isNotNull();
+
             String gen = read(generatedFile);
-            String gold = read(goldenFile);
-            // Normalize absolute paths emitted by generator back to relative spec path
-            // expected in golden
-            String abs = projectRoot.toAbsolutePath().toString() + "/test-resources/";
-            String trimmedHome = abs.replaceFirst("^/home/", "");
-            Map<String, String> tokenMap = Map.of(
-                    abs, "",
-                    trimmedHome, "");
-            // If mismatch due to absolute path embedding bug, abort test instead of failing
-            // hard
-            try {
-                DiffUtils.assertEqualsNormalized(gold, gen, tokenMap);
-            } catch (AssertionError e) {
-                Assumptions.abort("Known path embedding difference (BUGS_4.md): " + e.getMessage());
-            }
+            String gold = read(entry.getValue());
+
+            DiffUtils.assertEqualsNormalized(gold, gen);
         }
     }
 
@@ -132,5 +117,37 @@ public class JavaCodegenGoldenTest {
 
     private static String capitalize(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    private static Map<String, Path> snapshotFiles(Path root) throws IOException {
+        try (Stream<Path> walk = Files.walk(root)) {
+            return walk.filter(Files::isRegularFile)
+                    .collect(Collectors.toMap(
+                            path -> normalize(root.relativize(path).toString()),
+                            Function.identity(),
+                            (a, b) -> {
+                                throw new IllegalStateException("Duplicate generated path: " + a);
+                            },
+                            TreeMap::new));
+        }
+    }
+
+    private static Map<String, Path> snapshotGolden(Path goldenRoot, String scenario) throws IOException {
+        try (Stream<Path> walk = Files.walk(goldenRoot)) {
+            return walk.filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith(".java.txt"))
+                    .collect(Collectors.toMap(
+                            path -> scenario + "/" + normalize(goldenRoot.relativize(path).toString())
+                                    .replaceFirst("\\.java\\.txt$", ".java"),
+                            Function.identity(),
+                            (a, b) -> {
+                                throw new IllegalStateException("Duplicate golden path: " + a);
+                            },
+                            TreeMap::new));
+        }
+    }
+
+    private static String normalize(String relativePath) {
+        return relativePath.replace('\\', '/');
     }
 }
