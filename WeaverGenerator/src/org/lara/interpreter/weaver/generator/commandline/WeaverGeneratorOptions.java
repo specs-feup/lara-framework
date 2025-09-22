@@ -16,7 +16,9 @@ import org.apache.commons.cli.*;
 import org.apache.commons.cli.Option.Builder;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 
+import java.io.PrintWriter;
 import java.io.Serial;
+import java.io.StringWriter;
 
 class WeaverGeneratorOptions extends Options {
     private static HelpFormatter formatter = new HelpFormatter();
@@ -120,7 +122,15 @@ class WeaverGeneratorOptions extends Options {
     }
 
     protected void help() {
-        WeaverGeneratorOptions.formatter.printHelp("java -jar WeaverGenerator.jar [options]", this);
+        StringWriter buffer = new StringWriter();
+        PrintWriter writer = new PrintWriter(buffer);
+
+        WeaverGeneratorOptions.formatter.printHelp(writer, WeaverGeneratorOptions.formatter.getWidth(),
+                "java -jar WeaverGenerator.jar [options]", null, this,
+                WeaverGeneratorOptions.formatter.getLeftPadding(), WeaverGeneratorOptions.formatter.getDescPadding(),
+                null);
+        writer.flush();
+        System.out.print(buffer.toString());
     }
 
     /**

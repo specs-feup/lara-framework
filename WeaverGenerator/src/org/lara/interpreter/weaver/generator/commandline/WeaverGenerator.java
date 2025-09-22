@@ -110,32 +110,69 @@ public class WeaverGenerator {
     /**/
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
+        System.exit(run(args));
+    }
 
+    public static int run(String[] args) {
         final WeaverGeneratorOptions opts = new WeaverGeneratorOptions();
 
-        final CommandLine cmdLine = opts.parse(args);
-        if (cmdLine.hasOption(GeneratorOption.H.getOption())) {
-            opts.help();
-            return;
+        final CommandLine cmdLine;
+        try {
+            cmdLine = opts.parse(args);
+        } catch (RuntimeException e) {
+            reportException(e);
+            return 1;
         }
 
-        File XMLSpecDir;
+        if (cmdLine.hasOption(GeneratorOption.H.getOption())) {
+            opts.help();
+            return 0;
+        }
 
+        try {
+            final BaseGenerator generator = buildGenerator(cmdLine);
+
+            printReport(generator);
+
+            if (!generate(generator)) {
+                System.err.println("The Weaver was not created!");
+                return 1;
+            }
+
+            if (!print(generator)) {
+                System.err.println("The Weaver was not created!");
+                return 1;
+            }
+
+            if (generator.isJson() && !emitJsonArtifacts(generator)) {
+                return 1;
+            }
+
+            System.out.println("Weaver successfully created!");
+            return 0;
+        } catch (RuntimeException e) {
+            reportException(e);
+            return 1;
+        }
+    }
+
+    private static BaseGenerator buildGenerator(CommandLine cmdLine) {
+        final File XMLSpecDir;
         if (cmdLine.hasOption(GeneratorOption.X.getOption())) {
             XMLSpecDir = new File(cmdLine.getOptionValue(GeneratorOption.X.getOption()));
         } else {
             XMLSpecDir = GenConstants.getDefaultXMLDir();
         }
+
         final BaseGenerator generator = new JavaAbstractsGenerator(XMLSpecDir);
-        String optionValue;
 
         if (cmdLine.hasOption(GeneratorOption.W.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
+            final String optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
             generator.setWeaverName(optionValue);
         }
 
         if (cmdLine.hasOption(GeneratorOption.P.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
+            final String optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
             generator.setOutPackage(optionValue);
         }
 
@@ -153,7 +190,7 @@ public class WeaverGenerator {
         }
 
         if (cmdLine.hasOption(GeneratorOption.N.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
+            final String optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
             generator.setNodeType(Objects.requireNonNullElseGet(optionValue, GenConstants::getDefaultNodeType));
         }
 
@@ -165,19 +202,11 @@ public class WeaverGenerator {
             generator.setConcreteClassesPrefix(cmdLine.getOptionValue(GeneratorOption.C.getOption()));
         }
 
-        printReport(generator);
+        return generator;
+    }
 
-        final boolean generated = generate(generator);
-        if (!generated) {
-            System.err.println("The Weaver was not created!");
-            System.exit(1);
-        }
-        final boolean printed = print(generator);
-        if (!printed) {
-            System.err.println("The Weaver was not created!");
-            System.exit(1);
-        }
-        if (generator.isJson()) {
+    private static boolean emitJsonArtifacts(BaseGenerator generator) {
+        try {
             String packagePath = generator.getOutPackage().replace(".", "/");
             File jsonDir = new File(generator.getOutDir(), packagePath);
             File jsonOutFile = new File(jsonDir, generator.getWeaverName() + ".json");
@@ -194,8 +223,24 @@ public class WeaverGenerator {
                 SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.PNG);
                 SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.SVG);
             }
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("The Weaver was not created!");
+            e.printStackTrace();
+            return false;
         }
-        System.out.println("Weaver successfully created!");
+    }
+
+    private static void reportException(RuntimeException e) {
+        var message = e.getMessage();
+        if ((message == null || message.isBlank()) && e.getCause() != null) {
+            message = e.getCause().getMessage();
+        }
+        if (message == null || message.isBlank()) {
+            message = e.toString();
+        }
+        System.err.println(message);
     }
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
@@ -217,17 +262,17 @@ public class WeaverGenerator {
             boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
             boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
-        report.append("Weaver name:   " + weaverName + "\n");
-        report.append("Package:       " + outPackage + "\n");
+        report.append("Weaver name:       " + weaverName + "\n");
+        report.append("Package:           " + outPackage + "\n");
         if (xMLSpecDir != null) {
-            report.append("Lang. Spec:    " + xMLSpecDir + "\n");
+            report.append("Lang. Spec:        " + xMLSpecDir + "\n");
         }
-        report.append("Output Dir.:   " + outDir + "\n");
-        report.append("Add Events: " + hasEvents + "\n");
+        report.append("Output Dir.:       " + outDir + "\n");
+        report.append("Add Events:        " + hasEvents + "\n");
         report.append("Uses Impl Methods: " + usesImpl + "\n");
-        report.append("Abst. Getters: " + abstractGetters + "\n");
-        report.append("Node type:     " + (generics == null ? "N/A" : generics) + "\n");
-        report.append("Create JSON:   " + json + "\n");
+        report.append("Abst. Getters:     " + abstractGetters + "\n");
+        report.append("Node type:         " + (generics == null ? "N/A" : generics) + "\n");
+        report.append("Create JSON:       " + json + "\n");
 
         if (concreteClassesPrefix != null) {
             report.append("Concrete classes with prefix:   " + concreteClassesPrefix + "\n");
