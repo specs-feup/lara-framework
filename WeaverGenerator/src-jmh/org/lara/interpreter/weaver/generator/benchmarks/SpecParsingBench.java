@@ -1,8 +1,10 @@
 package org.lara.interpreter.weaver.generator.benchmarks;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -34,21 +36,38 @@ public class SpecParsingBench {
 
     @Setup(Level.Trial)
     public void setup() throws Exception {
-        specDir = Files.createTempDirectory("wg-spec-" + joinPoints + "-");
+        specDir = createTempDir("wg-spec-" + joinPoints);
         SpecFactory.writeSpec(specDir, joinPoints);
     }
 
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
-        if (specDir != null) {
-            Files.walk(specDir)
-                    .sorted((a, b) -> b.getNameCount() - a.getNameCount())
-                    .forEach(p -> p.toFile().delete());
-        }
+        deleteRecursively(specDir);
     }
 
     @Benchmark
     public LanguageSpecification parse_spec_folder() {
         return LanguageSpecification.newInstance(specDir.toFile());
+    }
+
+    private static Path createTempDir(String prefix) throws IOException {
+        return Files.createTempDirectory(prefix + "-" + UUID.randomUUID());
+    }
+
+    private static void deleteRecursively(Path dir) {
+        if (dir == null) {
+            return;
+        }
+
+        try (var walk = Files.walk(dir)) {
+            walk.sorted((a, b) -> b.getNameCount() - a.getNameCount())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException ignored) {
+                        }
+                    });
+        } catch (IOException ignored) {
+        }
     }
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.language.specification.dsl.LanguageSpecification;
 
@@ -16,8 +17,8 @@ public class PerfGuardTest {
 
     @Test
     @Timeout(value = 5, unit = TimeUnit.SECONDS)
-    public void tinySpec_parsing_and_codegen_under_budget() throws Exception {
-        Path specDir = Files.createTempDirectory("wg-guard-spec-");
+    public void tinySpec_parsing_and_codegen_under_budget(@TempDir Path tempDir) throws Exception {
+        Path specDir = Files.createDirectories(tempDir.resolve("spec"));
         // Build a tiny spec with 5 join points
         String jp = """
                 <?xml version=\"1.0\"?>
@@ -47,7 +48,7 @@ public class PerfGuardTest {
         assertThat(lang.hasJoinPoint("root")).isTrue();
 
         // Codegen
-        Path outDir = Files.createTempDirectory("wg-guard-out-");
+        Path outDir = Files.createDirectories(tempDir.resolve("out"));
         var gen = new JavaAbstractsGenerator(new File(specDir.toString()));
         gen.outputDir(outDir.toFile());
         gen.setPackage("guard.generated");

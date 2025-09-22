@@ -59,7 +59,7 @@ class WeaverGeneratorOptions extends Options {
         }
 
         public String getLongOption() {
-            return option;
+            return longOption;
         }
 
     }

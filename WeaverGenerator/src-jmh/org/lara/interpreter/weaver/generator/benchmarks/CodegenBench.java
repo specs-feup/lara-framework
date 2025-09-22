@@ -1,8 +1,10 @@
 package org.lara.interpreter.weaver.generator.benchmarks;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
@@ -37,8 +39,8 @@ public class CodegenBench {
 
     @Setup(Level.Trial)
     public void setup() throws Exception {
-        specDir = Files.createTempDirectory("wg-spec-" + joinPoints + "-");
-        outDir = Files.createTempDirectory("wg-out-" + joinPoints + "-");
+        specDir = createTempDir("wg-spec-" + joinPoints);
+        outDir = createTempDir("wg-out-" + joinPoints);
         SpecFactory.writeSpec(specDir, joinPoints);
 
         generator = new JavaAbstractsGenerator(specDir.toFile());
@@ -50,16 +52,8 @@ public class CodegenBench {
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         // Best-effort cleanup
-        if (specDir != null) {
-            Files.walk(specDir)
-                    .sorted((a, b) -> b.getNameCount() - a.getNameCount())
-                    .forEach(p -> p.toFile().delete());
-        }
-        if (outDir != null) {
-            Files.walk(outDir)
-                    .sorted((a, b) -> b.getNameCount() - a.getNameCount())
-                    .forEach(p -> p.toFile().delete());
-        }
+        deleteRecursively(specDir);
+        deleteRecursively(outDir);
     }
 
     @Benchmark
@@ -74,5 +68,26 @@ public class CodegenBench {
             generator.generate();
         }
         generator.print();
+    }
+
+    private static Path createTempDir(String prefix) throws IOException {
+        return Files.createTempDirectory(prefix + "-" + UUID.randomUUID());
+    }
+
+    private static void deleteRecursively(Path dir) {
+        if (dir == null) {
+            return;
+        }
+
+        try (var walk = Files.walk(dir)) {
+            walk.sorted((a, b) -> b.getNameCount() - a.getNameCount())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException ignored) {
+                        }
+                    });
+        } catch (IOException ignored) {
+        }
     }
 }

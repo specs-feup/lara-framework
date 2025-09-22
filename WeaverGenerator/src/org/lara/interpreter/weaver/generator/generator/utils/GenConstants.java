@@ -29,7 +29,7 @@ public class GenConstants {
     private static final boolean defaultEvents = false;
     private static final boolean defaultImplMode = true;
     private static final boolean defaultShowGraph = false;
-    private static final String defaultNodeType = Object.class.getSimpleName();
+    private static final String defaultNodeType = Object.class.getCanonicalName();
     private static final String AUTHOR = "Lara Weaver Generator";
 
     private static final String GET_CLASS_NAME = "get_class";
@@ -155,7 +155,6 @@ public class GenConstants {
     }
 
     public static String withImpl(String string) {
-        // TODO Auto-generated method stub
         return string + IMPLEMENTATION_SUFIX;
     }
 
