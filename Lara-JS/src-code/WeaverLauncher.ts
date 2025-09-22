@@ -65,7 +65,7 @@ export default class WeaverLauncher {
   protected main(args: Arguments): void {
     this.debug(`${this.config.weaverPrettyName} execution arguments: %O`, args);
 
-    if ((args.watch as string[]).length > 0) {
+    if (args.watch && (args.watch as string[]).length > 0) {
       for (const directory of args.watch as string[]) {
         this.debug(`Watching directory: ${directory}`);
       }
