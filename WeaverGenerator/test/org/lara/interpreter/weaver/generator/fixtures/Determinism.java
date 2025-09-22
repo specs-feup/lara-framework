@@ -7,7 +7,8 @@ import java.time.ZoneId;
 import java.util.Random;
 
 public final class Determinism {
-    private Determinism() {}
+    private Determinism() {
+    }
 
     public static final long TEST_SEED = 0x5EEDCAFECAFEL;
 

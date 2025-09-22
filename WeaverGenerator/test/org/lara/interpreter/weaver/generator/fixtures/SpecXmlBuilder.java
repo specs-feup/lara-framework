@@ -10,15 +10,16 @@ import java.nio.file.Path;
  */
 public final class SpecXmlBuilder {
 
-    private SpecXmlBuilder() {}
+    private SpecXmlBuilder() {
+    }
 
     public static Path writeMinimalJoinPointModel(Path dir) throws IOException {
         String xml = """
-            <?xml version=\"1.0\"?>
-            <joinpoints root_class=\"root\">
-              <joinpoint class=\"root\"/>
-            </joinpoints>
-            """;
+                <?xml version=\"1.0\"?>
+                <joinpoints root_class=\"root\">
+                  <joinpoint class=\"root\"/>
+                </joinpoints>
+                """;
         Path out = dir.resolve("joinPointModel.xml");
         Files.writeString(out, normalize(xml), StandardCharsets.UTF_8);
         return out;
@@ -26,11 +27,11 @@ public final class SpecXmlBuilder {
 
     public static Path writeMinimalActionModel(Path dir) throws IOException {
         String xml = """
-            <?xml version=\"1.0\"?>
-            <actions>
-              <action name=\"report\" class=\"root\"/>
-            </actions>
-            """;
+                <?xml version=\"1.0\"?>
+                <actions>
+                  <action name=\"report\" class=\"root\"/>
+                </actions>
+                """;
         Path out = dir.resolve("actionModel.xml");
         Files.writeString(out, normalize(xml), StandardCharsets.UTF_8);
         return out;
@@ -38,14 +39,14 @@ public final class SpecXmlBuilder {
 
     public static Path writeMinimalArtifacts(Path dir) throws IOException {
         String xml = """
-            <?xml version=\"1.0\"?>
-            <artifacts>
-              <global/>
-              <artifact class=\"root\" default=\"name\">
-                <attribute name=\"name\" type=\"string\"/>
-              </artifact>
-            </artifacts>
-            """;
+                <?xml version=\"1.0\"?>
+                <artifacts>
+                  <global/>
+                  <artifact class=\"root\" default=\"name\">
+                    <attribute name=\"name\" type=\"string\"/>
+                  </artifact>
+                </artifacts>
+                """;
         Path out = dir.resolve("artifacts.xml");
         Files.writeString(out, normalize(xml), StandardCharsets.UTF_8);
         return out;

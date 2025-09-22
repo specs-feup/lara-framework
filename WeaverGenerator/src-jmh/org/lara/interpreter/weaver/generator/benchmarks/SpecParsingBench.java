@@ -3,8 +3,8 @@ package org.lara.interpreter.weaver.generator.benchmarks;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.openjdk.jmh.annotations.Benchmark;

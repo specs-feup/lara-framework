@@ -25,7 +25,8 @@ import org.junit.jupiter.api.io.TempDir;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 
 /**
- * End-to-end smoke tests focused on minimally valid generation and failure diagnostics.
+ * End-to-end smoke tests focused on minimally valid generation and failure
+ * diagnostics.
  */
 public class GeneratorE2ETest {
 
@@ -36,7 +37,8 @@ public class GeneratorE2ETest {
 
     @BeforeEach
     void setupRoot() throws IOException {
-        // Find WeaverGenerator module root by traversing upwards until we find build.gradle
+        // Find WeaverGenerator module root by traversing upwards until we find
+        // build.gradle
         projectRoot = Path.of(".");
         // heuristic: ensure we are inside WeaverGenerator
         assertThat(projectRoot.resolve("build.gradle")).exists();
@@ -65,31 +67,31 @@ public class GeneratorE2ETest {
         PipelineResult result = runPipeline(scenario);
 
         switch (scenario.expectation) {
-        case COMPILE_SUCCESS:
-            assertThat(result.generationError).isEmpty();
-            assertThat(result.compilationDiagnostics).isEmpty();
-            assertThat(result.loadedWeaverClass).as("Generated class for %s", scenario.name).isPresent();
-            assertThat(result.loadedWeaverClass.get().getSimpleName()).isEqualTo(scenario.weaverName);
-            break;
-        case COMPILATION_FAILURE:
-            assertThat(result.generationError)
-                    .as("Expected generation to succeed for %s", scenario.name)
-                    .isEmpty();
-            assertThat(result.compilationDiagnostics)
-                    .as("Expected compilation to fail for %s", scenario.name)
-                    .isPresent();
-            scenario.expectedMessage.ifPresent(message -> assertThat(result.compilationDiagnostics.get())
-                    .contains(message));
-            break;
-        case GENERATION_FAILURE:
-            assertThat(result.generationError)
-                    .as("Expected generation to fail for %s", scenario.name)
-                    .isPresent();
-            scenario.expectedMessage.ifPresent(message -> assertThat(result.generationError.get().getMessage())
-                    .contains(message));
-            break;
-        default:
-            throw new IllegalStateException("Unhandled expectation: " + scenario.expectation);
+            case COMPILE_SUCCESS:
+                assertThat(result.generationError).isEmpty();
+                assertThat(result.compilationDiagnostics).isEmpty();
+                assertThat(result.loadedWeaverClass).as("Generated class for %s", scenario.name).isPresent();
+                assertThat(result.loadedWeaverClass.get().getSimpleName()).isEqualTo(scenario.weaverName);
+                break;
+            case COMPILATION_FAILURE:
+                assertThat(result.generationError)
+                        .as("Expected generation to succeed for %s", scenario.name)
+                        .isEmpty();
+                assertThat(result.compilationDiagnostics)
+                        .as("Expected compilation to fail for %s", scenario.name)
+                        .isPresent();
+                scenario.expectedMessage.ifPresent(message -> assertThat(result.compilationDiagnostics.get())
+                        .contains(message));
+                break;
+            case GENERATION_FAILURE:
+                assertThat(result.generationError)
+                        .as("Expected generation to fail for %s", scenario.name)
+                        .isPresent();
+                scenario.expectedMessage.ifPresent(message -> assertThat(result.generationError.get().getMessage())
+                        .contains(message));
+                break;
+            default:
+                throw new IllegalStateException("Unhandled expectation: " + scenario.expectation);
         }
     }
 

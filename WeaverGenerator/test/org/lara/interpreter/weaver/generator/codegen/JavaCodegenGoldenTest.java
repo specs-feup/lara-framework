@@ -80,7 +80,6 @@ public class JavaCodegenGoldenTest {
         List<String> after = snapshot(outDir);
         assertThat(after).as("Idempotent generation (file listing)").containsExactlyElementsOf(before);
 
-
         Path goldenRoot = projectRoot.resolve("test-resources/golden/" + scenario);
         Map<String, Path> generatedFiles = snapshotFiles(outDir);
         Map<String, Path> goldenFiles = snapshotGolden(goldenRoot, scenario);

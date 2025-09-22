@@ -1,16 +1,17 @@
 package org.lara.interpreter.weaver.generator.spec;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.lara.language.specification.exception.LanguageSpecificationException;
-import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.lara.language.specification.exception.LanguageSpecificationException;
+
+import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 @DisplayName("Semantic Validation")
 class SemanticValidationTest {
@@ -23,11 +24,11 @@ class SemanticValidationTest {
     @DisplayName("Valid minimal hierarchy builds and exposes root and global")
     void validHierarchyBuilds() {
         String jp = """
-            <joinpoints root_class=\"root\"> 
-                <joinpoint class=\"root\"/>
-                <joinpoint class=\"child\" extends=\"root\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"root\">
+                    <joinpoint class=\"root\"/>
+                    <joinpoint class=\"child\" extends=\"root\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -44,11 +45,11 @@ class SemanticValidationTest {
     @DisplayName("Duplicate joinpoint classes are rejected by parser or model")
     void duplicateJoinPointsRejected() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-                <joinpoint class=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                    <joinpoint class=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -63,11 +64,11 @@ class SemanticValidationTest {
     @DisplayName("Hyphenated identifiers are rejected with a descriptive error")
     void hyphenatedNamesRejected() {
         String jp = """
-            <joinpoints root_class=\"Root\"> 
-                <joinpoint class=\"Root\"/>
-                <joinpoint class=\"bad-name\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"Root\">
+                    <joinpoint class=\"Root\"/>
+                    <joinpoint class=\"bad-name\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -82,11 +83,11 @@ class SemanticValidationTest {
     @DisplayName("Identifiers starting with digits are rejected")
     void digitPrefixedNamesRejected() {
         String jp = """
-            <joinpoints root_class=\"Root\"> 
-                <joinpoint class=\"Root\"/>
-                <joinpoint class=\"1bad\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"Root\">
+                    <joinpoint class=\"Root\"/>
+                    <joinpoint class=\"1bad\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -101,10 +102,10 @@ class SemanticValidationTest {
     @DisplayName("Inheritance cycles are rejected with a descriptive error")
     void inheritanceCyclesRejected() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\" extends=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\" extends=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -119,21 +120,21 @@ class SemanticValidationTest {
     @DisplayName("Duplicate action signatures per joinpoint are rejected")
     void duplicateActionSignaturesRejected() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = """
-            <actions>
-                <action name=\"dup\" class=\"A\">
-                    <parameter name=\"p\" type=\"String\"/>
-                </action>
-                <action name=\"dup\" class=\"A\">
-                    <parameter name=\"p\" type=\"String\"/>
-                </action>
-            </actions>
-            """;
+                <actions>
+                    <action name=\"dup\" class=\"A\">
+                        <parameter name=\"p\" type=\"String\"/>
+                    </action>
+                    <action name=\"dup\" class=\"A\">
+                        <parameter name=\"p\" type=\"String\"/>
+                    </action>
+                </actions>
+                """;
 
         LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
                 () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions)));
@@ -146,27 +147,27 @@ class SemanticValidationTest {
     @DisplayName("Attributes and actions are attached to correct joinpoints, and global ones propagate")
     void attributesAndActionsPropagate() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-                <joinpoint class=\"B\" extends=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                    <joinpoint class=\"B\" extends=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = """
-            <artifacts>
-                <global>
-                    <attribute name=\"gAttr\" type=\"String\"/>
-                </global>
-                <artifact class=\"A\">
-                    <attribute name=\"aAttr\" type=\"Integer\"/>
-                </artifact>
-            </artifacts>
-            """;
+                <artifacts>
+                    <global>
+                        <attribute name=\"gAttr\" type=\"String\"/>
+                    </global>
+                    <artifact class=\"A\">
+                        <attribute name=\"aAttr\" type=\"Integer\"/>
+                    </artifact>
+                </artifacts>
+                """;
         String actions = """
-            <actions>
-                <action name=\"gAct\" class=\"*\"/>
-                <action name=\"aAct\" class=\"A\"/>
-            </actions>
-            """;
+                <actions>
+                    <action name=\"gAct\" class=\"*\"/>
+                    <action name=\"aAct\" class=\"A\"/>
+                </actions>
+                """;
 
         var spec = LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions));
 
@@ -193,17 +194,17 @@ class SemanticValidationTest {
     @DisplayName("Type resolution errors (unknown typedef/enum/jp) are surfaced deterministically")
     void typeResolutionErrors() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                </joinpoints>
+                """;
         String attrsUnknownType = """
-            <artifacts>
-                <artifact class=\"A\">
-                    <attribute name=\"bad\" type=\"UnknownType\"/>
-                </artifact>
-            </artifacts>
-            """;
+                <artifacts>
+                    <artifact class=\"A\">
+                        <attribute name=\"bad\" type=\"UnknownType\"/>
+                    </artifact>
+                </artifacts>
+                """;
         String actions = "<actions/>";
 
         assertThrows(RuntimeException.class, () -> LangSpecsXmlParser.parse(is(jp), is(attrsUnknownType), is(actions)));
@@ -213,18 +214,18 @@ class SemanticValidationTest {
     @DisplayName("Global default attribute propagates down hierarchy when set in artifacts")
     void defaultAttributePropagation() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-                <joinpoint class=\"B\" extends=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                    <joinpoint class=\"B\" extends=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = """
-            <artifacts>
-                <artifact class=\"A\" default=\"aAttr\">
-                    <attribute name=\"aAttr\" type=\"String\"/>
-                </artifact>
-            </artifacts>
-            """;
+                <artifacts>
+                    <artifact class=\"A\" default=\"aAttr\">
+                        <attribute name=\"aAttr\" type=\"String\"/>
+                    </artifact>
+                </artifacts>
+                """;
         String actions = "<actions/>";
 
         var spec = LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions));

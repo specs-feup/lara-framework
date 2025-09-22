@@ -7,7 +7,8 @@ import java.nio.file.Path;
 import java.util.Comparator;
 
 public final class FsTestUtils {
-    private FsTestUtils() {}
+    private FsTestUtils() {
+    }
 
     public static Path mkdirs(Path root, String... segments) throws IOException {
         Path dir = root;
@@ -27,12 +28,15 @@ public final class FsTestUtils {
     }
 
     public static void rmrf(Path dir) throws IOException {
-        if (!Files.exists(dir)) return;
+        if (!Files.exists(dir)) {
+            return;
+        }
         try (var walk = Files.walk(dir)) {
             walk.sorted(Comparator.reverseOrder()).forEach(p -> {
                 try {
                     Files.deleteIfExists(p);
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             });
         }
     }

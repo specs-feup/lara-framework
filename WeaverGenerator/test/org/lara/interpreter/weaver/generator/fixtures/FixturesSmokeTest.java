@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Basic smoke test to ensure fixtures work and minimal spec files can be written.
+ * Basic smoke test to ensure fixtures work and minimal spec files can be
+ * written.
  */
 public class FixturesSmokeTest {
 

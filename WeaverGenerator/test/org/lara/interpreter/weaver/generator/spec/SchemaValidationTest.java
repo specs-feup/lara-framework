@@ -1,5 +1,13 @@
 package org.lara.interpreter.weaver.generator.spec;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -7,15 +15,8 @@ import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.lara.language.specification.exception.LanguageSpecificationException;
+
 import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("XML Schema Validation")
 class SchemaValidationTest {
@@ -28,10 +29,10 @@ class SchemaValidationTest {
     @DisplayName("Valid minimal spec parses with schema validation enabled")
     void validMinimalSpecParses() {
         String jp = """
-            <joinpoints root_class=\"root\"> 
-                <joinpoint class=\"root\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"root\">
+                    <joinpoint class=\"root\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
@@ -45,29 +46,29 @@ class SchemaValidationTest {
     @DisplayName("Artifacts schema accepts mixed enum/object/typedef ordering")
     void mixedArtifactsOrderingAccepted() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                </joinpoints>
+                """;
         String attrs = """
-            <artifacts>
-                <enum name=\"Color\">
-                    <value name=\"RED\"/>
-                    <value name=\"BLUE\"/>
-                </enum>
-                <typedef name=\"Alias\">
-                    <attribute name=\"color\" type=\"Color\"/>
-                </typedef>
-                <object name=\"Vec2\">
-                    <attribute name=\"x\" type=\"String\"/>
-                    <attribute name=\"y\" type=\"String\"/>
-                </object>
-                <artifact class=\"A\">
-                    <attribute name=\"position\" type=\"Vec2\"/>
-                    <attribute name=\"alias\" type=\"Alias\"/>
-                </artifact>
-            </artifacts>
-            """;
+                <artifacts>
+                    <enum name=\"Color\">
+                        <value name=\"RED\"/>
+                        <value name=\"BLUE\"/>
+                    </enum>
+                    <typedef name=\"Alias\">
+                        <attribute name=\"color\" type=\"Color\"/>
+                    </typedef>
+                    <object name=\"Vec2\">
+                        <attribute name=\"x\" type=\"String\"/>
+                        <attribute name=\"y\" type=\"String\"/>
+                    </object>
+                    <artifact class=\"A\">
+                        <attribute name=\"position\" type=\"Vec2\"/>
+                        <attribute name=\"alias\" type=\"Alias\"/>
+                    </artifact>
+                </artifacts>
+                """;
         String actions = "<actions/>";
 
         LanguageSpecification spec = LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions));
@@ -101,15 +102,16 @@ class SchemaValidationTest {
     @DisplayName("Unknown 'extends' target triggers failure during parsing/semantic linking")
     void unknownExtendsTargetFails() {
         String jp = """
-            <joinpoints root_class=\"A\"> 
-                <joinpoint class=\"A\"/>
-                <joinpoint class=\"B\" extends=\"Nope\"/>
-            </joinpoints>
-            """;
+                <joinpoints root_class=\"A\">
+                    <joinpoint class=\"A\"/>
+                    <joinpoint class=\"B\" extends=\"Nope\"/>
+                </joinpoints>
+                """;
         String attrs = "<artifacts/>";
         String actions = "<actions/>";
 
-        // The parser links extends by name; unknown target should raise at some point when building model
+        // The parser links extends by name; unknown target should raise at some point
+        // when building model
         LanguageSpecificationException thrown = assertThrows(LanguageSpecificationException.class,
                 () -> LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false));
 
@@ -121,7 +123,8 @@ class SchemaValidationTest {
     @DisplayName("WeaverGenerator.newInstance(File) rejects non-existing directory with a helpful message")
     void newInstanceRejectsBadDir(@TempDir File temp) {
         File notDir = new File(temp, "no-such-dir");
-        // Use default constructor so we don't trigger parsing on a folder without the 3 spec files
+        // Use default constructor so we don't trigger parsing on a folder without the 3
+        // spec files
         BaseGenerator gen = new JavaAbstractsGenerator();
         assertThrows(RuntimeException.class, () -> gen.setLanguageSpecification(notDir));
     }
