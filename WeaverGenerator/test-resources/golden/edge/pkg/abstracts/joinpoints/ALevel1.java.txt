@@ -1,0 +1,144 @@
+package edge.pkg.abstracts.joinpoints;
+
+import org.lara.interpreter.exception.AttributeException;
+import org.lara.interpreter.weaver.interf.JoinPoint;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Auto-Generated class for join point ALevel1
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class ALevel1 extends ABase {
+
+    protected ABase aBase;
+
+    /**
+     * 
+     */
+    public ALevel1(ABase aBase){
+        this.aBase = aBase;
+    }
+    /**
+     * Get value on attribute a
+     * @return the attribute's value
+     */
+    public abstract Integer getAImpl();
+
+    /**
+     * Get value on attribute b
+     * @return the attribute's value
+     */
+    public abstract Integer getBImpl();
+
+    /**
+     * Get value on attribute b
+     * @return the attribute's value
+     */
+    public final Object getB() {
+        try {
+        	Integer result = this.getBImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "b", e);
+        }
+    }
+
+    /**
+     * 
+     * @param position 
+     * @param code 
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, String code) {
+        return this.aBase.insertImpl(position, code);
+    }
+
+    /**
+     * 
+     * @param position 
+     * @param code 
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
+        return this.aBase.insertImpl(position, code);
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public void noopImpl() {
+        this.aBase.noopImpl();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Optional<? extends ABase> getSuper() {
+        return Optional.of(this.aBase);
+    }
+
+    /**
+     * Returns the join point type of this class
+     * @return The join point type
+     */
+    @Override
+    public String get_class() {
+        return "level1";
+    }
+
+    /**
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * @return True if this join point is an instanceof the given class
+     */
+    @Override
+    public boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if(isInstance) {
+        	return true;
+        }
+        return this.aBase.instanceOf(joinpointClass);
+    }
+    /**
+     * 
+     */
+    protected enum Level1Attributes {
+        A("a"),
+        B("b");
+        private String name;
+
+        /**
+         * 
+         */
+        private Level1Attributes(String name){
+            this.name = name;
+        }
+        /**
+         * Return an attribute enumeration item from a given attribute name
+         */
+        public static Optional<Level1Attributes> fromString(String name) {
+            return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
+        }
+
+        /**
+         * Return a list of attributes in String format
+         */
+        public static List<String> getNames() {
+            return Arrays.asList(values()).stream().map(Level1Attributes::name).collect(Collectors.toList());
+        }
+
+        /**
+         * True if the enum contains the given attribute name, false otherwise.
+         */
+        public static boolean contains(String name) {
+            return fromString(name).isPresent();
+        }
+    }
+}

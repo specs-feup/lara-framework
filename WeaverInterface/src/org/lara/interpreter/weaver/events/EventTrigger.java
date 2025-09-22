@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.weaver.events;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,16 +22,7 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.events.LaraIEvent;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
-import org.lara.interpreter.weaver.interf.events.data.ApplyEvent;
-import org.lara.interpreter.weaver.interf.events.data.ApplyIterationEvent;
-import org.lara.interpreter.weaver.interf.events.data.AspectEvent;
 import org.lara.interpreter.weaver.interf.events.data.AttributeEvent;
-import org.lara.interpreter.weaver.interf.events.data.JoinPointEvent;
-import org.lara.interpreter.weaver.interf.events.data.SelectEvent;
-import org.lara.interpreter.weaver.interf.events.data.WeaverEvent;
-import org.lara.interpreter.weaver.joinpoint.LaraJoinPoint;
-import org.lara.interpreter.weaver.utils.FilterExpression;
-import org.suikasoft.jOptions.Interfaces.DataStore;
 
 import pt.up.fe.specs.util.events.Event;
 import pt.up.fe.specs.util.events.EventController;
@@ -53,61 +43,11 @@ public class EventTrigger {
     public void registerReceivers(List<AGear> gears) {
 
         gears.forEach(this::registerReceiver);
-        // for (final AGear gear : gears) {
-        // eventController.registerReceiver(gear);
-        // }
     }
-
-    public static final String TRIGGER_WEAVER_EVENT = "triggerWeaver";
-
-    /**
-     * Trigger a weaver event
-     * 
-     * @param stage
-     * @param args
-     * @param sources
-     */
-    public void triggerWeaver(Stage stage, DataStore args, String mainAspect,
-            String aspectFile) {
-        final WeaverEvent data = new WeaverEvent(stage, args, mainAspect,
-                aspectFile);
-        final Event event = new SimpleEvent(LaraIEvent.OnWeaver, data);
-        eventController.notifyEvent(event);
-    }
-
-    public static final String TRIGGER_ASPECT_EVENT = "triggerAspect";
-
-    /**
-     * Trigger an aspect event
-     * 
-     * @param stage
-     * @param aspect_name
-     * @param called_by
-     * @param params
-     * @param objects
-     */
-    // public void triggerAspect(Object stage, Object aspect_name, Object called_by, Object[] params, Object[] objects,
-    // Object exception) {
-    public void triggerAspect(Stage stage, String aspect_name, String called_by, String[] params, Object[] objects,
-            Object exception) {
-        // System.out.println("TRIGGER ASPECT:" + aspect_name);
-        final AspectEvent data = new AspectEvent(stage, aspect_name, called_by, params, objects, exception);
-        // final AspectEvent data = new AspectEvent((Stage) stage, (String) aspect_name, (String) called_by,
-        // (String[]) params, objects, exception);
-        final Event event = new SimpleEvent(LaraIEvent.OnAspect, data);
-        eventController.notifyEvent(event);
-        // System.out.println("TRIGGER ASPECT END:" + aspect_name);
-    }
-
-    public static final String TRIGGER_ACTION_EVENT = "triggerAction";
 
     /**
      * Trigger an action event
-     * 
-     * @param stage
-     * @param name
-     * @param target
-     * @param params
+     *
      */
     public void triggerAction(Stage stage, String name, JoinPoint target, List<Object> params,
             Optional<Object> result) {
@@ -124,83 +64,9 @@ public class EventTrigger {
         eventController.notifyEvent(event);
     }
 
-    public static final String TRIGGER_APPLY_EVENT = "triggerApply";
-
-    /**
-     * Trigger an apply event
-     * 
-     * @param stage
-     * @param name
-     * @param target
-     * @param params
-     */
-    public void triggerApply(Stage stage, String aspect_name, String label, String select_label,
-            LaraJoinPoint select) {
-        // System.out.println("TRIGGER APPLY:" + aspect_name);
-
-        // Object select1) {
-        // LaraJoinPoint select = (LaraJoinPoint) select1;
-        Optional<LaraJoinPoint> root;
-        if (select == null || !select.hasChildren()) {
-            root = Optional.empty();
-        } else {
-            // final LaraJoinPoint laraRoot = (LaraJoinPoint) select.get("laraJoinPoint");
-            LaraJoinPoint weaverRoot = select.getChild(0); // Master root only has one child (weaver root);
-            root = Optional.of(weaverRoot);
-        }
-
-        final ApplyEvent data = new ApplyEvent(stage, aspect_name, label, select_label, root);
-        final Event event = new SimpleEvent(LaraIEvent.OnApply, data);
-        eventController.notifyEvent(event);
-        // System.out.println("TRIGGER APPLY END:" + aspect_name);
-    }
-
-    public void triggerApply(Stage stage, String aspect_name, String label, String select_label,
-            JoinPoint[] pointcutChain) {
-        // System.out.println("TRIGGER APPLY[]:" + aspect_name);
-        final ApplyIterationEvent data = new ApplyIterationEvent(stage, aspect_name, label, select_label,
-                Arrays.asList(pointcutChain));
-        final Event event = new SimpleEvent(LaraIEvent.OnApply, data);
-        eventController.notifyEvent(event);
-        // System.out.println("TRIGGER APPLY[] END:" + aspect_name);
-    }
-
-    /**
-     * Trigger a select event
-     * 
-     * @param stage
-     * @param aspect_name
-     * @param selectLable
-     * @param pointcutChain
-     * @param aliases
-     * @param filters
-     * @param pointcut
-     */
-    public void triggerSelect(Stage stage, String aspect_name, String selectLable, String[] pointcutChain,
-            String[] aliases, FilterExpression[][] filters, Optional<LaraJoinPoint> pointcut) {
-
-        final SelectEvent data = new SelectEvent(stage, aspect_name, selectLable, pointcutChain, aliases, filters,
-                pointcut);
-        final Event event = new SimpleEvent(LaraIEvent.OnSelect, data);
-        eventController.notifyEvent(event);
-    }
-
-    public void triggerJoinPoint(Stage stage, String joinPointClass, String alias,
-            FilterExpression[] filter, JoinPoint joinPoint, boolean approvedByFilter) {
-
-        final JoinPointEvent data = new JoinPointEvent(stage, joinPointClass, alias, filter, joinPoint,
-                approvedByFilter);
-        final Event event = new SimpleEvent(LaraIEvent.OnJoinPoint, data);
-        eventController.notifyEvent(event);
-    }
-
     /**
      * Trigger an attribute access event
-     * 
-     * @param stage
-     * @param target
-     * @param name
-     * @param args
+     *
      */
     public void triggerAttribute(Stage stage, JoinPoint target, String name, Optional<Object> result, Object... args) {
         triggerAttribute(stage, target, name, Arrays.asList(args), result);

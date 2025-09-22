@@ -1,0 +1,16 @@
+<artifacts>
+  <global>
+    <attribute name="language" type="String"/>
+  </global>
+  <artifact class="file" default="language">
+    <attribute name="path" type="String"/>
+  </artifact>
+  <artifact class="function">
+    <attribute name="name" type="String"/>
+    <attribute name="params" type="{Location}"/>
+  </artifact>
+  <object name="Location">
+    <attribute name="file" type="String"/>
+    <attribute name="line" type="Integer"/>
+  </object>
+</artifacts>

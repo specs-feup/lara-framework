@@ -60,6 +60,6 @@ public class Parameter {
     }
 
     public String getType() {
-        return getDeclaration().getType().getType();
+        return getDeclaration().getType().type();
     }
 }

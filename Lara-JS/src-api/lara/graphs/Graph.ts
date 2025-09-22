@@ -1,4 +1,4 @@
-import cytoscape from "../../libs/cytoscape-3.26.0.js";
+import cytoscape from "cytoscape";
 import DotFormatter from "./DotFormatter.js";
 import Graphs from "./Graphs.js";
 

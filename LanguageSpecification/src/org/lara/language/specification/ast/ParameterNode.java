@@ -15,7 +15,7 @@ package org.lara.language.specification.ast;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import pt.up.fe.specs.util.utilities.BuilderWithIndentation;
 
@@ -26,9 +26,9 @@ public class ParameterNode extends LangSpecNode {
     private final String type;
 
     /**
-     * Create a new instance of an action with a declaration child that defines its name and return type
-     * 
-     * @param declaration
+     * Create a new instance of an action with a declaration child that defines its
+     * name and return type
+     *
      */
     public ParameterNode(String type, String name, String defaultValue) {
         this.type = type;
@@ -60,5 +60,17 @@ public class ParameterNode extends LangSpecNode {
         builder.decreaseIndentation();
         builder.add("}");
         return builder.toString();
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public String getDefaultValue() {
+        return defaultValue;
     }
 }

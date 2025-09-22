@@ -71,16 +71,12 @@ public class LiteralEnum implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return toString();
     }
 
     @Override
     public String toString() {
         return values.stream().collect(Collectors.joining("| ", "[", "]"));
-        //return values.stream().collect(Collectors.joining(",", "{", "}"));
-
-        // To keep compatibility with previous code, since it is dependent on this format
-        //return values.stream().collect(Collectors.joining("\",\"", "{\"", "\"}"));
     }
 }

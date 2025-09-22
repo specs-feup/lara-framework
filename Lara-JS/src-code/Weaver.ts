@@ -5,7 +5,6 @@ import java from "java";
 import Debug from "debug";
 import { fileURLToPath, pathToFileURL } from "url";
 import { isJavaError } from "./JavaError.js";
-import { promisify } from "util";
 import { isValidFileExtension } from "./FileExtensions.js";
 import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 import assert from "assert";
@@ -21,8 +20,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 java.asyncOptions = {
   asyncSuffix: "Async",
   syncSuffix: "",
-  promiseSuffix: "P",
-  promisify: promisify,
+  promiseSuffix: "P"
 };
 
 export class Weaver {
@@ -89,44 +87,32 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const CxxWeaverOptions = java.import(
-      "pt.up.fe.specs.clava.weaver.options.CxxWeaverOption"
-    );
-    const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
-    const JavaEventTrigger = java.import(
-      "org.lara.interpreter.weaver.events.EventTrigger"
-    );
     const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
-    javaWeaver.setScriptEngine(new NodeJsEngine());
-    javaWeaver.setEventTrigger(new JavaEventTrigger());
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;
 
     let datastore;
     if (isClassicCli) {
-      //if (args._[0] === "classic") {
       try {
         assert(args.configClassic instanceof Array);
-        //console.log("FLAGS: " + args.configClassic);
 
         datastore = JavaLaraI.convertArgsToDataStore(
-          //args._.slice(1),
           args.configClassic,
           javaWeaver
         ).get();
 
         // Arguments parser has shown help, exit
-        if (datastore.get("help")) {
+        if (datastore.get(LaraiKeys.SHOW_HELP)) {
           process.exit(0);
         }
 
-        args.scriptFile = datastore.get("aspect").toString();
+        args.scriptFile = datastore.get(LaraiKeys.LARA_FILE).toString();
       } catch (error) {
         throw new Error(
           "Failed to parse 'Classic' weaver arguments:\n" + error
@@ -153,7 +139,6 @@ export class Weaver {
         LaraiKeys.WORKSPACE_FOLDER,
         JavaFileList.newInstance(fileList)
       );
-      datastore.set(CxxWeaverOptions.PARSE_INCLUDES, true);
     }
 
     // Needed only for side-effects over the datastore
@@ -162,6 +147,10 @@ export class Weaver {
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;
+
+    for (const file of config.importForSideEffects ?? []) {
+      await import(file);
+    }
     /* eslint-enable */
   }
 
@@ -176,10 +165,6 @@ export class Weaver {
   ): Promise<boolean> {
     if (args.scriptFile == undefined) {
       Weaver.debug("No script file provided.");
-    }
-
-    for (const file of config.importForSideEffects ?? []) {
-      await import(file);
     }
 
     if (typeof args.scriptFile !== "string") {
@@ -229,7 +214,7 @@ export class Weaver {
   static shutdown() {
     Weaver.debug("Exiting...");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    Weaver.javaWeaver.close();
+    Weaver.javaWeaver.end();
   }
 }
 

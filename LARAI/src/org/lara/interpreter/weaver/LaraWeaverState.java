@@ -53,10 +53,9 @@ public class LaraWeaverState {
                         throw new RuntimeException("Could not convert JAR file to URL", e);
                     }
                 })
-                .toArray(s -> new URL[s]);
+                .toArray(URL[]::new);
 
-        classLoader = new URLClassLoader(urls, getClass().getClassLoader()
-        );
+        classLoader = new URLClassLoader(urls, getClass().getClassLoader());
     }
 
     private List<File> getJarFiles() {

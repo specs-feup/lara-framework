@@ -10,9 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
-/**
- *
- */
+
 package org.lara.interpreter.cli;
 
 import java.io.File;
@@ -56,67 +54,27 @@ public class OptionsParser {
     public static Collection<Option> buildLaraIOptionGroup() {
         final Option help = OptionsBuilderUtils.newOption(CLIOption.help);
         final Option version = OptionsBuilderUtils.newOption(CLIOption.version);
-        final Option javascript = OptionsBuilderUtils.newOption(CLIOption.javascript);
         final Option debug = OptionsBuilderUtils.newOption(CLIOption.debug);
-        final Option stack = OptionsBuilderUtils.newOption(CLIOption.stack);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
         final Option workDir = OptionsBuilderUtils.newOption(CLIOption.workspace);
-        final Option workDirExtra = OptionsBuilderUtils.newOption(CLIOption.workspace_extra);
-        final Option verbose = OptionsBuilderUtils.newOption(CLIOption.verbose);
         final Option argv = OptionsBuilderUtils.newOption(CLIOption.argv);
-        // final Option argw = OptionsBuilderUtils.newOption(CLIOption.argw);
-        final Option main = OptionsBuilderUtils.newOption(CLIOption.main);
-        final Option tools = OptionsBuilderUtils.newOption(CLIOption.tools);
-        final Option report = OptionsBuilderUtils.newOption(CLIOption.report);
 
         final Option log = OptionsBuilderUtils.newOption(CLIOption.log);
 
-        final Option scripts = OptionsBuilderUtils.newOption(CLIOption.includes);
-        final Option dependencies = OptionsBuilderUtils.newOption(CLIOption.dependencies);
-
-        final Option metrics = OptionsBuilderUtils.newOption(CLIOption.metrics);
-
-        final Option bundleTags = OptionsBuilderUtils.newOption(CLIOption.bundle_tags);
-        final Option restrict = OptionsBuilderUtils.newOption(CLIOption.restrict);
-        final Option call = OptionsBuilderUtils.newOption(CLIOption.call);
-        final Option jsengine = OptionsBuilderUtils.newOption(CLIOption.jsengine);
         final Option jarpaths = OptionsBuilderUtils.newOption(CLIOption.jarpaths);
 
         Options options = new Options()
                 .addOption(help)
                 .addOption(version)
                 .addOption(argv)
-                // .addOption(argw)
-                .addOption(main)
                 .addOption(debug)
-                .addOption(stack)
                 .addOption(outDir)
                 .addOption(workDir)
-                .addOption(workDirExtra)
-                .addOption(verbose)
-                .addOption(tools)
-                .addOption(report)
-                .addOption(scripts)
-                .addOption(dependencies)
-                .addOption(javascript)
                 .addOption(log)
-                .addOption(metrics)
-                .addOption(bundleTags)
-                .addOption(restrict)
-                .addOption(call)
-                .addOption(jsengine)
                 .addOption(jarpaths);
 
-        // final Option weaver = newOption(CLIOption.weaver, "className", ArgOption.ONE_ARG,
-        // "change the target weaver (default: " + LaraI.DEFAULT_WEAVER + ")");
-        // final Option xml = newOption(CLIOption.XMLspec, "dir", ArgOption.ONE_ARG,
-        // "location of the target language specification");
-        // .addOption(weaver)
-        // .addOption(xml)
-
-        ArrayList<Option> arrayList = new ArrayList<>();
-        arrayList.addAll(options.getOptions());
+        ArrayList<Option> arrayList = new ArrayList<>(options.getOptions());
         return arrayList;
     }
 
@@ -140,11 +98,10 @@ public class OptionsParser {
     }
 
     /**
-     * Verifies if the given extra options does not exist in the current larai options {@link CLIOption} and adds them
+     * Verifies if the given extra options does not exist in the current larai
+     * options {@link CLIOption} and adds them
      * to the options collection
      *
-     * @param mainOptions
-     * @param extraOptions
      */
     public static void addExtraOptions(Collection<Option> mainOptions, List<WeaverOption> extraOptions) {
         for (WeaverOption weaverOption : extraOptions) {
@@ -179,11 +136,6 @@ public class OptionsParser {
         }
     }
 
-    /*
-    public void help() {
-    	this.formatter.printHelp("java -jar larai.jar (<larafile>.lara|<aspIR>.xml) [options]", this.opts);
-    }
-    */
     public static String getHelp(Options options) {
         return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
     }
@@ -194,9 +146,6 @@ public class OptionsParser {
         StringWriter sw = new StringWriter();
         String usageSyntax = "<aspect.lara> [options] [-c <file>]  | -c <file>";
         PrintWriter pw = new PrintWriter(sw);
-        if (CLIConfigOption.ALLOW_GUI) {
-            usageSyntax += " [-g]";
-        }
         formatter.printHelp(pw, HELP_MAX_WIDTH,
                 usageSyntax,
                 "", options, leftPadding, formatter.getDescPadding(), "", false);
@@ -211,74 +160,37 @@ public class OptionsParser {
 
         return output;
     }
-    /*
-    public static String getHelp() {
-    	return getHelp(buildLaraIOptions());
-    }
-    */
 
     public static Collection<Option> buildConfigOptions() {
 
         List<Option> options = new ArrayList<>();
         options.add(CLIConfigOption.config.buildOption());
-        if (CLIConfigOption.ALLOW_GUI) {
-            options.add(CLIConfigOption.gui.buildOption());
-        }
-        // for (CLIConfigOption option : CLIConfigOption.values()) {
-        //
-        // }
+
         return options;
     }
 
-    // public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Collection<Option> mainOptions,
-    // Options finalOptions) {
     public static ExecutionMode getExecMode(String firstArg, CommandLine cmd, Options finalOptions) {
-        // validateExclusiveOptions(cmd, configOptions, options);
-        // Optional<CLIConfigOption> configOption = Arrays.asList(CLIConfigOption.values()).stream()
-        // .filter(opt -> cmd.hasOption(opt.getShortOpt()))
-        // .findFirst();
 
         boolean configPresent = cmd.hasOption(CLIConfigOption.config.getShortOpt());
-        boolean guiPresent = cmd.hasOption(CLIConfigOption.gui.getShortOpt());
 
         // No configuration option means normal execution
         if (!configPresent) {
-            if (guiPresent) {
-                throw new LaraIException(
-                        "Cannot accept GUI mode and execution options: lara file (" + firstArg
-                                + ") was given.\n" + getHelp(finalOptions, 3));
-            }
             return ExecutionMode.OPTIONS; // for now -g is completely ignored in this case
         }
 
         // A configuration option in GUI mode plus a normal option means exception
         if (!firstArg.startsWith("-")) { // then we are redefining the lara file
-            if (guiPresent) {
-                throw new LaraIException(
-                        "Cannot accept both configuration in GUI mode and execution options: lara file (" + firstArg
-                                + ") was given.\n" + getHelp(finalOptions, 3));
-            }
             return ExecutionMode.CONFIG_OPTIONS;
         }
         // for (Option option : mainOptions) {
         for (Option option : finalOptions.getOptions()) {
             if (cmd.hasOption(option.getOpt())) {
-                if (guiPresent) {
-
-                    // String configOptionStr = configOption.get().getShortOpt() + "(" + configOption.get().name() +
-                    // ")";
-                    String mainOption = option.getOpt() + "(" + option.getLongOpt() + ")";
-                    throw new LaraIException(
-                            "Cannot accept both configuration in GUI mode and execution options: option " /*+ configOptionStr + " vs "*/
-                                    + mainOption + "was given.\n");
-                } else {
-                    return ExecutionMode.CONFIG_OPTIONS;
-                }
+                return ExecutionMode.CONFIG_OPTIONS;
             }
         }
 
         // A configuration option means config execution
-        return guiPresent && CLIConfigOption.ALLOW_GUI ? ExecutionMode.CONFIG_GUI : ExecutionMode.CONFIG;
+        return ExecutionMode.CONFIG;
     }
 
     public enum ExecutionMode {
@@ -291,45 +203,15 @@ public class OptionsParser {
          * Execute Weaver with the given config file (no overriding options)
          */
         CONFIG,
-
-        /**
-         * GUI mode only (no configuration file)
-         */
-        GUI,
-        /**
-         * Open GUI with the given config file (no overriding options allowed!)
-         */
-        CONFIG_GUI,
         /**
          * Execute Weaver with the given config file and the overriding options
          */
         CONFIG_OPTIONS,
-        /**
-         * Open GUI with the overriding options (means creating a temporary config file)
-         */
-        // OPTIONS_GUI //FUTURE WORK!
-        /**
-         * Unit testing mode
-         */
-        // UNIT_TEST
-    }
-
-    /**
-     * Verify if it is to launch the GUI without config file
-     *
-     * @param args
-     * @return
-     */
-    public static boolean guiMode(String[] args) {
-        return args.length == 0 ||
-                (args.length == 1 && args[0].startsWith("-") && CLIConfigOption.gui.sameAs(args[0]));
     }
 
     /**
      * Returns a configuration file or an exception if the file does not exist
      *
-     * @param cmd
-     * @return
      */
     public static File getConfigFile(CommandLine cmd) {
         File file = new File(cmd.getOptionValue(CLIConfigOption.config.getShortOpt()));
@@ -349,37 +231,14 @@ public class OptionsParser {
     }
 
     /**
-     * The 'public' StoreDefinition that will be used for the user interface. It is a subset of the complete definition.
+     * The 'public' StoreDefinition that will be used for the user interface. It is
+     * a subset of the complete definition.
      *
-     * @param engine
-     * @return
      */
     public static StoreDefinition getLaraStoreDefinition(WeaverEngine engine) {
         return new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName())
-            .addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition())
-            .addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition())
-            .build();
+                .addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition())
+                .addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition())
+                .build();
     }
-
-    // /**
-    // *
-    // * @param engine
-    // * @return
-    // */
-    // public static StoreDefinition getLaraStoreDefinitionComplete(WeaverEngine engine) {
-    // return getLaraStoreDefinition(engine, true);
-    // }
-    //
-    // private static StoreDefinition getLaraStoreDefinition(WeaverEngine engine, boolean isComplete) {
-    // StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.getDefinitionName());
-    // builder.addNamedDefinition(new LaraiStoreDefinition().getStoreDefinition());
-    // builder.addNamedDefinition(new WeaverEngineStoreDefinition(engine).getStoreDefinition());
-    //
-    // if (isComplete) {
-    // builder.addDefinition(LaraiKeys.STORE_DEFINITION_EXTRA);
-    // }
-    //
-    // StoreDefinition laraiDefinition = builder.build();
-    // return laraiDefinition;
-    // }
 }

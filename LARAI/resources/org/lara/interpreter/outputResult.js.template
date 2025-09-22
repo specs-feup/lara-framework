@@ -1,3 +1,0 @@
-laraImport('weaver.Script');
-laraImport('lara.Io');
-Io.writeJson('<OUTPUT_JSON_PATH>', Script.getOutput());
