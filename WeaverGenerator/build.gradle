@@ -74,15 +74,6 @@ sourceSets {
     }
 }
 
-tasks.register('WeaverGenerator', JavaExec) {
-    group = "Execution"
-    description = "Launches WeaverGenerator"
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
-    args = []
-}
-
-
 test {
     useJUnitPlatform()
 
