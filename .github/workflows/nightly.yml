@@ -80,8 +80,18 @@ jobs:
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+      - name: Build and test LaraUtils
+        working-directory: lara-framework/LaraUtils
+        run: gradle build test
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test WeaverInterface
         working-directory: lara-framework/WeaverInterface
+        run: gradle build test
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+      - name: Build and test WeaverGenerator
+        working-directory: lara-framework/WeaverGenerator
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
