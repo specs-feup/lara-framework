@@ -150,7 +150,7 @@ public class WeaverOptionBuilder {
     }
 
     public static WeaverOption build(DataKey<?> dataKey) {
-        return build("", dataKey.getName(), dataKey.getLabel(), dataKey);
+        return build(null, dataKey.getName(), dataKey.getLabel(), dataKey);
     }
 
     public static <T extends Enum<T>> List<WeaverOption> enum2List(Class<T> anEnum,
