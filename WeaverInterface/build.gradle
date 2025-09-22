@@ -115,7 +115,7 @@ jacocoTestReport {
             'jacoco/test/*.exec'
     ])
     sourceDirectories.from = sourceSets.main.allSource.srcDirs
-    classDirectories.from = sourceSets.main.output
+    classDirectories.from = sourceSets.main.output.classesDirs
 
     finalizedBy(jacocoTestCoverageVerification)
 }

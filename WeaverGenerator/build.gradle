@@ -121,7 +121,7 @@ jacocoTestCoverageVerification {
         // Package-specific stricter rules for parsing/validation and code generation
         rule {
             element = 'PACKAGE'
-            includes = ['org.lara.interpreter.weaver.generator*']
+            includes = ['org.lara.interpreter.weaver.generator.*']
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
@@ -142,7 +142,7 @@ jacocoTestReport {
             'jacoco/test/*.exec'
     ])
     sourceDirectories.from = sourceSets.main.allSource.srcDirs
-    classDirectories.from = sourceSets.main.output
+    classDirectories.from = sourceSets.main.output.classesDirs
 
     finalizedBy(jacocoTestCoverageVerification)
 }
