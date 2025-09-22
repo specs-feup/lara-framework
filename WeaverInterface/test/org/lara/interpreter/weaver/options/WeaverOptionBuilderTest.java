@@ -45,8 +45,8 @@ class WeaverOptionBuilderTest {
 
         WeaverOption opt = WeaverOptionBuilder.build(key);
 
-        // short option is empty string per implementation
-        assertThat(opt.shortOption()).isEmpty();
+        // short option is absent when built from DataKey shortcut
+        assertThat(opt.shortOption()).isNull();
         assertThat(opt.longOption()).isEqualTo("bar");
         assertThat(opt.description()).isEqualTo("Bar Label");
         assertThat(opt.args()).isEqualTo(OptionArguments.NO_ARGS);
