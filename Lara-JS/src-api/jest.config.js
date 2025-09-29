@@ -19,6 +19,7 @@ const config = {
   globalSetup: "@specs-feup/lara/jest/jestGlobalSetup.js",
   globalTeardown: "@specs-feup/lara/jest/jestGlobalTeardown.js",
   setupFiles: ["@specs-feup/lara/jest/setupFiles/sharedJavaModule.js"],
+  setupFilesAfterEnv: ["@specs-feup/lara/jest/setupFiles/importSideEffects.js"],
   moduleNameMapper: {
     "@specs-feup/lara/api/(.+).js": "@specs-feup/lara/src-api/$1",
     "(.+)\\.js": "$1",
