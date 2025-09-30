@@ -36,10 +36,13 @@ public interface LaraiKeys {
         return "doc";
     }
 
+    /*
     static String getServerFlag() {
         return "server";
     }
+    */
 
+    
     static String getApiFlag() {
         return "api";
     }

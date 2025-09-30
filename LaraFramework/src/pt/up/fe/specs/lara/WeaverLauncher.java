@@ -66,8 +66,10 @@ public class WeaverLauncher {
         // If doc generator flag is present, run doc generator
         taskMap.put("-" + LaraiKeys.getDocGeneratorFlag(), args -> executeDocGenerator(args));
 
+        /*
         // If server flag is present, run server
         taskMap.put("-" + LaraiKeys.getServerFlag(), args -> executeServer(args));
+        */
 
         // If api flag is present, copy APIs to a folder
         taskMap.put("-" + LaraiKeys.getApiFlag(), args -> executeApiExtractor(args));
@@ -235,6 +237,7 @@ public class WeaverLauncher {
         return docResults != -1;
     }
 
+    /*
     private Boolean executeServer(String[] args) {
 
         // First index is the task flag
@@ -261,6 +264,7 @@ public class WeaverLauncher {
 
         return true;
     }
+     */
 
     public String[] executeParallel(String[][] args, int threads, List<String> weaverCommand) {
         return executeParallel(args, threads, weaverCommand, SpecsIo.getWorkingDir().getAbsolutePath());
