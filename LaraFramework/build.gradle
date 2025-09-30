@@ -25,7 +25,7 @@ repositories {
 dependencies {
     implementation "junit:junit:4.13.1"
 
-    implementation ':GearmanPlus'
+    //implementation ':GearmanPlus'
     implementation ':jOptions'
     implementation ':JsEngine'
     implementation ':SpecsUtils'
