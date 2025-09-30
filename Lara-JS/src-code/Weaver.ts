@@ -73,6 +73,10 @@ export class Weaver {
       throw new Error("Invalid weaver class name.");
     }
 
+    // Run this before any other Java code, to have properly formatted prints
+    const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
+    JavaSpecsSystem.programStandardInit();
+
     /* eslint-disable */
     // This code is intentionally ignored by eslint
     const JavaArrayList = java.import("java.util.ArrayList");
@@ -87,7 +91,6 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
@@ -143,7 +146,6 @@ export class Weaver {
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
-    JavaSpecsSystem.programStandardInit();
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;

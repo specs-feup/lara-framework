@@ -88,8 +88,12 @@ public enum CLIOption implements WeaverOption {
     }
 
     public static boolean containsShort(String shortOption) {
+        if (shortOption == null) {
+            return false;
+        }
+
         for (final CLIOption opt : CLIOption.values()) {
-            if (opt.shortOption().equals(shortOption)) {
+            if (shortOption.equals(opt.shortOption())) {
                 return true;
             }
         }
