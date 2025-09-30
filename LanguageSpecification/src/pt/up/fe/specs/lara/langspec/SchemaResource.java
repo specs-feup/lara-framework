@@ -28,9 +28,6 @@ public enum SchemaResource implements ResourceProvider {
 
     private static final String BASE_PACKAGE = "schemas/";
 
-    /**
-     * @param resource
-     */
     private SchemaResource(String resource) {
         this.resource = BASE_PACKAGE + resource;
     }

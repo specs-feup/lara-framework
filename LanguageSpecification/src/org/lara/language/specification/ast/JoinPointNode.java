@@ -68,15 +68,11 @@ public class JoinPointNode extends LangSpecNode {
 
     @Override
     public String toHtml() {
-        StringBuilder html = new StringBuilder();
 
         // Using styles from LaraDoc
-        html.append("<div id='toc_container'>");
 
-        html.append("<p class='toc_title'>").append(name).append("</p>");
-
-        html.append("</div>");
-
-        return html.toString();
+        return "<div id='toc_container'>" +
+                "<p class='toc_title'>" + name + "</p>" +
+                "</div>";
     }
 }

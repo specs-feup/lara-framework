@@ -4,6 +4,7 @@ woven_code/
 /code/
 package-lock.json
 docs/
+java-binaries
 
 # Extensions
 ltex.dictionary.*

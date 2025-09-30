@@ -36,10 +36,8 @@ public interface LaraResourceProvider extends ResourceProvider {
             return originalResource;
         }
 
-        String parsedResource = originalResource.substring(0, separatorIndex)
-                + originalResource.substring(separatorIndex + 1, originalResource.length());
-
-        return parsedResource;
+        return originalResource.substring(0, separatorIndex)
+                + originalResource.substring(separatorIndex + 1);
     }
 
     @Override

@@ -16,7 +16,6 @@ package org.lara.interpreter.weaver.generator.generator.java.helpers;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.interpreter.weaver.interf.SelectOp;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -26,7 +25,8 @@ import org.specs.generators.java.members.Method;
 import java.util.List;
 
 /**
- * Generates an abstract class that can be edited by the developer. This class can be used for changes/extensions that
+ * Generates an abstract class that can be edited by the developer. This class
+ * can be used for changes/extensions that
  * are global to the join points.
  */
 public class UserAbstractJPClassGenerator extends GeneratorHelper {
@@ -41,13 +41,10 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate an abstract class that can be edited by the developer. This class can be used for changes/extensions
+     * Generate an abstract class that can be edited by the developer. This class
+     * can be used for changes/extensions
      * that are global to the join points
      *
-     * @param javaGenerator
-     * @param sanitizedOutPackage
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         final UserAbstractJPClassGenerator gen = new UserAbstractJPClassGenerator(javaGenerator);
@@ -55,10 +52,10 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate an abstract class that can be edited by the developer. This class can be used for changes/extensions
+     * Generate an abstract class that can be edited by the developer. This class
+     * can be used for changes/extensions
      * that are global to the join points
      *
-     * @return
      */
     private JavaClass generateUserClass() {
         // Create the abstract class using the name of the weaver
@@ -80,12 +77,8 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         compareNodes.add(Annotation.OVERRIDE);
         abstJPClass.add(compareNodes);
 
-        abstJPClass.add(GeneratorUtils.generateSelectGeneric(javaGenerator.getAJoinPointClass()));
-        // abstJPClass.add(GeneratorUtils.generateSelectGeneric(abstJPClass));
-        abstJPClass.addImport(SelectOp.class);
         abstJPClass.addImport(List.class);
 
-        // abstJPClass.add(method)
         return abstJPClass;
     }
 }

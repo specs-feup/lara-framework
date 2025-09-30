@@ -37,11 +37,9 @@ public abstract class BaseGenerator {
     private boolean showGraph;
     private boolean generated;
     private boolean json;
-    private boolean defs;
     private String concreteClassesPrefix;
 
     public BaseGenerator() {
-
         init();
     }
 
@@ -52,7 +50,6 @@ public abstract class BaseGenerator {
     /**
      * Generate the code for the given language specification
      *
-     * @return true if generation was successful; false otherwise
      * @throws RuntimeException if the language specification was not defined
      */
     public void generate() {
@@ -66,7 +63,6 @@ public abstract class BaseGenerator {
     /**
      * Print the generated code in files
      *
-     * @return true if generation was successful; false otherwise
      * @throws RuntimeException if the language specification was not defined
      */
     public void print() {
@@ -92,14 +88,12 @@ public abstract class BaseGenerator {
         setShowGraph(GenConstants.getDefaultShowGraph());
         setGenerated(false);
         setJson(false);
-        setDefs(false);
         setConcreteClassesPrefix(null);
     }
 
     /**
      * Initialize the generator based on another generator
      *
-     * @param baseGenerator
      */
     private void init(BaseGenerator baseGenerator) {
         if (baseGenerator == null) {
@@ -121,7 +115,6 @@ public abstract class BaseGenerator {
     /**
      * Generate the code for the given language specification
      *
-     * @return
      */
     protected abstract void generateCode();
 
@@ -184,7 +177,6 @@ public abstract class BaseGenerator {
     /**
      * Get the output package for the weaver and join points
      *
-     * @return
      */
     public String getOutPackage() {
         return outPackage;
@@ -193,7 +185,6 @@ public abstract class BaseGenerator {
     /**
      * Set the output package for the weaver and join points
      *
-     * @param outPackage
      */
     public void setOutPackage(String outPackage) {
         this.outPackage = outPackage;
@@ -202,7 +193,6 @@ public abstract class BaseGenerator {
     /**
      * Get the output dir for the generated files
      *
-     * @return
      */
     public File getOutDir() {
         return outDir;
@@ -211,7 +201,6 @@ public abstract class BaseGenerator {
     /**
      * Set the output dir for the generated files
      *
-     * @return
      */
     public void setOutDir(File outDir) {
         this.outDir = outDir;
@@ -220,7 +209,6 @@ public abstract class BaseGenerator {
     /**
      * Get the name of the weaver
      *
-     * @return
      */
     public String getWeaverName() {
         return weaverName;
@@ -229,16 +217,15 @@ public abstract class BaseGenerator {
     /**
      * Set the name of the weaver
      *
-     * @return
      */
     public void setWeaverName(String weaverName) {
         this.weaverName = weaverName;
     }
 
     /**
-     * See if the getters should be generated as abstract, and thus no field is generated
+     * See if the getters should be generated as abstract, and thus no field is
+     * generated
      *
-     * @return
      */
     public boolean isAbstractGetters() {
         return abstractGetters;
@@ -247,16 +234,15 @@ public abstract class BaseGenerator {
     /**
      * Should the generated code have events or not
      *
-     * @return
      */
     public boolean hasEvents() {
         return events;
     }
 
     /**
-     * Set if the getters should be generated as abstract, and thus no field is generated
+     * Set if the getters should be generated as abstract, and thus no field is
+     * generated
      *
-     * @return
      */
     public void setAbstractGetters(boolean abstractGetters) {
         this.abstractGetters = abstractGetters;
@@ -265,7 +251,6 @@ public abstract class BaseGenerator {
     /**
      * Get the base AST node.
      *
-     * @return
      */
     public String getNodeType() {
         return nodeType;
@@ -274,7 +259,6 @@ public abstract class BaseGenerator {
     /**
      * Get the base AST node name.
      *
-     * @return
      */
     public String getNodeName() {
         var nodeNames = nodeType.split("\\.");
@@ -288,7 +272,6 @@ public abstract class BaseGenerator {
     /**
      * Set the base AST node.
      *
-     * @param nodeType
      */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
@@ -297,16 +280,14 @@ public abstract class BaseGenerator {
     /**
      * Set the generic type of the join points
      *
-     * @param nodeType
      */
     public void setNodeType(Class<?> nodeType) {
-        this.nodeType = nodeType.getCanonicalName().toString();
+        this.nodeType = nodeType.getCanonicalName();
     }
 
     /**
      * Should the generator show a graph in the end of the generation
      *
-     * @return
      */
     public boolean isShowGraph() {
         return showGraph;
@@ -322,7 +303,6 @@ public abstract class BaseGenerator {
     /**
      * The language specification for this generation
      *
-     * @return
      */
     public LanguageSpecification getLanguageSpecification() {
         return languageSpecification;
@@ -333,18 +313,10 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Set the language specification for this generation
+     * Create a language specification using the models defined in the given
+     * directory
      *
-     * @param languageSpecification
-     */
-    private void setLanguageSpecification(LanguageSpecification languageSpecification) {
-        this.languageSpecification = languageSpecification;
-    }
-
-    /**
-     * Create a language specification using the models defined in the given directory
-     *
-     * @param langSpecDirStr the input folder
+     * @param langSpecDir the input folder
      */
     public void setLanguageSpecification(File langSpecDir) {
         languageSpecification = LanguageSpecification.newInstance(langSpecDir);
@@ -352,7 +324,8 @@ public abstract class BaseGenerator {
     }
 
     /**
-     * Create a language specification using the models defined in the given directory name
+     * Create a language specification using the models defined in the given
+     * directory name
      *
      * @param langSpecDirStr name of the input folder
      */
@@ -387,14 +360,6 @@ public abstract class BaseGenerator {
 
     public boolean hasImplMode() {
         return implMode;
-    }
-
-    public void setDefs(boolean b) {
-        this.defs = b;
-    }
-
-    public boolean hasDefs() {
-        return defs;
     }
 
     /**

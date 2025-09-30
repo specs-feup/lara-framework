@@ -6,6 +6,7 @@ import { hideBin } from "yargs/helpers";
 import { convertSpecification } from "./convert-joinpoint-specification.js";
 
 import { generateJoinpoints, generateEnums } from "./generate-ts-joinpoints.js";
+import { fileURLToPath } from "url";
 
 async function buildInterfaces(
   inputFileName,
@@ -20,13 +21,8 @@ async function buildInterfaces(
   );
   console.log("outputFile:", outputFileName);
 
-  const { default: laraJsonSpecification } = await import(
-    laraJoinPointSpecificationImportPath,
-    {
-      assert: {
-        type: "json",
-      },
-    }
+  const laraJsonSpecification = JSON.parse(
+    fs.readFileSync(fileURLToPath(import.meta.resolve(laraJoinPointSpecificationImportPath)), "utf8")
   );
   const jsonSpecification = fs.readFileSync(inputFileName, "utf8");
 

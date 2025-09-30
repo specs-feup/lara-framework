@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class LaraWeaverState {
 
-    private final File outputDir;
     private final DataStore data;
 
     private URLClassLoader classLoader;
@@ -26,8 +25,7 @@ public class LaraWeaverState {
     /**
      * @param dataStore DataStore that supports LaraIKeys
      */
-    public LaraWeaverState(File outputDir, DataStore dataStore) {
-        this.outputDir = outputDir;
+    public LaraWeaverState(DataStore dataStore) {
         this.data = dataStore;
 
         // Load JARs to classloader
@@ -38,10 +36,6 @@ public class LaraWeaverState {
         return data;
     }
 
-    public File getOutputDir() {
-        return outputDir;
-    }
-    
     public URLClassLoader getClassLoader() {
         return classLoader;
     }
@@ -59,10 +53,9 @@ public class LaraWeaverState {
                         throw new RuntimeException("Could not convert JAR file to URL", e);
                     }
                 })
-                .toArray(s -> new URL[s]);
+                .toArray(URL[]::new);
 
-        classLoader = new URLClassLoader(urls, getClass().getClassLoader()
-        );
+        classLoader = new URLClassLoader(urls, getClass().getClassLoader());
     }
 
     private List<File> getJarFiles() {
