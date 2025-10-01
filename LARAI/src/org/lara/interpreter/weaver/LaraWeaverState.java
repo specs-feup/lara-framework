@@ -18,31 +18,22 @@ import java.util.List;
  */
 public class LaraWeaverState {
 
-    private final DataStore data;
-
     private URLClassLoader classLoader;
 
     /**
      * @param dataStore DataStore that supports LaraIKeys
      */
     public LaraWeaverState(DataStore dataStore) {
-        this.data = dataStore;
-
-        // Load JARs to classloader
-        loadJars();
-    }
-
-    public DataStore getData() {
-        return data;
+        loadJars(dataStore);
     }
 
     public URLClassLoader getClassLoader() {
         return classLoader;
     }
 
-    private void loadJars() {
+    private void loadJars(DataStore dataStore) {
         // Get external jar files
-        var jarFiles = getJarFiles();
+        var jarFiles = getJarFiles(dataStore);
 
         var urls = jarFiles.stream()
                 .map(f -> {
@@ -58,8 +49,8 @@ public class LaraWeaverState {
         classLoader = new URLClassLoader(urls, getClass().getClassLoader());
     }
 
-    private List<File> getJarFiles() {
-        var jarPaths = data.get(LaraiKeys.JAR_PATHS);
+    private List<File> getJarFiles(DataStore dataStore) {
+        var jarPaths = dataStore.get(LaraiKeys.JAR_PATHS);
 
         var jarFiles = new ArrayList<File>();
 

@@ -146,6 +146,7 @@ export class Weaver {
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
+    javaWeaver.setData(datastore);
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;

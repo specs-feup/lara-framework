@@ -28,9 +28,11 @@ import pt.up.fe.specs.util.SpecsIo;
 
 public abstract class LaraWeaverEngine extends WeaverEngine {
     private LaraWeaverState state;
+    protected DataStore dataStore;
 
     public LaraWeaverEngine() {
         state = null;
+        dataStore = null;
     }
 
     @Override
@@ -74,6 +76,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
             state.close(); // Close previous state
         }
         state = new LaraWeaverState(dataStore);
+        setData(dataStore);
 
         var eventTrigger = new EventTrigger();
         eventTrigger.registerReceivers(getGears());
@@ -96,11 +99,12 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
 
     @Override
     public Optional<DataStore> getData() {
-        if (state == null) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(dataStore);
+    }
 
-        return Optional.of(state.getData());
+    public LaraWeaverEngine setData(DataStore dataStore) {
+        this.dataStore = dataStore;
+        return this;
     }
 
     public Optional<LaraWeaverState> getLaraWeaverStateTry() {
