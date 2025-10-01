@@ -126,9 +126,9 @@ export class Weaver {
         "org.suikasoft.jOptions.Interfaces.DataStore"
       );
 
-      datastore = await new JavaDataStore.newInstanceP(
-        `${javaWeaverClassName}DataStore`
-      );
+      const storeDefinition = JavaLaraI.getStoreDefinition(javaWeaver);
+
+      datastore = await new JavaDataStore.newInstanceP(storeDefinition);
 
       const fileList = new JavaArrayList();
       //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
