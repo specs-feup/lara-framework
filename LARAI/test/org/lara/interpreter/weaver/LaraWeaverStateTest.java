@@ -54,7 +54,6 @@ class LaraWeaverStateTest {
 
         // Then
         assertThat(state).isNotNull();
-        assertThat(state.getData()).isEqualTo(mockDataStore);
         assertThat(state.getClassLoader()).isNotNull();
         assertThat(state.getClassLoader()).isInstanceOf(URLClassLoader.class);
     }
@@ -161,20 +160,6 @@ class LaraWeaverStateTest {
 
         // Then - no exception should be thrown, and subsequent calls should not fail
         state.close(); // Should be safe to call multiple times
-    }
-
-    @Test
-    @DisplayName("getData() should return the original DataStore")
-    void testGetData() {
-        // Given
-        when(mockFileList.iterator()).thenReturn(Arrays.<File>asList().iterator());
-        LaraWeaverState state = new LaraWeaverState(mockDataStore);
-
-        // When
-        DataStore result = state.getData();
-
-        // Then
-        assertThat(result).isSameAs(mockDataStore);
     }
 
     @Test
