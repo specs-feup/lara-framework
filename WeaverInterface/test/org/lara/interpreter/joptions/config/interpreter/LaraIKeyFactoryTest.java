@@ -105,4 +105,73 @@ class LaraIKeyFactoryTest {
         assertThat(LaraIKeyFactory.customGetterLaraArgs("  a b  ", TestDataStores.empty())).isEqualTo("a b");
         assertThat(LaraIKeyFactory.customGetterLaraArgs("\t\na\n", TestDataStores.empty())).isEqualTo("a");
     }
+
+    @Test
+    @DisplayName("radioEnum creates key with correct default, decoder, and key panel provider")
+    void radioEnumCreatesCorrectKey() {
+        enum TestEnum {
+            OPTION_A, OPTION_B, OPTION_C
+        }
+
+        DataKey<TestEnum> key = LaraIKeyFactory.radioEnum("testRadio", TestEnum.class);
+
+        // Verify default is first enum constant
+        assertThat(key.getDefault()).isPresent();
+        assertThat(key.getDefault().get()).isEqualTo(TestEnum.OPTION_A);
+
+        // Verify decoder is present and works correctly
+        assertThat(key.getDecoder()).isPresent();
+        assertThat(key.getDecoder().get().decode("OPTION_B")).isEqualTo(TestEnum.OPTION_B);
+        assertThat(key.getDecoder().get().decode("OPTION_C")).isEqualTo(TestEnum.OPTION_C);
+
+        // Verify key panel provider is set
+        assertThat(key.getKeyPanelProvider()).isPresent();
+    }
+
+    @Test
+    @DisplayName("radioEnum decoder handles invalid input")
+    void radioEnumDecoderInvalidInput() {
+        enum Color {
+            RED, GREEN, BLUE
+        }
+
+        DataKey<Color> key = LaraIKeyFactory.radioEnum("color", Color.class);
+
+        // Valid decoding
+        assertThat(key.getDecoder()).isPresent();
+        assertThat(key.getDecoder().get().decode("RED")).isEqualTo(Color.RED);
+        assertThat(key.getDecoder().get().decode("GREEN")).isEqualTo(Color.GREEN);
+
+        // Invalid decoding should throw RuntimeException
+        assertThatThrownBy(() -> key.getDecoder().get().decode("YELLOW"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Could not find enum 'YELLOW'");
+    }
+
+    @Test
+    @DisplayName("fileList has key panel provider configured")
+    void fileListHasKeyPanelProvider() {
+        DataKey<FileList> key = LaraIKeyFactory.fileList("files", JFileChooser.FILES_ONLY, List.of("txt", "java"));
+
+        // Verify key panel provider is set
+        assertThat(key.getKeyPanelProvider()).isPresent();
+    }
+
+    @Test
+    @DisplayName("optionalFile has key panel provider configured")
+    void optionalFileHasKeyPanelProvider() {
+        DataKey<OptionalFile> key = LaraIKeyFactory.optionalFile("optFile", false);
+
+        // Verify key panel provider is set
+        assertThat(key.getKeyPanelProvider()).isPresent();
+    }
+
+    @Test
+    @DisplayName("optionalFolder has key panel provider configured")
+    void optionalFolderHasKeyPanelProvider() {
+        DataKey<OptionalFile> key = LaraIKeyFactory.optionalFolder("optDir", false);
+
+        // Verify key panel provider is set
+        assertThat(key.getKeyPanelProvider()).isPresent();
+    }
 }
