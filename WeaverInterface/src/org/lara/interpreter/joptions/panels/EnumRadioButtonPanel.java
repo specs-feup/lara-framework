@@ -46,18 +46,17 @@ public class EnumRadioButtonPanel<T extends Enum<T>> extends KeyPanel<T> {
             add(radioButton);
         }
 
-        if (key.getDefault().isPresent()) {
-
-            T t = key.getDefault().get();
-            if (radioButtons.containsKey(t)) {
-
-                radioButtons.get(t).setSelected(true);
-                return;
-            }
-        }
-
+        // Set layout before handling default value
         FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
         setLayout(flowLayout);
+
+        // Select default value if present
+        if (key.getDefault().isPresent()) {
+            T t = key.getDefault().get();
+            if (radioButtons.containsKey(t)) {
+                radioButtons.get(t).setSelected(true);
+            }
+        }
     }
 
     @Override
