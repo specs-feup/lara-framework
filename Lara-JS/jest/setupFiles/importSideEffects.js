@@ -1,3 +1,5 @@
+/* global globalThis */
+
 // Take a look at https://github.com/specs-feup/lara-framework/issues/93 for context.
 
 // This file is executed after the test environment is set up, so we can access

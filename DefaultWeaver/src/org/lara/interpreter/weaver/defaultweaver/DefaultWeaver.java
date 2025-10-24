@@ -137,8 +137,6 @@ public class DefaultWeaver extends ADefaultWeaver {
 
     @Override
     public String getName() {
-
-        // return Optional.of("Lara Interpreter User Interface");
         return "LaraI";
     }
 
