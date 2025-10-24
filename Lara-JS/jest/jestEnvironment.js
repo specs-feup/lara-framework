@@ -1,5 +1,5 @@
 import { TestEnvironment } from "jest-environment-node";
-import java from "java";
+import java from "java-bridge";
 
 export default class LaraWeaverEnvironment extends TestEnvironment {
   constructor(config, context) {

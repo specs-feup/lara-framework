@@ -1,4 +1,4 @@
-import java from "java";
+import java from "java-bridge";
 
 export const NodeJavaPrefix = "nodeJava_";
 
@@ -88,7 +88,7 @@ export default class JavaTypes {
       return JavaTypes.typeMap.get(javaTypeName);
     }
 
-    const javaType = java.import(javaTypeName);
+    const javaType = java.importClass(javaTypeName);
 
     JavaTypes.typeMap.set(javaTypeName, javaType);
 
@@ -96,17 +96,21 @@ export default class JavaTypes {
   }
 
   static instanceOf<T>(value: T, javaTypeName: string): boolean {
-    return java.instanceOf(value, javaTypeName);
+    return java.isInstanceOf((value as java.JavaClass), javaTypeName);
   }
 
   static isJavaObject<T>(value: T): boolean {
-    return (
-        typeof value === "object" &&
-        value !== null &&
-        Object.getPrototypeOf(value).constructor.name.startsWith(
-            NodeJavaPrefix
-        )
-    );
+    // Prefer a robust runtime check using java-bridge instanceOf against java.lang.Object
+    // to support both node-java and java-bridge proxies.
+    if (typeof value !== "object" || value === null) return false;
+    try {
+      return JavaTypes.instanceOf(value as any, "java.lang.Object");
+    } catch (_e) {
+      // Fallback for legacy environments (kept for completeness)
+      const proto = Object.getPrototypeOf(value);
+      const ctorName = proto?.constructor?.name ?? "";
+      return typeof ctorName === "string" && ctorName.startsWith(NodeJavaPrefix);
+    }
   }
 
   static get LaraI() {
@@ -245,7 +249,7 @@ export default class JavaTypes {
 
   static get WeaverEngine() {
     return JavaTypes.getType(
-      "org.lara.interpreter.weaver.interf.WeaverEngine"
+      "org.lara.interpreter.weaver.LaraWeaverEngine"
     ) as JavaClasses.WeaverEngine;
   }
 

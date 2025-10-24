@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import EventEmitter from "events";
-import java from "java";
+import java from "java-bridge";
 import Debug from "debug";
 import { fileURLToPath, pathToFileURL } from "url";
 import { isJavaError } from "./JavaError.js";
@@ -17,11 +17,8 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
   directExecution = false;
 }
 
-java.asyncOptions = {
-  asyncSuffix: "Async",
-  syncSuffix: "",
-  promiseSuffix: "P"
-};
+java.config.asyncSuffix = "Async";
+java.config.syncSuffix = "";
 
 export class Weaver {
   private static debug: Debug.Debugger;
@@ -34,23 +31,24 @@ export class Weaver {
     return Weaver.datastore;
   }
 
-  static async setupJavaEnvironment(sourceDir: string) {
-    const files = fs.readdirSync(sourceDir, { recursive: true });
-
-    for (const file of files) {
-      if (typeof file === "string") {
-        if (file.endsWith(".jar")) {
-          java.classpath.push(path.join(sourceDir, file));
+  static setupJavaEnvironment(sourceDir: string) {
+    java.stdout.enableRedirect(
+        (_, data) => {
+            console.log(data);
+        },
+        (_, data) => {
+            console.error(data);
         }
-      } else {
-        // TODO: review this Buffer thing and why it exists.
-        throw new Error(
-          `Returned a Buffer instead of a string for path: ${file.toString()}.`
-        );
-      }
-    }
+    );
+    const files = fs.readdirSync(sourceDir, { recursive: true });
+    const jarFiles = files
+        .filter((file) => typeof file === "string")
+        .filter((file) => file.endsWith(".jar"))
+        .map((jar) => path.join(sourceDir, jar));
 
-    await java.ensureJvm();
+    java.appendClasspath(jarFiles);
+
+    java.ensureJvm();
   }
 
   static async setupWeaver(
@@ -61,7 +59,7 @@ export class Weaver {
     Weaver.debug = Debug(`Weaver:${config.weaverPrettyName}`);
     Weaver.debug("Initiating weaver setup.");
 
-    await this.setupJavaEnvironment(config.jarPath);
+    this.setupJavaEnvironment(config.jarPath);
 
     Weaver.debug(`${config.weaverPrettyName} execution arguments: %O`, args);
 
@@ -74,25 +72,25 @@ export class Weaver {
     }
 
     // Run this before any other Java code, to have properly formatted prints
-    const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
+    const JavaSpecsSystem = java.importClass("pt.up.fe.specs.util.SpecsSystem");
     JavaSpecsSystem.programStandardInit();
 
     /* eslint-disable */
     // This code is intentionally ignored by eslint
-    const JavaArrayList = java.import("java.util.ArrayList");
-    const JavaFile = java.import("java.io.File");
-    const JavaFileList = java.import(
+    const JavaArrayList = java.importClass("java.util.ArrayList");
+    const JavaFile = java.importClass("java.io.File");
+    const JavaFileList = java.importClass(
       "org.lara.interpreter.joptions.keys.FileList"
     );
-    const JavaLaraI = java.import("larai.LaraI");
-    const JavaLaraIDataStore = java.import(
+    const JavaLaraI = java.importClass("larai.LaraI");
+    const JavaLaraIDataStore = java.importClass(
       "org.lara.interpreter.joptions.config.interpreter.LaraIDataStore"
     );
-    const LaraiKeys = java.import(
+    const LaraiKeys = java.importClass(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
 
-    const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
+    const JavaWeaverClass = java.importClass(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
@@ -122,13 +120,13 @@ export class Weaver {
         );
       }
     } else {
-      const JavaDataStore = java.import(
+      const JavaDataStore = java.importClass(
         "org.suikasoft.jOptions.Interfaces.DataStore"
       );
 
       const storeDefinition = JavaLaraI.getStoreDefinition(javaWeaver);
 
-      datastore = await new JavaDataStore.newInstanceP(storeDefinition);
+      datastore = JavaDataStore.newInstance(storeDefinition);
 
       const fileList = new JavaArrayList();
       //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);

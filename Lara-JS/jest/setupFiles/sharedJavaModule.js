@@ -2,4 +2,4 @@
 
 import { jest } from "@jest/globals";
 
-jest.mock("java", () => global.__SHARED_MODULE__);
+jest.mock("java-bridge", () => global.__SHARED_MODULE__);

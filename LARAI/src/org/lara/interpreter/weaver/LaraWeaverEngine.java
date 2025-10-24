@@ -141,4 +141,7 @@ public abstract class LaraWeaverEngine extends WeaverEngine {
         }
     }
 
+    public static LaraWeaverEngine getThreadLocalWeaver() {
+        return (LaraWeaverEngine) WeaverEngine.getThreadLocalWeaver();
+    }
 }
