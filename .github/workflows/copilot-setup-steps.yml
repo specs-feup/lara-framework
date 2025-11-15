@@ -1,0 +1,92 @@
+name: "Copilot Setup Steps"
+
+# Automatically run the setup steps when they are changed
+# Allows for streamlined validation,
+# and allow manual testing through the repository's "Actions" tab
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+env:
+  LARA_FRAMEWORK_BRANCH: ${{ github.head_ref || github.ref_name }}
+
+jobs:
+  # The job MUST be called `copilot-setup-steps`
+  # otherwise it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    # Permissions set just for the setup steps
+    # Copilot has permissions to its branch
+
+    permissions:
+      # To allow us to clone the repo for setup
+      contents: read
+
+    # The setup steps - install our dependencies
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: current
+          dependency-graph: generate-and-submit
+
+      - name: Checkout lara-framework
+        uses: actions/checkout@v4
+        with:
+          path: lara-framework
+
+      - name: Detect specs-java-libs default branch
+        id: specs-java-libs-default
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEFAULT_BRANCH=$(git ls-remote --symref https://github.com/specs-feup/specs-java-libs.git HEAD | awk '/^ref:/ {print $2}' | sed 's@refs/heads/@@')
+          echo "Default branch is '${DEFAULT_BRANCH}'"
+          echo "default=${DEFAULT_BRANCH}" >> "$GITHUB_OUTPUT"
+
+      - name: Determine specs-java-libs ref
+        id: specs-java-libs-ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH_NAME="${{ env.LARA_FRAMEWORK_BRANCH }}"
+          DEFAULT_BRANCH="${{ steps.specs-java-libs-default.outputs.default }}"
+
+          echo "Checking if branch '${BRANCH_NAME}' exists in specs-java-libs"
+          if git ls-remote --heads https://github.com/specs-feup/specs-java-libs.git "refs/heads/${BRANCH_NAME}" >/dev/null; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+            echo "ref=${BRANCH_NAME}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "match=false" >> "$GITHUB_OUTPUT"
+          echo "ref=${DEFAULT_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "Branch '${BRANCH_NAME}' not found. Falling back to '${DEFAULT_BRANCH}'."
+
+      - name: Echo checks
+        run: |
+          echo "Matching branch found: ${{ steps.specs-java-libs-ref.outputs.match }}"
+          echo "Lara framework branch: ${{ env.LARA_FRAMEWORK_BRANCH }}"
+          echo "Specs-java-libs ref: ${{ steps.specs-java-libs-ref.outputs.ref }}"
+          echo "Specs-java-libs default fallback: ${{ steps.specs-java-libs-default.outputs.default }}"
+          echo "Pull request base_ref (if any): ${{ github.base_ref }}"
+
+      - name: Checkout specs-java-libs
+        uses: actions/checkout@v4
+        with:
+          repository: specs-feup/specs-java-libs
+          path: specs-java-libs
+          ref: ${{ steps.specs-java-libs-ref.outputs.ref }}
