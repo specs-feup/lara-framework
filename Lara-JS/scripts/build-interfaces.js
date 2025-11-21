@@ -23,7 +23,7 @@ async function buildInterfaces(
   const { default: laraJsonSpecification } = await import(
     laraJoinPointSpecificationImportPath,
     {
-      assert: {
+      with: {
         type: "json",
       },
     }
