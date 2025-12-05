@@ -181,7 +181,8 @@ export function registerJoinpointMapperFunction(
   };
 
   JoinpointMappers.push(jpMapper);
-}`
+}
+  `
   );
 
   fs.writeSync(
