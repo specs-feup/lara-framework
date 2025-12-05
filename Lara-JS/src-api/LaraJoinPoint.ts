@@ -164,7 +164,11 @@ export function wrapJoinPoint(obj: any): any {
   const jpClass: string = obj.get_class();
   for (const mapper of JoinpointMappers) {
     if (mapper[jpClass]) {
-      return new mapper[jpClass](obj);
+      // Resolve the Java object to its actual runtime type to get a proxy with all methods.
+      // This is necessary because java-bridge creates proxies based on declared return types,
+      // not actual runtime types, so methods from subclasses may be missing.
+      const resolvedObj = JavaTypes.toRuntimeType(obj);
+      return new mapper[jpClass](resolvedObj);
     }
   }
   throw new Error("No mapper found for join point type: " + jpClass);

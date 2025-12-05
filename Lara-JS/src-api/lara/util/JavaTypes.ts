@@ -1,4 +1,4 @@
-import java from "java-bridge";
+import java, { type JavaClass } from "java-bridge";
 
 export const NodeJavaPrefix = "nodeJava_";
 
@@ -97,6 +97,37 @@ export default class JavaTypes {
 
   static instanceOf<T>(value: T, javaTypeName: string): boolean {
     return java.isInstanceOf((value as java.JavaClass), javaTypeName);
+  }
+
+  /**
+   * Re-resolves a Java object to get a proxy with methods from its actual runtime class.
+   *
+   * The node-java-bridge library creates proxies based on the declared return
+   * type of methods, not the actual runtime type of the object. This means
+   * subclass methods won't be available on the proxy. This function works
+   * around that limitation by passing the object through a method that returns
+   * `java.lang.Object`, which triggers java-bridge's automatic type resolution
+   * to create a new proxy with methods from the actual runtime class.
+   *
+   * This is a no-op on the Java side but causes java-bridge to re-evaluate
+   * the object's type and create an appropriate proxy.
+   *
+   * @param obj - The Java object to re-resolve
+   * @returns A new proxy for the same Java object but with methods from its actual runtime class
+   * @example
+   * // If you have a join point whose actual type is CxxLoop but was returned as JoinPoint
+   * const resolvedJp = JavaTypes.toRuntimeType(limitedJp);
+   * resolvedJp.getKind(); // Now this works because the proxy has CxxLoop methods!
+   */
+  static toRuntimeType<T extends JavaClass>(obj: JavaClass): T {
+    // Use java.importClass directly to avoid any caching issues.
+    const Objects = java.importClass("java.util.Objects");
+    const methodName = "requireNonNull" + (java.config.syncSuffix ?? "");
+    const method = Objects[methodName];
+    if (typeof method !== "function") {
+      throw new Error(`Cannot find method ${methodName} on java.util.Objects`);
+    }
+    return method.call(Objects, obj) as T;
   }
 
   static isJavaObject<T>(value: T): boolean {
