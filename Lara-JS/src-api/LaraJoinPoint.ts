@@ -174,12 +174,8 @@ export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
   // Create mapper from object
   const jpMapper: JoinpointMapper = {
     toJpClass(jpTypename: string) {
-      const jpClass = mapper[jpTypename];
-      if (jpClass) {
-        return jpClass;
-      }
-
-      return undefined;
+      return mapper[jpTypename];
+      
     },
 
     toJpInstance(jpTypename: string, javaJp: any) {
