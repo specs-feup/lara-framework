@@ -66,9 +66,6 @@ export class LaraJoinPoint {
     }
 }
 const JoinpointMappers = [];
-export function registerJoinpointMapper(mapper) {
-    JoinpointMappers.push(mapper);
-}
 /**
  * This function is for internal use only. DO NOT USE IT!
  */
@@ -80,6 +77,45 @@ export function clearJoinpointMappers() {
  */
 export function getJoinpointMappers() {
     return JoinpointMappers;
+}
+export function registerJoinpointMapper(mapper) {
+    // Create mapper from object
+    const jpMapper = {
+        toJpClass(jpTypename) {
+            return mapper[jpTypename];
+        },
+        toJpInstance(jpTypename, javaJp) {
+            const jpClass = this.toJpClass(jpTypename);
+            if (jpClass) {
+                return new jpClass(javaJp);
+            }
+            return undefined;
+        },
+        fromJpClass(jpType) {
+            return Object.keys(mapper).find((key) => mapper[key] === jpType);
+        },
+    };
+    JoinpointMappers.push(jpMapper);
+}
+export function registerJoinpointMapperFunction(mapper) {
+    // Create mapper from function
+    const jpMapper = {
+        toJpClass(jpTypename) {
+            return mapper(jpTypename);
+        },
+        toJpInstance(jpTypename, javaJp) {
+            const jpClass = this.toJpClass(jpTypename);
+            if (jpClass) {
+                return new jpClass(javaJp);
+            }
+            return undefined;
+        },
+        // Not possible to implement with just a function
+        fromJpClass(jpType) {
+            return undefined;
+        },
+    };
+    JoinpointMappers.push(jpMapper);
 }
 export function wrapJoinPoint(obj) {
     if (JoinpointMappers.length === 0) {
@@ -119,52 +155,20 @@ export function wrapJoinPoint(obj) {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Given Java join point is a Java class but is not a JoinPoint: ${obj.getClass()}`);
     }
-    // Get join point class from name of the Java class, since getJoinPointType() might
-    // not always correspond to the actual join point class (e.g., anyweaver)
-    const jpClass = obj.get_class();
+    const jpType = obj.getJoinPointType();
     for (const mapper of JoinpointMappers) {
-        if (mapper[jpClass]) {
-            return new mapper[jpClass](obj);
+        const laraJp = mapper.toJpInstance(jpType, obj);
+        if (laraJp) {
+            return laraJp;
         }
     }
-    throw new Error("No mapper found for join point type: " + jpClass);
+    throw new Error("No mapper found for join point type: " + jpType);
 }
 export function unwrapJoinPoint(obj) {
     if (obj instanceof LaraJoinPoint) {
         return obj._javaObject;
     }
     if (Array.isArray(obj)) {
-        // Always convert to Object[]
-        // Java methods that interface with JavaScript and
-        // have an array parameter, it must always be Object[]
-        /*
-        if (engine == Engine.NodeJS) {
-    
-          
-          const isJpArray = obj.reduce((prev, curr) => {
-              return prev && curr instanceof LaraJoinPoint;
-          }, true);
-          
-          const getClassName = (jp: LaraJoinPoint) =>
-              Object.getPrototypeOf(jp._javaObject).constructor.name;
-    
-          if (isJpArray) {
-            const clazz = (
-                obj.map(getClassName).reduce((prev, curr) => {
-                    if (prev != curr) {
-                        return undefined;
-                    }
-                    return prev;
-                }) ?? "java.lang.Object"
-            )
-                .replace(NodeJavaPrefix, "")
-                .replaceAll("_", ".");
-            
-            return java.newArray(clazz, obj.map(unwrapJoinPoint));
-          }
-            
-        }
-    */
         return obj.map(unwrapJoinPoint);
     }
     return obj;
