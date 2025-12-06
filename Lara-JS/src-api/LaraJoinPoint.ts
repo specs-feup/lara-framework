@@ -188,12 +188,7 @@ export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
     },
 
     fromJpClass(jpType: typeof LaraJoinPoint) {
-      const match = Object.keys(mapper).find((key) => mapper[key] === jpType);
-      if (match) {
-        return match;
-      }
-
-      return undefined;
+      return Object.keys(mapper).find((key) => mapper[key] === jpType);
     },
   };
 
