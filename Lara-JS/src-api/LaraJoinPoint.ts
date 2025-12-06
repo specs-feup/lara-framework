@@ -175,7 +175,6 @@ export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
   const jpMapper: JoinpointMapper = {
     toJpClass(jpTypename: string) {
       return mapper[jpTypename];
-      
     },
 
     toJpInstance(jpTypename: string, javaJp: any) {
@@ -299,30 +298,6 @@ export function unwrapJoinPoint(obj: any): any {
   }
 
   if (Array.isArray(obj)) {
-    if (engine == Engine.NodeJS) {
-      const isJpArray = obj.reduce((prev, curr) => {
-        return prev && curr instanceof LaraJoinPoint;
-      }, true);
-
-      const getClassName = (jp: LaraJoinPoint) =>
-        Object.getPrototypeOf(jp._javaObject).constructor.name;
-
-      if (isJpArray) {
-        const clazz = (
-          obj.map(getClassName).reduce((prev, curr) => {
-            if (prev != curr) {
-              return undefined;
-            }
-            return prev;
-          }) ?? "java.lang.Object"
-        )
-          .replace(NodeJavaPrefix, "")
-          .replaceAll("_", ".");
-
-        return java.newArray(clazz, obj.map(unwrapJoinPoint));
-      }
-    }
-
     return obj.map(unwrapJoinPoint);
   }
 
