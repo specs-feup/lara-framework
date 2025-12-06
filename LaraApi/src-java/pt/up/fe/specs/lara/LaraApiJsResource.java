@@ -24,6 +24,7 @@ import org.lara.interpreter.weaver.utils.LaraResourceProvider;
  */
 public enum LaraApiJsResource implements LaraResourceProvider {
 
+    JOINPOINTMAPPER_JS("JoinpointMapper.js"),
     LARAJOINPOINT_JS("LaraJoinPoint.js"),
     CORE_JS("core.js"),
     OUTPUT_JS("core/output.js"),
