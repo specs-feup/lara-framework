@@ -398,31 +398,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * Processes the arguments. Processing includes:
-     *
-     * <p>
-     * - Arrays are converted to arrays of Objects, for compatibility with the
-     * JavaScript layer.
-     * </p>
-     *
-     */
-    public static List<Argument> convertParamArrayToObjArray(List<Argument> arguments) {
-        var newArgs = new ArrayList<Argument>(arguments.size());
-
-        for (var arg : arguments) {
-            if (arg.getClassType().isArray()) {
-                arg = arg.clone();
-                arg.getClassType().setName("Object");
-                arg.getClassType().setPackage("java.lang");
-            }
-
-            newArgs.add(arg);
-        }
-
-        return newArgs;
-    }
-
-    /**
      * Convert an action method to actionImpl,which will be the one the user should
      * implement, and generate the action
      * implementation that invokes this new actionImpl
@@ -544,7 +519,7 @@ public class GeneratorUtils {
         // Adapts parameters after processing and code generation is done, to improve
         // compatibility with
         // calls from JavaScript
-        cloned.setArguments(convertParamArrayToObjArray(cloned.getParams()));
+        cloned.setArguments(cloned.getParams());
 
         return cloned;
 

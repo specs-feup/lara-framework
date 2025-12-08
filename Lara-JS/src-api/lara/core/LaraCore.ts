@@ -252,7 +252,12 @@ export function arrayFromArgs(args: any, start = 0) {
 }
 
 function isJavaList<T>(list: T) {
-  if (typeof list !== "object") {
+  if (list == null || typeof list !== "object") {
+    return false;
+  }
+
+  // First check if it's a Java object to avoid errors when calling instanceOf on non-Java objects
+  if (!JavaTypes.isJavaObject(list)) {
     return false;
   }
 

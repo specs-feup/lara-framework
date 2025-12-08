@@ -1,10 +1,10 @@
-import java, { type JavaClass } from "java-bridge";
+import java, { type JavaClass as jc } from "java-bridge";
 
 export const NodeJavaPrefix = "nodeJava_";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JavaClasses {
-  export interface JavaClass {
+  export interface JavaClass extends jc {
     (...args: unknown[]): any;
     new (...args: unknown[]): any;
     [key: string]: any;
@@ -48,7 +48,8 @@ export namespace JavaClasses {
   export interface Diff extends JavaClass {}
   export interface XStreamUtils extends JavaClass {
     // Otherwise TS will get confused about .toString()
-    toString(obj: any): string;
+    // Accept an optional parameter so the signature is compatible with JavaClass.toString()
+    toString(obj?: any): string;
   }
   export interface Object extends JavaClass {}
   export interface CsvReader extends JavaClass {}
@@ -119,7 +120,7 @@ export default class JavaTypes {
    * const resolvedJp = JavaTypes.toRuntimeType(limitedJp);
    * resolvedJp.getKind(); // Now this works because the proxy has CxxLoop methods!
    */
-  static toRuntimeType<T extends JavaClass>(obj: JavaClass): T {
+  static toRuntimeType<T extends JavaClasses.JavaClass>(obj: JavaClasses.JavaClass): T {
     // Use java.importClass directly to avoid any caching issues.
     const Objects = java.importClass("java.util.Objects");
     const methodName = "requireNonNull" + (java.config.syncSuffix ?? "");
