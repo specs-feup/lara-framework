@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, afterAll } from "bun:test";
-import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
-import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.js";
+import Weaver from "../api/weaver/Weaver.js";
+import JavaTypes from "../api/lara/util/JavaTypes.js";
 
 /**
  * Registers the source code that will be used by the weaver for the purpose of this test suite.
