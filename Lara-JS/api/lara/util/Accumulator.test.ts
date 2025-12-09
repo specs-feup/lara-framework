@@ -1,3 +1,4 @@
+import { describe, it, expect } from "bun:test";
 import Accumulator from "./Accumulator.js";
 
 describe("Accumulator", () => {

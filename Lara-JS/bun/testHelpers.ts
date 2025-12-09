@@ -1,3 +1,4 @@
+import { beforeEach, afterEach, afterAll } from "bun:test";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.js";
 

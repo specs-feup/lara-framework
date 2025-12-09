@@ -1,3 +1,4 @@
+import { describe, it, expect } from "bun:test";
 import PrintOnce from "./PrintOnce.js"
 
 describe("PrintOnce", () => {

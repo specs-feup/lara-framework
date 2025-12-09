@@ -2,16 +2,14 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
-    "declaration": true,
-    "outDir": "./dist",
     "strict": true,
     //"allowJs": true,
     //"checkJs": true,
     "moduleResolution": "NodeNext",
     "isolatedModules": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
     //"esModuleInterop": true
-  }
+    "noEmit": true
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
 }

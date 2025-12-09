@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import Io from "./Io.js";
 import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 

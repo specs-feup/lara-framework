@@ -17,9 +17,6 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
   directExecution = false;
 }
 
-java.config.asyncSuffix = "Async";
-java.config.syncSuffix = "";
-
 export class Weaver {
   private static debug: Debug.Debugger;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,6 +29,19 @@ export class Weaver {
   }
 
   static setupJavaEnvironment(sourceDir: string) {
+    // IMPORTANT: This is a Bun-specific workaround that must be applied BEFORE the JVM is created.
+    // If the JVM hasn't been created yet by a preload script, we need to ensure it's created with
+    // the proper options. The -Djdk.lang.processReaperUseDefaultStackSize=true option is required
+    // because Bun uses a smaller thread stack size (136k) than Node.js, which causes Java's process
+    // reaper thread to fail with "pthread_create failed (EINVAL)" when spawning external processes.
+    // This call is idempotent - if JVM is already created, it does nothing.
+    java.ensureJvm({
+      opts: ["-Djdk.lang.processReaperUseDefaultStackSize=true"],
+    });
+
+    java.config.asyncSuffix = "Async";
+    java.config.syncSuffix = "";
+
     java.stdout.enableRedirect(
         (_, data) => {
             console.log(data);
@@ -47,8 +57,6 @@ export class Weaver {
         .map((jar) => path.join(sourceDir, jar));
 
     java.appendClasspath(jarFiles);
-
-    java.ensureJvm();
   }
 
   static async setupWeaver(

@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { describe, it, expect, spyOn, mock } from "bun:test";
 import {
   addActiveChildProcess,
   handleExit,
@@ -36,18 +36,10 @@ describe("ChildProcessHandling", () => {
       getActiveChildProcesses()[childProcess1.pid] = childProcess1;
       getActiveChildProcesses()[childProcess2.pid] = childProcess2;
 
-      const childProcessKillSpy1 = jest
-        .spyOn(childProcess1, "kill")
-        .mockClear();
-      const childProcessOnceSpy1 = jest
-        .spyOn(childProcess1, "once")
-        .mockClear();
-      const childProcessKillSpy2 = jest
-        .spyOn(childProcess2, "kill")
-        .mockClear();
-      const childProcessOnceSpy2 = jest
-        .spyOn(childProcess2, "once")
-        .mockClear();
+      const childProcessKillSpy1 = spyOn(childProcess1, "kill");
+      const childProcessOnceSpy1 = spyOn(childProcess1, "once");
+      const childProcessKillSpy2 = spyOn(childProcess2, "kill");
+      const childProcessOnceSpy2 = spyOn(childProcess2, "once");
 
       handleExit(false);
 
@@ -56,7 +48,10 @@ describe("ChildProcessHandling", () => {
       expect(childProcessKillSpy2).toHaveBeenCalledTimes(1);
       expect(childProcessOnceSpy2).toHaveBeenCalledTimes(1);
 
-      jest.restoreAllMocks();
+      childProcessKillSpy1.mockRestore();
+      childProcessOnceSpy1.mockRestore();
+      childProcessKillSpy2.mockRestore();
+      childProcessOnceSpy2.mockRestore(); 
     });
   });
 });

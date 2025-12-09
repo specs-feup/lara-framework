@@ -1,10 +1,10 @@
 import JavaTypes, {
     JavaClasses,
-} from "@specs-feup/lara/api/lara/util/JavaTypes.js";
-import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
+} from "../api/lara/util/JavaTypes.js";
+import Weaver from "../api/weaver/Weaver.js";
 import fs from "fs";
 import util from "util";
-import { jest } from "@jest/globals";
+import { afterAll, expect, spyOn } from "bun:test";
 import path from "path";
 
 afterAll(() => {
@@ -131,8 +131,8 @@ export class WeaverLegacyTester {
         }
 
         let out = "";
-        const log = jest.spyOn(global.console, "log");
-        log.mockImplementation((data, ...args: unknown[]) => {
+        const log = spyOn(globalThis.console, "log");
+        log.mockImplementation((data: unknown, ...args: unknown[]) => {
             if (data) {
                 out += util.format(data, ...args);
             }

@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { describe, it, expect } from "bun:test";
 import { isValidFileExtension, FileExtensions } from "./FileExtensions.js";
 
 describe("FileExtensions", () => {

@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from "bun:test";
 import IdGenerator, { IdGeneratorClass } from "./IdGenerator.js";
 
 describe("IdGenerator", () => {

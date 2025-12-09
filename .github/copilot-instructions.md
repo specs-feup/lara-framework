@@ -19,8 +19,8 @@ The LARA Framework is a sophisticated **source-to-source compiler framework** de
 ## Development Environment & Setup
 
 - **Java Version:** 17+ (required for all Java components)
-- **Node.js Version:** 20 or 22 (minimum 20.0.0 for JavaScript components)
-- **Build System:** Gradle for Java modules, npm for TypeScript/JavaScript
+- **Bun.sh Version:** Any version
+- **Build System:** Gradle for Java modules, Bun for TypeScript/JavaScript
 - **IDE:** VSCode is recommended for development
 
 ## Architecture Overview
@@ -41,9 +41,9 @@ lara-framework/
 
 ### Technology Stack
 - **Backend**: Java 17+ with Gradle build system
-- **Frontend**: TypeScript/JavaScript with Node.js 20 or 22
+- **Frontend**: TypeScript/JavaScript with Bun.sh runtime
 - **Specification**: XML with XSD schema validation
-- **Testing**: Jest (JS), JUnit (Java)
+- **Testing**: Bun's test runner (JS), JUnit (Java)
 - **Interoperability**: Java-JavaScript bridge via `java` npm package
 
 ### Related Projects
@@ -76,7 +76,7 @@ You can then run the following command to generate the TypeScript interfaces for
 ```bash
 # Generate TypeScript interfaces from XML specifications
 cd Lara-JS
-npm run build-interfaces
+bun run build-interfaces
 ```
 
 ### 2. Weaver Pattern
@@ -136,8 +136,8 @@ for (const func of Query.search('function')) {
 **Purpose**: TypeScript/JavaScript implementation providing modern API and better compatibility
 
 **Key Components**:
-- `src-api/`: Public API for weaver development
-- `src-code/`: Core weaver functionality and launchers  
+- `api/`: Public API for weaver development
+- `code/`: Core weaver functionality and launchers  
 - `scripts/`: Build and interface generation tools
 
 **Entry Points**:
@@ -210,7 +210,7 @@ The project uses Gradle multi-project build:
 
 ### Testing Approach
 
-- **Unit Tests**: Jest for TypeScript, JUnit for Java
+- **Unit Tests**: Bun's test runner for TypeScript, JUnit for Java
 - **Integration Tests**: End-to-end weaver execution tests
 - **Specification Tests**: XML schema validation and parsing tests
 
@@ -268,11 +268,11 @@ const defaultAttr = Weaver.getDefaultAttribute('function');
 
 ### Runtime Requirements
 - **Java**: JDK 17 or higher
-- **Node.js**: Version 20 or 22 (minimum 20.0.0)
+- **Bun.sh**: Any version
 - **Build**: Gradle 6.0+ for Java modules
 
 ### Key Dependencies
-- `java`: Node.js-Java bridge
+- `java-bridge`: Bun.sh-Java bridge
 - `cytoscape`: Graph visualization
 - `yargs`: Command-line argument parsing
 - `chokidar`: File system watching
@@ -280,8 +280,8 @@ const defaultAttr = Weaver.getDefaultAttribute('function');
 ## Common Troubleshooting
 
 ### Java-JavaScript Interop Issues
-- Ensure compatible Java and Node.js versions
-- Check `java` npm package installation
+- Ensure compatible Java and Bun.sh versions
+- Check `java-bridge` bun package installation
 - Verify JAVA_HOME environment variable
 
 ### Specification Validation Errors

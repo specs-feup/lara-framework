@@ -1,7 +1,7 @@
-import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.js";
+import { describe, it } from "bun:test";
+import { WeaverLegacyTester } from "../bun/WeaverLegacyTester.js";
 import path from "path";
 
-/* eslint-disable jest/expect-expect */
 describe("Weaver", () => {
     function newTester() {
         return new WeaverLegacyTester(
