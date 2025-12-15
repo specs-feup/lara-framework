@@ -50,6 +50,22 @@ export class Weaver {
       }
     }
 
+    // Add JVM options to open modules for reflection (needed by XStream/jOptions)
+    // These must be added before ensureJvm() is called
+    const moduleOptions = [
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+      "--add-opens=java.base/java.text=ALL-UNNAMED",
+      "--add-opens=java.desktop/java.awt.font=ALL-UNNAMED",
+    ];
+
+    for (const option of moduleOptions) {
+      if (!java.options.includes(option)) {
+        java.options.push(option);
+      }
+    }
+
     await java.ensureJvm();
   }
 

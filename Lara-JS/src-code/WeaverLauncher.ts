@@ -184,9 +184,32 @@ export default class WeaverLauncher {
               type: "array",
               default: [],
               defaultDescription: "none",
+            })
+            .option("e", {
+              alias: "edit",
+              describe: "Launch TUI to edit weaver options file",
+              type: "string",
+            })
+            .check((argv) => {
+              if (argv.edit !== undefined) {
+                const hasScriptFile = argv.scriptFile !== undefined && argv.scriptFile !== "";
+                const hasConfig = argv.config !== undefined;
+                const hasWatch = argv.watch !== undefined && (argv.watch as string[]).length > 0;
+
+                if (hasScriptFile || hasConfig || hasWatch) {
+                  throw new Error("--edit cannot be used with other options (--config, --watch, or script-file)");
+                }
+              }
+              return true;
             });
         },
-        handler: (argv) => {
+        handler: async (argv) => {
+          if (argv.edit !== undefined) {
+            const { launchOptionsEditor } = await import("./weaver-options-tui/OptionsEditor.js");
+            const exitCode = await launchOptionsEditor(argv.edit as string, this.config);
+            process.exit(exitCode);
+            return;
+          }
           try {
             console.log(`Executing ${this.config.weaverPrettyName} script...`);
             void this.main(argv);

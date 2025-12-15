@@ -60,10 +60,13 @@
     "node": ">=18.18"
   },
   "dependencies": {
+    "@inkjs/ui": "^2.0.0",
     "chokidar": "^4.0.3",
     "cytoscape": "^3.0.0",
     "debug": "^4.4.0",
+    "ink": "^6.5.1",
     "java": "^0.16.1",
+    "react": "^19.2.3",
     "supports-color": "^10.0.0",
     "yargs": "^17.7.2"
   },
@@ -72,6 +75,7 @@
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.14.10",
+    "@types/react": "^19.2.7",
     "@types/yargs": "^17.0.33",
     "typescript-eslint": "^8.26.1",
     "cross-env": "^7.0.3",
