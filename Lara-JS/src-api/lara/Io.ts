@@ -483,23 +483,6 @@ export default class Io {
 
   /**
    *
-   * @param fileOrBaseFolder - File object or path to the file
-   * @param optionalFile - Optional child pathname or file
-   *
-   * @returns the MD5 checksum of the file represented as a hexadecimal string.
-   *
-   * @throws RuntimeException if there are any issues while reading the file or calculating the MD5 checksum
-   */
-
-  static md5(
-    fileOrBaseFolder: string | JavaClasses.File,
-    optionalFile?: string | JavaClasses.File
-  ): string {
-    return JavaTypes.SpecsIo.getMd5(Io.getPath(fileOrBaseFolder, optionalFile));
-  }
-
-  /**
-   *
    * @returns the current working directory as a File object.
    */
   static getWorkingFolder(): JavaClasses.File {
