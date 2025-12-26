@@ -1,7 +1,6 @@
 import { JSONtoFile, fileToJSON } from "../core/output.js";
 import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 import fg from "fast-glob";
-import path from "path";
 import fs from "fs";
 
 /**
@@ -152,7 +151,9 @@ export default class Io {
       return [];
     }
 
-    const globPattern = path.join(folderPath, pattern);
+    // Normalize path to forward slashes for fast-glob (works on all platforms)
+    const normalizedFolder = folderPath.replace(/\\/g, '/');
+    const globPattern = `${normalizedFolder}/${pattern}`;
     
     const entries = fg.sync(globPattern, {
       dot: true,
