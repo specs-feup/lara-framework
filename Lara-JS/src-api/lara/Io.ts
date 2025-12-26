@@ -1,5 +1,8 @@
 import { JSONtoFile, fileToJSON } from "../core/output.js";
 import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import fg from "fast-glob";
+import path from "path";
+import fs from "fs";
 
 /**
  * Utility methods related with input/output operations on files.
@@ -134,6 +137,35 @@ export default class Io {
   }
 
   /**
+   * Get paths matching a pattern in a folder (using fast-glob)
+   */
+  private static getPathsWithPattern(
+    folder: string | JavaClasses.File,
+    pattern: string,
+    recursive: boolean,
+    filter: 'FILES' | 'FOLDERS' | 'FILES_AND_FOLDERS'
+  ): JavaClasses.File[] {
+    const folderPath = Io.getAbsolutePath(folder);
+    
+    if (!fs.existsSync(folderPath) || !fs.statSync(folderPath).isDirectory()) {
+      console.warn(`Folder does not exist: '${folderPath}'`);
+      return [];
+    }
+
+    const globPattern = path.join(folderPath, pattern);
+    
+    const entries = fg.sync(globPattern, {
+      dot: true,
+      onlyFiles: filter === 'FILES',
+      onlyDirectories: filter === 'FOLDERS',
+      deep: recursive ? Infinity : 1,
+      absolute: true
+    });
+
+    return entries.map(entry => Io.newFile(entry));
+  }
+
+  /**
    *
    * @param baseFolder - File object or path to the base folder
    * @param args - Patterns to match
@@ -155,16 +187,14 @@ export default class Io {
     }
 
     for (const argument of argsArray) {
-      const foundFiles: any = JavaTypes.SpecsIo.getPathsWithPattern(
+      const foundFiles = Io.getPathsWithPattern(
         baseFolderFile,
         argument,
         false,
         "FILES_AND_FOLDERS"
       );
 
-      for (const file of foundFiles.toArray()) {
-        files.push(file);
-      }
+      files.push(...foundFiles);
     }
 
     return files;
@@ -219,19 +249,12 @@ export default class Io {
       return files;
     }
 
-    const list = JavaTypes.SpecsIo.getPathsWithPattern(
+    return Io.getPathsWithPattern(
       Io.getPath(baseFolder),
       pattern.toString(),
       isRecursive,
       "FILES"
-    ).toArray();
-    const files: JavaClasses.File[] = [];
-
-    for (const file of list) {
-      files.push(file);
-    }
-
-    return files;
+    );
   }
 
   /**
