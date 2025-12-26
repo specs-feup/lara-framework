@@ -21,8 +21,6 @@ configurations {
 }
 
 dependencies {
-    testImplementation "junit:junit:4.13.1"
-
     implementation ":CommonsLangPlus" // Required for APIs only. Needs to be in the classpath.
     implementation ":jOptions"
     implementation ":SpecsUtils"
