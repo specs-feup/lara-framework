@@ -126,7 +126,7 @@ export class Weaver {
         "org.suikasoft.jOptions.Interfaces.DataStore"
       );
 
-      const storeDefinition = JavaLaraI.getStoreDefinition(javaWeaver);
+      const storeDefinition = JavaLaraI.buildStoreDefinition(javaWeaver);
 
       datastore = await new JavaDataStore.newInstanceP(storeDefinition);
 

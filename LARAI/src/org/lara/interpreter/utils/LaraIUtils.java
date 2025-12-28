@@ -28,8 +28,6 @@ public class LaraIUtils {
             return true;
         }
         if (cmd.hasOption(CLIOption.version.shortOption())) {
-            System.out.println(LaraI.LARAI_VERSION_TEXT);
-
             var implVersion = SpecsSystem.getBuildNumber();
             if (implVersion == null) {
                 implVersion = "<build number not found>";

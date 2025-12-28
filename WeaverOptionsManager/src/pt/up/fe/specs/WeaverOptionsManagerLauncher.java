@@ -22,7 +22,7 @@ public class WeaverOptionsManagerLauncher {
 
         AppKernel kernel = new WeaverOptionsManagerKernel();
 
-        StoreDefinition definition = LaraI.getStoreDefinition(weaverEngine);
+        StoreDefinition definition = LaraI.buildStoreDefinition(weaverEngine);
 
         AppPersistence persistence = new XmlPersistence(definition);
 

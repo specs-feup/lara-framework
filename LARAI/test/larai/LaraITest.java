@@ -87,14 +87,6 @@ class LaraITest {
     }
 
     @Test
-    @DisplayName("LARAI_VERSION_TEXT should contain version")
-    void testLaraiVersionText() {
-        // When/Then
-        assertThat(LaraI.LARAI_VERSION_TEXT).contains("Lara interpreter version");
-        assertThat(LaraI.LARAI_VERSION_TEXT).contains("3.1");
-    }
-
-    @Test
     @DisplayName("PROPERTY_JAR_PATH should be defined")
     void testPropertyJarPath() {
         // When/Then
@@ -123,7 +115,7 @@ class LaraITest {
     @DisplayName("getStoreDefinition() should create store definition from weaver engine")
     void testGetStoreDefinition() {
         // When
-        StoreDefinition storeDefinition = LaraI.getStoreDefinition(mockWeaverEngine);
+        StoreDefinition storeDefinition = LaraI.buildStoreDefinition(mockWeaverEngine);
 
         // Then
         assertThat(storeDefinition).isNotNull();

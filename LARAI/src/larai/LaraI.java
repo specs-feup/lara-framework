@@ -29,13 +29,11 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class LaraI {
-    private static final double LARA_VERSION = 3.1; // Since we are using GraalVM
-    public static final String LARAI_VERSION_TEXT = "Lara interpreter version: " + LaraI.LARA_VERSION;
     public static final String PROPERTY_JAR_PATH = "lara.jarpath";
 
     private static Supplier<Long> timeProvider = System::currentTimeMillis;
 
-    public static StoreDefinition getStoreDefinition(WeaverEngine weaverEngine) {
+    public static StoreDefinition buildStoreDefinition(WeaverEngine weaverEngine) {
         String weaverName = weaverEngine.getName();
         return new StoreDefinitionBuilder(weaverName)
                 // Add LaraI keys

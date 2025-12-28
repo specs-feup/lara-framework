@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
-import larai.LaraI;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -88,7 +87,6 @@ class LaraIUtilsTest {
         // Then
         assertThat(result).isTrue();
         String output = outputStreamCaptor.toString();
-        assertThat(output).contains(LaraI.LARAI_VERSION_TEXT);
         assertThat(output).contains("Build:");
     }
 
@@ -149,7 +147,6 @@ class LaraIUtilsTest {
             assertThat(result).isTrue();
             String output = outputStreamCaptor.toString();
             assertThat(output).contains(helpText);
-            assertThat(output).doesNotContain(LaraI.LARAI_VERSION_TEXT); // Version should not be printed
         }
     }
 
