@@ -13,20 +13,14 @@
 
 package pt.up.fe.specs.lara.util;
 
-import java.io.File;
 import java.util.List;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
 
-import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.utilities.StringLines;
 
 public class JavaDiffHelper {
-
-    public static String getDiff(File original, File revised) {
-        return getDiff(SpecsIo.read(original), SpecsIo.read(revised));
-    }
 
     public static String getDiff(String original, String revised) {
         // build simple lists of the lines of the two testfiles

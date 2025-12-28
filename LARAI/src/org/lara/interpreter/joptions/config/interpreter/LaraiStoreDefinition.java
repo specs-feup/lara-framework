@@ -85,8 +85,4 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     public static String getDefinitionName() {
         return LaraiStoreDefinition.DEFINITION_NAME;
     }
-
-    public void addExtraKeys(StoreDefinition storeDefinition) {
-        extraKeys.addAll(storeDefinition.getKeys());
-    }
 }

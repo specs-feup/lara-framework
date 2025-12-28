@@ -167,17 +167,17 @@ public class WeaverGenerator {
         final BaseGenerator generator = new JavaAbstractsGenerator(XMLSpecDir);
 
         if (cmdLine.hasOption(GeneratorOption.W.getOption())) {
-            final String optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
             generator.setWeaverName(optionValue);
         }
 
         if (cmdLine.hasOption(GeneratorOption.P.getOption())) {
-            final String optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
             generator.setOutPackage(optionValue);
         }
 
         if (cmdLine.hasOption(GeneratorOption.O.getOption())) {
-            final File file = new File(cmdLine.getOptionValue(GeneratorOption.O.getOption()));
+            var file = new File(cmdLine.getOptionValue(GeneratorOption.O.getOption()));
             generator.setOutDir(file);
         }
 
@@ -190,7 +190,7 @@ public class WeaverGenerator {
         }
 
         if (cmdLine.hasOption(GeneratorOption.N.getOption())) {
-            final String optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
             generator.setNodeType(Objects.requireNonNullElseGet(optionValue, GenConstants::getDefaultNodeType));
         }
 

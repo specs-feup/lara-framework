@@ -1,31 +1,12 @@
 package pt.up.fe.specs.lara.util;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Unit tests for JavaDiffHelper utility class.
  */
 class JavaDiffHelperTest {
-
-    @TempDir
-    Path tempDir;
-
-    private File originalFile;
-    private File revisedFile;
-
-    @BeforeEach
-    void setUp() throws IOException {
-        originalFile = tempDir.resolve("original.txt").toFile();
-        revisedFile = tempDir.resolve("revised.txt").toFile();
-    }
 
     @Test
     void testGetDiff_withIdenticalStrings_returnsEmptyDiff() {
@@ -123,36 +104,6 @@ class JavaDiffHelperTest {
     }
 
     @Test
-    void testGetDiff_withFiles_identicalFiles() throws IOException {
-        // Given
-        String content = "line1\nline2\nline3";
-        Files.writeString(originalFile.toPath(), content);
-        Files.writeString(revisedFile.toPath(), content);
-        
-        // When
-        String diff = JavaDiffHelper.getDiff(originalFile, revisedFile);
-        
-        // Then
-        assertThat(diff).isEmpty();
-    }
-
-    @Test
-    void testGetDiff_withFiles_differentFiles() throws IOException {
-        // Given
-        String originalContent = "line1\nline2\nline3";
-        String revisedContent = "line1\nmodified line2\nline3";
-        Files.writeString(originalFile.toPath(), originalContent);
-        Files.writeString(revisedFile.toPath(), revisedContent);
-        
-        // When
-        String diff = JavaDiffHelper.getDiff(originalFile, revisedFile);
-        
-        // Then
-        assertThat(diff).isNotEmpty();
-        assertThat(diff).contains("modified line2");
-    }
-
-    @Test
     void testGetDiff_withMultipleChanges_detectsAllChanges() {
         // Given
         String original = "line1\nline2\nline3\nline4";
@@ -203,26 +154,6 @@ class JavaDiffHelperTest {
                 .isInstanceOf(Exception.class);
         
         assertThatThrownBy(() -> JavaDiffHelper.getDiff("content", null))
-                .isInstanceOf(Exception.class);
-    }
-
-    @Test
-    void testGetDiff_withNullFiles_throwsException() {
-        // When & Then
-        assertThatThrownBy(() -> JavaDiffHelper.getDiff(null, revisedFile))
-                .isInstanceOf(Exception.class);
-        
-        assertThatThrownBy(() -> JavaDiffHelper.getDiff(originalFile, null))
-                .isInstanceOf(Exception.class);
-    }
-
-    @Test
-    void testGetDiff_withNonExistentFiles_throwsException() {
-        // Given
-        File nonExistentFile = tempDir.resolve("nonexistent.txt").toFile();
-        
-        // When & Then
-        assertThatThrownBy(() -> JavaDiffHelper.getDiff(nonExistentFile, revisedFile))
                 .isInstanceOf(Exception.class);
     }
 }

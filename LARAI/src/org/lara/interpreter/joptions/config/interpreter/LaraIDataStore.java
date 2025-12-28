@@ -122,7 +122,7 @@ public class LaraIDataStore implements LaraiKeys {
         if (!dataStore.hasValue(LaraiKeys.LARA_FILE)) {
 
             throw new LaraIException(
-                    "The lara aspect file is mandatory! Please define the input lara file (e.g.: aspect.lara)");
+                    "The script file is mandatory! Please define the input script file (e.g.: main.js)");
         }
         if (dataStore.hasValue(LaraiKeys.OUTPUT_FOLDER)) {
             File output = dataStore.get(LaraiKeys.OUTPUT_FOLDER);

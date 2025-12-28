@@ -1,8 +1,6 @@
 package org.lara.interpreter.joptions.config.interpreter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,17 +41,6 @@ class LaraiStoreDefinitionTest {
 
         // Then
         assertThat(definitionName).isEqualTo("LaraI Options");
-    }
-
-    @Test
-    @DisplayName("addExtraKeys() should accept store definition")
-    void testAddExtraKeys() {
-        // Given
-        StoreDefinition mockStoreDefinition = mock(StoreDefinition.class);
-        when(mockStoreDefinition.getKeys()).thenReturn(java.util.Arrays.asList());
-
-        // When/Then - should not throw exception
-        storeDefinition.addExtraKeys(mockStoreDefinition);
     }
 
     @Test
