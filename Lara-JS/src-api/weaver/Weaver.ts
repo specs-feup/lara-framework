@@ -85,8 +85,9 @@ export default class Weaver {
     if (typeof joinPointType === "string") {
       // Search for the default attribute in the joinpoint mappers
       for (const mapper of getJoinpointMappers()) {
-        if (mapper[joinPointType]) {
-          return mapper[joinPointType]._defaultAttributeInfo.name;
+        const jpClass = mapper.toJpClass(joinPointType);
+        if (jpClass) {
+          return jpClass._defaultAttributeInfo.name;
         }
       }
 
@@ -108,7 +109,7 @@ export default class Weaver {
     const joinpointMappers = getJoinpointMappers();
 
     for (const mapper of joinpointMappers) {
-      const match = Object.keys(mapper).find((key) => mapper[key] === type);
+      const match = mapper.fromJpClass(type);
       if (match) {
         return match;
       }
@@ -121,8 +122,9 @@ export default class Weaver {
     const joinpointMappers = getJoinpointMappers();
 
     for (const mapper of joinpointMappers) {
-      if (mapper[name]) {
-        return mapper[name];
+      const jpClass = mapper.toJpClass(name);
+      if (jpClass) {
+        return jpClass;
       }
     }
 
