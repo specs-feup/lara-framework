@@ -20,7 +20,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/LaraUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverGenerator"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WeaverInterface"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/GearmanPlus"/>
+	<!--<classpathentry combineaccessrules="false" kind="src" path="/GearmanPlus"/>-->
 	<classpathentry combineaccessrules="false" kind="src" path="/SpecsUtils"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
