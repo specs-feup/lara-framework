@@ -40,9 +40,7 @@ export class WeaverLegacyTester {
     private resultsFile: string | null;
     private run: boolean;
 
-    public constructor(
-        basePackage: string
-    ) {
+    public constructor(basePackage: string) {
         this.basePackage = basePackage;
         this.checkWovenCodeSyntax = true;
 
@@ -164,7 +162,9 @@ export class WeaverLegacyTester {
             );
 
             javaWeaver.run(javaDatastore);
-            await import(path.join(this.basePackage, laraResource));
+            // Add timestamp to bypass module cache for repeated test script imports
+            const scriptPath = path.join(this.basePackage, laraResource);
+            await import(`${scriptPath}?t=${Date.now()}`);
             javaWeaver.end();
         } finally {
             log.mockRestore();
