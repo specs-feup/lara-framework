@@ -13,7 +13,6 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -94,12 +93,6 @@ public class AttributesEnumGenerator {
         method.addArgument(String.class, "name");
         method.appendCodeln(
                 "return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();");
-        // method.appendCodeln("for (" + enumName + " attribute : values()) {");
-        // method.appendCodeln("\tif (name.equals(attribute.name)) {");
-        // method.appendCodeln("\t\treturn Optional.of(attribute);");
-        // method.appendCodeln("\t}");
-        // method.appendCodeln("}");
-        // method.appendCodeln("return Optional.empty();");
         anEnum.add(method);
     }
 
@@ -114,17 +107,11 @@ public class AttributesEnumGenerator {
         anEnum.add(method);
     }
 
-    // static public boolean contains(Object name) {
-    //
-    // return getNames.contains(name);
-    // }
-
     private void addContainsMethod(JavaEnum anEnum) {
 
         Method method = new Method(JavaTypeFactory.getBooleanType(), "contains", Modifier.STATIC);
         method.addArgument(String.class, "name");
         method.appendComment("True if the enum contains the given attribute name, false otherwise.");
-        // method.appendCodeln("return getNames().contains(name);");
         method.appendCodeln("return fromString(name).isPresent();");
         anEnum.addImport(Collectors.class);
         anEnum.addImport(Arrays.class);

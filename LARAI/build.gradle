@@ -1,15 +1,15 @@
 plugins {
- 	id 'distribution'
+    id 'distribution'
+    id 'java'
+    id 'jacoco'
 }
 
-// Java project
-apply plugin: 'java'
-
 java {
+    withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
 
 // Repositories providers
 repositories {
@@ -17,61 +17,77 @@ repositories {
 }
 
 dependencies {
-	implementation "junit:junit:4.13.1"     
-	
-	implementation ':CommonsLangPlus'
-	implementation ':GitPlus'
-	implementation ':jOptions'
-	implementation ':JsEngine'
-	implementation ':SpecsUtils'
-	implementation ':tdrcLibrary'
+    implementation ':jOptions'
+    implementation ':SpecsUtils'
 
-	implementation ':LanguageSpecification'	
-	implementation ':LaraApi'	
-	implementation ':LARAC'	
-	implementation ':LaraCommonLanguage'	
-	implementation ':LaraLoc'	
-	implementation ':LaraUtils'	
-	implementation ':WeaverInterface'	
+    implementation ':LaraUtils'
+    implementation ':LanguageSpecification'
+    implementation ':WeaverInterface'
 
+    implementation 'commons-cli:commons-cli:1.9.0'
 
-	implementation group: 'commons-cli', name: 'commons-cli', version: '1.3.1'		
-	implementation group: 'org.apache.commons', name: 'commons-exec', version: '1.3'		
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'		
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.4'		
-	implementation group: 'com.google.guava', name: 'guava', version: '19.0'		
-	implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '2.5.8'		
-	implementation group: 'com.fifesoft', name: 'autocomplete', version: '2.5.8'				
-	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'		
-}
-
-java {
-	withSourcesJar()
+    // Testing dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 }
 
 // Project sources
 sourceSets {
-   main {
-      java {
-         srcDir 'src'
-      }
-	  
-	  resources {
-		 //srcDir 'src'
-         srcDir 'src-lara'	  
-         srcDir 'resources'	  
-	  }
-   }
-	
-   test {
-      java {
-         srcDir 'test'
-      }
-	  
-	  resources {
-		 //srcDir 'src'
-         srcDir 'src-lara'	  
-         srcDir 'resources'	  
-	  }
-   }   
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test-resources'
+        }
+    }
+}
+
+// Test coverage configuration
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80 // 80% minimum coverage
+            }
+        }
+    }
+}
+
+// Make sure jacoco report is generated after tests
+test {
+    useJUnitPlatform()
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+
+    finalizedBy jacocoTestReport
+}
+
+tasks.register('json', JavaExec) {
+    group = "Execution"
+    description = "Generates the LaraJoinPointSpecification.json file for Lara-JS"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.lara.interpreter.LaraJoinPointJsonGeneratorLauncher'
+    args = []
 }

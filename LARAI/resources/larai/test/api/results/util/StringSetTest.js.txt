@@ -1,1 +1,1 @@
-{a, b}
+StringSet { set: Set(2) { 'a', 'b' } }

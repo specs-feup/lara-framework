@@ -20,7 +20,8 @@ import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 /**
- * Abstract implementation of AstMethods. It takes into account conversions that might be needed to communicate more
+ * Abstract implementation of AstMethods. It takes into account conversions that
+ * might be needed to communicate more
  * seamlessly between Java and the JavaScript engine.
  * 
  * @author Joao Bispo
@@ -38,48 +39,40 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     @Override
     public Object toJavaJoinPoint(Object node) {
-        return toJs(toJavaJoinPointImpl(getNodeClass().cast(node)));
+        return toJavaJoinPointImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getJoinPointName(Object node) {
-        return toJs(getJoinPointNameImpl(getNodeClass().cast(node)));
+        return getJoinPointNameImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getChildren(Object node) {
-        var children = getChildrenImpl(getNodeClass().cast(node));
-        return toJs(children);
+        return getChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getNumChildren(Object node) {
-        var numChildren = getNumChildrenImpl(getNodeClass().cast(node));
-        return toJs(numChildren);
+        return getNumChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getScopeChildren(Object node) {
-        var scopeChildren = getScopeChildrenImpl(getNodeClass().cast(node));
-        return toJs(scopeChildren);
+        return getScopeChildrenImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getParent(Object node) {
-        var scopeChildren = getParentImpl(getNodeClass().cast(node));
-        return toJs(scopeChildren);
-    }
-
-    private Object toJs(Object object) {
-        return weaverEngine.getScriptEngine().toJs(object);
+        return getParentImpl(getNodeClass().cast(node));
     }
 
     @Override
     public Object getDescendants(Object node) {
-        var descendants = new ArrayList<Object>();
+        var descendants = new ArrayList<>();
         getDescendantsPrivate(getNodeClass().cast(node), descendants);
 
-        return toJs(descendants);
+        return descendants;
     }
 
     private void getDescendantsPrivate(T node, List<Object> descendants) {
@@ -89,11 +82,11 @@ public abstract class AAstMethods<T> implements AstMethods {
             getDescendantsPrivate(getNodeClass().cast(child), descendants);
         }
     }
-    
-	@Override
+
+    @Override
     public Object getRoot() {
-    	return toJs(getRootImpl());
-	}
+        return getRootImpl();
+    }
 
     public abstract Class<T> getNodeClass();
 
@@ -106,14 +99,14 @@ public abstract class AAstMethods<T> implements AstMethods {
     protected abstract Object[] getScopeChildrenImpl(T node);
 
     protected abstract Object getParentImpl(T node);
-    
+
     // protected abstract Integer getNumChildrenImpl(T node);
 
     protected Integer getNumChildrenImpl(T node) {
         return getChildrenImpl(node).length;
     }
-    
+
     public Object getRootImpl() {
-    	return weaverEngine.getRootNode();
- 	}
+        return weaverEngine.getRootNode();
+    }
 }

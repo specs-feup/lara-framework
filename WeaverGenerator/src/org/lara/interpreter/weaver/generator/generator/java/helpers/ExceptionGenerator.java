@@ -35,9 +35,7 @@ public class ExceptionGenerator extends GeneratorHelper {
 
     /**
      * Generate an Exception with the name of the Weaver
-     * 
-     * @param javaGenerator
-     * @return
+     *
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         return new ExceptionGenerator(javaGenerator).generate();
@@ -99,7 +97,6 @@ public class ExceptionGenerator extends GeneratorHelper {
      * </pre>
      * 
      * @see pt.up.fe.specs.tools.lara.exception.BaseException#generateSimpleMessage()
-     * @param eC
      */
     private Method generateSimpleMessageMethod(JavaClass eC) {
         Method m = new Method(JavaTypeFactory.getStringType(), "generateSimpleMessage");
@@ -113,10 +110,9 @@ public class ExceptionGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate a field that can be used by the weaver developer to inform in which event the exception occurred
-     * 
-     * @param eC
-     * @return
+     * Generate a field that can be used by the weaver developer to inform in which
+     * event the exception occurred
+     *
      */
     private static Field generateEventField(JavaClass eC) {
         Field eventF = new Field(JavaTypeFactory.getStringType(), "event");
@@ -132,8 +128,7 @@ public class ExceptionGenerator extends GeneratorHelper {
      * <pre>
      * private static final long serialVersionUID = 1L;
      * </pre>
-     * 
-     * @param eC
+     *
      */
     private static void generateSerialIDField(JavaClass eC) {
         Field serialID = new Field(JavaTypeFactory.getPrimitiveType(Primitive.LONG), "serialVersionUID");

@@ -1,3 +1,0 @@
-LaraImportFromLaraLara.print()
-LaraImportFromLaraJs.print()
-LaraImportFromLaraMjs.print()

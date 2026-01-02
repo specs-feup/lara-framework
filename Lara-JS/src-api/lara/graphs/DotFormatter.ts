@@ -1,4 +1,4 @@
-import cytoscape from "../../libs/cytoscape-3.26.0.js";
+import cytoscape from "cytoscape";
 import NodeData from "./NodeData.js";
 import EdgeData from "./EdgeData.js";
 

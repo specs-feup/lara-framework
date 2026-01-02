@@ -15,7 +15,9 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.types.TypeDef;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
@@ -42,10 +44,6 @@ public class ConvertUtils {
         final JavaType objectType = JavaTypeFactory.getObjectType();
         ConvertUtils.InterpreterTypes.put("Object", objectType);
 
-        // objectType = JavaTypeFactory.getObjectType();
-        // objectType.setArrayDimension(1);
-        // InterpreterTypes.put("Array", objectType);
-
         final JavaType mapType = new JavaType(Map.class);
         mapType.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
         mapType.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
@@ -59,17 +57,15 @@ public class ConvertUtils {
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
-     * @param type
-     * @param ls
-     * @return
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
-        // String original = type;
+        type = normalizeReferenceType(type);
+
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.getLeft();
-        final int arrayDimension = splittedType.getRight();
+        type = splittedType.left();
+        final int arrayDimension = splittedType.right();
         // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
         // Integer)
         if (JavaTypeFactory.isPrimitive(type)) {
@@ -89,14 +85,12 @@ public class ConvertUtils {
     }
 
     /**
-     * Get the correct type for the return of an attribute. This method converts a primitive type into its wrapper
+     * Get the correct type for the return of an attribute. This method converts a
+     * primitive type into its wrapper
      * <p>
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
-     * @param type
-     * @param ls
-     * @return
      * @throws RuntimeException if the type cannot be found.
      */
     public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
@@ -106,12 +100,13 @@ public class ConvertUtils {
         if (type.contains("[") && type.contains("|") && type.contains("]")) {
             type = String.class.getSimpleName();
         }
-        
-        // String original = type;
+
+        type = normalizeReferenceType(type);
+
         // First remove array dimension
         final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.getLeft();
-        final int arrayDimension = splittedType.getRight();
+        type = splittedType.left();
+        final int arrayDimension = splittedType.right();
         // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
         // Integer)
         if (JavaTypeFactory.isPrimitive(type)) {
@@ -137,7 +132,7 @@ public class ConvertUtils {
     }
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
-                                                final int arrayDimension) {
+            final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);
 
         if (generator.getLanguageSpecification().hasEnumDef(type)) {
@@ -172,13 +167,11 @@ public class ConvertUtils {
         // if it is a join point class
         if (generator.getLanguageSpecification().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
-            final JavaType jpType = new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
-            return jpType;
+            return new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
         }
 
         // If it does not exist, throw an exception with the error message and
-        // the possible
-        // types that can be used
+        // the possible types that can be used
         final StringBuilder message = new StringBuilder(
                 "Could not convert type '" + type + "'. Available types in the Language Specification: ");
 
@@ -190,7 +183,7 @@ public class ConvertUtils {
 
     private static StringBuilder reportAvailableTypes(LanguageSpecification langSpec) {
         final StringBuilder message = new StringBuilder(ln() + "\t Primitives: ");
-        String join = StringUtils.join(Arrays.asList(Primitive.values()), p -> p.name(), ", ")
+        String join = StringUtils.join(Arrays.asList(Primitive.values()), Enum::name, ", ")
                 + ", Object, Array, Map, Template, Joinpoint";
         message.append(join);
 
@@ -198,7 +191,7 @@ public class ConvertUtils {
         if (!objects.isEmpty()) {
 
             message.append(ln() + "\t Defined types: ");
-            final String objectsString = StringUtils.join(objects, t -> t.getName(), ", ");
+            final String objectsString = StringUtils.join(objects, TypeDef::getName, ", ");
             message.append(objectsString);
         }
 
@@ -206,15 +199,54 @@ public class ConvertUtils {
         if (!joinpoints.isEmpty()) {
 
             message.append(ln() + "\t Join point types: ");
-            final String jpsString = StringUtils.join(joinpoints, j -> j.getName(), ", ");
+            final String jpsString = StringUtils.join(joinpoints, JoinPointClass::getName, ", ");
             message.append(jpsString);
         }
         return message;
     }
 
+    private static String normalizeReferenceType(String rawType) {
+        String trimmed = rawType == null ? "" : rawType.trim();
+        if (trimmed.isEmpty()) {
+            return trimmed;
+        }
+
+        if (trimmed.startsWith("{")) {
+            return normalizeWrappedReference(rawType, trimmed, '}', "{", "}");
+        }
+
+        if (trimmed.startsWith("[") && trimmed.indexOf('|') < 0) {
+            return normalizeWrappedReference(rawType, trimmed, ']', "[", "]");
+        }
+
+        return trimmed;
+    }
+
+    private static String normalizeWrappedReference(String rawType, String trimmed, char closingChar, String openToken,
+            String closeToken) {
+        int closingIdx = trimmed.indexOf(closingChar);
+        if (closingIdx < 0) {
+            throw new RuntimeException("Malformed object reference type '" + rawType + "': missing closing '"
+                    + closeToken + "' character");
+        }
+
+        String referenceName = trimmed.substring(1, closingIdx).trim();
+        if (referenceName.isEmpty()) {
+            throw new RuntimeException("Malformed object reference type '" + rawType
+                    + "': expected a type name inside '" + openToken + "..." + closeToken + "'");
+        }
+
+        String remainder = trimmed.substring(closingIdx + 1);
+        String normalizedRemainder = remainder.replaceAll("\\s+", "");
+        if (!normalizedRemainder.isEmpty() && !normalizedRemainder.matches("(\\[\\])+$")) {
+            throw new RuntimeException("Malformed object reference type '" + rawType
+                    + "': only array suffixes are permitted after the closing '" + closeToken + "'");
+        }
+
+        return referenceName + normalizedRemainder;
+    }
+
     public static String ln() {
         return Utils.ln();
-        //return "\n";
-        //return SpecsIo.getNewline();
     }
 }

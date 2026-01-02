@@ -1,7 +1,0 @@
-import ImportMultipleFiles;
-
-aspectdef Test
-	
-	println("Test");
-
-end

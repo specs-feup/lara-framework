@@ -20,7 +20,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 java.asyncOptions = {
   asyncSuffix: "Async",
   syncSuffix: "",
-  promiseSuffix: "P",
+  promiseSuffix: "P"
 };
 
 export class Weaver {
@@ -91,43 +91,31 @@ export class Weaver {
     const LaraiKeys = java.import(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
     );
-    const NodeJsEngine = java.import("pt.up.fe.specs.jsengine.NodeJsEngine");
-    const JavaEventTrigger = java.import(
-      "org.lara.interpreter.weaver.events.EventTrigger"
-    );
 
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
     javaWeaver.setWeaver();
-    javaWeaver.setScriptEngine(new NodeJsEngine());
-
-    const eventTrigger = new JavaEventTrigger();
-    eventTrigger.registerReceivers(javaWeaver.getGears());
-    javaWeaver.setEventTrigger(eventTrigger);
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;
 
     let datastore;
     if (isClassicCli) {
-      //if (args._[0] === "classic") {
       try {
         assert(args.configClassic instanceof Array);
-        //console.log("FLAGS: " + args.configClassic);
 
         datastore = JavaLaraI.convertArgsToDataStore(
-          //args._.slice(1),
           args.configClassic,
           javaWeaver
         ).get();
 
         // Arguments parser has shown help, exit
-        if (datastore.get("help")) {
+        if (datastore.get(LaraiKeys.SHOW_HELP)) {
           process.exit(0);
         }
 
-        args.scriptFile = datastore.get("aspect").toString();
+        args.scriptFile = datastore.get(LaraiKeys.LARA_FILE).toString();
       } catch (error) {
         throw new Error(
           "Failed to parse 'Classic' weaver arguments:\n" + error
@@ -138,9 +126,9 @@ export class Weaver {
         "org.suikasoft.jOptions.Interfaces.DataStore"
       );
 
-      datastore = await new JavaDataStore.newInstanceP(
-        `${javaWeaverClassName}DataStore`
-      );
+      const storeDefinition = JavaLaraI.buildStoreDefinition(javaWeaver);
+
+      datastore = await new JavaDataStore.newInstanceP(storeDefinition);
 
       const fileList = new JavaArrayList();
       //const [command, clangArgs, env] = await Sandbox.splitCommandArgsEnv(args._[1]);
@@ -158,6 +146,7 @@ export class Weaver {
 
     // Needed only for side-effects over the datastore
     new JavaLaraIDataStore(null, datastore, javaWeaver); // nosonar typescript:S1848
+    javaWeaver.setData(datastore);
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;
@@ -228,7 +217,7 @@ export class Weaver {
   static shutdown() {
     Weaver.debug("Exiting...");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    Weaver.javaWeaver.close();
+    Weaver.javaWeaver.end();
   }
 }
 

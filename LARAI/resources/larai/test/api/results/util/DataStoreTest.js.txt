@@ -1,0 +1,4 @@
+GET:undefined
+TYPE:class java.lang.Boolean
+GET AFTER PUT:true
+DataStore Context folder: .

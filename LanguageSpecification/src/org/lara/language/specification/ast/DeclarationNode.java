@@ -66,4 +66,12 @@ public class DeclarationNode extends LangSpecNode {
     public void setNameAttributeString(String nameAttributeString) {
         this.nameAttributeString = nameAttributeString;
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getType() {
+        return type;
+    }
 }

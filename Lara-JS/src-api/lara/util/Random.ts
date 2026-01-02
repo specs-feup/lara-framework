@@ -11,7 +11,7 @@ export default class Random {
   constructor(seed?: number) {
     const RandomClass = JavaTypes.getType(Random.RANDOM_CLASS);
     this.javaRandom =
-      seed !== undefined ? new RandomClass(seed) : new RandomClass();
+      seed !== undefined ? new RandomClass(Math.trunc(seed)) : new RandomClass();
   }
 
   /**

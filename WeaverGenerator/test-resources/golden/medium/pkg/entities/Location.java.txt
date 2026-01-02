@@ -1,0 +1,68 @@
+package medium.pkg.entities;
+
+
+/**
+ * 
+ * 
+ * @author Lara C.
+ */
+public class Location {
+
+    private String file;
+    private Integer line;
+
+    /**
+     * 
+     */
+    public Location(){}
+    /**
+     * 
+     */
+    public Location(String file, Integer line){
+        this.setFile(file);
+        this.setLine(line);
+    }
+    /**
+     * Get value on attribute file
+     * @return the attribute's value
+     */
+    public String getFile() {
+        return this.file;
+    }
+
+    /**
+     * Set value on attribute file
+     * @param file
+     */
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    /**
+     * Get value on attribute line
+     * @return the attribute's value
+     */
+    public Integer getLine() {
+        return this.line;
+    }
+
+    /**
+     * Set value on attribute line
+     * @param line
+     */
+    public void setLine(Integer line) {
+        this.line = line;
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public String toString() {
+        String json = "{\n";
+        json += " file: "+getFile() + ",\n";
+        json += " line: "+getLine() + ",\n";
+        json+="}";
+        return json;
+    }
+}

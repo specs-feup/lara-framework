@@ -1,0 +1,13 @@
+rootProject.name = 'DefaultWeaver'
+
+def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-java-libs'
+
+includeBuild("${specsJavaLibsRoot}/CommonsLangPlus")
+includeBuild("${specsJavaLibsRoot}/jOptions")
+includeBuild("${specsJavaLibsRoot}/SpecsUtils")
+
+includeBuild("../LanguageSpecification")
+includeBuild("../LARAI")
+includeBuild("../LaraUtils")
+includeBuild("../WeaverGenerator")
+includeBuild("../WeaverInterface")

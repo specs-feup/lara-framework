@@ -1,4 +1,3 @@
-import JavaTypes from "../lara/util/JavaTypes.js";
 import Weaver from "./Weaver.js";
 import WeaverDataStore from "./util/WeaverDataStore.js";
 
@@ -12,15 +11,6 @@ export default class WeaverOptions {
   static getData() {
     const weaverEngine = Weaver.getWeaverEngine();
     return new WeaverDataStore(weaverEngine.getData().get(), weaverEngine.getStoreDefinition());
-  }
-
-  /**
-   * @returns a string with the command-line flags for the current options
-   */
-  static toCli(): string {
-    return JavaTypes.LaraCli.getWeaverOptions(Weaver.getWeaverEngine()).toCli(
-      WeaverOptions.getData().getData()
-    );
   }
 
   /**

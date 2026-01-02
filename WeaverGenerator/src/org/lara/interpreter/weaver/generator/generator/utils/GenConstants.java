@@ -15,13 +15,11 @@ package org.lara.interpreter.weaver.generator.generator.utils;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.specs.generators.java.types.JavaType;
-import tdrc.utils.StringUtils;
 
 import java.io.File;
 
 public class GenConstants {
 
-    private static final String DEF_PREFIX = "def";
     private static final String IMPLEMENTATION_SUFIX = "Impl";
     private static final File defaultXmlDir = new File(".");
     private static final File defaultOutputDir = new File(".");
@@ -31,19 +29,15 @@ public class GenConstants {
     private static final boolean defaultEvents = false;
     private static final boolean defaultImplMode = true;
     private static final boolean defaultShowGraph = false;
-    private static final String defaultNodeType = Object.class.getSimpleName();
+    private static final String defaultNodeType = Object.class.getCanonicalName();
     private static final String AUTHOR = "Lara Weaver Generator";
 
     private static final String GET_CLASS_NAME = "get_class";
     private static final String INSTANCE_OF_NAME = "instanceOf";
     private static final String WITH_TRY_PREFIX = "WithTryCatch";
-    private static final String SELECT_BY_NAME_METHOD_NAME = "select";
-    private static final String FILL_WITH_ATTRIBUTES_METHOD_NAME = "fillWithAttributes";
-    private static final String FILL_WITH_ACTIONS_METHOD_NAME = "fillWithActions";
-    private static final String FILL_WITH_SELECTS_METHOD_NAME = "fillWithSelects";
     private static final String LINK_TAG = "[[LINK]]";
     private static final String WEAVER_NAME_TAG = "[[WEAVERNAME]]";
-    private static final String WEAVER_TEXT_HEADER_LOCATION = "org/lara/interpreter/weaver/generator/generator/utils/WeaverTextHeader.txt";
+    private static final String WEAVER_TEXT_HEADER_LOCATION = "org/lara/interpreter/weaver/generator/WeaverTextHeader.txt";
     // private static final String rootName = "ProgramRoot";
 
     private static final String interfaceName = JoinPoint.class.getSimpleName();
@@ -63,18 +57,6 @@ public class GenConstants {
 
     public static String getClassName() {
         return GenConstants.GET_CLASS_NAME;
-    }
-
-    public static String fillWAttrMethodName() {
-        return GenConstants.FILL_WITH_ATTRIBUTES_METHOD_NAME;
-    }
-
-    public static String fillWActMethodName() {
-        return GenConstants.FILL_WITH_ACTIONS_METHOD_NAME;
-    }
-
-    public static String fillWSelMethodName() {
-        return GenConstants.FILL_WITH_SELECTS_METHOD_NAME;
     }
 
     public static String linkTag() {
@@ -160,10 +142,6 @@ public class GenConstants {
         return GenConstants.IMPLEMENTATION_SUFIX;
     }
 
-    public static String getSelectByNameMethodName() {
-        return SELECT_BY_NAME_METHOD_NAME;
-    }
-
     public static String getInstanceOfName() {
         return INSTANCE_OF_NAME;
     }
@@ -176,18 +154,7 @@ public class GenConstants {
         return GenConstants.SET_WEAVER_ENGINE_NAME;
     }
 
-    public static String getDefPrefix() {
-
-        return GenConstants.DEF_PREFIX;
-    }
-
-    public static String getDefAttributeImplName(String attribute) {
-        return getDefPrefix()
-                + StringUtils.firstCharToUpper(attribute) + getImplementationSufix();
-    }
-
     public static String withImpl(String string) {
-        // TODO Auto-generated method stub
         return string + IMPLEMENTATION_SUFIX;
     }
 

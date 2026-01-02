@@ -15,58 +15,28 @@ package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class ActionException extends BaseException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String joinPointName;
-	private String actionName;
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private String joinPointName;
+    private String actionName;
 
-	public ActionException(String joinPointName, String actionName, Throwable e) {
-		super(e);
-		setJoinPointName(joinPointName);
-		setActionName(actionName);
-	}
+    public ActionException(String joinPointName, String actionName, Throwable e) {
+        super(e);
+        this.joinPointName = joinPointName;
+        this.actionName = actionName;
+    }
 
-	@Override
-	protected String generateMessage() {
-		return "Exception " + generateSimpleMessage();
-	}
+    @Override
+    protected String generateMessage() {
+        return "Exception " + generateSimpleMessage();
+    }
 
-	@Override
-	protected String generateSimpleMessage() {
-		return "in action " + joinPointName + "." + actionName + "";
-	}
-
-	/**
-	 * @return the actionName
-	 */
-	public String getActionName() {
-		return actionName;
-	}
-
-	/**
-	 * @param actionName
-	 *            the actionName to set
-	 */
-	public void setActionName(String actionName) {
-		this.actionName = actionName;
-	}
-
-	/**
-	 * @return the joinPointName
-	 */
-	public String getJoinPointName() {
-		return joinPointName;
-	}
-
-	/**
-	 * @param joinPointName
-	 *            the joinPointName to set
-	 */
-	public void setJoinPointName(String joinPointName) {
-		this.joinPointName = joinPointName;
-	}
+    @Override
+    protected String generateSimpleMessage() {
+        return "in action " + joinPointName + "." + actionName;
+    }
 }
