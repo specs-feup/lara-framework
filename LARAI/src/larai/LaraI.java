@@ -58,7 +58,7 @@ public class LaraI {
 
         Options finalOptions = getCliOptions(weaverEngine);
 
-        CommandLine cmd = OptionsParser.parse(args, finalOptions);
+        CommandLine cmd = OptionsParser.parse(args, finalOptions, weaverEngine);
 
         ExecutionMode mode = OptionsParser.getExecMode(args[0], cmd, finalOptions);
 
@@ -69,7 +69,7 @@ public class LaraI {
         // If help, print help
         var helpFlag = dataStore.map(data -> data.get(LaraiKeys.SHOW_HELP)).orElse(false);
         if (helpFlag) {
-            LaraIUtils.printHelp(cmd, finalOptions);
+            LaraIUtils.printHelp(cmd, finalOptions, weaverEngine);
         }
 
         return dataStore;

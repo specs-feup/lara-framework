@@ -60,7 +60,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     public boolean begin(List<File> sources, File output, DataStore args) {
 
         this.args = args;
-        root = new DWorkspace();
+        root = new DWorkspace(this);
         for (File source : sources) {
             if (source.isDirectory()) {
                 root.addFolder(source);
@@ -138,10 +138,6 @@ public class DefaultWeaver extends ADefaultWeaver {
     @Override
     public String getName() {
         return "LaraI";
-    }
-
-    public static DefaultWeaver getDefaultWeaver() {
-        return (DefaultWeaver) getThreadLocalWeaver();
     }
 
     public DataStore getArgs() {
