@@ -241,7 +241,7 @@ export function arrayFromArgs(args: any, start = 0) {
   }
 
   // If only one element and is already an array, just return the array
-  if (args.length === start + 1 && isArray(args[start])) {
+  if (args.length === start + 1 && isArray(args)) {
     return args[start];
   }
 
