@@ -160,11 +160,6 @@ export class WeaverLegacyTester {
         JavaTypes.FileList.newInstance(javaFiles)
       );
 
-      javaDatastore.set(
-        JavaTypes.LaraiKeys.OUTPUT_FOLDER,
-        new JavaTypes.File("woven_code")
-      );
-
       javaWeaver.run(javaDatastore);
       await import(path.join(this.basePackage, laraResource));
       javaWeaver.end();
