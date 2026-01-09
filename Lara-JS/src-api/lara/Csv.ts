@@ -40,7 +40,7 @@ export default class Csv {
     const csvData: any = {};
     csvData.header = [];
 
-    for (var headerValue of csvReader.getHeader()) {
+    for (const headerValue of csvReader.getHeader().toArray()) {
       csvData.header.push(headerValue.trim());
     }
 
@@ -52,7 +52,7 @@ export default class Csv {
       lineCounter++;
 
       // Read line
-      const values = csvReader.next();
+      const values = csvReader.next().toArray();
 
       // Check line has the same number of elements as headerList
       if (values.length !== csvData.header.length) {

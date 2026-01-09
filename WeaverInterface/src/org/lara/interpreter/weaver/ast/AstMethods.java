@@ -24,16 +24,14 @@ public interface AstMethods {
     /**
      * Transforms the given AST node into a join point.
      * 
-     * @param node
      * @return the join point corresponding to this node
      */
     Object toJavaJoinPoint(Object node);
 
     /**
-     * Maps an AST node to the corresponding Common Language Specification join point name.
-     * 
-     * @param node
-     * @return
+     * Maps an AST node to the corresponding Common Language Specification join
+     * point name.
+     *
      */
     Object getJoinPointName(Object node);
 
@@ -51,7 +49,8 @@ public interface AstMethods {
 
     /**
      * 
-     * @return a JavaScript array with the children inside the scope declared by this AST node (e.g., body of a loop),
+     * @return a JavaScript array with the children inside the scope declared by
+     *         this AST node (e.g., body of a loop),
      *         or empty array if node does not have a scope
      */
     Object getScopeChildren(Object node);
@@ -64,14 +63,13 @@ public interface AstMethods {
 
     /**
      *
-     * @param node
      * @return a JavaScript array with the descendants of this AST node
      */
     Object getDescendants(Object node);
-    
+
     /**
-    *
-    * @return the root AST node
-    */
-   Object getRoot();
+     *
+     * @return the root AST node
+     */
+    Object getRoot();
 }

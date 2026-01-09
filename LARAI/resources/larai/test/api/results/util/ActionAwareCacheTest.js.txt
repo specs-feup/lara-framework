@@ -1,7 +1,0 @@
-DATA BEFORE ACTION: 
-{
-   foo:
-      bar
-}
-DATA AFTER ACTION: 
-undefined

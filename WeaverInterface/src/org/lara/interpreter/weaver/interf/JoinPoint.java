@@ -13,7 +13,6 @@
 package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.exception.ActionException;
-import org.lara.interpreter.profile.WeaverProfiler;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
@@ -23,12 +22,11 @@ import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import pt.up.fe.specs.jsengine.JsEngine;
-import pt.up.fe.specs.util.SpecsSystem;
+import pt.up.fe.specs.jsengine.node.UndefinedValue;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,9 +38,6 @@ public abstract class JoinPoint {
     private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint");
 
     static {
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "attributes");
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "selects");
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(PrimitiveClasses.STRING), "actions");
         // JoinPointSpecification.addAttribute(null, "srcCode"));
         LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "dump");
         LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "joinPointType");
@@ -52,15 +47,12 @@ public abstract class JoinPoint {
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "children");
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
-        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
                 new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(PrimitiveClasses.STRING, "code"));
-        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
                 new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.VOID, "def",
-                new Parameter(PrimitiveClasses.STRING, "attribute"),
-                new Parameter(PrimitiveClasses.OBJECT, "value"));
         LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
         LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "equals",
                 new Parameter(JPType.of(LARA_JOIN_POINT), "jp"));
@@ -74,44 +66,16 @@ public abstract class JoinPoint {
         return LARA_JOIN_POINT;
     }
 
-    private static final Map<Class<? extends JoinPoint>, Set<String>> JOIN_POINTS_ATTRIBUTES;
-
-    static {
-        JOIN_POINTS_ATTRIBUTES = new HashMap<Class<? extends JoinPoint>, Set<String>>();
-    }
-
-    // private static final String BASE_JOINPOINT_CLASS = "joinpoint";
-    private static final String LARA_GETTER = "laraGetter";
-
-    // public static String getBaseJoinpointClass() {
-    // return BASE_JOINPOINT_CLASS;
-    // }
-
-    public static String getLaraGetterName() {
-        return LARA_GETTER;
-    }
-
     public static boolean isJoinPoint(Object value) {
         return value instanceof JoinPoint;
     }
 
     /**
-     * Function used by the lara interpreter to verify if a join point is the same (equals) as another join point
+     * Function used by the lara interpreter to verify if a join point is the same
+     * (equals) as another join point
      *
-     * @param iJoinPoint
-     * @return
      */
-    public abstract boolean same(JoinPoint iJoinPoint); // {
-
-    // throw new UnsupportedOperationException("The 'same' method is not
-    // implemented for the join point "
-    // + get_class());
-    // if (this.get_class().equals(iJoinPoint.get_class())) {
-    // boolean equals = compareNodes(iJoinPoint);
-    // return equals;
-    // }
-    // return false;
-    // }
+    public abstract boolean same(JoinPoint iJoinPoint);
 
     /**
      * Returns the tree node reference of this join point.<br>
@@ -121,39 +85,8 @@ public abstract class JoinPoint {
     public abstract Object getNode();
 
     /**
-     * Compares the two join points based on their node reference of the used compiler/parsing tool. <br>
-     * This is the default implementation for comparing two join points. <br>
-     * <b>Note for developers:</b> A weaver may override this implementation in the (editable) abstract join point, so
-     * the changes are made for all join points, or override this method in the specific join points.
-     *
-     * @param iJoinPoint
-     * @return
-     */
-    // protected abstract boolean compareNodes(JoinPoint<T> iJoinPoint); // {
-    // return this.getNode().equals(iJoinPoint.getNode());
-    // }
-    //
-    // /**
-    // * Returns the tree node reference representing this join point (used for
-    // join operations)
-    // *
-    // * @return the tree node reference
-    // */
-    // public abstract T getNode();
-
-    /**
-     * Select from a given joinPoint class name
-     *
-     * @return
-     */
-    public List<? extends JoinPoint> select(String joinPoint) {
-        throw new RuntimeException("Select '" + joinPoint + "' does not exist for join point " + get_class());
-    }
-
-    /**
      * Returns the join point class
      *
-     * @return
      */
     public String get_class() {
         // return BASE_JOINPOINT_CLASS;
@@ -163,7 +96,6 @@ public abstract class JoinPoint {
     /**
      * Returns the join point type
      *
-     * @return
      */
     public String getJoinPointType() {
         return get_class();
@@ -172,15 +104,14 @@ public abstract class JoinPoint {
     /**
      * Returns the super type of this joinPoint or empty if no super exists
      *
-     * @return
      */
     public Optional<? extends JoinPoint> getSuper() {
         return Optional.empty();
     }
 
     /**
-     * @param type
-     * @return true, if this join point is an instance of the given type, false otherwise
+     * @return true, if this join point is an instance of the given type, false
+     * otherwise
      */
     public boolean instanceOf(String type) {
 
@@ -193,12 +124,12 @@ public abstract class JoinPoint {
             return true;
         }
         Optional<? extends JoinPoint> superType = getSuper();
-        return superType.isPresent() ? superType.get().instanceOf(type) : false;
+        return superType.isPresent() && superType.get().instanceOf(type);
     }
 
     /**
-     * @param type
-     * @return true, if this join point is an instance of any of the given types, false otherwise
+     * @return true, if this join point is an instance of any of the given types,
+     * false otherwise
      */
     public boolean instanceOf(String[] types) {
         for (var type : types) {
@@ -211,96 +142,10 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Defines if this joinpoint is an instanceof joinpointclass
-     *
-     * @return
-     */
-    // public boolean instanceOf(String joinpointClass) {
-    // return get_class().equals(BASE_JOINPOINT_CLASS);
-    // }
-
-    /**
-     * Fill the list with available actions
-     *
-     * @param actions
-     */
-    protected void fillWithActions(List<String> actions) {
-        // DEFAULT ACTIONS
-        LARA_JOIN_POINT.getActions().forEach(action -> {
-            actions.add(action.getName() + "("
-                    + action.getParameters().stream().map(param -> param.toString()).collect(Collectors.joining(", "))
-                    + ")");
-        });
-
-    }
-
-    /**
-     * Fill the list with possible selects from this join point
-     *
-     * @param selects
-     */
-    protected void fillWithSelects(List<String> selects) {
-
-    }
-
-    /**
-     * Fill the list with attributes
-     *
-     * @param attributes
-     */
-    protected void fillWithAttributes(List<String> attributes) {
-        // DEFAULT ATTRIBUTES
-        LARA_JOIN_POINT.getAttributes().forEach(attribute -> {
-            attributes.add(attribute.getName());
-        });
-    }
-
-    /**
-     * Return an array containing the actions this current join point can apply
-     *
-     * @return an array of actions
-     */
-    public final Object getActions() {
-        final List<String> actions = new ArrayList<>();
-        fillWithActions(actions);
-        Object[] array = actions.toArray();
-        Arrays.sort(array);
-        return getWeaverEngine().getScriptEngine().toNativeArray(array);
-        // return Converter.toNativeArray(array);
-    }
-
-    /**
-     * Return an array containing the join points this current join point can select
-     *
-     * @return an array of possible selects
-     */
-    public final Object getSelects() {
-        final List<String> selects = new ArrayList<>();
-        fillWithSelects(selects);
-        Object[] array = selects.toArray();
-        Arrays.sort(array);
-        return getWeaverEngine().getScriptEngine().toNativeArray(array);
-        // return Converter.toNativeArray(array);
-    }
-
-    /**
-     * Return an array containing the attributes this current join point has
-     *
-     * @return an array of attributes
-     */
-    public final Object getAttributes() {
-        final List<String> attributes = new ArrayList<>();
-        fillWithAttributes(attributes);
-        Object[] array = attributes.toArray();
-        Arrays.sort(array);
-        return getWeaverEngine().getScriptEngine().toNativeArray(array);
-        // return Converter.toNativeArray(array);
-    }
-
-    /**
      * @see JoinPoint#insert(String, JoinPoint)
      */
-    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T JoinPoint) {
+    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T
+    // JoinPoint) {
     public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");
@@ -315,19 +160,19 @@ public abstract class JoinPoint {
     }
 
     /**
-     * @see JoinPoint#insert(String, JoinPoint, boolean)
+     * @see JoinPoint#insertFar(String, JoinPoint)
      */
     public <T extends JoinPoint> void insertFarImpl(String position, T JoinPoint) {
         throw new UnsupportedOperationException(
-                "Join point " + get_class() + ": Action insert(String,joinpoint,boolean) not implemented ");
+                "Join point " + get_class() + ": Action insertFar(String, joinpoint) not implemented");
     }
 
     /**
-     * @see JoinPoint#insert(String, String, boolean)
+     * @see JoinPoint#insertFar(String, String)
      */
     public void insertFarImpl(String position, String code) {
         throw new UnsupportedOperationException(
-                "Join point " + get_class() + ": Action insert far(String,String) not implemented ");
+                "Join point " + get_class() + ": Action insertFar(String, String) not implemented");
     }
 
     /**
@@ -374,7 +219,8 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Action insert that accepts a string containing the code snippet to inject as far as possible from the join point
+     * Action insert that accepts a string containing the code snippet to inject as
+     * far as possible from the join point
      * based on other insertions over the targeted join point
      *
      * @param position before|after|replace|around
@@ -391,18 +237,21 @@ public abstract class JoinPoint {
                 eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, code);
             }
         } catch (Exception e) {
-            throw new ActionException(get_class(), "insert", e);
+            throw new ActionException(get_class(), "insertFar", e);
         }
     }
 
     /**
-     * Action insert that accepts a join point to inject and a boolean to indicate if the insertion must be as close as
-     * possible to the join point (false) or as far as possible to the join point (true) based on other insertions over
+     * Action insert that accepts a join point to inject and a boolean to indicate
+     * if the insertion must be as close as
+     * possible to the join point (false) or as far as possible to the join point
+     * (true) based on other insertions over
      * the targeted join point
      *
      * @param position          before|after|replace|around
      * @param code              the code to inject
-     * @param farthestInsertion if true will insert the code as far as possible from the join point, based on the other insertions
+     * @param farthestInsertion if true will insert the code as far as possible from
+     *                          the join point, based on the other insertions
      *                          over this targeted join point
      */
     public final <T extends JoinPoint> void insertFar(String position, T joinPoint) {
@@ -416,128 +265,8 @@ public abstract class JoinPoint {
                 eventTrigger().triggerAction(Stage.END, "insertFar", this, Optional.empty(), position, joinPoint);
             }
         } catch (Exception e) {
-            throw new ActionException(get_class(), "insert", e);
+            throw new ActionException(get_class(), "insertFar", e);
         }
-    }
-
-    /**
-     *
-     */
-    public void defImpl(String attribute, Object value) {
-        throw new UnsupportedOperationException("Join point " + get_class() + ": Action def not implemented ");
-    }
-
-    protected void unsupportedTypeForDef(String attribute, Object value) {
-        String valueType;
-        if (value == null) {
-            valueType = "null";
-        } else {
-            valueType = value.getClass().getSimpleName();
-            if (value instanceof JoinPoint) {
-                valueType = ((JoinPoint) value).getJoinPointType();
-            }
-        }
-        throw new UnsupportedOperationException("Join point " + get_class() + ": attribute '" + attribute
-                + "' cannot be defined with the input type '" + valueType + "'");
-    }
-
-    /**
-     *
-     */
-    public final void def(String attribute, Object value) {
-        try {
-            if (hasListeners()) {
-                eventTrigger().triggerAction(Stage.BEGIN, "def", this, Optional.empty(), attribute, value);
-            }
-
-            value = parseDefValue(value);
-
-            this.defImpl(attribute, value);
-            if (hasListeners()) {
-                eventTrigger().triggerAction(Stage.BEGIN, "def", this, Optional.empty(), attribute, value);
-            }
-        } catch (Exception e) {
-            throw new ActionException(get_class(), "def", e);
-        }
-    }
-
-    // /**
-    // * Set the weaver engine that uses this join point. <br>
-    // * <b>NOTE:</b> this method is automatically used by {@link JoinPoint#select} method. Use this method if you
-    // create
-    // * new join points not related to a select. For instance when you create a new join point when applying an action
-    // * and return that join point as the action output.
-    // *
-    // * @param engine
-    // */
-    // public void setWeaverEngine(WeaverEngine engine) {
-    // // this.engine = engine;
-    //
-    // }
-    //
-    // /**
-    // * This is an overload of method {@link JoinPoint#setWeaverEngine(WeaverEngine)} that takes the reference of the
-    // * weaverEngine on a given JoinPoint.
-    // *
-    // * @param engine
-    // */
-    // public void setWeaverEngine(JoinPoint reference) {
-    // // engine = reference.getWeaverEngine();
-    // }
-
-    /**
-     * Handles special cases in def.
-     *
-     * @param value
-     * @return
-     */
-    private Object parseDefValue(Object value) {
-        return parseDefValue(value, new HashSet<>());
-    }
-
-    private Object parseDefValue(Object value, Set<Object> seenObjects) {
-
-        // If object already appear stop, cyclic dependencies not supported
-        if (seenObjects.contains(value)) {
-            throw new RuntimeException("Detected a cyclic dependency in 'def' value: " + value);
-        }
-
-        seenObjects.add(value);
-        JsEngine jsEngine = getWeaverEngine().getScriptEngine();
-
-        // Convert value to a Java array, if necessary
-        // if (value instanceof ScriptObjectMirror && ((ScriptObjectMirror) value).isArray()) {
-        if (jsEngine.isArray(value)) {
-
-            var elements = jsEngine.getValues(value);
-            // if (((ScriptObjectMirror) value).isEmpty()) {
-            if (elements.isEmpty()) {
-                throw new RuntimeException("Cannot pass an empty array to a 'def'");
-            }
-
-            // ScriptObjectMirror jsObject = (ScriptObjectMirror) value;
-            // List<Class<?>> classes = jsObject.values().stream().map(Object::getClass).collect(Collectors.toList());
-            List<Class<?>> classes = elements.stream().map(Object::getClass).collect(Collectors.toList());
-
-            // Get common class of given instances
-            List<Class<?>> superClasses = SpecsSystem.getCommonSuperClasses(classes);
-            Class<?> superClass = superClasses.isEmpty() ? Object.class : superClasses.get(0);
-
-            // Object[] objectArray = (Object[]) ScriptUtils.convert(value, Array.newInstance(superClass,
-            // 0).getClass());
-            Object[] objectArray = (Object[]) jsEngine.convert(value, Array.newInstance(superClass, 0).getClass());
-
-            // Recursively convert the elements of the array
-            Object[] convertedArray = (Object[]) Array.newInstance(superClass, objectArray.length);
-            for (int i = 0; i < objectArray.length; i++) {
-                convertedArray[i] = parseDefValue(objectArray[i], seenObjects);
-            }
-
-            return convertedArray;
-        }
-
-        return value;
-
     }
 
     public WeaverEngine getWeaverEngine() {
@@ -552,14 +281,8 @@ public abstract class JoinPoint {
         return getWeaverEngine().hasListeners();
     }
 
-    public WeaverProfiler getWeaverProfiler() {
-        return getWeaverEngine().getWeaverProfiler();
-    }
-
     public static Object getUndefinedValue() {
-        // To avoid using reference to internal package jdk.nashorn.internal.runtime.Undefined
-        return WeaverEngine.getThreadLocalWeaver().getScriptEngine().getUndefined();
-        // return Undefined.getUndefined();
+        return UndefinedValue.getUndefined();
     }
 
     public Object getChildren() {
@@ -575,9 +298,9 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Implement this method and getJpParent() in order to obtain tree-like functionality (descendants, etc).
+     * Implement this method and getJpParent() in order to obtain tree-like
+     * functionality (descendants, etc).
      *
-     * @return
      */
 
     public Stream<JoinPoint> getJpChildrenStream() {
@@ -585,9 +308,9 @@ public abstract class JoinPoint {
     }
 
     /**
-     * Implement this method and getJpChildrenStream() in order to obtain tree-like functionality (descendants, etc).
+     * Implement this method and getJpChildrenStream() in order to obtain tree-like
+     * functionality (descendants, etc).
      *
-     * @return
      */
     public JoinPoint getJpParent() {
         throw new NotImplementedException(this);
@@ -602,7 +325,7 @@ public abstract class JoinPoint {
     }
 
     public Stream<JoinPoint> getJpDescendantsStream() {
-        return getJpChildrenStream().flatMap(c -> c.getJpDescendantsAndSelfStream());
+        return getJpChildrenStream().flatMap(JoinPoint::getJpDescendantsAndSelfStream);
     }
 
     public Stream<JoinPoint> getJpDescendantsAndSelfStream() {
@@ -612,26 +335,6 @@ public abstract class JoinPoint {
     @Override
     public String toString() {
         return "Joinpoint '" + getJoinPointType() + "'";
-        // return "'" + getJoinPointType() + "'";
-    }
-
-    /**
-     * Tests if a join point supports a given attribute.
-     *
-     * @return true if the join point supports the given attribute, false otherwise
-     */
-    public final boolean hasAttribute(String attributeName) {
-        var attributes = JOIN_POINTS_ATTRIBUTES.get(getClass());
-
-        if (attributes == null) {
-            attributes = new HashSet<>();
-            final List<String> attributesList = new ArrayList<>();
-            fillWithAttributes(attributesList);
-            attributes.addAll(attributesList);
-            JOIN_POINTS_ATTRIBUTES.put(getClass(), attributes);
-        }
-
-        return attributes.contains(attributeName);
     }
 
     public String getDump() {

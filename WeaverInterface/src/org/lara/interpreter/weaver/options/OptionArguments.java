@@ -19,5 +19,5 @@ public enum OptionArguments {
     ONE_ARG,
     SEVERAL_ARGS,
     OPTIONAL_ARG,
-    OPTIONAL_ARGS;
+    OPTIONAL_ARGS
 }

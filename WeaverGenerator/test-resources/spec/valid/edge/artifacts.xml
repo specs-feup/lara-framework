@@ -1,0 +1,15 @@
+<artifacts>
+  <artifact class="base">
+    <attribute name="a" type="Integer"/>
+  </artifact>
+  <artifact class="level1">
+    <attribute name="a" type="Integer"/>
+    <attribute name="b" type="Integer"/>
+  </artifact>
+  <artifact class="level2">
+    <attribute name="c" type="Integer"/>
+  </artifact>
+  <artifact class="reservedKeyword">
+    <attribute name="class" type="String"/>
+  </artifact>
+</artifacts>

@@ -15,19 +15,19 @@ package org.lara.interpreter.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class AttributeException extends BaseException {
 
-    /**
-     * 
-     */
+    @Serial
     private static final long serialVersionUID = 1L;
     private String joinPointName;
     private String attribute;
 
     public AttributeException(String joinPointName, String attribute, Throwable e) {
         super(e);
-        setJoinPointName(joinPointName);
-        setAttributeName(attribute);
+        this.joinPointName = joinPointName;
+        this.attribute = attribute;
     }
 
     @Override
@@ -37,36 +37,6 @@ public class AttributeException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        return "in attribute " + joinPointName + "." + attribute + "";
-    }
-
-    /**
-     * @return the actionName
-     */
-    public String getAttributeName() {
-        return attribute;
-    }
-
-    /**
-     * @param actionName
-     *            the actionName to set
-     */
-    public void setAttributeName(String attribute) {
-        this.attribute = attribute;
-    }
-
-    /**
-     * @return the joinPointName
-     */
-    public String getJoinPointName() {
-        return joinPointName;
-    }
-
-    /**
-     * @param joinPointName
-     *            the joinPointName to set
-     */
-    public void setJoinPointName(String joinPointName) {
-        this.joinPointName = joinPointName;
+        return "in attribute " + joinPointName + "." + attribute;
     }
 }

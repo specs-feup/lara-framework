@@ -16,44 +16,35 @@ import org.apache.commons.cli.*;
 import org.apache.commons.cli.Option.Builder;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 
+import java.io.PrintWriter;
+import java.io.Serial;
+import java.io.StringWriter;
+
 class WeaverGeneratorOptions extends Options {
     private static HelpFormatter formatter = new HelpFormatter();
 
-    /**
-     *
-     */
+    @Serial
     private static final long serialVersionUID = -7738963410049098076L;
 
-    /**
-     * Arguments for options
-     *
-     * @author Tiago Carvalho
-     */
     private enum ArgOption {
         NO_ARGS,
         ONE_ARG,
         SEVERAL_ARGS,
         OPTIONAL_ARG,
-        OPTIONAL_ARGS;
+        OPTIONAL_ARGS
     }
 
     protected enum GeneratorOption {
         H("h", "help"),
         W("w", "weaver"),
-
         X("x", "XMLspec"),
         O("o", "output"),
         P("p", "package"),
-        // A("a", "abstractGetters"), //replaced with -f
         F("f", "fields"),
         E("e", "events"),
-        // I("i", "implMode"),
-        // G("g", "graph"),
         N("n", "nodeType"),
-        D("d", "defs"),
         J("j", "json"),
-        C("c", "concrete"),
-        ;
+        C("c", "concrete");
 
         private String option;
         private String longOption;
@@ -68,7 +59,7 @@ class WeaverGeneratorOptions extends Options {
         }
 
         public String getLongOption() {
-            return option;
+            return longOption;
         }
 
     }
@@ -88,42 +79,31 @@ class WeaverGeneratorOptions extends Options {
 
         final Option packDir = newOption("packageName", GeneratorOption.P, ArgOption.ONE_ARG,
                 "define the package for the java files");
-        
+
         final Option fields = newOption(null, GeneratorOption.F, ArgOption.NO_ARGS,
                 "use fields for attributes");
 
         final Option events = newOption(null, GeneratorOption.E, ArgOption.NO_ARGS,
                 "add code that trigger events such as action execution and attributes access");
-        // final Option implMode = newOption(null, GeneratorOption.I, ArgOption.NO_ARGS,
-        // "Wrap use of attributes with \"Impl\" methods");
 
         final Option nodeType = newOption("base", GeneratorOption.N, ArgOption.OPTIONAL_ARG,
                 "use generics for the Join points, extending the given class (optional)");
 
         final Option toJson = newOption(null, GeneratorOption.J, ArgOption.NO_ARGS,
                 "Output a json file of the language specification");
-        final Option useDefs = newOption(null, GeneratorOption.D, ArgOption.NO_ARGS,
-                "Create methods for def action");
         final Option concreteClasses = newOption("concreteClasses", GeneratorOption.C, ArgOption.ONE_ARG,
                 "Generate the concrete classes, using a linear hierarchy");
-
-        // final Option showGraph = newOption(null, GeneratorOption.G, ArgOption.NO_ARGS,
-        // "Show a graph of the join point hierarchy (default: " + GenConstants.getDefaultShowGraph() + ")");
 
         addOption(help);
         addOption(weaver);
         addOption(xmlDir);
         addOption(outDir);
         addOption(packDir);
-        // addOption(abstractGetters);
         addOption(fields);
         addOption(events);
-        // addOption(implMode);
         addOption(nodeType);
         addOption(toJson);
-        addOption(useDefs);
         addOption(concreteClasses);
-        // addOption(showGraph);
     }
 
     protected CommandLine parse(String[] args) {
@@ -135,7 +115,6 @@ class WeaverGeneratorOptions extends Options {
             return parser.parse(this, args);
 
         } catch (final ParseException e) {
-            // System.out.println(e.getMessage());
             help();
             throw new RuntimeException(e);
         }
@@ -143,21 +122,23 @@ class WeaverGeneratorOptions extends Options {
     }
 
     protected void help() {
-        WeaverGeneratorOptions.formatter.printHelp("java -jar WeaverGenerator.jar [options]", this);
+        StringWriter buffer = new StringWriter();
+        PrintWriter writer = new PrintWriter(buffer);
+
+        WeaverGeneratorOptions.formatter.printHelp(writer, WeaverGeneratorOptions.formatter.getWidth(),
+                "java -jar WeaverGenerator.jar [options]", null, this,
+                WeaverGeneratorOptions.formatter.getLeftPadding(), WeaverGeneratorOptions.formatter.getDescPadding(),
+                null);
+        writer.flush();
+        System.out.print(buffer.toString());
     }
 
     /**
      * Create a new Option with all the description
      *
-     * @param argName
-     * @param shortOpt
-     * @param longOpt
-     * @param argOption
-     * @param description
-     * @return
      */
     protected static Option newOption(String argName, GeneratorOption shortOpt, ArgOption argOption,
-                                      String description) {
+            String description) {
 
         Builder builder = Option.builder(shortOpt.getOption());
 

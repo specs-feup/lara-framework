@@ -27,30 +27,26 @@ public class WeaverEngineStoreDefinition implements StoreDefinitionProvider {
 
     private final WeaverEngine weaver;
 
-    // private LanguageSpecification langSpec;
-
     public WeaverEngineStoreDefinition(WeaverEngine weaver) {
-	this.weaver = weaver;
-	// // TODO Auto-generated constructor stub
+        this.weaver = weaver;
     }
 
     @Override
     public StoreDefinition getStoreDefinition() {
 
-	StoreDefinitionBuilder builder = new StoreDefinitionBuilder(
-		// WeaverEngineStoreDefinition.DEFINITION_NAME + " " + weaver.getClass().getName());
-		weaver.getClass().getSimpleName() + " Options");
-	List<WeaverOption> opts = weaver.getOptions();
+        StoreDefinitionBuilder builder = new StoreDefinitionBuilder(
+                weaver.getClass().getSimpleName() + " Options");
+        List<WeaverOption> opts = weaver.getOptions();
 
-	for (WeaverOption weaverOption : opts) {
-	    builder.addKey(weaverOption.dataKey());
-	}
+        for (WeaverOption weaverOption : opts) {
+            builder.addKey(weaverOption.dataKey());
+        }
 
-	return builder.build();
+        return builder.build();
     }
 
     public static String getDefinitionName() {
-	return WeaverEngineStoreDefinition.DEFINITION_NAME;
+        return WeaverEngineStoreDefinition.DEFINITION_NAME;
     }
 
 }

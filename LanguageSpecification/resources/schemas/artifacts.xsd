@@ -7,10 +7,12 @@
 	<xsd:complexType name="ArtifactsList">
 		<xsd:sequence>
 			<xsd:element name="global" type="Global" maxOccurs="1" minOccurs="0"/>
-			<xsd:element name="artifact" type="Artifact" maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="object" type="TypeDef" maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="typedef" type="TypeDef" maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="enum" type="EnumDef" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="artifact" type="Artifact"/>
+				<xsd:element name="object" type="TypeDef"/>
+				<xsd:element name="typedef" type="TypeDef"/>
+				<xsd:element name="enum" type="EnumDef"/>
+			</xsd:choice>
 		</xsd:sequence>
 	</xsd:complexType>
 	

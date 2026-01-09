@@ -1,8 +1,0 @@
-   
-   import org.mozilla.javascript.NativeArray;
-   
-   
-   public NativeArray getInterfaces() {
-
-	return toNativeArray(getInterfacesArray());
-    }

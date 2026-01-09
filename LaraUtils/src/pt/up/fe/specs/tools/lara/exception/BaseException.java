@@ -13,87 +13,59 @@
 
 package pt.up.fe.specs.tools.lara.exception;
 
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
+import java.io.Serial;
 
 /**
- * Abstract exception of a LARA exception. These type of exceptions are used to encapsulate other thrown exceptions
+ * Abstract exception of a LARA exception. These type of exceptions are used to
+ * encapsulate other thrown exceptions
  *
  * @author Tiago
  *
  */
 public abstract class BaseException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     *
-     */
-    public BaseException(Throwable e) {
-        super(e);
+    public BaseException(String message) {
+        super(message);
     }
 
     public BaseException(String message, Throwable e) {
         super(message, e);
     }
 
+    public BaseException(Throwable e) {
+        super(e);
+    }
+
     /**
-     * Generate a complete message to present to the user, usually containing 'Exception on' + generateSimpleMessage()
+     * Generate a complete message to present to the user, usually containing
+     * 'Exception on' + generateSimpleMessage()
      *
-     * @return
      */
     protected abstract String generateMessage();
 
     /**
-     * Generate the concrete message to present to the user. Usually this method does not contain the 'Exception on'
-     * stuff, just get to the point!
+     * Generate the concrete message to present to the user. Usually this method
+     * does not contain the 'Exception on' stuff, just get to the point!
      *
-     * @return
      */
-    protected abstract String generateSimpleMessage();
+    protected String generateSimpleMessage() {
+        return LARAExceptionBuilder.getEvaluationExceptionMessage();
+    }
 
     @Override
     public String getMessage() {
-        // return generateMessage();
-        String message = generateMessage();
+        return generateMessage();
+    }
 
-        // Throwable primaryCause = this;
-        // while (primaryCause.getCause() != null) {
-        // primaryCause = primaryCause.getCause();
-        // }
-        //
-        // if (primaryCause != this) {
-        // StringBuilder cause = new StringBuilder();
-        // cause.append("Primary cause:");
-        // for (var element : primaryCause.getStackTrace()) {
-        // cause.append("\n").append(element);
-        // }
-        //
-        // message += "\n" + cause.toString();
-        // }
-
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        return message;
+    protected String getDetailMessage() {
+        return super.getMessage();
     }
 
     public String getSimpleMessage() {
         return generateSimpleMessage();
-        // String message = generateSimpleMessage();
-        // System.out.println("MESSAGE: " + message);
-        // message += "\n Something extra";
-        // return message;
-    }
-
-    /**
-     * Generate a Runtime exception and use a specific stack trace instead of the one generated based on the chained
-     * exceptions
-     *
-     * @param stackStrace
-     * @return
-     */
-    public RuntimeException generateRuntimeException(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = generateExceptionBuilder(stackStrace);
-        throw builder.getRuntimeException();
     }
 
     public RuntimeException generateRuntimeException() {
@@ -103,12 +75,6 @@ public abstract class BaseException extends RuntimeException {
 
     public LARAExceptionBuilder generateExceptionBuilder() {
         LARAExceptionBuilder builder = new LARAExceptionBuilder();
-        generateException(builder);
-        return builder;
-    }
-
-    public LARAExceptionBuilder generateExceptionBuilder(CallStackTrace stackStrace) {
-        LARAExceptionBuilder builder = new LARAExceptionBuilder(stackStrace);
         generateException(builder);
         return builder;
     }

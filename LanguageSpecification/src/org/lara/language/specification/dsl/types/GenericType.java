@@ -13,24 +13,11 @@
 
 package org.lara.language.specification.dsl.types;
 
-public class GenericType implements IType {
-
-    private final String type;
-    private final boolean isArray;
-
-    public GenericType(String type, boolean isArray) {
-        this.type = type;
-        this.isArray = isArray;
-    }
+public record GenericType(String type, boolean isArray) implements IType {
 
     @Override
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public boolean isArray() {
-        return isArray;
+    public String toString() {
+        return type != null ? type : "null";
     }
 
 }

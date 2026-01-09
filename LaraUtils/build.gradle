@@ -1,15 +1,15 @@
 plugins {
- 	id 'distribution'
+    id 'distribution'
+    id 'java'
+    id 'jacoco'
 }
 
-// Java project
-apply plugin: 'java'
-
 java {
+    withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
 
 // Repositories providers
 repositories {
@@ -17,22 +17,61 @@ repositories {
 }
 
 dependencies {
-	testImplementation "junit:junit:4.13.1"     
-	implementation ':SpecsUtils'
-	implementation ':tdrcLibrary'		
-}
+    implementation ':SpecsUtils'
 
-java {
-	withSourcesJar()
-}
+    implementation 'io.github.java-diff-utils:java-diff-utils:4.15'
 
+    // Testing dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
+}
 
 // Project sources
 sourceSets {
-   main {
-      java {
-         srcDir 'src'
-      }
-   }   
-   
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test-resources'
+        }
+    }
+}
+
+// Test coverage configuration
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80 // 80% minimum coverage
+            }
+        }
+    }
+}
+
+// Make sure jacoco report is generated after tests
+test {
+    useJUnitPlatform()
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+
+    finalizedBy jacocoTestReport
 }

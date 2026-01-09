@@ -1,5 +1,5 @@
-import Clava from "@specs-feup/clava/api/clava/Clava.js";
-import ClavaJoinPoints from "@specs-feup/clava/api/clava/ClavaJoinPoints.js";
+import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
+import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.js";
 
 /**
  * Registers the source code that will be used by the weaver for the purpose of this test suite.
@@ -16,19 +16,26 @@ export function registerSourceCode(code: string): void {
  * @param codes - Record that maps file names to the corresponding source code.
  */
 export function registerSourceCodes(codes: Record<string, string>): void {
-  beforeAll(() => {
-    Clava.getProgram().push();
-    const program = Clava.getProgram();
+  beforeEach(() => {
+    const javaWeaver = Weaver.getWeaverEngine();
+    const javaDatastore = javaWeaver.getData().get();
 
-    for (const key in codes) {
-      const sourceFile = ClavaJoinPoints.fileWithSource(key, codes[key]);
-      program.addFile(sourceFile);
-    }
+    javaWeaver.run(Object.keys(codes), Object.values(codes), javaDatastore);
+  });
 
-    program.rebuild();
+  afterEach(() => {
+    Weaver.getWeaverEngine().end();
   });
 
   afterAll(() => {
-    Clava.getProgram().pop();
+    const javaWeaver = Weaver.getWeaverEngine();
+    const javaDatastore = javaWeaver.getData().get();
+
+    javaDatastore.set(
+      JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
+      JavaTypes.FileList.newInstance()
+    );
+
+    javaWeaver.run(javaDatastore);
   });
 }

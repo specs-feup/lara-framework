@@ -11,30 +11,6 @@
 						"type": "attribute",
 						"children": [
 									{
-										"type": "String[]",
-										"name": "attributes"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "String[]",
-										"name": "selects"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "String[]",
-										"name": "actions"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
 										"type": "String",
 										"name": "dump"
 									}]
@@ -99,7 +75,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "LaraJoinPoint",
+										"type": "LaraJoinPoint[]",
 										"name": "insert"
 									},
 									{
@@ -117,7 +93,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "LaraJoinPoint",
+										"type": "LaraJoinPoint[]",
 										"name": "insert"
 									},
 									{
@@ -128,24 +104,6 @@
 									{
 										"type": "LaraJoinPoint",
 										"name": "joinpoint",
-										"defaultValue": ""
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "Void",
-										"name": "def"
-									},
-									{
-										"type": "String",
-										"name": "attribute",
-										"defaultValue": ""
-									},
-									{
-										"type": "Object",
-										"name": "value",
 										"defaultValue": ""
 									}]
 					},

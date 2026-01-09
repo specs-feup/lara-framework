@@ -22,81 +22,69 @@ public class OptionsBuilderUtils {
 
     /**
      * Create a New Option
-     * 
-     * @param argName
-     * @param shortOpt
-     * @param longOpt
-     * @param argOption
-     * @param description
-     * @return
+     *
      */
     static Option newOption(String shortOpt, String longOpt, OptionArguments argOption, String argName,
-	    String description) {
+            String description) {
 
-	Builder builder;
-	if (shortOpt == null) {
-	    builder = Option.builder();
-	} else {
-	    builder = Option.builder(shortOpt);
-	}
-	if (!argName.isEmpty()) {
-	    builder.argName(argName);
-	}
-	builder.longOpt(longOpt);
+        Builder builder;
+        if (shortOpt == null) {
+            builder = Option.builder();
+        } else {
+            builder = Option.builder(shortOpt);
+        }
+        if (!argName.isEmpty()) {
+            builder.argName(argName);
+        }
+        builder.longOpt(longOpt);
 
-	switch (argOption) {
-	case NO_ARGS:
-	    break;
-	case ONE_ARG:
-	    builder.hasArg();
-	    break;
-	case SEVERAL_ARGS:
-	    builder.hasArgs();
-	    break;
-	case OPTIONAL_ARG:
-	    builder.hasArg();
-	    builder.optionalArg(true);
-	    break;
-	case OPTIONAL_ARGS:
-	    builder.hasArgs();
-	    builder.optionalArg(true);
-	    break;
-	default:
-	    break;
-	}
+        switch (argOption) {
+            case NO_ARGS:
+                break;
+            case ONE_ARG:
+                builder.hasArg();
+                break;
+            case SEVERAL_ARGS:
+                builder.hasArgs();
+                break;
+            case OPTIONAL_ARG:
+                builder.hasArg();
+                builder.optionalArg(true);
+                break;
+            case OPTIONAL_ARGS:
+                builder.hasArgs();
+                builder.optionalArg(true);
+                break;
+            default:
+                break;
+        }
 
-	builder.desc(description);
+        builder.desc(description);
 
-	return builder.build();
+        return builder.build();
     }
 
     /**
      * New Option using the CLIOptions enum
-     * 
-     * @param option
-     * @param description
-     * @return
+     *
      */
     static Option newOption(CLIOption option, String argName, OptionArguments argOption,
-	    String description) {
-	return newOption(option.shortOption(), option.name(), argOption, argName, description);
+            String description) {
+        return newOption(option.shortOption(), option.name(), argOption, argName, description);
     }
 
     /**
      * New Option without arguments
-     * 
-     * @param option
-     * @param description
-     * @return
+     *
      */
     static Option newOption(CLIOption option, String description) {
-	return newOption(option, "", OptionArguments.NO_ARGS, description);
+        return newOption(option, "", OptionArguments.NO_ARGS, description);
     }
 
     static Option newOption(WeaverOption option) {
 
-	return newOption(option.shortOption(), option.longOption(), option.args(), option.argName(),
-		option.description());
+        return newOption(option.shortOption(), option.longOption(), option.args(), option.argName(),
+                option.description());
     }
 
 }

@@ -13,11 +13,25 @@
 
 package pt.up.fe.specs.lara.langspec;
 
-import org.lara.language.specification.dsl.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
+import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.EnumDef;
 import org.lara.language.specification.dsl.types.EnumValue;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.TypeDef;
+import org.lara.language.specification.exception.LanguageSpecificationException;
+
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
 import pt.up.fe.specs.util.collections.MultiMap;
@@ -25,30 +39,23 @@ import pt.up.fe.specs.util.providers.ResourceProvider;
 import pt.up.fe.specs.util.xml.XmlDocument;
 import pt.up.fe.specs.util.xml.XmlElement;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 public class LangSpecsXmlParser {
 
     public static LanguageSpecification parse(InputStream joinPointModel, InputStream attributeModel,
-                                              InputStream actionModel) {
+            InputStream actionModel) {
 
         return parse(joinPointModel, attributeModel, actionModel, true);
     }
 
     public static LanguageSpecification parse(ResourceProvider joinPointModel, ResourceProvider attributeModel,
-                                              ResourceProvider actionModel, boolean validate) {
+            ResourceProvider actionModel, boolean validate) {
 
         return parse(SpecsIo.resourceToStream(joinPointModel), SpecsIo.resourceToStream(attributeModel),
                 SpecsIo.resourceToStream(actionModel), validate);
     }
 
     public static LanguageSpecification parse(InputStream joinPointModel, InputStream attributeModel,
-                                              InputStream actionModel, boolean validate) {
+            InputStream actionModel, boolean validate) {
 
         var jpSchema = validate ? SchemaResource.JOIN_POINT_SCHEMA.toStream() : null;
         var attrSchema = validate ? SchemaResource.ATTRIBUTE_SCHEMA.toStream() : null;
@@ -71,6 +78,16 @@ public class LangSpecsXmlParser {
             langSpecV2.add(typeDef);
         }
 
+        for (var type : attributeModelNode.getElementsByName("enum")) {
+            var enumDef = new EnumDef(type.getAttribute("name"));
+            langSpecV2.add(enumDef);
+
+            setOptional(type.getAttribute("tooltip"), enumDef::setToolTip);
+
+            List<EnumValue> valuesList = toEnumValues(type.getElementsByName("value"), langSpecV2);
+            enumDef.setValues(valuesList);
+        }
+
         for (var type : attributeModelNode.getElementsByName("typedef")) {
             var typeDef = new TypeDef(type.getAttribute("name"));
 
@@ -83,16 +100,6 @@ public class LangSpecsXmlParser {
             langSpecV2.add(typeDef);
         }
 
-        for (var type : attributeModelNode.getElementsByName("enum")) {
-            var enumDef = new EnumDef(type.getAttribute("name"));
-            langSpecV2.add(enumDef);
-
-            setOptional(type.getAttribute("tooltip"), enumDef::setToolTip);
-
-            List<EnumValue> valuesList = toEnumValues(type.getElementsByName("value"), langSpecV2);
-            enumDef.setValues(valuesList);
-        }
-
         List<JoinPointClass> jps = new ArrayList<>();
         for (var jpNode : joinPointModelNode.getElementsByName("joinpoint")) {
             var jp = new JoinPointClass(jpNode.getAttribute("class"));
@@ -100,7 +107,7 @@ public class LangSpecsXmlParser {
             jps.add(jp);
         }
         Collections.sort(jps);
-        jps.stream().forEach(langSpecV2::add);
+        jps.forEach(langSpecV2::add);
 
         var joinpoints = joinPointModelNode.getElementsByName("joinpoints").get(0);
         langSpecV2.setRoot(joinpoints.getAttribute("root_class"));
@@ -138,7 +145,14 @@ public class LangSpecsXmlParser {
             JoinPointClass jp = langSpecV2.getJoinPoint(jpClass);
             String extendsType = jpNode.getAttribute("extends");
             if (!extendsType.isEmpty()) {
-                jp.setExtend(langSpecV2.getJoinPoint(extendsType));
+                JoinPointClass parent = langSpecV2.getJoinPoint(extendsType);
+                if (parent == null) {
+                    throw new LanguageSpecificationException(
+                            "Unknown extends target '" + extendsType + "' for join point '" + jpClass + "'");
+                }
+
+                validateNoInheritanceCycle(jp, parent);
+                jp.setExtend(parent);
             } else {
                 jp.setExtend(global);
             }
@@ -146,7 +160,7 @@ public class LangSpecsXmlParser {
             // Obtain attribute nodes from artifacts
             List<XmlElement> artifactNodes = attributeModelNode.getElementsByName("artifact").stream()
                     .filter(attribute -> attribute.getAttribute("class").equals(jpClass))
-                    .collect(Collectors.toList());
+                    .toList();
 
             var attributeNodes = artifactNodes.stream()
                     .flatMap(art -> art.getElementsByName("attribute").stream())
@@ -155,28 +169,25 @@ public class LangSpecsXmlParser {
             // Add attributes
             jp.setAttributes(convertAttributes(attributeNodes, langSpecV2));
 
-            // Add selects
-            jp.setSelects(convertSelects(langSpecV2, jpNode.getElementsByName("select")));
-
             // Add actions
-            jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass)));
+            jp.setActions(convertActions(langSpecV2, joinPointActions.get(jpClass), jpClass));
+        }
 
-            // Set default attributes
-            for (var artifact : attributeModelNode.getElementsByName("artifact")) {
-                var defaultValue = artifact.getAttribute("default");
-                if (defaultValue.isEmpty()) {
-                    continue;
-                }
-
-                var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
-
-                if (artifactJp == null) {
-                    SpecsLogs.info("Artifact without join point: " + artifact.getAttribute("class"));
-                    continue;
-                }
-
-                artifactJp.setDefaultAttribute(defaultValue);
+        // Set default attributes
+        for (var artifact : attributeModelNode.getElementsByName("artifact")) {
+            var defaultValue = artifact.getAttribute("default");
+            if (defaultValue.isEmpty()) {
+                continue;
             }
+
+            var artifactJp = langSpecV2.getJoinPoint(artifact.getAttribute("class"));
+
+            if (artifactJp == null) {
+                SpecsLogs.info("Artifact without join point: " + artifact.getAttribute("class"));
+                continue;
+            }
+
+            artifactJp.setDefaultAttribute(defaultValue);
         }
 
         return langSpecV2;
@@ -206,7 +217,7 @@ public class LangSpecsXmlParser {
     }
 
     private static void populateGlobal(XmlDocument jpModel, XmlDocument artifacts, XmlDocument actionModel,
-                                       LanguageSpecification langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
+            LanguageSpecification langSpecV2, JoinPointClass global, List<XmlElement> globalActionNodes) {
 
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
@@ -214,12 +225,12 @@ public class LangSpecsXmlParser {
                     .forEach(global::add);
         }
 
-        convertActions(langSpecV2, globalActionNodes).stream()
+        convertActions(langSpecV2, globalActionNodes, JoinPointClass.getGlobalName())
                 .forEach(global::add);
     }
 
     private static List<Attribute> convertAttributes(List<XmlElement> attributeNodes,
-                                                     LanguageSpecification langSpec) {
+            LanguageSpecification langSpec) {
 
         List<Attribute> attributes = new ArrayList<>();
         for (var attributeNode : attributeNodes) {
@@ -245,21 +256,7 @@ public class LangSpecsXmlParser {
                     parameterNode.getAttribute("name"), parameterNode.getAttribute("default"));
         }
 
-        var defNodes = attributeNode.getElementsByName("def");
-
-        for (var defNode : defNodes) {
-            // If def does not have a type, use the attribute type
-            newAttribute.addDef(parseDef(defNode, type));
-        }
-
         return newAttribute;
-    }
-
-    private static Def parseDef(XmlElement defNode, String attributeType) {
-        // Check if it has an optional 'type'
-        var type = defNode.getAttribute("type", attributeType);
-
-        return new Def(type);
     }
 
     private static String getType(XmlElement node) {
@@ -268,9 +265,14 @@ public class LangSpecsXmlParser {
     }
 
     private static List<Action> convertActions(LanguageSpecification langSpecV2,
-                                               List<XmlElement> actionNodes) {
+            List<XmlElement> actionNodes, String ownerName) {
+
+        if (actionNodes == null || actionNodes.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         List<Action> newActions = new ArrayList<>();
+        var seenSignatures = new HashSet<String>();
         for (var action : actionNodes) {
             var parameterNodes = action.getElementsByName("parameter");
             List<Parameter> declarations = new ArrayList<>();
@@ -283,6 +285,11 @@ public class LangSpecsXmlParser {
             Action newAction = new Action(langSpecV2.getType(action.getAttribute("return", "void")),
                     action.getAttribute("name"), declarations);
             setOptional(action.getAttribute("tooltip"), newAction::setToolTip);
+            var signature = newAction.getSignature();
+            if (!seenSignatures.add(signature)) {
+                throw new LanguageSpecificationException(
+                        "Duplicate action signature '" + signature + "' for join point '" + ownerName + "'");
+            }
             newActions.add(newAction);
         }
 
@@ -290,27 +297,19 @@ public class LangSpecsXmlParser {
         return newActions;
     }
 
-    private static List<Select> convertSelects(LanguageSpecification langSpecV2,
-                                               List<XmlElement> selectNodes) {
-
-        List<Select> selects = new ArrayList<>();
-
-        for (var selectNode : selectNodes) {
-            String selectClassName = selectNode.getAttribute("class");
-            JoinPointClass selectJP = langSpecV2.getJoinPoint(selectClassName);
-
-            // Validation: selectJP must not be null
-            if (selectJP == null) {
-                throw new RuntimeException("Select has invalid join point name as class: " + selectClassName);
-            }
-
-            String alias = selectNode.getAttribute("alias");
-            alias = alias.equals(selectClassName) ? "" : alias; // Is this necessary?
-            Select newSelect = new Select(selectJP, alias);
-            newSelect.setToolTip(selectNode.getAttribute("tooltip", null));
-            selects.add(newSelect);
+    private static void validateNoInheritanceCycle(JoinPointClass child, JoinPointClass parent) {
+        if (parent == null) {
+            return;
         }
 
-        return selects;
+        JoinPointClass current = parent;
+        while (current != null) {
+            if (current == child) {
+                throw new LanguageSpecificationException(
+                        "Inheritance cycle detected for join point '" + child.getName() + "'");
+            }
+
+            current = current.getExtend().orElse(null);
+        }
     }
 }

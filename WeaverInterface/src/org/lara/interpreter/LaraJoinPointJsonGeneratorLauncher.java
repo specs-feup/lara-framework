@@ -23,7 +23,17 @@ import java.io.File;
 
 public class LaraJoinPointJsonGeneratorLauncher {
 
+    private static final String OUTPUT_PATH = "../Lara-JS/LaraJoinPointSpecification.json";
+
     public static void main(String[] args) {
+        String outputPath = OUTPUT_PATH;
+        if (args != null && args.length > 0 && args[0] != null && !args[0].isBlank()) {
+            outputPath = args[0];
+        }
+        generateJsonOutputFile(outputPath);
+    }
+
+    private static void generateJsonOutputFile(String outputPath) {
         var jp = JoinPoint.getLaraJoinPoint();
         var langSpec = new LanguageSpecification(jp, null);
         langSpec.setGlobal(jp);
@@ -31,7 +41,7 @@ public class LaraJoinPointJsonGeneratorLauncher {
         LangSpecNode node = NodeFactory.toNode(langSpec);
         String json = node.toJson();
 
-        File jsonOutFile = new File("../Lara-JS/LaraJoinPointSpecification.json");
+        File jsonOutFile = new File(outputPath);
         SpecsIo.write(jsonOutFile, json);
         System.out.println(json);
     }
