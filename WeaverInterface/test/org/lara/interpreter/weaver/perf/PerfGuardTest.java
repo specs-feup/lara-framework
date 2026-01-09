@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.utils.SourcesGatherer;
@@ -27,7 +28,8 @@ class PerfGuardTest {
             trigger.registerReceiver(new AGear() {
             }); // no-op gear
 
-            var jp = new TestJoinPoint("test");
+            var engine = new TestWeaverEngine();
+            var jp = new TestJoinPoint(engine, "test");
             for (int i = 0; i < 1_000; i++) {
                 trigger.triggerAction(Stage.BEGIN, "guard", jp, List.of(), Optional.empty());
                 trigger.triggerAction(Stage.END, "guard", jp, List.of(), Optional.of(i));
@@ -58,7 +60,8 @@ class PerfGuardTest {
     }
 
     private static TestJoinPoint buildTree(int branching, int depth) {
-        var root = new TestJoinPoint("root");
+        var engine = new TestWeaverEngine();
+        var root = new TestJoinPoint(engine, "root");
         build(root, branching, depth - 1);
         return root;
     }
@@ -67,7 +70,7 @@ class PerfGuardTest {
         if (depth < 0)
             return;
         for (int i = 0; i < branching; i++) {
-            var child = new TestJoinPoint("n");
+            var child = new TestJoinPoint(parent.getWeaverEngine(), "n");
             parent.addChild(child);
             build(child, branching, depth - 1);
         }

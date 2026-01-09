@@ -161,22 +161,6 @@ public abstract class WeaverEngine {
         return getClass().getSimpleName();
     }
 
-    /**
-     * The name of the weaver with the build number, if available.
-     *
-     */
-    public String getNameAndBuild() {
-        var appName = getName();
-
-        var implVersion = SpecsSystem.getBuildNumber();
-        if (implVersion != null) {
-            appName += " (build " + implVersion + ")";
-        }
-
-        return appName;
-
-    }
-
     public EventTrigger getEventTrigger() {
         return eventTrigger;
     }

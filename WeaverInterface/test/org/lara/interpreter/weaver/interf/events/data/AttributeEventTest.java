@@ -7,13 +7,15 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 class AttributeEventTest {
 
     @Test
     void getters_and_base_toString() {
-        var jp = new TestJoinPoint("loop");
+        var engine = new TestWeaverEngine();
+        var jp = new TestJoinPoint(engine, "loop");
         var ev = new AttributeEvent(Stage.BEGIN, jp, "iters", List.of(1, 2), Optional.empty());
 
         assertThat(ev.getStage()).isEqualTo(Stage.BEGIN);

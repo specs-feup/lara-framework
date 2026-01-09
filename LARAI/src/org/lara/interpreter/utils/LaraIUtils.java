@@ -16,7 +16,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import larai.LaraI;
 import pt.up.fe.specs.util.SpecsSystem;
@@ -24,19 +23,9 @@ import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
 
-    public static boolean printHelp(CommandLine cmd, Options options, WeaverEngine weaver) {
+    public static boolean printHelp(CommandLine cmd, Options options) {
         if (cmd.hasOption(CLIOption.help.shortOption())) {
-            System.out.println(OptionsParser.getHelp(options, weaver));
-            return true;
-        }
-        if (cmd.hasOption(CLIOption.version.shortOption())) {
-            var implVersion = SpecsSystem.getBuildNumber();
-            if (implVersion == null) {
-                implVersion = "<build number not found>";
-            }
-
-            System.out.println("Build: " + implVersion);
-
+            System.out.println(OptionsParser.getHelp(options));
             return true;
         }
         return false;
