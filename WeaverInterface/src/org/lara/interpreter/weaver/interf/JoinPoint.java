@@ -35,6 +35,7 @@ import java.util.stream.Stream;
  */
 public abstract class JoinPoint {
 
+    private WeaverEngine weaver;
     private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint");
 
     static {
@@ -60,6 +61,10 @@ public abstract class JoinPoint {
                 new Parameter(PrimitiveClasses.STRING, "name"));
         LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
                 new Parameter(ArrayType.of(PrimitiveClasses.STRING), "names"));
+    }
+
+    public JoinPoint(WeaverEngine weaver) {
+        this.weaver = weaver;
     }
 
     public static JoinPointClass getLaraJoinPoint() {
@@ -270,7 +275,7 @@ public abstract class JoinPoint {
     }
 
     public WeaverEngine getWeaverEngine() {
-        return WeaverEngine.getThreadLocalWeaver();
+        return weaver;
     }
 
     protected EventTrigger eventTrigger() {
