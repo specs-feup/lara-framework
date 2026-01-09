@@ -75,7 +75,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "LaraJoinPoint",
+										"type": "LaraJoinPoint[]",
 										"name": "insert"
 									},
 									{
@@ -93,7 +93,7 @@
 						"type": "action",
 						"children": [
 									{
-										"type": "LaraJoinPoint",
+										"type": "LaraJoinPoint[]",
 										"name": "insert"
 									},
 									{

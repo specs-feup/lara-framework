@@ -22,11 +22,11 @@ import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-
 import pt.up.fe.specs.jsengine.node.UndefinedValue;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,10 +47,10 @@ public abstract class JoinPoint {
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "children");
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
         LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
-        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
                 new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(PrimitiveClasses.STRING, "code"));
-        LARA_JOIN_POINT.addAction(JPType.of(LARA_JOIN_POINT), "insert",
+        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
                 new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
                 new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
         LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
@@ -111,7 +111,7 @@ public abstract class JoinPoint {
 
     /**
      * @return true, if this join point is an instance of the given type, false
-     *         otherwise
+     * otherwise
      */
     public boolean instanceOf(String type) {
 
@@ -129,7 +129,7 @@ public abstract class JoinPoint {
 
     /**
      * @return true, if this join point is an instance of any of the given types,
-     *         false otherwise
+     * false otherwise
      */
     public boolean instanceOf(String[] types) {
         for (var type : types) {

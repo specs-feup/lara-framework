@@ -127,7 +127,7 @@ export default abstract class LoggerBase<T extends LaraJoinPoint> {
       $jp.insert(insertBeforeString, code);
       this.afterJp = $jp;
     } else {
-      this.afterJp = $jp.insert("after", code) as T;
+      this.afterJp = $jp.insert("after", code)[0] as T;
     }
   }
 

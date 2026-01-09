@@ -67,9 +67,9 @@ export class LaraJoinPoint {
   get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
   get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
   get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
-  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint;
-  insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint;
-  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
+  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint[];
+  insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint[];
+  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
   equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
   instanceOf(name: string): boolean;
