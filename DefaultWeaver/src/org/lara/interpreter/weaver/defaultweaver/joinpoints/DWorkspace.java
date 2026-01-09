@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AWorkspace;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -32,14 +33,15 @@ public class DWorkspace extends AWorkspace {
 
     private final Map<File, DWFolder> folders;
 
-    public DWorkspace() {
+    public DWorkspace(DefaultWeaver weaver) {
+        super(weaver);
         folders = new HashMap<>();
     }
 
     public void addFolder(File dir) {
         File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
         if (!folders.containsKey(canonicalFile)) {
-            folders.put(canonicalFile, new DWFolder(canonicalFile));
+            folders.put(canonicalFile, new DWFolder(canonicalFile, getWeaverEngine()));
         }
     }
 

@@ -78,10 +78,10 @@ public class OptionsParser {
         return arrayList;
     }
 
-    public static CommandLine parse(String[] args, Options options) {
+    public static CommandLine parse(String[] args, Options options, WeaverEngine weaver) {
 
         if (args.length < 1) {
-            throw new IllegalArgumentException("LARA aspect file is required.\n" + OptionsParser.getHelp(options));
+            throw new IllegalArgumentException("LARA aspect file is required.\n" + OptionsParser.getHelp(options, weaver));
         }
 
         try {
@@ -92,7 +92,7 @@ public class OptionsParser {
 
         } catch (final ParseException e) {
             // System.out.println(e.getMessage());
-            String help = getHelp(options);
+            String help = getHelp(options, weaver);
             throw new LaraIException(e.getMessage() + "\n" + help);
         }
     }
@@ -136,11 +136,11 @@ public class OptionsParser {
         }
     }
 
-    public static String getHelp(Options options) {
-        return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
+    public static String getHelp(Options options, WeaverEngine weaver) {
+        return getHelp(options, weaver, HelpFormatter.DEFAULT_LEFT_PAD);
     }
 
-    public static String getHelp(Options options, int leftPadding) {
+    public static String getHelp(Options options, WeaverEngine weaver, int leftPadding) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null); // So it stays the same order the options are added
         StringWriter sw = new StringWriter();
@@ -153,8 +153,7 @@ public class OptionsParser {
 
         var output = sw.toString();
 
-        if (WeaverEngine.isWeaverSet()) {
-            var weaver = WeaverEngine.getThreadLocalWeaver();
+        if (weaver != null) {
             output = weaver.getNameAndBuild() + "\n" + output;
         }
 
