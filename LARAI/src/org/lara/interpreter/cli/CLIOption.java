@@ -24,7 +24,6 @@ import org.suikasoft.jOptions.Datakey.DataKey;
 public enum CLIOption implements WeaverOption {
 
     help("h", "print this message", LaraiKeys.SHOW_HELP),
-    version("v", "print version information and exit", null),
     debug("d", "show all process information", LaraiKeys.DEBUG_MODE),
     argv("av", OptionArguments.ONE_ARG, "arguments",
             "arguments for the main aspect. Supports passing a .properties file with the arguments",

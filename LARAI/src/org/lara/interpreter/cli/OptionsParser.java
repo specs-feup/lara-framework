@@ -40,6 +40,7 @@ import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.specs.util.lazy.Lazy;
 
 /**
  * @author Tiago
@@ -53,7 +54,6 @@ public class OptionsParser {
      */
     public static Collection<Option> buildLaraIOptionGroup() {
         final Option help = OptionsBuilderUtils.newOption(CLIOption.help);
-        final Option version = OptionsBuilderUtils.newOption(CLIOption.version);
         final Option debug = OptionsBuilderUtils.newOption(CLIOption.debug);
 
         final Option outDir = OptionsBuilderUtils.newOption(CLIOption.output);
@@ -66,7 +66,6 @@ public class OptionsParser {
 
         Options options = new Options()
                 .addOption(help)
-                .addOption(version)
                 .addOption(argv)
                 .addOption(debug)
                 .addOption(outDir)
@@ -78,22 +77,20 @@ public class OptionsParser {
         return arrayList;
     }
 
-    public static CommandLine parse(String[] args, Options options, WeaverEngine weaver) {
+    public static CommandLine parse(String[] args, Options options) {
+
+        Lazy<String> help = Lazy
+                .newInstance(() -> OptionsParser.getHelp(options));
 
         if (args.length < 1) {
-            throw new IllegalArgumentException("LARA aspect file is required.\n" + OptionsParser.getHelp(options, weaver));
+            throw new IllegalArgumentException("LARA aspect file is required.\n" + help.get());
         }
 
         try {
-
             final CommandLineParser parser = new DefaultParser();
-
             return parser.parse(options, args);
-
         } catch (final ParseException e) {
-            // System.out.println(e.getMessage());
-            String help = getHelp(options, weaver);
-            throw new LaraIException(e.getMessage() + "\n" + help);
+            throw new LaraIException(e.getMessage() + "\n" + help.get());
         }
     }
 
@@ -136,11 +133,11 @@ public class OptionsParser {
         }
     }
 
-    public static String getHelp(Options options, WeaverEngine weaver) {
-        return getHelp(options, weaver, HelpFormatter.DEFAULT_LEFT_PAD);
+    public static String getHelp(Options options) {
+        return getHelp(options, HelpFormatter.DEFAULT_LEFT_PAD);
     }
 
-    public static String getHelp(Options options, WeaverEngine weaver, int leftPadding) {
+    public static String getHelp(Options options, int leftPadding) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null); // So it stays the same order the options are added
         StringWriter sw = new StringWriter();
@@ -151,13 +148,7 @@ public class OptionsParser {
                 "", options, leftPadding, formatter.getDescPadding(), "", false);
         pw.flush();
 
-        var output = sw.toString();
-
-        if (weaver != null) {
-            output = weaver.getNameAndBuild() + "\n" + output;
-        }
-
-        return output;
+        return sw.toString();
     }
 
     public static Collection<Option> buildConfigOptions() {

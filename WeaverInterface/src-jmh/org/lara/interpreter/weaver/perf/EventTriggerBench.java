@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -55,7 +56,9 @@ public class EventTriggerBench {
         }
         emptyResult = Optional.empty();
         someResult = Optional.of("ok");
-        jp = new BenchJoinPoint();
+
+        WeaverEngine weaver = null; // weaver is not used in this benchmark
+        jp = new BenchJoinPoint(weaver);
     }
 
     @Benchmark
@@ -72,6 +75,10 @@ public class EventTriggerBench {
 
     // Minimal JoinPoint for benchmarks
     private static final class BenchJoinPoint extends JoinPoint {
+        public BenchJoinPoint(WeaverEngine weaver) {
+            super(weaver);
+        }
+
         @Override
         public boolean same(JoinPoint iJoinPoint) {
             return this == iJoinPoint;

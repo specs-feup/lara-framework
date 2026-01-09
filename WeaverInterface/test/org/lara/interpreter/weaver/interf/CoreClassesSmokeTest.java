@@ -33,7 +33,7 @@ class CoreClassesSmokeTest {
 
         @Override
         public JoinPoint getRootJp() {
-            return new DummyJp();
+            return new DummyJp(this);
         }
 
         @Override
@@ -58,6 +58,15 @@ class CoreClassesSmokeTest {
     }
 
     private static class DummyJp extends JoinPoint {
+        public DummyJp(DummyWeaver weaver) {
+            super(weaver);
+        }
+
+        @Override
+        public DummyWeaver getWeaverEngine() {
+            return (DummyWeaver) super.getWeaverEngine();
+        }
+
         @Override
         public boolean same(JoinPoint iJoinPoint) {
             return this == iJoinPoint;
@@ -90,7 +99,6 @@ class CoreClassesSmokeTest {
 
         // Name and build string is not empty
         assertThat(weaver.getName()).isEqualTo("DummyWeaver");
-        assertThat(weaver.getNameAndBuild()).contains("DummyWeaver");
 
         // Event trigger usage
         var trigger = new EventTrigger();
@@ -101,7 +109,8 @@ class CoreClassesSmokeTest {
     @Test
     @DisplayName("JoinPoint utility methods produce outputs and toString contains type")
     void joinPointUtilities() {
-        var jp = new DummyJp();
+        var weaver = new DummyWeaver();
+        var jp = new DummyJp(weaver);
         assertThat(jp.getJoinPointType()).isEqualTo(jp.get_class());
         assertThat(JoinPoint.isJoinPoint(jp)).isTrue();
         assertThat(jp.instanceOf("joinpoint")).isTrue();
