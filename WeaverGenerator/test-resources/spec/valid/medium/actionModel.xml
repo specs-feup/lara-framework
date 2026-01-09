@@ -2,7 +2,7 @@
   <action name="replaceWith" class="function" return="joinpoint">
     <parameter name="node" type="joinpoint"/>
   </action>
-  <action name="insert" class="*">
+  <action name="insert" class="*" return="joinpoint[]">
     <parameter name="position" type="String" default="before"/>
     <parameter name="code" type="template"/>
   </action>

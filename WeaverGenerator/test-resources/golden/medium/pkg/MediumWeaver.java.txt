@@ -7,7 +7,6 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.dsl.LanguageSpecification;
 
 /**
@@ -70,13 +69,6 @@ public class MediumWeaver extends AMediumWeaver {
     @Override
     public List<WeaverOption> getOptions() {
         return List.of(); //i.e., no additional options
-    }
-
-    /**
-     * Returns thread-local instance of weaver engine.
-     */
-    public static MediumWeaver getMediumWeaver() {
-        return (MediumWeaver) WeaverEngine.getThreadLocalWeaver();
     }
 
     /**

@@ -1,5 +1,6 @@
 package minimal.pkg.abstracts.joinpoints;
 
+import minimal.pkg.MinimalWeaver;
 import minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
 
 /**
@@ -11,6 +12,12 @@ import minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
  */
 public abstract class ARoot extends AMinimalWeaverJoinPoint {
 
+    /**
+     * 
+     */
+    public ARoot(MinimalWeaver weaver){
+        super(weaver);
+    }
     /**
      * Returns the join point type of this class
      * @return The join point type
