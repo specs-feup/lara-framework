@@ -7,13 +7,15 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 class ActionEventTest {
 
     @Test
     void getters_and_toString_contains_expected_fields() {
-        var jp = new TestJoinPoint("call");
+        var engine = new TestWeaverEngine();
+        var jp = new TestJoinPoint(engine, "call");
         var ev = new ActionEvent(Stage.BEGIN, "replace", jp, List.of("arg1", 2), Optional.empty());
 
         assertThat(ev.getStage()).isEqualTo(Stage.BEGIN);

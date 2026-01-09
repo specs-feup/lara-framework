@@ -74,28 +74,10 @@ class LaraIUtilsTest {
     }
 
     @Test
-    @DisplayName("printHelp should return true and print version when version option is present")
-    void testPrintHelp_WithVersionOption() {
-        // Given
-        // Mock help option not present, version option present
-        when(mockCommandLine.hasOption(CLIOption.help.shortOption())).thenReturn(false);
-        when(mockCommandLine.hasOption(CLIOption.version.shortOption())).thenReturn(true);
-
-        // When
-        boolean result = LaraIUtils.printHelp(mockCommandLine, mockOptions);
-
-        // Then
-        assertThat(result).isTrue();
-        String output = outputStreamCaptor.toString();
-        assertThat(output).contains("Build:");
-    }
-
-    @Test
-    @DisplayName("printHelp should return false when no help or version options are present")
+    @DisplayName("printHelp should return false when no help option is present")
     void testPrintHelp_NoOptions() {
         // Given
         when(mockCommandLine.hasOption(CLIOption.help.shortOption())).thenReturn(false);
-        when(mockCommandLine.hasOption(CLIOption.version.shortOption())).thenReturn(false);
 
         // When
         boolean result = LaraIUtils.printHelp(mockCommandLine, mockOptions);
@@ -127,42 +109,5 @@ class LaraIUtilsTest {
         // Then
         assertThat(jarPath1).isEqualTo(jarPath2);
         assertThat(jarPath1).isSameAs(jarPath2); // Should be the same instance
-    }
-
-    @Test
-    @DisplayName("printHelp should handle both help and version options correctly")
-    void testPrintHelp_PriorityHandling() {
-        // Given - both options present, help should have priority
-        try (var mockedOptionsParser = mockStatic(OptionsParser.class)) {
-            when(mockCommandLine.hasOption(CLIOption.help.shortOption())).thenReturn(true);
-            when(mockCommandLine.hasOption(CLIOption.version.shortOption())).thenReturn(true);
-
-            String helpText = "Usage: larai [options] script.lara";
-            mockedOptionsParser.when(() -> OptionsParser.getHelp(mockOptions)).thenReturn(helpText);
-
-            // When
-            boolean result = LaraIUtils.printHelp(mockCommandLine, mockOptions);
-
-            // Then
-            assertThat(result).isTrue();
-            String output = outputStreamCaptor.toString();
-            assertThat(output).contains(helpText);
-        }
-    }
-
-    @Test
-    @DisplayName("printHelp should handle null build number gracefully")
-    void testPrintHelp_NullBuildNumber() {
-        // Given
-        when(mockCommandLine.hasOption(CLIOption.help.shortOption())).thenReturn(false);
-        when(mockCommandLine.hasOption(CLIOption.version.shortOption())).thenReturn(true);
-
-        // When
-        boolean result = LaraIUtils.printHelp(mockCommandLine, mockOptions);
-
-        // Then
-        assertThat(result).isTrue();
-        String output = outputStreamCaptor.toString();
-        assertThat(output).contains("Build: <build number not found>");
     }
 }

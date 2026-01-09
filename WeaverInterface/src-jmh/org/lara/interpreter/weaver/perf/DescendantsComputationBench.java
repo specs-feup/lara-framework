@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
@@ -39,7 +40,8 @@ public class DescendantsComputationBench {
     }
 
     private static TestTreeJoinPoint makeTree(int branching, int depth) {
-        TestTreeJoinPoint r = new TestTreeJoinPoint(null);
+        WeaverEngine weaver = null; // weaver is not used in this benchmark
+        TestTreeJoinPoint r = new TestTreeJoinPoint(weaver, null);
         build(r, branching, depth - 1);
         return r;
     }
@@ -48,7 +50,7 @@ public class DescendantsComputationBench {
         if (depth < 0)
             return;
         for (int i = 0; i < branching; i++) {
-            var child = new TestTreeJoinPoint(parent);
+            var child = new TestTreeJoinPoint(parent.getWeaverEngine(), parent);
             parent.children.add(child);
             build(child, branching, depth - 1);
         }
@@ -58,7 +60,8 @@ public class DescendantsComputationBench {
         private final TestTreeJoinPoint parent;
         private final List<TestTreeJoinPoint> children = new ArrayList<>();
 
-        TestTreeJoinPoint(TestTreeJoinPoint parent) {
+        TestTreeJoinPoint(WeaverEngine weaver, TestTreeJoinPoint parent) {
+            super(weaver);
             this.parent = parent;
         }
 

@@ -151,16 +151,16 @@ class OptionsBuilderUtilsTest {
     @DisplayName("newOption() with CLIOption should create valid option without arguments")
     void testNewOption_CLIOption_NoArgs() {
         // Given
-        CLIOption cliOption = CLIOption.version;
+        CLIOption cliOption = CLIOption.log;
 
         // When
-        Option option = OptionsBuilderUtils.newOption(cliOption, "show version");
+        Option option = OptionsBuilderUtils.newOption(cliOption, "show logs");
 
         // Then
         assertThat(option).isNotNull();
         assertThat(option.getOpt()).isEqualTo(cliOption.shortOption());
         assertThat(option.getLongOpt()).isEqualTo(cliOption.name());
-        assertThat(option.getDescription()).isEqualTo("show version");
+        assertThat(option.getDescription()).isEqualTo("show logs");
         assertThat(option.hasArg()).isFalse();
         assertThat(option.hasArgs()).isFalse();
     }
