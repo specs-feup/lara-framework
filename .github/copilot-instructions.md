@@ -141,7 +141,6 @@ for (const func of Query.search('function')) {
 - `scripts/`: Build and interface generation tools
 
 **Entry Points**:
-- `core.ts`: Global imports and initialization
 - `weaver/Weaver.ts`: Main weaver utilities
 - `LaraJoinPoint.ts`: Base join point implementation
 
