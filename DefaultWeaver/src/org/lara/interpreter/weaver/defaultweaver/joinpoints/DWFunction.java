@@ -12,6 +12,7 @@
  */
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 
@@ -19,7 +20,8 @@ public class DWFunction extends AFunction {
 
     private final String name;
 
-    public DWFunction(String element) {
+    public DWFunction(String element, DefaultWeaver weaver) {
+        super(weaver);
         name = element;
     }
 

@@ -73,7 +73,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         joinPoint.getToolTip().ifPresent(javaC::appendComment);
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
-        addFieldsAndConstructors(javaC);
+        addFields(javaC);
         addActions(javaC);
 
         String superTypeName = null;
@@ -93,6 +93,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             javaC.setSuperClass(new JavaType(superClass, javaGenerator.getJoinPointClassPackage()));
 
         } else {
+            addConstructor(javaC);
+
             javaC.setSuperClass(javaGenerator.getSuperClass());
         }
 
@@ -122,11 +124,25 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(clazzMethod);
     }
 
+
+    private void addConstructor(JavaClass abstJPClass) {
+        JavaClass weaverClass = javaGenerator.getWeaverImplClass();
+        String qualifiedName = weaverClass.getQualifiedName();
+        String weaverName = weaverClass.getName();
+        abstJPClass.addImport(qualifiedName);
+        JavaType weaverType = new JavaType(weaverName);
+
+        var constructor = new Constructor(abstJPClass);
+        constructor.addArgument(weaverType, "weaver");
+        constructor.appendCode("super(weaver);");
+        abstJPClass.add(constructor);
+    }
+
     /**
-     * Add fields and constructors
+     * Add fields
      *
      */
-    private void addFieldsAndConstructors(JavaClass javaC) {
+    private void addFields(JavaClass javaC) {
 
         for (var attribute : joinPoint.getAttributesSelf()) {
             Method generateAttribute = GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator);
@@ -315,9 +331,20 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
 
         final Constructor constructor = new Constructor(javaC);
         constructor.addArgument(joinPointType, fieldName);
+
+        JavaClass weaverClass = javaGenerator.getWeaverImplClass();
+        String qualifiedName = weaverClass.getQualifiedName();
+        String weaverName = weaverClass.getName();
+        javaC.addImport(qualifiedName);
+        JavaType weaverType = new JavaType(weaverName);
+        constructor.addArgument(weaverType, "weaver");
+
         if (superType.getExtendExplicit().isPresent()) {
-            constructor.appendCode("super(" + fieldName + ");" + ln());
+            constructor.appendCode("super(" + fieldName + ", weaver);" + ln());
+        } else {
+            constructor.appendCode("super(weaver);" + ln());
         }
+
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
         GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
 

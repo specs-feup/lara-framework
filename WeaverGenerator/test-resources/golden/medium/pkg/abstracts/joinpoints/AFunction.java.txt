@@ -3,6 +3,7 @@ package medium.pkg.abstracts.joinpoints;
 import org.lara.interpreter.exception.AttributeException;
 import medium.pkg.entities.Location;
 import org.lara.interpreter.exception.ActionException;
+import medium.pkg.MediumWeaver;
 import medium.pkg.abstracts.AMediumWeaverJoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,12 @@ import java.util.List;
  */
 public abstract class AFunction extends AMediumWeaverJoinPoint {
 
+    /**
+     * 
+     */
+    public AFunction(MediumWeaver weaver){
+        super(weaver);
+    }
     /**
      * Get value on attribute name
      * @return the attribute's value

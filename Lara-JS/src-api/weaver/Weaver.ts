@@ -3,13 +3,11 @@ import {
   getJoinpointMappers,
   wrapJoinPoint,
 } from "../LaraJoinPoint.js";
+import Io from "../lara/Io.js";
 import JavaInterop from "../lara/JavaInterop.js";
-import Strings from "../lara/Strings.js";
 import DataStore from "../lara/util/DataStore.js";
 import JavaTypes, { JavaClasses } from "../lara/util/JavaTypes.js";
-import PrintOnce from "../lara/util/PrintOnce.js";
 import WeaverOptions from "./WeaverOptions.js";
-import Io from "../lara/Io.js";
 
 /**
  * @internal Lara Common Language dirty hack. IMPROPER USAGE WILL BREAK THE WHOLE WEAVER!
@@ -36,7 +34,7 @@ export default class Weaver {
    * @returns The Java instance of the current WeaverEngine
    */
   static getWeaverEngine(): JavaClasses.WeaverEngine {
-    return JavaTypes.WeaverEngine.getThreadLocalWeaver();
+    return (globalThis as any).__hidden.javaWeaver;
   }
 
   static writeCode(outputFolder: any) {
@@ -150,47 +148,6 @@ export default class Weaver {
 
     return !joinPoint.getAttribute(attributeName).isEmpty();
   }
-
-  /**
-   * Converts a given join point to a string.
-   *
-   * @param $jp - The join point to serialize.
-   *
-   * @returns A string representation of the join point.
-   */
-  static serialize($jp: LaraJoinPoint): string {
-    if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
-      PrintOnce.message(
-        "Weaver.serialize: Java version 17 or higher detected, XML serialization of AST might not work"
-      );
-    }
-
-    return Strings.toXml($jp.node);
-  }
-
-  /**
-   * Converts a serialized join point back to an object.
-   *
-   * @param string - The serialized join point.
-   *
-   * @returns The deserialized join point.
-   */
-  static deserialize(string: string): LaraJoinPoint {
-    if (JavaTypes.SpecsSystem.getJavaVersionNumber() > 16) {
-      PrintOnce.message(
-        "Weaver.deserialize: Java version 17 or higher detected, XML serialization of AST might not work"
-      );
-    }
-
-    return wrapJoinPoint(
-      Weaver.AST_METHODS.toJavaJoinPoint(Strings.fromXml(string))
-    );
-  }
-
-  /**
-   * An instance of the basic interface that the AST nodes must support.
-   */
-  static AST_METHODS = Weaver.getWeaverEngine().getAstMethods();
 
   /**
    * @deprecated Should not be used. Here for a short period to allow for code migration.

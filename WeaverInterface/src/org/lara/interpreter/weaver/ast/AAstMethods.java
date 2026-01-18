@@ -109,4 +109,8 @@ public abstract class AAstMethods<T> implements AstMethods {
     public Object getRootImpl() {
         return weaverEngine.getRootNode();
     }
+
+    protected WeaverEngine getWeaverEngine() {
+        return weaverEngine;
+    }
 }

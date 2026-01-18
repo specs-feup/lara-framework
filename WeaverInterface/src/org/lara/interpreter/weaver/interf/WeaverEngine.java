@@ -24,7 +24,6 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
-import pt.up.fe.specs.util.utilities.SpecsThreadLocal;
 
 import java.io.File;
 import java.util.*;
@@ -162,22 +161,6 @@ public abstract class WeaverEngine {
         return getClass().getSimpleName();
     }
 
-    /**
-     * The name of the weaver with the build number, if available.
-     *
-     */
-    public String getNameAndBuild() {
-        var appName = getName();
-
-        var implVersion = SpecsSystem.getBuildNumber();
-        if (implVersion != null) {
-            appName += " (build " + implVersion + ")";
-        }
-
-        return appName;
-
-    }
-
     public EventTrigger getEventTrigger() {
         return eventTrigger;
     }
@@ -215,39 +198,6 @@ public abstract class WeaverEngine {
      */
     public boolean hasTemporaryWeaverFolder() {
         return temporaryWeaverFolder.isInitialized();
-    }
-
-    /**
-     * Thread-scope WeaverEngine
-     */
-    private static final SpecsThreadLocal<WeaverEngine> THREAD_LOCAL_WEAVER = new SpecsThreadLocal<>(
-            WeaverEngine.class);
-
-    public static WeaverEngine getThreadLocalWeaver() {
-        return THREAD_LOCAL_WEAVER.get();
-    }
-
-    public void setWeaver() {
-        // If already set, check the weaver.
-        // If it is the same, just return. Otherwise, throw exception.
-        if (WeaverEngine.isWeaverSet()) {
-            if (getThreadLocalWeaver() == this) {
-                return;
-            }
-
-            throw new RuntimeException("Trying to set a different thread-local weaver (" + this
-                    + ") without removing the previous weaver (" + getThreadLocalWeaver() + ")");
-        }
-
-        THREAD_LOCAL_WEAVER.set(this);
-    }
-
-    public static boolean isWeaverSet() {
-        return THREAD_LOCAL_WEAVER.isSet();
-    }
-
-    public static void removeWeaver() {
-        THREAD_LOCAL_WEAVER.remove();
     }
 
     public void writeCode(File outputFolder) {

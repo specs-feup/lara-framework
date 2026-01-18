@@ -1,6 +1,4 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
-import Query from "../../weaver/Query.js";
-import Weaver from "../../weaver/Weaver.js";
 import Io from "../Io.js";
 import { JavaClasses } from "../util/JavaTypes.js";
 import ProcessExecutor from "../util/ProcessExecutor.js";
@@ -121,10 +119,7 @@ export default abstract class BenchmarkInstance {
 
       // If caching enabled, save AST
       if (BenchmarkInstance.CACHE_ENABLE) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        console.log(`Saving AST to file ${cachedFile.getAbsolutePath()}...`);
-        const serialized = Weaver.serialize(Query.root());
-        Io.writeFile(cachedFile, serialized);
+        throw new Error("BenchmarkInstance.load: Caching not implemented");
       }
 
       this._isCachedAst = false;

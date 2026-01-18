@@ -21,7 +21,6 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
 import pt.up.fe.specs.util.SpecsEnums;
 import pt.up.fe.specs.util.SpecsLogs;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,8 +43,6 @@ public class JOptionsInterface {
 
     }
 
-    private static final EnumSet<CLIOption> IGNORE_SET = EnumSet.of(CLIOption.version);
-
     public static DataStore getDataStore(String name, Properties properties) {
 
         DataStore data = DataStore.newInstance(name);
@@ -56,11 +53,6 @@ public class JOptionsInterface {
             CLIOption option = enumMap.get(key);
             if (option == null) {
                 SpecsLogs.msgInfo("Could not find property with name '" + key + "'");
-                continue;
-            }
-
-            // Just ignore
-            if (JOptionsInterface.IGNORE_SET.contains(option)) {
                 continue;
             }
 
