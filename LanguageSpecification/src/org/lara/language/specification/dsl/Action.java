@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.Primitive;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
 /**
  * A basic class that contains a type and a name
@@ -32,7 +29,6 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     private final Declaration declaration;
     private List<Parameter> parameters;
-    // private JoinPointClass joinPoint;
 
     public Action(IType returnType, String name) {
         this(returnType, name, new ArrayList<>());
@@ -68,7 +64,7 @@ public class Action extends BaseNode implements Comparable<Action> {
     }
 
     public String getReturnType() {
-        return getType().getType();
+        return getType().type();
     }
 
     public List<Parameter> getParameters() {
@@ -77,6 +73,17 @@ public class Action extends BaseNode implements Comparable<Action> {
 
     public void setParameters(List<Parameter> parameters) {
         this.parameters = parameters;
+    }
+
+    /**
+     * @return the method-like signature composed of the action name and its
+     *         parameter types.
+     */
+    public String getSignature() {
+        String parametersSignature = parameters.stream()
+                .map(Parameter::getType)
+                .collect(Collectors.joining(", "));
+        return getName() + "(" + parametersSignature + ")";
     }
 
     @Override

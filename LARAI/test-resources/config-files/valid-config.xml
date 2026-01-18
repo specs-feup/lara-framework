@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <option name="verbose" value="true"/>
+    <option name="debug" value="false"/>
+    <option name="timeout" value="30"/>
+    <option name="output.dir" value="/tmp/output"/>
+    <option name="workspace.dir" value="/tmp/workspace"/>
+</configuration>

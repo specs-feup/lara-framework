@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <option name="verbose" value="invalid_boolean"/>
+    <unclosed-tag>
+    <!-- Invalid XML structure for testing error handling -->

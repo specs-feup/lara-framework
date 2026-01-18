@@ -1,15 +1,15 @@
 plugins {
     id 'distribution'
+    id 'java' // Java project
+    id 'jacoco'
 }
 
-// Java project
-apply plugin: 'java'
-
 java {
+    withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
 
 // Repositories providers
 repositories {
@@ -17,23 +17,20 @@ repositories {
 }
 
 dependencies {
-    implementation "junit:junit:4.13.1"
-
     implementation ':SpecsUtils'
     implementation ':tdrcLibrary'
     implementation ':LaraUtils'
 
+    implementation 'org.apache.commons:commons-text:1.13.0'
 
-    implementation group: 'org.antlr', name: 'antlr4', version: '4.5.2-1'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
-    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.1'
-    implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
-}
-
-java {
-    withSourcesJar()
+    // Testing dependencies (matching LaraUtils)
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.3.0' // For test retries
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 }
 
 // Project sources
@@ -42,21 +39,47 @@ sourceSets {
         java {
             srcDir 'src'
         }
-
         resources {
             srcDir 'resources'
         }
     }
-
 
     test {
         java {
             srcDir 'test'
         }
-
         resources {
             srcDir 'resources'
+            srcDir 'test-resources'
         }
     }
+}
 
+// Test coverage configuration (matching LaraUtils)
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80 // Standard minimum coverage target
+            }
+        }
+    }
+}
+
+// Make sure jacoco report is generated after tests
+test {
+    useJUnitPlatform()
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+
+    finalizedBy jacocoTestReport
 }

@@ -16,30 +16,28 @@ package org.lara.interpreter.weaver.interf.events.data;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 public class BaseEvent {
-	private Stage stage;
+    private Stage stage;
 
-	public BaseEvent(Stage stage) {
+    public BaseEvent(Stage stage) {
+        this.stage = stage;
+    }
 
-		this.stage = stage;
-	}
+    /**
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
+    }
 
-	/**
-	 * @return the stage
-	 */
-	public Stage getStage() {
-		return stage;
-	}
+    /**
+     * @param stage the stage to set
+     */
+    protected void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
-	/**
-	 * @param stage
-	 *            the stage to set
-	 */
-	protected void setStage(Stage stage) {
-		this.stage = stage;
-	}
-
-	@Override
-	public String toString() {
-		return "Stage: " + stage.getName();
-	}
+    @Override
+    public String toString() {
+        return "Stage: " + stage.getName();
+    }
 }

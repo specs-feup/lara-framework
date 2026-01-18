@@ -36,8 +36,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     protected UserEnumsGenerator(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
         super(javaGenerator);
@@ -47,8 +45,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @param newObject the new Object to generate
-     * @return
      */
     public static JavaEnum generate(JavaAbstractsGenerator javaGenerator, EnumDef enumDef) {
         var gen = new UserEnumsGenerator(javaGenerator, enumDef);
@@ -58,7 +54,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
     /**
      * Generate an entity based on the NewObject instance
      *
-     * @return
      */
     @Override
     public JavaEnum generate() {
@@ -90,7 +85,6 @@ public class UserEnumsGenerator extends GeneratorHelper {
             userEnum.add(item);
         }
         generateLazyHelper(userEnum);
-        // generateToString(userEnum);
         return userEnum;
     }
 
@@ -110,34 +104,10 @@ public class UserEnumsGenerator extends GeneratorHelper {
                         .fromString(enumHelperType.getName() + ".newLazyHelperWithValue(" + userEnum.getName()
                                 + ".class)"));
 
-        Method getHelper = new Method(enumHelperType/*.clone()*/, "getHelper", Modifier.STATIC);
+        Method getHelper = new Method(enumHelperType/* .clone() */, "getHelper", Modifier.STATIC);
         getHelper.appendCode("return " + enumHelper.getName() + ".get();");
 
         userEnum.add(enumHelper);
         userEnum.add(getHelper);
     }
-
-    // /**
-    // * Generate the toString method based on a json format
-    // *
-    // * @param uDClass
-    // */
-    // private static void generateToString(JavaClass uDClass) {
-    // final Method toString = new Method(JavaTypeFactory.getStringType(), "toString");
-    // toString.add(Annotation.OVERRIDE);
-    // // default method
-    // // toString.appendCode("return super.toString();");
-    // final StringBuffer buff = new StringBuffer("String json = \"{\\n\";\n");
-    // for (final Field f : uDClass.getFields()) {
-    // final String name = f.getName();
-    // buff.append("json += \" ");
-    // buff.append(name);
-    // buff.append(": \"+get" + StringUtils.firstCharToUpper(name));
-    // buff.append("() + \",\\n\";\n");
-    // }
-    // buff.append("json+=\"}\";\n");
-    // buff.append("return json;");
-    // toString.setMethodBody(buff);
-    // uDClass.add(toString);
-    // }
 }

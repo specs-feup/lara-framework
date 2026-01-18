@@ -48,7 +48,8 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private JavaType superClass;
 
     /**
-     * These fields will contain the generated Java code for the given language specification
+     * These fields will contain the generated Java code for the given language
+     * specification
      */
     private JavaClass aJoinPointClass;
     private JavaClass userClass;
@@ -69,24 +70,13 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     /**
      * Create the default JavaGenerator.<br>
-     * <b>NOTE:</b> Please define the language specification before using {@link JavaAbstractsGenerator#generate()},
+     * <b>NOTE:</b> Please define the language specification before using
+     * {@link JavaAbstractsGenerator#generate()},
      * otherwise it will not work!
      */
     public JavaAbstractsGenerator() {
         this((BaseGenerator) null);
     }
-
-    /**
-     * Create a JavaGenerator with the given language specification
-     *
-     * @param langSpec the language specification
-     */
-    /*
-    public JavaAbstractsGenerator(LanguageSpecification langSpec) {
-        this();
-        this.languageSpec(langSpec);
-    }
-     */
 
     /**
      * Create a JavaGenerator with the given language specification folder
@@ -175,34 +165,16 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         setEntitiesPackage(basePackageName + GenConstants.entity());
         setEnumsPackage(basePackageName + GenConstants.enums());
         setLiteralEnumsPackage(joinPointPackage + ".enums");
-
-        /**
-         * return javaC.getClassPackage() + ".enums"
-         */
     }
-
-    // protected void printCode() {
-    // generateFiles();
-    // /*this.definedObjects, this.aJoinPointClass, this.userClass, this.abstractJoinPoints,
-    // this.weaverAbstractClass,
-    // this.weaverImplClass, this.weaverExceptionClass);*/
-    // }
-    // * @param definedObjects
-    // * @param abstrJPClass
-    // * @param userClass
-    // * @param classes
-    // * @param weaverAbstractClass
-    // * @param weaverImplClass
 
     /**
      * Write the java class files in the defined output directory
      */
     @Override
-    public void printCode() {// List<String> definedObjects, JavaClass abstrJPClass, JavaClass userClass,
+    public void printCode() {
         SpecsLogs.info(
                 "Make sure to make this project import the following projects in order to work: jOptions, LanguageSpecification, LaraFramework, LARAI, SpecsUtils and WeaverInterface");
 
-        // List<JavaClass> classes, JavaClass weaverAbstractClass, JavaClass weaverImplClass) {
         final File outDir = getOutDir();
 
         Utils.generateToFile(outDir, weaverAbstractClass, true);
@@ -223,11 +195,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     }
 
-    /**
-     * @param weaverName
-     * @param outPackage
-     * @return
-     */
     public static String getWeaverText(String weaverName, JavaType aJoinPointType) {
         String text = SpecsIo.getResource(GenConstants.weaverTextHeaderLocation());
         text = text.replace(GenConstants.weaverNameTag(), weaverName);
@@ -235,11 +202,9 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         return text;
     }
 
-
     protected List<JavaClass> generateClasses() {
 
         final List<JavaClass> joinPointClasses = new ArrayList<>();
-
 
         for (var joinPoint : getLanguageSpecification().getDeclaredJoinPoints()) {
             var jClass = AbstractJoinPointClassGenerator.generate(this, joinPoint);
@@ -251,11 +216,10 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     }
 
     /**
-     * Generate Java Classes defined by the user in the artifacts model, such as <object name="Symbol">
+     * Generate Java Classes defined by the user in the artifacts model, such as
+     * <object name="Symbol">
      * <attribute name="name" type="String"/> </object>
      *
-     * @param newObjects the map containing the objects mapped to the field elements
-     * @param outPackage the class package (will append '.entities')
      */
     private List<String> generateUserDefinedEntities() {
         final List<String> userDefinedClasses = new ArrayList<>();
@@ -272,7 +236,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
             Utils.generateToFile(getOutDir(), userEnum, true);
         }
 
-        // System.out.println("USER DEFINED CLASSES: " + userDefinedClasses);
         return userDefinedClasses;
     }
 
@@ -281,9 +244,9 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     }
 
     /**
-     * This package will contain the abstract join points, including the super type AJoinPoint
+     * This package will contain the abstract join points, including the super type
+     * AJoinPoint
      *
-     * @return
      */
     public String getJoinPointClassPackage() {
         return joinPointPackage;
@@ -292,7 +255,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the package for the Weaver implementation
      *
-     * @return
      */
     public String getWeaverPackage() {
         return weaverPackage;
@@ -301,16 +263,15 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the package for the abstract representation of the weaver
      *
-     * @return
      */
     public String getAbstractWeaverPackage() {
         return abstractWeaverPackage;
     }
 
     /**
-     * This package is the one containing the abstract class that can be edited by the use
+     * This package is the one containing the abstract class that can be edited by
+     * the use
      *
-     * @return
      */
     public String getAbstractUserJoinPointClassPackage() {
         return abstractUserJoinPointPackage;
@@ -319,7 +280,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This is the name of the (uneditable) abstract join point
      *
-     * @return
      */
     public static String getAbstractJoinPointClassName() {
 
@@ -342,7 +302,6 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     /**
      * This package will contain the user defined entities
      *
-     * @return
      */
     public String getEntitiesPackage() {
         return entitiesPackage;

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,9 +26,9 @@ import javax.swing.JFileChooser;
 
 import org.lara.interpreter.joptions.keys.FileList;
 import org.lara.interpreter.joptions.keys.OptionalFile;
-import org.lara.interpreter.joptions.panels.configpanel.EnumRadioButtonPanel;
-import org.lara.interpreter.joptions.panels.configpanel.FileListPanel;
-import org.lara.interpreter.joptions.panels.configpanel.FileWithCheckBoxPanel;
+import org.lara.interpreter.joptions.panels.EnumRadioButtonPanel;
+import org.lara.interpreter.joptions.panels.FileListPanel;
+import org.lara.interpreter.joptions.panels.FileWithCheckBoxPanel;
 import org.suikasoft.jOptions.JOptionKeys;
 import org.suikasoft.jOptions.Datakey.CustomGetter;
 import org.suikasoft.jOptions.Datakey.DataKey;
@@ -47,9 +48,6 @@ public class LaraIKeyFactory {
     /**
      * Default file selection is {@link JFileChooser#FILES_ONLY}.
      *
-     * @param id
-     * @param extensions
-     * @return
      */
     public static DataKey<FileList> fileList(String id, Collection<String> extensions) {
         return fileList(id, JFileChooser.FILES_ONLY, extensions);
@@ -57,12 +55,10 @@ public class LaraIKeyFactory {
 
     /**
      *
-     * @param id
-     * @param selectionMode
-     *            file selection mode, using constants: {@link JFileChooser#FILES_AND_DIRECTORIES},
-     *            {@link JFileChooser#FILES_ONLY} or {@link JFileChooser#DIRECTORIES_ONLY}
-     * @param extensions
-     * @return
+     * @param selectionMode file selection mode, using constants:
+     *                      {@link JFileChooser#FILES_AND_DIRECTORIES},
+     *                      {@link JFileChooser#FILES_ONLY} or
+     *                      {@link JFileChooser#DIRECTORIES_ONLY}
      */
     public static DataKey<FileList> fileList(String id, int selectionMode, Collection<String> extensions) {
         Optional<Boolean> isFolder = isFolder(selectionMode);
@@ -70,7 +66,7 @@ public class LaraIKeyFactory {
         var fileKey = LaraIKeyFactory.file("", selectionMode, false, extensions);
         DataKey<FileList> fileListKey = KeyFactory.object(id, FileList.class)
                 .setDecoder(FileList::newInstance)
-                .setDefault(() -> FileList.newInstance())
+                .setDefault(FileList::newInstance)
                 .setKeyPanelProvider((key, data) -> new FileListPanel(key, fileKey, data, selectionMode,
                         extensions));
 
@@ -89,8 +85,8 @@ public class LaraIKeyFactory {
         return (fileList, dataStore) -> {
 
             List<File> processedFiles = fileList.getFiles().stream()
-                    // In the option 'exists', using 'false' since this is a new option and this way the behaviour is
-                    // the same
+                    // In the option 'exists', using 'false' since this is a new option and this way
+                    // the behaviour is the same
                     .map(file -> KeyFactory.customGetterFile(isFolder, isFile, create, false).get(file, dataStore))
                     .collect(Collectors.toList());
 
@@ -98,38 +94,12 @@ public class LaraIKeyFactory {
         };
     }
 
-    /*
-    public static CustomGetter<FileList> customGetterFileList(boolean create) {
-    return (fileList, dataStore) -> {
-        List<File> processedFiles = new ArrayList<>();
-        for (File file : fileList.getFiles()) {
-    	// Check if path exists
-    	boolean isFolder = file.isDirectory();
-    	if (!file.getAbsoluteFile().exists()) {
-    	    LoggingUtils
-    		    .msgInfo("Path '" + file.getAbsolutePath() + "' does not exist, treating it as a folder");
-    
-    	    isFolder = true;
-    	}
-    
-    	File processedFile = KeyFactory.customGetterFile(isFolder, create).get(file, dataStore);
-    	processedFiles.add(processedFile);
-        }
-    
-        return FileList.newInstance(processedFiles);
-    };
-    }
-     */
-
     private static Optional<Boolean> isFolder(int selectionMode) {
-        switch (selectionMode) {
-        case JFileChooser.FILES_ONLY:
-            return Optional.of(false);
-        case JFileChooser.DIRECTORIES_ONLY:
-            return Optional.of(true);
-        default:
-            return Optional.empty();
-        }
+        return switch (selectionMode) {
+            case JFileChooser.FILES_ONLY -> Optional.of(false);
+            case JFileChooser.DIRECTORIES_ONLY -> Optional.of(true);
+            default -> Optional.empty();
+        };
 
     }
 
@@ -137,24 +107,16 @@ public class LaraIKeyFactory {
      * Based on {@link KeyFactory#file(String, String...)}
      *
      *
-     * @param id
-     * @param selectionMode
-     *            file selection mode, using constants: {@link JFileChooser#FILES_AND_DIRECTORIES},
-     *            {@link JFileChooser#FILES_ONLY} or {@link JFileChooser#DIRECTORIES_ONLY}
-     * @param create
-     * @param extensions
-     * @return
+     * @param selectionMode file selection mode, using constants:
+     *                      {@link JFileChooser#FILES_AND_DIRECTORIES},
+     *                      {@link JFileChooser#FILES_ONLY} or
+     *                      {@link JFileChooser#DIRECTORIES_ONLY}
      */
     public static DataKey<File> file(String id, int selectionMode, boolean create, Collection<String> extensions) {
 
         return KeyFactory.object(id, File.class)
                 .setDefault(() -> new File(""))
-                .setDecoder(s -> {
-                    if (s == null) {
-                        return new File("");
-                    }
-                    return new File(s);
-                })
+                .setDecoder(s -> new File(Objects.requireNonNullElse(s, "")))
                 .setKeyPanelProvider((key, data) -> new FilePanel(key, data, selectionMode, extensions))
                 .setCustomGetter(customGetterFile(selectionMode, create));
     }
@@ -162,13 +124,9 @@ public class LaraIKeyFactory {
     /**
      * Based on {@link KeyFactory#customGetterFile(boolean, boolean)}
      *
-     * @param selectionMode
-     * @param create
-     * @return
      */
     private static CustomGetter<File> customGetterFile(int selectionMode, boolean create) {
         return (file, dataStore) -> {
-            // System.out.println("RECEIVED:" + file);
             // If an empty path, return an empty path
             if (file.getPath().isEmpty() && selectionMode == JFileChooser.FILES_ONLY && !create) {
                 // System.out.println("RETURN 0:" + file);
@@ -176,29 +134,6 @@ public class LaraIKeyFactory {
             }
 
             File currentFile = JOptionKeys.getContextPath(file, dataStore);
-
-            /*
-            File currentFile = file;
-            // System.out.println("CUSTOM GETTER - CURRENT FOLDER:" +
-            // dataStore.getTry(JOptionKeys.CURRENT_FOLDER_PATH));
-            // System.out.println("CUSTOM GETTER - MAKE RELATIVE:" + dataStore.get(JOptionKeys.USE_RELATIVE_PATHS));
-            
-            
-            
-            
-            // If it has a working folder set
-            Optional<String> workingFolder = dataStore.get(JOptionKeys.CURRENT_FOLDER_PATH);
-            if (workingFolder.isPresent()) {
-                // If path is not absolute, create new file with working folder as parent
-            
-                if (!currentFile.isAbsolute()) {
-                    File parentFolder = new File(workingFolder.get());
-                    currentFile = new File(parentFolder, currentFile.getPath());
-                }
-            
-            }
-            */
-            // System.out.println("CUSTOM GET FOLDER:" + dataStore.getTry(JOptionKeys.CURRENT_FOLDER_PATH));
 
             currentFile = processPath(selectionMode != JFileChooser.FILES_ONLY, create, currentFile);
 
@@ -220,35 +155,17 @@ public class LaraIKeyFactory {
         if (isFolder && create) {
             return SpecsIo.mkdir(currentFile);
         }
-
-        // return currentFile;
-
-        // }
-
-        // Is a file
-        //
-        // // Test if it is not a folder
-        // if (currentFile.isDirectory()) {
-        // throw new RuntimeException("File key has directory as value: '"
-        // + currentFile.getPath() + "')");
-        // }
-
-        // System.out.println("RETURN 3:" + currentFile);
         return currentFile;
-
     }
 
     /**
      * A File DataKey, with default value file with current path (.).
      *
      * <p>
-     * If 'isFolder' is true, it will try to create the folder when returning the File instance, even if it does not
+     * If 'isFolder' is true, it will try to create the folder when returning the
+     * File instance, even if it does not
      * exist.
      *
-     * @param id
-     * @param isFolder
-     * @param create
-     * @return
      */
     public static DataKey<OptionalFile> optionalFile(String id, boolean exists) {
         return optionalFile(id, false, false, exists, Collections.emptyList());
@@ -273,8 +190,7 @@ public class LaraIKeyFactory {
         }
 
         return KeyFactory.object(id, OptionalFile.class)
-                // .setDecoder(OptionalFile::newInstance) // .setDecoder(s -> new OptionalFile(new File(s), false))
-                .setDecoder(OptionalFile.getCodec()) // .setDecoder(s -> new OptionalFile(new File(s), false))
+                .setDecoder(OptionalFile.getCodec())
                 .setDefault(() -> OptionalFile.newInstance(null))
                 .setKeyPanelProvider((key, data) -> new FileWithCheckBoxPanel(key, data, fileChooser, extensions))
                 .setCustomGetter((optFile, dataStore) -> {

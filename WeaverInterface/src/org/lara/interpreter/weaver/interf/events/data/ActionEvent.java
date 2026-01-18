@@ -28,12 +28,6 @@ public class ActionEvent extends BaseEvent {
     private List<Object> arguments;
     private Optional<Object> result;
 
-    /**
-     * @param stage
-     * @param actionName
-     * @param joinPoint
-     * @param arguments
-     */
     public ActionEvent(Stage stage, String actionName, JoinPoint joinPoint, List<Object> arguments,
             Optional<Object> result) {
         super(stage);
@@ -63,8 +57,7 @@ public class ActionEvent extends BaseEvent {
     }
 
     /**
-     * @param arguments
-     *            the arguments to set
+     * @param arguments the arguments to set
      */
     protected void setArguments(List<Object> arguments) {
         this.arguments = arguments;
@@ -78,8 +71,7 @@ public class ActionEvent extends BaseEvent {
     }
 
     /**
-     * @param joinPoint
-     *            the joinPoint to set
+     * @param joinPoint the joinPoint to set
      */
     protected void setJoinPoint(JoinPoint joinPoint) {
         this.joinPoint = joinPoint;
@@ -93,8 +85,7 @@ public class ActionEvent extends BaseEvent {
     }
 
     /**
-     * @param actionName
-     *            the actionName to set
+     * @param actionName the actionName to set
      */
     protected void setName(String actionName) {
         name = actionName;

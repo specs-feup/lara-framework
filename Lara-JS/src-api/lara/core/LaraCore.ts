@@ -252,6 +252,10 @@ export function arrayFromArgs(args: any, start = 0) {
 }
 
 function isJavaList<T>(list: T) {
+  if (typeof list !== "object") {
+    return false;
+  }
+
   return JavaTypes.instanceOf(list, "java.util.List");
 }
 
@@ -470,39 +474,4 @@ export function getValues<T>(object: T) {
 export function newObject(aClass: any, args?: any[]) {
   const obj = Object.create(aClass.prototype);
   return aClass.apply(obj, args) || obj;
-}
-
-const _LARA_IMPORT_LOADED: Set<string> = new Set();
-
-export function laraImport(importName: string) {
-  // Return if already loaded
-  if (_LARA_IMPORT_LOADED.has(importName)) {
-    debug(
-      () => "laraImport: import " + importName + " already processed, ignoring"
-    );
-    return;
-  }
-
-  // Import
-  _LARA_IMPORT_LOADED.add(importName);
-  debug(() => "laraImport: importing " + importName);
-
-  // Check if Kleene Start
-  if (importName.endsWith(".*")) {
-    _laraImportKleeneStar(importName.substring(0, importName.length - 2));
-  }
-  // Simple import
-  else {
-    JavaTypes.LaraI.loadLaraImport(importName);
-  }
-}
-
-function _laraImportKleeneStar(packageName: string) {
-  const laraImports = JavaTypes.LaraI.getLaraImportInPackage(
-    packageName
-  ) as string[];
-
-  for (const singleLaraImport of laraImports) {
-    laraImport(singleLaraImport);
-  }
 }

@@ -1,0 +1,14 @@
+<joinpoints root_class="file" root_alias="root">
+  <joinpoint class="file">
+    <select class="function" alias="func"/>
+  </joinpoint>
+  <joinpoint class="function">
+    <select class="var" alias="param"/>
+    <select class="body"/>
+  </joinpoint>
+  <joinpoint class="var"/>
+  <joinpoint class="body">
+    <select class="statement"/>
+  </joinpoint>
+  <joinpoint class="statement"/>
+</joinpoints>

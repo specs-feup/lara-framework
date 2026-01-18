@@ -25,7 +25,6 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-import tdrc.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Generate the weaver abstract class. The getActions method (list of available actions) will be automatically generated. The getRoot method
+ * Generate the weaver abstract class. The getActions method (list of available
+ * actions) will be automatically generated. The getRoot method
  * (returns the name of the root join point) will be automatically generated.
  *
  * @author tiago
@@ -46,10 +46,9 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
-     * @param enums
-     * @return
      */
     public static JavaClass generate(JavaAbstractsGenerator javaGenerator) {
         final WeaverAbstractGenerator gen = new WeaverAbstractGenerator(javaGenerator);
@@ -57,19 +56,14 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the base Join Point abstract class, containing the global attributes and actions
+     * Generate the base Join Point abstract class, containing the global attributes
+     * and actions
      *
-     * @return
      */
     @Override
     public JavaClass generate() {
         final JavaClass java = generateWeaverAbstractClass();
 
-        /*
-         * Super abstract methods that are not implemented here
-         * addHandlesApplicationFolderMethod(java); addBeginMethod(java);
-         * addSelectMethod(java); addCloseMethod(java);
-         */
         addGetActionMethod(java);
         addGetRootMethod(java);
         addGetAllImportableClassesMethod(java);
@@ -91,12 +85,9 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the Weaver abstract class with name : A + the weaver name, in the given package and
+     * Generate the Weaver abstract class with name : A + the weaver name, in the
+     * given package and
      *
-     * @param weaverName
-     * @param weaverPackage
-     * @param aJoinPointPackage
-     * @return
      */
     private JavaClass generateWeaverAbstractClass() {
         final String weaverName = javaGenerator.getWeaverName();
@@ -116,10 +107,9 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generates the method that returns a list of the available actions in the weaver
+     * Generates the method that returns a list of the available actions in the
+     * weaver
      *
-     * @param actionModel
-     * @param java
      */
     private void addGetActionMethod(JavaClass java) {
 
@@ -132,8 +122,8 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
 
         // Using linked hashset to have deterministic order
         var uniqueActions = new LinkedHashSet<>(javaGenerator.getLanguageSpecification().getAllActions());
-        var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions, a -> '"' + a.getName() + '"');
-
+        var generatedCode = GeneratorUtils.array2ListCode("String", "weaverActions", uniqueActions,
+                a -> '"' + a.getName() + '"');
 
         getActions.appendCode(generatedCode);
         java.add(getActions);
@@ -176,7 +166,7 @@ public class WeaverAbstractGenerator extends GeneratorHelper {
         List<String> joined = new ArrayList<>();
         entities.stream().map(mapper).forEach(joined::add);
         enums.stream().map(enumMapper).forEach(joined::add);
-        String joinedClasses = StringUtils.join(joined, ", ");
+        String joinedClasses = String.join(", ", joined);
         getImportableClasses.appendCode("Class<?>[] defaultClasses = {");
         getImportableClasses.appendCode(joinedClasses);
         getImportableClasses.appendCodeln("};");

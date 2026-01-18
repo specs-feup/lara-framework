@@ -13,34 +13,22 @@
 
 package org.lara.interpreter.exception;
 
-import java.io.File;
-
 import pt.up.fe.specs.tools.lara.exception.BaseException;
+
+import java.io.Serial;
 
 public class LaraIException extends BaseException {
 
-    /**
-     * 
-     */
+    @Serial
     private static final long serialVersionUID = 1L;
-    private final String inputName;
     private final String problem;
 
     public LaraIException(String problem) {
-        this("", problem, null);
+        this(problem, null);
     }
 
     public LaraIException(String problem, Throwable e) {
-        this("", problem, e);
-    }
-
-    public LaraIException(File file, String problem, Throwable e) {
-        this(file.getName(), problem, e);
-    }
-
-    public LaraIException(String inputName, String problem, Throwable e) {
         super(e);
-        this.inputName = inputName;
         this.problem = problem;
     }
 
@@ -51,9 +39,7 @@ public class LaraIException extends BaseException {
 
     @Override
     protected String generateSimpleMessage() {
-        String inputMessage = this.inputName.isEmpty() ? "" : " input '" + this.inputName + "' ";
-
-        return inputMessage + this.problem;
+        return this.problem;
     }
 
 }

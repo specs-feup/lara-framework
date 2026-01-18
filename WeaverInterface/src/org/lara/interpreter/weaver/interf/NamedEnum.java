@@ -20,7 +20,6 @@ import org.lara.interpreter.exception.LaraIException;
 import pt.up.fe.specs.util.providers.StringProvider;
 import tdrc.utils.StringUtils;
 
-// public interface NamedEnum<T extends Enum<T>> extends StringProvider {
 public interface NamedEnum extends StringProvider {
 
     public String getName();

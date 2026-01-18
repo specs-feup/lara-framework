@@ -134,6 +134,7 @@ export default class IterativeMutator extends Mutator {
           this.restoreSource();
         }
       }
+        
     }
 
     // Mark as finished
@@ -147,8 +148,9 @@ export default class IterativeMutator extends Mutator {
     this.joinPoints.push($joinpoint);
   }
 
-  addJps(...jps: LaraJoinPoint[]) {
+  addJps(jps: LaraJoinPoint[]) {
     jps = arrayFromArgs(jps) as LaraJoinPoint[];
+
     for (const $jp of jps) {
       this.addJp($jp);
     }

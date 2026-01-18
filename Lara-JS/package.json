@@ -1,11 +1,10 @@
 {
   "name": "@specs-feup/lara",
-  "version": "3.0.14",
+  "version": "3.5.0",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
-    "lara-build-interfaces": "scripts/build-interfaces.js",
-    "lara-java-dist": "scripts/java-dist.js"
+    "lara-build-interfaces": "scripts/build-interfaces.js"
   },
   "files": [
     "api",
@@ -27,7 +26,7 @@
     "typedoc.json"
   ],
   "scripts": {
-    "build": "node scripts/copy-folder.js -i src-api/libs -o api/libs && npx tsc -b src-api src-code",
+    "build": "npx tsc -b src-api src-code",
     "build:api": "npx tsc -b src-api",
     "build:code": "npx tsc -b src-code",
     "build:watch": "npm run build -- --watch",
@@ -37,7 +36,6 @@
     "test:code": "npm run test -- src-code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "java-dist": "node scripts/java-dist.js --jsSourceFolder api --jsDestinationFolder ../LaraApi/src-lara/ --javaClassname LaraApiJsResource --javaPackageName pt.up.fe.specs.lara --javaDestinationFolder ../LaraApi/src-java/pt/up/fe/specs/lara/",
     "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
   },
   "repository": {
@@ -63,7 +61,9 @@
   },
   "dependencies": {
     "chokidar": "^4.0.3",
+    "cytoscape": "^3.0.0",
     "debug": "^4.4.0",
+    "fast-glob": "^3.3.3",
     "java": "^0.16.1",
     "supports-color": "^10.0.0",
     "yargs": "^17.7.2"

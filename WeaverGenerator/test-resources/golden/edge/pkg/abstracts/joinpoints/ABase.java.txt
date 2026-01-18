@@ -1,0 +1,80 @@
+package edge.pkg.abstracts.joinpoints;
+
+import org.lara.interpreter.exception.AttributeException;
+import edge.pkg.abstracts.AEdgeWeaverJoinPoint;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Auto-Generated class for join point ABase
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class ABase extends AEdgeWeaverJoinPoint {
+
+    /**
+     * Get value on attribute a
+     * @return the attribute's value
+     */
+    public abstract Integer getAImpl();
+
+    /**
+     * Get value on attribute a
+     * @return the attribute's value
+     */
+    public final Object getA() {
+        try {
+        	Integer result = this.getAImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "a", e);
+        }
+    }
+
+    /**
+     * Returns the join point type of this class
+     * @return The join point type
+     */
+    @Override
+    public String get_class() {
+        return "base";
+    }
+    /**
+     * 
+     */
+    protected enum BaseAttributes {
+        A("a");
+        private String name;
+
+        /**
+         * 
+         */
+        private BaseAttributes(String name){
+            this.name = name;
+        }
+        /**
+         * Return an attribute enumeration item from a given attribute name
+         */
+        public static Optional<BaseAttributes> fromString(String name) {
+            return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
+        }
+
+        /**
+         * Return a list of attributes in String format
+         */
+        public static List<String> getNames() {
+            return Arrays.asList(values()).stream().map(BaseAttributes::name).collect(Collectors.toList());
+        }
+
+        /**
+         * True if the enum contains the given attribute name, false otherwise.
+         */
+        public static boolean contains(String name) {
+            return fromString(name).isPresent();
+        }
+    }
+}

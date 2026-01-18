@@ -13,6 +13,8 @@
 
 package org.lara.language.specification.dsl.types;
 
+import org.lara.language.specification.dsl.IdentifierValidator;
+
 public class EnumValue implements Comparable<EnumValue> {
 
     private String value;
@@ -32,6 +34,7 @@ public class EnumValue implements Comparable<EnumValue> {
     }
 
     public void setValue(String value) {
+        IdentifierValidator.requireValid(value, "enum value");
         this.value = value;
     }
 

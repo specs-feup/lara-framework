@@ -5,10 +5,6 @@ import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
 import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
 
 export default class System {
-  static prepareExe(executable: string | JavaClasses.File): string {
-    return JavaTypes.LARASystem.prepareExe(executable);
-  }
-
   static getExecutableFile(
     executableName: string,
     executableFolder?: string | JavaClasses.File,

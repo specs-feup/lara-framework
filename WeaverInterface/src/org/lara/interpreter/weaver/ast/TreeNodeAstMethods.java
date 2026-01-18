@@ -50,8 +50,7 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
 
     @Override
     protected Object[] getChildrenImpl(T node) {
-        var children = node.getChildren().toArray();
-        return children;
+        return node.getChildren().toArray();
     }
 
     @Override
@@ -69,9 +68,9 @@ public class TreeNodeAstMethods<T extends ATreeNode<T>> extends AAstMethods<T> {
         return scopeChildrenGetter.apply(node).toArray();
     }
 
-	@Override
-	protected Object getParentImpl(T node) {
-		return node.getParent();
-	}
+    @Override
+    protected Object getParentImpl(T node) {
+        return node.getParent();
+    }
 
 }

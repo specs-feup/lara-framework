@@ -29,9 +29,8 @@ public enum Stage {
     }
 
     /**
-     * Returns a string representation of the stage, such as 'Stage.BEFORE'
-     * 
-     * @return
+     * Returns a string representation of the stage, such as 'Stage.BEGIN'
+     *
      */
     public String toCode() {
         return Stage.class.getSimpleName() + "." + name();

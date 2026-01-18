@@ -10,7 +10,7 @@ export default class DataStore {
   javaDataStoreInstance!: JavaClasses.DataStore;
   definition: any;
   checkKeys: boolean;
-  allowedKeys: any;
+  allowedKeys: Set<string> = new Set();
   keyAliases: Record<string, string> = {};
 
   constructor(
@@ -49,10 +49,7 @@ export default class DataStore {
     this.checkKeys = this.definition !== undefined;
 
     // Build set with allowed keys
-
-    this.allowedKeys = undefined;
     if (this.checkKeys) {
-      this.allowedKeys = new Set();
       const keys = this.definition.getKeys();
       for (let i = 0; i < keys.size(); i++){
         this.allowedKeys.add(keys.get(i).getName());
@@ -104,7 +101,7 @@ export default class DataStore {
   }
 
   getKeys() {
-    return this.allowedKeys.values();
+    return Array.from(this.allowedKeys.values());
   }
 
   getData() {
@@ -176,25 +173,17 @@ export default class DataStore {
       return;
     }
 
-    let message =
-      "DataStore." +
-      functionName +
-      " : Key '" +
-      key +
-      "' is not allowed, available keys:\n";
-    message += " - '" + this.allowedKeys.values().join("'\n - '") + "'";
-
-    throw message;
+    throw `DataStore.${functionName} : Key '${key}' is not allowed, available keys:\n - '${this.getKeys().join("'\n - '")}'`;
   }
 
-  save(fileOrBaseFolder: any, optionalFile?: any) {
+  save(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: string | JavaClasses.File) {
     this.UtilityClass.saveDataStore(
       Io.getPath(fileOrBaseFolder, optionalFile),
       this.javaDataStoreInstance
     );
   }
 
-  load(fileOrBaseFolder: any, optionalFile?: any) {
+  load(fileOrBaseFolder: string | JavaClasses.File, optionalFile?: string | JavaClasses.File) {
     if (this.definition === undefined) {
       throw "DataStore.load: current DataStore does not have keys definition, cannot load from file";
     }

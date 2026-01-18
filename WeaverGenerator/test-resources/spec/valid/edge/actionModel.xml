@@ -1,0 +1,3 @@
+<actions>
+  <action name="noop" class="*"/>
+</actions>

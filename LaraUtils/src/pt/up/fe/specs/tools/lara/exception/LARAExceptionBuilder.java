@@ -16,10 +16,7 @@ package pt.up.fe.specs.tools.lara.exception;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.up.fe.specs.tools.lara.trace.CallStackTrace;
-import pt.up.fe.specs.tools.lara.trace.Trace;
 import pt.up.fe.specs.util.SpecsLogs;
-import tdrc.utils.StringUtils;
 
 public class LARAExceptionBuilder {
 
@@ -29,18 +26,13 @@ public class LARAExceptionBuilder {
         return EVALUATION_EXCEPTION_MESSAGE;
     }
 
-    // private static final String EXCEPTION_HEADER = "An exception occured";
     private static final String INDENT = " ";
     private static final String SEPARATOR = "\n";
-    // private static final int PREDEFINED_SPACE =
-    // java.lang.RuntimeException.class.getCanonicalName().length() + 2;
     private static final int PREDEFINED_SPACE = 0;
     private List<String> messages;
-    // private Set<String> addedMessages;
     private StackTraceElement[] lastTrace;
     private BaseException lastLARAException;
     private Throwable lastException;
-    private CallStackTrace stackTrace;
 
     private static final List<String> ignoredPackages;
 
@@ -52,145 +44,51 @@ public class LARAExceptionBuilder {
         LARAExceptionBuilder.ignoredPackages.add("java.util.");
     }
 
-    public LARAExceptionBuilder(CallStackTrace stacktrace) {
-        this();
-        this.stackTrace = stacktrace;
-    }
-
     public LARAExceptionBuilder() {
 
         setMessages(new ArrayList<>());
     }
 
     public RuntimeException getRuntimeException() {
-        SpecsLogs.info("Last exception type: " + lastException.getClass());
-        if (lastException != lastLARAException) {
+        if (lastException != null) {
+            SpecsLogs.info("Last exception type: " + lastException.getClass());
+        }
+        if (lastException != null && lastException != lastLARAException) {
             Throwable last = lastException;
             while (last != null) {
 
                 String message = last.getMessage();
-                // String causeMessage = "caused by " + last.getClass().getSimpleName()
-                // + (message != null ? ": " + message : "");
+
                 String causeMessage = message != null ? message : "caused by " + last.getClass().getSimpleName();
 
                 add(causeMessage);
 
-                // }
-                lastTrace = last.getStackTrace(); // We will only show the cause
-                // trace
+                lastTrace = last.getStackTrace(); // We will only show the cause trace
                 last = last.getCause();
-                // System.out.println();
             }
-
-            // String causeMessage = lastException.getMessage();
-            // if (causeMessage != null) {
-            // add(causeMessage);
-            // }
         }
 
         String str = "\n";// + LARAExceptionBuilder.EXCEPTION_HEADER + ":\n";
         StringBuilder completeMessage = new StringBuilder(str);
-        String separator = LARAExceptionBuilder.SEPARATOR;
-        int predefinedSpace = LARAExceptionBuilder.PREDEFINED_SPACE;
         String indentStr = LARAExceptionBuilder.INDENT;
-        if (stackTrace != null) {
-            // completeMessage.append(indentStr + messages.get(0));
-            // int i = 1;
-            List<String> locations = new ArrayList<>();
-            Trace trace = stackTrace.pop();
-            while (trace != null) {
-                locations.add(trace.toString());
-                trace = stackTrace.pop();
-            }
+        if (!messages.isEmpty()) {
 
-            int size = locations.size() - 1;
-            for (int i = size; i >= 0; i--) {
-                int repeatValue = (size - i) + 1;
-                if (repeatValue > 15) {
-                    repeatValue = 15;
-                }
-                String indentation = StringUtils.repeat(" ", predefinedSpace)
-                        + StringUtils.repeat(indentStr, repeatValue);
-                String finalMessage = indentation + locations.get(i);
-                completeMessage.append(separator + finalMessage);
-            }
-            int repeatValue = size + 2;
-            if (repeatValue > 16) {
-                repeatValue = 16;
-            }
-            String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, repeatValue);
-
-            // for (String message : messages) {
-            // completeMessage.append(separator + indentation + message);
-            // }
-
-            // String lastMessage = messages.get(messages.size() - 1);
-            String lastMessage = getLastMessage();
-
-            completeMessage.append(separator + indentation + lastMessage);
-            // String firstMessage = messages.get(0);
-            // completeMessage.append(separator + indentation + firstMessage);
-        } else if (!messages.isEmpty()) {
-
-            completeMessage.append(indentStr + messages.get(0));
+            completeMessage.append(indentStr).append(messages.get(0));
             for (int i = 1; i < messages.size(); i++) {
-                String indentation = StringUtils.repeat(" ", predefinedSpace) + StringUtils.repeat(indentStr, i + 1);
+                String indentation = " ".repeat(LARAExceptionBuilder.PREDEFINED_SPACE) + indentStr.repeat(i + 1);
                 String message = messages.get(i);
                 message = message.replaceAll("\n", "\n" + indentation);
                 String finalMessage = indentation + message;
-                completeMessage.append(separator + finalMessage);
+                completeMessage.append(LARAExceptionBuilder.SEPARATOR).append(finalMessage);
             }
         }
 
-        // Class<? extends Throwable> type;
-        // if (lastException != null) {
-        // type = lastException.getClass();
-        // } else {
-        // type = lastLARAException.getClass();
-        // }
-        // String lastSpace = StringUtils.repeat(indentStr, messages.size() +
-        // 2);
-        // completeMessage.append(separator + StringUtils.repeat(" ",
-        // predefinedSpace) + lastSpace + "Exception type: "
-        // + type.toString().replaceAll("class", "").trim());
-        // String string = message.toString().isEmpty() ? "" :
-        // message.toString();
-        // String separator = causeClass.isEmpty() || string.isEmpty() ? "" : ":
-        // ";
-        // String completeMessage = causeClass + separator + string;
-        // RuntimeException re = new RuntimeException(completeMessage.toString());// ,
-        // lastException);
-
-        RuntimeException re = new RuntimeException(completeMessage.toString(), lastException);
-
-        // re.setStackTrace(cleanTrace());
-        return re;
-    }
-
-    private String getLastMessage() {
-
-        // If user exception, return last message
-        if (lastException instanceof BaseException && ((BaseException) lastException).useLastMessage()) {
-            return messages.get(messages.size() - 1);
-        }
-
-        for (String message : messages) {
-            if (EVALUATION_EXCEPTION_MESSAGE.equals(message)) {
-                continue;
-            }
-
-            return message;
-        }
-
-        return "<no message>";
-        // return messages.get(messages.size() - 1);
-
+        return new RuntimeException(completeMessage.toString(), lastException);
     }
 
     /**
      * Remove unnecessary Elements, such as package org.mozilla.javascript
-     * 
-     * @return
+     *
      */
     private StackTraceElement[] cleanTrace() {
         List<StackTraceElement> newTraceList = new ArrayList<>();
@@ -212,12 +110,7 @@ public class LARAExceptionBuilder {
     }
 
     public void add(String string) {
-        // if (addedMessages.contains(string)) {
-        // return;
-        // }
-
         messages.add(string);
-        // addedMessages.add(string);
     }
 
     /**
@@ -228,12 +121,10 @@ public class LARAExceptionBuilder {
     }
 
     /**
-     * @param message
-     *            the message to set
+     * @param messages the messages to set
      */
     public void setMessages(List<String> messages) {
         this.messages = messages;
-        // this.addedMessages = new HashSet<>(messages);
     }
 
     /**
@@ -244,8 +135,7 @@ public class LARAExceptionBuilder {
     }
 
     /**
-     * @param lastLARAException
-     *            the lastLARAException to set
+     * @param lastLARAException the lastLARAException to set
      */
     public void setLastLARAException(BaseException lastLARAException) {
         this.lastLARAException = lastLARAException;
@@ -259,8 +149,7 @@ public class LARAExceptionBuilder {
     }
 
     /**
-     * @param lastException
-     *            the lastException to set
+     * @param lastException the lastException to set
      */
     public void setLastException(Throwable lastException) {
         this.lastException = lastException;
@@ -274,8 +163,7 @@ public class LARAExceptionBuilder {
     }
 
     /**
-     * @param lastTrace
-     *            the lastTrace to set
+     * @param lastTrace the lastTrace to set
      */
     public void setLastTrace(StackTraceElement[] lastTrace) {
         this.lastTrace = lastTrace;

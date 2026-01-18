@@ -36,50 +36,15 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     private static final String DEFINITION_NAME = "LaraI Options";
 
     private final List<DataKey<?>> extraKeys = new ArrayList<>();
-    // private final List<DataKey<?>> extraKeys = new ArrayList<>(Arrays.asList(LaraiKeys.CONFIGURATION_FILE));
 
     @Override
     public StoreDefinition getStoreDefinition() {
 
         StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiKeys.STORE_DEFINITION.getName());
         builder.addDefinition(LaraiKeys.STORE_DEFINITION);
-
-        /*
-        StoreDefinitionBuilder builder = new StoreDefinitionBuilder(LaraiStoreDefinition.DEFINITION_NAME);
-        
-        builder.addKey(LaraiKeys.LARA_FILE);
-        
-        builder.addKey(LaraiKeys.MAIN_ASPECT);
-        builder.addKey(LaraiKeys.ASPECT_ARGS);
-        // builder.addKey(LaraiKeys.WEAVER_ARGS);
-        // builder.addKey(LaraiKeys.LANGUAGE_SPECIFICATION_FOLDER);
-        builder.addKey(LaraiKeys.WORKSPACE_FOLDER);
-        builder.addKey(LaraiKeys.OUTPUT_FOLDER);
-        builder.addKey(LaraiKeys.INCLUDES_FOLDER);
-        builder.addKey(LaraiKeys.EXTERNAL_DEPENDENCIES);
-        // DataKey<ClassProvider> weaverClass = LaraiKeys.WEAVER_CLASS.setDefault(ClassProvider.newInstance(weaver));
-        // builder.addKey(weaverClass);
-        builder.addKey(LaraiKeys.VERBOSE);
-        builder.addKey(LaraiKeys.REPORT_FILE);
-        builder.addKey(LaraiKeys.METRICS_FILE);
-        builder.addKey(LaraiKeys.TOOLS_FILE);
-        builder.addKey(LaraiKeys.LOG_FILE);
-        builder.addKey(LaraiKeys.LOG_JS_OUTPUT);
-        builder.addKey(LaraiKeys.DEBUG_MODE);
-        builder.addKey(LaraiKeys.TRACE_MODE);
-        builder.addKey(LaraiKeys.BUNDLE_TAGS);
-        // builder.addKey(LaraiKeys.SHOW_HELP);
-        */
         final StoreDefinitionBuilder finalBuilder = builder.setDefaultValues(getDefaultValues());
 
         extraKeys.forEach(finalBuilder::addKey);
-        // List<WeaverOption> engineOptions;
-        // try {
-        // engineOptions = this.weaver.newInstance().getOptions();
-        // engineOptions.forEach(opt -> finalBuilder.addKey(opt.dataKey()));
-        // } catch (InstantiationException | IllegalAccessException e) {
-        // LoggingUtils.msgWarn("Error message:\n", e);
-        // }
         return finalBuilder.build();
 
     }
@@ -103,14 +68,13 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     }
 
     /**
-     * Loads the properties from a given file. It does not load/given an exception if the file does not exist!
+     * Loads the properties from a given file. It does not load/given an exception
+     * if the file does not exist!
      *
-     * @param properties
-     * @param globalFile
      */
     private static void loadProperties(Properties properties, File globalFile) {
         if (globalFile.exists()) {
-            try (final InputStream inputConfigStream = new FileInputStream(globalFile);) {
+            try (final InputStream inputConfigStream = new FileInputStream(globalFile)) {
                 properties.load(inputConfigStream);
             } catch (IOException e) {
                 SpecsLogs.warn("Error message:\n", e);
@@ -120,9 +84,5 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
 
     public static String getDefinitionName() {
         return LaraiStoreDefinition.DEFINITION_NAME;
-    }
-
-    public void addExtraKeys(StoreDefinition storeDefinition) {
-        extraKeys.addAll(storeDefinition.getKeys());
     }
 }

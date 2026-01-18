@@ -1,0 +1,65 @@
+plugins {
+    id 'distribution'
+    id 'application' // Executable
+    id 'java' // Java project
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    withSourcesJar()
+}
+
+// Repositories providers
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    weaverGeneratorRuntime
+}
+
+dependencies {
+    implementation ":CommonsLangPlus" // Required for APIs only. Needs to be in the classpath.
+    implementation ":jOptions"
+    implementation ":SpecsUtils"
+
+    implementation ":LanguageSpecification"
+    implementation ":LARAI"
+    implementation ":LaraUtils"
+    implementation ":WeaverInterface"
+
+    weaverGeneratorRuntime ':WeaverGenerator'
+}
+
+// Project sources
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+
+        resources {
+            srcDir 'resources'	  
+	    }
+    }
+}
+
+// Re-run the weaver generator
+tasks.register('generateWeaver', JavaExec) {
+    group = "Execution"
+    description = "Generates the Weaver Abstracts"
+    classpath = configurations.weaverGeneratorRuntime
+    mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
+    args = [
+        "-w", "DefaultWeaver",
+        "-x", "${rootProject.projectDir}/resources/specification",
+        "-o", "${rootProject.projectDir}/src/",
+        "-p", "org.lara.interpreter.weaver.defaultweaver",
+        "-e",
+        "-j"
+    ]
+}
+
+compileJava.dependsOn generateWeaver

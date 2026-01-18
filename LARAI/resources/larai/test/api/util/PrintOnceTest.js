@@ -1,22 +1,4 @@
-laraImport("lara.util.Replacer");
-
-/*
-let countBefore = 0;
-for (const key in globalThis) {
-  countBefore++;
-}
-println("Global this # keys before:" + countBefore);
-*/
-
-laraImport("lara.util.PrintOnce");
-
-/*
-let countAfter = 0;
-for (const key in globalThis) {
-  countAfter++;
-}
-println("Global this # keys after:" + countAfter);
-*/
+import PrintOnce from "@specs-feup/lara/api/lara/util/PrintOnce.js";
 
 PrintOnce.message("a");
 PrintOnce.message("b");

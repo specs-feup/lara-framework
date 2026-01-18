@@ -58,7 +58,6 @@ public class OptionalFile {
 
     public static String encode(OptionalFile optionalFile) {
         if (optionalFile.isUsed()) {
-            System.out.println("ENCODER: '" + optionalFile.file.toString() + "'");
             return optionalFile.file.toString();
         }
 

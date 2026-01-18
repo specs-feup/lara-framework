@@ -39,23 +39,6 @@ export default class Weaver {
     return JavaTypes.WeaverEngine.getThreadLocalWeaver();
   }
 
-  static getLaraLoc() {
-    return JavaTypes.LaraIUtils.getLaraLoc(
-      Weaver.getWeaverEngine(),
-      Weaver.getWeaverEngine().getData().get()
-    );
-  }
-
-  static getLaraLocTotals() {
-    var laraLoc = JavaTypes.getType("pt.up.fe.specs.lara.loc.LaraLoc");
-    return JavaTypes.getType("org.lara.interpreter.utils.LaraIUtils")
-      .getLaraLoc(
-        Weaver.getWeaverEngine(),
-        Weaver.getWeaverEngine().getData().get()
-      )
-      .get(laraLoc.getTotalsKey());
-  }
-
   static writeCode(outputFolder: any) {
     if (outputFolder === undefined) {
       console.log("Weaver.writeCode: Output folder not defined");
@@ -210,15 +193,22 @@ export default class Weaver {
   static AST_METHODS = Weaver.getWeaverEngine().getAstMethods();
 
   /**
+   * @deprecated Should not be used. Here for a short period to allow for code migration.
+   * 
    * Adapts a Java object to JavaScript. Currently converts:
    *
-   * - Null to undefined;
-   * - Java array to JS array;
-   * - List to array;
+   * - ~Null to undefined~;
+   * - ~Java array to JS array~;
+   * - Java List to array;
    *
    */
-  static toJs(javaObject: any) {
-    return Weaver.getWeaverEngine().getScriptEngine().toJs(javaObject);
+  static toJs<T>(javaObject: JavaClasses.List<T> | T[]): T[] {
+    // if is list call toArray
+    if (JavaTypes.instanceOf(javaObject, "java.util.List")) {
+      // Convert Java List to JS array
+      return (javaObject as JavaClasses.List<T>).toArray();
+    }
+    return javaObject as T[];
   }
 
   /**

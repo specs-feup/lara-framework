@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.BaseNode;
+import org.lara.language.specification.dsl.IdentifierValidator;
 
 public class TypeDef extends BaseNode implements IType {
 
@@ -30,7 +31,7 @@ public class TypeDef extends BaseNode implements IType {
     }
 
     public TypeDef(String name, List<Attribute> fields) {
-        this.name = name;
+        setName(name);
         this.fields = fields;
     }
 
@@ -39,6 +40,7 @@ public class TypeDef extends BaseNode implements IType {
     }
 
     public void setName(String name) {
+        IdentifierValidator.requireValid(name, "typedef name");
         this.name = name;
     }
 
@@ -55,7 +57,7 @@ public class TypeDef extends BaseNode implements IType {
     }
 
     @Override
-    public String getType() {
+    public String type() {
         return getName();
     }
 

@@ -16,7 +16,6 @@ import org.apache.commons.cli.CommandLine;
 import org.lara.interpreter.weaver.generator.commandline.WeaverGeneratorOptions.GeneratorOption;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
-import org.lara.interpreter.weaver.generator.generator.templated.TemplatedGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
@@ -26,67 +25,9 @@ import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
 
 import java.io.File;
+import java.util.Objects;
 
 public class WeaverGenerator {
-    /**
-     * Generate a new weaver, according to the input language specification.
-     *
-     * @param weaverName
-     *            The name for the new Weaver
-     * @param languageSpecification
-     *            The language specification
-     * @param outputDir
-     *            The output directory
-     * @param outputPackage
-     *            The package for the generated classes
-     * @param abstractGetters
-     *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
-     * @param nodeType
-     *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
-     * @return true if generated successfully, false otherwise.
-     */
-    /*
-    public static void generateJava(String weaverName, LanguageSpecification langSpec, File outputDir,
-            String outputPackage, boolean abstractGetters, Class<?> nodeType) {
-
-        final BaseGenerator generator = new JavaAbstractsGenerator(langSpec)
-                .weaverName(weaverName).outputDir(outputDir)
-                .setPackage(outputPackage).abstractGetters(abstractGetters).nodeType(nodeType);
-        printReport(generator);
-        generator.generate();
-        generator.print();
-    }
-     */
-
-    /**
-     * Generate a new weaver, according to the input language specification.
-     *
-     * @param weaverName
-     *            The name for the new Weaver
-     * @param langSpec
-     *            The language specification
-     * @param outputDir
-     *            The output directory
-     * @param outputPackage
-     *            The package for the generated classes
-     * @param abstractGetters
-     *            Define if the attributes are generated as abstract methods (true) or fields with getters (false)
-     * @param nodeType
-     *            Define the base class of the generics for the join points, i.e., <T extends «nodeGenerics»>
-     * @return true if generated successfully, false otherwise.
-     */
-    /*
-    public static void generateJava2CPP(String weaverName, LanguageSpecification langSpec, File outputDir,
-            String outputPackage, boolean abstractGetters, Class<?> nodeType) {
-
-        final BaseGenerator generator = new JavaImplGenerator(langSpec, "C").weaverName(weaverName).outputDir(outputDir)
-                .setPackage(outputPackage).abstractGetters(abstractGetters).nodeType(nodeType);
-        printReport(generator);
-        generator.generate();
-        generator.print();
-    }
-     */
-
     /**
      * Generate a new weaver, according to the input language specification.
      *
@@ -94,8 +35,6 @@ public class WeaverGenerator {
      * @return true if generated successfully, false otherwise.
      */
     private static boolean generate(BaseGenerator generator) {
-
-        // String xmlLocation = languageSpecificationDir.getAbsolutePath();
         try {
             generator.generate();
             return true;
@@ -162,7 +101,8 @@ public class WeaverGenerator {
      *             <tr>
      *             <td>-x</td>
      *             <td>--XMLspec &ltdir&gt</td>
-     *             <td>Location of the target language specification (default: .)</td>
+     *             <td>Location of the target language specification (default:
+     *             .)</td>
      *             </tr>
      *             </tbody>
      *             </table>
@@ -170,99 +110,103 @@ public class WeaverGenerator {
     /**/
     public static void main(String[] args) {
         SpecsSystem.programStandardInit();
+        System.exit(run(args));
+    }
 
+    public static int run(String[] args) {
         final WeaverGeneratorOptions opts = new WeaverGeneratorOptions();
 
-        final CommandLine cmdLine = opts.parse(args);
-        if (cmdLine.hasOption(GeneratorOption.H.getOption())) {
-            opts.help();
-            return;
+        final CommandLine cmdLine;
+        try {
+            cmdLine = opts.parse(args);
+        } catch (RuntimeException e) {
+            reportException(e);
+            return 1;
         }
 
-        File XMLSpecDir;
+        if (cmdLine.hasOption(GeneratorOption.H.getOption())) {
+            opts.help();
+            return 0;
+        }
 
+        try {
+            final BaseGenerator generator = buildGenerator(cmdLine);
+
+            printReport(generator);
+
+            if (!generate(generator)) {
+                System.err.println("The Weaver was not created!");
+                return 1;
+            }
+
+            if (!print(generator)) {
+                System.err.println("The Weaver was not created!");
+                return 1;
+            }
+
+            if (generator.isJson() && !emitJsonArtifacts(generator)) {
+                return 1;
+            }
+
+            System.out.println("Weaver successfully created!");
+            return 0;
+        } catch (RuntimeException e) {
+            reportException(e);
+            return 1;
+        }
+    }
+
+    private static BaseGenerator buildGenerator(CommandLine cmdLine) {
+        final File XMLSpecDir;
         if (cmdLine.hasOption(GeneratorOption.X.getOption())) {
             XMLSpecDir = new File(cmdLine.getOptionValue(GeneratorOption.X.getOption()));
         } else {
             XMLSpecDir = GenConstants.getDefaultXMLDir();
         }
-        final BaseGenerator generator;
-        String optionValue;
-        if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
-            System.out.println("Warning: option 'C' is deprecated and was not tested after a Weaver Generator refactoring, proceed at your own risk");
-            generator = new TemplatedGenerator(XMLSpecDir);
-        } else {
-            // Create the JavaAbstractGenerator
-            generator = new JavaAbstractsGenerator(XMLSpecDir);
-        }
+
+        final BaseGenerator generator = new JavaAbstractsGenerator(XMLSpecDir);
 
         if (cmdLine.hasOption(GeneratorOption.W.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.W.getOption());
             generator.setWeaverName(optionValue);
         }
 
         if (cmdLine.hasOption(GeneratorOption.P.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.P.getOption());
             generator.setOutPackage(optionValue);
         }
 
         if (cmdLine.hasOption(GeneratorOption.O.getOption())) {
-            final File file = new File(cmdLine.getOptionValue(GeneratorOption.O.getOption()));
+            var file = new File(cmdLine.getOptionValue(GeneratorOption.O.getOption()));
             generator.setOutDir(file);
         }
 
-        // if (cmdLine.hasOption(GeneratorOption.A.getOption())) {
-        // generator.setAbstractGetters(true);
-        // }
         if (cmdLine.hasOption(GeneratorOption.F.getOption())) {
             generator.setAbstractGetters(false);
         }
+
         if (cmdLine.hasOption(GeneratorOption.E.getOption())) {
             generator.setEvents(true);
         }
-        // if (cmdLine.hasOption(GeneratorOption.I.getOption())) {
-        // generator.setImplMode(true);
-        // }
 
         if (cmdLine.hasOption(GeneratorOption.N.getOption())) {
-            optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
-            if (optionValue != null) {
-                generator.setNodeType(optionValue);
-            } else {
-                generator.setNodeType(GenConstants.getDefaultNodeType());
-            }
+            var optionValue = cmdLine.getOptionValue(GeneratorOption.N.getOption());
+            generator.setNodeType(Objects.requireNonNullElseGet(optionValue, GenConstants::getDefaultNodeType));
         }
 
         if (cmdLine.hasOption(GeneratorOption.J.getOption())) {
             generator.setJson(true);
-        }
-        if (cmdLine.hasOption(GeneratorOption.D.getOption())) {
-            generator.setDefs(true);
         }
 
         if (cmdLine.hasOption(GeneratorOption.C.getOption())) {
             generator.setConcreteClassesPrefix(cmdLine.getOptionValue(GeneratorOption.C.getOption()));
         }
 
-        // if (cmdLine.hasOption(GeneratorOption.G.getOption())) {
-        // generator.setShowGraph(true);
-        // }
+        return generator;
+    }
 
-        printReport(generator);
-
-        // boolean generated = generate(weaverName, XMLSpecDir, outDir,
-        // outPackage, abstractGetters, showGraph);
-        final boolean generated = generate(generator);
-        if (!generated) {
-            System.err.println("The Weaver was not created!");
-            return;
-        }
-        final boolean printed = print(generator);
-        if (!printed) {
-            System.err.println("The Weaver was not created!");
-            return;
-        }
-        if (generator.isJson()) {
+    private static boolean emitJsonArtifacts(BaseGenerator generator) {
+        try {
             String packagePath = generator.getOutPackage().replace(".", "/");
             File jsonDir = new File(generator.getOutDir(), packagePath);
             File jsonOutFile = new File(jsonDir, generator.getWeaverName() + ".json");
@@ -279,8 +223,24 @@ public class WeaverGenerator {
                 SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.PNG);
                 SpecsGraphviz.renderDot(dotOutFile, DotRenderFormat.SVG);
             }
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("The Weaver was not created!");
+            e.printStackTrace();
+            return false;
         }
-        System.out.println("Weaver successfully created!");
+    }
+
+    private static void reportException(RuntimeException e) {
+        var message = e.getMessage();
+        if ((message == null || message.isBlank()) && e.getCause() != null) {
+            message = e.getCause().getMessage();
+        }
+        if (message == null || message.isBlank()) {
+            message = e.toString();
+        }
+        System.err.println(message);
     }
 
     public static void printJson(final BaseGenerator generator, File jsonOutFile) {
@@ -289,7 +249,6 @@ public class WeaverGenerator {
         LangSpecNode node = NodeFactory.toNode(languageSpecification);
         String json = node.toJson();
 
-        // String json = jw.toJson(languageSpecification);
         SpecsIo.write(jsonOutFile, json);
     }
 
@@ -300,25 +259,25 @@ public class WeaverGenerator {
     }
 
     private static void printReport(String weaverName, String outPackage, File xMLSpecDir, File outDir,
-                                    boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
-                                    boolean showGraph, String concreteClassesPrefix) {
+            boolean abstractGetters, boolean hasEvents, boolean usesImpl, String generics, boolean json,
+            boolean showGraph, String concreteClassesPrefix) {
         final StringBuilder report = new StringBuilder();
-        report.append("Weaver name:   " + weaverName + "\n");
-        report.append("Package:       " + outPackage + "\n");
+        report.append("Weaver name:       " + weaverName + "\n");
+        report.append("Package:           " + outPackage + "\n");
         if (xMLSpecDir != null) {
-            report.append("Lang. Spec:    " + xMLSpecDir + "\n");
+            report.append("Lang. Spec:        " + xMLSpecDir + "\n");
         }
-        report.append("Output Dir.:   " + outDir + "\n");
-        report.append("Add Events: " + hasEvents + "\n");
+        report.append("Output Dir.:       " + outDir + "\n");
+        report.append("Add Events:        " + hasEvents + "\n");
         report.append("Uses Impl Methods: " + usesImpl + "\n");
-        report.append("Abst. Getters: " + abstractGetters + "\n");
-        report.append("Node type:     " + (generics == null ? "N/A" : generics) + "\n");
-        report.append("Create JSON:   " + json + "\n");
+        report.append("Abst. Getters:     " + abstractGetters + "\n");
+        report.append("Node type:         " + (generics == null ? "N/A" : generics) + "\n");
+        report.append("Create JSON:       " + json + "\n");
 
         if (concreteClassesPrefix != null) {
             report.append("Concrete classes with prefix:   " + concreteClassesPrefix + "\n");
         }
-        // report.append("Show Graph: " + showGraph + "\n");
+
         System.out.println(report);
     }
 }

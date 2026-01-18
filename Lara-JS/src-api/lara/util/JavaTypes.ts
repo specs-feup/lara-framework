@@ -1,19 +1,6 @@
 import java from "java";
 
-export enum Engine {
-  GraalVM = "GraalVM",
-  NodeJS = "NodeJS",
-}
-
 export const NodeJavaPrefix = "nodeJava_";
-
-export let engine: Engine = Engine.GraalVM;
-
-if ("Java" in globalThis) {
-  engine = Engine.GraalVM;
-} else {
-  engine = Engine.NodeJS;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JavaClasses {
@@ -23,7 +10,7 @@ export namespace JavaClasses {
     [key: string]: any;
   }
 
-  /* eslint-disable @typescript-eslint/no-empty-interface */
+  /* eslint-disable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
   export interface LaraSystemTools extends JavaClass {
@@ -55,6 +42,7 @@ export namespace JavaClasses {
   }
   export interface List<T> extends JavaClass {
     [Symbol.iterator](): IterableIterator<T>;
+    toArray(): T[];
   }
   export interface Collections extends JavaClass {}
   export interface Diff extends JavaClass {}
@@ -63,14 +51,12 @@ export namespace JavaClasses {
     toString(obj: any): string;
   }
   export interface Object extends JavaClass {}
-  export interface ReplacerHelper extends JavaClass {}
   export interface CsvReader extends JavaClass {}
   export interface CsvWriter extends JavaClasses.JavaClass {}
   export interface CsvField extends JavaClasses.JavaClass {}
   export interface DataStore extends JavaClass {}
   export interface JOptionsUtils extends JavaClass {}
   export interface WeaverEngine extends JavaClass {}
-  export interface VerboseLevel extends JavaClass {}
   export interface LaraiKeys extends JavaClass {}
   export interface FileList extends JavaClass {}
   export interface OptionalFile extends JavaClass {}
@@ -80,17 +66,12 @@ export namespace JavaClasses {
   export interface HashMap extends JavaClass {}
   export interface SpecsPlatforms extends JavaClass {}
   export interface Runtime extends JavaClass {}
-  export interface LARASystem extends JavaClass {}
   export interface ProcessOutputAsString extends JavaClass {
     getOutput(): string;
   }
-  export interface JsGear extends JavaClass {
-    setJsOnAction(onActionCallback: (d: Record<string, any>) => void): boolean;
-    onAction(actionEvent: any): void;
-  }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
-  /* eslint-enable @typescript-eslint/no-empty-interface */
+  /* eslint-enable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
 }
 
 export default class JavaTypes {
@@ -107,15 +88,7 @@ export default class JavaTypes {
       return JavaTypes.typeMap.get(javaTypeName);
     }
 
-    let javaType: unknown;
-    switch (engine) {
-      case Engine.GraalVM:
-        javaType = Java.type(javaTypeName);
-        break;
-      case Engine.NodeJS:
-        javaType = java.import(javaTypeName);
-        break;
-    }
+    const javaType = java.import(javaTypeName);
 
     JavaTypes.typeMap.set(javaTypeName, javaType);
 
@@ -123,36 +96,17 @@ export default class JavaTypes {
   }
 
   static instanceOf<T>(value: T, javaTypeName: string): boolean {
-    switch (engine) {
-      case Engine.GraalVM:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        if (Java.isJavaObject(value)) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return Java.type(javaTypeName).class.isInstance(value);
-        }
-        return Java.typeName(value) === javaTypeName;
-      case Engine.NodeJS:
-        return java.instanceOf(value, javaTypeName);
-    }
+    return java.instanceOf(value, javaTypeName);
   }
 
   static isJavaObject<T>(value: T): boolean {
-    if (engine == Engine.NodeJS) {
-        return (
-            typeof value === "object" &&
-            value !== null &&
-            Object.getPrototypeOf(value).constructor.name.startsWith(
-                NodeJavaPrefix
-            )
-        );
-    }
-
-    try {
-      (value as any).getClass().getName();
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        Object.getPrototypeOf(value).constructor.name.startsWith(
+            NodeJavaPrefix
+        )
+    );
   }
 
   static get LaraI() {
@@ -237,10 +191,6 @@ export default class JavaTypes {
     return JavaTypes.getType("java.io.File") as JavaClasses.File;
   }
 
-  static get List() {
-    return JavaTypes.getType("java.util.List") as JavaClasses.List<any>;
-  }
-
   static get Collections() {
     return JavaTypes.getType(
       "java.util.Collections"
@@ -261,12 +211,6 @@ export default class JavaTypes {
 
   static get Object() {
     return JavaTypes.getType("java.lang.Object") as JavaClasses.Object;
-  }
-
-  static get ReplacerHelper() {
-    return JavaTypes.getType(
-      "pt.up.fe.specs.lara.util.ReplacerHelper"
-    ) as JavaClasses.ReplacerHelper;
   }
 
   static get CsvReader() {
@@ -305,12 +249,6 @@ export default class JavaTypes {
     ) as JavaClasses.WeaverEngine;
   }
 
-  static get VerboseLevel() {
-    return JavaTypes.getType(
-      "org.lara.interpreter.joptions.config.interpreter.VerboseLevel"
-    ) as JavaClasses.VerboseLevel;
-  }
-
   static get LaraiKeys() {
     return JavaTypes.getType(
       "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
@@ -342,7 +280,7 @@ export default class JavaTypes {
   }
 
   static get ArrayList() {
-    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.ArrayList;
+    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.List<any>;
   }
 
   static get HashMap() {
@@ -359,20 +297,10 @@ export default class JavaTypes {
     return JavaTypes.getType("java.lang.Runtime") as JavaClasses.Runtime;
   }
 
-  static get LARASystem() {
-    return JavaTypes.getType("Utils.LARASystem") as JavaClasses.LARASystem;
-  }
-
   static get ProcessOutputAsString() {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.system.ProcessOutputAsString"
     ) as JavaClasses.ProcessOutputAsString;
-  }
-
-  static get JsGear() {
-    return JavaTypes.getType("org.lara.interpreter.utils.JsGear") as {
-      new (...args: any[]): JavaClasses.JsGear;
-    };
   }
 
   static get ProgressCounter() {

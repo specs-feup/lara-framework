@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="com.github.jknack.Antlr4.tool">
-<stringAttribute key="antlr4.arguments" value="-listener -no-visitor -encoding UTF-8 -package org.lara.language.antlr.grammar"/>
-<stringAttribute key="antlr4.grammar" value="\LanguageSpecification\src\org\lara\language\antlr\LanguageSpecification.g4"/>
-<stringAttribute key="antlr4.vmArguments" value=""/>
-</launchConfiguration>

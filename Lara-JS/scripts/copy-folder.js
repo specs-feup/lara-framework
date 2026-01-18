@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   // This script is being executed directly
   const args = yargs(hideBin(process.argv))
-    .scriptName("java-dist")
+    .scriptName("copy-folder")
     .option("i", {
       alias: "inputFolder",
       describe: "Path to the source folder",

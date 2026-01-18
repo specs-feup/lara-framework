@@ -15,34 +15,39 @@ package org.lara.language.specification.exception;
 
 import pt.up.fe.specs.tools.lara.exception.BaseException;
 
+import java.io.Serial;
+
 public class LanguageSpecificationException extends BaseException {
 
     private static final String DEFAULT_TEXT = "while building language specification";
-    /**
-     * 
-     */
+    @Serial
     private static final long serialVersionUID = 1L;
-    private String message;
 
-    public LanguageSpecificationException(Throwable e) {
-	super(e);
+    public LanguageSpecificationException(String message) {
+        super(message);
     }
 
     public LanguageSpecificationException(String message, Throwable e) {
-	super(e);
-	this.message = message;
+        super(message, e);
+    }
+
+    public LanguageSpecificationException(Throwable e) {
+        super(e);
     }
 
     @Override
     protected String generateMessage() {
-
-	return "Exception on ";
+        return "Exception on " + this.generateSimpleMessage();
     }
 
     @Override
     protected String generateSimpleMessage() {
-	// TODO Auto-generated method stub
-	return this.message != null ? this.message : LanguageSpecificationException.DEFAULT_TEXT;
+        String message = this.getDetailMessage();
+        if (message != null && !message.isBlank()) {
+            return message;
+        }
+
+        return DEFAULT_TEXT;
     }
 
 }

@@ -49,9 +49,9 @@ public class DummyAstMethods extends AAstMethods<Object> {
         throw new NotImplementedException(this);
     }
 
-	@Override
-	protected Object getParentImpl(Object node) {
-		 throw new NotImplementedException(this);
-	}
+    @Override
+    protected Object getParentImpl(Object node) {
+        throw new NotImplementedException(this);
+    }
 
 }

@@ -29,7 +29,7 @@ export default interface WeaverConfiguration {
   /**
    * List of files that should be imported for side effects.
    * This is useful for registering the joinpoint mappers for the weaver.
-   * Files must be importtable using the ES6 import syntax.
+   * Files must be importable using the ES6 import syntax.
    *
    * @example ["@specs-feup/clava/api/Joinpoints.js"]
    */

@@ -1,0 +1,22 @@
+package minimal.pkg.abstracts.joinpoints;
+
+import minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
+
+/**
+ * Auto-Generated class for join point ARoot
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class ARoot extends AMinimalWeaverJoinPoint {
+
+    /**
+     * Returns the join point type of this class
+     * @return The join point type
+     */
+    @Override
+    public final String get_class() {
+        return "root";
+    }
+}
