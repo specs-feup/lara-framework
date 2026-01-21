@@ -16,9 +16,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
-import larai.LaraI;
 import pt.up.fe.specs.util.SpecsSystem;
-import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {
 
@@ -38,19 +36,5 @@ public class LaraIUtils {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Enables lazy initialization of jarParth
-     *
-     * @author Joao Bispo
-     */
-    private static class JarPathHolder {
-        public static final String instance = new JarPath(LaraI.class, LaraI.PROPERTY_JAR_PATH).buildJarPath();
-
-    }
-
-    public static String getJarFoldername() {
-        return JarPathHolder.instance;
     }
 }

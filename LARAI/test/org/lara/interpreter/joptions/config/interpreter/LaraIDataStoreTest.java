@@ -70,16 +70,6 @@ class LaraIDataStoreTest {
     }
 
     @Test
-    @DisplayName("getSystemOptionsFilename() should return correct file name")
-    void testGetSystemOptionsFilename() {
-        // When
-        String fileName = LaraIDataStore.getSystemOptionsFilename();
-
-        // Then
-        assertThat(fileName).isEqualTo("system_options.xml");
-    }
-
-    @Test
     @DisplayName("constructor should create instance with empty weaver options")
     void testConstructor_EmptyWeaverOptions() {
         // Given

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.lara.interpreter.cli.JOptionsInterface;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -56,12 +55,9 @@ public class LaraiStoreDefinition implements StoreDefinitionProvider {
     }
 
     private static Properties getDefaultProperties() {
-        String jarLoc = LaraIUtils.getJarFoldername();
         Properties properties = new Properties();
 
-        File globalFile = new File(jarLoc, LaraIDataStore.getConfigFileName());
         File localFile = new File(LaraIDataStore.getConfigFileName());
-        loadProperties(properties, globalFile);
         loadProperties(properties, localFile);
 
         return properties;

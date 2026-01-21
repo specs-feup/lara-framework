@@ -29,7 +29,6 @@ export namespace JavaClasses {
     escapeJson(str: string): string;
   }
   export interface SpecsSystem extends JavaClass {}
-  export interface ApacheStrings extends JavaClass {}
   export interface StringLines extends JavaClass {}
   export interface LaraIo extends JavaClass {}
   export interface SpecsIo extends JavaClass {}
@@ -157,12 +156,6 @@ export default class JavaTypes {
     return JavaTypes.getType(
       "pt.up.fe.specs.util.SpecsSystem"
     ) as JavaClasses.SpecsSystem;
-  }
-
-  static get ApacheStrings() {
-    return JavaTypes.getType(
-      "pt.up.fe.specs.lang.ApacheStrings"
-    ) as JavaClasses.ApacheStrings;
   }
 
   static get StringLines() {

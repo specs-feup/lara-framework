@@ -40,15 +40,6 @@ export default class Strings {
   }
 
   /**
-   * Escapes HTML code.
-   *
-   * @returns String with escaped code
-   */
-  static escapeHtml(html: string) {
-    return JavaTypes.ApacheStrings.escapeHtml(html);
-  }
-
-  /**
    * Escapes JSON content.
    *
    * @returns String with escaped code

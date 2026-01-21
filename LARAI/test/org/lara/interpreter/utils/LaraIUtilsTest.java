@@ -106,30 +106,6 @@ class LaraIUtilsTest {
     }
 
     @Test
-    @DisplayName("getJarFoldername should return non-null jar path")
-    void testGetJarFoldername() {
-        // When
-        String jarPath = LaraIUtils.getJarFoldername();
-
-        // Then
-        assertThat(jarPath).isNotNull();
-        // Note: The actual path depends on the runtime environment
-        // We can only verify it's not null and is a string
-    }
-
-    @Test
-    @DisplayName("getJarFoldername should return same instance on multiple calls (lazy initialization)")
-    void testGetJarFoldername_LazyInitialization() {
-        // When
-        String jarPath1 = LaraIUtils.getJarFoldername();
-        String jarPath2 = LaraIUtils.getJarFoldername();
-
-        // Then
-        assertThat(jarPath1).isEqualTo(jarPath2);
-        assertThat(jarPath1).isSameAs(jarPath2); // Should be the same instance
-    }
-
-    @Test
     @DisplayName("printHelp should handle both help and version options correctly")
     void testPrintHelp_PriorityHandling() {
         // Given - both options present, help should have priority

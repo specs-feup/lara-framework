@@ -14,7 +14,6 @@
 package org.lara.interpreter.cli;
 
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
-import org.lara.interpreter.utils.LaraIUtils;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -27,8 +26,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class JOptionsInterface {
-
-    private static final String LARAPATH = "$LARAI";
 
     private static final Map<WeaverOption, DataKey<?>> CONVERSION_MAP;
 
@@ -71,7 +68,6 @@ public class JOptionsInterface {
             }
 
             String property = properties.getProperty(key.toString());
-            property.replace(LARAPATH, LaraIUtils.getJarFoldername());
             data.setString(datakey, property);
         }
 
