@@ -251,6 +251,16 @@ public class LanguageSpecification {
             return new ArrayType(baseType, arrayDimension);
         }
 
+        // Handle 'this' type (late-bound self type)
+        if (type.equals(ThisType.THIS_KEYWORD)) {
+            return ThisType.getInstance();
+        }
+
+        // Handle generic/parameterized types (e.g., List<String>, Map<String, this>)
+        if (type.contains("<") && type.contains(">")) {
+            return parseParameterizedType(type);
+        }
+
         if (type.equalsIgnoreCase("template")) {
             return PrimitiveClasses.STRING;
         }
@@ -277,6 +287,79 @@ public class LanguageSpecification {
         }
 
         throw new RuntimeException("Type given does not exist: " + type);
+    }
+
+    /**
+     * Parses a parameterized type string (e.g., "List&lt;String&gt;", "Map&lt;String, this&gt;").
+     * Supports nested generics and the 'this' type anywhere in the type arguments.
+     *
+     * @param type the type string with generic syntax
+     * @return a ParameterizedType representing the parsed type
+     */
+    private IType parseParameterizedType(String type) {
+        int angleBracketStart = type.indexOf('<');
+        int angleBracketEnd = type.lastIndexOf('>');
+
+        if (angleBracketStart == -1 || angleBracketEnd == -1 || angleBracketEnd <= angleBracketStart) {
+            throw new RuntimeException("Invalid parameterized type format: " + type);
+        }
+
+        String baseTypeName = type.substring(0, angleBracketStart).trim();
+        String argsString = type.substring(angleBracketStart + 1, angleBracketEnd).trim();
+
+        // Parse the base type
+        IType baseType = getBaseTypeForParameterized(baseTypeName);
+
+        // Parse type arguments, respecting nested generics
+        List<IType> typeArguments = parseTypeArguments(argsString);
+
+        return new ParameterizedType(baseType, typeArguments);
+    }
+
+    /**
+     * Gets the base type for a parameterized type. For unknown base types,
+     * returns a GenericType to preserve the original string.
+     */
+    private IType getBaseTypeForParameterized(String baseTypeName) {
+        // Check if it's a known primitive class (e.g., Map, List in some contexts)
+        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(baseTypeName))) {
+            return PrimitiveClasses.get(baseTypeName);
+        }
+        // For unknown base types (like List, Set, etc.), use GenericType as a wrapper
+        return new GenericType(baseTypeName, false);
+    }
+
+    /**
+     * Parses a comma-separated list of type arguments, respecting nested generics.
+     *
+     * @param argsString the string containing type arguments (e.g., "String, Map&lt;K, V&gt;")
+     * @return list of parsed IType objects
+     */
+    private List<IType> parseTypeArguments(String argsString) {
+        List<IType> arguments = new ArrayList<>();
+        int depth = 0;
+        int start = 0;
+
+        for (int i = 0; i < argsString.length(); i++) {
+            char c = argsString.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                String arg = argsString.substring(start, i).trim();
+                arguments.add(getType(arg));
+                start = i + 1;
+            }
+        }
+
+        // Add the last argument
+        String lastArg = argsString.substring(start).trim();
+        if (!lastArg.isEmpty()) {
+            arguments.add(getType(lastArg));
+        }
+
+        return arguments;
     }
 
     public JoinPointClass getRoot() {

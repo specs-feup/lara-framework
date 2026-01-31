@@ -8,6 +8,9 @@ import org.lara.language.specification.dsl.LanguageSpecification;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.types.IType;
+import org.lara.language.specification.dsl.types.ThisType;
+import org.lara.language.specification.dsl.types.ParameterizedType;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -339,5 +342,218 @@ class LanguageSpecificationIntegrationTest {
         // 6. Test string representations work
         assertNotNull(statement.toString());
         assertFalse(statement.toString().trim().isEmpty());
+    }
+
+    // ==================== ThisType and Generics Integration Tests ====================
+
+    @Test
+    void testThisTypeInAttributeReturnType() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'clone' attribute which returns 'this'
+        Attribute cloneAttr = node.getAttributesSelf().stream()
+                .filter(a -> "clone".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(cloneAttr, "Should have 'clone' attribute");
+        IType returnType = cloneAttr.getType();
+        
+        // Should be ThisType, not resolved to JPType
+        assertInstanceOf(ThisType.class, returnType);
+        assertEquals("this", returnType.toString());
+    }
+
+    @Test
+    void testThisTypeInActionReturnType() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'copy' action which returns 'this'
+        Action copyAction = node.getActionsSelf().stream()
+                .filter(a -> "copy".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(copyAction, "Should have 'copy' action");
+        assertEquals("this", copyAction.getReturnType());
+    }
+
+    @Test
+    void testThisTypeInActionParameter() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'merge' action which has 'this' as parameter type
+        Action mergeAction = node.getActionsSelf().stream()
+                .filter(a -> "merge".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(mergeAction, "Should have 'merge' action");
+        assertEquals(1, mergeAction.getParameters().size());
+        assertEquals("this", mergeAction.getParameters().get(0).getType());
+    }
+
+    @Test
+    void testGenericTypeWithThisArgument() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'children' attribute which returns 'List<this>'
+        Attribute childrenAttr = node.getAttributesSelf().stream()
+                .filter(a -> "children".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(childrenAttr, "Should have 'children' attribute");
+        IType returnType = childrenAttr.getType();
+        
+        // Should be ParameterizedType with ThisType argument
+        assertInstanceOf(ParameterizedType.class, returnType);
+        ParameterizedType paramType = (ParameterizedType) returnType;
+        assertEquals("List<this>", paramType.toString());
+        assertInstanceOf(ThisType.class, paramType.getTypeArguments().get(0));
+    }
+
+    @Test
+    void testComplexGenericWithThis() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'metadata' attribute which returns 'Map<String, this>'
+        Attribute metadataAttr = node.getAttributesSelf().stream()
+                .filter(a -> "metadata".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(metadataAttr, "Should have 'metadata' attribute");
+        IType returnType = metadataAttr.getType();
+        
+        // Should be ParameterizedType: Map<String, this>
+        assertInstanceOf(ParameterizedType.class, returnType);
+        ParameterizedType paramType = (ParameterizedType) returnType;
+        assertEquals("Map<String, this>", paramType.toString());
+        assertEquals(2, paramType.getTypeArguments().size());
+        assertInstanceOf(ThisType.class, paramType.getTypeArguments().get(1));
+    }
+
+    @Test
+    void testNestedGenericWithThis() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        assertNotNull(node);
+
+        // Find the 'nestedChildren' attribute which returns 'List<List<this>>'
+        Attribute nestedAttr = node.getAttributesSelf().stream()
+                .filter(a -> "nestedChildren".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(nestedAttr, "Should have 'nestedChildren' attribute");
+        IType returnType = nestedAttr.getType();
+        
+        // Should be ParameterizedType: List<List<this>>
+        assertInstanceOf(ParameterizedType.class, returnType);
+        ParameterizedType outerType = (ParameterizedType) returnType;
+        assertEquals("List<List<this>>", outerType.toString());
+        
+        // Inner type should also be ParameterizedType
+        IType innerType = outerType.getTypeArguments().get(0);
+        assertInstanceOf(ParameterizedType.class, innerType);
+        ParameterizedType innerParamType = (ParameterizedType) innerType;
+        assertInstanceOf(ThisType.class, innerParamType.getTypeArguments().get(0));
+    }
+
+    @Test
+    void testThisTypePreservedInInheritedAttribute() throws IOException {
+        File specDir = createSpecWithThisType();
+        LanguageSpecification langSpec = LanguageSpecification.newInstance(specDir);
+
+        JoinPointClass node = langSpec.getJoinPoint("node");
+        JoinPointClass expr = langSpec.getJoinPoint("expr");
+        assertNotNull(node);
+        assertNotNull(expr);
+
+        // expr extends node, so it should inherit the 'clone' attribute
+        // The 'this' type should still be ThisType (late-bound)
+        Attribute exprClone = expr.getAttributes().stream()
+                .filter(a -> "clone".equals(a.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(exprClone, "expr should inherit 'clone' attribute from node");
+        IType returnType = exprClone.getType();
+        
+        // Should still be ThisType, not resolved to 'expr' or 'node'
+        assertInstanceOf(ThisType.class, returnType);
+        assertEquals("this", returnType.toString());
+    }
+
+    /**
+     * Creates a language specification with 'this' type usage.
+     */
+    private File createSpecWithThisType() throws IOException {
+        File specDir = tempDir.resolve("this-type-spec").toFile();
+        specDir.mkdirs();
+
+        // Create joinPointModel.xml
+        try (FileWriter writer = new FileWriter(new File(specDir, "joinPointModel.xml"))) {
+            writer.write("<?xml version=\"1.0\"?>\n");
+            writer.write("<joinpoints root_alias=\"root\" root_class=\"node\">\n");
+            writer.write("  <joinpoint class=\"node\"/>\n");
+            writer.write("  <joinpoint class=\"expr\" extends=\"node\"/>\n");
+            writer.write("</joinpoints>\n");
+        }
+
+        // Create artifacts.xml with 'this' and generic types
+        try (FileWriter writer = new FileWriter(new File(specDir, "artifacts.xml"))) {
+            writer.write("<?xml version=\"1.0\"?>\n");
+            writer.write("<artifacts>\n");
+            writer.write("  <artifact class=\"node\">\n");
+            // Attribute returning 'this'
+            writer.write("    <attribute name=\"clone\" type=\"this\"/>\n");
+            // Attribute returning List<this>
+            writer.write("    <attribute name=\"children\" type=\"List&lt;this&gt;\"/>\n");
+            // Attribute returning Map<String, this>
+            writer.write("    <attribute name=\"metadata\" type=\"Map&lt;String, this&gt;\"/>\n");
+            // Attribute returning nested generic List<List<this>>
+            writer.write("    <attribute name=\"nestedChildren\" type=\"List&lt;List&lt;this&gt;&gt;\"/>\n");
+            writer.write("  </artifact>\n");
+            writer.write("</artifacts>\n");
+        }
+
+        // Create actionModel.xml with 'this' in return and parameter types
+        try (FileWriter writer = new FileWriter(new File(specDir, "actionModel.xml"))) {
+            writer.write("<?xml version=\"1.0\"?>\n");
+            writer.write("<actions>\n");
+            // Action returning 'this'
+            writer.write("  <action name=\"copy\" class=\"node\" return=\"this\"/>\n");
+            // Action with 'this' as parameter type
+            writer.write("  <action name=\"merge\" class=\"node\" return=\"void\">\n");
+            writer.write("    <parameter name=\"other\" type=\"this\"/>\n");
+            writer.write("  </action>\n");
+            writer.write("</actions>\n");
+        }
+
+        return specDir;
     }
 }

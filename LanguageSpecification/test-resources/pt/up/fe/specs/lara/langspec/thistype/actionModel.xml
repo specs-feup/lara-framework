@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<!--
+  Actions for testing 'this' type and generic types.
+  
+  Test coverage:
+  - 'this' as action return type
+  - 'this' as action parameter type (only parameter)
+  - 'this' mixed with other parameters
+  - Generics in action return types
+  - Generics with 'this' in action return types
+  - Generics in action parameter types
+  - Global actions with 'this'
+-->
+<actions>
+    
+    <!-- ============ Global actions (no class specified) ============ -->
+    
+    <!-- Global action returning 'this' -->
+    <action name="selfTransform" return="this" tooltip="Applies transformation returning self">
+        <parameter name="transformName" type="String"/>
+    </action>
+    
+    <!-- Global action with 'this' as parameter -->
+    <action name="replaceWith" return="void" tooltip="Replaces this node with another">
+        <parameter name="replacement" type="this"/>
+    </action>
+    
+    <!-- Global action with 'this' in generic return type -->
+    <action name="findAll" return="List&lt;this&gt;" tooltip="Finds all matching nodes">
+        <parameter name="pattern" type="String"/>
+    </action>
+    
+    <!-- Global action returning Map with 'this' -->
+    <action name="categorize" return="Map&lt;String, this&gt;" tooltip="Categorizes nodes by criteria"/>
+    
+    <!-- ============ Node class actions ============ -->
+    
+    <!-- Simple 'this' return type -->
+    <action name="copy" class="node" return="this" tooltip="Creates a copy of this node"/>
+    
+    <action name="detach" class="node" return="this" tooltip="Detaches node from parent and returns it"/>
+    
+    <!-- 'this' as the only parameter -->
+    <action name="insertBefore" class="node" return="void" tooltip="Inserts node before this one">
+        <parameter name="node" type="this"/>
+    </action>
+    
+    <action name="insertAfter" class="node" return="void" tooltip="Inserts node after this one">
+        <parameter name="node" type="this"/>
+    </action>
+    
+    <!-- 'this' as parameter returning 'this' -->
+    <action name="merge" class="node" return="this" tooltip="Merges with another node">
+        <parameter name="other" type="this"/>
+    </action>
+    
+    <!-- 'this' mixed with other parameters -->
+    <action name="swap" class="node" return="void" tooltip="Swaps position with another node">
+        <parameter name="other" type="this"/>
+        <parameter name="preserveComments" type="Boolean"/>
+    </action>
+    
+    <action name="insertAt" class="node" return="void" tooltip="Inserts node at specific position">
+        <parameter name="position" type="Integer"/>
+        <parameter name="node" type="this"/>
+    </action>
+    
+    <action name="wrapWith" class="node" return="this" tooltip="Wraps this node with wrapper">
+        <parameter name="wrapper" type="this"/>
+        <parameter name="position" type="String"/>
+    </action>
+    
+    <!-- Multiple 'this' parameters -->
+    <action name="replaceBetween" class="node" return="void" tooltip="Replaces nodes between two markers">
+        <parameter name="start" type="this"/>
+        <parameter name="end" type="this"/>
+        <parameter name="replacement" type="this"/>
+    </action>
+    
+    <!-- Generic return type (no 'this') -->
+    <action name="getMetadata" class="node" return="Map&lt;String, String&gt;" tooltip="Returns metadata as map"/>
+    
+    <action name="getTags" class="node" return="List&lt;String&gt;" tooltip="Returns list of tags"/>
+    
+    <!-- Generic return type with 'this' -->
+    <action name="findChildren" class="node" return="List&lt;this&gt;" tooltip="Finds children matching criteria">
+        <parameter name="filter" type="String"/>
+    </action>
+    
+    <action name="groupByType" class="node" return="Map&lt;String, List&lt;this&gt;&gt;" tooltip="Groups descendants by type"/>
+    
+    <!-- Generic parameter with 'this' -->
+    <action name="insertAll" class="node" return="void" tooltip="Inserts multiple nodes">
+        <parameter name="nodes" type="List&lt;this&gt;"/>
+    </action>
+    
+    <action name="replaceAll" class="node" return="void" tooltip="Replaces multiple nodes by name">
+        <parameter name="replacements" type="Map&lt;String, this&gt;"/>
+    </action>
+    
+    <!-- Nested generic with 'this' in return -->
+    <action name="partitionChildren" class="node" return="Map&lt;String, List&lt;this&gt;&gt;" tooltip="Partitions children">
+        <parameter name="criteria" type="String"/>
+    </action>
+    
+    <!-- Array of 'this' in return type -->
+    <action name="toArray" class="node" return="this[]" tooltip="Converts children to array"/>
+    
+    <!-- ============ Expression class actions ============ -->
+    
+    <action name="evaluate" class="expr" return="this" tooltip="Evaluates and returns simplified form"/>
+    
+    <action name="substitute" class="expr" return="this" tooltip="Substitutes sub-expression">
+        <parameter name="target" type="this"/>
+        <parameter name="replacement" type="this"/>
+    </action>
+    
+    <action name="collectTerms" class="expr" return="List&lt;this&gt;" tooltip="Collects all terms"/>
+    
+    <!-- ============ Binary expression actions ============ -->
+    
+    <action name="swapOperands" class="binaryExpr" return="this" tooltip="Swaps left and right operands"/>
+    
+    <action name="setOperands" class="binaryExpr" return="void" tooltip="Sets both operands">
+        <parameter name="left" type="this"/>
+        <parameter name="right" type="this"/>
+    </action>
+    
+    <!-- ============ Statement class actions ============ -->
+    
+    <action name="moveAfter" class="stmt" return="this" tooltip="Moves this statement after target">
+        <parameter name="target" type="this"/>
+    </action>
+    
+    <action name="extractTo" class="stmt" return="this" tooltip="Extracts to new context">
+        <parameter name="context" type="String"/>
+    </action>
+    
+    <!-- ============ Loop class actions ============ -->
+    
+    <action name="unroll" class="loop" return="List&lt;this&gt;" tooltip="Unrolls loop returning statements">
+        <parameter name="factor" type="Integer"/>
+    </action>
+    
+    <action name="tile" class="loop" return="this" tooltip="Applies tiling transformation">
+        <parameter name="tileSize" type="Integer"/>
+    </action>
+    
+    <action name="interchange" class="loop" return="void" tooltip="Interchanges with another loop">
+        <parameter name="other" type="this"/>
+    </action>
+    
+    <action name="fuse" class="loop" return="this" tooltip="Fuses with adjacent loop">
+        <parameter name="other" type="this"/>
+        <parameter name="checkDependencies" type="Boolean"/>
+    </action>
+    
+    <!-- ============ Container class actions ============ -->
+    
+    <action name="processNested" class="container" return="List&lt;Map&lt;String, this&gt;&gt;" tooltip="Processes nested structure"/>
+    
+    <action name="addToAll" class="container" return="void" tooltip="Adds to all nested maps">
+        <parameter name="items" type="Map&lt;String, List&lt;this&gt;&gt;"/>
+    </action>
+    
+</actions>
