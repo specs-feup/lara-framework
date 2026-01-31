@@ -13,6 +13,17 @@
 
 package pt.up.fe.specs.lara.langspec;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +33,6 @@ import org.lara.language.specification.ast.ActionNode;
 import org.lara.language.specification.ast.AttributeNode;
 import org.lara.language.specification.ast.DeclarationNode;
 import org.lara.language.specification.ast.JoinPointNode;
-import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
 import org.lara.language.specification.ast.RootNode;
 import org.lara.language.specification.ast.TypeDefNode;
@@ -36,13 +46,9 @@ import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.ParameterizedType;
 import org.lara.language.specification.dsl.types.ThisType;
 import org.lara.language.specification.dsl.types.TypeDef;
+
 import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.providers.ResourceProvider;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive integration tests for the 'this' type and generic types feature.
