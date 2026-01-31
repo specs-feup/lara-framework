@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<joinpoints root_alias="root" root_class="node">
+  <joinpoint class="node"/>
+  <joinpoint class="expr" extends="node"/>
+</joinpoints>
