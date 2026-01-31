@@ -90,6 +90,9 @@ public class WildcardType implements IType {
         if (kind != Kind.UNBOUNDED && bound == null) {
             throw new IllegalArgumentException("Bounded wildcard (" + kind + ") requires a bound type");
         }
+        if (bound instanceof WildcardType) {
+            throw new IllegalArgumentException("Wildcard bounds cannot be wildcard types");
+        }
 
         this.kind = kind;
         this.bound = bound;
