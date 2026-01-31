@@ -256,6 +256,11 @@ public class LanguageSpecification {
             return ThisType.getInstance();
         }
 
+        // Handle wildcard types: ?, ? extends X, ? super X
+        if (type.startsWith(WildcardType.WILDCARD_SYMBOL)) {
+            return parseWildcardType(type);
+        }
+
         // Handle generic/parameterized types (e.g., List<String>, Map<String, this>)
         if (type.contains("<") && type.contains(">")) {
             return parseParameterizedType(type);
@@ -360,6 +365,37 @@ public class LanguageSpecification {
         }
 
         return arguments;
+    }
+
+    /**
+     * Parses a wildcard type string (e.g., "?", "? extends String", "? super this").
+     * 
+     * @param type the wildcard type string starting with "?"
+     * @return a WildcardType representing the parsed wildcard
+     */
+    private IType parseWildcardType(String type) {
+        String trimmed = type.trim();
+
+        // Unbounded wildcard: just "?"
+        if (trimmed.equals(WildcardType.WILDCARD_SYMBOL)) {
+            return WildcardType.unbounded();
+        }
+
+        // Upper bounded: "? extends X"
+        if (trimmed.startsWith("? extends ")) {
+            String boundTypeName = trimmed.substring("? extends ".length()).trim();
+            IType boundType = getType(boundTypeName);
+            return WildcardType.extendsType(boundType);
+        }
+
+        // Lower bounded: "? super X"
+        if (trimmed.startsWith("? super ")) {
+            String boundTypeName = trimmed.substring("? super ".length()).trim();
+            IType boundType = getType(boundTypeName);
+            return WildcardType.superType(boundType);
+        }
+
+        throw new RuntimeException("Invalid wildcard type format: " + type);
     }
 
     public JoinPointClass getRoot() {
