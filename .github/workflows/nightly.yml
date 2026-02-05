@@ -173,7 +173,7 @@ jobs:
 
       # Only on ubuntu-latest
       - name: Publish JS
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        if: github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
         run: | 
             cd lara-framework/Lara-JS
             npm whoami
