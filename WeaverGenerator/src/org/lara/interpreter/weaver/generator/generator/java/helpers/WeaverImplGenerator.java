@@ -75,23 +75,9 @@ public class WeaverImplGenerator extends GeneratorHelper {
         addSelectMethod(java);
         addGetGearsMethod(java);
         addGetOptionsMethod(java);
-        addGetWeaver(java);
         addBuildLanguageSpecification(java);
 
         return java;
-    }
-
-    private void addGetWeaver(JavaClass java) {
-        String weaverName = java.getName();
-        JavaType weavingEngineClass = new JavaType(weaverName);
-
-        Method getWE = new Method(weavingEngineClass, "get" + weaverName);
-        getWE.add(Modifier.STATIC);
-        getWE.appendComment("Returns thread-local instance of weaver engine.");
-        getWE.appendCode("return (" + weaverName + ") WeaverEngine.getThreadLocalWeaver();");
-        java.add(getWE);
-
-        java.addImport("org.lara.interpreter.weaver.interf.WeaverEngine");
     }
 
     /**

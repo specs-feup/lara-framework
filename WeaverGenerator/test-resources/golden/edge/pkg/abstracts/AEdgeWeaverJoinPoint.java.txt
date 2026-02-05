@@ -1,6 +1,7 @@
 package edge.pkg.abstracts;
 
 import edge.pkg.abstracts.joinpoints.AJoinPoint;
+import edge.pkg.EdgeWeaver;
 import java.util.List;
 
 /**
@@ -9,6 +10,20 @@ import java.util.List;
  * @author Lara Weaver Generator
  */
 public abstract class AEdgeWeaverJoinPoint extends AJoinPoint {
+
+    /**
+     * 
+     */
+    public AEdgeWeaverJoinPoint(EdgeWeaver weaver){
+        super(weaver);
+    }
+    /**
+     * Returns the Weaving Engine this join point pertains to.
+     */
+    @Override
+    public EdgeWeaver getWeaverEngine() {
+        return (EdgeWeaver) super.getWeaverEngine();
+    }
 
     /**
      * Compares the two join points based on their node reference of the used compiler/parsing tool.<br>

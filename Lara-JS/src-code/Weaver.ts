@@ -95,7 +95,6 @@ export class Weaver {
     const JavaWeaverClass = java.import(config.javaWeaverQualifiedName);
 
     const javaWeaver = new JavaWeaverClass();
-    javaWeaver.setWeaver();
 
     const isClassicCli =
       args.configClassic !== undefined && args.configClassic !== null;
@@ -150,6 +149,8 @@ export class Weaver {
 
     Weaver.javaWeaver = javaWeaver;
     Weaver.datastore = datastore;
+
+    (globalThis as any).__hidden = {javaWeaver: Weaver.javaWeaver};
 
     for (const file of config.importForSideEffects ?? []) {
       await import(file);

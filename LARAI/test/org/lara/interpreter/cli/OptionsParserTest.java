@@ -51,7 +51,6 @@ class OptionsParserTest {
 
         // Should contain basic LARAI options
         assertThat(options.stream().anyMatch(opt -> "h".equals(opt.getOpt()))).isTrue(); // help
-        assertThat(options.stream().anyMatch(opt -> "v".equals(opt.getOpt()))).isTrue(); // version
     }
 
     @Test

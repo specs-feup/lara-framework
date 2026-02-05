@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 
 public class DWFolder extends AFolder {
@@ -24,7 +25,8 @@ public class DWFolder extends AFolder {
     private final List<DWFile> files;
     private final String path;
 
-    public DWFolder(File source) {
+    public DWFolder(File source, DefaultWeaver weaver) {
+        super(weaver);
         path = source.getAbsolutePath();
         files = new ArrayList<>();
         createFiles(source);
@@ -36,7 +38,7 @@ public class DWFolder extends AFolder {
             if (f.isDirectory() && getFilesRecursively) {
                 createFiles(f);
             } else if (f.getName().endsWith(".c")) {
-                files.add(new DWFile(f));
+                files.add(new DWFile(f, getWeaverEngine()));
             }
         }
     }
