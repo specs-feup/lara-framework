@@ -12,11 +12,13 @@
  */
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
+import java.util.List;
+
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AJoinPoint;
 
-public class DWFunction extends AFunction {
+public class DWFunction extends AFunction<DWFunction> {
 
     private final String name;
 
@@ -39,7 +41,7 @@ public class DWFunction extends AFunction {
     // }
 
     @Override
-    public JoinPoint[] insertImpl(String position, String code) {
+    public AJoinPoint[] insertImpl(String position, String code) {
         System.out.println("#########INSERTING#########");
         System.out.println(
                 "Action not available. But would insert " + position + " function " + name + ": " + code.trim());//
@@ -57,5 +59,10 @@ public class DWFunction extends AFunction {
     @Override
     public String getNameImpl() {
         return name;
+    }
+
+    @Override
+    public DWFunction usesThisImpl(List<DWFunction> param1) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

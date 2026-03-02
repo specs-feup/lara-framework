@@ -59,7 +59,22 @@ public class Parameter {
         return getDeclaration().getName();
     }
 
+    /**
+     * Returns the type of this parameter as a string representation.
+     * 
+     * @return the type string
+     */
     public String getType() {
         return getDeclaration().getType().type();
+    }
+
+    /**
+     * Returns the IType of this parameter, which may include structured types
+     * like ThisType, ParameterizedType, ArrayType, etc.
+     * 
+     * @return the IType
+     */
+    public IType getIType() {
+        return getDeclaration().getType();
     }
 }

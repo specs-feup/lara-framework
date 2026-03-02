@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
@@ -31,6 +32,7 @@ import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
+
 import pt.up.fe.specs.util.SpecsLogs;
 
 /**
@@ -68,23 +70,35 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * Generate an abstract class for the join points, containing the global
      * attributes and actions. It also generates
      * the code for listing the available attributes and actions.
+     * 
+     * <p>
+     * This class uses CRTP (Curiously Recurring Template Pattern) to enable
+     * polymorphic "this" type: {@code AJoinPoint<Self extends AJoinPoint<Self>>}
+     * </p>
      *
      */
     private JavaClass generateAbstractJoinPointClass() {
+        // Get the base class type (e.g., "AJoinPoint")
+        JavaType baseType = javaGenerator.getaJoinPointType();
+        String baseClassName = baseType.getName();
 
-        // JavaClass abstJPClass = new JavaClass(abstractPrefix + globalJPInfo
-        final JavaClass abstJPClass = new JavaClass(javaGenerator.getaJoinPointType());
+        // All classes use CRTP type parameters
+        final CrtpJavaClass abstJPClass = new CrtpJavaClass(baseClassName, baseType.getPackage());
         abstJPClass.add(Modifier.ABSTRACT);
+        // The base JoinPoint class doesn't have type parameters, so don't add type args
+        // to it
+        abstJPClass.setAddTypeArgToSuperClass(false);
         abstJPClass.setSuperClass(GenConstants.getJoinPointInterfaceType());
         abstJPClass.appendComment("Abstract class containing the global attributes and default action exception.");
         abstJPClass.appendComment(ln() + "This class is overwritten when the weaver generator is executed.");
         abstJPClass.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
-        // abstJPClass.setSuperClass(GenConstants.getJoinPointInterfaceType());
-        // abstJPClass.addImport(JoinPoint.class.getCanonicalName());
 
         addConstructor(abstJPClass);
-        generateCompareMethods(abstJPClass);
-        generateGlobalJoinPointData(abstJPClass);
+        generateCompareMethods(abstJPClass, baseClassName);
+
+        // For CRTP, use "Self" as the type for ThisType resolution
+        JavaType thisType = new JavaType(CrtpJavaClass.SELF_TYPE_PARAMETER);
+        generateGlobalJoinPointData(abstJPClass, thisType);
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
 
         return abstJPClass;
@@ -104,10 +118,12 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * Generate the default methods com comparing two joinpoints: same, compareNodes
      * and getNode()
      *
-     * @param abstJPClass target class
+     * @param abstJPClass   target class
+     * @param baseClassName the base class name without type parameters (for
+     *                      casting)
      */
-    private void generateCompareMethods(JavaClass abstJPClass) {
-        generateSameMethod(abstJPClass);
+    private void generateCompareMethods(JavaClass abstJPClass, String baseClassName) {
+        generateSameMethod(abstJPClass, baseClassName);
         final Method compareNodes = GeneratorUtils.generateCompareNodes(javaGenerator.getaJoinPointType());
         abstJPClass.add(compareNodes);
         generateGetNodeMethod(abstJPClass);
@@ -127,18 +143,21 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
     /**
      * Generate the default "same" method, that verifies if the argument has the
-     * same join point class as "this" and
-     * calls the compareNodes method to compare the join point nodes
+     * same join point class as "this" and calls the compareNodes method to compare
+     * the join point nodes
      *
+     * @param baseClassName the base class name without type parameters (for
+     *                      casting)
      */
-    private static void generateSameMethod(JavaClass abstJPClass) {
+    private static void generateSameMethod(JavaClass abstJPClass, String baseClassName) {
         final Method same = new Method(JavaTypeFactory.getBooleanType(), "same");
         same.add(Annotation.OVERRIDE);
         same.addArgument(GenConstants.getJoinPointInterfaceType(), "iJoinPoint");
+        // Cast to the base class name (e.g., AJoinPoint)
         same.appendCode(
                 "if (this.get_class().equals(iJoinPoint.get_class())) {" + ln() + ln()
                         + "        return this.compareNodes(("
-                        + abstJPClass.getName() + ") iJoinPoint);" + ln() + "    }" + ln() + "    return false;");
+                        + baseClassName + ") iJoinPoint);" + ln() + "    }" + ln() + "    return false;");
         abstJPClass.add(same);
     }
 
@@ -147,14 +166,14 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * points
      *
      * @param abstJPClass the target join point abstraction class
+     * @param thisType    the type to use for ThisType resolution (Self for CRTP)
      */
-    private void generateGlobalJoinPointData(JavaClass abstJPClass) {
-        // abstJPClass.addImport(List.class.getCanonicalName());
+    private void generateGlobalJoinPointData(JavaClass abstJPClass, JavaType thisType) {
 
         // Add actions to the abstract join point class
-        generateGlobalActionsAsMethods(abstJPClass);
+        generateGlobalActionsAsMethods(abstJPClass, thisType);
 
-        generateGlobalAttributes(abstJPClass);
+        generateGlobalAttributes(abstJPClass, thisType);
 
     }
 
@@ -162,7 +181,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * Generate the global attributes as fields and/or getter methods
      *
      */
-    private void generateGlobalAttributes(JavaClass abstJPClass) {
+    private void generateGlobalAttributes(JavaClass abstJPClass, JavaType currentJpType) {
 
         var globalAttrs = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
 
@@ -171,7 +190,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
         for (var attr : globalAttrs) {
-            final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator);
+            final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator, currentJpType);
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
                     abstJPClass, javaGenerator, false);
@@ -186,7 +205,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * List all the actions as methods
      *
      */
-    private void generateGlobalActionsAsMethods(JavaClass abstJPClass) {
+    private void generateGlobalActionsAsMethods(JavaClass abstJPClass, JavaType currentJpType) {
 
         var actions = javaGenerator.getLanguageSpecification().getGlobal().getActionsSelf();
 
@@ -197,13 +216,23 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         for (var action : actions) {
             ActionPlan plan = prepareGlobalAction(action);
 
-            final Method m = GeneratorUtils.generateActionMethod(plan.action(), javaGenerator);
+            final Method m = GeneratorUtils.generateActionMethod(plan.action(), javaGenerator, currentJpType);
+            if (GeneratorUtils.hasMethodSignature(abstJPClass, m)) {
+                SpecsLogs.warn(String.format(
+                        "Skipping global action '%s' due to duplicate method signature '%s'.",
+                        plan.action().getName(), m.getName()));
+                continue;
+            }
             abstJPClass.add(m);
 
             Method cloned = GeneratorUtils.generateActionImplMethod(m, plan.action(),
-                    abstJPClass, javaGenerator);
-            if (!plan.skipWrapper()) {
+                    abstJPClass, javaGenerator, currentJpType);
+            if (!plan.skipWrapper() && !GeneratorUtils.hasMethodSignature(abstJPClass, cloned)) {
                 abstJPClass.add(cloned);
+            } else if (!plan.skipWrapper()) {
+                SpecsLogs.warn(String.format(
+                        "Skipping global action wrapper '%s' due to duplicate method signature.",
+                        cloned.getName()));
             }
         }
     }
@@ -278,6 +307,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         return type.replace("java.lang.", "").trim();
     }
 
-    private record ActionPlan(Action action, boolean skipWrapper) {}
+    private record ActionPlan(Action action, boolean skipWrapper) {
+    }
 
 }

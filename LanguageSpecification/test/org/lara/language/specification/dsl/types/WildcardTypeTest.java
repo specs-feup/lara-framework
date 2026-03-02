@@ -429,14 +429,16 @@ class WildcardTypeTest {
         }
 
         @Test
-        @DisplayName("Should support nested wildcards conceptually (wildcard as bound)")
-        void testNestedWildcardAsBound() {
-            // While unusual, this tests that the type system handles any IType
+        @DisplayName("Should reject wildcards as bounds")
+        void testNestedWildcardAsBoundRejected() {
+            // Wildcard bounds cannot themselves be wildcard types
             WildcardType innerWildcard = WildcardType.unbounded();
-            WildcardType outerWildcard = WildcardType.extendsType(innerWildcard);
 
-            assertEquals(innerWildcard, outerWildcard.getBound());
-            assertEquals("? extends ?", outerWildcard.toString());
+            IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> WildcardType.extendsType(innerWildcard)
+            );
+            assertEquals("Wildcard bounds cannot be wildcard types", exception.getMessage());
         }
 
         @Test

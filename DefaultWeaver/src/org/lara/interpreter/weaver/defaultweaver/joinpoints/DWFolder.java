@@ -19,7 +19,7 @@ import java.util.List;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 
-public class DWFolder extends AFolder {
+public class DWFolder extends AFolder<DWFolder> {
 
     private final boolean getFilesRecursively = true;
     private final List<DWFile> files;
