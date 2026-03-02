@@ -17,7 +17,7 @@ import java.io.File;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
 
-public class DWFile extends AFile {
+public class DWFile extends AFile<DWFile> {
 
     private final File file;
 

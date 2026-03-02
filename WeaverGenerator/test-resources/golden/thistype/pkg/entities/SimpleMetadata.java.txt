@@ -1,0 +1,89 @@
+package thistype.pkg.entities;
+
+import java.util.Map;
+import java.util.List;
+
+/**
+ * 
+ * 
+ * @author Lara C.
+ */
+public class SimpleMetadata {
+
+    private Map<String, Object> config;
+    private String name;
+    private List<String> values;
+
+    /**
+     * 
+     */
+    public SimpleMetadata(){}
+    /**
+     * 
+     */
+    public SimpleMetadata(Map<String, Object> config, String name, List<String> values){
+        this.setConfig(config);
+        this.setName(name);
+        this.setValues(values);
+    }
+    /**
+     * Get value on attribute config
+     * @return the attribute's value
+     */
+    public Map<String, Object> getConfig() {
+        return this.config;
+    }
+
+    /**
+     * Set value on attribute config
+     * @param config
+     */
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+
+    /**
+     * Get value on attribute name
+     * @return the attribute's value
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Set value on attribute name
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get value on attribute values
+     * @return the attribute's value
+     */
+    public List<String> getValues() {
+        return this.values;
+    }
+
+    /**
+     * Set value on attribute values
+     * @param values
+     */
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public String toString() {
+        String json = "{\n";
+        json += " config: "+getConfig() + ",\n";
+        json += " name: "+getName() + ",\n";
+        json += " values: "+getValues() + ",\n";
+        json+="}";
+        return json;
+    }
+}

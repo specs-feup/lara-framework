@@ -1,0 +1,648 @@
+package thistype.pkg.abstracts.joinpoints;
+
+import org.lara.interpreter.exception.AttributeException;
+import java.util.List;
+import org.lara.interpreter.exception.ActionException;
+import thistype.pkg.ThistypeWeaver;
+import java.util.Map;
+import java.util.Set;
+import org.lara.interpreter.weaver.interf.JoinPoint;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+
+/**
+ * Auto-Generated class for join point AExpr
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
+
+    protected ANode aNode;
+
+    /**
+     * 
+     */
+    public AExpr(ANode aNode, ThistypeWeaver weaver){
+        super(weaver);
+        this.aNode = aNode;
+    }
+    /**
+     * Returns normalized form
+     */
+    public abstract Self getNormalizeImpl();
+
+    /**
+     * Returns normalized form
+     */
+    public final Object getNormalize() {
+        try {
+        	Self result = this.getNormalizeImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "normalize", e);
+        }
+    }
+
+    /**
+     * Returns simplified expression
+     */
+    public abstract Self getSimplifyImpl();
+
+    /**
+     * Returns simplified expression
+     */
+    public final Object getSimplify() {
+        try {
+        	Self result = this.getSimplifyImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "simplify", e);
+        }
+    }
+
+    /**
+     * Returns sub-expressions
+     */
+    public abstract List<Self> getSubExpressionsImpl();
+
+    /**
+     * Returns sub-expressions
+     */
+    public final Object getSubExpressions() {
+        try {
+        	List<Self> result = this.getSubExpressionsImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "subExpressions", e);
+        }
+    }
+
+    /**
+     * Collects all terms
+     */
+    public List<Self> collectTermsImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action collectTerms not implemented ");
+    }
+
+    /**
+     * Collects all terms
+     */
+    public final Object collectTerms() {
+        try {
+        	List<Self> result = this.collectTermsImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "collectTerms", e);
+        }
+    }
+
+    /**
+     * Evaluates and returns simplified form
+     */
+    public Self evaluateImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action evaluate not implemented ");
+    }
+
+    /**
+     * Evaluates and returns simplified form
+     */
+    public final Object evaluate() {
+        try {
+        	Self result = this.evaluateImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "evaluate", e);
+        }
+    }
+
+    /**
+     * Substitutes sub-expression
+     * @param target 
+     * @param replacement 
+     */
+    public Self substituteImpl(Self target, Self replacement) {
+        throw new UnsupportedOperationException(get_class()+": Action substitute not implemented ");
+    }
+
+    /**
+     * Substitutes sub-expression
+     * @param target 
+     * @param replacement 
+     */
+    public final Object substitute(Self target, Self replacement) {
+        try {
+        	Self result = this.substituteImpl(target, replacement);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "substitute", e);
+        }
+    }
+
+    /**
+     * Get value on attribute ancestorOfType
+     * @return the attribute's value
+     */
+    @Override
+    public Self ancestorOfTypeImpl(String typeName) {
+        return (Self) this.aNode.ancestorOfTypeImpl(typeName);
+    }
+
+    /**
+     * Get value on attribute attributes
+     * @return the attribute's value
+     */
+    @Override
+    public Map<String, String> getAttributesImpl() {
+        return this.aNode.getAttributesImpl();
+    }
+
+    /**
+     * Get value on attribute categorizedNodes
+     * @return the attribute's value
+     */
+    @Override
+    public Map<String, List<Self>> getCategorizedNodesImpl() {
+        return (Map<String, List<Self>>) this.aNode.getCategorizedNodesImpl();
+    }
+
+    /**
+     * Get value on attribute childGroups
+     * @return the attribute's value
+     */
+    @Override
+    public List<List<Self>> getChildGroupsImpl() {
+        return (List<List<Self>>) this.aNode.getChildGroupsImpl();
+    }
+
+    /**
+     * Get value on attribute childList
+     * @return the attribute's value
+     */
+    @Override
+    public List<Self> getChildListImpl() {
+        return (List<Self>) this.aNode.getChildListImpl();
+    }
+
+    /**
+     * Get value on attribute children
+     * @return the attribute's value
+     */
+    @Override
+    public Self[] getChildrenArrayImpl() {
+        return (Self[]) this.aNode.getChildrenArrayImpl();
+    }
+
+    /**
+     * Get value on attribute childrenMatrix
+     * @return the attribute's value
+     */
+    @Override
+    public Self[][] getChildrenMatrixArrayImpl() {
+        return (Self[][]) this.aNode.getChildrenMatrixArrayImpl();
+    }
+
+    /**
+     * Get value on attribute clone
+     * @return the attribute's value
+     */
+    @Override
+    public Self getCloneImpl() {
+        return (Self) this.aNode.getCloneImpl();
+    }
+
+    /**
+     * Get value on attribute column
+     * @return the attribute's value
+     */
+    @Override
+    public Integer getColumnImpl() {
+        return this.aNode.getColumnImpl();
+    }
+
+    /**
+     * Get value on attribute descendantSet
+     * @return the attribute's value
+     */
+    @Override
+    public Set<Self> getDescendantSetImpl() {
+        return (Set<Self>) this.aNode.getDescendantSetImpl();
+    }
+
+    /**
+     * Get value on attribute descendants
+     * @return the attribute's value
+     */
+    @Override
+    public Self[] getDescendantsArrayImpl() {
+        return (Self[]) this.aNode.getDescendantsArrayImpl();
+    }
+
+    /**
+     * Get value on attribute findBetween
+     * @return the attribute's value
+     */
+    @Override
+    public List<Self> findBetweenImpl(Self start, Self end) {
+        return (List<Self>) this.aNode.findBetweenImpl(start, end);
+    }
+
+    /**
+     * Get value on attribute findSimilar
+     * @return the attribute's value
+     */
+    @Override
+    public List<Self> findSimilarImpl(Self target) {
+        return (List<Self>) this.aNode.findSimilarImpl(target);
+    }
+
+    /**
+     * Get value on attribute hierarchy
+     * @return the attribute's value
+     */
+    @Override
+    public Map<String, Map<String, Self>> getHierarchyImpl() {
+        return (Map<String, Map<String, Self>>) this.aNode.getHierarchyImpl();
+    }
+
+    /**
+     * Get value on attribute id
+     * @return the attribute's value
+     */
+    @Override
+    public String getIdImpl() {
+        return this.aNode.getIdImpl();
+    }
+
+    /**
+     * Get value on attribute indexedNodes
+     * @return the attribute's value
+     */
+    @Override
+    public Map<Integer, Self> getIndexedNodesImpl() {
+        return (Map<Integer, Self>) this.aNode.getIndexedNodesImpl();
+    }
+
+    /**
+     * Get value on attribute line
+     * @return the attribute's value
+     */
+    @Override
+    public Integer getLineImpl() {
+        return this.aNode.getLineImpl();
+    }
+
+    /**
+     * Get value on attribute namedChildren
+     * @return the attribute's value
+     */
+    @Override
+    public Map<String, Self> getNamedChildrenImpl() {
+        return (Map<String, Self>) this.aNode.getNamedChildrenImpl();
+    }
+
+    /**
+     * Get value on attribute parent
+     * @return the attribute's value
+     */
+    @Override
+    public Self getParentImpl() {
+        return (Self) this.aNode.getParentImpl();
+    }
+
+    /**
+     * Get value on attribute properties
+     * @return the attribute's value
+     */
+    @Override
+    public Map<String, Object> getPropertiesImpl() {
+        return this.aNode.getPropertiesImpl();
+    }
+
+    /**
+     * Get value on attribute tags
+     * @return the attribute's value
+     */
+    @Override
+    public List<String> getTagsImpl() {
+        return this.aNode.getTagsImpl();
+    }
+
+    /**
+     * Get value on attribute ancestors
+     * @return the attribute's value
+     */
+    @Override
+    public Self[] getAncestorsArrayImpl() {
+        return (Self[]) this.aNode.getAncestorsArrayImpl();
+    }
+
+    /**
+     * Get value on attribute root
+     * @return the attribute's value
+     */
+    @Override
+    public Self getRootImpl() {
+        return (Self) this.aNode.getRootImpl();
+    }
+
+    /**
+     * Get value on attribute siblings
+     * @return the attribute's value
+     */
+    @Override
+    public List<Self> getSiblingsImpl() {
+        return (List<Self>) this.aNode.getSiblingsImpl();
+    }
+
+    /**
+     * Categorizes nodes by criteria
+     */
+    @Override
+    public Map<String, Self> categorizeImpl() {
+        return (Map<String, Self>) this.aNode.categorizeImpl();
+    }
+
+    /**
+     * Creates a copy of this node
+     */
+    @Override
+    public Self copyImpl() {
+        return (Self) this.aNode.copyImpl();
+    }
+
+    /**
+     * Detaches node from parent and returns it
+     */
+    @Override
+    public Self detachImpl() {
+        return (Self) this.aNode.detachImpl();
+    }
+
+    /**
+     * Finds all matching nodes
+     * @param pattern 
+     */
+    @Override
+    public List<Self> findAllImpl(String pattern) {
+        return (List<Self>) this.aNode.findAllImpl(pattern);
+    }
+
+    /**
+     * Finds children matching criteria
+     * @param filter 
+     */
+    @Override
+    public List<Self> findChildrenImpl(String filter) {
+        return (List<Self>) this.aNode.findChildrenImpl(filter);
+    }
+
+    /**
+     * Returns metadata as map
+     */
+    @Override
+    public Map<String, String> getMetadataImpl() {
+        return this.aNode.getMetadataImpl();
+    }
+
+    /**
+     * Groups descendants by type
+     */
+    @Override
+    public Map<String, List<Self>> groupByTypeImpl() {
+        return (Map<String, List<Self>>) this.aNode.groupByTypeImpl();
+    }
+
+    /**
+     * 
+     * @param position 
+     * @param code 
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, String code) {
+        return (AJoinPoint[]) this.aNode.insertImpl(position, code);
+    }
+
+    /**
+     * 
+     * @param position 
+     * @param code 
+     */
+    @Override
+    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
+        return (AJoinPoint[]) this.aNode.insertImpl(position, code);
+    }
+
+    /**
+     * Inserts node after this one
+     * @param node 
+     */
+    @Override
+    public void insertAfterImpl(Self node) {
+        this.aNode.insertAfterImpl(node);
+    }
+
+    /**
+     * Inserts multiple nodes
+     * @param nodes 
+     */
+    @Override
+    public void insertAllImpl(List<Self> nodes) {
+        this.aNode.insertAllImpl(nodes);
+    }
+
+    /**
+     * Inserts node at specific position
+     * @param position 
+     * @param node 
+     */
+    @Override
+    public void insertAtImpl(Integer position, Self node) {
+        this.aNode.insertAtImpl(position, node);
+    }
+
+    /**
+     * Inserts node before this one
+     * @param node 
+     */
+    @Override
+    public void insertBeforeImpl(Self node) {
+        this.aNode.insertBeforeImpl(node);
+    }
+
+    /**
+     * Merges with another node
+     * @param other 
+     */
+    @Override
+    public Self mergeImpl(Self other) {
+        return (Self) this.aNode.mergeImpl(other);
+    }
+
+    /**
+     * Partitions children
+     * @param criteria 
+     */
+    @Override
+    public Map<String, List<Self>> partitionChildrenImpl(String criteria) {
+        return (Map<String, List<Self>>) this.aNode.partitionChildrenImpl(criteria);
+    }
+
+    /**
+     * Replaces multiple nodes by name
+     * @param replacements 
+     */
+    @Override
+    public void replaceAllImpl(Map<String, Self> replacements) {
+        this.aNode.replaceAllImpl(replacements);
+    }
+
+    /**
+     * Replaces nodes between two markers
+     * @param start 
+     * @param end 
+     * @param replacement 
+     */
+    @Override
+    public void replaceBetweenImpl(Self start, Self end, Self replacement) {
+        this.aNode.replaceBetweenImpl(start, end, replacement);
+    }
+
+    /**
+     * Replaces this node with another
+     * @param replacement 
+     */
+    @Override
+    public void replaceWithImpl(Self replacement) {
+        this.aNode.replaceWithImpl(replacement);
+    }
+
+    /**
+     * Applies transformation returning self
+     * @param transformName 
+     */
+    @Override
+    public Self selfTransformImpl(String transformName) {
+        return (Self) this.aNode.selfTransformImpl(transformName);
+    }
+
+    /**
+     * Swaps position with another node
+     * @param other 
+     * @param preserveComments 
+     */
+    @Override
+    public void swapImpl(Self other, Boolean preserveComments) {
+        this.aNode.swapImpl(other, preserveComments);
+    }
+
+    /**
+     * Converts children to array
+     */
+    @Override
+    public Self[] toArrayImpl() {
+        return (Self[]) this.aNode.toArrayImpl();
+    }
+
+    /**
+     * Wraps this node with wrapper
+     * @param wrapper 
+     * @param position 
+     */
+    @Override
+    public Self wrapWithImpl(Self wrapper, String position) {
+        return (Self) this.aNode.wrapWithImpl(wrapper, position);
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Optional<? extends ANode> getSuper() {
+        return Optional.of(this.aNode);
+    }
+
+    /**
+     * Returns the join point type of this class
+     * @return The join point type
+     */
+    @Override
+    public String get_class() {
+        return "expr";
+    }
+
+    /**
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * @return True if this join point is an instanceof the given class
+     */
+    @Override
+    public boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if(isInstance) {
+        	return true;
+        }
+        return this.aNode.instanceOf(joinpointClass);
+    }
+    /**
+     * 
+     */
+    protected enum ExprAttributes {
+        NORMALIZE("normalize"),
+        SIMPLIFY("simplify"),
+        SUBEXPRESSIONS("subExpressions"),
+        ANCESTOROFTYPE("ancestorOfType"),
+        ATTRIBUTES("attributes"),
+        CATEGORIZEDNODES("categorizedNodes"),
+        CHILDGROUPS("childGroups"),
+        CHILDLIST("childList"),
+        CHILDREN("children"),
+        CHILDRENMATRIX("childrenMatrix"),
+        CLONE("clone"),
+        COLUMN("column"),
+        DESCENDANTSET("descendantSet"),
+        DESCENDANTS("descendants"),
+        FINDBETWEEN("findBetween"),
+        FINDSIMILAR("findSimilar"),
+        HIERARCHY("hierarchy"),
+        ID("id"),
+        INDEXEDNODES("indexedNodes"),
+        LINE("line"),
+        NAMEDCHILDREN("namedChildren"),
+        PARENT("parent"),
+        PROPERTIES("properties"),
+        TAGS("tags"),
+        ANCESTORS("ancestors"),
+        ROOT("root"),
+        SIBLINGS("siblings");
+        private String name;
+
+        /**
+         * 
+         */
+        private ExprAttributes(String name){
+            this.name = name;
+        }
+        /**
+         * Return an attribute enumeration item from a given attribute name
+         */
+        public static Optional<ExprAttributes> fromString(String name) {
+            return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
+        }
+
+        /**
+         * Return a list of attributes in String format
+         */
+        public static List<String> getNames() {
+            return Arrays.asList(values()).stream().map(ExprAttributes::name).collect(Collectors.toList());
+        }
+
+        /**
+         * True if the enum contains the given attribute name, false otherwise.
+         */
+        public static boolean contains(String name) {
+            return fromString(name).isPresent();
+        }
+    }
+}

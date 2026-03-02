@@ -1,0 +1,109 @@
+package thistype.pkg.entities;
+
+import java.util.Map;
+import thistype.pkg.abstracts.joinpoints.AJoinPoint;
+import java.util.List;
+
+/**
+ * 
+ * 
+ * @author Lara C.
+ */
+public class NodeInfo {
+
+    private Map<String, String> metadata;
+    private String name;
+    private AJoinPoint node;
+    private List<AJoinPoint> relatedNodes;
+
+    /**
+     * 
+     */
+    public NodeInfo(){}
+    /**
+     * 
+     */
+    public NodeInfo(Map<String, String> metadata, String name, AJoinPoint node, List<AJoinPoint> relatedNodes){
+        this.setMetadata(metadata);
+        this.setName(name);
+        this.setNode(node);
+        this.setRelatedNodes(relatedNodes);
+    }
+    /**
+     * Get value on attribute metadata
+     * @return the attribute's value
+     */
+    public Map<String, String> getMetadata() {
+        return this.metadata;
+    }
+
+    /**
+     * Set value on attribute metadata
+     * @param metadata
+     */
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    /**
+     * Get value on attribute name
+     * @return the attribute's value
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Set value on attribute name
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get value on attribute node
+     * @return the attribute's value
+     */
+    public AJoinPoint getNode() {
+        return this.node;
+    }
+
+    /**
+     * Set value on attribute node
+     * @param node
+     */
+    public void setNode(AJoinPoint node) {
+        this.node = node;
+    }
+
+    /**
+     * Get value on attribute relatedNodes
+     * @return the attribute's value
+     */
+    public List<AJoinPoint> getRelatedNodes() {
+        return this.relatedNodes;
+    }
+
+    /**
+     * Set value on attribute relatedNodes
+     * @param relatedNodes
+     */
+    public void setRelatedNodes(List<AJoinPoint> relatedNodes) {
+        this.relatedNodes = relatedNodes;
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public String toString() {
+        String json = "{\n";
+        json += " metadata: "+getMetadata() + ",\n";
+        json += " name: "+getName() + ",\n";
+        json += " node: "+getNode() + ",\n";
+        json += " relatedNodes: "+getRelatedNodes() + ",\n";
+        json+="}";
+        return json;
+    }
+}

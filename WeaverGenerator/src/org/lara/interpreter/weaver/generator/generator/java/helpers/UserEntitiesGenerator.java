@@ -62,10 +62,11 @@ public class UserEntitiesGenerator extends GeneratorHelper {
         for (var attribute : entity.getFields()) {
 
             final String fieldName = attribute.getName();
-            final String classType = attribute.getReturnType();
 
             final String sanitizedName = StringUtils.getSanitizedName(fieldName);
-            final JavaType jType = ConvertUtils.getConvertedType(classType, javaGenerator);
+            // Use IType-based conversion which properly handles generic types like Map<String, String>
+            // Pass null for currentJpType since TypeDef fields don't support ThisType
+            final JavaType jType = ConvertUtils.getConvertedType(attribute.getType(), javaGenerator, null);
             final Field field = new Field(jType, sanitizedName, Privacy.PRIVATE);
             final Pair<Method, Method> getSet = GeneratorUtils.createGetterAndSetter(field, fieldName, false);
             uDClass.add(field);
@@ -73,7 +74,9 @@ public class UserEntitiesGenerator extends GeneratorHelper {
             uDClass.add(getSet.right());
         }
         uDClass.createOrGetEmptyConstructor().clearCode();
-        uDClass.createFullConstructor();
+        if (!entity.getFields().isEmpty()) {
+            uDClass.createFullConstructor();
+        }
         generateToString(uDClass);
         return uDClass;
     }

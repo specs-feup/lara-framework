@@ -110,7 +110,16 @@ public class LangSpecsXmlParser {
         jps.forEach(langSpecV2::add);
 
         var joinpoints = joinPointModelNode.getElementsByName("joinpoints").get(0);
-        langSpecV2.setRoot(joinpoints.getAttribute("root_class"));
+        String rootClass = joinpoints.getAttribute("root_class");
+        if (rootClass.isBlank()) {
+            throw new LanguageSpecificationException("Missing required attribute 'root_class' in joinpoints");
+        }
+
+        langSpecV2.setRoot(rootClass);
+        if (langSpecV2.getRoot() == null) {
+            throw new LanguageSpecificationException("Unknown root class '" + rootClass + "'");
+        }
+
         setOptional(joinpoints.getAttribute("root_alias"), langSpecV2::setRootAlias);
 
         // Map of actions according to class
