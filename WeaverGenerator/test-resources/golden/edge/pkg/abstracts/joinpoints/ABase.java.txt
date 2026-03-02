@@ -15,7 +15,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class ABase extends AEdgeWeaverJoinPoint {
+public abstract class ABase<Self extends ABase<Self>> extends AEdgeWeaverJoinPoint<Self> {
 
     /**
      * 

@@ -9,7 +9,7 @@ import org.lara.interpreter.exception.ActionException;
  * This class is overwritten when the weaver generator is executed.
  * @author Lara Weaver Generator
  */
-public abstract class AJoinPoint extends JoinPoint {
+public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoint {
 
     /**
      * 

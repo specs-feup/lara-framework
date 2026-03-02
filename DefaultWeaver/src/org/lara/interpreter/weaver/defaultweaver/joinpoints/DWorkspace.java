@@ -29,7 +29,7 @@ import pt.up.fe.specs.util.SpecsIo;
  * @author Tiago Carvalho
  * 
  */
-public class DWorkspace extends AWorkspace {
+public class DWorkspace extends AWorkspace<DWorkspace> {
 
     private final Map<File, DWFolder> folders;
 

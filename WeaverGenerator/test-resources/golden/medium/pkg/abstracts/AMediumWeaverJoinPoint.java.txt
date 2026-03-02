@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AMediumWeaverJoinPoint extends AJoinPoint {
+public abstract class AMediumWeaverJoinPoint<Self extends AMediumWeaverJoinPoint<Self>> extends AJoinPoint<Self> {
 
     /**
      * 

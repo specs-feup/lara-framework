@@ -15,7 +15,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class ALevel2 extends ALevel1 {
+public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> {
 
     protected ALevel1 aLevel1;
 
@@ -70,7 +70,7 @@ public abstract class ALevel2 extends ALevel1 {
      */
     @Override
     public AJoinPoint[] insertImpl(String position, String code) {
-        return this.aLevel1.insertImpl(position, code);
+        return (AJoinPoint[]) this.aLevel1.insertImpl(position, code);
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class ALevel2 extends ALevel1 {
      */
     @Override
     public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return this.aLevel1.insertImpl(position, code);
+        return (AJoinPoint[]) this.aLevel1.insertImpl(position, code);
     }
 
     /**

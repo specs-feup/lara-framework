@@ -63,6 +63,12 @@ public class GeneratorE2ETest {
                 .withExpectedMessage("getClass()"));
     }
 
+    @Test
+    @DisplayName("ThisType spec -> generate -> compile")
+    void thisTypePipelineCompiles() throws Exception {
+        assertScenario(scenario("thistype", "thistype.pkg", "ThisTypeWeaver", Expectation.COMPILE_SUCCESS));
+    }
+
     private void assertScenario(Scenario scenario) throws Exception {
         PipelineResult result = runPipeline(scenario);
 

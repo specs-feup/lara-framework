@@ -10,7 +10,7 @@ import minimal.pkg.abstracts.AMinimalWeaverJoinPoint;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class ARoot extends AMinimalWeaverJoinPoint {
+public abstract class ARoot<Self extends ARoot<Self>> extends AMinimalWeaverJoinPoint<Self> {
 
     /**
      * 

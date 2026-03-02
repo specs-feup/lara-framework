@@ -1,0 +1,24 @@
+package thistype.pkg.entities;
+
+
+/**
+ * 
+ * 
+ * @author Lara C.
+ */
+public class AstContext {
+
+    /**
+     * 
+     */
+    public AstContext(){}
+    /**
+     * 
+     */
+    @Override
+    public String toString() {
+        String json = "{\n";
+        json+="}";
+        return json;
+    }
+}
