@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AVar extends AMediumWeaverJoinPoint {
+public abstract class AVar<Self extends AVar<Self>> extends AMediumWeaverJoinPoint<Self> {
 
     /**
      * 

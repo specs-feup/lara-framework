@@ -309,6 +309,26 @@ public class LanguageSpecification {
             throw new RuntimeException("Invalid parameterized type format: " + type);
         }
 
+        // Check for trailing tokens after final >
+        String afterBracket = type.substring(angleBracketEnd + 1).trim();
+        if (!afterBracket.isEmpty()) {
+            throw new RuntimeException("Invalid parameterized type format: unexpected characters after '>': " + type);
+        }
+
+        // Check bracket balance
+        int depth = 0;
+        for (int i = angleBracketStart; i <= angleBracketEnd; i++) {
+            char c = type.charAt(i);
+            if (c == '<') depth++;
+            else if (c == '>') depth--;
+            if (depth < 0) {
+                throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+            }
+        }
+        if (depth != 0) {
+            throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+        }
+
         String baseTypeName = type.substring(0, angleBracketStart).trim();
         String argsString = type.substring(angleBracketStart + 1, angleBracketEnd).trim();
 
@@ -353,6 +373,9 @@ public class LanguageSpecification {
                 depth--;
             } else if (c == ',' && depth == 0) {
                 String arg = argsString.substring(start, i).trim();
+                if (arg.isEmpty()) {
+                    throw new RuntimeException("Invalid type arguments: empty argument in: " + argsString);
+                }
                 arguments.add(getType(arg));
                 start = i + 1;
             }
@@ -362,6 +385,9 @@ public class LanguageSpecification {
         String lastArg = argsString.substring(start).trim();
         if (!lastArg.isEmpty()) {
             arguments.add(getType(lastArg));
+        } else if (!arguments.isEmpty()) {
+            // Trailing comma case: "String," -> lastArg is empty but we have previous args
+            throw new RuntimeException("Invalid type arguments: trailing comma in: " + argsString);
         }
 
         return arguments;

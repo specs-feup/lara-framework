@@ -14,5 +14,8 @@
 	</artifact>
 	<artifact class="function" default="name">
 		<attribute name="name" type="string" />
+		<attribute name="usesThis" type="this">
+			<parameter name="param1" type="List&lt;this&gt;"/>
+		</attribute>
 	</artifact>
 </artifacts>
