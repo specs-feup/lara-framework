@@ -933,7 +933,7 @@ public class ThisTypeXmlIntegrationTest {
             List<Attribute> fields = nodeInfo.getFields();
 
             // Fields should be sorted alphabetically
-            assertTrue(fields.size() >= 4);
+            assertTrue(fields.size() >= 4, "Should have at least 4 fields");
 
             // Check metadata, name, node, relatedNodes are present
             assertNotNull(findAttribute(fields, "metadata"));
@@ -1019,13 +1019,17 @@ public class ThisTypeXmlIntegrationTest {
             JoinPointNode jpNode = NodeFactory.toNode(node);
             String json = jpNode.toJson();
 
-            // Actions section should contain return type "this"
+            // Verify JSON contains action nodes
             assertTrue(json.contains("\"action\""),
                     "JSON should contain action nodes");
-
-            // The copy action returns 'this'
-            // We verify the structure is correct
-            assertFalse(json.isEmpty());
+            
+            // Verify the 'copy' action with 'this' return type is represented
+            Action copy = findAction(node.getActionsSelf(), "copy");
+            assertNotNull(copy);
+            ActionNode copyNode = NodeFactory.toNode(copy);
+            String copyJson = copyNode.toJson();
+            assertTrue(copyJson.contains("\"this\""),
+                    "Action with 'this' return type should have 'this' in JSON");
         }
 
         @Test
