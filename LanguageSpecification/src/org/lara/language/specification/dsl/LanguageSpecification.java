@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
  * @author jbispo
  */
 public class LanguageSpecification {
+    private static final String WILDCARD_EXTENDS_PREFIX = "? extends ";
+    private static final String WILDCARD_SUPER_PREFIX = "? super ";
 
     private static final String JOIN_POINTS_FILENAME = "joinPointModel.xml";
     private static final String ATTRIBUTES_FILENAME = "artifacts.xml";
@@ -305,29 +307,7 @@ public class LanguageSpecification {
         int angleBracketStart = type.indexOf('<');
         int angleBracketEnd = type.lastIndexOf('>');
 
-        if (angleBracketStart == -1 || angleBracketEnd == -1 || angleBracketEnd <= angleBracketStart) {
-            throw new RuntimeException("Invalid parameterized type format: " + type);
-        }
-
-        // Check for trailing tokens after final >
-        String afterBracket = type.substring(angleBracketEnd + 1).trim();
-        if (!afterBracket.isEmpty()) {
-            throw new RuntimeException("Invalid parameterized type format: unexpected characters after '>': " + type);
-        }
-
-        // Check bracket balance
-        int depth = 0;
-        for (int i = angleBracketStart; i <= angleBracketEnd; i++) {
-            char c = type.charAt(i);
-            if (c == '<') depth++;
-            else if (c == '>') depth--;
-            if (depth < 0) {
-                throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
-            }
-        }
-        if (depth != 0) {
-            throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
-        }
+        validateParameterizedTypeFormat(type, angleBracketStart, angleBracketEnd);
 
         String baseTypeName = type.substring(0, angleBracketStart).trim();
         String argsString = type.substring(angleBracketStart + 1, angleBracketEnd).trim();
@@ -339,6 +319,39 @@ public class LanguageSpecification {
         List<IType> typeArguments = parseTypeArguments(argsString);
 
         return new ParameterizedType(baseType, typeArguments);
+    }
+
+    private static void validateParameterizedTypeFormat(String type, int angleBracketStart, int angleBracketEnd) {
+        if (angleBracketStart == -1 || angleBracketEnd == -1 || angleBracketEnd <= angleBracketStart) {
+            throw new RuntimeException("Invalid parameterized type format: " + type);
+        }
+
+        String afterBracket = type.substring(angleBracketEnd + 1).trim();
+        if (!afterBracket.isEmpty()) {
+            throw new RuntimeException("Invalid parameterized type format: unexpected characters after '>': " + type);
+        }
+
+        validateBalancedAngleBrackets(type, angleBracketStart, angleBracketEnd);
+    }
+
+    private static void validateBalancedAngleBrackets(String type, int start, int end) {
+        int depth = 0;
+        for (int i = start; i <= end; i++) {
+            char c = type.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            }
+
+            if (depth < 0) {
+                throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+            }
+        }
+
+        if (depth != 0) {
+            throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+        }
     }
 
     /**
@@ -372,25 +385,28 @@ public class LanguageSpecification {
             } else if (c == '>') {
                 depth--;
             } else if (c == ',' && depth == 0) {
-                String arg = argsString.substring(start, i).trim();
-                if (arg.isEmpty()) {
-                    throw new RuntimeException("Invalid type arguments: empty argument in: " + argsString);
-                }
-                arguments.add(getType(arg));
+                addTypeArgument(argsString, arguments, start, i);
                 start = i + 1;
             }
         }
 
-        // Add the last argument
         String lastArg = argsString.substring(start).trim();
         if (!lastArg.isEmpty()) {
             arguments.add(getType(lastArg));
         } else if (!arguments.isEmpty()) {
-            // Trailing comma case: "String," -> lastArg is empty but we have previous args
             throw new RuntimeException("Invalid type arguments: trailing comma in: " + argsString);
         }
 
         return arguments;
+    }
+
+    private void addTypeArgument(String argsString, List<IType> arguments, int start, int end) {
+        String arg = argsString.substring(start, end).trim();
+        if (arg.isEmpty()) {
+            throw new RuntimeException("Invalid type arguments: empty argument in: " + argsString);
+        }
+
+        arguments.add(getType(arg));
     }
 
     /**
@@ -408,15 +424,15 @@ public class LanguageSpecification {
         }
 
         // Upper bounded: "? extends X"
-        if (trimmed.startsWith("? extends ")) {
-            String boundTypeName = trimmed.substring("? extends ".length()).trim();
+        if (trimmed.startsWith(WILDCARD_EXTENDS_PREFIX)) {
+            String boundTypeName = trimmed.substring(WILDCARD_EXTENDS_PREFIX.length()).trim();
             IType boundType = getType(boundTypeName);
             return WildcardType.extendsType(boundType);
         }
 
         // Lower bounded: "? super X"
-        if (trimmed.startsWith("? super ")) {
-            String boundTypeName = trimmed.substring("? super ".length()).trim();
+        if (trimmed.startsWith(WILDCARD_SUPER_PREFIX)) {
+            String boundTypeName = trimmed.substring(WILDCARD_SUPER_PREFIX.length()).trim();
             IType boundType = getType(boundTypeName);
             return WildcardType.superType(boundType);
         }
