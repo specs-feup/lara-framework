@@ -15,6 +15,7 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.Primitive;
+import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.members.Argument;
 import org.specs.generators.java.members.Method;
@@ -51,6 +53,39 @@ class GeneratorUtilsTest {
 
         Method generatedMethod = GeneratorUtils.generateAttribute(attribute, targetClass, generator, null);
         assertThat(methodSignature(generatedMethod)).isEqualTo("getCounter():Integer");
+    }
+
+    @Test
+    @DisplayName("base JoinPoint analysis should detect corrected return type and final wrapper skip")
+    void analyzeJoinPointBaseAction() {
+        Action action = new Action(PrimitiveClasses.STRING, "insert", List.of(
+                new Parameter(PrimitiveClasses.STRING, "position"),
+                new Parameter(PrimitiveClasses.STRING, "code")));
+
+        GeneratorUtils.JoinPointBaseActionInfo info = GeneratorUtils.analyzeJoinPointBaseAction(action);
+
+        assertThat(info.skipWrapper()).isTrue();
+        assertThat(info.correctedReturnType()).contains("joinpoint[]");
+    }
+
+    @Test
+    @DisplayName("adding same action twice should keep one signature pair")
+    void addActionAndWrapperDeduplicates() {
+        JavaAbstractsGenerator generator = new JavaAbstractsGenerator();
+        JavaClass targetClass = new JavaClass("ActionHost", "pt.up.fe");
+        Action action = new Action(Primitive.INT, "sum", List.of(
+                new Parameter(Primitive.INT, "left"),
+                new Parameter(Primitive.INT, "right")));
+
+        GeneratorUtils.addActionAndWrapper(targetClass, action, generator, null, false,
+                "duplicate action %s %s", "duplicate wrapper %s");
+        int methodCountAfterFirst = targetClass.getMethods().size();
+
+        GeneratorUtils.addActionAndWrapper(targetClass, action, generator, null, false,
+                "duplicate action %s %s", "duplicate wrapper %s");
+
+        assertThat(methodCountAfterFirst).isEqualTo(2);
+        assertThat(targetClass.getMethods()).hasSize(2);
     }
 
     private static String methodSignature(Method method) {

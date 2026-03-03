@@ -29,7 +29,6 @@ import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.GenericType;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.JPType;
-import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.ParameterizedType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.ThisType;
@@ -248,6 +247,7 @@ public class ConvertUtils {
      *                                  contexts like TypeDef fields)
      */
     public static JavaType getConvertedType(IType type, JavaAbstractsGenerator generator, JavaType currentJpType) {
+        ensureThisTypeContext(type, currentJpType);
         return convert(type, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
     }
 
@@ -272,7 +272,23 @@ public class ConvertUtils {
      */
     public static JavaType getAttributeConvertedType(IType type, JavaAbstractsGenerator generator,
             JavaType currentJpType) {
+        ensureThisTypeContext(type, currentJpType);
         return convert(type, generator, currentJpType, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
+    }
+
+    private static void ensureThisTypeContext(IType type, JavaType currentJpType) {
+        if (type == null) {
+            return;
+        }
+
+        if (currentJpType != null) {
+            return;
+        }
+
+        if (TypeTraversalUtils.containsThisType(type)) {
+            throw new IllegalStateException(
+                    "ThisType found but no currentJpType context provided. ThisType is not supported in this context (e.g., TypeDef fields).");
+        }
     }
 
     private static JavaType convert(IType type, JavaAbstractsGenerator generator, JavaType currentJpType,
@@ -288,11 +304,6 @@ public class ConvertUtils {
 
         // Handle ThisType - resolve to current join point type
         if (type instanceof ThisType) {
-            if (currentJpType == null) {
-                throw new IllegalStateException(
-                        "ThisType found but no currentJpType context provided. " +
-                                "ThisType is not supported in this context (e.g., TypeDef fields).");
-            }
             return currentJpType.clone();
         }
 
