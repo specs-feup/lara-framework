@@ -30,11 +30,12 @@ import org.lara.language.specification.dsl.types.ThisType;
 class ConvertUtilsTest {
 
     @Test
-    @DisplayName("primitive conversion behavior should be preserved between standard and attribute conversion")
-    void primitiveConversionBehaviorIsPreserved() {
-        var regularPrimitive = ConvertUtils.getConvertedType("int", null);
-        var attributePrimitive = ConvertUtils.getAttributeConvertedType("int", null);
-        var attributePrimitiveArray = ConvertUtils.getAttributeConvertedType("int[]", null);
+    @DisplayName("primitive conversion behavior should differ between standard and attribute conversion")
+    void primitiveConversionBehavior() {
+        var regularPrimitive = ConvertUtils.getConvertedType(Primitive.INT, null, null);
+        var attributePrimitive = ConvertUtils.getAttributeConvertedType(Primitive.INT, null, null);
+        var attributePrimitiveArray = ConvertUtils.getAttributeConvertedType(new ArrayType(Primitive.INT, 1), null,
+                null);
 
         assertThat(regularPrimitive.isPrimitive()).isTrue();
         assertThat(attributePrimitive.isPrimitive()).isFalse();
