@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.lara.language.specification.dsl.types.ArrayType;
+import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.ThisType;
 
 /**
