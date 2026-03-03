@@ -68,18 +68,9 @@ public class ConvertUtils {
                 primitiveType.setArrayDimension(arrayDimension);
                 return primitiveType;
             }
-
-            @Override
-            boolean convertLegacyInlineEnumToString(String type) {
-                return type.contains("[") && type.contains("|") && type.contains("]");
-            }
         };
 
         abstract JavaType convertPrimitive(Primitive primitive, int arrayDimension);
-
-        boolean convertLegacyInlineEnumToString(String type) {
-            return false;
-        }
     }
 
     private static final String JoinPointClassTypeName = "Joinpoint";
@@ -114,88 +105,6 @@ public class ConvertUtils {
         StandardJavaTypes.put("Optional", new JavaType(Optional.class));
         StandardJavaTypes.put("Map", new JavaType(Map.class));
 
-    }
-
-    /**
-     * Get the correct type for the given string, according to:
-     * <p>
-     * 1st the primitives, 2nd the declared objects and 3rd the declared join points
-     *
-     * @deprecated Use {@link #getConvertedType(IType, JavaAbstractsGenerator, JavaType)}
-     *             and pass structured {@link IType} values instead of raw strings.
-     * @throws RuntimeException if the type cannot be found.
-     */
-    @Deprecated(forRemoval = false)
-    public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
-        return convertFromString(type, generator, PrimitiveConversionStrategy.STANDARD);
-    }
-
-    /**
-     * Get the correct type for the return of an attribute. This method converts a
-     * primitive type into its wrapper
-     * <p>
-     * <p>
-     * 1st the primitives, 2nd the declared objects and 3rd the declared join points
-     *
-     * @deprecated Use {@link #getAttributeConvertedType(IType, JavaAbstractsGenerator, JavaType)}
-     *             and pass structured {@link IType} values instead of raw strings.
-     * @throws RuntimeException if the type cannot be found.
-     */
-    @Deprecated(forRemoval = false)
-    public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
-        return convertFromString(type, generator, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
-    }
-
-    private static JavaType convertFromString(String rawType, JavaAbstractsGenerator generator,
-            PrimitiveConversionStrategy strategy) {
-
-        String normalizedType = rawType;
-        if (strategy.convertLegacyInlineEnumToString(rawType)) {
-            normalizedType = String.class.getSimpleName();
-        }
-
-        normalizedType = normalizeReferenceType(normalizedType);
-        IType parsedType = parseType(normalizedType, generator);
-        return convert(parsedType, generator, null, strategy);
-    }
-
-    private static IType parseType(String normalizedType, JavaAbstractsGenerator generator) {
-        final Pair<String, Integer> splitType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
-        final String baseTypeName = splitType.left().trim();
-        final int arrayDimension = splitType.right();
-
-        IType baseType = parseNonArrayType(baseTypeName, generator);
-        if (arrayDimension == 0) {
-            return baseType;
-        }
-
-        return new ArrayType(baseType, arrayDimension);
-    }
-
-    private static IType parseNonArrayType(String baseTypeName, JavaAbstractsGenerator generator) {
-        if (baseTypeName.startsWith("{")) {
-            return new LiteralEnum(baseTypeName, baseTypeName);
-        }
-
-        String lowerCaseType = baseTypeName.toLowerCase();
-        if (org.lara.language.specification.dsl.types.Primitive.contains(lowerCaseType)) {
-            return org.lara.language.specification.dsl.types.Primitive.get(lowerCaseType);
-        }
-
-        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(baseTypeName))) {
-            return PrimitiveClasses.get(baseTypeName);
-        }
-
-        if (baseTypeName.equalsIgnoreCase(JoinPointClassTypeName)) {
-            return new JPType(JoinPointClass.globalJoinPoint());
-        }
-
-        if (generator == null) {
-            throw new RuntimeException("Could not convert type '" + baseTypeName
-                    + "' without generator context");
-        }
-
-        return generator.getLanguageSpecification().getType(baseTypeName);
     }
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
@@ -325,7 +234,8 @@ public class ConvertUtils {
      * This method handles all IType subtypes including ParameterizedType,
      * ArrayType, WildcardType, etc.
      *
-     * @param type          the IType to convert (must not be null)
+     * @param type          the IType to convert (must not be null). String-based
+     *                      conversion is no longer supported.
      * @param generator     the generator context for resolving type references
      * @param currentJpType the JavaType representing the current join point
      *                      abstract being generated; ThisType will resolve to this
@@ -347,7 +257,8 @@ public class ConvertUtils {
      * but wraps
      * primitives in their wrapper classes for use as return types.
      *
-     * @param type          the IType to convert (must not be null)
+     * @param type          the IType to convert (must not be null). String-based
+     *                      conversion is no longer supported.
      * @param generator     the generator context for resolving type references
      * @param currentJpType the JavaType representing the current join point
      *                      abstract; ThisType will resolve to this type. Must not
@@ -444,12 +355,7 @@ public class ConvertUtils {
 
     private static JavaType convertSimpleTypeName(String typeName, JavaAbstractsGenerator generator,
             PrimitiveConversionStrategy strategy) {
-        String normalizedType = typeName;
-        if (strategy.convertLegacyInlineEnumToString(typeName)) {
-            normalizedType = String.class.getSimpleName();
-        }
-
-        normalizedType = normalizeReferenceType(normalizedType);
+        String normalizedType = normalizeReferenceType(typeName);
 
         final Pair<String, Integer> splitType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
         final String baseType = splitType.left();

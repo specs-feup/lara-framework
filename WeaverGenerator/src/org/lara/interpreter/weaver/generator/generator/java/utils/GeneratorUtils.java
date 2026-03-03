@@ -113,26 +113,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * Add methods of the super join point to the java class
-     *
-     * @deprecated Use
-     *             {@link #addSuperMethods(JavaClass, String, JavaAbstractsGenerator, JoinPointClass, JavaType)}
-     *             to support {@code this} type resolution.
-     */
-    @Deprecated(forRemoval = false)
-    public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            JoinPointClass current) {
-
-        var parent = current.getExtendExplicit().orElse(null);
-        if (parent == null) {
-            return;
-        }
-
-        addSuperGetters(javaC, fieldName, generator, parent);
-        addSuperMethods(javaC, fieldName, generator, parent);
-    }
-
-    /**
      * Add methods of the super join point to the java class, resolving ThisType to
      * "Self".
      *
@@ -175,24 +155,6 @@ public class GeneratorUtils {
         javaC.add(toStringMethod);
     }
 
-    public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            JoinPointClass parent) {
-
-        addSuperGetters(javaC, fieldName, generator, parent.getAttributesSelf());
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link #addSuperGetters(JavaClass, String, JavaAbstractsGenerator, List, JavaType)}
-     *             to support {@code this} type resolution.
-     */
-    @Deprecated(forRemoval = false)
-    public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            List<org.lara.language.specification.dsl.Attribute> attributes) {
-        addSuperGetters(javaC, fieldName, generator, attributes, null);
-
-    }
-
     @FunctionalInterface
     private interface ParameterTypeResolver {
         JavaType resolve(Parameter parameter);
@@ -223,7 +185,7 @@ public class GeneratorUtils {
 
         for (var attribute : mutableAttributes) {
 
-            IType attrType = normalizeAttributeTypeForGetter(attribute, currentJpType == null);
+            IType attrType = normalizeAttributeTypeForGetter(attribute);
             JavaType type = ConvertUtils.getAttributeConvertedType(attrType, generator, currentJpType);
             ParameterTypeResolver parameterTypeResolver = parameter -> ConvertUtils.getConvertedType(
                     parameter.getIType(), generator, currentJpType);
@@ -253,13 +215,9 @@ public class GeneratorUtils {
 
     }
 
-    private static IType normalizeAttributeTypeForGetter(Attribute attribute, boolean legacyCompatibility) {
+    private static IType normalizeAttributeTypeForGetter(Attribute attribute) {
         IType attrType = attribute.getType();
         if (!(attrType instanceof LiteralEnum)) {
-            return attrType;
-        }
-
-        if (legacyCompatibility && !attribute.getReturnType().trim().startsWith("{")) {
             return attrType;
         }
 
@@ -467,20 +425,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * Generates the method with the name and parameters of the action
-     *
-     * @param action the action used to generate its method
-     * @deprecated Use
-     *             {@link #generateActionMethod(Action, JavaAbstractsGenerator, JavaType)}
-     *             to support {@code this}/generic types.
-     */
-    @Deprecated(forRemoval = false)
-    public static Method generateActionMethod(org.lara.language.specification.dsl.Action action,
-            JavaAbstractsGenerator generator) {
-        return generateActionMethod(action, generator, null, true);
-    }
-
-    /**
      * Generates the method with the name and parameters of the action, resolving
      * ThisType to the current join point type.
      *
@@ -491,21 +435,16 @@ public class GeneratorUtils {
      */
     public static Method generateActionMethod(org.lara.language.specification.dsl.Action action,
             JavaAbstractsGenerator generator, JavaType currentJpType) {
-        return generateActionMethod(action, generator, currentJpType, false);
-    }
-
-    private static Method generateActionMethod(org.lara.language.specification.dsl.Action action,
-            JavaAbstractsGenerator generator, JavaType currentJpType, boolean legacyLiteralEnumConversion) {
         JavaType actionReturn = getJavaType(action.getType(), action.getName(), action, "ActionParam", generator,
-                currentJpType, legacyLiteralEnumConversion);
+                currentJpType);
         final Method m = new Method(actionReturn, action.getName());
         action.getToolTip().ifPresent(m::appendComment);
         for (var param : action.getParameters()) {
 
             String paramName = param.getName();
             paramName = StringUtils.getSanitizedName(paramName);
-            JavaType jType = getJavaType(param.getIType(), paramName, action, "ActionParam", generator, currentJpType,
-                    legacyLiteralEnumConversion);
+            JavaType jType = getJavaType(param.getIType(), paramName, action, "ActionParam", generator,
+                    currentJpType);
 
             paramName = StringUtils.getSanitizedName(paramName);
             m.addArgument(jType, paramName);
@@ -519,10 +458,9 @@ public class GeneratorUtils {
 
     private static JavaType getJavaType(IType type, String paramName,
             org.lara.language.specification.dsl.Action action, String sufix,
-            JavaAbstractsGenerator generator, JavaType currentJpType, boolean legacyLiteralEnumConversion) {
+            JavaAbstractsGenerator generator, JavaType currentJpType) {
 
-        if (type instanceof LiteralEnum literalEnum
-                && (legacyLiteralEnumConversion || literalEnum.getValues().size() > 1)) {
+        if (type instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             final String firstCharToUpper = StringUtils.firstCharToUpper(action.getName());
             final JavaEnum enumerator = generateEnum(type.type(), paramName, firstCharToUpper + sufix, generator);
             generator.getEnums().add(enumerator);
@@ -571,7 +509,7 @@ public class GeneratorUtils {
 
         // Use IType-aware conversion that properly handles ThisType
         JavaType actionReturn = getJavaType(action.getType(), action.getName(), action, "ActionParam", generator,
-                currentJpType, false);
+                currentJpType);
 
         // TODO: This is the abstract method that will be called from JavaScript,
         // instead of cloned should have another name. Also, this method is called
@@ -816,17 +754,6 @@ public class GeneratorUtils {
     }
 
     /**
-     * @deprecated Use
-     *             {@link #generateAttribute(Attribute, JavaClass, JavaAbstractsGenerator, JavaType)}
-     *             to support {@code this}/generic types.
-     */
-    @Deprecated(forRemoval = false)
-    public static Method generateAttribute(org.lara.language.specification.dsl.Attribute attribute, JavaClass javaC,
-            JavaAbstractsGenerator generator) {
-        return generateAttribute(attribute, javaC, generator, null, true);
-    }
-
-    /**
      * Generate code for a given attribute, resolving ThisType to the current join
      * point type.
      *
@@ -838,11 +765,6 @@ public class GeneratorUtils {
      */
     public static Method generateAttribute(org.lara.language.specification.dsl.Attribute attribute, JavaClass javaC,
             JavaAbstractsGenerator generator, JavaType currentJpType) {
-        return generateAttribute(attribute, javaC, generator, currentJpType, false);
-    }
-
-    private static Method generateAttribute(org.lara.language.specification.dsl.Attribute attribute, JavaClass javaC,
-            JavaAbstractsGenerator generator, JavaType currentJpType, boolean legacyLiteralEnumConversion) {
         IType attrType = attribute.getType();
         boolean isEnum = false;
         JavaEnum enumerator = null;
@@ -854,8 +776,7 @@ public class GeneratorUtils {
         // A LiteralEnum with only one value is typically a type reference like
         // {TypeName}, not a true enum. We only generate an enum for multi-value
         // LiteralEnums.
-        if (attrType instanceof LiteralEnum literalEnum
-                && (legacyLiteralEnumConversion || literalEnum.getValues().size() > 1)) {
+        if (attrType instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             isEnum = true;
             enumerator = generateEnum(attrType.type(), name, javaC.getName(), generator);
             generator.getEnums().add(enumerator);
