@@ -29,6 +29,7 @@ import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.GenericType;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.ParameterizedType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.lara.language.specification.dsl.types.ThisType;
@@ -120,10 +121,13 @@ public class ConvertUtils {
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
+     * @deprecated Use {@link #getConvertedType(IType, JavaAbstractsGenerator, JavaType)}
+     *             and pass structured {@link IType} values instead of raw strings.
      * @throws RuntimeException if the type cannot be found.
      */
+    @Deprecated(forRemoval = false)
     public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
-        return getConvertedType(type, generator, PrimitiveConversionStrategy.STANDARD);
+        return convertFromString(type, generator, PrimitiveConversionStrategy.STANDARD);
     }
 
     /**
@@ -133,13 +137,16 @@ public class ConvertUtils {
      * <p>
      * 1st the primitives, 2nd the declared objects and 3rd the declared join points
      *
+     * @deprecated Use {@link #getAttributeConvertedType(IType, JavaAbstractsGenerator, JavaType)}
+     *             and pass structured {@link IType} values instead of raw strings.
      * @throws RuntimeException if the type cannot be found.
      */
+    @Deprecated(forRemoval = false)
     public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
-        return getConvertedType(type, generator, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
+        return convertFromString(type, generator, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
     }
 
-    private static JavaType getConvertedType(String rawType, JavaAbstractsGenerator generator,
+    private static JavaType convertFromString(String rawType, JavaAbstractsGenerator generator,
             PrimitiveConversionStrategy strategy) {
 
         String normalizedType = rawType;
@@ -148,25 +155,47 @@ public class ConvertUtils {
         }
 
         normalizedType = normalizeReferenceType(normalizedType);
+        IType parsedType = parseType(normalizedType, generator);
+        return convert(parsedType, generator, null, strategy);
+    }
 
-        // First remove array dimension
-        final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
-        String baseType = splittedType.left();
-        final int arrayDimension = splittedType.right();
+    private static IType parseType(String normalizedType, JavaAbstractsGenerator generator) {
+        final Pair<String, Integer> splitType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
+        final String baseTypeName = splitType.left().trim();
+        final int arrayDimension = splitType.right();
 
-        // if the type is a primitive (e.g. int) or a primitive wrapper (e.g. Integer)
-        if (JavaTypeFactory.isPrimitive(baseType)) {
-            Primitive primitive = Primitive.getPrimitive(baseType);
-            return strategy.convertPrimitive(primitive, arrayDimension);
+        IType baseType = parseNonArrayType(baseTypeName, generator);
+        if (arrayDimension == 0) {
+            return baseType;
         }
 
-        if (JavaTypeFactory.isPrimitiveWrapper(baseType)) {
-            final JavaType primitiveWrapper = JavaTypeFactory.getPrimitiveWrapper(baseType);
-            primitiveWrapper.setArrayDimension(arrayDimension);
-            return primitiveWrapper;
+        return new ArrayType(baseType, arrayDimension);
+    }
+
+    private static IType parseNonArrayType(String baseTypeName, JavaAbstractsGenerator generator) {
+        if (baseTypeName.startsWith("{")) {
+            return new LiteralEnum(baseTypeName, baseTypeName);
         }
 
-        return getConvertedTypeAux(baseType, generator, arrayDimension);
+        String lowerCaseType = baseTypeName.toLowerCase();
+        if (org.lara.language.specification.dsl.types.Primitive.contains(lowerCaseType)) {
+            return org.lara.language.specification.dsl.types.Primitive.get(lowerCaseType);
+        }
+
+        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(baseTypeName))) {
+            return PrimitiveClasses.get(baseTypeName);
+        }
+
+        if (baseTypeName.equalsIgnoreCase(JoinPointClassTypeName)) {
+            return new JPType(JoinPointClass.globalJoinPoint());
+        }
+
+        if (generator == null) {
+            throw new RuntimeException("Could not convert type '" + baseTypeName
+                    + "' without generator context");
+        }
+
+        return generator.getLanguageSpecification().getType(baseTypeName);
     }
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
@@ -309,7 +338,7 @@ public class ConvertUtils {
      *                                  contexts like TypeDef fields)
      */
     public static JavaType getConvertedType(IType type, JavaAbstractsGenerator generator, JavaType currentJpType) {
-        return getConvertedType(type, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
+        return convert(type, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
     }
 
     /**
@@ -332,13 +361,18 @@ public class ConvertUtils {
      */
     public static JavaType getAttributeConvertedType(IType type, JavaAbstractsGenerator generator,
             JavaType currentJpType) {
-        return getConvertedType(type, generator, currentJpType, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
+        return convert(type, generator, currentJpType, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
     }
 
-    private static JavaType getConvertedType(IType type, JavaAbstractsGenerator generator, JavaType currentJpType,
+    private static JavaType convert(IType type, JavaAbstractsGenerator generator, JavaType currentJpType,
             PrimitiveConversionStrategy strategy) {
         if (type == null) {
             throw new IllegalArgumentException("Type cannot be null");
+        }
+
+        if (type instanceof org.lara.language.specification.dsl.types.Primitive primitiveType) {
+            Primitive primitive = Primitive.getPrimitive(primitiveType.type());
+            return strategy.convertPrimitive(primitive, 0);
         }
 
         // Handle ThisType - resolve to current join point type
@@ -355,7 +389,7 @@ public class ConvertUtils {
         if (type instanceof ArrayType arrayType) {
             // For arrays, use the base conversion to ensure primitives are wrapped at the
             // element level
-            JavaType baseJavaType = getConvertedType(arrayType.getBaseType(), generator, currentJpType, strategy);
+            JavaType baseJavaType = convert(arrayType.getBaseType(), generator, currentJpType, strategy);
             baseJavaType.setArrayDimension(baseJavaType.getArrayDimension() + arrayType.getDimension());
             return baseJavaType;
         }
@@ -365,7 +399,7 @@ public class ConvertUtils {
             JavaType baseJavaType = getRawBaseType(paramType.getBaseType(), generator, currentJpType);
 
             for (IType typeArg : paramType.getTypeArguments()) {
-                JavaType argJavaType = getConvertedType(typeArg, generator, currentJpType, strategy);
+                JavaType argJavaType = convert(typeArg, generator, currentJpType, strategy);
                 baseJavaType.addGeneric(new JavaGenericType(argJavaType));
             }
 
@@ -405,7 +439,34 @@ public class ConvertUtils {
         }
 
         // Fall back to string-based conversion for other simple types
-        return getConvertedType(type.type(), generator, strategy);
+        return convertSimpleTypeName(type.type(), generator, strategy);
+    }
+
+    private static JavaType convertSimpleTypeName(String typeName, JavaAbstractsGenerator generator,
+            PrimitiveConversionStrategy strategy) {
+        String normalizedType = typeName;
+        if (strategy.convertLegacyInlineEnumToString(typeName)) {
+            normalizedType = String.class.getSimpleName();
+        }
+
+        normalizedType = normalizeReferenceType(normalizedType);
+
+        final Pair<String, Integer> splitType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
+        final String baseType = splitType.left();
+        final int arrayDimension = splitType.right();
+
+        if (JavaTypeFactory.isPrimitive(baseType)) {
+            Primitive primitive = Primitive.getPrimitive(baseType);
+            return strategy.convertPrimitive(primitive, arrayDimension);
+        }
+
+        if (JavaTypeFactory.isPrimitiveWrapper(baseType)) {
+            final JavaType primitiveWrapper = JavaTypeFactory.getPrimitiveWrapper(baseType);
+            primitiveWrapper.setArrayDimension(arrayDimension);
+            return primitiveWrapper;
+        }
+
+        return getConvertedTypeAux(baseType, generator, arrayDimension);
     }
 
     /**
@@ -451,7 +512,7 @@ public class ConvertUtils {
         // Note: Only collection types in InterpreterTypes have pre-populated generics,
         // and those are handled above via StandardJavaTypes. Other types (String,
         // Object, etc.) don't have pre-populated generics that would interfere.
-        return getConvertedType(baseType, generator, currentJpType);
+        return convert(baseType, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
     }
 
     /**
@@ -471,7 +532,8 @@ public class ConvertUtils {
 
             case EXTENDS:
                 // For ? extends T, we need to properly represent the bounded wildcard
-                JavaType extendsBound = getConvertedType(wildcardType.getBound(), generator, currentJpType);
+                JavaType extendsBound = convert(wildcardType.getBound(), generator, currentJpType,
+                        PrimitiveConversionStrategy.STANDARD);
                 // Create a type that represents ? extends T
                 // Use the full type representation including package if needed
                 String extendsTypeName = extendsBound.getPackage().isEmpty()
@@ -481,7 +543,8 @@ public class ConvertUtils {
                 return extendsWildcard;
 
             case SUPER:
-                JavaType superBound = getConvertedType(wildcardType.getBound(), generator, currentJpType);
+                JavaType superBound = convert(wildcardType.getBound(), generator, currentJpType,
+                        PrimitiveConversionStrategy.STANDARD);
                 // Create a type that represents ? super T
                 String superTypeName = superBound.getPackage().isEmpty()
                         ? superBound.getSimpleType()
