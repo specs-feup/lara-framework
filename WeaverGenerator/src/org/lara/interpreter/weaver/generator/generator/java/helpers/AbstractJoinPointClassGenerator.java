@@ -13,8 +13,6 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
@@ -23,7 +21,6 @@ import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.Parameter;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -187,55 +184,36 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     private void addActions(JavaClass javaC, JavaType currentJpType) {
 
         for (var action : joinPoint.getActionsSelf()) {
-            ActionPlan plan = prepareAction(action);
-
-            final Method m = GeneratorUtils.generateActionMethod(plan.action(), javaGenerator, currentJpType);
-            if (GeneratorUtils.hasMethodSignature(javaC, m)) {
-                SpecsLogs.warn(String.format(
-                        "Skipping action '%s' in join point '%s' due to duplicate method signature '%s'.",
-                        plan.action().getName(), joinPoint.getName(), m.getName()));
-                continue;
-            }
-            javaC.add(m);
-
-            Method cloned = GeneratorUtils.generateActionImplMethod(m, plan.action(), javaC,
-                    javaGenerator, currentJpType);
-
-            if (!plan.skipWrapper() && !GeneratorUtils.hasMethodSignature(javaC, cloned)) {
-                javaC.add(cloned);
-            } else if (!plan.skipWrapper()) {
-                SpecsLogs.warn(String.format(
-                        "Skipping action wrapper '%s' in join point '%s' due to duplicate method signature.",
-                        cloned.getName(), joinPoint.getName()));
-            }
+            Action preparedAction = prepareAction(action);
+            var baseInfo = GeneratorUtils.analyzeJoinPointBaseAction(preparedAction);
+            applyJoinPointBaseReturnType(preparedAction, baseInfo);
+            GeneratorUtils.addActionAndWrapper(
+                    javaC,
+                    preparedAction,
+                    javaGenerator,
+                    currentJpType,
+                    baseInfo.skipWrapper(),
+                    "Skipping action '%s' in join point '" + joinPoint.getName()
+                            + "' due to duplicate method signature '%s'.",
+                    "Skipping action wrapper '%s' in join point '" + joinPoint.getName()
+                            + "' due to duplicate method signature.");
         }
 
     }
 
-    private ActionPlan prepareAction(Action action) {
+    private Action prepareAction(Action action) {
         Action effective = alignWithSpecHierarchy(action);
+        return effective;
+    }
 
-        boolean skipWrapper = false;
-
-        var baseMethod = findJoinPointBaseMethod(effective);
-        if (baseMethod.isPresent()) {
-            java.lang.reflect.Method method = baseMethod.get();
-
-            if (!hasSameReturnType(effective, method)) {
-                String specTypeName = toSpecTypeName(method.getReturnType());
-                effective.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
-                SpecsLogs.warn(String.format(
-                        "Action '%s' in join point '%s' redeclares inherited action with different return type."
-                                + " Using return type '%s'.",
-                        effective.getName(), joinPoint.getName(), specTypeName));
-            }
-
-            if (java.lang.reflect.Modifier.isFinal(method.getModifiers())) {
-                skipWrapper = true;
-            }
-        }
-
-        return new ActionPlan(effective, skipWrapper);
+    private void applyJoinPointBaseReturnType(Action action, GeneratorUtils.JoinPointBaseActionInfo baseInfo) {
+        baseInfo.correctedReturnType().ifPresent(specTypeName -> {
+            action.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
+            SpecsLogs.warn(String.format(
+                    "Action '%s' in join point '%s' redeclares inherited action with different return type."
+                            + " Using return type '%s'.",
+                    action.getName(), joinPoint.getName(), specTypeName));
+        });
     }
 
     private Action alignWithSpecHierarchy(Action action) {
@@ -246,11 +224,11 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     }
 
     private Action ensureMatchingParameters(Action action, Action superAction) {
-        if (hasSameSignature(action, superAction)) {
+        if (GeneratorUtils.hasSameSignature(action, superAction)) {
             return action;
         }
 
-        if (!hasSameParameterTypes(action, superAction)) {
+        if (!GeneratorUtils.hasSameParameterTypes(action, superAction)) {
             return action;
         }
 
@@ -265,82 +243,10 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         return action;
     }
 
-    private boolean hasSameSignature(Action left, Action right) {
-        return hasSameParameterTypes(left, right) && left.getReturnType().equals(right.getReturnType());
-    }
-
-    private boolean hasSameParameterTypes(Action left, Action right) {
-        List<Parameter> leftParams = left.getParameters();
-        List<Parameter> rightParams = right.getParameters();
-        if (leftParams.size() != rightParams.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < leftParams.size(); i++) {
-            String leftType = normalizeType(leftParams.get(i).getType());
-            String rightType = normalizeType(rightParams.get(i).getType());
-            if (!leftType.equals(rightType)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private Optional<Action> findMatchingAction(JoinPointClass parent, Action action) {
         return parent.getAction(action.getName()).stream()
-                .filter(candidate -> hasSameParameterTypes(candidate, action))
+                .filter(candidate -> GeneratorUtils.hasSameParameterTypes(candidate, action))
                 .findFirst();
-    }
-
-    private Optional<java.lang.reflect.Method> findJoinPointBaseMethod(Action action) {
-        return Arrays.stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
-                .filter(method -> method.getName().equals(action.getName()))
-                .filter(method -> parametersMatch(method, action))
-                .findFirst();
-    }
-
-    private boolean parametersMatch(java.lang.reflect.Method method, Action action) {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        List<Parameter> params = action.getParameters();
-        if (parameterTypes.length != params.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < parameterTypes.length; i++) {
-            String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
-            String actual = normalizeType(params.get(i).getType());
-            if (!expected.equals(actual)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean hasSameReturnType(Action action, java.lang.reflect.Method method) {
-        String expected = normalizeType(toSpecTypeName(method.getReturnType()));
-        String actual = normalizeType(action.getReturnType());
-        return expected.equals(actual);
-    }
-
-    private String toSpecTypeName(Class<?> type) {
-        if (type.isArray()) {
-            return toSpecTypeName(type.getComponentType()) + "[]";
-        }
-
-        if (org.lara.interpreter.weaver.interf.JoinPoint.class.equals(type)) {
-            return "joinpoint";
-        }
-
-        return type.getSimpleName();
-    }
-
-    private String normalizeType(String type) {
-        return type.replace("java.lang.", "").trim();
-    }
-
-    private record ActionPlan(Action action, boolean skipWrapper) {
     }
 
     /**

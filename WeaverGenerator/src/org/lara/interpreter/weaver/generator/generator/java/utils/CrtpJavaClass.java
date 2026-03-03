@@ -39,7 +39,6 @@ public class CrtpJavaClass extends JavaClass {
     /** The name used for the CRTP type parameter */
     public static final String SELF_TYPE_PARAMETER = "Self";
 
-    private String superClassTypeArg;
     private boolean addTypeArgToSuperClass = true;
 
     /**
@@ -53,7 +52,6 @@ public class CrtpJavaClass extends JavaClass {
      */
     public CrtpJavaClass(String name, String classPackage) {
         super(name, classPackage);
-        this.superClassTypeArg = null;
     }
 
     /**
@@ -68,7 +66,6 @@ public class CrtpJavaClass extends JavaClass {
      */
     public CrtpJavaClass(String name, String classPackage, Modifier modifier) {
         super(name, classPackage, modifier);
-        this.superClassTypeArg = null;
     }
     
     /**
@@ -80,32 +77,6 @@ public class CrtpJavaClass extends JavaClass {
      */
     public void setAddTypeArgToSuperClass(boolean addTypeArg) {
         this.addTypeArgToSuperClass = addTypeArg;
-    }
-
-    /**
-     * Sets the superclass with a type argument for CRTP.
-     * 
-     * <p>All classes now use "Self" as the type argument to maintain consistency:</p>
-     * <pre>setSuperClassWithTypeArg("AParent") // Uses "Self" as type arg</pre>
-     *
-     * @param superClassName the simple name of the superclass (used for documentation, actual superclass set via setSuperClass)
-     */
-    public void setSuperClassWithTypeArg(String superClassName) {
-        this.superClassTypeArg = SELF_TYPE_PARAMETER;
-    }
-
-    /**
-     * Overrides the default setSuperClass to track that we may need type args.
-     * 
-     * @param superClass the superclass type
-     */
-    @Override
-    public void setSuperClass(JavaType superClass) {
-        super.setSuperClass(superClass);
-        // If we haven't explicitly set a type arg, always use Self (all classes use CRTP)
-        if (superClassTypeArg == null) {
-            superClassTypeArg = SELF_TYPE_PARAMETER;
-        }
     }
 
     /**
@@ -139,10 +110,10 @@ public class CrtpJavaClass extends JavaClass {
         if (superClass != null && !superClass.equals(JavaTypeFactory.getObjectType())) {
             classGen.append(" extends ");
             classGen.append(superClass.getSimpleType());
-            // Add type argument to superclass (only if enabled and we have a type arg)
-            if (addTypeArgToSuperClass && superClassTypeArg != null) {
+            // Add type argument to superclass unless explicitly disabled.
+            if (addTypeArgToSuperClass) {
                 classGen.append("<");
-                classGen.append(superClassTypeArg);
+                classGen.append(SELF_TYPE_PARAMETER);
                 classGen.append(">");
             }
         }

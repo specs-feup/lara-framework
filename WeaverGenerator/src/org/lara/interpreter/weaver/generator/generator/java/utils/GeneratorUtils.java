@@ -14,13 +14,13 @@
 package org.lara.interpreter.weaver.generator.generator.java.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.exception.AttributeException;
@@ -37,10 +37,7 @@ import org.lara.language.specification.dsl.types.GenericType;
 import org.lara.language.specification.dsl.types.IType;
 import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.ParameterizedType;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
-import org.lara.language.specification.dsl.types.ThisType;
-import org.lara.language.specification.dsl.types.WildcardType;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.Annotation;
@@ -57,6 +54,7 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
 
+import pt.up.fe.specs.util.SpecsLogs;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -64,52 +62,6 @@ public class GeneratorUtils {
 
     private static String ln() {
         return Utils.ln();
-    }
-
-    /**
-     * Checks if the given IType contains ThisType (directly or nested in generic
-     * arguments, arrays, etc.).
-     *
-     * @param type the type to check
-     * @return true if the type contains ThisType anywhere in its structure
-     */
-    public static boolean containsThisType(IType type) {
-        return containsType(type, candidate -> candidate instanceof ThisType);
-    }
-
-    /**
-     * Checks if the given IType contains a join point type (directly or nested in
-     * generic arguments, arrays, etc.).
-     */
-    public static boolean containsJoinPointType(IType type) {
-        return containsType(type, candidate -> candidate instanceof JPType);
-    }
-
-    private static boolean containsType(IType type, Predicate<IType> matcher) {
-        if (type == null) {
-            return false;
-        }
-        if (matcher.test(type)) {
-            return true;
-        }
-        if (type instanceof ArrayType arrayType) {
-            return containsType(arrayType.getBaseType(), matcher);
-        }
-        if (type instanceof ParameterizedType paramType) {
-            if (containsType(paramType.getBaseType(), matcher)) {
-                return true;
-            }
-            for (IType typeArg : paramType.getTypeArguments()) {
-                if (containsType(typeArg, matcher)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (type instanceof WildcardType wildcardType) {
-            return containsType(wildcardType.getBound(), matcher);
-        }
-        return false;
     }
 
     /**
@@ -146,21 +98,6 @@ public class GeneratorUtils {
     }
 
     /**
-     */
-    public static void addSuperToString(JavaClass javaC, String fieldName) {
-
-        final Method toStringMethod = new Method(JavaTypeFactory.getStringType(), "toString");
-        toStringMethod.add(Annotation.OVERRIDE);
-        toStringMethod.appendCode("return this." + fieldName + "." + toStringMethod.getName() + "();");
-        javaC.add(toStringMethod);
-    }
-
-    @FunctionalInterface
-    private interface ParameterTypeResolver {
-        JavaType resolve(Parameter parameter);
-    }
-
-    /**
      * Add getter methods for inherited attributes.
      * 
      * <p>
@@ -178,7 +115,7 @@ public class GeneratorUtils {
      *                      resolution)
      */
     public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            List<org.lara.language.specification.dsl.Attribute> attributes, JavaType currentJpType) {
+            List<Attribute> attributes, JavaType currentJpType) {
 
         var mutableAttributes = new ArrayList<>(attributes);
         mutableAttributes.sort(Comparator.comparing(Attribute::getName));
@@ -187,9 +124,9 @@ public class GeneratorUtils {
 
             IType attrType = normalizeAttributeTypeForGetter(attribute);
             JavaType type = ConvertUtils.getAttributeConvertedType(attrType, generator, currentJpType);
-            ParameterTypeResolver parameterTypeResolver = parameter -> ConvertUtils.getConvertedType(
+            Function<Parameter, JavaType> parameterTypeResolver = parameter -> ConvertUtils.getConvertedType(
                     parameter.getIType(), generator, currentJpType);
-            boolean needsCast = currentJpType != null && containsThisType(attrType);
+            boolean needsCast = currentJpType != null && TypeTraversalUtils.containsThisType(attrType);
 
             String sanitizedName = sanitizeAttributeName(attribute.getName());
             String methodBase = attributeMethodBaseName(attribute.getName());
@@ -263,7 +200,8 @@ public class GeneratorUtils {
             // Check if the return type involves ThisType (which resolves to Self)
             // If so, we need to cast the delegation result since the delegate field has raw
             // type
-            boolean needsCast = containsThisType(action.getType()) || containsJoinPointType(action.getType());
+            boolean needsCast = TypeTraversalUtils.containsThisType(action.getType())
+                    || TypeTraversalUtils.containsType(action.getType(), candidate -> candidate instanceof JPType);
 
             if (!action.getReturnType().equals("void")) {
                 m.appendCode("return ");
@@ -333,8 +271,8 @@ public class GeneratorUtils {
     }
 
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
-            List<org.lara.language.specification.dsl.Parameter> list,
-            ParameterTypeResolver parameterTypeResolver, boolean needsCast) {
+            List<Parameter> list,
+            Function<Parameter, JavaType> parameterTypeResolver, boolean needsCast) {
 
         final boolean hasParameters = !list.isEmpty();
         final String methodName = hasParameters ? originalName : "get" + Utils.firstCharToUpper(originalName);
@@ -347,7 +285,7 @@ public class GeneratorUtils {
         }
 
         for (var parameter : list) {
-            JavaType type = parameterTypeResolver.resolve(parameter);
+            JavaType type = parameterTypeResolver.apply(parameter);
             getAttribute.addArgument(type, parameter.getName());
         }
 
@@ -384,13 +322,6 @@ public class GeneratorUtils {
         javaC.add(newGetter);
     }
 
-    public static String encapsulateBasedOnDimension(String baseType, String valueName, int dimension, int position) {
-        final String spaceStr = "\t".repeat(position);
-        final String nativeArrayVarName = GenConstants.getNativeArrayVarName();
-        return spaceStr + "Object " + nativeArrayVarName + position
-            + " = " + valueName + position + ";" + ln();
-    }
-
     public static boolean hasMethodSignature(JavaClass javaClass, Method candidate) {
         return javaClass.getMethods().stream().anyMatch(existing -> sameSignature(existing, candidate));
     }
@@ -422,6 +353,111 @@ public class GeneratorUtils {
         String sanitized = StringUtils.getSanitizedName(attributeName);
         String withoutPrefix = sanitized.replaceFirst("^_+", "");
         return withoutPrefix.isEmpty() ? sanitized : withoutPrefix;
+    }
+
+    public static boolean hasSameSignature(Action left, Action right) {
+        return hasSameParameterTypes(left, right) && normalizeType(left.getReturnType()).equals(normalizeType(right.getReturnType()));
+    }
+
+    public static boolean hasSameParameterTypes(Action left, Action right) {
+        List<Parameter> leftParams = left.getParameters();
+        List<Parameter> rightParams = right.getParameters();
+        if (leftParams.size() != rightParams.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < leftParams.size(); i++) {
+            String leftType = normalizeType(leftParams.get(i).getType());
+            String rightType = normalizeType(rightParams.get(i).getType());
+            if (!leftType.equals(rightType)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Optional<java.lang.reflect.Method> findJoinPointBaseMethod(Action action) {
+        return Arrays.stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
+                .filter(method -> method.getName().equals(action.getName()))
+                .filter(method -> parametersMatch(method, action))
+                .findFirst();
+    }
+
+    public static String toSpecTypeName(Class<?> type) {
+        if (type.isArray()) {
+            return toSpecTypeName(type.getComponentType()) + "[]";
+        }
+
+        if (org.lara.interpreter.weaver.interf.JoinPoint.class.equals(type)) {
+            return "joinpoint";
+        }
+
+        return type.getSimpleName();
+    }
+
+    public static String normalizeType(String type) {
+        return type.replace("java.lang.", "").trim();
+    }
+
+    public static JoinPointBaseActionInfo analyzeJoinPointBaseAction(Action action) {
+        var baseMethod = findJoinPointBaseMethod(action);
+        if (baseMethod.isEmpty()) {
+            return new JoinPointBaseActionInfo(Optional.empty(), false);
+        }
+
+        java.lang.reflect.Method method = baseMethod.get();
+        boolean skipWrapper = java.lang.reflect.Modifier.isFinal(method.getModifiers());
+        String expectedReturnType = toSpecTypeName(method.getReturnType());
+        String actualReturnType = action.getReturnType();
+        Optional<String> correctedReturnType = normalizeType(expectedReturnType).equals(normalizeType(actualReturnType))
+                ? Optional.empty()
+                : Optional.of(expectedReturnType);
+
+        return new JoinPointBaseActionInfo(correctedReturnType, skipWrapper);
+    }
+
+    public static void addActionAndWrapper(JavaClass targetClass, Action action, JavaAbstractsGenerator generator,
+            JavaType currentJpType, boolean skipWrapper, String duplicateActionMessage, String duplicateWrapperMessage) {
+        final Method method = generateActionMethod(action, generator, currentJpType);
+        if (hasMethodSignature(targetClass, method)) {
+            SpecsLogs.warn(duplicateActionMessage.formatted(action.getName(), method.getName()));
+            return;
+        }
+        targetClass.add(method);
+
+        Method wrapper = generateActionImplMethod(method, action, targetClass, generator, currentJpType);
+        if (skipWrapper) {
+            return;
+        }
+
+        if (hasMethodSignature(targetClass, wrapper)) {
+            SpecsLogs.warn(duplicateWrapperMessage.formatted(wrapper.getName()));
+            return;
+        }
+
+        targetClass.add(wrapper);
+    }
+
+    public record JoinPointBaseActionInfo(Optional<String> correctedReturnType, boolean skipWrapper) {
+    }
+
+    private static boolean parametersMatch(java.lang.reflect.Method method, Action action) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        List<Parameter> params = action.getParameters();
+        if (parameterTypes.length != params.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
+            String actual = normalizeType(params.get(i).getType());
+            if (!expected.equals(actual)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

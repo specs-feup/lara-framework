@@ -20,6 +20,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.lara.language.specification.dsl.types.ArrayType;
+import org.lara.language.specification.dsl.types.GenericType;
+import org.lara.language.specification.dsl.types.ParameterizedType;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.ThisType;
 
@@ -61,6 +63,16 @@ class ConvertUtilsTest {
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("ThisType found but no currentJpType context provided")
                     .hasMessageContaining("ThisType is not supported in this context");
+        }
+
+        @Test
+        @DisplayName("should throw IllegalStateException when nested ThisType used without context")
+        void shouldThrowWhenNestedThisTypeWithoutContext() {
+            var nestedType = ParameterizedType.of(new GenericType("List", false), ThisType.getInstance());
+
+            assertThatThrownBy(() -> ConvertUtils.getConvertedType(nestedType, null, null))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("ThisType found but no currentJpType context provided");
         }
     }
 
