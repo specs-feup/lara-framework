@@ -358,6 +358,13 @@ public class ConvertUtils {
                 }
                 return result;
             }
+
+            // GenericType carries array information separately from its name.
+            // Preserve it for non-standard types by appending the suffix before
+            // simple-name conversion.
+            if (genericType.isArray()) {
+                return convertSimpleTypeName(typeName + "[]", generator, strategy);
+            }
         }
 
         // Fall back to string-based conversion for other simple types

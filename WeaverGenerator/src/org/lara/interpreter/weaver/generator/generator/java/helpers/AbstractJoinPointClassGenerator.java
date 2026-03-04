@@ -184,36 +184,25 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     private void addActions(JavaClass javaC, JavaType currentJpType) {
 
         for (var action : joinPoint.getActionsSelf()) {
-            Action preparedAction = prepareAction(action);
-            var baseInfo = GeneratorUtils.analyzeJoinPointBaseAction(preparedAction);
-            applyJoinPointBaseReturnType(preparedAction, baseInfo);
+            Action preparedAction = alignWithSpecHierarchy(action);
+            boolean skipWrapper = GeneratorUtils.normalizeJoinPointBaseAction(
+                    preparedAction,
+                    javaGenerator,
+                    "Action '%s' in join point '" + joinPoint.getName()
+                            + "' redeclares inherited action with different return type."
+                            + " Using return type '%s'.");
             GeneratorUtils.addActionAndWrapper(
                     javaC,
                     preparedAction,
                     javaGenerator,
                     currentJpType,
-                    baseInfo.skipWrapper(),
+                    skipWrapper,
                     "Skipping action '%s' in join point '" + joinPoint.getName()
                             + "' due to duplicate method signature '%s'.",
                     "Skipping action wrapper '%s' in join point '" + joinPoint.getName()
                             + "' due to duplicate method signature.");
         }
 
-    }
-
-    private Action prepareAction(Action action) {
-        Action effective = alignWithSpecHierarchy(action);
-        return effective;
-    }
-
-    private void applyJoinPointBaseReturnType(Action action, GeneratorUtils.JoinPointBaseActionInfo baseInfo) {
-        baseInfo.correctedReturnType().ifPresent(specTypeName -> {
-            action.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
-            SpecsLogs.warn(String.format(
-                    "Action '%s' in join point '%s' redeclares inherited action with different return type."
-                            + " Using return type '%s'.",
-                    action.getName(), joinPoint.getName(), specTypeName));
-        });
     }
 
     private Action alignWithSpecHierarchy(Action action) {
