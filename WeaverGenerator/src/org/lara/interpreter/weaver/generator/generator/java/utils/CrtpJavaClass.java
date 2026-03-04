@@ -19,13 +19,21 @@ import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 
 /**
- * A JavaClass that supports the CRTP (Curiously Recurring Template Pattern) for polymorphic "this" types.
+ * A JavaClass that supports the CRTP (Curiously Recurring Template Pattern) for
+ * polymorphic "this" types.
  * 
- * <p>This class extends JavaClass to add class-level type parameters while keeping the 
- * file name clean. The standard JavaClass uses the name for both the class declaration
- * and the file name, which prevents using type parameters like {@code ANode<Self extends ANode<Self>>}.</p>
+ * <p>
+ * This class extends JavaClass to add class-level type parameters while keeping
+ * the file name clean. The standard JavaClass uses the name for both the class
+ * declaration and the file name, which prevents using type parameters like
+ * {@code ANode<Self extends ANode<Self>>}.
+ * </p>
  * 
- * <p>ALL classes get the CRTP type parameter for consistency and future extensibility:</p>
+ * <p>
+ * ALL classes get the CRTP type parameter for consistency and future
+ * extensibility:
+ * </p>
+ * 
  * <pre>
  * CrtpJavaClass javaC = new CrtpJavaClass("ANode", package);
  * // Generates: public abstract class ANode&lt;Self extends ANode&lt;Self&gt;&gt; extends ASuperClass&lt;Self&gt;
@@ -44,10 +52,14 @@ public class CrtpJavaClass extends JavaClass {
     /**
      * Creates a CRTP-enabled JavaClass.
      * 
-     * <p>All classes get the CRTP type parameter {@code <Self extends ClassName<Self>>} for
-     * consistency and to allow any class to be extended in the future.</p>
+     * <p>
+     * All classes get the CRTP type parameter
+     * {@code <Self extends ClassName<Self>>} for consistency and to allow any class
+     * to be extended in the future.
+     * </p>
      *
-     * @param name the base class name (without type parameters, e.g., "ANode")
+     * @param name         the base class name (without type parameters, e.g.,
+     *                     "ANode")
      * @param classPackage the class package
      */
     public CrtpJavaClass(String name, String classPackage) {
@@ -57,21 +69,28 @@ public class CrtpJavaClass extends JavaClass {
     /**
      * Creates a CRTP-enabled JavaClass with modifier.
      * 
-     * <p>All classes get the CRTP type parameter {@code <Self extends ClassName<Self>>} for
-     * consistency and to allow any class to be extended in the future.</p>
+     * <p>
+     * All classes get the CRTP type parameter
+     * {@code <Self extends ClassName<Self>>} for consistency and to allow any class
+     * to be extended in the future.
+     * </p>
      *
-     * @param name the base class name (without type parameters, e.g., "ANode")
+     * @param name         the base class name (without type parameters, e.g.,
+     *                     "ANode")
      * @param classPackage the class package
-     * @param modifier the class modifier
+     * @param modifier     the class modifier
      */
     public CrtpJavaClass(String name, String classPackage, Modifier modifier) {
         super(name, classPackage, modifier);
     }
-    
+
     /**
      * Sets whether to add a type argument to the superclass.
      * 
-     * <p>Use this when the superclass doesn't support type parameters (e.g., the base JoinPoint class).</p>
+     * <p>
+     * Use this when the superclass doesn't support type parameters (e.g., the base
+     * JoinPoint class).
+     * </p>
      *
      * @param addTypeArg true to add type argument, false to omit it
      */
@@ -82,9 +101,17 @@ public class CrtpJavaClass extends JavaClass {
     /**
      * Generates the Java class code with CRTP type parameters.
      * 
-     * <p>All classes are generated with the CRTP pattern:</p>
-     * <pre>public abstract class ANode&lt;Self extends ANode&lt;Self&gt;&gt; extends AParent&lt;Self&gt;</pre>
-     * <pre>public abstract class ALoop&lt;Self extends ALoop&lt;Self&gt;&gt; extends AStmt&lt;Self&gt;</pre>
+     * <p>
+     * All classes are generated with the CRTP pattern:
+     * </p>
+     * 
+     * <pre>
+     * public abstract class ANode&lt;Self extends ANode&lt;Self&gt;&gt; extends AParent&lt;Self&gt;
+     * </pre>
+     * 
+     * <pre>
+     * public abstract class ALoop&lt;Self extends ALoop&lt;Self&gt;&gt; extends AStmt&lt;Self&gt;
+     * </pre>
      *
      * @param indentation the indentation level
      * @return the generated Java class code
@@ -95,7 +122,7 @@ public class CrtpJavaClass extends JavaClass {
 
         classGen.append("class ");
         classGen.append(getName());
-        
+
         // All classes get the CRTP type parameter
         classGen.append("<");
         classGen.append(SELF_TYPE_PARAMETER);

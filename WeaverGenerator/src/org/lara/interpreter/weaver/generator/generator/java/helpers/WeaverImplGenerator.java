@@ -13,6 +13,11 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.AGear;
@@ -28,13 +33,9 @@ import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
+
 import pt.up.fe.specs.util.SpecsIo;
 import tdrc.utils.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Generate the weaver abstract class, containing the four methods to implement:
