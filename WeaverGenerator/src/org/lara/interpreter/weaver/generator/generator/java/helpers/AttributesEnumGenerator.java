@@ -13,6 +13,11 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -24,12 +29,8 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-import tdrc.utils.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import tdrc.utils.StringUtils;
 
 public class AttributesEnumGenerator {
 
