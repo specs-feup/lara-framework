@@ -16,9 +16,12 @@ package org.lara.interpreter.weaver.generator.generator.java.utils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.File;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.GenericType;
 import org.lara.language.specification.dsl.types.ParameterizedType;
@@ -42,6 +45,16 @@ class ConvertUtilsTest {
         assertThat(regularPrimitive.isPrimitive()).isTrue();
         assertThat(attributePrimitive.isPrimitive()).isFalse();
         assertThat(attributePrimitiveArray.isArray()).isTrue();
+    }
+
+    @Test
+    @DisplayName("should preserve GenericType array flag for non-standard Java types")
+    void preservesGenericTypeArrayFlagForNonStandardJavaTypes() {
+        JavaAbstractsGenerator generator = new JavaAbstractsGenerator(new File("test-resources/spec/valid/minimal"));
+        var convertedType = ConvertUtils.getConvertedType(new GenericType("String", true), generator, null);
+
+        assertThat(convertedType.isArray()).isTrue();
+        assertThat(convertedType.getSimpleType()).isEqualTo("String[]");
     }
 
     @Nested
