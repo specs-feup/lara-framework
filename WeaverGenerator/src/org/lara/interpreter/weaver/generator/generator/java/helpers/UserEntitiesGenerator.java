@@ -25,6 +25,7 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
+
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
@@ -64,7 +65,8 @@ public class UserEntitiesGenerator extends GeneratorHelper {
             final String fieldName = attribute.getName();
 
             final String sanitizedName = StringUtils.getSanitizedName(fieldName);
-            // Use IType-based conversion which properly handles generic types like Map<String, String>
+            // Use IType-based conversion which properly handles generic types like
+            // Map<String, String>
             // Pass null for currentJpType since TypeDef fields don't support ThisType
             final JavaType jType = ConvertUtils.getConvertedType(attribute.getType(), javaGenerator, null);
             final Field field = new Field(jType, sanitizedName, Privacy.PRIVATE);

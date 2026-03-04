@@ -12,8 +12,19 @@
  */
 package org.lara.interpreter.weaver.generator.generator.java;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
-import org.lara.interpreter.weaver.generator.generator.java.helpers.*;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.ExceptionGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.SuperAbstractJoinPointGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.UserAbstractJPClassGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEntitiesGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.UserEnumsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverAbstractGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.helpers.WeaverImplGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
@@ -21,12 +32,9 @@ import org.specs.generators.java.members.Field;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
+
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsLogs;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JavaAbstractsGenerator extends BaseGenerator {
     private static final String INTERFACE_NAME = GenConstants.interfaceName();

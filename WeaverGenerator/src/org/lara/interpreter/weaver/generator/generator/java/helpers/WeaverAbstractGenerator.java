@@ -13,6 +13,12 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.function.Function;
+
 import org.lara.interpreter.weaver.LaraWeaverEngine;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
@@ -25,12 +31,6 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Generate the weaver abstract class. The getActions method (list of available

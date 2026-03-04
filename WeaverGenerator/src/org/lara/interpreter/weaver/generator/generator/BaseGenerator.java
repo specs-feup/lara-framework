@@ -13,12 +13,13 @@
 
 package org.lara.interpreter.weaver.generator.generator;
 
-import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
-import org.lara.language.specification.dsl.LanguageSpecification;
-import pt.up.fe.specs.util.SpecsCheck;
-
 import java.io.File;
 import java.util.Arrays;
+
+import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.language.specification.dsl.LanguageSpecification;
+
+import pt.up.fe.specs.util.SpecsCheck;
 
 public abstract class BaseGenerator {
 
