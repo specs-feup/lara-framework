@@ -18,7 +18,6 @@ import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.language.specification.dsl.Action;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -27,8 +26,6 @@ import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
-
-import pt.up.fe.specs.util.SpecsLogs;
 
 /**
  * Generates the base Join Point abstract class, containing the global
@@ -209,7 +206,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
         for (var action : actions) {
-            boolean skipWrapper = prepareGlobalAction(action);
+            boolean skipWrapper = GeneratorUtils.normalizeJoinPointBaseAction(
+                    action,
+                    javaGenerator,
+                    "Global action '%s' redeclares inherited action with different return type. Using return type '%s'.");
             GeneratorUtils.addActionAndWrapper(
                     abstJPClass,
                     action,
@@ -219,18 +219,6 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
                     "Skipping global action '%s' due to duplicate method signature '%s'.",
                     "Skipping global action wrapper '%s' due to duplicate method signature.");
         }
-    }
-
-    private boolean prepareGlobalAction(Action action) {
-        var baseInfo = GeneratorUtils.analyzeJoinPointBaseAction(action);
-        baseInfo.correctedReturnType().ifPresent(specTypeName -> {
-            action.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
-            SpecsLogs.warn(String.format(
-                    "Global action '%s' redeclares inherited action with different return type. Using return type '%s'.",
-                    action.getName(), specTypeName));
-        });
-
-        return baseInfo.skipWrapper();
     }
 
 }

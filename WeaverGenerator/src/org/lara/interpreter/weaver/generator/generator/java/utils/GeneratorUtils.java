@@ -417,6 +417,28 @@ public class GeneratorUtils {
         return new JoinPointBaseActionInfo(correctedReturnType, skipWrapper);
     }
 
+    /**
+     * Aligns an action with the base JoinPoint contract (if one exists), applying a
+     * corrected return type when needed.
+     *
+     * @param action             action to normalize
+     * @param generator          generator used to resolve corrected type names
+     * @param warningMessageFmt  message format with placeholders: action name, corrected
+     *                           type name
+     * @return true when wrapper generation should be skipped because the base method is
+     *         final
+     */
+    public static boolean normalizeJoinPointBaseAction(Action action, JavaAbstractsGenerator generator,
+            String warningMessageFmt) {
+        var baseInfo = analyzeJoinPointBaseAction(action);
+        baseInfo.correctedReturnType().ifPresent(specTypeName -> {
+            action.setType(generator.getLanguageSpecification().getType(specTypeName));
+            SpecsLogs.warn(warningMessageFmt.formatted(action.getName(), specTypeName));
+        });
+
+        return baseInfo.skipWrapper();
+    }
+
     public static void addActionAndWrapper(JavaClass targetClass, Action action, JavaAbstractsGenerator generator,
             JavaType currentJpType, boolean skipWrapper, String duplicateActionMessage, String duplicateWrapperMessage) {
         final Method method = generateActionMethod(action, generator, currentJpType);
