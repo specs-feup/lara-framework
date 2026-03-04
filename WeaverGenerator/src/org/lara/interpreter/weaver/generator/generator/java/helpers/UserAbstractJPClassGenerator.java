@@ -13,6 +13,8 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.util.List;
+
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
@@ -24,8 +26,6 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
-
-import java.util.List;
 
 /**
  * Generates an abstract class that can be edited by the developer. This class
@@ -59,8 +59,10 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
      * can be used for changes/extensions
      * that are global to the join points
      * 
-     * <p>This class uses CRTP (Curiously Recurring Template Pattern) to pass through
-     * the type parameter from AJoinPoint to concrete join point classes.</p>
+     * <p>
+     * This class uses CRTP (Curiously Recurring Template Pattern) to pass through
+     * the type parameter from AJoinPoint to concrete join point classes.
+     * </p>
      *
      */
     private JavaClass generateUserClass() {
@@ -68,7 +70,7 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
         String classname = GenConstants.abstractPrefix() + javaGenerator.getWeaverName() + GenConstants.interfaceName();
 
         // All classes use CRTP type parameters
-        final CrtpJavaClass abstJPClass = new CrtpJavaClass(classname, 
+        final CrtpJavaClass abstJPClass = new CrtpJavaClass(classname,
                 javaGenerator.getAbstractUserJoinPointClassPackage());
         abstJPClass.setSuperClass(javaGenerator.getaJoinPointType());
         abstJPClass.add(Modifier.ABSTRACT);

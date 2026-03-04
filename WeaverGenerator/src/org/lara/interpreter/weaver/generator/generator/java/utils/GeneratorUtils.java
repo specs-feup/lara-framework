@@ -356,7 +356,8 @@ public class GeneratorUtils {
     }
 
     public static boolean hasSameSignature(Action left, Action right) {
-        return hasSameParameterTypes(left, right) && normalizeType(left.getReturnType()).equals(normalizeType(right.getReturnType()));
+        return hasSameParameterTypes(left, right)
+                && normalizeType(left.getReturnType()).equals(normalizeType(right.getReturnType()));
     }
 
     public static boolean hasSameParameterTypes(Action left, Action right) {
@@ -421,12 +422,12 @@ public class GeneratorUtils {
      * Aligns an action with the base JoinPoint contract (if one exists), applying a
      * corrected return type when needed.
      *
-     * @param action             action to normalize
-     * @param generator          generator used to resolve corrected type names
-     * @param warningMessageFmt  message format with placeholders: action name, corrected
-     *                           type name
-     * @return true when wrapper generation should be skipped because the base method is
-     *         final
+     * @param action            action to normalize
+     * @param generator         generator used to resolve corrected type names
+     * @param warningMessageFmt message format with placeholders: action name,
+     *                          corrected type name
+     * @return true when wrapper generation should be skipped because the base
+     *         method is final
      */
     public static boolean normalizeJoinPointBaseAction(Action action, JavaAbstractsGenerator generator,
             String warningMessageFmt) {
@@ -440,7 +441,8 @@ public class GeneratorUtils {
     }
 
     public static void addActionAndWrapper(JavaClass targetClass, Action action, JavaAbstractsGenerator generator,
-            JavaType currentJpType, boolean skipWrapper, String duplicateActionMessage, String duplicateWrapperMessage) {
+            JavaType currentJpType, boolean skipWrapper, String duplicateActionMessage,
+            String duplicateWrapperMessage) {
         final Method method = generateActionMethod(action, generator, currentJpType);
         if (hasMethodSignature(targetClass, method)) {
             SpecsLogs.warn(duplicateActionMessage.formatted(action.getName(), method.getName()));
