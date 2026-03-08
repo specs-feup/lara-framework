@@ -12,9 +12,9 @@ import java.util.Map;
 public class TreeStructure {
 
     private Integer depth;
-    private List<List<AJoinPoint>> levels;
-    private Map<String, AJoinPoint> nodeIndex;
-    private AJoinPoint root;
+    private List<List<AJoinPoint<?>>> levels;
+    private Map<String, AJoinPoint<?>> nodeIndex;
+    private AJoinPoint<?> root;
 
     /**
      * 
@@ -23,7 +23,7 @@ public class TreeStructure {
     /**
      * 
      */
-    public TreeStructure(Integer depth, List<List<AJoinPoint>> levels, Map<String, AJoinPoint> nodeIndex, AJoinPoint root){
+    public TreeStructure(Integer depth, List<List<AJoinPoint<?>>> levels, Map<String, AJoinPoint<?>> nodeIndex, AJoinPoint<?> root){
         this.setDepth(depth);
         this.setLevels(levels);
         this.setNodeIndex(nodeIndex);
@@ -49,7 +49,7 @@ public class TreeStructure {
      * Get value on attribute levels
      * @return the attribute's value
      */
-    public List<List<AJoinPoint>> getLevels() {
+    public List<List<AJoinPoint<?>>> getLevels() {
         return this.levels;
     }
 
@@ -57,7 +57,7 @@ public class TreeStructure {
      * Set value on attribute levels
      * @param levels
      */
-    public void setLevels(List<List<AJoinPoint>> levels) {
+    public void setLevels(List<List<AJoinPoint<?>>> levels) {
         this.levels = levels;
     }
 
@@ -65,7 +65,7 @@ public class TreeStructure {
      * Get value on attribute nodeIndex
      * @return the attribute's value
      */
-    public Map<String, AJoinPoint> getNodeIndex() {
+    public Map<String, AJoinPoint<?>> getNodeIndex() {
         return this.nodeIndex;
     }
 
@@ -73,7 +73,7 @@ public class TreeStructure {
      * Set value on attribute nodeIndex
      * @param nodeIndex
      */
-    public void setNodeIndex(Map<String, AJoinPoint> nodeIndex) {
+    public void setNodeIndex(Map<String, AJoinPoint<?>> nodeIndex) {
         this.nodeIndex = nodeIndex;
     }
 
@@ -81,7 +81,7 @@ public class TreeStructure {
      * Get value on attribute root
      * @return the attribute's value
      */
-    public AJoinPoint getRoot() {
+    public AJoinPoint<?> getRoot() {
         return this.root;
     }
 
@@ -89,7 +89,7 @@ public class TreeStructure {
      * Set value on attribute root
      * @param root
      */
-    public void setRoot(AJoinPoint root) {
+    public void setRoot(AJoinPoint<?> root) {
         this.root = root;
     }
 

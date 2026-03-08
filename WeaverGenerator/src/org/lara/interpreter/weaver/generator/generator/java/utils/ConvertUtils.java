@@ -106,6 +106,12 @@ public class ConvertUtils {
 
     }
 
+    public static JavaType withJoinPointWildcard(JavaType joinPointType) {
+        JavaType clone = joinPointType.clone();
+        clone.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
+        return clone;
+    }
+
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
             final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);
@@ -125,7 +131,7 @@ public class ConvertUtils {
         if (keyType.equalsIgnoreCase(ConvertUtils.JoinPointClassTypeName)) {
             final JavaType clone = generator.getaJoinPointType().clone();
             clone.setArrayDimension(arrayDimension);
-            return clone;
+            return withJoinPointWildcard(clone);
         }
 
         // if it is the joinpoint interface type (case-insensitive match)
@@ -142,7 +148,7 @@ public class ConvertUtils {
         // if it is a join point class
         if (generator.getLanguageSpecification().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
-            return new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
+            return withJoinPointWildcard(new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension));
         }
 
         // If it does not exist, throw an exception with the error message and
@@ -339,11 +345,11 @@ public class ConvertUtils {
             // Check if this is the global join point (named "joinpoint")
             // If so, use the pre-configured AJoinPoint type from the generator
             if (jpClassName.equalsIgnoreCase(JoinPointClassTypeName)) {
-                return generator.getaJoinPointType().clone();
+                return withJoinPointWildcard(generator.getaJoinPointType().clone());
             }
             // For regular join points, construct the abstract class name
             String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(jpClassName);
-            return new JavaType(jpName, generator.getJoinPointClassPackage());
+            return withJoinPointWildcard(new JavaType(jpName, generator.getJoinPointClassPackage()));
         }
 
         // Handle GenericType - check standard Java types first, then fall back to

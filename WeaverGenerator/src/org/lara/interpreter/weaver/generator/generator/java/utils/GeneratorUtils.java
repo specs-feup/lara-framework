@@ -123,7 +123,7 @@ public class GeneratorUtils {
         for (var attribute : mutableAttributes) {
 
             IType attrType = normalizeAttributeTypeForGetter(attribute);
-            JavaType type = ConvertUtils.getAttributeConvertedType(attrType, generator, currentJpType);
+            JavaType type = ConvertUtils.getConvertedType(attrType, generator, currentJpType);
             Function<Parameter, JavaType> parameterTypeResolver = parameter -> ConvertUtils.getConvertedType(
                     parameter.getIType(), generator, currentJpType);
             boolean needsCast = currentJpType != null && TypeTraversalUtils.containsThisType(attrType);
@@ -197,11 +197,10 @@ public class GeneratorUtils {
             m.clearCode();
             m.add(Annotation.OVERRIDE);
 
-            // Check if the return type involves ThisType (which resolves to Self)
-            // If so, we need to cast the delegation result since the delegate field has raw
-            // type
-            boolean needsCast = TypeTraversalUtils.containsThisType(action.getType())
-                    || TypeTraversalUtils.containsType(action.getType(), candidate -> candidate instanceof JPType);
+            // Cast is only needed when ThisType is involved.
+            // JPType by itself does not require a cast and may trigger unnecessary-cast
+            // warnings.
+            boolean needsCast = TypeTraversalUtils.containsThisType(action.getType());
 
             if (!action.getReturnType().equals("void")) {
                 m.appendCode("return ");
@@ -309,15 +308,11 @@ public class GeneratorUtils {
         getter.setReturnType(new JavaType(Object.class));
         // javaC.addImport(Converter.class); // No longer needed?
         getter.clearCode();
-        getter.appendCode(returnType.getSimpleType());
-        final String valueName = StringUtils.firstCharToLower(baseType) + GenConstants.getArrayMethodSufix();
-        getter.appendCode(" " + valueName + "0 = ");
-        getter.appendCode(newGetter.getName() + "(");
+        getter.appendCode("return " + newGetter.getName() + "(");
         final List<Argument> arguments = getter.getParams();
         final String argsList = StringUtils.join(arguments, Argument::getName, ", ");
         getter.appendCode(argsList);
-        getter.appendCode(");" + ln());
-        getter.appendCode("return " + valueName + "0;");
+        getter.appendCode(");");
         getter.remove(Modifier.ABSTRACT);
         javaC.add(newGetter);
     }
@@ -522,7 +517,8 @@ public class GeneratorUtils {
 
         if (type instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             final String firstCharToUpper = StringUtils.firstCharToUpper(action.getName());
-            final JavaEnum enumerator = generateEnum(type.type(), paramName, firstCharToUpper + sufix, generator);
+            final JavaEnum enumerator = generateEnum(literalEnum.getValues(), paramName, firstCharToUpper + sufix,
+                    generator);
             generator.getEnums().add(enumerator);
             return JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
         }
@@ -543,9 +539,11 @@ public class GeneratorUtils {
 
         for (var arg : arguments) {
             if (arg.getClassType().isArray()) {
+                int arrayDimension = arg.getClassType().getArrayDimension();
                 arg = arg.clone();
-                arg.getClassType().setName("Object");
-                arg.getClassType().setPackage("java.lang");
+                JavaType objectArrayType = JavaTypeFactory.getObjectType();
+                objectArrayType.setArrayDimension(arrayDimension);
+                arg.setClassType(objectArrayType);
             }
 
             newArgs.add(arg);
@@ -699,17 +697,17 @@ public class GeneratorUtils {
      * @param attributeName   the name of the attribute
      * @param baseName        the base for the name
      */
-    public static JavaEnum generateEnum(String itemsCollection, String attributeName, String baseName,
+    public static JavaEnum generateEnum(List<String> items, String attributeName, String baseName,
             JavaAbstractsGenerator generator) {
 
-        final String[] items = itemsCollection.substring(1, itemsCollection.length() - 1).split(",");
-        // System.out.println(itemsCollection);
         final String javaEnumName = extractEnumName(baseName, attributeName);
         final JavaEnum enumerator = new JavaEnum(javaEnumName, generator.getLiteralEnumsPackage());
         for (String itemName : items) {
             itemName = itemName.trim();
-            String enumName = itemName.toUpperCase();
-            enumName = enumName.replace("-", "_");
+            String enumName = itemName.toUpperCase().replaceAll("[^A-Z0-9_]", "_");
+            if (!enumName.isEmpty() && Character.isDigit(enumName.charAt(0))) {
+                enumName = "_" + enumName;
+            }
 
             final EnumItem item = new EnumItem(enumName);
             item.addParameter('"' + itemName + '"');
@@ -802,7 +800,11 @@ public class GeneratorUtils {
             cloned.appendCodeln("\t}");
         }
 
-        cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
+        if (original.getReturnType().isPrimitive()) {
+            cloned.appendCodeln("\treturn result;");
+        } else {
+            cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
+        }
 
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
@@ -838,12 +840,13 @@ public class GeneratorUtils {
         // LiteralEnums.
         if (attrType instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             isEnum = true;
-            enumerator = generateEnum(attrType.type(), name, javaC.getName(), generator);
+            enumerator = generateEnum(literalEnum.getValues(), name, javaC.getName(), generator);
             generator.getEnums().add(enumerator);
             javaType = new JavaType(enumerator.getName(), enumerator.getClassPackage());
         } else {
-            // Use IType-aware conversion that resolves ThisType
-            javaType = ConvertUtils.getAttributeConvertedType(attrType, generator, currentJpType);
+            // Use IType-aware conversion that resolves ThisType while preserving
+            // primitive signatures in generated impl methods.
+            javaType = ConvertUtils.getConvertedType(attrType, generator, currentJpType);
         }
         final Field attributeField = new Field(javaType, fieldName, Privacy.PROTECTED);
         if (!generator.isAbstractGetters()) {
@@ -902,9 +905,8 @@ public class GeneratorUtils {
      */
     public static Method generateCompareNodes(JavaType superClass) {
         final Method method = new Method(JavaTypeFactory.getBooleanType(), "compareNodes");
-        method.addArgument(superClass, "aJoinPoint");
-        // abstJPClass.addImport(javaGenerator.getJoinPointClassPackage()); //
-        // JoinPoint.class.getCanonicalName()
+        method.addArgument(
+                ConvertUtils.withJoinPointWildcard(superClass), "aJoinPoint");
         method.appendCode("return this.getNode().equals(aJoinPoint.getNode());");
         method.appendComment(
                 "Compares the two join points based on their node reference of the used compiler/parsing tool.<br>"

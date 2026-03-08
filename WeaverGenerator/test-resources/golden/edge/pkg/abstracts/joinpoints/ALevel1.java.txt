@@ -17,12 +17,12 @@ import java.util.List;
  */
 public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
 
-    protected ABase aBase;
+    protected ABase<?> aBase;
 
     /**
      * 
      */
-    public ALevel1(ABase aBase, EdgeWeaver weaver){
+    public ALevel1(ABase<?> aBase, EdgeWeaver weaver){
         super(weaver);
         this.aBase = aBase;
     }
@@ -57,8 +57,8 @@ public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return (AJoinPoint[]) this.aBase.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, String code) {
+        return this.aBase.insertImpl(position, code);
     }
 
     /**
@@ -67,8 +67,8 @@ public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return (AJoinPoint[]) this.aBase.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
+        return this.aBase.insertImpl(position, code);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
      * 
      */
     @Override
-    public Optional<? extends ABase> getSuper() {
+    public Optional<? extends ABase<?>> getSuper() {
         return Optional.of(this.aBase);
     }
 

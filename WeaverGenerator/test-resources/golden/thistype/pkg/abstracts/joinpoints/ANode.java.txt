@@ -125,8 +125,7 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
      * Returns direct children as array
      */
     public Object getChildrenImpl() {
-        Self[] selfArrayImpl0 = getChildrenArrayImpl();
-        return selfArrayImpl0;
+        return getChildrenArrayImpl();
     }
 
     /**
@@ -151,8 +150,7 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
      * Returns children organized in 2D matrix
      */
     public Object getChildrenMatrixImpl() {
-        Self[][] selfArrayImpl0 = getChildrenMatrixArrayImpl();
-        return selfArrayImpl0;
+        return getChildrenMatrixArrayImpl();
     }
 
     /**
@@ -230,8 +228,7 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
      * Returns all descendants as array
      */
     public Object getDescendantsImpl() {
-        Self[] selfArrayImpl0 = getDescendantsArrayImpl();
-        return selfArrayImpl0;
+        return getDescendantsArrayImpl();
     }
 
     /**

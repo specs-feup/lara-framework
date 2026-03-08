@@ -14,6 +14,7 @@
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
@@ -72,10 +73,9 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
     private JavaClass generateAbstractJoinPointClass() {
         // Get the base class type (e.g., "AJoinPoint")
         JavaType baseType = javaGenerator.getaJoinPointType();
-        String baseClassName = baseType.getName();
 
         // All classes use CRTP type parameters
-        final CrtpJavaClass abstJPClass = new CrtpJavaClass(baseClassName, baseType.getPackage());
+        final CrtpJavaClass abstJPClass = new CrtpJavaClass(baseType.getName(), baseType.getPackage());
         abstJPClass.add(Modifier.ABSTRACT);
         // The base JoinPoint class doesn't have type parameters, so don't add type args
         // to it
@@ -86,7 +86,7 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         abstJPClass.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
         addConstructor(abstJPClass);
-        generateCompareMethods(abstJPClass, baseClassName);
+        generateCompareMethods(abstJPClass, baseType);
 
         // For CRTP, use "Self" as the type for ThisType resolution
         JavaType thisType = new JavaType(CrtpJavaClass.SELF_TYPE_PARAMETER);
@@ -114,8 +114,8 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * @param baseClassName the base class name without type parameters (for
      *                      casting)
      */
-    private void generateCompareMethods(JavaClass abstJPClass, String baseClassName) {
-        generateSameMethod(abstJPClass, baseClassName);
+    private void generateCompareMethods(JavaClass abstJPClass, JavaType baseClass) {
+        generateSameMethod(abstJPClass, baseClass);
         final Method compareNodes = GeneratorUtils.generateCompareNodes(javaGenerator.getaJoinPointType());
         abstJPClass.add(compareNodes);
         generateGetNodeMethod(abstJPClass);
@@ -141,15 +141,17 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
      * @param baseClassName the base class name without type parameters (for
      *                      casting)
      */
-    private static void generateSameMethod(JavaClass abstJPClass, String baseClassName) {
+    private static void generateSameMethod(JavaClass abstJPClass, JavaType baseClass) {
         final Method same = new Method(JavaTypeFactory.getBooleanType(), "same");
         same.add(Annotation.OVERRIDE);
         same.addArgument(GenConstants.getJoinPointInterfaceType(), "iJoinPoint");
         // Cast to the base class name (e.g., AJoinPoint)
         same.appendCode(
-                "if (this.get_class().equals(iJoinPoint.get_class())) {" + ln() + ln()
+                "if (this.get_class().equals(iJoinPoint.get_class())) {" + ln()
                         + "        return this.compareNodes(("
-                        + baseClassName + ") iJoinPoint);" + ln() + "    }" + ln() + "    return false;");
+                        + ConvertUtils.withJoinPointWildcard(baseClass).getSimpleType() + ") iJoinPoint);" + ln()
+                        + "    }" + ln()
+                        + "    return false;");
         abstJPClass.add(same);
     }
 

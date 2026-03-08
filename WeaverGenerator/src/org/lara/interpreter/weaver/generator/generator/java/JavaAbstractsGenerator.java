@@ -15,6 +15,7 @@ package org.lara.interpreter.weaver.generator.generator.java;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.helpers.AbstractJoinPointClassGenerator;
@@ -54,6 +55,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
     private String literalEnumsPackage;
     private String enumsPackage;
     private JavaType superClass;
+    private boolean addTypeArgToRootUserSuperClass;
 
     /**
      * These fields will contain the generated Java code for the given language
@@ -111,6 +113,7 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
         setPackages(); // Assign required package names
         setJavaTypes(); // Assign required basic java types
+        addTypeArgToRootUserSuperClass = shouldAddTypeArgToRootUserSuperClass();
 
         // Generate the Weaver abstraction class
         weaverAbstractClass = WeaverAbstractGenerator.generate(this); // partially
@@ -299,6 +302,10 @@ public class JavaAbstractsGenerator extends BaseGenerator {
         return superClass;
     }
 
+    public boolean addTypeArgToRootUserSuperClass() {
+        return addTypeArgToRootUserSuperClass;
+    }
+
     public JavaType getaJoinPointType() {
         return aJoinPointType;
     }
@@ -393,6 +400,22 @@ public class JavaAbstractsGenerator extends BaseGenerator {
 
     public void setEnumsPackage(String enumsPackage) {
         this.enumsPackage = enumsPackage;
+    }
+
+    private boolean shouldAddTypeArgToRootUserSuperClass() {
+        String className = GenConstants.abstractPrefix() + getWeaverName() + GenConstants.interfaceName();
+        String relativePath = getAbstractUserJoinPointClassPackage().replace('.', '/')
+                + "/" + className + ".java";
+        File existingFile = new File(getOutDir(), relativePath);
+
+        // No pre-existing user class: use the default CRTP output.
+        if (!existingFile.isFile()) {
+            return true;
+        }
+
+        String contents = SpecsIo.read(existingFile);
+        Pattern genericDecl = Pattern.compile("\\bclass\\s+" + Pattern.quote(className) + "\\s*<");
+        return genericDecl.matcher(contents).find();
     }
 
 }
