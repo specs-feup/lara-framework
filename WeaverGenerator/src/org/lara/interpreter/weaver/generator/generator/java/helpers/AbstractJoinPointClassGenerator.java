@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
+import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.JoinPointClass;
@@ -113,6 +114,7 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
             addConstructor(javaC);
 
             // Extends the user-editable abstract class (which also has CRTP)
+            javaC.setAddTypeArgToSuperClass(javaGenerator.addTypeArgToRootUserSuperClass());
             javaC.setSuperClass(javaGenerator.getSuperClass());
         }
 
@@ -253,7 +255,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
                 + Utils.firstCharToUpper(superType.getName());
-        final JavaType joinPointType = new JavaType(superClassName, javaGenerator.getJoinPointClassPackage());
+        final JavaType joinPointType = ConvertUtils
+                .withJoinPointWildcard(new JavaType(superClassName, javaGenerator.getJoinPointClassPackage()));
         javaC.add(new Field(joinPointType, fieldName, Privacy.PROTECTED));
 
         final Constructor constructor = new Constructor(javaC);

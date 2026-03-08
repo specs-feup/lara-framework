@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends AExpr<Self> {
 
-    protected AExpr aExpr;
+    protected AExpr<?> aExpr;
 
     /**
      * 
      */
-    public ABinaryExpr(AExpr aExpr, ThistypeWeaver weaver){
+    public ABinaryExpr(AExpr<?> aExpr, ThistypeWeaver weaver){
         super(aExpr, weaver);
         this.aExpr = aExpr;
     }
@@ -444,8 +444,8 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends AExpr<
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return (AJoinPoint[]) this.aExpr.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, String code) {
+        return this.aExpr.insertImpl(position, code);
     }
 
     /**
@@ -454,8 +454,8 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends AExpr<
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return (AJoinPoint[]) this.aExpr.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
+        return this.aExpr.insertImpl(position, code);
     }
 
     /**
@@ -593,7 +593,7 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends AExpr<
      * 
      */
     @Override
-    public Optional<? extends AExpr> getSuper() {
+    public Optional<? extends AExpr<?>> getSuper() {
         return Optional.of(this.aExpr);
     }
 

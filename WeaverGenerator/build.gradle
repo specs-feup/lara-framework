@@ -83,6 +83,26 @@ test {
     finalizedBy(jacocoTestReport)
 }
 
+tasks.register('regenLargeIntegrationBaselines', Test) {
+    group = 'verification'
+    description = 'Regenerates the large integration test baselines for WeaverGenerator.'
+
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'weaver.integration.regen', 'true'
+
+    filter {
+        includeTestsMatching 'org.lara.interpreter.weaver.generator.integration.LargeLangSpecIntegrationTest'
+    }
+
+    outputs.upToDateWhen { false }
+}
+
+tasks.named('test') {
+    mustRunAfter(tasks.named('regenLargeIntegrationBaselines'))
+}
+
 
 jacocoTestCoverageVerification {
     // Exclude non-core/entrypoint UI and CLI packages, templated internals, and low-signal utils from coverage accounting

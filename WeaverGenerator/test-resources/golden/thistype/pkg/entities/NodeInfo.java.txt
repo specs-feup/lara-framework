@@ -13,8 +13,8 @@ public class NodeInfo {
 
     private Map<String, String> metadata;
     private String name;
-    private AJoinPoint node;
-    private List<AJoinPoint> relatedNodes;
+    private AJoinPoint<?> node;
+    private List<AJoinPoint<?>> relatedNodes;
 
     /**
      * 
@@ -23,7 +23,7 @@ public class NodeInfo {
     /**
      * 
      */
-    public NodeInfo(Map<String, String> metadata, String name, AJoinPoint node, List<AJoinPoint> relatedNodes){
+    public NodeInfo(Map<String, String> metadata, String name, AJoinPoint<?> node, List<AJoinPoint<?>> relatedNodes){
         this.setMetadata(metadata);
         this.setName(name);
         this.setNode(node);
@@ -65,7 +65,7 @@ public class NodeInfo {
      * Get value on attribute node
      * @return the attribute's value
      */
-    public AJoinPoint getNode() {
+    public AJoinPoint<?> getNode() {
         return this.node;
     }
 
@@ -73,7 +73,7 @@ public class NodeInfo {
      * Set value on attribute node
      * @param node
      */
-    public void setNode(AJoinPoint node) {
+    public void setNode(AJoinPoint<?> node) {
         this.node = node;
     }
 
@@ -81,7 +81,7 @@ public class NodeInfo {
      * Get value on attribute relatedNodes
      * @return the attribute's value
      */
-    public List<AJoinPoint> getRelatedNodes() {
+    public List<AJoinPoint<?>> getRelatedNodes() {
         return this.relatedNodes;
     }
 
@@ -89,7 +89,7 @@ public class NodeInfo {
      * Set value on attribute relatedNodes
      * @param relatedNodes
      */
-    public void setRelatedNodes(List<AJoinPoint> relatedNodes) {
+    public void setRelatedNodes(List<AJoinPoint<?>> relatedNodes) {
         this.relatedNodes = relatedNodes;
     }
 
