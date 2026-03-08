@@ -17,12 +17,12 @@ import java.util.List;
  */
 public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> {
 
-    protected ALevel1 aLevel1;
+    protected ALevel1<?> aLevel1;
 
     /**
      * 
      */
-    public ALevel2(ALevel1 aLevel1, EdgeWeaver weaver){
+    public ALevel2(ALevel1<?> aLevel1, EdgeWeaver weaver){
         super(aLevel1, weaver);
         this.aLevel1 = aLevel1;
     }
@@ -69,8 +69,8 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> 
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return (AJoinPoint[]) this.aLevel1.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, String code) {
+        return this.aLevel1.insertImpl(position, code);
     }
 
     /**
@@ -79,8 +79,8 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> 
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return (AJoinPoint[]) this.aLevel1.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
+        return this.aLevel1.insertImpl(position, code);
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> 
      * 
      */
     @Override
-    public Optional<? extends ALevel1> getSuper() {
+    public Optional<? extends ALevel1<?>> getSuper() {
         return Optional.of(this.aLevel1);
     }
 

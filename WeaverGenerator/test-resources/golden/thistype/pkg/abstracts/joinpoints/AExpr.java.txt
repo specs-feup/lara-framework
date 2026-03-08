@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
 
-    protected ANode aNode;
+    protected ANode<?> aNode;
 
     /**
      * 
      */
-    public AExpr(ANode aNode, ThistypeWeaver weaver){
+    public AExpr(ANode<?> aNode, ThistypeWeaver weaver){
         super(weaver);
         this.aNode = aNode;
     }
@@ -421,8 +421,8 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return (AJoinPoint[]) this.aNode.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, String code) {
+        return this.aNode.insertImpl(position, code);
     }
 
     /**
@@ -431,8 +431,8 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return (AJoinPoint[]) this.aNode.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
+        return this.aNode.insertImpl(position, code);
     }
 
     /**
@@ -560,7 +560,7 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
      * 
      */
     @Override
-    public Optional<? extends ANode> getSuper() {
+    public Optional<? extends ANode<?>> getSuper() {
         return Optional.of(this.aNode);
     }
 

@@ -52,7 +52,7 @@ class GeneratorUtilsTest {
         JavaClass targetClass = new JavaClass("CanonicalClass", "pt.up.fe");
 
         Method generatedMethod = GeneratorUtils.generateAttribute(attribute, targetClass, generator, null);
-        assertThat(methodSignature(generatedMethod)).isEqualTo("getCounter():Integer");
+        assertThat(methodSignature(generatedMethod)).isEqualTo("getCounter():int");
     }
 
     @Test

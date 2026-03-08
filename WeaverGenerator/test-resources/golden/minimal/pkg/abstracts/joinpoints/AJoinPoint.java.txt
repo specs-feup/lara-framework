@@ -22,8 +22,7 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
     @Override
     public boolean same(JoinPoint iJoinPoint) {
         if (this.get_class().equals(iJoinPoint.get_class())) {
-        
-                return this.compareNodes((AJoinPoint) iJoinPoint);
+                return this.compareNodes((AJoinPoint<?>) iJoinPoint);
             }
             return false;
     }
@@ -34,7 +33,7 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
      * <b>Note for developers:</b> A weaver may override this implementation in the editable abstract join point, so
      * the changes are made for all join points, or override this method in specific join points.
      */
-    public boolean compareNodes(AJoinPoint aJoinPoint) {
+    public boolean compareNodes(AJoinPoint<?> aJoinPoint) {
         return this.getNode().equals(aJoinPoint.getNode());
     }
 

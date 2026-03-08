@@ -32,7 +32,7 @@ public abstract class AEdgeWeaverJoinPoint<Self extends AEdgeWeaverJoinPoint<Sel
      * the changes are made for all join points, or override this method in specific join points.
      */
     @Override
-    public boolean compareNodes(AJoinPoint aJoinPoint) {
+    public boolean compareNodes(AJoinPoint<?> aJoinPoint) {
         return this.getNode().equals(aJoinPoint.getNode());
     }
 }
