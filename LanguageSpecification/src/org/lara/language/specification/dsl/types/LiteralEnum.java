@@ -77,6 +77,6 @@ public class LiteralEnum implements IType {
 
     @Override
     public String toString() {
-        return values.stream().collect(Collectors.joining("| ", "[", "]"));
+        return values.stream().collect(Collectors.joining(" | ", "[", "]"));
     }
 }

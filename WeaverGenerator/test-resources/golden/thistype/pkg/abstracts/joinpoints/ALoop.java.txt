@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
 
-    protected AStmt aStmt;
+    protected AStmt<?> aStmt;
 
     /**
      * 
      */
-    public ALoop(AStmt aStmt, ThistypeWeaver weaver){
+    public ALoop(AStmt<?> aStmt, ThistypeWeaver weaver){
         super(aStmt, weaver);
         this.aStmt = aStmt;
     }
@@ -502,8 +502,8 @@ public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return (AJoinPoint[]) this.aStmt.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, String code) {
+        return this.aStmt.insertImpl(position, code);
     }
 
     /**
@@ -512,8 +512,8 @@ public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
      * @param code 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return (AJoinPoint[]) this.aStmt.insertImpl(position, code);
+    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
+        return this.aStmt.insertImpl(position, code);
     }
 
     /**
@@ -650,7 +650,7 @@ public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
      * 
      */
     @Override
-    public Optional<? extends AStmt> getSuper() {
+    public Optional<? extends AStmt<?>> getSuper() {
         return Optional.of(this.aStmt);
     }
 
