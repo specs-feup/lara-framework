@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
 
-    protected ANode<?> aNode;
+    protected ANode<Self> aNode;
 
     /**
      * 
      */
-    public AExpr(ANode<?> aNode, ThistypeWeaver weaver){
+    public AExpr(ANode<Self> aNode, ThistypeWeaver weaver){
         super(weaver);
         this.aNode = aNode;
     }
@@ -560,7 +560,7 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ANode<Self> {
      * 
      */
     @Override
-    public Optional<? extends ANode<?>> getSuper() {
+    public Optional<? extends ANode<Self>> getSuper() {
         return Optional.of(this.aNode);
     }
 

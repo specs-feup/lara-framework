@@ -17,12 +17,12 @@ import java.util.List;
  */
 public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
 
-    protected ABase<?> aBase;
+    protected ABase<Self> aBase;
 
     /**
      * 
      */
-    public ALevel1(ABase<?> aBase, EdgeWeaver weaver){
+    public ALevel1(ABase<Self> aBase, EdgeWeaver weaver){
         super(weaver);
         this.aBase = aBase;
     }
@@ -83,7 +83,7 @@ public abstract class ALevel1<Self extends ALevel1<Self>> extends ABase<Self> {
      * 
      */
     @Override
-    public Optional<? extends ABase<?>> getSuper() {
+    public Optional<? extends ABase<Self>> getSuper() {
         return Optional.of(this.aBase);
     }
 
