@@ -25,7 +25,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import org.lara.interpreter.weaver.generator.commandline.WeaverGenerator;
+import org.lara.interpreter.weaver.generator.fixtures.BaselineRegen;
+import org.lara.interpreter.weaver.generator.fixtures.GeneratedTreeUtils;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.RunResult;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.Scenario;
 import org.lara.interpreter.weaver.generator.integration.fixtures.ArtifactManifestEntry;
 import org.lara.interpreter.weaver.generator.integration.fixtures.InvariantSnapshot;
 import org.lara.interpreter.weaver.generator.integration.fixtures.JavaDeclarationSignature;
@@ -43,9 +47,12 @@ public class LargeLangSpecIntegrationTest {
     private static final String PACKAGE_NAME = "large.integration.pkg";
     private static final String WEAVER_NAME = "LargeIntegrationWeaver";
 
-    private static final String REGEN_PROPERTY = "weaver.integration.regen";
+    private static final Scenario LARGE_SCENARIO = WeaverGeneratorTestHarness.scenario(
+            SCENARIO,
+            PACKAGE_NAME,
+            WEAVER_NAME,
+            true);
 
-    private static final Path SPEC_DIR = Path.of("test-resources/spec/valid/" + SCENARIO);
     private static final Path EXPECTED_DIR = Path.of("test-resources/integration/" + SCENARIO);
 
     private static final Path EXPECTED_JAVA_MANIFEST = EXPECTED_DIR.resolve("java-manifest.tsv");
@@ -196,7 +203,7 @@ public class LargeLangSpecIntegrationTest {
     void largeIntegration_generated_java_compiles() throws Exception {
         RuntimeSnapshot runtime = ensureSnapshot();
 
-        List<Path> javaFiles = listJava(runtime.outputDir);
+        List<Path> javaFiles = GeneratedTreeUtils.listFiles(runtime.outputDir, path -> path.toString().endsWith(".java"));
         assertThat(javaFiles)
                 .as("Generated Java files")
                 .isNotEmpty();
@@ -231,7 +238,8 @@ public class LargeLangSpecIntegrationTest {
             }
 
             try (URLClassLoader classLoader = new URLClassLoader(new URL[] { classesDir.toUri().toURL() })) {
-                Class<?> weaverClass = classLoader.loadClass(PACKAGE_NAME + "." + WEAVER_NAME);
+                Class<?> weaverClass = classLoader.loadClass(
+                        LARGE_SCENARIO.packageName() + "." + LARGE_SCENARIO.weaverName());
                 assertThat(weaverClass).isNotNull();
             }
         }
@@ -260,27 +268,15 @@ public class LargeLangSpecIntegrationTest {
     }
 
     private RuntimeSnapshot ensureSnapshot() throws Exception {
-        if (!Files.isDirectory(SPEC_DIR)) {
-            fail("Missing scenario directory: " + SPEC_DIR + ". Add XML files for " + SCENARIO);
-        }
-
+        WeaverGeneratorTestHarness.assertSpecDirExists(LARGE_SCENARIO);
         return runPipeline(temp.resolve("output-" + runCounter.incrementAndGet()));
     }
 
     private RuntimeSnapshot runPipeline(Path outputDir) throws Exception {
-        Files.createDirectories(outputDir);
-
-        String[] args = new String[] {
-                "-x", SPEC_DIR.toString(),
-                "-o", outputDir.toString(),
-                "-p", PACKAGE_NAME,
-                "-w", WEAVER_NAME,
-                "-j"
-        };
-
-        int exitCode = WeaverGenerator.run(args);
+        RunResult result = WeaverGeneratorTestHarness.run(LARGE_SCENARIO, outputDir);
+        int exitCode = result.exitCode();
         if (exitCode != 0) {
-            String parseDiagnostics = diagnoseLanguageSpecification(SPEC_DIR);
+            String parseDiagnostics = diagnoseLanguageSpecification(LARGE_SCENARIO.specDir());
             fail("WeaverGenerator failed for scenario '" + SCENARIO + "' with exit code " + exitCode
                     + ". LanguageSpecification diagnostics:\n" + parseDiagnostics);
         }
@@ -308,7 +304,10 @@ public class LargeLangSpecIntegrationTest {
         ParsedJson parsedJson = JsonInvariantUtils.parseJson(jsonPath);
         String jsonCanonicalHash = JsonInvariantUtils.canonicalHash(parsedJson.root());
 
-        JavaSnapshot javaSnapshot = JavaInvariantUtils.computeSnapshot(outputDir, PACKAGE_NAME, WEAVER_NAME);
+        JavaSnapshot javaSnapshot = JavaInvariantUtils.computeSnapshot(
+                outputDir,
+                LARGE_SCENARIO.packageName(),
+                LARGE_SCENARIO.weaverName());
         InvariantSnapshot invariantSnapshot = JsonInvariantUtils.computeSnapshot(parsedJson, javaSnapshot.structure());
 
         return new RuntimeSnapshot(exitCode, outputDir, javaManifest, jsonManifest, aggregateHash, parsedJson,
@@ -346,7 +345,7 @@ public class LargeLangSpecIntegrationTest {
     }
 
     private static boolean isRegenMode() {
-        return Boolean.getBoolean(REGEN_PROPERTY);
+        return BaselineRegen.isEnabled();
     }
 
     private static String readTrimmed(Path file) throws IOException {
@@ -371,14 +370,6 @@ public class LargeLangSpecIntegrationTest {
                 depth++;
             }
             return builder.toString();
-        }
-    }
-
-    private static List<Path> listJava(Path root) throws IOException {
-        try (Stream<Path> walk = Files.walk(root)) {
-            return walk.filter(path -> path.toString().endsWith(".java"))
-                    .sorted()
-                    .collect(Collectors.toList());
         }
     }
 
