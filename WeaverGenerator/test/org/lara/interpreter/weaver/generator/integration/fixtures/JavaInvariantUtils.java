@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -21,10 +20,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class JavaInvariantUtils {
+import org.lara.interpreter.weaver.generator.fixtures.JavaMethodSignatureUtils;
 
-    private static final Pattern METHOD_SIGNATURE_PATTERN = Pattern.compile(
-            "(?m)^\\s*(?:public|protected|private)\\s+(?:final\\s+|static\\s+|abstract\\s+|synchronized\\s+|native\\s+)*[^\\s(]+(?:\\s*<[^>]+>)?(?:\\s*\\[\\])*(?:\\s+[^\\s(]+(?:\\s*<[^>]+>)?(?:\\s*\\[\\])*)*\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(?:throws\\s+[^\\{]+)?\\{");
+public final class JavaInvariantUtils {
 
     private static final Pattern TOP_LEVEL_TYPE_PATTERN = Pattern.compile(
             "(?m)^\\s*(?:public|protected|private|abstract|final|static|strictfp|sealed|non-sealed\\s+)*\\s*(class|interface|enum|record)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*([^\\{;]*)\\{");
@@ -64,7 +62,7 @@ public final class JavaInvariantUtils {
                 .collect(Collectors.joining("\n"));
         String apiHash = ManifestUtils.sha256Hex(signatureText.getBytes(StandardCharsets.UTF_8));
 
-        assertNoMethodSignatureCollisions(root, "large-integration");
+        JavaMethodSignatureUtils.assertNoMethodSignatureCollisions(root, "large-integration");
 
         assertThat(signatures)
                 .as("Java declaration signatures should not be empty")
@@ -282,95 +280,6 @@ public final class JavaInvariantUtils {
 
     private static String collapse(String text) {
         return text.replaceAll("\\s+", " ").trim();
-    }
-
-    private static void assertNoMethodSignatureCollisions(Path outDir, String scenario) throws IOException {
-        Map<String, Integer> signatureCounts = new HashMap<>();
-
-        try (Stream<Path> walk = Files.walk(outDir)) {
-            List<Path> javaFiles = walk.filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().endsWith(".java"))
-                    .collect(Collectors.toList());
-
-            for (Path javaFile : javaFiles) {
-                String source = Files.readString(javaFile, StandardCharsets.UTF_8)
-                        .replace("\r\n", "\n")
-                        .replace('\r', '\n');
-                Matcher matcher = METHOD_SIGNATURE_PATTERN.matcher(source);
-                while (matcher.find()) {
-                    String methodName = matcher.group(1);
-                    String normalizedParams = normalizeParameterTypes(matcher.group(2));
-                    String signature = normalize(outDir.relativize(javaFile).toString()) + "::" + methodName + "("
-                            + normalizedParams + ")";
-                    signatureCounts.put(signature, signatureCounts.getOrDefault(signature, 0) + 1);
-                }
-            }
-        }
-
-        List<String> collisions = signatureCounts.entrySet().stream()
-                .filter(entry -> entry.getValue() > 1)
-                .map(entry -> entry.getKey() + " x" + entry.getValue())
-                .sorted()
-                .collect(Collectors.toList());
-
-        assertThat(collisions)
-                .as("Generated Java should not contain duplicate method signatures for scenario '%s'", scenario)
-                .isEmpty();
-    }
-
-    private static String normalizeParameterTypes(String params) {
-        String trimmed = params == null ? "" : params.trim();
-        if (trimmed.isEmpty()) {
-            return "";
-        }
-
-        List<String> parameterChunks = splitParameters(trimmed);
-        return parameterChunks.stream()
-                .map(JavaInvariantUtils::normalizeSingleParameterType)
-                .collect(Collectors.joining(","));
-    }
-
-    private static List<String> splitParameters(String params) {
-        List<String> chunks = new ArrayList<>();
-        int genericDepth = 0;
-        StringBuilder current = new StringBuilder();
-        for (int i = 0; i < params.length(); i++) {
-            char ch = params.charAt(i);
-            if (ch == '<') {
-                genericDepth++;
-            } else if (ch == '>') {
-                genericDepth = Math.max(0, genericDepth - 1);
-            }
-
-            if (ch == ',' && genericDepth == 0) {
-                chunks.add(current.toString().trim());
-                current.setLength(0);
-                continue;
-            }
-
-            current.append(ch);
-        }
-
-        String last = current.toString().trim();
-        if (!last.isEmpty()) {
-            chunks.add(last);
-        }
-
-        return chunks;
-    }
-
-    private static String normalizeSingleParameterType(String parameter) {
-        String normalized = parameter
-                .replaceAll("@[A-Za-z_][A-Za-z0-9_$.]*(\\([^)]*\\))?\\s*", "")
-                .replaceAll("\\bfinal\\b\\s*", "")
-                .trim();
-
-        int lastSpace = normalized.lastIndexOf(' ');
-        if (lastSpace >= 0) {
-            normalized = normalized.substring(0, lastSpace).trim();
-        }
-
-        return normalized.replaceAll("\\s+", "");
     }
 
     public record JavaSnapshot(Map<String, Long> structure, List<JavaDeclarationSignature> signatures, String apiHash) {

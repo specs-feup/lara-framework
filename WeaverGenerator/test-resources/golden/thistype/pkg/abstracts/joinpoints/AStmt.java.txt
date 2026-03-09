@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class AStmt<Self extends AStmt<Self>> extends ANode<Self> {
 
-    protected ANode<?> aNode;
+    protected ANode<Self> aNode;
 
     /**
      * 
      */
-    public AStmt(ANode<?> aNode, ThistypeWeaver weaver){
+    public AStmt(ANode<Self> aNode, ThistypeWeaver weaver){
         super(weaver);
         this.aNode = aNode;
     }
@@ -541,7 +541,7 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ANode<Self> {
      * 
      */
     @Override
-    public Optional<? extends ANode<?>> getSuper() {
+    public Optional<? extends ANode<Self>> getSuper() {
         return Optional.of(this.aNode);
     }
 

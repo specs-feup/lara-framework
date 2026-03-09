@@ -21,9 +21,16 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.lara.interpreter.weaver.generator.commandline.WeaverGenerator;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.RunResult;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.Scenario;
 
 class JavaCodegenRegressionTest {
+
+    private static final Scenario THIS_TYPE = WeaverGeneratorTestHarness.scenario(
+            "thistype",
+            "thistype.pkg",
+            "ThistypeWeaver");
 
     @TempDir
     Path temp;
@@ -55,18 +62,11 @@ class JavaCodegenRegressionTest {
     }
 
     private Path generateThistype() {
-        Path specDir = Path.of("test-resources/spec/valid/thistype");
         Path outDir = temp.resolve("gen-thistype");
 
-        String[] args = new String[] {
-                "-x", specDir.toString(),
-                "-o", outDir.toString(),
-                "-p", "thistype.pkg",
-                "-w", "ThistypeWeaver"
-        };
-
-        int exitCode = WeaverGenerator.run(args);
-        assertThat(exitCode).as("WeaverGenerator should succeed").isZero();
+        WeaverGeneratorTestHarness.assertSpecDirExists(THIS_TYPE);
+        RunResult result = WeaverGeneratorTestHarness.run(THIS_TYPE, outDir);
+        assertThat(result.exitCode()).as("WeaverGenerator should succeed").isZero();
 
         return outDir;
     }
