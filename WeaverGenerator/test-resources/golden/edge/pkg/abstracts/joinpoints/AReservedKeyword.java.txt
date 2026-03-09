@@ -17,12 +17,12 @@ import java.util.List;
  */
 public abstract class AReservedKeyword<Self extends AReservedKeyword<Self>> extends ALevel2<Self> {
 
-    protected ALevel2<?> aLevel2;
+    protected ALevel2<Self> aLevel2;
 
     /**
      * 
      */
-    public AReservedKeyword(ALevel2<?> aLevel2, EdgeWeaver weaver){
+    public AReservedKeyword(ALevel2<Self> aLevel2, EdgeWeaver weaver){
         super(aLevel2, weaver);
         this.aLevel2 = aLevel2;
     }
@@ -104,7 +104,7 @@ public abstract class AReservedKeyword<Self extends AReservedKeyword<Self>> exte
      * 
      */
     @Override
-    public Optional<? extends ALevel2<?>> getSuper() {
+    public Optional<? extends ALevel2<Self>> getSuper() {
         return Optional.of(this.aLevel2);
     }
 

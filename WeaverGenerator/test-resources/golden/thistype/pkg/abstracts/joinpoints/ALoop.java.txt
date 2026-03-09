@@ -20,12 +20,12 @@ import java.util.Arrays;
  */
 public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
 
-    protected AStmt<?> aStmt;
+    protected AStmt<Self> aStmt;
 
     /**
      * 
      */
-    public ALoop(AStmt<?> aStmt, ThistypeWeaver weaver){
+    public ALoop(AStmt<Self> aStmt, ThistypeWeaver weaver){
         super(aStmt, weaver);
         this.aStmt = aStmt;
     }
@@ -650,7 +650,7 @@ public abstract class ALoop<Self extends ALoop<Self>> extends AStmt<Self> {
      * 
      */
     @Override
-    public Optional<? extends AStmt<?>> getSuper() {
+    public Optional<? extends AStmt<Self>> getSuper() {
         return Optional.of(this.aStmt);
     }
 
