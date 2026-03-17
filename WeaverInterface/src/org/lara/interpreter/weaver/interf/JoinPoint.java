@@ -16,12 +16,8 @@ import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.language.specification.dsl.JoinPointClass;
+import org.lara.language.specification.dsl.LaraJoinPointContract;
 import org.lara.language.specification.dsl.LanguageSpecification;
-import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.types.ArrayType;
-import org.lara.language.specification.dsl.types.JPType;
-import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import pt.up.fe.specs.jsengine.node.UndefinedValue;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 
@@ -36,32 +32,7 @@ import java.util.stream.Stream;
 public abstract class JoinPoint {
 
     private WeaverEngine weaver;
-    private static final JoinPointClass LARA_JOIN_POINT = new JoinPointClass("LaraJoinPoint");
-
-    static {
-        // JoinPointSpecification.addAttribute(null, "srcCode"));
-        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "dump");
-        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.STRING, "joinPointType");
-        LARA_JOIN_POINT.addAttribute(PrimitiveClasses.OBJECT, "node");
-        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "self");
-        LARA_JOIN_POINT.addAttribute(JPType.of(LARA_JOIN_POINT), "super");
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "children");
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "descendants");
-        LARA_JOIN_POINT.addAttribute(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "scopeNodes");
-        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
-                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
-                new Parameter(PrimitiveClasses.STRING, "code"));
-        LARA_JOIN_POINT.addAction(ArrayType.of(JPType.of(LARA_JOIN_POINT)), "insert",
-                new Parameter(LiteralEnum.of("Position", "before", "after", "replace"), "position"),
-                new Parameter(JPType.of(LARA_JOIN_POINT), "joinpoint"));
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.STRING, "toString");
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "equals",
-                new Parameter(JPType.of(LARA_JOIN_POINT), "jp"));
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
-                new Parameter(PrimitiveClasses.STRING, "name"));
-        LARA_JOIN_POINT.addAction(PrimitiveClasses.BOOLEAN, "instanceOf",
-                new Parameter(ArrayType.of(PrimitiveClasses.STRING), "names"));
-    }
+    private static final JoinPointClass LARA_JOIN_POINT = LaraJoinPointContract.build("LaraJoinPoint");
 
     public JoinPoint(WeaverEngine weaver) {
         this.weaver = weaver;
@@ -149,8 +120,6 @@ public abstract class JoinPoint {
     /**
      * @see JoinPoint#insert(String, JoinPoint)
      */
-    // public <T extends JoinPoint> JoinPoint[] insertImpl(String position, T
-    // JoinPoint) {
     public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
         throw new UnsupportedOperationException(
                 "Join point " + get_class() + ": Action insert(String,joinpoint) not implemented ");

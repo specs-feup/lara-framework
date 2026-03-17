@@ -55,6 +55,14 @@ public abstract class AFile<Self extends AFile<Self>> extends AMediumWeaverJoinP
      */
     protected enum FileAttributes {
         PATH("path"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

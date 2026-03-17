@@ -26,7 +26,7 @@ public abstract class AThistypeWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {"categorize", "findAll", "replaceWith", "selfTransform", "setOperands", "swapOperands", "collectTerms", "evaluate", "substitute", "copy", "detach", "findChildren", "getMetadata", "getTags", "groupByType", "insertAfter", "insertAll", "insertAt", "insertBefore", "merge", "partitionChildren", "replaceAll", "replaceBetween", "swap", "toArray", "wrapWith", "addToAll", "processNested", "fuse", "interchange", "tile", "unroll", "extractTo", "moveAfter"};
+        String[] weaverActions= {"insert", "insert", "toString", "equals", "instanceOf", "instanceOf", "categorize", "findAll", "replaceWith", "selfTransform", "setOperands", "swapOperands", "collectTerms", "evaluate", "substitute", "copy", "detach", "findChildren", "getMetadata", "getTags", "groupByType", "insertAfter", "insertAll", "insertAt", "insertBefore", "merge", "partitionChildren", "replaceAll", "replaceBetween", "swap", "toArray", "wrapWith", "addToAll", "processNested", "fuse", "interchange", "tile", "unroll", "extractTo", "moveAfter"};
         return Arrays.asList(weaverActions);
     }
 

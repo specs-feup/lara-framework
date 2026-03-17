@@ -6,7 +6,6 @@ import org.lara.interpreter.exception.ActionException;
 import thistype.pkg.ThistypeWeaver;
 import java.util.Map;
 import java.util.Set;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
@@ -363,6 +362,15 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ANode<Self> {
     }
 
     /**
+     * 
+     * @param jp 
+     */
+    @Override
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        return this.aNode.equalsImpl(jp);
+    }
+
+    /**
      * Finds all matching nodes
      * @param pattern 
      */
@@ -394,26 +402,6 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ANode<Self> {
     @Override
     public Map<String, List<Self>> groupByTypeImpl() {
         return (Map<String, List<Self>>) this.aNode.groupByTypeImpl();
-    }
-
-    /**
-     * 
-     * @param position 
-     * @param code 
-     */
-    @Override
-    public AJoinPoint<?>[] insertImpl(String position, String code) {
-        return this.aNode.insertImpl(position, code);
-    }
-
-    /**
-     * 
-     * @param position 
-     * @param code 
-     */
-    @Override
-    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
-        return this.aNode.insertImpl(position, code);
     }
 
     /**
@@ -594,6 +582,12 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ANode<Self> {
         PARENT("parent"),
         PROPERTIES("properties"),
         TAGS("tags"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        SCOPENODES("scopeNodes"),
         ANCESTORS("ancestors"),
         ROOT("root"),
         SIBLINGS("siblings");
