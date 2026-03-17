@@ -16,6 +16,7 @@ import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
+import org.lara.langspec2.model.ProviderRegistry;
 import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
@@ -229,5 +230,17 @@ public abstract class WeaverEngine {
      */
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
+    }
+
+    /**
+     * Returns the provider registry for the new provider-based join point system.
+     * <p>
+     * Override in weavers that use the new WeaverGen2 system. Default throws
+     * {@link UnsupportedOperationException} for backward compatibility with old weavers.
+     */
+    public ProviderRegistry getProviderRegistry() {
+        throw new UnsupportedOperationException(
+                getClass().getSimpleName() + " does not support the provider registry pattern. "
+                + "Override getProviderRegistry() to use JoinPoint2-based join points.");
     }
 }
