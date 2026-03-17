@@ -1,0 +1,3 @@
+rootProject.name = 'WeaverGen2'
+
+includeBuild("../LangSpec2")
