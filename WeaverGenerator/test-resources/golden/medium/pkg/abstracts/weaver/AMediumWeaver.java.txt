@@ -22,7 +22,7 @@ public abstract class AMediumWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {"insert", "replaceWith"};
+        String[] weaverActions= {"insert", "insert", "toString", "equals", "instanceOf", "instanceOf", "insert", "replaceWith"};
         return Arrays.asList(weaverActions);
     }
 

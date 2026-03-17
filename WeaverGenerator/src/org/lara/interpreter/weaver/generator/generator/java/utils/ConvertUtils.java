@@ -112,6 +112,12 @@ public class ConvertUtils {
         return clone;
     }
 
+    public static JavaType withJoinPointTypeArgument(JavaType joinPointType, JavaType typeArgument) {
+        JavaType clone = joinPointType.clone();
+        clone.addGeneric(new JavaGenericType(typeArgument.clone()));
+        return clone;
+    }
+
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
             final int arrayDimension) {
         String keyType = StringUtils.firstCharToUpper(type);

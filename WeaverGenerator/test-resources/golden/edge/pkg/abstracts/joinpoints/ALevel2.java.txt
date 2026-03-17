@@ -2,7 +2,6 @@ package edge.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.exception.AttributeException;
 import edge.pkg.EdgeWeaver;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
@@ -65,22 +64,11 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> 
 
     /**
      * 
-     * @param position 
-     * @param code 
+     * @param jp 
      */
     @Override
-    public AJoinPoint<?>[] insertImpl(String position, String code) {
-        return this.aLevel1.insertImpl(position, code);
-    }
-
-    /**
-     * 
-     * @param position 
-     * @param code 
-     */
-    @Override
-    public AJoinPoint<?>[] insertImpl(String position, JoinPoint code) {
-        return this.aLevel1.insertImpl(position, code);
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        return this.aLevel1.equalsImpl(jp);
     }
 
     /**
@@ -126,7 +114,15 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends ALevel1<Self> 
     protected enum Level2Attributes {
         C("c"),
         A("a"),
-        B("b");
+        B("b"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes");
         private String name;
 
         /**

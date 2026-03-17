@@ -32,12 +32,9 @@ import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.GenericType;
 import org.lara.language.specification.dsl.types.IType;
-import org.lara.language.specification.dsl.types.JPType;
 import org.lara.language.specification.dsl.types.LiteralEnum;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.Annotation;
@@ -172,26 +169,20 @@ public class GeneratorUtils {
 
         var jps = new ArrayList<>(joinPointSuperType.getActions());
 
-        // TODO: HACK - Two insert methods are missing from the actions/generation,
-        // adding them manually
-
-        var returnType = new ArrayType(new JPType(JoinPointClass.globalJoinPoint()));
-        // var globalJpType = new GenericType("JoinpointInterface", false);
-        var globalJpType = PrimitiveClasses.JOINPOINT_INTERFACE;
-        var paramsJp = List.of(new Parameter(PrimitiveClasses.STRING, "position"), new Parameter(globalJpType, "code"));
-        var paramsString = List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-                new Parameter(PrimitiveClasses.STRING, "code"));
-
-        var insertActionWithJp = new org.lara.language.specification.dsl.Action(returnType, "insert", paramsJp);
-        var insertActionWithString = new org.lara.language.specification.dsl.Action(returnType, "insert", paramsString);
-
-        jps.add(insertActionWithString);
-        jps.add(insertActionWithJp);
-
-        // Sort with the insert actions inside
+        // Insert overloads now come from the shared LaraJoinPoint contract through the
+        // inherited action hierarchy.
         jps.sort(Comparator.comparing(Action::getName));
 
         for (var action : jps) {
+            if (isRuntimeBackedAction(action)) {
+                continue;
+            }
+
+            normalizeJoinPointBaseAction(
+                    action,
+                    javaGenerator,
+                    "Inherited action '%s' redeclares inherited action with different return type. Using return type '%s'.");
+
             final Method m = generateActionMethod(action, javaGenerator, currentJpType);
             m.setName(m.getName() + GenConstants.getImplementationSufix());
             m.clearCode();
@@ -392,6 +383,31 @@ public class GeneratorUtils {
         return type.replace("java.lang.", "").trim();
     }
 
+    public static boolean isRuntimeBackedAction(Action action) {
+        return findJoinPointBaseMethod(action).isPresent();
+    }
+
+    public static boolean isRuntimeBackedAttribute(Attribute attribute) {
+        String methodName = attribute.getParameters().isEmpty()
+                ? "get" + Utils.firstCharToUpper(attributeMethodBaseName(attribute.getName()))
+                : attribute.getName();
+
+        Optional<java.lang.reflect.Method> baseMethod = Arrays
+            .stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
+                .filter(method -> method.getName().equals(methodName))
+            .filter(method -> parametersMatch(method, attribute.getParameters()))
+            .findFirst();
+
+        // Keep generation for Object-returning methods (e.g., children/descendants),
+        // so we can still emit the JP-specific impl hook and wrapper. For methods with
+        // non-Object returns (e.g., getJoinPointType/getSuper/getDump) generation would
+        // produce an invalid override because generated wrappers return Object.
+        return baseMethod
+            .map(method -> java.lang.reflect.Modifier.isFinal(method.getModifiers())
+                || !Object.class.equals(method.getReturnType()))
+            .orElse(false);
+    }
+
     public static JoinPointBaseActionInfo analyzeJoinPointBaseAction(Action action) {
         var baseMethod = findJoinPointBaseMethod(action);
         if (baseMethod.isEmpty()) {
@@ -458,8 +474,11 @@ public class GeneratorUtils {
     }
 
     private static boolean parametersMatch(java.lang.reflect.Method method, Action action) {
+        return parametersMatch(method, action.getParameters());
+    }
+
+    private static boolean parametersMatch(java.lang.reflect.Method method, List<Parameter> params) {
         Class<?>[] parameterTypes = method.getParameterTypes();
-        List<Parameter> params = action.getParameters();
         if (parameterTypes.length != params.size()) {
             return false;
         }
@@ -467,6 +486,9 @@ public class GeneratorUtils {
         for (int i = 0; i < parameterTypes.length; i++) {
             String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
             String actual = normalizeType(params.get(i).getType());
+            if (params.get(i).getIType() instanceof LiteralEnum && expected.equals("String")) {
+                continue;
+            }
             if (!expected.equals(actual)) {
                 return false;
             }

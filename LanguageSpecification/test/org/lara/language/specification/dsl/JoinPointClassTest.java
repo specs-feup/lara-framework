@@ -19,7 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.lara.language.specification.dsl.types.ArrayType;
 import org.lara.language.specification.dsl.types.GenericType;
+import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
 
 import java.util.List;
@@ -355,6 +358,51 @@ class JoinPointClassTest {
             assertThat(global.getName()).isEqualTo(JoinPointClass.getGlobalName());
             assertThat(global.getExtend()).isEmpty();
             assertThat(global.hasExtend()).isFalse();
+            assertThat(global.getAttributesSelf()).extracting(Attribute::getName)
+                .containsExactly("dump", "joinPointType", "node", "self", "super", "children", "descendants",
+                    "scopeNodes");
+            assertThat(global.getActionsSelf()).extracting(Action::getSignature)
+                .containsExactly(
+                    "insert([before | after | replace], String)",
+                    "insert([before | after | replace], joinpoint)",
+                    "toString()",
+                    "equals(joinpoint)",
+                    "instanceOf(String)",
+                    "instanceOf(String[])");
+        }
+
+        @Test
+        @DisplayName("Should keep self-references bound to the created join point")
+        void shouldKeepSelfReferencesBoundToCreatedJoinPoint() {
+            JoinPointClass global = JoinPointClass.globalJoinPoint();
+
+            assertThat(((JPType) global.getAttributeSelf("self").get(0).getType()).getJointPoint()).isSameAs(global);
+            assertThat(((JPType) global.getAttributeSelf("super").get(0).getType()).getJointPoint()).isSameAs(global);
+
+            ArrayType childrenType = (ArrayType) global.getAttributeSelf("children").get(0).getType();
+            assertThat(((JPType) childrenType.getBaseType()).getJointPoint()).isSameAs(global);
+
+            Action insertJoinPoint = global.getActionSelf("insert").get(1);
+            ArrayType insertReturnType = (ArrayType) insertJoinPoint.getType();
+            assertThat(((JPType) insertReturnType.getBaseType()).getJointPoint()).isSameAs(global);
+            assertThat(((JPType) insertJoinPoint.getParameters().get(1).getIType()).getJointPoint()).isSameAs(global);
+
+            LiteralEnum positionType = (LiteralEnum) insertJoinPoint.getParameters().get(0).getIType();
+            assertThat(positionType.getValues()).containsExactly("before", "after", "replace");
+        }
+
+        @Test
+        @DisplayName("Should support alternate metadata names with the same shared contract")
+        void shouldSupportAlternateMetadataNames() {
+            JoinPointClass laraJoinPoint = LaraJoinPointContract.build("LaraJoinPoint");
+
+            assertThat(laraJoinPoint.getName()).isEqualTo("LaraJoinPoint");
+            assertThat(laraJoinPoint.getAttributesSelf()).extracting(Attribute::getName)
+                .containsExactlyElementsOf(globalJoinPoint.getAttributesSelf().stream().map(Attribute::getName).toList());
+            assertThat(laraJoinPoint.getActionsSelf()).extracting(Action::getSignature)
+                .containsExactlyElementsOf(globalJoinPoint.getActionsSelf().stream().map(Action::getSignature).toList());
+            assertThat(((JPType) laraJoinPoint.getAttributeSelf("self").get(0).getType()).getJointPoint())
+                .isSameAs(laraJoinPoint);
         }
 
         @Test

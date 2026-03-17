@@ -98,6 +98,14 @@ public abstract class AFunction<Self extends AFunction<Self>> extends AMediumWea
     protected enum FunctionAttributes {
         NAME("name"),
         PARAMS("params"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

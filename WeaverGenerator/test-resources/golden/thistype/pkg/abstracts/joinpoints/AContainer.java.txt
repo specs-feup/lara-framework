@@ -112,6 +112,14 @@ public abstract class AContainer<Self extends AContainer<Self>> extends AThistyp
     protected enum ContainerAttributes {
         DEEPNESTED("deepNested"),
         MULTITHIS("multiThis"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         ANCESTORS("ancestors"),
         ROOT("root"),
         SIBLINGS("siblings");
