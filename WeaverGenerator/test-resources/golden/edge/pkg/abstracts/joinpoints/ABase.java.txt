@@ -54,7 +54,15 @@ public abstract class ABase<Self extends ABase<Self>> extends AEdgeWeaverJoinPoi
      * 
      */
     protected enum BaseAttributes {
-        A("a");
+        A("a"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes");
         private String name;
 
         /**

@@ -21,7 +21,7 @@ public abstract class AMinimalWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {};
+        String[] weaverActions= {"insert", "insert", "toString", "equals", "instanceOf", "instanceOf"};
         return Arrays.asList(weaverActions);
     }
 

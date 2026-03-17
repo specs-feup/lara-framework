@@ -2,8 +2,8 @@ package thistype.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import java.util.Map;
 import org.lara.interpreter.exception.ActionException;
+import java.util.Map;
 import java.util.List;
 import org.lara.interpreter.exception.AttributeException;
 
@@ -46,6 +46,40 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
      * @return Tree node reference
      */
     public abstract Object getNode();
+
+    /**
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * @return True if this join point is an instanceof the given class
+     */
+    @Override
+    public boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if(isInstance) {
+        	return true;
+        }
+        return super.instanceOf(joinpointClass);
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        throw new UnsupportedOperationException(get_class()+": Action equals not implemented ");
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public final Object equals(AJoinPoint<?> jp) {
+        try {
+        	boolean result = this.equalsImpl(jp);
+        	return result;
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "equals", e);
+        }
+    }
 
     /**
      * Categorizes nodes by criteria
@@ -185,18 +219,5 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "siblings", e);
         }
-    }
-
-    /**
-     * Defines if this joinpoint is an instanceof a given joinpoint class
-     * @return True if this join point is an instanceof the given class
-     */
-    @Override
-    public boolean instanceOf(String joinpointClass) {
-        boolean isInstance = get_class().equals(joinpointClass);
-        if(isInstance) {
-        	return true;
-        }
-        return super.instanceOf(joinpointClass);
     }
 }

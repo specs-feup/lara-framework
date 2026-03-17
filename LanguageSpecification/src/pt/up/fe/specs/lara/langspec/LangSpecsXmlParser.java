@@ -230,12 +230,48 @@ public class LangSpecsXmlParser {
 
         var globalAttributes = artifacts.getElementByName("global");
         if (globalAttributes != null) {
-            convertAttributes(globalAttributes.getElementsByName("attribute"), langSpecV2)
+            convertAttributes(globalAttributes.getElementsByName("attribute"), langSpecV2).stream()
+                    .filter(attribute -> !containsEquivalentAttribute(global.getAttributeSelf(attribute.getName()), attribute))
                     .forEach(global::add);
         }
 
-        convertActions(langSpecV2, globalActionNodes, JoinPointClass.getGlobalName())
+        convertActions(langSpecV2, globalActionNodes, JoinPointClass.getGlobalName()).stream()
+                .filter(action -> !containsEquivalentAction(global.getActionSelf(action.getName()), action))
                 .forEach(global::add);
+    }
+
+    private static boolean containsEquivalentAttribute(List<Attribute> existing, Attribute candidate) {
+        return existing.stream().anyMatch(attribute -> sameAttributeSignature(attribute, candidate));
+    }
+
+    private static boolean sameAttributeSignature(Attribute left, Attribute right) {
+        return left.getName().equals(right.getName())
+                && left.getReturnType().equals(right.getReturnType())
+                && sameParameterTypes(left.getParameters(), right.getParameters());
+    }
+
+    private static boolean containsEquivalentAction(List<Action> existing, Action candidate) {
+        return existing.stream().anyMatch(action -> sameActionSignature(action, candidate));
+    }
+
+    private static boolean sameActionSignature(Action left, Action right) {
+        return left.getName().equals(right.getName())
+                && left.getReturnType().equals(right.getReturnType())
+                && sameParameterTypes(left.getParameters(), right.getParameters());
+    }
+
+    private static boolean sameParameterTypes(List<Parameter> left, List<Parameter> right) {
+        if (left.size() != right.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < left.size(); i++) {
+            if (!left.get(i).getType().equals(right.get(i).getType())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static List<Attribute> convertAttributes(List<XmlElement> attributeNodes,

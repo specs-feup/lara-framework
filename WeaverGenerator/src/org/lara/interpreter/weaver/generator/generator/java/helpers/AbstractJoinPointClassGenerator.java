@@ -255,8 +255,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
                 + Utils.firstCharToUpper(superType.getName());
-        final JavaType joinPointType = ConvertUtils
-                .withJoinPointWildcard(new JavaType(superClassName, javaGenerator.getJoinPointClassPackage()));
+        final JavaType joinPointType = ConvertUtils.withJoinPointTypeArgument(
+            new JavaType(superClassName, javaGenerator.getJoinPointClassPackage()), currentJpType);
         javaC.add(new Field(joinPointType, fieldName, Privacy.PROTECTED));
 
         final Constructor constructor = new Constructor(javaC);
@@ -281,7 +281,9 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         // Add global methods for global attributes
         // With CRTP, global attributes that use ThisType must resolve to the current
         // Self type to keep override signatures compatible across the hierarchy.
-        var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
+        var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf().stream()
+            .filter(attribute -> !GeneratorUtils.isRuntimeBackedAttribute(attribute))
+            .toList();
         JavaType globalJpType = currentJpType;
 
         GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes, globalJpType);

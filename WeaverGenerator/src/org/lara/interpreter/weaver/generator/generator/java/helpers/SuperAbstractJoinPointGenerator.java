@@ -90,8 +90,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
 
         // For CRTP, use "Self" as the type for ThisType resolution
         JavaType thisType = new JavaType(CrtpJavaClass.SELF_TYPE_PARAMETER);
-        generateGlobalJoinPointData(abstJPClass, thisType);
+        // instanceOf(String) has a dedicated generator path; emit it before the
+        // generic global actions so duplicate signatures are skipped consistently.
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
+        generateGlobalJoinPointData(abstJPClass, thisType);
 
         return abstJPClass;
     }
@@ -184,6 +186,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
         for (var attr : globalAttrs) {
+            if (GeneratorUtils.isRuntimeBackedAttribute(attr)) {
+                continue;
+            }
+
             final Method method = GeneratorUtils.generateAttribute(attr, abstJPClass, javaGenerator, currentJpType);
 
             Method methodImpl = GeneratorUtils.generateAttributeImpl(method, attr,
@@ -208,6 +214,10 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         }
 
         for (var action : actions) {
+            if (GeneratorUtils.isRuntimeBackedAction(action)) {
+                continue;
+            }
+
             boolean skipWrapper = GeneratorUtils.normalizeJoinPointBaseAction(
                     action,
                     javaGenerator,
