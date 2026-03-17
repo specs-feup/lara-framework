@@ -302,11 +302,7 @@ public class GeneratorUtils {
     public static void encapsulateArrayAttribute(JavaClass javaC, Method getter) {
         final Method newGetter = getter.clone();
         newGetter.setName(newGetter.getName() + GenConstants.getArrayMethodSufix());
-        final JavaType returnType = newGetter.getReturnType();
-        final String baseType = returnType.getName();
-        // getter.setReturnType(new JavaType(Bindings.class));
         getter.setReturnType(new JavaType(Object.class));
-        // javaC.addImport(Converter.class); // No longer needed?
         getter.clearCode();
         getter.appendCode("return " + newGetter.getName() + "(");
         final List<Argument> arguments = getter.getParams();
