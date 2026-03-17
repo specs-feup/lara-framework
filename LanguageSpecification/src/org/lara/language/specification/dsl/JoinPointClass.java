@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.lara.language.specification.dsl.types.IType;
 
 import pt.up.fe.specs.util.collections.MultiMap;
-import pt.up.fe.specs.util.lazy.Lazy;
 
 public class JoinPointClass extends BaseNode implements Comparable<JoinPointClass> {
 
@@ -34,10 +33,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     private Optional<String> defaultAttribute;
     private List<Attribute> attributes;
     private List<Action> actions;
-
-    // TODO: There is attribute and action overloading, fix this
-    private final Lazy<MultiMap<String, Attribute>> attributeMap;
-    private final Lazy<MultiMap<String, Action>> actionsMap;
 
     public JoinPointClass(String name) {
         this(name, null, null);
@@ -50,9 +45,6 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         setDefaultAttribute(defaultAttribute);
         attributes = new ArrayList<>();
         actions = new ArrayList<>();
-
-        attributeMap = Lazy.newInstance(() -> buildMultiMap(getAttributesSelf(), Attribute::getName));
-        actionsMap = Lazy.newInstance(() -> buildMultiMap(getActionsSelf(), Action::getName));
     }
 
     public String getName() {
@@ -72,6 +64,14 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
         }
 
         return map;
+    }
+
+    private MultiMap<String, Attribute> buildAttributeMap() {
+        return buildMultiMap(getAttributesSelf(), Attribute::getName);
+    }
+
+    private MultiMap<String, Action> buildActionMap() {
+        return buildMultiMap(getActionsSelf(), Action::getName);
     }
 
     public boolean hasExtend() {
@@ -156,7 +156,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
     }
 
     public List<Attribute> getAttributeSelf(String name) {
-        return attributeMap.get().get(name);
+        return buildAttributeMap().get(name);
     }
 
     /**
@@ -164,15 +164,15 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      *         exists.
      */
     public List<Action> getActionSelf(String name) {
-        return actionsMap.get().get(name);
+        return buildActionMap().get(name);
     }
 
     public boolean hasAttributeSelf(String name) {
-        return attributeMap.get().containsKey(name);
+        return buildAttributeMap().containsKey(name);
     }
 
     public boolean hasActionSelf(String name) {
-        return actionsMap.get().containsKey(name);
+        return buildActionMap().containsKey(name);
     }
 
     public boolean hasAttribute(String name) {
@@ -223,7 +223,7 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      *         attributes of this join point, including hierarchy
      */
     public List<Attribute> getAttribute(String name) {
-        List<Attribute> attribute = new ArrayList<>(attributeMap.get().get(name));
+        List<Attribute> attribute = new ArrayList<>(buildAttributeMap().get(name));
         extend.ifPresent(superJp -> attribute.addAll(superJp.getAttribute(name)));
         return attribute;
     }
@@ -234,29 +234,13 @@ public class JoinPointClass extends BaseNode implements Comparable<JoinPointClas
      *         actions of this join point, including hierarchy
      */
     public List<Action> getAction(String name) {
-        List<Action> action = new ArrayList<>(actionsMap.get().get(name));
+        List<Action> action = new ArrayList<>(buildActionMap().get(name));
         extend.ifPresent(superJp -> action.addAll(superJp.getAction(name)));
         return action;
     }
 
     public static JoinPointClass globalJoinPoint() {
-        JoinPointClass globalNode = new JoinPointClass(JoinPointClass.GLOBAL_NAME);
-
-        // TODO: Handle this in another way, it is here for compatibility reasons with
-        // the weaver generator
-        // Add default define (def) action
-        // var defAction = new Action(new GenericType("Object", false), "def");
-        // globalNode.add(defAction);
-        /*
-         * globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
-         * List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-         * new Parameter(PrimitiveClasses.STRING, "code"))));
-         * 
-         * globalNode.add(new Action(new ArrayType(new JPType(globalNode)), "insert",
-         * List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-         * new Parameter(new GenericType("Joinpoint", false), "code"))));
-         */
-        return globalNode;
+        return LaraJoinPointContract.build(JoinPointClass.GLOBAL_NAME);
     }
 
     @Override

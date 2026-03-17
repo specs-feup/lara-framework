@@ -34,6 +34,14 @@ public abstract class AStatement<Self extends AStatement<Self>> extends AMediumW
      * 
      */
     protected enum StatementAttributes {
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

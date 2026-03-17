@@ -23,23 +23,8 @@
         <parameter name="node" type="String[]"/>
     </action>
 
-    <!-- Due to issues in the weaver generator, cannot declare these inserts here-->
-    <!-- Inserts the node in the given position -->
-    <!--
-    <action name="insert" return="joinpoint[]"
-            tooltip="Inserts the given string of code in the given position relative to this join point">
-        <parameter name="position" type="String"/>
-        <parameter name="code" type="String"/>
-    </action>
-    -->
-    <!-- Inserts the node in the given position -->
-    <!--
-    <action name="insert" return="joinpoint[]"
-            tooltip="Inserts the given join point in the given position relative to this join point">
-        <parameter name="position" type="String"/>
-        <parameter name="code" type="joinpoint_interface"/>
-    </action>
-    -->
+    <!-- Insert overloads are provided by the shared LaraJoinPoint contract and -->
+    <!-- inherited automatically, so explicit declarations are not needed here. -->
 
     <!-- Inserts node before the given node -->
     <action name="insertBefore" return="joinpoint"

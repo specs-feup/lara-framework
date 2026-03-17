@@ -2,6 +2,7 @@ package minimal.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
+import org.lara.interpreter.exception.ActionException;
 
 /**
  * Abstract class containing the global attributes and default action exception.
@@ -54,5 +55,26 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
         	return true;
         }
         return super.instanceOf(joinpointClass);
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        throw new UnsupportedOperationException(get_class()+": Action equals not implemented ");
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public final Object equals(AJoinPoint<?> jp) {
+        try {
+        	boolean result = this.equalsImpl(jp);
+        	return result;
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "equals", e);
+        }
     }
 }

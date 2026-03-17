@@ -46,12 +46,37 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
     public abstract Object getNode();
 
     /**
-     * 
-     * @param position 
-     * @param code 
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * @return True if this join point is an instanceof the given class
      */
-    public AJoinPoint<?>[] insertImpl(String position, String code) {
-        throw new UnsupportedOperationException(get_class()+": Action insert not implemented ");
+    @Override
+    public boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if(isInstance) {
+        	return true;
+        }
+        return super.instanceOf(joinpointClass);
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        throw new UnsupportedOperationException(get_class()+": Action equals not implemented ");
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public final Object equals(AJoinPoint<?> jp) {
+        try {
+        	boolean result = this.equalsImpl(jp);
+        	return result;
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "equals", e);
+        }
     }
 
     /**
@@ -71,18 +96,5 @@ public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoin
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "language", e);
         }
-    }
-
-    /**
-     * Defines if this joinpoint is an instanceof a given joinpoint class
-     * @return True if this join point is an instanceof the given class
-     */
-    @Override
-    public boolean instanceOf(String joinpointClass) {
-        boolean isInstance = get_class().equals(joinpointClass);
-        if(isInstance) {
-        	return true;
-        }
-        return super.instanceOf(joinpointClass);
     }
 }

@@ -129,18 +129,6 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
     }
 
     /**
-     * Returns direct children as array
-     */
-    public final Object getChildren() {
-        try {
-        	Object result = this.getChildrenImpl();
-        	return result!=null?result:getUndefinedValue();
-        } catch(Exception e) {
-        	throw new AttributeException(get_class(), "children", e);
-        }
-    }
-
-    /**
      * Get value on attribute childrenMatrix
      * @return the attribute's value
      */
@@ -229,18 +217,6 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
      */
     public Object getDescendantsImpl() {
         return getDescendantsArrayImpl();
-    }
-
-    /**
-     * Returns all descendants as array
-     */
-    public final Object getDescendants() {
-        try {
-        	Object result = this.getDescendantsImpl();
-        	return result!=null?result:getUndefinedValue();
-        } catch(Exception e) {
-        	throw new AttributeException(get_class(), "descendants", e);
-        }
     }
 
     /**
@@ -789,6 +765,12 @@ public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoi
         PARENT("parent"),
         PROPERTIES("properties"),
         TAGS("tags"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        SCOPENODES("scopeNodes"),
         ANCESTORS("ancestors"),
         ROOT("root"),
         SIBLINGS("siblings");

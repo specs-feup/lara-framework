@@ -10,19 +10,19 @@
     "weaverFiles": 1
   },
   "json": {
-    "actionCount": 2496,
-    "attributeCount": 6612,
-    "childrenKeyCount": 9201,
+    "actionCount": 3036,
+    "attributeCount": 7062,
+    "childrenKeyCount": 10191,
     "enumCount": 2,
     "extendsKeyCount": 90,
-    "joinpointCount": 3284,
+    "joinpointCount": 3644,
     "maxDepth": 7,
-    "nameKeyCount": 13037,
-    "nodesWithChildren": 9201,
-    "totalArrays": 9201,
-    "totalChildrenEdges": 22157,
-    "totalObjects": 22158,
-    "typeKeyCount": 22145,
+    "nameKeyCount": 14657,
+    "nodesWithChildren": 10191,
+    "totalArrays": 10191,
+    "totalChildrenEdges": 24767,
+    "totalObjects": 24768,
+    "typeKeyCount": 24755,
     "typedefCount": 0
   }
 }

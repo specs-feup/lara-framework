@@ -42,6 +42,37 @@ class SemanticValidationTest {
     }
 
     @Test
+    @DisplayName("Exact built-in global declarations are deduplicated when parsing XML")
+    void exactBuiltInGlobalsAreDeduplicated() {
+        String jp = """
+                <joinpoints root_class="root">
+                    <joinpoint class="root"/>
+                </joinpoints>
+                """;
+        String attrs = """
+                <artifacts>
+                    <global>
+                        <attribute name="children" type="joinpoint[]"/>
+                        <attribute name="descendants" type="joinpoint[]"/>
+                    </global>
+                </artifacts>
+                """;
+        String actions = """
+                <actions>
+                    <action name="instanceOf" return="boolean">
+                        <parameter name="name" type="String"/>
+                    </action>
+                </actions>
+                """;
+
+        var spec = LangSpecsXmlParser.parse(is(jp), is(attrs), is(actions), false);
+
+        assertThat(spec.getGlobal().getAttribute("children")).hasSize(1);
+        assertThat(spec.getGlobal().getAttribute("descendants")).hasSize(1);
+        assertThat(spec.getGlobal().getAction("instanceOf")).hasSize(2);
+    }
+
+    @Test
     @DisplayName("Duplicate joinpoint classes are rejected by parser or model")
     void duplicateJoinPointsRejected() {
         String jp = """

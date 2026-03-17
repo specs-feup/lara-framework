@@ -7,13 +7,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
+import org.lara.language.specification.dsl.Action;
+import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.LaraJoinPointContract;
 
 class JoinPointTest {
+
+    @Test
+    @DisplayName("getLaraJoinPoint() keeps runtime alias while reusing shared contract metadata")
+    void testGetLaraJoinPointUsesSharedContract() {
+    var runtimeContract = JoinPoint.getLaraJoinPoint();
+    var sharedContract = LaraJoinPointContract.build("LaraJoinPoint");
+
+    assertThat(runtimeContract.getName()).isEqualTo("LaraJoinPoint");
+    assertThat(runtimeContract.getAttributesSelf()).extracting(Attribute::getName)
+        .containsExactlyElementsOf(sharedContract.getAttributesSelf().stream().map(Attribute::getName).toList());
+    assertThat(runtimeContract.getActionsSelf()).extracting(Action::getSignature)
+        .containsExactlyElementsOf(sharedContract.getActionsSelf().stream().map(Action::getSignature).toList());
+    assertThat(runtimeContract.getAttributeSelf("self").get(0).getType().type()).isEqualTo("LaraJoinPoint");
+    assertThat(runtimeContract.getActionSelf("insert").get(1).getParameters().get(1).getIType().type())
+        .isEqualTo("LaraJoinPoint");
+    }
 
     @Test
     @DisplayName("instanceOf() true for 'joinpoint', exact type, and super chain")

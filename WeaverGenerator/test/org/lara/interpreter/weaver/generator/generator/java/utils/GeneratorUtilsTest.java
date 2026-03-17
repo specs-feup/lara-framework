@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
+import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
 import org.lara.language.specification.dsl.types.Primitive;
 import org.lara.language.specification.dsl.types.PrimitiveClasses;
@@ -69,6 +70,17 @@ class GeneratorUtilsTest {
     }
 
     @Test
+    @DisplayName("shared contract insert overload should still match runtime JoinPoint insert")
+    void analyzeJoinPointBaseActionWithLiteralEnumParameter() {
+        Action action = JoinPointClass.globalJoinPoint().getActionSelf("insert").get(0);
+
+        GeneratorUtils.JoinPointBaseActionInfo info = GeneratorUtils.analyzeJoinPointBaseAction(action);
+
+        assertThat(info.skipWrapper()).isTrue();
+        assertThat(info.correctedReturnType()).isEmpty();
+    }
+
+    @Test
     @DisplayName("adding same action twice should keep one signature pair")
     void addActionAndWrapperDeduplicates() {
         JavaAbstractsGenerator generator = new JavaAbstractsGenerator();
@@ -86,6 +98,39 @@ class GeneratorUtilsTest {
 
         assertThat(methodCountAfterFirst).isEqualTo(2);
         assertThat(targetClass.getMethods()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("shared contract should provide inherited insert overloads without generator hacks")
+    void sharedContractProvidesInheritedInsertOverloads() {
+        JoinPointClass global = JoinPointClass.globalJoinPoint();
+        JoinPointClass custom = new JoinPointClass("custom");
+        custom.setExtend(global);
+
+        List<Action> insertActions = custom.getAction("insert");
+
+        assertThat(insertActions)
+                .hasSize(2)
+                .extracting(Action::getSignature)
+                .containsExactly(
+                        "insert([before | after | replace], String)",
+                        "insert([before | after | replace], joinpoint)");
+    }
+
+    @Test
+    @DisplayName("runtime getChildren should not suppress generated children attribute hooks")
+    void runtimeGetChildrenShouldNotSuppressGeneration() {
+        Attribute children = JoinPointClass.globalJoinPoint().getAttributeSelf("children").get(0);
+
+        assertThat(GeneratorUtils.isRuntimeBackedAttribute(children)).isFalse();
+    }
+
+    @Test
+    @DisplayName("runtime getJoinPointType should still be treated as runtime-backed")
+    void runtimeGetJoinPointTypeShouldStayRuntimeBacked() {
+        Attribute joinPointType = JoinPointClass.globalJoinPoint().getAttributeSelf("joinPointType").get(0);
+
+        assertThat(GeneratorUtils.isRuntimeBackedAttribute(joinPointType)).isTrue();
     }
 
     private static String methodSignature(Method method) {
