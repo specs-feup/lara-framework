@@ -19,13 +19,13 @@ public class BaseJoinPointSpec extends WeaverSpec {
             .attribute("dump", STRING, "String with a dump of the join point hierarchy")
             .attribute("joinPointType", STRING, "The type name of this join point")
             .attribute("self", THIS, "A reference to this join point")
-            .attribute("children", array(THIS), "The children of this join point")
-            .attribute("descendants", array(THIS), "All descendants of this join point")
-            .attribute("scopeNodes", array(THIS), "The scope nodes of this join point")
+            .attribute("children", array(jpRef("joinpoint")), "The children of this join point, ignoring null nodes")
+            .attribute("descendants", array(jpRef("joinpoint")), "All descendants of this join point")
+            .attribute("scopeNodes", array(jpRef("joinpoint")), "The scope nodes of this join point")
 
             // Tree navigation
-            .attribute("parent", THIS, "The parent of this join point")
-            .attribute("root", THIS, "The root of the tree")
+            .attribute("parent", jpRef("joinpoint"), "Returns the parent node in the AST, or undefined if it is the root node")
+            .attribute("root", jpRef("joinpoint"), "The root of the tree")
             .attribute("code", STRING, "String with the code represented by this node")
             .attribute("line", INTEGER, "The starting line of the current node in the original code")
             .attribute("column", INTEGER, "The starting column of the current node in the original code")
