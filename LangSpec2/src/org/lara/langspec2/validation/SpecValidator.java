@@ -84,49 +84,63 @@ public final class SpecValidator {
     }
 
     private static void checkTypeReferences(WeaverModel model, List<String> errors) {
-        var validNames = new HashSet<String>();
-        validNames.add(model.getGlobal().getName());
+        var validJpNames = new HashSet<String>();
+        validJpNames.add(model.getGlobal().getName());
         for (var jp : model.getJoinPoints().values()) {
-            validNames.add(jp.getName());
+            validJpNames.add(jp.getName());
         }
-        for (var td : model.getTypeDefs().keySet()) {
-            validNames.add(td);
-        }
-        for (var ed : model.getEnumDefs().keySet()) {
-            validNames.add(ed);
-        }
+
+        var validTypeDefs = Set.copyOf(model.getTypeDefs().keySet());
+        var validEnums = Set.copyOf(model.getEnumDefs().keySet());
 
         for (var jp : model.getAllJpClasses()) {
             for (var attr : jp.getOwnAttributes()) {
-                checkTypeRef(attr.type(), validNames, "attribute '" + attr.name() + "' of '" + jp.getName() + "'", errors);
+                checkTypeRef(attr.type(), validJpNames, validTypeDefs, validEnums,
+                        "attribute '" + attr.name() + "' of '" + jp.getName() + "'", errors);
                 for (var param : attr.parameters()) {
-                    checkTypeRef(param.type(), validNames, "parameter '" + param.name() + "' of attribute '" + attr.name() + "' of '" + jp.getName() + "'", errors);
+                    checkTypeRef(param.type(), validJpNames, validTypeDefs, validEnums,
+                            "parameter '" + param.name() + "' of attribute '" + attr.name() + "' of '" + jp.getName() + "'", errors);
                 }
             }
             for (var action : jp.getOwnActions()) {
-                checkTypeRef(action.returnType(), validNames, "action '" + action.name() + "' of '" + jp.getName() + "'", errors);
+                checkTypeRef(action.returnType(), validJpNames, validTypeDefs, validEnums,
+                        "action '" + action.name() + "' of '" + jp.getName() + "'", errors);
                 for (var param : action.parameters()) {
-                    checkTypeRef(param.type(), validNames, "parameter '" + param.name() + "' of action '" + action.name() + "' of '" + jp.getName() + "'", errors);
+                    checkTypeRef(param.type(), validJpNames, validTypeDefs, validEnums,
+                            "parameter '" + param.name() + "' of action '" + action.name() + "' of '" + jp.getName() + "'", errors);
                 }
             }
         }
     }
 
-    private static void checkTypeRef(JpDataType type, Set<String> validNames, String context, List<String> errors) {
+    private static void checkTypeRef(JpDataType type,
+                                     Set<String> validJpNames,
+                                     Set<String> validTypeDefs,
+                                     Set<String> validEnums,
+                                     String context,
+                                     List<String> errors) {
         if (type instanceof JpRefType ref) {
-            if (!validNames.contains(ref.jpName())) {
+            if (!validJpNames.contains(ref.jpName())) {
                 errors.add("Unknown type reference '" + ref.jpName() + "' in " + context);
             }
+        } else if (type instanceof TypeDefRefType ref) {
+            if (!validTypeDefs.contains(ref.typeDefName())) {
+                errors.add("Unknown typedef reference '" + ref.typeDefName() + "' in " + context);
+            }
+        } else if (type instanceof EnumRefType ref) {
+            if (!validEnums.contains(ref.enumName())) {
+                errors.add("Unknown enum reference '" + ref.enumName() + "' in " + context);
+            }
         } else if (type instanceof ArrayType arr) {
-            checkTypeRef(arr.element(), validNames, context, errors);
+            checkTypeRef(arr.element(), validJpNames, validTypeDefs, validEnums, context, errors);
         } else if (type instanceof ParameterizedType pt) {
-            checkTypeRef(pt.base(), validNames, context, errors);
+            checkTypeRef(pt.base(), validJpNames, validTypeDefs, validEnums, context, errors);
             for (var arg : pt.args()) {
-                checkTypeRef(arg, validNames, context, errors);
+                checkTypeRef(arg, validJpNames, validTypeDefs, validEnums, context, errors);
             }
         } else if (type instanceof WildcardType wt) {
             if (wt.bound() != null) {
-                checkTypeRef(wt.bound(), validNames, context, errors);
+                checkTypeRef(wt.bound(), validJpNames, validTypeDefs, validEnums, context, errors);
             }
         }
         // PrimitiveType and SelfType: no-op

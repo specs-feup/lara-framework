@@ -3,6 +3,8 @@ package org.lara.weavergen2.java;
 import org.lara.langspec2.types.JpDataType;
 import org.lara.langspec2.types.JpDataType.*;
 
+import javax.lang.model.SourceVersion;
+
 /**
  * Utilities for mapping LangSpec2 types to Java type strings.
  */
@@ -13,30 +15,40 @@ public final class TypeMapper {
     /**
      * Converts a JpDataType to its Java type representation.
      *
-     * @param type         the spec type
-     * @param selfType     the Java type string to use for SelfType (e.g., "Self")
-     * @param jpRefMapper  how to resolve JP reference names to Java types
+     * @param type             the spec type
+     * @param selfType         the Java type string to use for SelfType (e.g., "Self")
+     * @param jpRefMapper      how to resolve JP reference names to Java types
+     * @param typeDefRefMapper how to resolve TypeDef reference names to Java types
+     * @param enumRefMapper    how to resolve EnumDef reference names to Java types
      */
-    public static String toJavaType(JpDataType type, String selfType, java.util.function.Function<String, String> jpRefMapper) {
+    public static String toJavaType(JpDataType type,
+                                    String selfType,
+                                    java.util.function.Function<String, String> jpRefMapper,
+                                    java.util.function.Function<String, String> typeDefRefMapper,
+                                    java.util.function.Function<String, String> enumRefMapper) {
         if (type instanceof PrimitiveType p) {
             return p.name();
         } else if (type instanceof SelfType) {
             return selfType;
         } else if (type instanceof JpRefType ref) {
             return jpRefMapper.apply(ref.jpName());
+        } else if (type instanceof TypeDefRefType ref) {
+            return typeDefRefMapper.apply(ref.typeDefName());
+        } else if (type instanceof EnumRefType ref) {
+            return enumRefMapper.apply(ref.enumName());
         } else if (type instanceof ArrayType arr) {
-            return toJavaType(arr.element(), selfType, jpRefMapper) + "[]";
+            return toJavaType(arr.element(), selfType, jpRefMapper, typeDefRefMapper, enumRefMapper) + "[]";
         } else if (type instanceof ParameterizedType pt) {
-            var base = toJavaType(pt.base(), selfType, jpRefMapper);
+            var base = toJavaType(pt.base(), selfType, jpRefMapper, typeDefRefMapper, enumRefMapper);
             var args = pt.args().stream()
-                    .map(a -> toJavaType(a, selfType, jpRefMapper))
+                    .map(a -> toJavaType(a, selfType, jpRefMapper, typeDefRefMapper, enumRefMapper))
                     .toList();
             return base + "<" + String.join(", ", args) + ">";
         } else if (type instanceof WildcardType wt) {
             return switch (wt.kind()) {
                 case UNBOUNDED -> "?";
-                case EXTENDS -> "? extends " + toJavaType(wt.bound(), selfType, jpRefMapper);
-                case SUPER -> "? super " + toJavaType(wt.bound(), selfType, jpRefMapper);
+                case EXTENDS -> "? extends " + toJavaType(wt.bound(), selfType, jpRefMapper, typeDefRefMapper, enumRefMapper);
+                case SUPER -> "? super " + toJavaType(wt.bound(), selfType, jpRefMapper, typeDefRefMapper, enumRefMapper);
             };
         }
         throw new IllegalArgumentException("Unknown JpDataType: " + type);
@@ -47,8 +59,10 @@ public final class TypeMapper {
      * For Self types, returns "Self". For JP refs, returns the abstract class name.
      */
     public static String toImplReturnType(JpDataType type, String selfType,
-                                          java.util.function.Function<String, String> jpRefMapper) {
-        return toJavaType(type, selfType, jpRefMapper);
+                                          java.util.function.Function<String, String> jpRefMapper,
+                                          java.util.function.Function<String, String> typeDefRefMapper,
+                                          java.util.function.Function<String, String> enumRefMapper) {
+        return toJavaType(type, selfType, jpRefMapper, typeDefRefMapper, enumRefMapper);
     }
 
     /**
