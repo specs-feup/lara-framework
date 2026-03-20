@@ -158,7 +158,10 @@ public final class AbstractJpGenerator {
             sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
         } else {
             var params = formatParams(attr.parameters());
-            var argNames = attr.parameters().stream().map(Parameter::name).toList();
+            var argNames = attr.parameters().stream()
+                    .map(Parameter::name)
+                    .map(TypeMapper::sanitizeJavaIdentifier)
+                    .toList();
             sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
             sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this, " + String.join(", ", argNames) + ");");
         }
@@ -172,7 +175,10 @@ public final class AbstractJpGenerator {
         var providerDefClass = TypeMapper.providerDefName(owner.getName());
 
         var params = formatParams(action.parameters());
-        var argNames = action.parameters().stream().map(Parameter::name).toList();
+        var argNames = action.parameters().stream()
+            .map(Parameter::name)
+            .map(TypeMapper::sanitizeJavaIdentifier)
+            .toList();
 
         sb.line("@Override");
         sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
@@ -192,12 +198,14 @@ public final class AbstractJpGenerator {
         var wrapperReturnType = "Object";
 
         if (params.isEmpty()) {
-            sb.openBlock("public final " + wrapperReturnType + " " + methodName.substring(3, 4).toLowerCase() + methodName.substring(4) + "()");
+            var wrapperName = TypeMapper.sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+            sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "()");
         } else {
             var objParams = params.stream()
-                    .map(p -> "Object " + p.name())
+                    .map(p -> "Object " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                     .toList();
-            sb.openBlock("public final " + wrapperReturnType + " " + methodName.substring(3, 4).toLowerCase() + methodName.substring(4) + "(" + String.join(", ", objParams) + ")");
+            var wrapperName = TypeMapper.sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+            sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "(" + String.join(", ", objParams) + ")");
         }
 
         sb.openBlock("try");
@@ -206,7 +214,7 @@ public final class AbstractJpGenerator {
         implCall.append("this.").append(methodName).append("Impl(");
         if (!params.isEmpty()) {
             var casts = params.stream()
-                    .map(p -> "(" + TypeMapper.boxed(mapType(p.type())) + ") " + p.name())
+                    .map(p -> "(" + TypeMapper.boxed(mapType(p.type())) + ") " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                     .toList();
             implCall.append(String.join(", ", casts));
         }
@@ -228,7 +236,6 @@ public final class AbstractJpGenerator {
         } else {
             sb.line("throw new ActionException(get_class(), \"" + attrName + "\", e);");
         }
-        sb.dedent();
         sb.closeBlock(); // catch
         sb.closeBlock(); // method
         sb.line();
@@ -239,18 +246,19 @@ public final class AbstractJpGenerator {
         var wrapperReturnType = "Object";
 
         var objParams = action.parameters().stream()
-                .map(p -> "Object " + p.name())
+            .map(p -> "Object " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .toList();
         var paramStr = String.join(", ", objParams);
 
-        sb.openBlock("public final " + wrapperReturnType + " " + action.name() + "(" + paramStr + ")");
+        var wrapperActionName = TypeMapper.sanitizeJavaIdentifier(action.name());
+        sb.openBlock("public final " + wrapperReturnType + " " + wrapperActionName + "(" + paramStr + ")");
         sb.openBlock("try");
 
         var implCall = new StringBuilder();
         implCall.append("this.").append(action.name()).append("Impl(");
         if (!action.parameters().isEmpty()) {
             var casts = action.parameters().stream()
-                    .map(p -> "(" + TypeMapper.boxed(mapType(p.type())) + ") " + p.name())
+                    .map(p -> "(" + TypeMapper.boxed(mapType(p.type())) + ") " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                     .toList();
             implCall.append(String.join(", ", casts));
         }
@@ -271,7 +279,6 @@ public final class AbstractJpGenerator {
         sb.append(" catch (Exception e) {\n");
         sb.indent();
         sb.line("throw new ActionException(get_class(), \"" + action.name() + "\", e);");
-        sb.dedent();
         sb.closeBlock(); // catch
         sb.closeBlock(); // method
         sb.line();
@@ -281,7 +288,7 @@ public final class AbstractJpGenerator {
         var chain = jpClass.getAncestorChain();
 
         sb.line("@Override");
-        sb.openBlock("public final boolean instanceOf(String joinpointClass)");
+        sb.openBlock("public boolean instanceOf(String joinpointClass)");
 
         var checks = chain.stream()
                 .map(jp -> "\"" + jp.getName() + "\".equals(joinpointClass)")
@@ -302,7 +309,7 @@ public final class AbstractJpGenerator {
 
     private String formatParams(List<Parameter> params) {
         return params.stream()
-                .map(p -> mapType(p.type()) + " " + p.name())
+                .map(p -> mapType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
     }
