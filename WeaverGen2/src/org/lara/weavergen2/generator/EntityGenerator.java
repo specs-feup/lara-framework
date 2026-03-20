@@ -1,6 +1,8 @@
 package org.lara.weavergen2.generator;
 
 import org.lara.langspec2.model.*;
+import org.lara.langspec2.types.JpDataType;
+import org.lara.langspec2.types.JpDataType.*;
 import org.lara.weavergen2.java.JavaSourceBuilder;
 import org.lara.weavergen2.java.TypeMapper;
 
@@ -39,6 +41,19 @@ public final class EntityGenerator {
         var sb = new JavaSourceBuilder();
         sb.line("package " + config.entitiesPackage() + ";");
         sb.line();
+
+        var usesJoinpoint = td.fields().stream().anyMatch(field -> containsJoinpointRef(field.type()));
+        var usesEnum = td.fields().stream().anyMatch(field -> containsEnumRef(field.type()));
+
+        if (usesJoinpoint) {
+            sb.line("import " + config.joinPointPackage() + ".*;");
+        }
+        if (usesEnum && !model.getEnumDefs().isEmpty()) {
+            sb.line("import " + config.enumsPackage() + ".*;");
+        }
+        if (usesJoinpoint || usesEnum) {
+            sb.line();
+        }
 
         sb.line("/**");
         if (td.tooltip() != null) {
@@ -122,6 +137,50 @@ public final class EntityGenerator {
     }
 
     private String mapType(org.lara.langspec2.types.JpDataType type) {
-        return TypeMapper.toJavaType(type, "Object", name -> TypeMapper.capitalize(name));
+        return TypeMapper.toJavaType(
+                type,
+                "Object",
+                name -> TypeMapper.abstractClassName(name) + "<?>",
+                TypeMapper::capitalize,
+                TypeMapper::capitalize
+        );
+    }
+
+    private boolean containsJoinpointRef(JpDataType type) {
+        if (type instanceof JpRefType || type instanceof SelfType) {
+            return true;
+        }
+        if (type instanceof ArrayType arr) {
+            return containsJoinpointRef(arr.element());
+        }
+        if (type instanceof ParameterizedType pt) {
+            if (containsJoinpointRef(pt.base())) {
+                return true;
+            }
+            return pt.args().stream().anyMatch(this::containsJoinpointRef);
+        }
+        if (type instanceof WildcardType wt && wt.bound() != null) {
+            return containsJoinpointRef(wt.bound());
+        }
+        return false;
+    }
+
+    private boolean containsEnumRef(JpDataType type) {
+        if (type instanceof EnumRefType) {
+            return true;
+        }
+        if (type instanceof ArrayType arr) {
+            return containsEnumRef(arr.element());
+        }
+        if (type instanceof ParameterizedType pt) {
+            if (containsEnumRef(pt.base())) {
+                return true;
+            }
+            return pt.args().stream().anyMatch(this::containsEnumRef);
+        }
+        if (type instanceof WildcardType wt && wt.bound() != null) {
+            return containsEnumRef(wt.bound());
+        }
+        return false;
     }
 }

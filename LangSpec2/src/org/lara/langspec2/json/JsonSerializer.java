@@ -257,6 +257,10 @@ public final class JsonSerializer {
             return "joinpoint";
         } else if (type instanceof JpRefType ref) {
             return ref.jpName();
+        } else if (type instanceof TypeDefRefType ref) {
+            return ref.typeDefName();
+        } else if (type instanceof EnumRefType ref) {
+            return ref.enumName();
         } else if (type instanceof ArrayType arr) {
             return typeToString(arr.element()) + "[]";
         } else if (type instanceof ParameterizedType pt) {

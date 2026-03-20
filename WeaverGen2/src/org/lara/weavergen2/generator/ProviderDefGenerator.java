@@ -1,5 +1,7 @@
 package org.lara.weavergen2.generator;
 
+import java.util.function.Function;
+
 import org.lara.langspec2.model.*;
 import org.lara.weavergen2.java.JavaSourceBuilder;
 import org.lara.weavergen2.java.TypeMapper;
@@ -34,6 +36,12 @@ public final class ProviderDefGenerator {
 
         // Imports
         sb.line("import " + config.joinPointPackage() + ".*;");
+        if (!model.getTypeDefs().isEmpty()) {
+            sb.line("import " + config.entitiesPackage() + ".*;");
+        }
+        if (!model.getEnumDefs().isEmpty()) {
+            sb.line("import " + config.enumsPackage() + ".*;");
+        }
         sb.line();
 
         var interfaceName = TypeMapper.providerDefName(jpClass.getName());
@@ -82,12 +90,20 @@ public final class ProviderDefGenerator {
     }
 
     private String mapType(org.lara.langspec2.types.JpDataType type) {
-        return TypeMapper.toJavaType(type, "JP", name -> {
+        Function<String, String> jpMapper = name -> {
             if (name.equals("joinpoint") || name.equals(model.getGlobal().getName())) {
                 return TypeMapper.abstractClassName(model.getGlobal().getName()) + "<?>";
             }
             return TypeMapper.abstractClassName(name) + "<?>";
-        });
+        };
+
+        return TypeMapper.toJavaType(
+                type,
+                "JP",
+                jpMapper,
+                TypeMapper::capitalize,
+                TypeMapper::capitalize
+        );
     }
 
     private String formatParams(java.util.List<Parameter> params) {
