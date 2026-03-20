@@ -90,7 +90,7 @@ public final class AbstractJpGenerator {
 
         // get_class()
         sb.line("@Override");
-        sb.openBlock("public final String get_class()");
+        sb.openBlock("public String get_class()");
         sb.line("return \"" + jpClass.getName() + "\";");
         sb.closeBlock();
         sb.line();
@@ -252,7 +252,7 @@ public final class AbstractJpGenerator {
 
     private void generateActionFinalWrapper(JavaSourceBuilder sb, Action action) {
         var isSelfOrJp = action.returnType() instanceof SelfType || action.returnType() instanceof JpRefType;
-        var wrapperReturnType = "Object";
+        var wrapperReturnType = mapType(action.returnType());
 
         var objParams = action.parameters().stream()
             .map(p -> "Object " + TypeMapper.sanitizeJavaIdentifier(p.name()))
