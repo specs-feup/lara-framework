@@ -62,6 +62,14 @@ public abstract class WeaverSpec {
         return new JpRefType(name);
     }
 
+    protected static JpDataType typeDefRef(String name) {
+        return new TypeDefRefType(name);
+    }
+
+    protected static JpDataType enumRef(String name) {
+        return new EnumRefType(name);
+    }
+
     // ----- Internal state -----
 
     private String weaverName;

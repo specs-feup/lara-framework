@@ -36,6 +36,28 @@ public sealed interface JpDataType {
     }
 
     /**
+     * Reference to a user-defined typedef by name.
+     */
+    record TypeDefRefType(String typeDefName) implements JpDataType {
+        public TypeDefRefType {
+            if (typeDefName == null || typeDefName.isBlank()) {
+                throw new IllegalArgumentException("TypeDef reference name must not be null or blank");
+            }
+        }
+    }
+
+    /**
+     * Reference to a user-defined enum by name.
+     */
+    record EnumRefType(String enumName) implements JpDataType {
+        public EnumRefType {
+            if (enumName == null || enumName.isBlank()) {
+                throw new IllegalArgumentException("Enum reference name must not be null or blank");
+            }
+        }
+    }
+
+    /**
      * Array type (T[]).
      */
     record ArrayType(JpDataType element) implements JpDataType {

@@ -7,6 +7,7 @@ import org.lara.weavergen2.java.JavaSourceBuilder;
 import org.lara.weavergen2.java.TypeMapper;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Generates an abstract join point class from a {@link JpClass}.
@@ -104,6 +105,14 @@ public final class AbstractJpGenerator {
 
     private void generateImports(JavaSourceBuilder sb) {
         sb.line("import " + config.baseJoinPointPackage() + ".*;");
+        sb.line("import " + config.abstractWeaverPackage() + "." + config.weaverClassName() + ";");
+        sb.line("import " + config.abstractsPackage() + "." + config.userAbstractClassName() + ";");
+        if (!model.getTypeDefs().isEmpty()) {
+            sb.line("import " + config.entitiesPackage() + ".*;");
+        }
+        if (!model.getEnumDefs().isEmpty()) {
+            sb.line("import " + config.enumsPackage() + ".*;");
+        }
         if (!config.providerPackage().equals(config.joinPointPackage())) {
             sb.line("import " + config.providerPackage() + ".*;");
         }
@@ -299,12 +308,20 @@ public final class AbstractJpGenerator {
     }
 
     private String mapType(JpDataType type) {
-        return TypeMapper.toJavaType(type, "Self", name -> {
+        Function<String, String> jpMapper = name -> {
             if (name.equals("joinpoint") || name.equals(model.getGlobal().getName())) {
                 return TypeMapper.abstractClassName(model.getGlobal().getName()) + "<?>";
             }
             return TypeMapper.abstractClassName(name) + "<?>";
-        });
+        };
+
+        return TypeMapper.toJavaType(
+                type,
+                "Self",
+                jpMapper,
+                TypeMapper::capitalize,
+                TypeMapper::capitalize
+        );
     }
 
     private String formatParams(List<Parameter> params) {
