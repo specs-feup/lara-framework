@@ -10,11 +10,15 @@ public record GeneratorConfig(
         boolean generateEvents
 ) {
     public String weaverClassName() {
-        return weaverName;
+        return "A" + weaverName;
+    }
+
+    public String abstractsPackage() {
+        return basePackage + ".abstracts";
     }
 
     public String joinPointPackage() {
-        return basePackage + ".abstracts.joinpoints";
+        return abstractsPackage() + ".joinpoints";
     }
 
     public String providerPackage() {
@@ -22,7 +26,7 @@ public record GeneratorConfig(
     }
 
     public String abstractWeaverPackage() {
-        return basePackage + ".abstracts.weaver";
+        return abstractsPackage() + ".weaver";
     }
 
     public String entitiesPackage() {
