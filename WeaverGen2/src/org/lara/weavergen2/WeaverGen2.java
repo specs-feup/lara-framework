@@ -129,6 +129,7 @@ public final class WeaverGen2 {
         var sb = new StringBuilder();
         sb.append("package ").append(pkg).append(";\n\n");
         sb.append("import ").append(config.joinPointPackage()).append(".*;\n");
+        sb.append("import ").append(config.abstractWeaverPackage()).append(".").append(config.weaverClassName()).append(";\n");
         sb.append("import ").append(config.registryPackage()).append(".*;\n\n");
         sb.append("/**\n");
         sb.append(" * Abstract class which can be edited by the developer.\n");

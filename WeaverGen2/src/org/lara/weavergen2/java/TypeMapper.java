@@ -100,4 +100,19 @@ public final class TypeMapper {
     public static String providerDefName(String jpName) {
         return capitalize(jpName) + "ProviderDef";
     }
+
+    /**
+     * Returns a Java-safe identifier by prefixing reserved words with an underscore.
+     */
+    public static String sanitizeJavaIdentifier(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+
+        if (SourceVersion.isKeyword(name)) {
+            return "_" + name;
+        }
+
+        return name;
+    }
 }

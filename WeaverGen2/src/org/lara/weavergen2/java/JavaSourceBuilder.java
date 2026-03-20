@@ -1,7 +1,5 @@
 package org.lara.weavergen2.java;
 
-import java.util.*;
-
 /**
  * Utility for building Java source code strings with proper indentation and formatting.
  */

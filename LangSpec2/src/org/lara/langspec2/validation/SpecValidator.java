@@ -156,33 +156,10 @@ public final class SpecValidator {
         return false;
     }
 
-    private static final Set<String> JAVA_KEYWORDS = Set.of(
-            "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-            "class", "const", "continue", "default", "do", "double", "else", "enum",
-            "extends", "final", "finally", "float", "for", "goto", "if", "implements",
-            "import", "instanceof", "int", "interface", "long", "native", "new",
-            "package", "private", "protected", "public", "return", "short", "static",
-            "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
-            "transient", "try", "void", "volatile", "while"
-    );
-
+    // Reserved words can be used as object/class property and method names in TypeScript,
+    // so no keywords need to be restricted for attribute/action names
     private static void checkReservedKeywords(WeaverModel model, List<String> errors) {
-        for (var jp : model.getAllJpClasses()) {
-            // JP names can be Java keywords (they become string identifiers, not Java identifiers)
-            // But attribute/action names will become Java method names
-            for (var attr : jp.getOwnAttributes()) {
-                if (JAVA_KEYWORDS.contains(attr.name())) {
-                    errors.add("Attribute name '" + attr.name() + "' in '" + jp.getName()
-                            + "' is a Java reserved keyword");
-                }
-            }
-            for (var action : jp.getOwnActions()) {
-                if (JAVA_KEYWORDS.contains(action.name())) {
-                    errors.add("Action name '" + action.name() + "' in '" + jp.getName()
-                            + "' is a Java reserved keyword");
-                }
-            }
-        }
+        // Currently no validation needed - reserved words are allowed as class members in TypeScript
     }
 
     private static void checkDefaultAttributes(WeaverModel model, List<String> errors) {
