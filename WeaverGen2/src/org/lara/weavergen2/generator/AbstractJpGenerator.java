@@ -160,11 +160,17 @@ public final class AbstractJpGenerator {
         var javaRetType = mapType(attr.type());
         var methodName = "get" + TypeMapper.capitalize(attr.name());
         var providerDefClass = TypeMapper.providerDefName(owner.getName());
+        var isSelf = attr.type() instanceof SelfType;
 
+        sb.line("@SuppressWarnings(\"unchecked\")");
         sb.line("@Override");
         if (attr.parameters().isEmpty()) {
             sb.openBlock("public " + javaRetType + " " + methodName + "Impl()");
-            sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
+            if (isSelf) {
+                sb.line("return (Self) provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
+            } else {
+                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
+            }
         } else {
             var params = formatParams(attr.parameters());
             var argNames = attr.parameters().stream()
@@ -172,7 +178,11 @@ public final class AbstractJpGenerator {
                     .map(TypeMapper::sanitizeJavaIdentifier)
                     .toList();
             sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
-            sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this, " + String.join(", ", argNames) + ");");
+            if (isSelf) {
+                sb.line("return (Self) provider(" + providerDefClass + ".class)." + methodName + "Impl(this, " + String.join(", ", argNames) + ");");
+            } else {
+                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this, " + String.join(", ", argNames) + ");");
+            }
         }
         sb.closeBlock();
         sb.line();
@@ -182,6 +192,7 @@ public final class AbstractJpGenerator {
         var javaRetType = mapType(action.returnType());
         var methodName = action.name();
         var providerDefClass = TypeMapper.providerDefName(owner.getName());
+        var isSelfReturn = "Self".equals(javaRetType) || "Self[]".equals(javaRetType);
 
         var params = formatParams(action.parameters());
         var argNames = action.parameters().stream()
@@ -189,13 +200,18 @@ public final class AbstractJpGenerator {
             .map(TypeMapper::sanitizeJavaIdentifier)
             .toList();
 
+        sb.line("@SuppressWarnings(\"unchecked\")");
         sb.line("@Override");
         sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
         var argsStr = argNames.isEmpty() ? "this" : "this, " + String.join(", ", argNames);
         if ("void".equals(javaRetType)) {
             sb.line("provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
         } else {
-            sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
+            if (isSelfReturn) {
+                sb.line("return (" + javaRetType + ") provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
+            } else {
+                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
+            }
         }
         sb.closeBlock();
         sb.line();
@@ -340,7 +356,7 @@ public final class AbstractJpGenerator {
      */
     private List<InheritedAttr> collectInheritedAttributesWithOwner() {
         var result = new ArrayList<InheritedAttr>();
-var seenSignatures = new LinkedHashSet<MemberSignature>();
+        var seenSignatures = new LinkedHashSet<MemberSignature>();
 
         // Own members override inherited ones with the same signature.
         for (var ownAttr : jpClass.getOwnAttributes()) {
@@ -350,7 +366,7 @@ var seenSignatures = new LinkedHashSet<MemberSignature>();
         var current = jpClass.getParent().orElse(null);
         while (current != null) {
             for (var attr : current.getOwnAttributes()) {
-var signature = memberSignature(attr.name(), attr.parameters());
+                var signature = memberSignature(attr.name(), attr.parameters());
                 if (!seenSignatures.add(signature)) {
                     continue;
                 }
@@ -363,7 +379,7 @@ var signature = memberSignature(attr.name(), attr.parameters());
 
     private List<InheritedAction> collectInheritedActionsWithOwner() {
         var result = new ArrayList<InheritedAction>();
-var seenSignatures = new LinkedHashSet<MemberSignature>();
+        var seenSignatures = new LinkedHashSet<MemberSignature>();
 
         // Own members override inherited ones with the same signature.
         for (var ownAction : jpClass.getOwnActions()) {
@@ -373,7 +389,7 @@ var seenSignatures = new LinkedHashSet<MemberSignature>();
         var current = jpClass.getParent().orElse(null);
         while (current != null) {
             for (var action : current.getOwnActions()) {
-var signature = memberSignature(action.name(), action.parameters());
+                var signature = memberSignature(action.name(), action.parameters());
                 if (!seenSignatures.add(signature)) {
                     continue;
                 }
