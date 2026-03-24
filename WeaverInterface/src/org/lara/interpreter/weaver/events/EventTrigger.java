@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.weaver.interf.AGear;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.events.LaraIEvent;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
@@ -49,7 +49,7 @@ public class EventTrigger {
      * Trigger an action event
      *
      */
-    public void triggerAction(Stage stage, String name, JoinPoint target, List<Object> params,
+    public void triggerAction(Stage stage, String name, JoinPoint2 target, List<Object> params,
             Optional<Object> result) {
 
         final ActionEvent data = new ActionEvent(stage, name, target, params, result);
@@ -57,7 +57,7 @@ public class EventTrigger {
         eventController.notifyEvent(event);
     }
 
-    public void triggerAction(Stage stage, String name, JoinPoint target, Optional<Object> result, Object... params) {
+    public void triggerAction(Stage stage, String name, JoinPoint2 target, Optional<Object> result, Object... params) {
 
         final ActionEvent data = new ActionEvent(stage, name, target, Arrays.asList(params), result);
         final Event event = new SimpleEvent(LaraIEvent.OnAction, data);
@@ -68,11 +68,11 @@ public class EventTrigger {
      * Trigger an attribute access event
      *
      */
-    public void triggerAttribute(Stage stage, JoinPoint target, String name, Optional<Object> result, Object... args) {
+    public void triggerAttribute(Stage stage, JoinPoint2 target, String name, Optional<Object> result, Object... args) {
         triggerAttribute(stage, target, name, Arrays.asList(args), result);
     }
 
-    public void triggerAttribute(Stage stage, JoinPoint target, String name, List<Object> args,
+    public void triggerAttribute(Stage stage, JoinPoint2 target, String name, List<Object> args,
             Optional<Object> result) {
 
         final AttributeEvent data = new AttributeEvent(stage, target, name, args, result);
