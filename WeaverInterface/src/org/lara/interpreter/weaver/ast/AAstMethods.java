@@ -16,7 +16,7 @@ package org.lara.interpreter.weaver.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 /**
@@ -90,7 +90,7 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     public abstract Class<T> getNodeClass();
 
-    protected abstract JoinPoint toJavaJoinPointImpl(T node);
+    protected abstract JoinPoint2 toJavaJoinPointImpl(T node);
 
     protected abstract String getJoinPointNameImpl(T node);
 
