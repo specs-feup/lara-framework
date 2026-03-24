@@ -61,10 +61,10 @@ public final class ProviderDefGenerator {
             var methodName = "get" + TypeMapper.capitalize(attr.name());
 
             if (attr.parameters().isEmpty()) {
-                sb.openBlock("default " + javaRetType + " " + methodName + "Impl(JP jp)");
+                sb.openBlock("default " + javaRetType + " " + methodName + "Impl(JP _jp)");
             } else {
                 var params = formatParams(attr.parameters());
-                sb.openBlock("default " + javaRetType + " " + methodName + "Impl(JP jp, " + params + ")");
+                sb.openBlock("default " + javaRetType + " " + methodName + "Impl(JP _jp, " + params + ")");
             }
             sb.line("throw new UnsupportedOperationException(\"" + jpClass.getName() + ": " + attr.name() + " not implemented\");");
             sb.closeBlock();
@@ -76,7 +76,7 @@ public final class ProviderDefGenerator {
             var javaRetType = mapType(action.returnType());
             var methodName = action.name();
             var params = formatParams(action.parameters());
-            var fullParams = params.isEmpty() ? "JP jp" : "JP jp, " + params;
+            var fullParams = params.isEmpty() ? "JP _jp" : "JP _jp, " + params;
 
             sb.openBlock("default " + javaRetType + " " + methodName + "Impl(" + fullParams + ")");
             sb.line("throw new UnsupportedOperationException(\"" + jpClass.getName() + ": " + action.name() + " not implemented\");");
