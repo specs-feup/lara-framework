@@ -51,22 +51,36 @@ public final class SpecValidator {
 
         // Check duplicate attribute names within same JP (own only)
         for (var jp : model.getAllJpClasses()) {
-            var attrNames = new HashSet<String>();
+            var attributeSignatures = new HashSet<MemberSignature>();
             for (var attr : jp.getOwnAttributes()) {
-                if (!attrNames.add(attr.name())) {
-                    errors.add("Duplicate attribute '" + attr.name() + "' in join point '" + jp.getName() + "'");
+                var signature = memberSignature(attr.name(), attr.parameters());
+                if (!attributeSignatures.add(signature)) {
+                    errors.add("Duplicate attribute signature '" + formatSignature(signature)
+                            + "' in join point '" + jp.getName() + "'");
                 }
             }
-            var actionNames = new HashSet<String>();
+            var actionSignatures = new HashSet<MemberSignature>();
             for (var action : jp.getOwnActions()) {
-                // Actions may be overloaded by parameter types, but we check by name+arity
-                var key = action.name() + "/" + action.parameters().size();
-                if (!actionNames.add(key)) {
-                    errors.add("Duplicate action '" + action.name() + "' with " + action.parameters().size()
-                            + " parameters in join point '" + jp.getName() + "'");
+                var signature = memberSignature(action.name(), action.parameters());
+                if (!actionSignatures.add(signature)) {
+                    errors.add("Duplicate action signature '" + formatSignature(signature)
+                            + "' in join point '" + jp.getName() + "'");
                 }
             }
         }
+    }
+
+    private static MemberSignature memberSignature(String name, List<Parameter> parameters) {
+        var paramTypes = parameters.stream().map(Parameter::type).toList();
+        return new MemberSignature(name, paramTypes);
+    }
+
+    private static String formatSignature(MemberSignature signature) {
+        var params = signature.paramTypes().stream()
+                .map(Object::toString)
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+        return signature.name() + "(" + params + ")";
     }
 
     private static void checkNoInheritanceCycles(WeaverModel model, List<String> errors) {
@@ -188,4 +202,6 @@ public final class SpecValidator {
             });
         }
     }
+
+    private record MemberSignature(String name, List<JpDataType> paramTypes) {}
 }
