@@ -340,9 +340,20 @@ public final class AbstractJpGenerator {
      */
     private List<InheritedAttr> collectInheritedAttributesWithOwner() {
         var result = new ArrayList<InheritedAttr>();
+var seenSignatures = new LinkedHashSet<MemberSignature>();
+
+        // Own members override inherited ones with the same signature.
+        for (var ownAttr : jpClass.getOwnAttributes()) {
+            seenSignatures.add(memberSignature(ownAttr.name(), ownAttr.parameters()));
+        }
+
         var current = jpClass.getParent().orElse(null);
         while (current != null) {
             for (var attr : current.getOwnAttributes()) {
+var signature = memberSignature(attr.name(), attr.parameters());
+                if (!seenSignatures.add(signature)) {
+                    continue;
+                }
                 result.add(new InheritedAttr(attr, current));
             }
             current = current.getParent().orElse(null);
@@ -352,13 +363,31 @@ public final class AbstractJpGenerator {
 
     private List<InheritedAction> collectInheritedActionsWithOwner() {
         var result = new ArrayList<InheritedAction>();
+var seenSignatures = new LinkedHashSet<MemberSignature>();
+
+        // Own members override inherited ones with the same signature.
+        for (var ownAction : jpClass.getOwnActions()) {
+            seenSignatures.add(memberSignature(ownAction.name(), ownAction.parameters()));
+        }
+
         var current = jpClass.getParent().orElse(null);
         while (current != null) {
             for (var action : current.getOwnActions()) {
+var signature = memberSignature(action.name(), action.parameters());
+                if (!seenSignatures.add(signature)) {
+                    continue;
+                }
                 result.add(new InheritedAction(action, current));
             }
             current = current.getParent().orElse(null);
         }
         return result;
     }
+
+    private MemberSignature memberSignature(String name, List<Parameter> parameters) {
+        var parameterTypes = parameters.stream().map(Parameter::type).toList();
+        return new MemberSignature(name, parameterTypes);
+    }
+
+    record MemberSignature(String name, List<JpDataType> parameterTypes) {}
 }

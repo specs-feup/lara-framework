@@ -2,12 +2,10 @@ package org.lara.weavergen2.generator;
 
 import org.lara.langspec2.model.*;
 import org.lara.langspec2.dsl.WeaverSpec;
-import org.lara.langspec2.validation.SpecValidationException;
+import org.lara.langspec2.types.JpDataType;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Merges a base spec (from WeaverInterface) with a weaver-specific spec.
@@ -32,13 +30,8 @@ public final class SpecMerger {
         var weaverGlobal = weaverModel.getGlobal();
         var baseGlobal = baseModel.getGlobal();
 
-        var mergeErrors = new ArrayList<String>();
-        var mergedAttributes = mergeAttributes(baseGlobal.getOwnAttributes(), weaverGlobal.getOwnAttributes(), mergeErrors);
-        var mergedActions = mergeActions(baseGlobal.getOwnActions(), weaverGlobal.getOwnActions(), mergeErrors);
-
-        if (!mergeErrors.isEmpty()) {
-            throw new SpecValidationException(mergeErrors);
-        }
+        var mergedAttributes = mergeAttributes(baseGlobal.getOwnAttributes(), weaverGlobal.getOwnAttributes());
+        var mergedActions = mergeActions(baseGlobal.getOwnActions(), weaverGlobal.getOwnActions());
 
         // We need to clear and re-add in order to prepend
         // Since JpClass uses an internal mutable list, we must work around it
@@ -94,74 +87,75 @@ public final class SpecMerger {
         return merged;
     }
 
-    private static List<Attribute> mergeAttributes(List<Attribute> baseAttrs, List<Attribute> weaverAttrs, List<String> errors) {
-        var mergedByName = new LinkedHashMap<String, Attribute>();
-        for (var attr : baseAttrs) {
-            mergedByName.put(attr.name(), attr);
-        }
+    private static List<Attribute> mergeAttributes(List<Attribute> baseAttrs, List<Attribute> weaverAttrs) {
+        var merged = new ArrayList<>(baseAttrs);
 
         for (var weaverAttr : weaverAttrs) {
-            var baseAttr = mergedByName.get(weaverAttr.name());
-            if (baseAttr == null) {
-                mergedByName.put(weaverAttr.name(), weaverAttr);
+            var baseIndex = findMatchingAttributeIndex(merged, weaverAttr);
+            if (baseIndex < 0) {
+                merged.add(weaverAttr);
                 continue;
             }
 
+            var baseAttr = merged.get(baseIndex);
             var effectiveTooltip = weaverAttr.tooltip() != null ? weaverAttr.tooltip() : baseAttr.tooltip();
-            var mergedAttr = new Attribute(weaverAttr.name(), weaverAttr.type(), weaverAttr.parameters(), effectiveTooltip);
-
-            if (isTrueDuplicate(baseAttr, mergedAttr)) {
-                errors.add("Duplicate attribute '" + weaverAttr.name() + "' in join point 'joinpoint'");
-                continue;
-            }
-
-            mergedByName.put(weaverAttr.name(), mergedAttr);
+            merged.set(baseIndex, new Attribute(weaverAttr.name(), weaverAttr.type(), weaverAttr.parameters(), effectiveTooltip));
         }
 
-        return List.copyOf(mergedByName.values());
+        return List.copyOf(merged);
     }
 
-    private static List<Action> mergeActions(List<Action> baseActions, List<Action> weaverActions, List<String> errors) {
-        var mergedByName = new LinkedHashMap<String, Action>();
-        for (var action : baseActions) {
-            mergedByName.put(action.name(), action);
-        }
+    private static List<Action> mergeActions(List<Action> baseActions, List<Action> weaverActions) {
+        var merged = new ArrayList<>(baseActions);
 
         for (var weaverAction : weaverActions) {
-            var baseAction = mergedByName.get(weaverAction.name());
-            if (baseAction == null) {
-                mergedByName.put(weaverAction.name(), weaverAction);
+            var baseIndex = findMatchingActionIndex(merged, weaverAction);
+            if (baseIndex < 0) {
+                merged.add(weaverAction);
                 continue;
             }
 
+            var baseAction = merged.get(baseIndex);
             var effectiveTooltip = weaverAction.tooltip() != null ? weaverAction.tooltip() : baseAction.tooltip();
-            var mergedAction = new Action(
+            merged.set(baseIndex, new Action(
                     weaverAction.name(),
                     weaverAction.returnType(),
                     weaverAction.parameters(),
                     effectiveTooltip
-            );
-
-            if (isTrueDuplicate(baseAction, mergedAction)) {
-                errors.add("Duplicate action '" + weaverAction.name() + "' in join point 'joinpoint'");
-                continue;
-            }
-
-            mergedByName.put(weaverAction.name(), mergedAction);
+            ));
         }
 
-        return List.copyOf(mergedByName.values());
+        return List.copyOf(merged);
     }
 
-    private static boolean isTrueDuplicate(Attribute baseAttr, Attribute mergedAttr) {
-        return Objects.equals(baseAttr.type(), mergedAttr.type())
-                && Objects.equals(baseAttr.parameters(), mergedAttr.parameters())
-                && Objects.equals(baseAttr.tooltip(), mergedAttr.tooltip());
+    private static int findMatchingAttributeIndex(List<Attribute> attributes, Attribute candidate) {
+        var candidateSignature = signature(candidate.name(), candidate.parameters());
+        for (int i = 0; i < attributes.size(); i++) {
+            var current = attributes.get(i);
+            if (signature(current.name(), current.parameters()).equals(candidateSignature)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
-    private static boolean isTrueDuplicate(Action baseAction, Action mergedAction) {
-        return Objects.equals(baseAction.returnType(), mergedAction.returnType())
-                && Objects.equals(baseAction.parameters(), mergedAction.parameters())
-                && Objects.equals(baseAction.tooltip(), mergedAction.tooltip());
+    private static int findMatchingActionIndex(List<Action> actions, Action candidate) {
+        var candidateSignature = signature(candidate.name(), candidate.parameters());
+        for (int i = 0; i < actions.size(); i++) {
+            var current = actions.get(i);
+            if (signature(current.name(), current.parameters()).equals(candidateSignature)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
+
+    private static MemberSignature signature(String name, List<Parameter> parameters) {
+        var parameterTypes = parameters.stream().map(Parameter::type).toList();
+        return new MemberSignature(name, parameterTypes);
+    }
+
+    private record MemberSignature(String name, List<JpDataType> parameterTypes) {}
 }
