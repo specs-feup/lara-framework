@@ -98,7 +98,7 @@ public abstract class WeaverEngine {
      * Function that can be called from LARA code to retrieve the root join point
      *
      */
-    public abstract JoinPoint getRootJp();
+    public abstract JoinPoint2 getRootJp();
 
     public Object getRootNode() {
         return getRootJp().getNode();
