@@ -17,27 +17,19 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation ':jOptions'
-    implementation ':SpecsUtils'
-    implementation ':tdrcLibrary'
-    implementation ':LanguageSpecification'
-    implementation ':LangSpec2'
-    implementation ':LaraUtils'
-
-    // Testing dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
-    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
-    testImplementation 'org.junit-pioneer:junit-pioneer:2.3.0' // For test retries
-    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
+configurations {
+    weaverGeneratorRuntime
 }
 
 // Project sources
 sourceSets {
+    // Compiled independently so code generation can run before main compilation to avoid circular dependency.
+    spec {
+        java {
+            srcDir 'src-spec'
+        }
+    }
+
     main {
         java {
             srcDir 'src'
@@ -56,6 +48,47 @@ sourceSets {
         }
     }
 }
+
+jar {
+    from sourceSets.spec.output
+}
+
+dependencies {
+    implementation ':jOptions'
+    implementation ':SpecsUtils'
+    implementation ':tdrcLibrary'
+    implementation ':LanguageSpecification'
+    implementation ':LangSpec2'
+    implementation ':LaraUtils'
+
+    weaverGeneratorRuntime ':WeaverGen2'
+
+    specImplementation ':LangSpec2'
+
+    // Testing dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.3.0' // For test retries
+    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
+}
+
+tasks.register('generateBaseJoinPointAbstracts', JavaExec) {
+    group = 'Execution'
+    description = 'Generates base joinpoint abstracts from BaseJoinPointSpec using WeaverGen2'
+    classpath = configurations.weaverGeneratorRuntime + sourceSets.spec.runtimeClasspath
+    mainClass = 'org.lara.weavergen2.WeaverGen2'
+    args = [
+            'org.lara.interpreter.weaver.interf.BaseJoinPointSpec',
+            "${projectDir}/src",
+            '--node', 'java.lang.Object'
+    ]
+}
+
+compileJava.dependsOn generateBaseJoinPointAbstracts
 
 test {
     useJUnitPlatform()
