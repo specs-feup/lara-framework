@@ -82,10 +82,6 @@ public final class WeaverGen2 {
             }
         }
 
-        // Provider registry
-        var registryGen = new RegistryGenerator(config);
-        writeFile(outputDir, config.registryPackage(), "ProviderRegistry.java", registryGen.generate());
-
         // Abstract weaver
         var weaverGen = new WeaverAbstractGenerator(model, config);
         writeFile(outputDir, config.abstractWeaverPackage(), "A" + config.weaverName() + ".java", weaverGen.generate());
