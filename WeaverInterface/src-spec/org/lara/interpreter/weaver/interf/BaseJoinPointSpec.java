@@ -15,6 +15,8 @@ public class BaseJoinPointSpec extends WeaverSpec {
 
     @Override
     public void define() {
+        packageName("org.lara.interpreter.weaver.interf");
+
         global()
             .attribute("dump", STRING, "String with a dump of the join point hierarchy")
             .attribute("joinPointType", STRING, "The type name of this join point")
@@ -31,9 +33,14 @@ public class BaseJoinPointSpec extends WeaverSpec {
             .attribute("column", INTEGER, "The starting column of the current node in the original code")
 
             // Actions available on all join points
-            .action("insert").param("position", STRING).param("code", STRING).returns(array(THIS))
-            .action("toString").returns(STRING)
-            .action("equals").param("jp", THIS).returns(BOOLEAN)
-            .action("instanceOf").param("name", STRING).returns(BOOLEAN);
+            .action("insert")
+                .param("position", STRING)
+                .param("code", STRING)
+                .returns(array(jpRef("joinpoint")))
+            .action("toString")
+                .returns(STRING)
+            .action("equals")
+                .param("jp", THIS)
+                .returns(BOOLEAN);
     }
 }
