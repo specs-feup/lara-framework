@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -56,7 +56,7 @@ public class DescendantsComputationBench {
         }
     }
 
-    private static final class TestTreeJoinPoint extends JoinPoint {
+    private static final class TestTreeJoinPoint extends JoinPoint2 {
         private final TestTreeJoinPoint parent;
         private final List<TestTreeJoinPoint> children = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class DescendantsComputationBench {
         }
 
         @Override
-        public boolean same(JoinPoint iJoinPoint) {
+        public boolean same(JoinPoint2 iJoinPoint) {
             return this == iJoinPoint;
         }
 
@@ -76,12 +76,12 @@ public class DescendantsComputationBench {
         }
 
         @Override
-        public Stream<JoinPoint> getJpChildrenStream() {
-            return children.stream().map(c -> (JoinPoint) c);
+        public Stream<JoinPoint2> getJpChildrenStream() {
+            return children.stream().map(c -> (JoinPoint2) c);
         }
 
         @Override
-        public JoinPoint getJpParent() {
+        public JoinPoint2 getJpParent() {
             return parent;
         }
     }
