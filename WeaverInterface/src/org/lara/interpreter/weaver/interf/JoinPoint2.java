@@ -2,6 +2,7 @@ package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.events.EventTrigger;
+import org.lara.interpreter.weaver.interf.abstracts.joinpoints.AJoinpoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import pt.up.fe.specs.jsengine.node.UndefinedValue;
 
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
  *       generated code will require this class to implement it</li>
  * </ul>
  */
-public abstract class JoinPoint2 {
+public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoint<Self> {
 
     private final WeaverEngine weaver;
     private transient Map<Class<?>, Object> providerCache;
@@ -35,19 +36,10 @@ public abstract class JoinPoint2 {
     // ----- Core identity (built-in, not from spec) -----
 
     /**
-     * Returns the join point class name (e.g., "loop", "function", "statement").
-     */
-    public abstract String get_class();
-
-    /**
      * Returns the underlying AST node.
      */
     public abstract Object getNode();
 
-    /**
-     * Returns true if this join point is an instance of the given type.
-     */
-    public abstract boolean instanceOf(String joinpointClass);
 
     /**
      * Multi-argument instanceOf.
@@ -107,6 +99,7 @@ public abstract class JoinPoint2 {
     /**
      * Returns the join point type.
      */
+    @Override
     public String getJoinPointType() {
         return get_class();
     }
@@ -114,8 +107,10 @@ public abstract class JoinPoint2 {
     /**
      * Self reference.
      */
-    public final JoinPoint2 getSelf() {
-        return this;
+    @SuppressWarnings("unchecked")
+    @Override
+    public Self getSelf() {
+        return (Self) this;
     }
 
     // ----- Tree navigation defaults -----
@@ -126,14 +121,6 @@ public abstract class JoinPoint2 {
 
     public JoinPoint2 getJpParent() {
         throw new UnsupportedOperationException(get_class() + ": getJpParent not implemented");
-    }
-
-    public List<JoinPoint2> getJpChildren() {
-        return getJpChildrenStream().collect(Collectors.toList());
-    }
-
-    public List<JoinPoint2> getJpDescendants() {
-        return getJpDescendantsStream().toList();
     }
 
     public Stream<JoinPoint2> getJpDescendantsStream() {
@@ -150,7 +137,7 @@ public abstract class JoinPoint2 {
         return dump(this, "");
     }
 
-    public static String dump(JoinPoint2 jp, String prefix) {
+    public static String dump(JoinPoint2<?> jp, String prefix) {
         var dump = new StringBuilder();
         dump.append(prefix).append(jp.toString()).append("\n");
         jp.getJpChildrenStream().forEach(child -> dump.append(dump(child, prefix + "   ")));
