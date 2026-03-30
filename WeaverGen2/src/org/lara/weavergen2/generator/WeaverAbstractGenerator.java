@@ -23,7 +23,7 @@ public final class WeaverAbstractGenerator {
         sb.line("package " + config.abstractWeaverPackage() + ";");
         sb.line();
         sb.line("import " + config.joinPointPackage() + ".*;");
-        sb.line("import " + config.registryPackage() + ".ProviderRegistry;");
+        sb.line("import org.lara.langspec2.model.ProviderRegistry;");
         sb.line("import org.lara.interpreter.weaver.interf.WeaverEngine;");
         sb.line();
         sb.line("import java.util.*;");
