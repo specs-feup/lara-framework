@@ -1,5 +1,7 @@
 package org.lara.weavergen2.generator;
 
+import java.util.Set;
+
 /**
  * Configuration for the code generator.
  */
@@ -7,10 +9,12 @@ public record GeneratorConfig(
         String weaverName,
         String basePackage,
         String nodeType,
-        boolean generateEvents
+        boolean generateEvents,
+        boolean hasBaseSpec,
+        Set<String> baseAttributeNames
 ) {
     public String weaverClassName() {
-        return "A" + weaverName;
+        return hasBaseSpec ? "A" + weaverName : "WeaverEngine";
     }
 
     public String abstractsPackage() {
@@ -26,7 +30,7 @@ public record GeneratorConfig(
     }
 
     public String abstractWeaverPackage() {
-        return abstractsPackage() + ".weaver";
+        return hasBaseSpec ? (abstractsPackage() + ".weaver") : "org.lara.interpreter.weaver.interf";
     }
 
     public String entitiesPackage() {
@@ -35,10 +39,6 @@ public record GeneratorConfig(
 
     public String enumsPackage() {
         return basePackage + ".enums";
-    }
-
-    public String registryPackage() {
-        return basePackage + ".registry";
     }
 
     public String userAbstractClassName() {
