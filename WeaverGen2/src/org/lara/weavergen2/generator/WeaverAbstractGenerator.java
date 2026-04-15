@@ -24,7 +24,7 @@ public final class WeaverAbstractGenerator {
         sb.line();
         sb.line("import " + config.joinPointPackage() + ".*;");
         sb.line("import org.lara.langspec2.model.ProviderRegistry;");
-        sb.line("import org.lara.interpreter.weaver.interf.WeaverEngine;");
+        sb.line("import org.lara.interpreter.weaver.LaraWeaverEngine;");
         sb.line();
         sb.line("import java.util.*;");
         sb.line();
@@ -34,7 +34,7 @@ public final class WeaverAbstractGenerator {
         sb.line("/**");
         sb.line(" * Auto-generated abstract weaver class for " + config.weaverName() + ".");
         sb.line(" */");
-        sb.openBlock("public abstract class " + className + " extends WeaverEngine");
+        sb.openBlock("public abstract class " + className + " extends LaraWeaverEngine");
         sb.line();
 
         sb.line("private final ProviderRegistry providerRegistry = new ProviderRegistry();");

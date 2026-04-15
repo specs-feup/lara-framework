@@ -42,6 +42,7 @@ public final class ProviderDefGenerator {
         if (!model.getEnumDefs().isEmpty()) {
             sb.line("import " + config.enumsPackage() + ".*;");
         }
+        sb.line("import java.util.*;");
         sb.line();
 
         var interfaceName = TypeMapper.providerDefName(jpClass.getName());
@@ -108,7 +109,7 @@ public final class ProviderDefGenerator {
 
     private String formatParams(java.util.List<Parameter> params) {
         return params.stream()
-                .map(p -> mapType(p.type()) + " " + p.name())
+                .map(p -> mapType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
     }
