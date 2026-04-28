@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Main entry point for the WeaverGen2 code generator.
  * <p>
- * Generates abstract join point classes, provider interfaces, registry, weaver abstract,
+ * Generates abstract join point classes, weaver abstract,
  * entities/enums, JSON spec, and DOT hierarchy diagram from a weaver specification.
  */
 public final class WeaverGen2 {
@@ -31,6 +31,11 @@ public final class WeaverGen2 {
      * Creates a generator from a base spec and weaver spec, merging them.
      */
     public static WeaverGen2 fromSpecs(WeaverSpec baseSpec, WeaverSpec weaverSpec, String nodeType) {
+        var baseModel = instantiate(baseSpec).buildRaw();
+        var baseAttributeNames = baseModel.getGlobal().getOwnAttributes().stream()
+            .map(Attribute::name)
+            .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+
         var merged = SpecMerger.merge(baseSpec, weaverSpec);
         SpecValidator.validate(merged);
 
@@ -38,10 +43,20 @@ public final class WeaverGen2 {
                 merged.getWeaverName(),
                 merged.getBasePackage(),
                 nodeType,
-                true
+                true,
+                true,
+                Set.copyOf(baseAttributeNames)
         );
 
         return new WeaverGen2(merged, config);
+    }
+
+    private static WeaverSpec instantiate(WeaverSpec spec) {
+        try {
+            return spec.getClass().getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not instantiate spec class " + spec.getClass().getName(), e);
+        }
     }
 
     /**
@@ -54,7 +69,9 @@ public final class WeaverGen2 {
                 model.getWeaverName(),
                 model.getBasePackage(),
                 nodeType,
-                true
+                true,
+                false,
+                Set.of()
         );
 
         return new WeaverGen2(model, config);
@@ -72,20 +89,6 @@ public final class WeaverGen2 {
             writeFile(outputDir, config.joinPointPackage(), fileName, source);
         }
 
-        // Provider definition interfaces
-        for (var jp : model.getAllJpClasses()) {
-            var gen = new ProviderDefGenerator(jp, model, config);
-            if (gen.hasContent()) {
-                var source = gen.generate();
-                var fileName = TypeMapper.providerDefName(jp.getName()) + ".java";
-                writeFile(outputDir, config.providerPackage(), fileName, source);
-            }
-        }
-
-        // Abstract weaver
-        var weaverGen = new WeaverAbstractGenerator(model, config);
-        writeFile(outputDir, config.abstractWeaverPackage(), "A" + config.weaverName() + ".java", weaverGen.generate());
-
         // Entities and enums
         var entityGen = new EntityGenerator(model, config);
         for (var entry : entityGen.generateTypeDefs().entrySet()) {
@@ -95,20 +98,30 @@ public final class WeaverGen2 {
             writeFile(outputDir, config.enumsPackage(), TypeMapper.capitalize(entry.getKey()) + ".java", entry.getValue());
         }
 
-        // JSON
-        var json = JsonSerializer.toJson(model);
-        var jsonPackage = config.basePackage();
-        writeFile(outputDir, jsonPackage, config.weaverName() + ".json", json);
+        if (config.hasBaseSpec()) {
+            // Abstract weaver
+            var weaverGen = new WeaverAbstractGenerator(model, config);
+            writeFile(outputDir, config.abstractWeaverPackage(), "A" + config.weaverName() + ".java", weaverGen.generate());
 
-        // DOT
-        var dot = new DotGenerator(model).generate();
-        writeFile(outputDir, jsonPackage, config.weaverName() + ".dotty", dot);
+            // JSON
+            var json = JsonSerializer.toJson(model);
+            var jsonPackage = config.basePackage();
+            writeFile(outputDir, jsonPackage, config.weaverName() + ".json", json);
+
+            // DOT
+            var dot = new DotGenerator(model).generate();
+            writeFile(outputDir, jsonPackage, config.weaverName() + ".dotty", dot);
+        }
     }
 
     /**
      * Generates a user-editable bridge class (only if it doesn't exist).
      */
     public void generateUserAbstract(Path outputDir) throws IOException {
+        if (!config.hasBaseSpec()) {
+            return; // Only generate user abstract if we have a base spec (otherwise there's no generated abstract weaver to extend)
+        }
+
         var pkg = config.basePackage() + ".abstracts";
         var fileName = config.userAbstractClassName() + ".java";
         var filePath = outputDir.resolve(pkg.replace('.', '/')).resolve(fileName);
@@ -124,16 +137,15 @@ public final class WeaverGen2 {
     private String generateUserAbstractSource(String pkg) {
         var sb = new StringBuilder();
         sb.append("package ").append(pkg).append(";\n\n");
-        sb.append("import ").append(config.joinPointPackage()).append(".*;\n");
-        sb.append("import ").append(config.abstractWeaverPackage()).append(".").append(config.weaverClassName()).append(";\n");
-        sb.append("import ").append(config.registryPackage()).append(".*;\n\n");
+        sb.append("import ").append(config.baseJoinPointPackage()).append(".").append(config.baseJoinPointClass()).append(";\n");
+        sb.append("import ").append(config.abstractWeaverPackage()).append(".").append(config.weaverClassName()).append(";\n\n");
         sb.append("/**\n");
         sb.append(" * Abstract class which can be edited by the developer.\n");
         sb.append(" * This class will NOT be overwritten by the generator.\n");
         sb.append(" */\n");
         sb.append("public abstract class ").append(config.userAbstractClassName());
         sb.append("<Self extends ").append(config.userAbstractClassName()).append("<Self>>");
-        sb.append(" extends ").append(TypeMapper.abstractClassName(model.getGlobal().getName())).append("<Self> {\n\n");
+        sb.append(" extends ").append(config.baseJoinPointClass()).append(" {\n\n");
         sb.append("    public ").append(config.userAbstractClassName()).append("(").append(config.weaverClassName()).append(" weaver) {\n");
         sb.append("        super(weaver);\n");
         sb.append("    }\n");

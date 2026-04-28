@@ -109,13 +109,6 @@ public final class TypeMapper {
     }
 
     /**
-     * Returns the provider definition interface name for a join point.
-     */
-    public static String providerDefName(String jpName) {
-        return capitalize(jpName) + "ProviderDef";
-    }
-
-    /**
      * Returns a Java-safe identifier by prefixing reserved words with an underscore.
      */
     public static String sanitizeJavaIdentifier(String name) {
