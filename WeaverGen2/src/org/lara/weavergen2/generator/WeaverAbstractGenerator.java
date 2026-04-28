@@ -2,7 +2,6 @@ package org.lara.weavergen2.generator;
 
 import org.lara.langspec2.model.*;
 import org.lara.weavergen2.java.JavaSourceBuilder;
-import org.lara.weavergen2.java.TypeMapper;
 
 /**
  * Generates the abstract weaver class (e.g., ACxxWeaver).
@@ -22,8 +21,6 @@ public final class WeaverAbstractGenerator {
 
         sb.line("package " + config.abstractWeaverPackage() + ";");
         sb.line();
-        sb.line("import " + config.joinPointPackage() + ".*;");
-        sb.line("import org.lara.langspec2.model.ProviderRegistry;");
         sb.line("import org.lara.interpreter.weaver.LaraWeaverEngine;");
         sb.line();
         sb.line("import java.util.*;");
@@ -35,22 +32,6 @@ public final class WeaverAbstractGenerator {
         sb.line(" * Auto-generated abstract weaver class for " + config.weaverName() + ".");
         sb.line(" */");
         sb.openBlock("public abstract class " + className + " extends LaraWeaverEngine");
-        sb.line();
-
-        sb.line("private final ProviderRegistry providerRegistry = new ProviderRegistry();");
-        sb.line();
-
-        // getProviderRegistry
-        sb.openBlock("public ProviderRegistry getProviderRegistry()");
-        sb.line("return providerRegistry;");
-        sb.closeBlock();
-        sb.line();
-
-        // registerProviders - abstract, user implements
-        sb.line("/**");
-        sb.line(" * Override this to register all provider implementations.");
-        sb.line(" */");
-        sb.line("protected abstract void registerProviders(ProviderRegistry registry);");
         sb.line();
 
         // getJoinPointClassNames
