@@ -1,25 +1,21 @@
 package org.lara.interpreter.weaver.interf;
 
-import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.abstracts.joinpoints.AJoinpoint;
-import org.lara.interpreter.weaver.interf.events.Stage;
 import pt.up.fe.specs.jsengine.node.UndefinedValue;
+import pt.up.fe.specs.util.treenode.ATreeNode;
 
-import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * New base class for join points, implementing the provider-registry pattern.
+ * New base class for join points.
  * <p>
  * This replaces the old {@link JoinPoint} class. Generated abstract classes extend this
  * (via an intermediate generated {@code ABaseJoinPoint} or {@code AJoinPoint}).
  * <p>
  * Key differences from the old {@link JoinPoint}:
  * <ul>
- *   <li>Has a {@code providerCache} for resolving inherited method implementations via providers</li>
- *   <li>No delegation chain -- uses flat inheritance with provider dispatch</li>
+ *   <li>No delegation chain -- behavior is defined directly in the hierarchy</li>
  *   <li>Methods driven by {@link BaseJoinPointSpec} -- if the spec adds a new attribute,
  *       generated code will require this class to implement it</li>
  * </ul>
@@ -27,7 +23,6 @@ import java.util.stream.Stream;
 public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoint<Self> {
 
     private final WeaverEngine weaver;
-    private transient Map<Class<?>, Object> providerCache;
 
     protected JoinPoint2(WeaverEngine weaver) {
         this.weaver = weaver;
@@ -38,7 +33,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
     /**
      * Returns the underlying AST node.
      */
-    public abstract Object getNode();
+    public abstract ATreeNode getNode();
 
 
     /**
@@ -56,21 +51,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
     /**
      * Compares two join points for identity.
      */
-    public abstract boolean same(JoinPoint2 other);
-
-    // ----- Provider resolution -----
-
-    /**
-     * Resolves a provider from the weaver's registry, with per-instance caching.
-     */
-    @SuppressWarnings("unchecked")
-    protected <P> P provider(Class<P> providerDef) {
-        if (providerCache == null) {
-            providerCache = new HashMap<>();
-        }
-        return (P) providerCache.computeIfAbsent(providerDef,
-                k -> weaver.getProviderRegistry().resolve(k));
-    }
+    public abstract boolean same(JoinPoint2<?> other);
 
     // ----- Weaver access -----
 

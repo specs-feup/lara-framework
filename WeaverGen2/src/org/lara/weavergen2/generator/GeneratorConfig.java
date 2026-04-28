@@ -25,10 +25,6 @@ public record GeneratorConfig(
         return abstractsPackage() + ".joinpoints";
     }
 
-    public String providerPackage() {
-        return basePackage + ".providers";
-    }
-
     public String abstractWeaverPackage() {
         return hasBaseSpec ? (abstractsPackage() + ".weaver") : "org.lara.interpreter.weaver.interf";
     }
