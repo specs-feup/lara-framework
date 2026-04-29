@@ -12,21 +12,19 @@ import java.util.function.Function;
 /**
  * Generates an abstract join point class from a {@link JpClass}.
  * <p>
- * This generates the new-style abstract classes that use provider dispatch for
- * inherited methods instead of delegation chains.
+ * This generates abstract classes where inherited methods are resolved through
+ * the Java class hierarchy.
  */
 public final class AbstractJpGenerator {
 
     private final JpClass jpClass;
     private final WeaverModel model;
     private final GeneratorConfig config;
-    private final boolean isRoot;
 
     public AbstractJpGenerator(JpClass jpClass, WeaverModel model, GeneratorConfig config) {
         this.jpClass = jpClass;
         this.model = model;
         this.config = config;
-        this.isRoot = jpClass.getParent().isEmpty() || jpClass == model.getGlobal();
     }
 
     public String generate() {
@@ -45,11 +43,7 @@ public final class AbstractJpGenerator {
         var className = TypeMapper.abstractClassName(jpClass.getName());
         String superClass = null;
         if (!standaloneMode) {
-            if (isRoot) {
-                superClass = config.userAbstractClassName() + "<Self>";
-            } else {
-                superClass = TypeMapper.abstractClassName(jpClass.getParent().get().getName()) + "<Self>";
-            }
+            superClass = getConcreteSuperclass(jpClass) + "<Self>";
         }
 
         sb.line("/**");
@@ -67,10 +61,29 @@ public final class AbstractJpGenerator {
 
         if (!standaloneMode) {
             // Constructor
-            sb.openBlock("public " + className + "(" + config.weaverClassName() + " weaver)");
-            sb.line("super(weaver);");
-            sb.closeBlock();
-            sb.line();
+            var nodeType = simpleClassName(config.nodeType());
+            if (jpClass == model.getGlobal()) {
+
+                sb.line("private " + nodeType + " node;");
+                sb.line();
+                sb.openBlock("public " + className + "(" + nodeType + " node, "
+                        + config.weaverClassName() + " weaver)");
+                sb.line("super(weaver);");
+                sb.line("this.node = node;");
+                sb.closeBlock();
+                sb.line();
+
+                sb.openBlock("public " + nodeType + " getNode()");
+                sb.line("return node;");
+                sb.closeBlock();
+                sb.line();
+            }
+            else {
+                sb.openBlock("public " + className + "(" + nodeType + " node, " + config.weaverClassName() + " weaver)");
+                sb.line("super(node, weaver);");
+                sb.closeBlock();
+                sb.line();
+            }
         }
 
         // Own attributes
@@ -81,19 +94,6 @@ public final class AbstractJpGenerator {
         // Own actions
         for (var action : jpClass.getOwnActions()) {
             generateOwnAction(sb, action, standaloneMode);
-        }
-
-        // Inherited methods
-        if (!isRoot) {
-            var inherited = collectInheritedAttributesWithOwner();
-            for (var entry : inherited) {
-                generateInheritedAttribute(sb, entry.attr, entry.owner, standaloneMode);
-            }
-
-            var inheritedActions = collectInheritedActionsWithOwner();
-            for (var entry : inheritedActions) {
-                generateInheritedAction(sb, entry.action, entry.owner, standaloneMode);
-            }
         }
 
         // get_class()
@@ -119,9 +119,11 @@ public final class AbstractJpGenerator {
         if (!standaloneMode) {
             sb.line("import " + config.baseJoinPointPackage() + ".*;");
             sb.line("import " + config.abstractWeaverPackage() + "." + config.weaverClassName() + ";");
-            if (jpClass == model.getGlobal()) {
-                sb.line("import " + config.abstractsPackage() + "." + config.userAbstractClassName() + ";");
+            var parentConcreteImport = getConcreteSuperclassImport(jpClass);
+            if (parentConcreteImport.isPresent()) {
+                sb.line("import " + parentConcreteImport.get() + ";");
             }
+            sb.line("import " + config.nodeType() + ";");
         }
         if (!model.getTypeDefs().isEmpty()) {
             sb.line("import " + config.entitiesPackage() + ".*;");
@@ -129,15 +131,80 @@ public final class AbstractJpGenerator {
         if (!model.getEnumDefs().isEmpty()) {
             sb.line("import " + config.enumsPackage() + ".*;");
         }
-        if (!standaloneMode && !config.providerPackage().equals(config.joinPointPackage())) {
-            sb.line("import " + config.providerPackage() + ".*;");
-        }
         if (!standaloneMode) {
             sb.line("import org.lara.interpreter.exception.ActionException;");
             sb.line("import org.lara.interpreter.exception.AttributeException;");
             sb.line();
             sb.line("import java.util.*;");
         }
+    }
+
+    private String simpleClassName(String fullyQualifiedName) {
+        var lastDot = fullyQualifiedName.lastIndexOf('.');
+        return lastDot < 0 ? fullyQualifiedName : fullyQualifiedName.substring(lastDot + 1);
+    }
+
+    private String getConcreteSuperclass(JpClass jpClass) {
+        if (jpClass == model.getGlobal()) {
+            return config.baseJoinPointClass();
+        }
+
+        var parent = jpClass.getParent().orElseThrow();
+        return concreteClassName(parent);
+    }
+
+    private Optional<String> getConcreteSuperclassImport(JpClass jpClass) {
+        if (jpClass == model.getGlobal()) {
+            return Optional.empty();
+        }
+
+        var parent = jpClass.getParent().orElseThrow();
+        var concretePackage = concretePackage(parent);
+        var concreteClass = concreteClassName(parent);
+
+        return Optional.of(concretePackage + "." + concreteClass);
+    }
+
+    private String concreteClassName(JpClass jpClass) {
+        if (jpClass == model.getGlobal()) {
+            return config.userAbstractClassName();
+        }
+
+        return "Cxx" + TypeMapper.capitalize(jpClass.getName());
+    }
+
+    private String concretePackage(JpClass jpClass) {
+        if (jpClass == model.getGlobal()) {
+            return config.abstractsPackage();
+        }
+
+        var concreteBasePackage = config.basePackage() + ".joinpoints";
+
+        if (isCilkBranch(jpClass)) {
+            return concreteBasePackage + ".cilk";
+        }
+
+        if (isTypeBranch(jpClass)) {
+            return concreteBasePackage + ".types";
+        }
+
+        return concreteBasePackage;
+    }
+
+    private boolean isTypeBranch(JpClass jpClass) {
+        var typeRoot = findJpClass("type");
+        return typeRoot != null && jpClass.isOrExtends(typeRoot);
+    }
+
+    private boolean isCilkBranch(JpClass jpClass) {
+        return jpClass.getName().toLowerCase(Locale.ROOT).startsWith("cilk");
+    }
+
+    private JpClass findJpClass(String name) {
+        return model.getAllJpClasses().stream()
+                .filter(jp -> jp.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     private void generateOwnAttribute(JavaSourceBuilder sb, Attribute attr, boolean standaloneMode) {
@@ -182,79 +249,6 @@ public final class AbstractJpGenerator {
             // Final wrapper
             generateActionFinalWrapper(sb, action);
         }
-    }
-
-    private void generateInheritedAttribute(JavaSourceBuilder sb, Attribute attr, JpClass owner,
-            boolean standaloneMode) {
-        if (standaloneMode) {
-            return;
-        }
-
-        var javaRetType = mapType(attr.type());
-        var methodName = "get" + TypeMapper.capitalize(attr.name());
-        var providerDefClass = TypeMapper.providerDefName(owner.getName());
-        var isSelf = attr.type() instanceof SelfType;
-
-        sb.line("@SuppressWarnings(\"unchecked\")");
-        sb.line("@Override");
-        if (attr.parameters().isEmpty()) {
-            sb.openBlock("public " + javaRetType + " " + methodName + "Impl()");
-            if (isSelf) {
-                sb.line("return (Self) provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
-            } else {
-                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this);");
-            }
-        } else {
-            var params = formatParams(attr.parameters());
-            var argNames = attr.parameters().stream()
-                    .map(Parameter::name)
-                    .map(TypeMapper::sanitizeJavaIdentifier)
-                    .toList();
-            sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
-            if (isSelf) {
-                sb.line("return (Self) provider(" + providerDefClass + ".class)." + methodName + "Impl(this, "
-                        + String.join(", ", argNames) + ");");
-            } else {
-                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(this, "
-                        + String.join(", ", argNames) + ");");
-            }
-        }
-        sb.closeBlock();
-        sb.line();
-    }
-
-    private void generateInheritedAction(JavaSourceBuilder sb, Action action, JpClass owner, boolean standaloneMode) {
-        if (standaloneMode) {
-            return;
-        }
-
-        var javaRetType = mapType(action.returnType());
-        var methodName = action.name();
-        var providerDefClass = TypeMapper.providerDefName(owner.getName());
-        var isSelfReturn = "Self".equals(javaRetType) || "Self[]".equals(javaRetType);
-
-        var params = formatParams(action.parameters());
-        var argNames = action.parameters().stream()
-                .map(Parameter::name)
-                .map(TypeMapper::sanitizeJavaIdentifier)
-                .toList();
-
-        sb.line("@SuppressWarnings(\"unchecked\")");
-        sb.line("@Override");
-        sb.openBlock("public " + javaRetType + " " + methodName + "Impl(" + params + ")");
-        var argsStr = argNames.isEmpty() ? "this" : "this, " + String.join(", ", argNames);
-        if ("void".equals(javaRetType)) {
-            sb.line("provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
-        } else {
-            if (isSelfReturn) {
-                sb.line("return (" + javaRetType + ") provider(" + providerDefClass + ".class)." + methodName + "Impl("
-                        + argsStr + ");");
-            } else {
-                sb.line("return provider(" + providerDefClass + ".class)." + methodName + "Impl(" + argsStr + ");");
-            }
-        }
-        sb.closeBlock();
-        sb.line();
     }
 
     private void generateFinalWrapper(JavaSourceBuilder sb, String attrName, String methodName,
@@ -409,69 +403,5 @@ public final class AbstractJpGenerator {
                 .map(p -> mapType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
-    }
-
-    record InheritedAttr(Attribute attr, JpClass owner) {
-    }
-
-    record InheritedAction(Action action, JpClass owner) {
-    }
-
-    /**
-     * Collects all inherited attributes paired with their declaring owner,
-     * excluding this JP's own attributes.
-     */
-    private List<InheritedAttr> collectInheritedAttributesWithOwner() {
-        var result = new ArrayList<InheritedAttr>();
-        var seenSignatures = new LinkedHashSet<MemberSignature>();
-
-        // Own members override inherited ones with the same signature.
-        for (var ownAttr : jpClass.getOwnAttributes()) {
-            seenSignatures.add(memberSignature(ownAttr.name(), ownAttr.parameters()));
-        }
-
-        var current = jpClass.getParent().orElse(null);
-        while (current != null) {
-            for (var attr : current.getOwnAttributes()) {
-                var signature = memberSignature(attr.name(), attr.parameters());
-                if (!seenSignatures.add(signature)) {
-                    continue;
-                }
-                result.add(new InheritedAttr(attr, current));
-            }
-            current = current.getParent().orElse(null);
-        }
-        return result;
-    }
-
-    private List<InheritedAction> collectInheritedActionsWithOwner() {
-        var result = new ArrayList<InheritedAction>();
-        var seenSignatures = new LinkedHashSet<MemberSignature>();
-
-        // Own members override inherited ones with the same signature.
-        for (var ownAction : jpClass.getOwnActions()) {
-            seenSignatures.add(memberSignature(ownAction.name(), ownAction.parameters()));
-        }
-
-        var current = jpClass.getParent().orElse(null);
-        while (current != null) {
-            for (var action : current.getOwnActions()) {
-                var signature = memberSignature(action.name(), action.parameters());
-                if (!seenSignatures.add(signature)) {
-                    continue;
-                }
-                result.add(new InheritedAction(action, current));
-            }
-            current = current.getParent().orElse(null);
-        }
-        return result;
-    }
-
-    private MemberSignature memberSignature(String name, List<Parameter> parameters) {
-        var parameterTypes = parameters.stream().map(Parameter::type).toList();
-        return new MemberSignature(name, parameterTypes);
-    }
-
-    record MemberSignature(String name, List<JpDataType> parameterTypes) {
     }
 }
