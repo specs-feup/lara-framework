@@ -52,6 +52,11 @@ public final class WeaverAbstractGenerator {
         sb.openBlock("public String getRoot()");
         sb.line("return \"" + rootName + "\";");
         sb.closeBlock();
+        sb.line();
+
+        sb.openBlock("public boolean implementsEvents()");
+        sb.line("return true;");
+        sb.closeBlock();
 
         sb.closeBlock(); // class
 
