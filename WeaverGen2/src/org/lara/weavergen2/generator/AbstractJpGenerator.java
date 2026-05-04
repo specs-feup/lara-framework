@@ -39,6 +39,9 @@ public final class AbstractJpGenerator {
 
         // Imports
         generateImports(sb);
+        if (standaloneMode) {
+            sb.line("import pt.up.fe.specs.jsengine.node.UndefinedValue;");
+        }
         sb.line();
 
         // Class declaration
@@ -95,12 +98,12 @@ public final class AbstractJpGenerator {
 
         // Own attributes
         for (var attr : jpClass.getOwnAttributes()) {
-            generateOwnAttribute(sb, attr, standaloneMode);
+            generateOwnAttribute(sb, attr);
         }
 
         // Own actions
         for (var action : jpClass.getOwnActions()) {
-            generateOwnAction(sb, action, standaloneMode);
+            generateOwnAction(sb, action);
         }
 
         // get_class()
@@ -114,6 +117,13 @@ public final class AbstractJpGenerator {
 
         // instanceOf()
         generateInstanceOf(sb);
+
+        if (standaloneMode) {
+            sb.line();
+            sb.openBlock("public static Object getUndefinedValue()");
+            sb.line("return UndefinedValue.getUndefined();");
+            sb.closeBlock();
+        }
 
         sb.closeBlock(); // class
 
@@ -143,12 +153,10 @@ public final class AbstractJpGenerator {
         if (!model.getEnumDefs().isEmpty()) {
             sb.line("import " + config.enumsPackage() + ".*;");
         }
-        if (!standaloneMode) {
             sb.line("import org.lara.interpreter.exception.ActionException;");
             sb.line("import org.lara.interpreter.exception.AttributeException;");
             sb.line();
             sb.line("import java.util.*;");
-        }
     }
 
     private String simpleClassName(String fullyQualifiedName) {
@@ -310,11 +318,10 @@ public final class AbstractJpGenerator {
                 .orElse(null);
     }
 
-    private void generateOwnAttribute(JavaSourceBuilder sb, Attribute attr, boolean standaloneMode) {
+    private void generateOwnAttribute(JavaSourceBuilder sb, Attribute attr) {
         var javaRetType = mapType(attr.type());
         var methodName = "get" + TypeMapper.capitalize(attr.name());
-
-        var implMethodName = standaloneMode ? methodName : methodName + "Impl";
+        var implMethodName = methodName + "Impl";
 
         if (attr.parameters().isEmpty()) {
             sb.line("public abstract " + javaRetType + " " + implMethodName + "();");
@@ -330,22 +337,18 @@ public final class AbstractJpGenerator {
         }
     }
 
-    private void generateOwnAction(JavaSourceBuilder sb, Action action, boolean standaloneMode) {
+    private void generateOwnAction(JavaSourceBuilder sb, Action action) {
         var javaRetType = mapType(action.returnType());
         var methodName = action.name();
-        var implMethodName = standaloneMode ? methodName : methodName + "Impl";
+        var implMethodName = methodName + "Impl";
 
         var paramStr = formatParams(action.parameters());
 
-        if (standaloneMode) {
-            sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + paramStr + ");");
-        } else {
             // Impl method (default: throws)
             sb.openBlock("public " + javaRetType + " " + implMethodName + "(" + paramStr + ")");
             sb.line("throw new UnsupportedOperationException(get_class() + \": Action " + action.name()
                     + " not implemented\");");
             sb.closeBlock();
-        }
         sb.line();
 
         if (!standaloneMode) {
@@ -356,18 +359,15 @@ public final class AbstractJpGenerator {
 
     private void generateFinalWrapper(JavaSourceBuilder sb, String attrName, String methodName,
             JpDataType type, List<Parameter> params, boolean isAttribute) {
-        var isBaseAttribute = config.baseAttributeNames().contains(attrName);
         var isSelfOrJp = type instanceof SelfType || type instanceof JpRefType;
-        var wrapperReturnType = isBaseAttribute ? mapType(type) : "Object";
-        var wrapperName = isBaseAttribute
-                ? TypeMapper.sanitizeJavaIdentifier(attrName.startsWith("get") ? attrName : methodName)
-                : TypeMapper.sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+        var wrapperReturnType = "Object";
+        var wrapperName = TypeMapper.sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
 
         if (params.isEmpty()) {
             sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "()");
         } else {
             var wrapperParams = params.stream()
-                    .map(p -> (isBaseAttribute ? mapType(p.type()) + " " : "Object ")
+                    .map(p -> ( "Object ")
                             + TypeMapper.sanitizeJavaIdentifier(p.name()))
                     .toList();
             sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "("
@@ -382,9 +382,6 @@ public final class AbstractJpGenerator {
             var args = params.stream()
                     .map(p -> {
                         var paramName = TypeMapper.sanitizeJavaIdentifier(p.name());
-                        if (isBaseAttribute) {
-                            return paramName;
-                        }
                         return "(" + mapType(p.type()) + ") " + paramName;
                     })
                     .toList();
@@ -392,7 +389,7 @@ public final class AbstractJpGenerator {
         }
         implCall.append(")");
 
-        if (isSelfOrJp && !isBaseAttribute) {
+        if (isSelfOrJp) {
             var javaRetType = mapType(type);
             sb.line(javaRetType + " result = " + implCall + ";");
             sb.line("return result != null ? result : getUndefinedValue();");

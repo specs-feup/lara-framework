@@ -29,8 +29,8 @@ public class BaseJoinPointSpec extends WeaverSpec {
             .attribute("parent", jpRef("joinpoint"), "Returns the parent node in the AST, or undefined if it is the root node")
             .attribute("root", jpRef("joinpoint"), "The root of the tree")
             .attribute("code", STRING, "String with the code represented by this node")
-            .attribute("line", INT, "The starting line of the current node in the original code")
-            .attribute("column", INT, "The starting column of the current node in the original code")
+            .attribute("line", INTEGER, "The starting line of the current node in the original code")
+            .attribute("column", INTEGER, "The starting column of the current node in the original code")
 
             // Actions available on all join points
             .action("insert")
