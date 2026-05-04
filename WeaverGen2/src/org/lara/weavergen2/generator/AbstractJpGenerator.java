@@ -508,6 +508,10 @@ public final class AbstractJpGenerator {
     }
 
     private String getConstructorWeaverImport(JpClass jpClass) {
+        if (jpClass == model.getGlobal()) {
+            return config.abstractWeaverPackage() + "." + config.weaverClassName();
+        }
+
         return jpClass.getParent().map(parent -> parent.equals(model.getGlobal()))
                 .map(isRootChild -> isRootChild
                         ? config.abstractWeaverPackage() + "." + config.weaverClassName()
