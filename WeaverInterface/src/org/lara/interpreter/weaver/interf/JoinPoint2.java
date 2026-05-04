@@ -2,7 +2,6 @@ package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.abstracts.joinpoints.AJoinpoint;
-import pt.up.fe.specs.jsengine.node.UndefinedValue;
 import pt.up.fe.specs.util.treenode.ATreeNode;
 
 import java.util.stream.Stream;
@@ -69,10 +68,6 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
 
     // ----- Common utilities -----
 
-    public static Object getUndefinedValue() {
-        return UndefinedValue.getUndefined();
-    }
-
     public static boolean isJoinPoint(Object value) {
         return value instanceof JoinPoint2;
     }
@@ -80,8 +75,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
     /**
      * Returns the join point type.
      */
-    @Override
-    public String getJoinPointType() {
+    public String getJoinPointTypeImpl() {
         return get_class();
     }
 
@@ -89,8 +83,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
      * Self reference.
      */
     @SuppressWarnings("unchecked")
-    @Override
-    public Self getSelf() {
+    public Self getSelfImpl() {
         return (Self) this;
     }
 
@@ -114,19 +107,18 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoi
 
     // ----- Dump -----
 
-    public String getDump() {
-        return dump(this, "");
+    public String getDumpImpl() {
+        return dumpPrivate(this, "");
     }
 
-    public static String dump(JoinPoint2<?> jp, String prefix) {
+    private static String dumpPrivate(JoinPoint2<?> jp, String prefix) {
         var dump = new StringBuilder();
         dump.append(prefix).append(jp.toString()).append("\n");
-        jp.getJpChildrenStream().forEach(child -> dump.append(dump(child, prefix + "   ")));
+        jp.getJpChildrenStream().forEach(child -> dump.append(dumpPrivate(child, prefix + "   ")));
         return dump.toString();
     }
 
-    @Override
-    public String toString() {
-        return "Joinpoint '" + getJoinPointType() + "'";
+    public String toStringImpl() {
+        return "Joinpoint '" + joinPointType() + "'";
     }
 }
