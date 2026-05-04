@@ -66,24 +66,6 @@ public final class TypeMapper {
     }
 
     /**
-     * Returns the boxed version of a primitive type name.
-     */
-    public static String boxed(String type) {
-        return switch (type) {
-            case "int" -> "Integer";
-            case "long" -> "Long";
-            case "double" -> "Double";
-            case "float" -> "Float";
-            case "boolean" -> "Boolean";
-            case "byte" -> "Byte";
-            case "short" -> "Short";
-            case "char" -> "Character";
-            case "void" -> "Void";
-            default -> type;
-        };
-    }
-
-    /**
      * Returns true if the type is a Java primitive.
      */
     public static boolean isPrimitive(String type) {
