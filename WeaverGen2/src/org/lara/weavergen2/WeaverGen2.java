@@ -28,7 +28,10 @@ public final class WeaverGen2 {
     }
 
     /**
-     * Creates a generator from a base spec and weaver spec, merging them.
+     * Creates a generator from a base spec and weaver spec.
+     * <p>
+     * The base spec is only used to record inherited base signatures so the generator can
+     * recognize overrides in the weaver spec. It is not merged into the generated model.
      */
     public static WeaverGen2 fromSpecs(WeaverSpec baseSpec, WeaverSpec weaverSpec, String nodeType) {
         var baseModel = instantiate(baseSpec).buildRaw();
@@ -36,19 +39,19 @@ public final class WeaverGen2 {
             .map(Attribute::name)
             .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
 
-        var merged = SpecMerger.merge(baseSpec, weaverSpec);
-        SpecValidator.validate(merged);
+        var model = weaverSpec.build();
+        SpecValidator.validate(model);
 
         var config = new GeneratorConfig(
-                merged.getWeaverName(),
-                merged.getBasePackage(),
+                model.getWeaverName(),
+                model.getBasePackage(),
                 nodeType,
                 true,
                 true,
                 Set.copyOf(baseAttributeNames)
         );
 
-        return new WeaverGen2(merged, config);
+        return new WeaverGen2(model, config);
     }
 
     private static WeaverSpec instantiate(WeaverSpec spec) {
