@@ -385,7 +385,7 @@ public final class AbstractJpGenerator {
                         if (isBaseAttribute) {
                             return paramName;
                         }
-                        return "(" + TypeMapper.boxed(mapType(p.type())) + ") " + paramName;
+                        return "(" + mapType(p.type()) + ") " + paramName;
                     })
                     .toList();
             implCall.append(String.join(", ", args));
