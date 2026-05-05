@@ -1,7 +1,10 @@
 package org.lara.weavergen2.java;
 
+import org.lara.langspec2.model.Parameter;
 import org.lara.langspec2.types.JpDataType;
 import org.lara.langspec2.types.JpDataType.*;
+
+import java.util.List;
 
 import javax.lang.model.SourceVersion;
 
@@ -103,5 +106,15 @@ public final class TypeMapper {
         }
 
         return name;
+    }
+
+    public static String memberSignature(String name, List<Parameter> parameters) {
+        var parameterTypes = parameters.stream()
+                .map(Parameter::type)
+                .map(Object::toString)
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+
+        return name + "(" + parameterTypes + ")";
     }
 }
