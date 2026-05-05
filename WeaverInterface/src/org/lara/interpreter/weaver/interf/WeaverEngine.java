@@ -42,13 +42,10 @@ public abstract class WeaverEngine {
     private EventTrigger eventTrigger;
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
-    private final Lazy<LanguageSpecification> langSpec;
-
+    
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
-
-        langSpec = Lazy.newInstance(this::buildLangSpecs);
     }
 
     public Optional<DataStore> getData() {
@@ -115,16 +112,6 @@ public abstract class WeaverEngine {
     public StoreDefinition getStoreDefinition() {
         return storeDefinition.get();
     }
-
-    public LanguageSpecification getLanguageSpecificationV2() {
-        return langSpec.get();
-    }
-
-    /**
-     * Builds and returns the language specification for this weaver.
-     *
-     */
-    protected abstract LanguageSpecification buildLangSpecs();
 
     /**
      * Returns a list of Gears associated to this weaver engine
@@ -201,15 +188,6 @@ public abstract class WeaverEngine {
 
     public void writeCode(File outputFolder) {
         throw new NotImplementedException(getClass().getSimpleName() + ".writeCode() not yet implemented!");
-    }
-
-    public String getDefaultAttribute(String joinPointType) {
-        var jp = getLanguageSpecificationV2().getJoinPoint(joinPointType);
-        if (jp == null) {
-            throw new RuntimeException("Used unsupported join point '" + joinPointType + "'");
-        }
-
-        return getLanguageSpecificationV2().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
     }
 
     /**
