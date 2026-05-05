@@ -153,10 +153,10 @@ public final class AbstractJpGenerator {
         if (!model.getEnumDefs().isEmpty()) {
             sb.line("import " + config.enumsPackage() + ".*;");
         }
-            sb.line("import org.lara.interpreter.exception.ActionException;");
-            sb.line("import org.lara.interpreter.exception.AttributeException;");
-            sb.line();
-            sb.line("import java.util.*;");
+        sb.line("import org.lara.interpreter.exception.ActionException;");
+        sb.line("import org.lara.interpreter.exception.AttributeException;");
+        sb.line();
+        sb.line("import java.util.*;");
     }
 
     private String simpleClassName(String fullyQualifiedName) {
@@ -331,8 +331,7 @@ public final class AbstractJpGenerator {
         }
         sb.line();
 
-        if (!standaloneMode) {
-            // Final wrapper
+        if (shouldGenerateWrapper(attr.name(), attr.parameters())) {
             generateFinalWrapper(sb, attr.name(), methodName, attr.type(), attr.parameters(), true);
         }
     }
@@ -344,15 +343,14 @@ public final class AbstractJpGenerator {
 
         var paramStr = formatParams(action.parameters());
 
-            // Impl method (default: throws)
-            sb.openBlock("public " + javaRetType + " " + implMethodName + "(" + paramStr + ")");
-            sb.line("throw new UnsupportedOperationException(get_class() + \": Action " + action.name()
-                    + " not implemented\");");
-            sb.closeBlock();
+        // Impl method (default: throws)
+        sb.openBlock("public " + javaRetType + " " + implMethodName + "(" + paramStr + ")");
+        sb.line("throw new UnsupportedOperationException(get_class() + \": Action " + action.name()
+                + " not implemented\");");
+        sb.closeBlock();
         sb.line();
 
-        if (!standaloneMode) {
-            // Final wrapper
+        if (shouldGenerateWrapper(action.name(), action.parameters())) {
             generateActionFinalWrapper(sb, action);
         }
     }
@@ -521,5 +519,43 @@ public final class AbstractJpGenerator {
                 .map(p -> mapType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
+    }
+
+    private boolean shouldGenerateWrapper(String name, List<Parameter> params) {
+        var signature = TypeMapper.memberSignature(name, params);
+
+        if (config.baseMemberSignatures().contains(signature)) {
+            return false;
+        }
+
+        var parent = jpClass.getParent().orElse(null);
+        while (parent != null) {
+            if (hasMatchingSignature(parent.getOwnAttributes(), signature)
+                    || hasMatchingSignature(parent.getOwnActions(), signature)) {
+                return false;
+            }
+
+            parent = parent.getParent().orElse(null);
+        }
+
+        return true;
+    }
+
+    private boolean hasMatchingSignature(List<?> members, String signature) {
+        for (var member : members) {
+            if (member instanceof Attribute attr) {
+                if (TypeMapper.memberSignature(attr.name(), attr.parameters()).equals(signature)) {
+                    return true;
+                }
+                continue;
+            }
+
+            if (member instanceof Action action
+                    && TypeMapper.memberSignature(action.name(), action.parameters()).equals(signature)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

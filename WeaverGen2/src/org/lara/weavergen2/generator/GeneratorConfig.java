@@ -11,7 +11,7 @@ public record GeneratorConfig(
         String nodeType,
         boolean generateEvents,
         boolean hasBaseSpec,
-        Set<String> baseAttributeNames
+        Set<String> baseMemberSignatures
 ) {
     public String weaverClassName() {
         return hasBaseSpec ? "A" + weaverName : "WeaverEngine";
