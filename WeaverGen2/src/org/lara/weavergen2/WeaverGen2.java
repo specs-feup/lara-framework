@@ -35,9 +35,13 @@ public final class WeaverGen2 {
      */
     public static WeaverGen2 fromSpecs(WeaverSpec baseSpec, WeaverSpec weaverSpec, String nodeType) {
         var baseModel = instantiate(baseSpec).buildRaw();
-        var baseAttributeNames = baseModel.getGlobal().getOwnAttributes().stream()
-            .map(Attribute::name)
-            .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        var baseMemberSignatures = new LinkedHashSet<String>();
+        for (var attr : baseModel.getGlobal().getOwnAttributes()) {
+            baseMemberSignatures.add(TypeMapper.memberSignature(attr.name(), attr.parameters()));
+        }
+        for (var action : baseModel.getGlobal().getOwnActions()) {
+            baseMemberSignatures.add(TypeMapper.memberSignature(action.name(), action.parameters()));
+        }
 
         var model = weaverSpec.build();
         SpecValidator.validate(model);
@@ -48,7 +52,7 @@ public final class WeaverGen2 {
                 nodeType,
                 true,
                 true,
-                Set.copyOf(baseAttributeNames)
+                Set.copyOf(baseMemberSignatures)
         );
 
         return new WeaverGen2(model, config);
