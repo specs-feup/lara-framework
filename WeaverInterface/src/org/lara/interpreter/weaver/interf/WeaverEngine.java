@@ -42,7 +42,7 @@ public abstract class WeaverEngine {
     private EventTrigger eventTrigger;
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
-    
+
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
