@@ -76,13 +76,6 @@ public abstract class WeaverEngine {
     public abstract boolean run(DataStore dataStore);
 
     /**
-     * Get the list of available actions in the weaver
-     *
-     * @return list with all actions
-     */
-    public abstract List<String> getActions();
-
-    /**
      * Returns the name of the join point model root
      *
      * @return then name of the join point model root

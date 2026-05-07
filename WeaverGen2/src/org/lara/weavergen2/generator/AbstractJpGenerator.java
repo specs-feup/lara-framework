@@ -74,7 +74,8 @@ public final class AbstractJpGenerator {
             var constructorWeaverType = getConstructorWeaverType(jpClass);
             if (jpClass == model.getGlobal()) {
 
-                sb.line("private " + nodeType + " node;");
+                sb.line("// FIXME: This should be a private field");
+                sb.line("protected " + nodeType + " node;");
                 sb.line();
                 sb.openBlock("public " + className + "(" + nodeType + " node, "
                         + config.weaverClassName() + " weaver)");
