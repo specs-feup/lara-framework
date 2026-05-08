@@ -85,7 +85,11 @@ public final class JpClass {
     }
 
     public Optional<String> getDefaultAttribute() {
-        return Optional.ofNullable(defaultAttribute);
+        if (defaultAttribute != null) {
+            return Optional.of(defaultAttribute);
+        }
+
+        return parent == null ? Optional.empty() : parent.getDefaultAttribute();
     }
 
     public void setDefaultAttribute(String defaultAttribute) {
