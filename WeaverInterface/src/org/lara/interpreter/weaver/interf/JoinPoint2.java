@@ -1,7 +1,7 @@
 package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.weaver.events.EventTrigger;
-import org.lara.interpreter.weaver.interf.abstracts.joinpoints.AJoinpoint;
+import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
 import pt.up.fe.specs.util.treenode.ATreeNode;
 
 import java.util.stream.Stream;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  *       generated code will require this class to implement it</li>
  * </ul>
  */
-public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends AJoinpoint<Self> {
+public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends ALaraJoinPoint<Self> {
 
     private final WeaverEngine weaver;
 
