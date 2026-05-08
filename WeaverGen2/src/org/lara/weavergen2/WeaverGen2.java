@@ -87,7 +87,7 @@ public final class WeaverGen2 {
     /**
      * Generates all artifacts and writes them to the output directory.
      */
-    public void generate(Path outputDir) throws IOException {
+    public void generate(Path outputDir, Path jsonOutPath) throws IOException {
         // Abstract join point classes
         for (var jp : model.getAllJpClasses()) {
             var gen = new AbstractJpGenerator(jp, model, config);
@@ -110,14 +110,21 @@ public final class WeaverGen2 {
             var weaverGen = new WeaverAbstractGenerator(model, config);
             writeFile(outputDir, config.abstractWeaverPackage(), "A" + config.weaverName() + ".java", weaverGen.generate());
 
-            // JSON
-            var json = JsonSerializer.toJson(model);
-            var jsonPackage = config.basePackage();
-            writeFile(outputDir, jsonPackage, config.weaverName() + ".json", json);
-
             // DOT
             var dot = new DotGenerator(model).generate();
-            writeFile(outputDir, jsonPackage, config.weaverName() + ".dotty", dot);
+            writeFile(outputDir, config.basePackage(), config.weaverName() + ".dotty", dot);
+        }
+
+        // JSON
+        var json = JsonSerializer.toJson(model);
+        if (jsonOutPath != null) {
+            var parentDir = jsonOutPath.getParent();
+            if (parentDir != null) {
+                Files.createDirectories(parentDir);
+            }
+            Files.writeString(jsonOutPath, json);
+        } else {
+            writeFile(outputDir, config.basePackage(), config.weaverName() + ".json", json);
         }
     }
 
@@ -170,7 +177,7 @@ public final class WeaverGen2 {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Usage: WeaverGen2 <specClassName> <outputDir> [--base <baseSpecClassName>] [--node <nodeType>]");
+            System.err.println("Usage: WeaverGen2 <specClassName> <outputDir> [--base <baseSpecClassName>] [--node <nodeType>] [--jsonOutPath <jsonFilePath>]");
             System.exit(1);
         }
 
@@ -178,12 +185,15 @@ public final class WeaverGen2 {
         var outputDir = Path.of(args[1]);
         String baseSpecClassName = null;
         var nodeType = "java.lang.Object";
+        Path jsonOutPath = null;
 
         for (int i = 2; i < args.length; i++) {
             if ("--base".equals(args[i]) && i + 1 < args.length) {
                 baseSpecClassName = args[++i];
             } else if ("--node".equals(args[i]) && i + 1 < args.length) {
                 nodeType = args[++i];
+            } else if ("--jsonOutPath".equals(args[i]) && i + 1 < args.length) {
+                jsonOutPath = Path.of(args[++i]);
             }
         }
 
@@ -199,7 +209,7 @@ public final class WeaverGen2 {
             gen = fromSpec(weaverSpec, nodeType);
         }
 
-        gen.generate(outputDir);
+        gen.generate(outputDir, jsonOutPath);
         gen.generateUserAbstract(outputDir);
 
         System.out.println("WeaverGen2: Generation complete. Output: " + outputDir);
