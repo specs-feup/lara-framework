@@ -83,11 +83,3 @@ test {
 
     finalizedBy jacocoTestReport
 }
-
-tasks.register('json', JavaExec) {
-    group = "Execution"
-    description = "Generates the LaraJoinPointSpecification.json file for Lara-JS"
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'org.lara.interpreter.LaraJoinPointJsonGeneratorLauncher'
-    args = []
-}
