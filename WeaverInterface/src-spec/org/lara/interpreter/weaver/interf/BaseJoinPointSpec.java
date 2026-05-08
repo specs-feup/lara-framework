@@ -17,6 +17,12 @@ public class BaseJoinPointSpec extends WeaverSpec {
     public void define() {
         packageName("org.lara.interpreter.weaver.interf");
 
+        enumDef("InsertPosition")
+                .value("before")
+                .value("after")
+                .value("replace")
+                .end();
+
         global("LaraJoinPoint")
             .attribute("dump", STRING, "String with a dump of the join point hierarchy")
             .attribute("joinPointType", STRING, "The type name of this join point")
@@ -34,11 +40,11 @@ public class BaseJoinPointSpec extends WeaverSpec {
 
             // Actions available on all join points
             .action("insert")
-                .param("position", STRING)
+                .param("position", enumRef("InsertPosition"))
                 .param("code", STRING)
                 .returns(array(jpRef("LaraJoinPoint")))
             .action("insert")
-                .param("position", STRING)
+                .param("position", enumRef("InsertPosition"))
                 .param("joinpoint", jpRef("LaraJoinPoint"))
                 .returns(array(jpRef("LaraJoinPoint")))
             .action("toString")
