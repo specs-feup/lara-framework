@@ -17,17 +17,17 @@ public class BaseJoinPointSpec extends WeaverSpec {
     public void define() {
         packageName("org.lara.interpreter.weaver.interf");
 
-        global()
+        global("LaraJoinPoint")
             .attribute("dump", STRING, "String with a dump of the join point hierarchy")
             .attribute("joinPointType", STRING, "The type name of this join point")
             .attribute("self", THIS, "A reference to this join point")
-            .attribute("children", array(jpRef("joinpoint")), "The children of this join point, ignoring null nodes")
-            .attribute("descendants", array(jpRef("joinpoint")), "All descendants of this join point")
-            .attribute("scopeNodes", array(jpRef("joinpoint")), "The scope nodes of this join point")
+            .attribute("children", array(jpRef("LaraJoinPoint")), "The children of this join point, ignoring null nodes")
+            .attribute("descendants", array(jpRef("LaraJoinPoint")), "All descendants of this join point")
+            .attribute("scopeNodes", array(jpRef("LaraJoinPoint")), "The scope nodes of this join point")
 
             // Tree navigation
-            .attribute("parent", jpRef("joinpoint"), "Returns the parent node in the AST, or undefined if it is the root node")
-            .attribute("root", jpRef("joinpoint"), "The root of the tree")
+            .attribute("parent", jpRef("LaraJoinPoint"), "Returns the parent node in the AST, or undefined if it is the root node")
+            .attribute("root", jpRef("LaraJoinPoint"), "The root of the tree")
             .attribute("code", STRING, "String with the code represented by this node")
             .attribute("line", INTEGER, "The starting line of the current node in the original code")
             .attribute("column", INTEGER, "The starting column of the current node in the original code")
@@ -36,11 +36,11 @@ public class BaseJoinPointSpec extends WeaverSpec {
             .action("insert")
                 .param("position", STRING)
                 .param("code", STRING)
-                .returns(array(jpRef("joinpoint")))
+                .returns(array(jpRef("LaraJoinPoint")))
             .action("insert")
                 .param("position", STRING)
-                .param("joinpoint", jpRef("joinpoint"))
-                .returns(array(jpRef("joinpoint")))
+                .param("joinpoint", jpRef("LaraJoinPoint"))
+                .returns(array(jpRef("LaraJoinPoint")))
             .action("toString")
                 .returns(STRING)
             .action("equals")
