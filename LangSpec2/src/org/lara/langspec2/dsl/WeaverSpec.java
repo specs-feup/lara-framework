@@ -88,12 +88,20 @@ public abstract class WeaverSpec {
      * Returns the builder for the global (base) join point class.
      * All join points inherit from this unless they specify a different parent.
      */
-    protected JpBuilder global() {
+    protected JpBuilder global(String name) {
         if (globalBuilder == null) {
-            global = new JpClass("joinpoint");
+            global = new JpClass(name);
             globalBuilder = new JpBuilder(this, global);
         }
         return globalBuilder;
+    }
+
+    /**
+     * Returns the builder for the global (base) join point class.
+     * All join points inherit from this unless they specify a different parent.
+     */
+    protected JpBuilder global() {
+        return global("joinpoint");
     }
 
     /**
