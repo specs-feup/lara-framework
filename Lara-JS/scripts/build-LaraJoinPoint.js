@@ -231,8 +231,8 @@ export function registerJoinpointMapperFunction(
 
   const jpType: string = obj.getJoinPointType();
   // Iterate in reverse order, to give priority to most recently added mappers
-  for(let i = JoinpointMappers.length - 1; i>=0; i--) {
-    const mapper = JoinpointMappers[i];  
+  for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
+    const mapper = JoinpointMappers[i];
     const laraJp = mapper.toJpInstance(jpType, obj);
     if (laraJp) {
       return laraJp;
