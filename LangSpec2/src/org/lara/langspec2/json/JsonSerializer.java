@@ -254,7 +254,7 @@ public final class JsonSerializer {
         if (type instanceof PrimitiveType p) {
             return p.name();
         } else if (type instanceof SelfType) {
-            return "joinpoint";
+            return "this";
         } else if (type instanceof JpRefType ref) {
             return ref.jpName();
         } else if (type instanceof TypeDefRefType ref) {
