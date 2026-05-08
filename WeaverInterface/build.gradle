@@ -84,7 +84,8 @@ tasks.register('generateBaseJoinPointAbstracts', JavaExec) {
     args = [
             'org.lara.interpreter.weaver.interf.BaseJoinPointSpec',
             "${projectDir}/src",
-            '--node', 'java.lang.Object'
+            '--node', 'java.lang.Object',
+            "--jsonOutPath", "${projectDir}/../Lara-JS/LaraJoinPointSpecification.json"
     ]
 }
 
