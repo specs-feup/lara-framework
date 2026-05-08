@@ -404,9 +404,12 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
     case "Integer":
     case "int":
     case "Long":
+    case "long":
     case "Double":
+    case "double":
       return "number";
       break;
+    case "map":
     case "Map":
       return "Record<string, any>";
     default:
