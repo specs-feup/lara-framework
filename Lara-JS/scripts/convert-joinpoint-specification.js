@@ -132,6 +132,9 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
     }
   });
 
+  attributes.sort((left, right) => left.name.localeCompare(right.name));
+  actions.sort((left, right) => left.name.localeCompare(right.name));
+
   const jpName = interpretType(jp.name, joinpointNameSet, enumNameSet);
   return {
     name: jpName,
