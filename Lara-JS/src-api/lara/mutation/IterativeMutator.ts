@@ -1,4 +1,4 @@
-import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import { InsertPosition, LaraJoinPoint } from "../../LaraJoinPoint.js";
 import { arrayFromArgs } from "../core/LaraCore.js";
 import Mutation from "./Mutation.js";
 import MutationResult from "./MutationResult.js";
@@ -79,7 +79,7 @@ export default class IterativeMutator extends Mutator {
     }
 
     this.isMutated = false;
-    this.currentMutatedPoint.insert("replace", this.currentOriginalPoint);
+    this.currentMutatedPoint.insert(InsertPosition.replace, this.currentOriginalPoint);
 
     // Unset mutated point
     this.currentMutatedPoint = undefined;
@@ -126,7 +126,7 @@ export default class IterativeMutator extends Mutator {
           // Mutate code and return
           this.isMutated = true;
           this.currentMutatedPoint = $mutatedJp;
-          $jp.insert("replace", $mutatedJp);
+          $jp.insert(InsertPosition.replace, $mutatedJp);
 
           yield mutationResult;
 

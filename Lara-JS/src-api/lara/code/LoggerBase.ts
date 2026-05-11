@@ -1,4 +1,4 @@
-import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import { InsertPosition, LaraJoinPoint } from "../../LaraJoinPoint.js";
 import JoinPoints from "../../weaver/JoinPoints.js";
 import { isJoinPoint } from "../core/LaraCore.js";
 
@@ -121,13 +121,13 @@ export default abstract class LoggerBase<T extends LaraJoinPoint> {
    */
   // TODO: This function should receive LaraJoinPoints but they do not have the insertAfter method
   _insertCode($jp: T, insertBefore: boolean, code: string) {
-    const insertBeforeString = insertBefore ? "before" : "after";
+    const insertBeforeString = insertBefore ? InsertPosition.before : InsertPosition.after;
 
     if (insertBefore) {
       $jp.insert(insertBeforeString, code);
       this.afterJp = $jp;
     } else {
-      this.afterJp = $jp.insert("after", code)[0] as T;
+      this.afterJp = $jp.insert(InsertPosition.after, code)[0] as T;
     }
   }
 
