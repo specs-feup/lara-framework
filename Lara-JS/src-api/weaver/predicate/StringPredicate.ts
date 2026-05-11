@@ -1,4 +1,5 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
+import Weaver from "../Weaver.js";
 import JpPredicate from "./JpPredicate.js";
 
 export default class StringPredicate extends JpPredicate {
@@ -16,7 +17,7 @@ export default class StringPredicate extends JpPredicate {
     }
 
     isInstance<T extends LaraJoinPoint>(jp: T): boolean {
-        return jp.instanceOf(this.name);
+        return Weaver.isJoinPoint(jp, this.name);
     }
 
 }
