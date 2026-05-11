@@ -98,7 +98,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   let actions = [];
   const actionNameSet = new Set();
 
-  jp.children.forEach((child) => {
+  jp.children?.forEach((child) => {
     switch (child.type) {
       case "attribute":
         if (child.children.length !== 1) {
