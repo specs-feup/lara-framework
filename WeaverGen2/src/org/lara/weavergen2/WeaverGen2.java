@@ -151,7 +151,8 @@ public final class WeaverGen2 {
     private String generateUserAbstractSource(String pkg) {
         var sb = new StringBuilder();
         sb.append("package ").append(pkg).append(";\n\n");
-        sb.append("import ").append(config.baseJoinPointPackage()).append(".").append(config.baseJoinPointClass()).append(";\n");
+        sb.append("import ").append(config.joinPointPackage()).append(".")
+            .append(TypeMapper.abstractClassName(model.getGlobal().getName())).append(";\n");
         sb.append("import ").append(config.abstractWeaverPackage()).append(".").append(config.weaverClassName()).append(";\n\n");
         sb.append("/**\n");
         sb.append(" * Abstract class which can be edited by the developer.\n");
@@ -159,9 +160,10 @@ public final class WeaverGen2 {
         sb.append(" */\n");
         sb.append("public abstract class ").append(config.userAbstractClassName());
         sb.append("<Self extends ").append(config.userAbstractClassName()).append("<Self>>");
-        sb.append(" extends ").append(config.baseJoinPointClass()).append(" {\n\n");
-        sb.append("    public ").append(config.userAbstractClassName()).append("(").append(config.weaverClassName()).append(" weaver) {\n");
-        sb.append("        super(weaver);\n");
+        sb.append(" extends ").append(TypeMapper.abstractClassName(model.getGlobal().getName())).append("<Self> {\n\n");
+        sb.append("    public ").append(config.userAbstractClassName()).append("(").append(config.nodeType()).append(" node, ")
+            .append(config.weaverClassName()).append(" weaver) {\n");
+        sb.append("        super(node, weaver);\n");
         sb.append("    }\n");
         sb.append("}\n");
         return sb.toString();
