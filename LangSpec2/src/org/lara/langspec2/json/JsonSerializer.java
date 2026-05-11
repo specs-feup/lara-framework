@@ -88,9 +88,9 @@ public final class JsonSerializer {
             sb.append(innerIndent).append("\"tooltip\": ").append(jsonString(tt));
         });
 
-        // Children: all attributes and actions (own + inherited for this JP)
-        var allAttrs = jp.getAllAttributes();
-        var allActions = jp.getAllActions();
+        // Children: only members declared on this join point
+        var allAttrs = jp.getOwnAttributes();
+        var allActions = jp.getOwnActions();
 
         if (!allAttrs.isEmpty() || !allActions.isEmpty()) {
             sb.append(",\n");
