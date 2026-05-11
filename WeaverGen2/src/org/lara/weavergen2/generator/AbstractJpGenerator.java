@@ -258,15 +258,22 @@ public final class AbstractJpGenerator {
             return nodeTypeSimpleName;
         }
 
+        if (TypeMapper.isPrimitive(nodeTypeSimpleName)) {
+            return nodeTypeSimpleName;
+        }
+
+        try {
+            Class.forName("java.lang." + nodeTypeSimpleName);
+            return "java.lang." + nodeTypeSimpleName;
+        } catch (ClassNotFoundException e) {
+            // Not a java.lang type, continue resolving from imports below.
+        }
+
         var importMatcher = Pattern.compile("^import\\s+([^;]+\\." + Pattern.quote(nodeTypeSimpleName) + ");$",
                 Pattern.MULTILINE).matcher(source);
 
         if (importMatcher.find()) {
             return importMatcher.group(1);
-        }
-
-        if ("Throwable".equals(nodeTypeSimpleName)) {
-            return "java.lang." + nodeTypeSimpleName;
         }
 
         throw new IllegalStateException("Could not resolve import for constructor node type '" + nodeTypeSimpleName
