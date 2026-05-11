@@ -1,4 +1,4 @@
-import { LaraJoinPoint } from "../LaraJoinPoint.js";
+import { getJoinpointMappers, LaraJoinPoint } from "../LaraJoinPoint.js";
 import * as LaraCore from "./core/LaraCore.js";
 import JavaTypes from "./util/JavaTypes.js";
 
@@ -108,9 +108,15 @@ export default class Check {
       return;
     }
 
-    if (typeof type === "string" && $jp.instanceOf(type)) {
-      return;
+    if (typeof type === "string") {
+      for (const mapper of getJoinpointMappers()) {
+        const jpClass = mapper.toJpClass(type);
+        if (jpClass && $jp instanceof jpClass) {
+          return;
+        }
+      }
     }
+
     if (typeof type === "string" && $jp.joinPointType !== type) {
       throw (
         "Expected join point to be an instance of type '" +
