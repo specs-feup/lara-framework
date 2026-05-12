@@ -122,7 +122,9 @@ public final class AbstractJpGenerator {
         sb.line();
 
         // instanceOf()
-        generateInstanceOf(sb);
+        if (config.hasBaseSpec()) {
+            generateInstanceOf(sb);
+        }
 
         if (standaloneMode) {
             sb.line();
@@ -479,13 +481,11 @@ public final class AbstractJpGenerator {
     private void generateInstanceOf(JavaSourceBuilder sb) {
         var chain = jpClass.getAncestorChain();
 
-        if (config.hasBaseSpec()) {
-            sb.line("@Override");
-        }
-        sb.openBlock("public boolean instanceOf(String joinpointClass)");
+        sb.line("@Override");
+        sb.openBlock("public boolean instanceOfImpl(String joinpointClassname)");
 
         var checks = chain.stream()
-                .map(jp -> "\"" + jp.getName() + "\".equals(joinpointClass)")
+                .map(jp -> "\"" + jp.getName() + "\".equals(joinpointClassname)")
                 .toList();
 
         sb.line("return " + String.join("\n" + sb.getIndentStr() + "    || ", checks) + ";");

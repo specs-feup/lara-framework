@@ -157,6 +157,30 @@
 							"type": "this",
 							"name": "jp"
 						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "instanceOf"
+						},
+						{
+							"type": "String",
+							"name": "joinpointClassname"
+						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "instanceOf"
+						},
+						{
+							"type": "String[]",
+							"name": "joinpointClassnames"
+						}]
 				}
 			]
 		}
