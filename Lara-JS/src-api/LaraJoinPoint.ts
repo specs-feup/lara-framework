@@ -107,6 +107,9 @@ export class LaraJoinPoint {
   insert(position: InsertPosition, code: string): LaraJoinPoint[];
   insert(position: InsertPosition, joinpoint: LaraJoinPoint): LaraJoinPoint[];
   insert(p1: InsertPosition, p2: string | LaraJoinPoint): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
+  instanceOf(joinpointClassname: string): boolean;
+  instanceOf(joinpointClassnames: string[]): boolean;
+  instanceOf(p1: string | string[]): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
 }
 

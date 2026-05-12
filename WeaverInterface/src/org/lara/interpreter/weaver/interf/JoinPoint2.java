@@ -39,7 +39,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
     /**
      * Multi-argument instanceOf.
      */
-    public boolean instanceOf(String[] types) {
+    public boolean instanceOfImpl(String[] types) {
         for (var type : types) {
             if (instanceOf(type)) {
                 return true;
