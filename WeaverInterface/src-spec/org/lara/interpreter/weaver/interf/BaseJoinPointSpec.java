@@ -51,6 +51,12 @@ public class BaseJoinPointSpec extends WeaverSpec {
                 .returns(STRING)
             .action("equals")
                 .param("jp", THIS)
+                .returns(BOOLEAN)
+            .action("instanceOf")
+                .param("joinpointClassname", STRING)
+                .returns(BOOLEAN)
+            .action("instanceOf")
+                .param("joinpointClassnames", array(STRING))
                 .returns(BOOLEAN);
     }
 }
