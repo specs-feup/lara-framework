@@ -22,10 +22,12 @@ public final class WeaverGen2 {
     private final WeaverModel model;
     private final WeaverModel mergedModel;
     private final GeneratorConfig config;
+    private final List<String> importEnums;
 
-    public WeaverGen2(WeaverModel model, WeaverModel mergedModel, GeneratorConfig config) {
+    public WeaverGen2(WeaverModel model, WeaverModel mergedModel, List<String> importEnums, GeneratorConfig config) {
         this.model = model;
         this.mergedModel = mergedModel;
+        this.importEnums = List.copyOf(importEnums);
         this.config = config;
     }
 
@@ -54,7 +56,9 @@ public final class WeaverGen2 {
                 true,
                 Set.copyOf(baseMemberSignatures));
 
-        return new WeaverGen2(weaverModel, mergedModel, config);
+        var importEnums = new ArrayList<>(baseModel.getEnumDefs().keySet());
+
+        return new WeaverGen2(weaverModel, mergedModel, importEnums, config);
     }
 
     private static WeaverSpec instantiate(WeaverSpec spec) {
@@ -79,7 +83,7 @@ public final class WeaverGen2 {
                 false,
                 Set.of());
 
-        return new WeaverGen2(model, model, config);
+        return new WeaverGen2(model, model, List.of(), config);
     }
 
     /**
@@ -119,7 +123,7 @@ public final class WeaverGen2 {
         }
 
         // JSON
-        var json = JsonSerializer.toJson(outputModel);
+        var json = JsonSerializer.toJson(outputModel, importEnums);
         if (jsonOutPath != null) {
             var parentDir = jsonOutPath.getParent();
             if (parentDir != null) {

@@ -2,7 +2,6 @@ package org.lara.langspec2.dsl;
 
 import org.lara.langspec2.model.*;
 import org.lara.langspec2.types.JpDataType;
-import org.lara.langspec2.types.JpDataType.*;
 
 import java.util.*;
 
