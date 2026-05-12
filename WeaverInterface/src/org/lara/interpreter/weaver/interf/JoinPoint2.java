@@ -19,7 +19,8 @@ import java.util.stream.Stream;
  *       generated code will require this class to implement it</li>
  * </ul>
  */
-public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends ALaraJoinPoint<Self> {
+public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends JoinPoint2<?, Jp>>
+        extends ALaraJoinPoint<Self, Jp> {
 
     private final WeaverEngine weaver;
 
@@ -50,7 +51,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends ALaraJoi
     /**
      * Compares two join points for identity.
      */
-    public abstract boolean same(JoinPoint2<?> other);
+    public abstract boolean same(JoinPoint2<?, ?> other);
 
     // ----- Weaver access -----
 
@@ -89,20 +90,25 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends ALaraJoi
 
     // ----- Tree navigation defaults -----
 
-    public Stream<JoinPoint2> getJpChildrenStream() {
+    public Stream<Jp> getJpChildrenStream() {
         throw new UnsupportedOperationException(get_class() + ": getJpChildrenStream not implemented");
     }
 
-    public JoinPoint2 getJpParent() {
+    public Jp getJpParent() {
         throw new UnsupportedOperationException(get_class() + ": getJpParent not implemented");
     }
 
-    public Stream<JoinPoint2> getJpDescendantsStream() {
+    public Stream<Jp> getJpDescendantsStream() {
         return getJpChildrenStream().flatMap(JoinPoint2::getJpDescendantsAndSelfStream);
     }
 
-    public Stream<JoinPoint2> getJpDescendantsAndSelfStream() {
-        return Stream.concat(Stream.of(this), getJpDescendantsStream());
+    public Stream<Jp> getJpDescendantsAndSelfStream() {
+        return Stream.concat(Stream.of(asJp()), getJpDescendantsStream());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Jp asJp() {
+        return (Jp) this;
     }
 
     // ----- Dump -----
@@ -111,7 +117,7 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self>> extends ALaraJoi
         return dumpPrivate(this, "");
     }
 
-    private static String dumpPrivate(JoinPoint2<?> jp, String prefix) {
+    private static String dumpPrivate(JoinPoint2<?, ?> jp, String prefix) {
         var dump = new StringBuilder();
         dump.append(prefix).append(jp.toString()).append("\n");
         jp.getJpChildrenStream().forEach(child -> dump.append(dumpPrivate(child, prefix + "   ")));
