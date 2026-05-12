@@ -19,6 +19,13 @@ public final class JsonSerializer {
      * Serializes the model to a JSON string.
      */
     public static String toJson(WeaverModel model) {
+        return toJson(model, List.of());
+    }
+
+    /**
+     * Serializes the model to a JSON string.
+     */
+    public static String toJson(WeaverModel model, List<String> importEnums) {
         var sb = new StringBuilder();
         sb.append("{\n");
 
@@ -26,6 +33,10 @@ public final class JsonSerializer {
         var root = model.getRoot().map(JpClass::getName).orElse("joinpoint");
         appendKv(sb, "\t", "root", root, true);
         appendKv(sb, "\t", "rootAlias", root, true);
+
+        if (importEnums != null && !importEnums.isEmpty()) {
+            appendArray(sb, "\t", "importEnums", importEnums, true);
+        }
 
         // Children: all JP classes
         sb.append("\t\"children\": [\n");
@@ -63,6 +74,16 @@ public final class JsonSerializer {
         sb.append("\t]\n");
         sb.append("}");
         return sb.toString();
+    }
+
+    private static void appendArray(StringBuilder sb, String indent, String key, List<String> values, boolean comma) {
+        sb.append(indent).append("\"").append(key).append("\": [");
+        if (!values.isEmpty()) {
+            sb.append(values.stream().map(JsonSerializer::jsonString).reduce((a, b) -> a + ", " + b).orElse(""));
+        }
+        sb.append("]");
+        if (comma) sb.append(",");
+        sb.append("\n");
     }
 
     private static void writeJpClass(StringBuilder sb, JpClass jp, WeaverModel model, String indent) {

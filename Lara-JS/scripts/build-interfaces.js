@@ -38,6 +38,7 @@ async function buildInterfaces(
     JSON.parse(jsonSpecification),
     laraSpecification
   );
+  const importedEnums = specification.importEnums ?? [];
 
   // Create output file if it doesn't exist
   const outputFile = fs.openSync(outputFileName, "w");
@@ -52,13 +53,17 @@ import {
   registerJoinpointMapper,
   wrapJoinPoint,
   unwrapJoinPoint,
+${importedEnums.map((name) => `  ${name},`).join("\n")}
 } from "@specs-feup/lara/api/LaraJoinPoint.js";\n\n`
   );
 
   generateDefaultAttributeMappers(specification.joinpoints, outputFile);
 
   generateJoinpoints(specification.joinpoints, outputFile);
-  generateEnums(specification.enums, outputFile);
+  generateEnums(
+    specification.enums.filter((enumDef) => !importedEnums.includes(enumDef.name)),
+    outputFile
+  );
 
   generateJoinpointMappers(
     specification.joinpoints,
