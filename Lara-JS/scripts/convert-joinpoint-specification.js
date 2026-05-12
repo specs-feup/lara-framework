@@ -25,6 +25,7 @@ export function convertSpecification(input, baseJoinPointSpec = undefined) {
   let output = {
     joinpoints: convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet),
     enums: convertEnums(enums),
+    importEnums: Array.isArray(input.importEnums) ? [...input.importEnums] : [],
   };
 
   if (baseJoinPointSpec !== undefined) {
