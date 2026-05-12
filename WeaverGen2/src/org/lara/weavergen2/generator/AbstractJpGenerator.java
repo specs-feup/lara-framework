@@ -79,7 +79,10 @@ public final class AbstractJpGenerator {
             var constructorWeaverType = getConstructorWeaverType(jpClass);
             if (jpClass == model.getGlobal()) {
 
-                sb.line("// FIXME: This should be a private field");
+                sb.line("/**");
+                sb.line(" *  FIXME: This should be a private field");
+                sb.line(" */ ");
+                sb.line("@Deprecated");
                 sb.line("protected " + nodeType + " node;");
                 sb.line();
                 sb.openBlock("public " + className + "(" + nodeType + " node, "
@@ -89,12 +92,11 @@ public final class AbstractJpGenerator {
                 sb.closeBlock();
                 sb.line();
 
-                sb.openBlock("public " + nodeType + " getNode()");
+                sb.openBlock("public " + nodeType + " getNodeImpl()");
                 sb.line("return node;");
                 sb.closeBlock();
                 sb.line();
-            }
-            else {
+            } else {
                 sb.openBlock("public " + className + "(" + nodeType + " node, " + constructorWeaverType + " weaver)");
                 sb.line("super(node, weaver);");
                 sb.closeBlock();

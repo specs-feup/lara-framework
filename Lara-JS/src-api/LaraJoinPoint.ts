@@ -88,6 +88,10 @@ export class LaraJoinPoint {
    */
   get line(): number { return wrapJoinPoint(this._javaObject.getLine()) }
   /**
+   * The underlying AST node represented by this join point
+   */
+  get node(): object { return (this._javaObject.getNode()) }
+  /**
    * Returns the parent node in the AST, or undefined if it is the root node
    */
   get parent(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getParent()) }

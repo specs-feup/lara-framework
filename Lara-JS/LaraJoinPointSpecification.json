@@ -9,6 +9,15 @@
 			"children": [
 				{
 					"type": "attribute",
+					"tooltip": "The underlying AST node represented by this join point",
+					"children": [
+						{
+							"type": "Object",
+							"name": "node"
+						}]
+				},
+				{
+					"type": "attribute",
 					"tooltip": "String with a dump of the join point hierarchy",
 					"children": [
 						{
