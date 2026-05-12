@@ -2,7 +2,6 @@ package org.lara.interpreter.weaver.interf;
 
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
-import pt.up.fe.specs.util.treenode.ATreeNode;
 
 import java.util.stream.Stream;
 
@@ -27,14 +26,6 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
     protected JoinPoint2(WeaverEngine weaver) {
         this.weaver = weaver;
     }
-
-    // ----- Core identity (built-in, not from spec) -----
-
-    /**
-     * Returns the underlying AST node.
-     */
-    public abstract ATreeNode getNode();
-
 
     /**
      * Multi-argument instanceOf.

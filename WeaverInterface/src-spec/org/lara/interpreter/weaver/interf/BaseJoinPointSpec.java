@@ -24,6 +24,7 @@ public class BaseJoinPointSpec extends WeaverSpec {
                 .end();
 
         global("LaraJoinPoint")
+            .attribute("node", OBJECT, "The underlying AST node represented by this join point")
             .attribute("dump", STRING, "String with a dump of the join point hierarchy")
             .attribute("joinPointType", STRING, "The type name of this join point")
             .attribute("self", THIS, "A reference to this join point")

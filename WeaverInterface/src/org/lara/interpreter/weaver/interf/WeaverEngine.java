@@ -89,7 +89,7 @@ public abstract class WeaverEngine {
     public abstract JoinPoint2 getRootJp();
 
     public Object getRootNode() {
-        return getRootJp().getNode();
+        return getRootJp().getNodeImpl();
     }
 
     /**
