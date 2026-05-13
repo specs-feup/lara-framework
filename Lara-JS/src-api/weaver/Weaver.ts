@@ -2,7 +2,6 @@ import {
   LaraJoinPoint,
   getJoinpointMappers,
 } from "../LaraJoinPoint.js";
-import Check from "../lara/Check.js";
 import Io from "../lara/Io.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import DataStore from "../lara/util/DataStore.js";
@@ -49,9 +48,15 @@ export default class Weaver {
   /**
    * @deprecated Use the javascript `instanceof` operator instead
    */
+  static isJoinPoint($joinpoint: LaraJoinPoint): boolean;
+  /**
+   * @deprecated Use the javascript `instanceof` operator instead
+   */
   static isJoinPoint($joinpoint: LaraJoinPoint, type?: string): boolean {
-    Check.isJoinPoint($joinpoint, type);
-    return true;
+    if (type === undefined) {
+      return $joinpoint instanceof LaraJoinPoint;
+    }
+    return $joinpoint.instanceOf(type);
   }
 
   /**
