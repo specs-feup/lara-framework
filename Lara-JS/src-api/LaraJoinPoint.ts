@@ -62,51 +62,51 @@ export class LaraJoinPoint {
   /**
    * The children of this join point, ignoring null nodes
    */
-  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
+  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.children()) }
   /**
    * String with the code represented by this node
    */
-  get code(): string { return wrapJoinPoint(this._javaObject.getCode()) }
+  get code(): string { return wrapJoinPoint(this._javaObject.code()) }
   /**
    * The starting column of the current node in the original code
    */
-  get column(): number { return wrapJoinPoint(this._javaObject.getColumn()) }
+  get column(): number { return wrapJoinPoint(this._javaObject.column()) }
   /**
    * All descendants of this join point
    */
-  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
+  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.descendants()) }
   /**
    * String with a dump of the join point hierarchy
    */
-  get dump(): string { return wrapJoinPoint(this._javaObject.getDump()) }
+  get dump(): string { return wrapJoinPoint(this._javaObject.dump()) }
   /**
    * The type name of this join point
    */
-  get joinPointType(): string { return wrapJoinPoint(this._javaObject.getJoinPointType()) }
+  get joinPointType(): string { return wrapJoinPoint(this._javaObject.joinPointType()) }
   /**
    * The starting line of the current node in the original code
    */
-  get line(): number { return wrapJoinPoint(this._javaObject.getLine()) }
+  get line(): number { return wrapJoinPoint(this._javaObject.line()) }
   /**
    * The underlying AST node represented by this join point
    */
-  get node(): object { return (this._javaObject.getNode()) }
+  get node(): object { return (this._javaObject.node()) }
   /**
    * Returns the parent node in the AST, or undefined if it is the root node
    */
-  get parent(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getParent()) }
+  get parent(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.parent()) }
   /**
    * The root of the tree
    */
-  get root(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getRoot()) }
+  get root(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.root()) }
   /**
    * The scope nodes of this join point
    */
-  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
+  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.scopeNodes()) }
   /**
    * A reference to this join point
    */
-  get self(): this { return wrapJoinPoint(this._javaObject.getSelf()) }
+  get self(): this { return wrapJoinPoint(this._javaObject.self()) }
   equals(jp: this): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
   insert(position: InsertPosition, code: string): LaraJoinPoint[];
   insert(position: InsertPosition, joinpoint: LaraJoinPoint): LaraJoinPoint[];
@@ -270,7 +270,7 @@ export function wrapJoinPoint(obj: any): any {
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  const jpType: string = obj.joinPointType();
   // Iterate in reverse order, to give priority to most recently added mappers
   for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
     const mapper = JoinpointMappers[i];
