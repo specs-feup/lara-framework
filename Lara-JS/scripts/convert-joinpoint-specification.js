@@ -375,6 +375,10 @@ export function capitalizeFirstLetter(string) {
  * @returns {string}
  */
 function interpretType(typeString, joinpointNameSet, enumNameSet) {
+  if (typeString === "?") {
+    return "any";
+  }
+
   // Detect array types
   if (typeString.endsWith("[]")) {
     const baseType = typeString.slice(0, -2);
@@ -387,6 +391,17 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
       .map((literal) => `"${literal.trim()}"`)
       .join(" | ");
     return literals;
+  }
+
+  if ((typeString.startsWith("Map<") || typeString.startsWith("map<")) && typeString.endsWith(">")) {
+    const innerTypes = typeString.slice(4, -1).split(",").map((t) => t.trim());
+    if (innerTypes.length === 2) {
+      const keyType = interpretType(innerTypes[0], joinpointNameSet, enumNameSet);
+      const valueType = interpretType(innerTypes[1], joinpointNameSet, enumNameSet);
+      return `Record<${keyType}, ${valueType}>`;
+    } else {
+      return "Record<string, any>";
+    }
   }
 
   if (joinpointNameSet.has(typeString) || enumNameSet.has(typeString)) {
@@ -413,6 +428,8 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
     case "double":
       return "number";
       break;
+    case "map<?, ?>":
+    case "Map<?, ?>":
     case "map":
     case "Map":
       return "Record<string, any>";
