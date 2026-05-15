@@ -95,6 +95,8 @@ public final class EntityGenerator {
         var sb = new JavaSourceBuilder();
         sb.line("package " + config.enumsPackage() + ";");
         sb.line();
+        sb.line("import java.util.Objects;");
+        sb.line();
 
         sb.line("/**");
         if (ed.tooltip() != null) {
@@ -131,9 +133,44 @@ public final class EntityGenerator {
         sb.openBlock("public String toString()");
         sb.line("return display;");
         sb.closeBlock();
+        sb.line();
+
+        addFromDisplayMethod(sb, ed);
 
         sb.closeBlock(); // enum
         return sb.toString();
+    }
+
+    private void addFromDisplayMethod(JavaSourceBuilder sb, EnumDef ed) {
+        var enumName = TypeMapper.capitalize(ed.name());
+        var validValues = ed.values().stream()
+                .map(this::effectiveEnumDisplay)
+                .map(EntityGenerator::escapeJavaString)
+                .reduce((left, right) -> left + ", " + right)
+                .orElse("");
+
+        sb.openBlock("public static " + enumName + " fromDisplay(String display)");
+        sb.openBlock("for (" + enumName + " value : values())");
+        sb.openBlock("if (Objects.equals(value.getDisplay(), display))");
+        sb.line("return value;");
+        sb.closeBlock();
+        sb.closeBlock();
+        sb.line("throw new IllegalArgumentException(\"Unknown value for enum " + enumName + ": \" + display"
+                + " + \". Expected one of: " + validValues + "\");");
+        sb.closeBlock();
+    }
+
+    private String effectiveEnumDisplay(org.lara.langspec2.model.EnumValue value) {
+        return value.display() != null ? value.display() : value.value();
+    }
+
+    private static String escapeJavaString(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     private String mapType(org.lara.langspec2.types.JpDataType type) {
