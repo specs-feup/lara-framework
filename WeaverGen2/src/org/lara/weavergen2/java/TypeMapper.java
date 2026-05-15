@@ -29,8 +29,10 @@ public final class TypeMapper {
                                     java.util.function.Function<String, String> jpRefMapper,
                                     java.util.function.Function<String, String> typeDefRefMapper,
                                     java.util.function.Function<String, String> enumRefMapper) {
-        if (type instanceof PrimitiveType p) {
+        if (type instanceof DirectType p) {
             return p.name();
+        } else if (type instanceof ReferenceType b) {
+            return b.name();
         } else if (type instanceof SelfType) {
             return selfType;
         } else if (type instanceof JpRefType ref) {
