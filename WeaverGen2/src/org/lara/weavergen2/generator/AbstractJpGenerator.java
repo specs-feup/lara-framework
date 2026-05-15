@@ -1,5 +1,6 @@
 package org.lara.weavergen2.generator;
 
+import org.lara.langspec2.dsl.WeaverSpec;
 import org.lara.langspec2.model.*;
 import org.lara.langspec2.types.JpDataType;
 import org.lara.langspec2.types.JpDataType.*;
@@ -204,7 +205,8 @@ public final class AbstractJpGenerator {
     }
 
     private Optional<String> getConcreteSuperclassNodeTypeImport(JpClass jpClass) {
-        if (jpClass == model.getGlobal() || jpClass.getParent().map(parent -> parent.equals(model.getGlobal())).orElse(false)) {
+        if (jpClass == model.getGlobal()
+                || jpClass.getParent().map(parent -> parent.equals(model.getGlobal())).orElse(false)) {
             return Optional.of(config.nodeType());
         }
 
@@ -214,8 +216,10 @@ public final class AbstractJpGenerator {
 
         try {
             var sourceFile = resolveSourceFile(concreteSuperclassImport)
-                    .orElseThrow(() -> new IllegalStateException("Could not locate source file for concrete superclass '"
-                            + concreteSuperclassImport + "' while generating join point '" + jpClass.getName() + "'"));
+                    .orElseThrow(
+                            () -> new IllegalStateException("Could not locate source file for concrete superclass '"
+                                    + concreteSuperclassImport + "' while generating join point '" + jpClass.getName()
+                                    + "'"));
 
             var source = Files.readString(sourceFile);
             var concreteSuperclassName = simpleClassName(concreteSuperclassImport);
@@ -343,7 +347,7 @@ public final class AbstractJpGenerator {
         if (attr.parameters().isEmpty()) {
             sb.line("public abstract " + javaRetType + " " + implMethodName + "();");
         } else {
-            var params = formatParams(attr.parameters());
+            var params = formatImplParams(attr.parameters());
             sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + params + ");");
         }
         sb.line();
@@ -358,13 +362,9 @@ public final class AbstractJpGenerator {
         var methodName = action.name();
         var implMethodName = methodName + "Impl";
 
-        var paramStr = formatParams(action.parameters());
+        var paramStr = formatImplParams(action.parameters());
 
-        // Impl method (default: throws)
-        sb.openBlock("public " + javaRetType + " " + implMethodName + "(" + paramStr + ")");
-        sb.line("throw new UnsupportedOperationException(get_class() + \": Action " + action.name()
-                + " not implemented\");");
-        sb.closeBlock();
+        sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + paramStr + ");");
         sb.line();
 
         if (shouldGenerateWrapper(action.name(), action.parameters())) {
@@ -374,16 +374,15 @@ public final class AbstractJpGenerator {
 
     private void generateFinalWrapper(JavaSourceBuilder sb, String attrName, String methodName,
             JpDataType type, List<Parameter> params, boolean isAttribute) {
-        var isSelfOrJp = type instanceof SelfType || type instanceof JpRefType;
-        var wrapperReturnType = "Object";
-        var wrapperName = TypeMapper.sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+        var isReferenceType = type instanceof SelfType || type instanceof JpRefType || type instanceof ReferenceType;
+        var wrapperReturnType = mapPublicReturnType(type);
+        var wrapperName = TypeMapper
+                .sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
 
         if (params.isEmpty()) {
             sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "()");
         } else {
-            var wrapperParams = params.stream()
-                    .map(p -> "Object " + TypeMapper.sanitizeJavaIdentifier(p.name()))
-                    .toList();
+            var wrapperParams = formatPublicParams(params);
             sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "("
                     + String.join(", ", wrapperParams) + ")");
         }
@@ -396,17 +395,19 @@ public final class AbstractJpGenerator {
             var args = params.stream()
                     .map(p -> {
                         var paramName = TypeMapper.sanitizeJavaIdentifier(p.name());
-                        return "(" + mapParameterType(p.type()) + ") " + paramName;
+                        return toImplArgument(p.type(), paramName);
                     })
                     .toList();
             implCall.append(String.join(", ", args));
         }
         implCall.append(")");
 
-        if (isSelfOrJp) {
+        if (isReferenceType) {
             var javaRetType = mapReturnType(type);
             sb.line(javaRetType + " result = " + implCall + ";");
             sb.line("return result != null ? result : getUndefinedValue();");
+        } else if (isEnumLike(type)) {
+            sb.line("return " + toPublicEnumReturnExpression(type, implCall) + ";");
         } else {
             sb.line("return " + implCall + ";");
         }
@@ -427,11 +428,9 @@ public final class AbstractJpGenerator {
     private void generateActionFinalWrapper(JavaSourceBuilder sb, Action action) {
         var isSelfOrJp = action.returnType() instanceof SelfType || action.returnType() instanceof JpRefType;
         var actionReturnType = mapReturnType(action.returnType());
-        var wrapperReturnType = actionReturnType;
+        var wrapperReturnType = mapPublicReturnType(action.returnType());
 
-        var wrapperParams = action.parameters().stream()
-            .map(p -> mapParameterType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
-                .toList();
+        var wrapperParams = formatPublicParams(action.parameters());
         var paramStr = String.join(", ", wrapperParams);
 
         var wrapperActionName = TypeMapper.sanitizeJavaIdentifier(action.name());
@@ -442,7 +441,7 @@ public final class AbstractJpGenerator {
         implCall.append("this.").append(action.name()).append("Impl(");
         if (!action.parameters().isEmpty()) {
             var casts = action.parameters().stream()
-                    .map(p -> toActionImplArgument(p))
+                    .map(p -> toImplArgument(p.type(), TypeMapper.sanitizeJavaIdentifier(p.name())))
                     .toList();
             implCall.append(String.join(", ", casts));
         }
@@ -451,7 +450,9 @@ public final class AbstractJpGenerator {
         if (isSelfOrJp) {
             var javaRetType = actionReturnType;
             sb.line(javaRetType + " result = " + implCall + ";");
-            sb.line("return result != null ? result : (" + javaRetType + ") getUndefinedValue();");
+            sb.line("return result != null ? result : getUndefinedValue();");
+        } else if (isEnumLike(action.returnType())) {
+            sb.line("return " + toPublicEnumReturnExpression(action.returnType(), implCall) + ";");
         } else if ("void".equals(actionReturnType)) {
             sb.line(implCall + ";");
             sb.line("return;");
@@ -468,16 +469,69 @@ public final class AbstractJpGenerator {
         sb.line();
     }
 
-    private String toActionImplArgument(Parameter parameter) {
-        var paramName = TypeMapper.sanitizeJavaIdentifier(parameter.name());
-        var implParamType = mapParameterType(parameter.type());
-        var wrapperParamType = mapParameterType(parameter.type());
-
-        if (implParamType.equals(wrapperParamType)) {
+    private String toImplArgument(JpDataType type, String paramName) {
+        if (type instanceof DirectType) {
             return paramName;
         }
 
-        return "(" + implParamType + ") " + paramName;
+        if (type == WeaverSpec.OBJECT) {
+            return paramName;
+        }
+
+        if (type instanceof EnumRefType ref) {
+            return TypeMapper.capitalize(ref.enumName()) + ".fromDisplay(" + paramName + ")";
+        }
+
+        if (type instanceof ArrayType arrayType) {
+            if (arrayType.element() instanceof DirectType) {
+                return paramName;
+            }
+            if (arrayType.element() == WeaverSpec.OBJECT) {
+                return paramName;
+            }
+
+            if (isEnumLike(arrayType.element())) {
+                return toImplEnumArrayArgument(arrayType, paramName);
+            }
+
+            /*
+            var arrayCast = new StringBuilder("pt.up.fe.specs.util.SpecsCollections.cast(" + paramName + ", ");
+            if (arrayType.element() instanceof ReferenceType refType) {
+                arrayCast.append(refType.name()).append(".class)");
+            } else if (arrayType.element() instanceof JpRefType jpRefType) {
+                arrayCast.append(jpRefType.jpName()).append(".class)");
+            }
+            return arrayCast.toString();
+            */
+            return "(" + mapParameterType(type) + ") " + paramName;
+        }
+
+        if (type instanceof ParameterizedType parameterizedType && parameterizedType.base() instanceof DirectType) {
+            return paramName;
+        }
+
+        return "(" + mapParameterType(type) + ") " + paramName;
+    }
+
+    private String toImplEnumArrayArgument(ArrayType arrayType, String sourceExpression) {
+        var element = arrayType.element();
+
+        if (element instanceof EnumRefType ref) {
+            var enumType = TypeMapper.capitalize(ref.enumName());
+            return "Arrays.stream(" + sourceExpression + ")"
+                    + ".map(" + enumType + "::fromDisplay)"
+                    + ".toArray(" + enumType + "[]::new)";
+        }
+
+        if (element instanceof ArrayType innerArray) {
+            var lambdaVar = "value";
+            var innerExpression = toImplEnumArrayArgument(innerArray, lambdaVar);
+            return "Arrays.stream(" + sourceExpression + ")"
+                    + ".map(" + lambdaVar + " -> " + innerExpression + ")"
+                    + ".toArray(" + mapParameterType(arrayType) + "::new)";
+        }
+
+        throw new IllegalArgumentException("Unsupported enum array type: " + arrayType);
     }
 
     private void generateInstanceOf(JavaSourceBuilder sb) {
@@ -500,6 +554,85 @@ public final class AbstractJpGenerator {
 
     private String mapParameterType(JpDataType type) {
         return mapType(type, false);
+    }
+
+    private String mapPublicReturnType(JpDataType type) {
+        if (type instanceof DirectType primitiveType) {
+            return primitiveType.name();
+        }
+        if (type instanceof ReferenceType) {
+            return "Object";
+        }
+        if (type instanceof EnumRefType) {
+            return "String";
+        }
+        if (type instanceof ArrayType arrayType) {
+            return mapPublicReturnType(arrayType.element()) + "[]";
+        }
+
+        return "Object";
+    }
+
+    private String mapPublicParameterType(JpDataType type) {
+        if (type instanceof DirectType primitiveType) {
+            return primitiveType.name();
+        }
+
+        if (type instanceof ReferenceType referenceType) {
+            return referenceType.name();
+        }
+
+        if (type instanceof EnumRefType) {
+            return "String";
+        }
+
+        if (type instanceof ArrayType arrayType) {
+            return mapPublicParameterType(arrayType.element()) + "[]";
+        }
+
+        if (type instanceof ParameterizedType parameterizedType && parameterizedType.base() instanceof DirectType) {
+            return mapType(parameterizedType, false);
+        }
+
+        return "Object";
+    }
+
+    private String formatImplParams(List<Parameter> params) {
+        return params.stream()
+                .map(p -> mapParameterType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("");
+    }
+
+    private List<String> formatPublicParams(List<Parameter> params) {
+        return params.stream()
+                .map(p -> String.join(" ", mapPublicParameterType(p.type()), TypeMapper.sanitizeJavaIdentifier(p.name())))
+                .toList();
+    }
+
+    private boolean isEnumLike(JpDataType type) {
+        if (type instanceof EnumRefType) {
+            return true;
+        }
+
+        if (type instanceof ArrayType arrayType) {
+            return isEnumLike(arrayType.element());
+        }
+
+        return false;
+    }
+
+    private String toPublicEnumReturnExpression(JpDataType type, StringBuilder implCall) {
+        if (type instanceof EnumRefType) {
+            return implCall + ".getDisplay()";
+        }
+
+        if (type instanceof ArrayType arrayType && arrayType.element() instanceof EnumRefType ref) {
+            var enumType = TypeMapper.capitalize(ref.enumName());
+            return implCall + ".map(" + enumType + "::getDisplay).toArray(String[]::new)";
+        }
+
+        throw new IllegalArgumentException("Unsupported enum bridge type: " + type);
     }
 
     private String mapType(JpDataType type, boolean useRootJoinPointAlias) {
@@ -538,15 +671,8 @@ public final class AbstractJpGenerator {
         return jpClass.getParent().map(parent -> parent.equals(model.getGlobal()))
                 .map(isRootChild -> isRootChild
                         ? config.abstractWeaverPackage() + "." + config.weaverClassName()
-                : config.basePackage() + "." + config.weaverName())
-            .orElse(config.basePackage() + "." + config.weaverName());
-    }
-
-    private String formatParams(List<Parameter> params) {
-        return params.stream()
-                .map(p -> mapParameterType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("");
+                        : config.basePackage() + "." + config.weaverName())
+                .orElse(config.basePackage() + "." + config.weaverName());
     }
 
     private boolean shouldGenerateWrapper(String name, List<Parameter> params) {
