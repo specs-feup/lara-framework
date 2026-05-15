@@ -9,12 +9,26 @@ import java.util.List;
 public sealed interface JpDataType {
 
     /**
-     * Primitive type (int, boolean, String, void, long, double, float, byte, short, char, Object).
+     * Direct (primitive) type (int, boolean, String, void, long, double, float, byte, short, char).
+     * These types can be emmited directly into the abstract joinpoint classes without special handling.
+     * Note that String is considered a direct type for simplicity, even though it's a reference type in Java.
      */
-    record PrimitiveType(String name) implements JpDataType {
-        public PrimitiveType {
+    record DirectType(String name) implements JpDataType {
+        public DirectType {
             if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException("Primitive type name must not be null or blank");
+                throw new IllegalArgumentException("Direct (primitive) type name must not be null or blank");
+            }
+        }
+    }
+
+    /**
+     * Reference type (Object, Integer, Boolean, Long, Double, Float, Byte, Short, Character).
+     * These types are emitted as references in the abstract joinpoint classes, and will require special handling when used as attribute types.
+     */
+    record ReferenceType(String name) implements JpDataType {
+        public ReferenceType {
+            if (name == null || name.isBlank()) {
+                throw new IllegalArgumentException("Reference type name must not be null or blank");
             }
         }
     }

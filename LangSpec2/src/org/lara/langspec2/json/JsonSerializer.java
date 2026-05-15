@@ -272,8 +272,10 @@ public final class JsonSerializer {
      * Converts a JpDataType to its string representation for JSON output.
      */
     static String typeToString(JpDataType type) {
-        if (type instanceof PrimitiveType p) {
+        if (type instanceof DirectType p) {
             return p.name();
+        } else if (type instanceof ReferenceType b) {
+            return b.name();
         } else if (type instanceof SelfType) {
             return "this";
         } else if (type instanceof JpRefType ref) {
