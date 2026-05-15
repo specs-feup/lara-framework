@@ -33,20 +33,20 @@ import java.util.*;
 public abstract class WeaverSpec {
 
     // ----- Type constants -----
-    protected static final JpDataType STRING = new DirectType("String");
-    protected static final JpDataType INT = new DirectType("int");
-    protected static final JpDataType LONG = new DirectType("long");
-    protected static final JpDataType DOUBLE = new DirectType("double");
-    protected static final JpDataType FLOAT = new DirectType("float");
-    protected static final JpDataType BOOLEAN = new DirectType("boolean");
-    protected static final JpDataType VOID = new DirectType("void");
-    protected static final JpDataType OBJECT = new ReferenceType("Object");
-    protected static final JpDataType INTEGER = new ReferenceType("Integer");
-    protected static final JpDataType LONG_BOXED = new ReferenceType("Long");
-    protected static final JpDataType DOUBLE_BOXED = new ReferenceType("Double");
-    protected static final JpDataType FLOAT_BOXED = new ReferenceType("Float");
-    protected static final JpDataType BOOLEAN_BOXED = new ReferenceType("Boolean");
-    protected static final JpDataType THIS = new SelfType();
+    public static final JpDataType STRING = new DirectType("String");
+    public static final JpDataType INT = new DirectType("int");
+    public static final JpDataType LONG = new DirectType("long");
+    public static final JpDataType DOUBLE = new DirectType("double");
+    public static final JpDataType FLOAT = new DirectType("float");
+    public static final JpDataType BOOLEAN = new DirectType("boolean");
+    public static final JpDataType VOID = new DirectType("void");
+    public static final JpDataType OBJECT = new ReferenceType("Object");
+    public static final JpDataType INTEGER = new ReferenceType("Integer");
+    public static final JpDataType LONG_BOXED = new ReferenceType("Long");
+    public static final JpDataType DOUBLE_BOXED = new ReferenceType("Double");
+    public static final JpDataType FLOAT_BOXED = new ReferenceType("Float");
+    public static final JpDataType BOOLEAN_BOXED = new ReferenceType("Boolean");
+    public static final JpDataType THIS = new SelfType();
 
     // ----- Type constructors -----
 
@@ -55,11 +55,11 @@ public abstract class WeaverSpec {
     }
 
     protected static JpDataType list(JpDataType element) {
-        return new ParameterizedType(new PrimitiveType("List"), List.of(element));
+        return new ParameterizedType(new DirectType("List"), List.of(element));
     }
 
     protected static JpDataType map(JpDataType key, JpDataType value) {
-        return new ParameterizedType(new PrimitiveType("Map"), List.of(key, value));
+        return new ParameterizedType(new DirectType("Map"), List.of(key, value));
     }
 
     protected static JpDataType jpRef(String name) {
