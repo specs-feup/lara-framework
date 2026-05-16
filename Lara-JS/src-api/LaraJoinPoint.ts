@@ -107,6 +107,10 @@ export class LaraJoinPoint {
    * A reference to this join point
    */
   get self(): this { return wrapJoinPoint(this._javaObject.self()) }
+  /**
+   * Compares this join point with another join point for identity (i.e., whether they represent the same AST node)
+   */
+  compareNodes(aJoinPoint: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.compareNodes(unwrapJoinPoint(aJoinPoint))); }
   equals(jp: this): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
   insert(position: InsertPosition, code: string): LaraJoinPoint[];
   insert(position: InsertPosition, joinpoint: LaraJoinPoint): LaraJoinPoint[];
@@ -114,6 +118,10 @@ export class LaraJoinPoint {
   instanceOf(joinpointClassname: string): boolean;
   instanceOf(joinpointClassnames: string[]): boolean;
   instanceOf(p1: string | string[]): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
+  /**
+   * Compares this join point with another join point for identity (i.e., whether they represent the same AST node)
+   */
+  same(other: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.same(unwrapJoinPoint(other))); }
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
 }
 
