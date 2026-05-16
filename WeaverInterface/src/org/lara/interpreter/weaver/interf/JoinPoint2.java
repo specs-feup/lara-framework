@@ -39,11 +39,6 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
         return false;
     }
 
-    /**
-     * Compares two join points for identity.
-     */
-    public abstract boolean same(JoinPoint2<?, ?> other);
-
     // ----- Weaver access -----
 
     public WeaverEngine getWeaverEngine() {

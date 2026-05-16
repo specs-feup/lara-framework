@@ -116,35 +116,29 @@
 						}]
 				},
 				{
-					"type": "action",
+					"type": "attribute",
+					"tooltip": "Compares this join point with another join point for identity (i.e., whether they represent the same AST node)",
 					"children": [
 						{
-							"type": "LaraJoinPoint[]",
-							"name": "insert"
-						},
-						{
-							"type": "InsertPosition",
-							"name": "position"
-						},
-						{
-							"type": "String",
-							"name": "code"
-						}]
-				},
-				{
-					"type": "action",
-					"children": [
-						{
-							"type": "LaraJoinPoint[]",
-							"name": "insert"
-						},
-						{
-							"type": "InsertPosition",
-							"name": "position"
+							"type": "boolean",
+							"name": "compareNodes"
 						},
 						{
 							"type": "LaraJoinPoint",
-							"name": "joinpoint"
+							"name": "aJoinPoint"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "Compares this join point with another join point for identity (i.e., whether they represent the same AST node)",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "same"
+						},
+						{
+							"type": "LaraJoinPoint",
+							"name": "other"
 						}]
 				},
 				{
@@ -189,6 +183,38 @@
 						{
 							"type": "String[]",
 							"name": "joinpointClassnames"
+						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "insert"
+						},
+						{
+							"type": "InsertPosition",
+							"name": "position"
+						},
+						{
+							"type": "String",
+							"name": "code"
+						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "insert"
+						},
+						{
+							"type": "InsertPosition",
+							"name": "position"
+						},
+						{
+							"type": "LaraJoinPoint",
+							"name": "joinpoint"
 						}]
 				}
 			]
