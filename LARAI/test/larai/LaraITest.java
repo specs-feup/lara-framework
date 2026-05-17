@@ -6,10 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 
@@ -45,28 +44,18 @@ class LaraITest {
             }
 
             @Override
-            public List<String> getActions() {
-                return List.of("action1", "action2");
-            }
-
-            @Override
             public String getRoot() {
                 return "testRoot";
             }
 
             @Override
-            public JoinPoint getRootJp() {
+            public JoinPoint2<?, ?> getRootJp() {
                 return null;
             }
 
             @Override
             public List<WeaverOption> getOptions() {
                 return List.of();
-            }
-
-            @Override
-            protected LanguageSpecification buildLangSpecs() {
-                return null;
             }
 
             @Override
