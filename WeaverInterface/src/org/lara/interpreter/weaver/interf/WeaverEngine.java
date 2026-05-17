@@ -16,7 +16,6 @@ import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
@@ -86,7 +85,7 @@ public abstract class WeaverEngine {
      * Function that can be called from LARA code to retrieve the root join point
      *
      */
-    public abstract JoinPoint2 getRootJp();
+    public abstract JoinPoint2<?, ?> getRootJp();
 
     public Object getRootNode() {
         return getRootJp().getNodeImpl();

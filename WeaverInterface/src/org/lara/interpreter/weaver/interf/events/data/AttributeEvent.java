@@ -20,13 +20,13 @@ import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 public class AttributeEvent extends BaseEvent {
-    private JoinPoint2 target;
+    private JoinPoint2<?, ?> target;
     private String attribute;
 
     private List<Object> arguments;
     private Optional<Object> result;
 
-    public AttributeEvent(Stage stage, JoinPoint2 target, String attribute, List<Object> arguments,
+    public AttributeEvent(Stage stage, JoinPoint2<?, ?> target, String attribute, List<Object> arguments,
             Optional<Object> result) {
         super(stage);
         this.target = target;
@@ -38,7 +38,7 @@ public class AttributeEvent extends BaseEvent {
     /**
      * @return the target
      */
-    public JoinPoint2 getTarget() {
+    public JoinPoint2<?, ?> getTarget() {
         return target;
     }
 
