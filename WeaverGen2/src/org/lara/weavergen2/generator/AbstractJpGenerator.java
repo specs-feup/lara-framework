@@ -549,11 +549,11 @@ public final class AbstractJpGenerator {
     }
 
     private String mapReturnType(JpDataType type) {
-        return mapType(type, true);
+        return mapType(type);
     }
 
     private String mapParameterType(JpDataType type) {
-        return mapType(type, false);
+        return mapType(type);
     }
 
     private String mapPublicReturnType(JpDataType type) {
@@ -591,7 +591,7 @@ public final class AbstractJpGenerator {
         }
 
         if (type instanceof ParameterizedType parameterizedType && parameterizedType.base() instanceof DirectType) {
-            return mapType(parameterizedType, false);
+            return mapType(parameterizedType);
         }
 
         return "Object";
@@ -635,10 +635,11 @@ public final class AbstractJpGenerator {
         throw new IllegalArgumentException("Unsupported enum bridge type: " + type);
     }
 
-    private String mapType(JpDataType type, boolean useRootJoinPointAlias) {
+    private String mapType(JpDataType type) {
+        boolean useRootJoinPointAlias = !config.hasBaseSpec();
+
         Function<String, String> jpMapper = name -> {
-            if (useRootJoinPointAlias && !config.hasBaseSpec() && jpClass == model.getGlobal()
-                    && (name.equals("joinpoint") || name.equals(model.getGlobal().getName()))) {
+            if (useRootJoinPointAlias && name.equals(model.getGlobal().getName())) {
                 return "Jp";
             }
 
