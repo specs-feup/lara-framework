@@ -164,8 +164,12 @@ public final class AbstractJpGenerator {
         if (!model.getEnumDefs().isEmpty()) {
             sb.line("import " + config.enumsPackage() + ".*;");
         }
-        sb.line("import org.lara.interpreter.exception.ActionException;");
-        sb.line("import org.lara.interpreter.exception.AttributeException;");
+        if (jpClass.getOwnActions().size() > 0) {
+            sb.line("import org.lara.interpreter.exception.ActionException;");
+        }
+        if (jpClass.getOwnAttributes().size() > 0) {
+            sb.line("import org.lara.interpreter.exception.AttributeException;");
+        }
         sb.line();
         sb.line("import java.util.*;");
     }
