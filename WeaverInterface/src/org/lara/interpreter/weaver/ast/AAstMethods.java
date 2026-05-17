@@ -90,7 +90,7 @@ public abstract class AAstMethods<T> implements AstMethods {
 
     public abstract Class<T> getNodeClass();
 
-    protected abstract JoinPoint2 toJavaJoinPointImpl(T node);
+    protected abstract JoinPoint2<?, ?> toJavaJoinPointImpl(T node);
 
     protected abstract String getJoinPointNameImpl(T node);
 

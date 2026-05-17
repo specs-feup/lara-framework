@@ -30,7 +30,7 @@ public class DummyAstMethods extends AAstMethods<Object> {
     }
 
     @Override
-    protected JoinPoint2 toJavaJoinPointImpl(Object node) {
+    protected JoinPoint2<?, ?> toJavaJoinPointImpl(Object node) {
         throw new NotImplementedException(this);
     }
 
