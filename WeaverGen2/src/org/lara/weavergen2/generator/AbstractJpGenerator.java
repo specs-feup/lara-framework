@@ -130,10 +130,27 @@ public final class AbstractJpGenerator {
         }
 
         if (standaloneMode) {
+            sb.line("protected abstract IntFunction<Self[]> selfTypeArrayFactory();");
+            sb.line();
+            sb.line("protected abstract IntFunction<Jp[]> jpTypeArrayFactory();");
             sb.line();
             sb.openBlock("public static Object getUndefinedValue()");
             sb.line("return UndefinedValue.getUndefined();");
             sb.closeBlock();
+        } else {
+            sb.line();
+            sb.line("@SuppressWarnings(\"unchecked\")");
+            sb.line("@Override");
+            sb.openBlock("protected IntFunction<Self[]> selfTypeArrayFactory()");
+            sb.line("return size -> (Self[]) new " + className + "[size];");
+            sb.closeBlock();
+            if (jpClass == model.getGlobal()) {
+                sb.line();
+                sb.line("@Override");
+                sb.openBlock("protected final IntFunction<" + className + "<?>[]> jpTypeArrayFactory()");
+                sb.line("return size -> new " + className + "[size];");
+                sb.closeBlock();
+            }
         }
 
         sb.closeBlock(); // class
@@ -172,6 +189,7 @@ public final class AbstractJpGenerator {
         }
         sb.line();
         sb.line("import java.util.*;");
+        sb.line("import java.util.function.IntFunction;");
     }
 
     private String simpleClassName(String fullyQualifiedName) {
@@ -498,16 +516,20 @@ public final class AbstractJpGenerator {
                 return toImplEnumArrayArgument(arrayType, paramName);
             }
 
-            /*
-            var arrayCast = new StringBuilder("pt.up.fe.specs.util.SpecsCollections.cast(" + paramName + ", ");
-            if (arrayType.element() instanceof ReferenceType refType) {
-                arrayCast.append(refType.name()).append(".class)");
-            } else if (arrayType.element() instanceof JpRefType jpRefType) {
-                arrayCast.append(jpRefType.jpName()).append(".class)");
+            String castType = mapArrayCastType(arrayType);
+            switch (castType) {
+                case "Jp":
+                    castType = "jpTypeArrayFactory()";
+                    break;
+                case "Self":
+                    castType = "selfTypeArrayFactory()";
+                    break;
+                default:
+                    castType += ".class";
+                    break;
             }
-            return arrayCast.toString();
-            */
-            return "(" + mapParameterType(type) + ") " + paramName;
+
+            return "pt.up.fe.specs.util.SpecsCollections.cast(" + paramName + ", " + castType + ")";
         }
 
         if (type instanceof ParameterizedType parameterizedType && parameterizedType.base() instanceof DirectType) {
@@ -610,7 +632,8 @@ public final class AbstractJpGenerator {
 
     private List<String> formatPublicParams(List<Parameter> params) {
         return params.stream()
-                .map(p -> String.join(" ", mapPublicParameterType(p.type()), TypeMapper.sanitizeJavaIdentifier(p.name())))
+                .map(p -> String.join(" ", mapPublicParameterType(p.type()),
+                        TypeMapper.sanitizeJavaIdentifier(p.name())))
                 .toList();
     }
 
@@ -656,6 +679,28 @@ public final class AbstractJpGenerator {
 
         return TypeMapper.toJavaType(
                 type,
+                "Self",
+                jpMapper,
+                TypeMapper::capitalize,
+                TypeMapper::capitalize);
+    }
+
+    private String mapArrayCastType(ArrayType type) {
+        boolean useRootJoinPointAlias = !config.hasBaseSpec();
+
+        Function<String, String> jpMapper = name -> {
+            if (useRootJoinPointAlias && name.equals(model.getGlobal().getName())) {
+                return "Jp";
+            }
+
+            if (name.equals("joinpoint") || name.equals(model.getGlobal().getName())) {
+                return TypeMapper.abstractClassName(model.getGlobal().getName());
+            }
+            return TypeMapper.abstractClassName(name);
+        };
+
+        return TypeMapper.toJavaType(
+                type.element(),
                 "Self",
                 jpMapper,
                 TypeMapper::capitalize,
