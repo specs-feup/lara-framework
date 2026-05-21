@@ -401,6 +401,7 @@ public final class AbstractJpGenerator {
         var wrapperName = TypeMapper
                 .sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
 
+        sb.line("@Deprecated");
         if (params.isEmpty()) {
             sb.openBlock("public final " + wrapperReturnType + " " + wrapperName + "()");
         } else {
@@ -456,6 +457,7 @@ public final class AbstractJpGenerator {
         var paramStr = String.join(", ", wrapperParams);
 
         var wrapperActionName = TypeMapper.sanitizeJavaIdentifier(action.name());
+        sb.line("@Deprecated");
         sb.openBlock("public final " + wrapperReturnType + " " + wrapperActionName + "(" + paramStr + ")");
         sb.openBlock("try");
 
