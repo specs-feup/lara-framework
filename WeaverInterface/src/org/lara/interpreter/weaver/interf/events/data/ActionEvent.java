@@ -16,7 +16,7 @@ package org.lara.interpreter.weaver.interf.events.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.lara.interpreter.weaver.interf.JoinPoint2;
+import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 import tdrc.utils.StringUtils;
@@ -24,11 +24,11 @@ import tdrc.utils.StringUtils;
 public class ActionEvent extends BaseEvent {
 
     private String name;
-    private JoinPoint2<?, ?> joinPoint;
+    private ALaraJoinPoint<?, ?> joinPoint;
     private List<Object> arguments;
     private Optional<Object> result;
 
-    public ActionEvent(Stage stage, String actionName, JoinPoint2<?, ?> joinPoint, List<Object> arguments,
+    public ActionEvent(Stage stage, String actionName, ALaraJoinPoint<?, ?> joinPoint, List<Object> arguments,
             Optional<Object> result) {
         super(stage);
         setName(actionName);
@@ -66,14 +66,14 @@ public class ActionEvent extends BaseEvent {
     /**
      * @return the joinPoint
      */
-    public JoinPoint2<?, ?> getJoinPoint() {
+    public ALaraJoinPoint<?, ?> getJoinPoint() {
         return joinPoint;
     }
 
     /**
      * @param joinPoint the joinPoint to set
      */
-    protected void setJoinPoint(JoinPoint2<?, ?> joinPoint) {
+    protected void setJoinPoint(ALaraJoinPoint<?, ?> joinPoint) {
         this.joinPoint = joinPoint;
     }
 

@@ -1,6 +1,5 @@
 package org.lara.interpreter.weaver.interf;
 
-import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
 
 import java.util.stream.Stream;
@@ -21,10 +20,8 @@ import java.util.stream.Stream;
 public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends JoinPoint2<?, Jp>>
         extends ALaraJoinPoint<Self, Jp> {
 
-    private final WeaverEngine weaver;
-
     protected JoinPoint2(WeaverEngine weaver) {
-        this.weaver = weaver;
+        super(weaver);
     }
 
     /**
@@ -32,25 +29,11 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
      */
     public boolean instanceOfImpl(String[] types) {
         for (var type : types) {
-            if (instanceOf(type)) {
+            if (instanceOfImpl(type)) {
                 return true;
             }
         }
         return false;
-    }
-
-    // ----- Weaver access -----
-
-    public WeaverEngine getWeaverEngine() {
-        return weaver;
-    }
-
-    protected EventTrigger eventTrigger() {
-        return weaver.getEventTrigger();
-    }
-
-    protected boolean hasListeners() {
-        return weaver.hasListeners();
     }
 
     // ----- Common utilities -----
@@ -105,12 +88,12 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
 
     private static String dumpPrivate(JoinPoint2<?, ?> jp, String prefix) {
         var dump = new StringBuilder();
-        dump.append(prefix).append(jp.toString()).append("\n");
+        dump.append(prefix).append(jp.toStringImpl()).append("\n");
         jp.getJpChildrenStream().forEach(child -> dump.append(dumpPrivate(child, prefix + "   ")));
         return dump.toString();
     }
 
     public String toStringImpl() {
-        return "Joinpoint '" + joinPointType() + "'";
+        return "Joinpoint '" + getJoinPointTypeImpl() + "'";
     }
 }
