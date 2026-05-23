@@ -382,35 +382,25 @@ public final class AbstractJpGenerator {
     }
 
     private void generateOwnAttribute(JavaSourceBuilder sb, Attribute attr) {
-        var javaRetType = mapReturnType(attr.type());
-        var methodName = "get" + TypeMapper.capitalize(attr.name());
-        var implMethodName = methodName + "Impl";
-
-        if (attr.parameters().isEmpty()) {
-            sb.line("public abstract " + javaRetType + " " + implMethodName + "();");
-        } else {
-            var params = formatImplParams(attr.parameters());
-            sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + params + ");");
-        }
-        sb.line();
-
-        if (shouldGenerateWrapper(attr.name(), attr.parameters())) {
-            generateFinalWrapper(sb, attr.name(), methodName, attr.type(), attr.parameters(), true);
-        }
+        generateOwnMethod(sb, attr.name(), attr.type(), attr.parameters(), true);
     }
 
     private void generateOwnAction(JavaSourceBuilder sb, Action action) {
-        var javaRetType = mapReturnType(action.returnType());
-        var methodName = action.name();
-        var implMethodName = methodName + "Impl";
+        generateOwnMethod(sb, action.name(), action.returnType(), action.parameters(), false);
+    }
 
-        var paramStr = formatImplParams(action.parameters());
+    private void generateOwnMethod(JavaSourceBuilder sb, String methodName, JpDataType returnType, List<Parameter> parameters, boolean isAttribute) {
+        var javaRetType = mapReturnType(returnType);
+        var finalName = isAttribute ? ("get" + TypeMapper.capitalize(methodName)) : methodName;
+        var implMethodName = finalName + "Impl";
 
-        sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + paramStr + ");");
+        var params = formatImplParams(parameters);
+
+        sb.line("public abstract " + javaRetType + " " + implMethodName + "(" + params + ");");
         sb.line();
 
-        if (shouldGenerateWrapper(action.name(), action.parameters())) {
-            generateActionFinalWrapper(sb, action);
+        if (shouldGenerateWrapper(methodName, parameters)) {
+            generateFinalWrapper(sb, methodName, finalName, returnType, parameters, isAttribute);
         }
     }
 
@@ -418,8 +408,7 @@ public final class AbstractJpGenerator {
             JpDataType type, List<Parameter> params, boolean isAttribute) {
         var isReferenceType = type instanceof SelfType || type instanceof JpRefType || type instanceof ReferenceType;
         var wrapperReturnType = mapPublicReturnType(type);
-        var wrapperName = TypeMapper
-                .sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+        var wrapperName = TypeMapper.sanitizeJavaIdentifier(attrName);
         var methodClass = isAttribute ? "Attribute" : "Action";
 
         sb.line("@Deprecated");
@@ -479,66 +468,6 @@ public final class AbstractJpGenerator {
         sb.append(" catch (Exception e) {\n");
         sb.indent();
         sb.line("throw new " + methodClass + "Exception(get_class(), \"" + attrName + "\", e);");
-        sb.closeBlock(); // catch
-        sb.closeBlock(); // method
-        sb.line();
-    }
-
-    private void generateActionFinalWrapper(JavaSourceBuilder sb, Action action) {
-        var isSelfOrJp = action.returnType() instanceof SelfType || action.returnType() instanceof JpRefType;
-        var actionReturnType = mapReturnType(action.returnType());
-        var wrapperReturnType = mapPublicReturnType(action.returnType());
-
-        var wrapperParams = formatPublicParams(action.parameters());
-        var paramStr = String.join(", ", wrapperParams);
-
-        var wrapperActionName = TypeMapper.sanitizeJavaIdentifier(action.name());
-        sb.line("@Deprecated");
-        sb.openBlock("public final " + wrapperReturnType + " " + wrapperActionName + "(" + paramStr + ")");
-        sb.openBlock("try");
-
-        var eventTriggerArgsString = buildEventTriggerArgsString(action.parameters());
-
-        sb.openBlock("if(getWeaverEngine().hasListeners())");
-        sb.line("getWeaverEngine().getEventTrigger().triggerAction(Stage.BEGIN, this, \"" + wrapperActionName + "\", Optional.empty()" + eventTriggerArgsString + ");");
-        sb.closeBlock();
-
-        var implCall = new StringBuilder();
-        implCall.append("this.").append(action.name()).append("Impl(");
-        if (!action.parameters().isEmpty()) {
-            var casts = action.parameters().stream()
-                    .map(p -> toImplArgument(p.type(), TypeMapper.sanitizeJavaIdentifier(p.name())))
-                    .toList();
-            implCall.append(String.join(", ", casts));
-        }
-        implCall.append(")");
-
-        if (action.returnType() == WeaverSpec.VOID) {
-            sb.line(implCall + ";");
-        } else {
-            if (isEnumLike(action.returnType())) {
-                sb.line(actionReturnType + " result = " + toPublicEnumReturnExpression(action.returnType(), implCall) + ";");
-            } else {
-                sb.line(actionReturnType + " result = " + implCall + ";");
-            }
-        }
-
-        sb.openBlock("if(getWeaverEngine().hasListeners())");
-        sb.line("getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, \"" + wrapperActionName + "\", " + ((action.returnType() == WeaverSpec.VOID) ? "Optional.empty()" : "Optional.ofNullable(result)") + eventTriggerArgsString + ");");
-        sb.closeBlock();
-
-        if (action.returnType() == WeaverSpec.VOID) {
-            sb.line("return;");
-        } else if (isSelfOrJp) {
-            sb.line("return result != null ? result : getUndefinedValue();");
-        } else {
-            sb.line("return result;");
-        }
-
-        sb.closeBlockNoNewline();
-        sb.append(" catch (Exception e) {\n");
-        sb.indent();
-        sb.line("throw new ActionException(get_class(), \"" + action.name() + "\", e);");
         sb.closeBlock(); // catch
         sb.closeBlock(); // method
         sb.line();
