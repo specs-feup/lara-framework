@@ -340,18 +340,10 @@ public final class AbstractJpGenerator {
     }
 
     private String concreteClassName(JpClass jpClass) {
-        if (jpClass == model.getGlobal()) {
-            return config.userAbstractClassName();
-        }
-
         return "Cxx" + TypeMapper.capitalize(jpClass.getName());
     }
 
     private String concretePackage(JpClass jpClass) {
-        if (jpClass == model.getGlobal()) {
-            return config.abstractsPackage();
-        }
-
         var concreteBasePackage = config.basePackage() + ".joinpoints";
 
         if (isCilkBranch(jpClass)) {
