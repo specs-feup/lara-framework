@@ -40,10 +40,6 @@ public final class AbstractJpGenerator {
 
         // Imports
         generateImports(sb);
-        if (standaloneMode) {
-            sb.line("import pt.up.fe.specs.jsengine.node.UndefinedValue;");
-        }
-        sb.line();
 
         // Class declaration
         var className = TypeMapper.abstractClassName(jpClass.getName());
@@ -70,7 +66,19 @@ public final class AbstractJpGenerator {
         }
         sb.line();
 
-        if (!standaloneMode) {
+        if (standaloneMode) {
+            // Constructor and getWeaverEngine()
+            sb.line("private final WeaverEngine weaver;");
+            sb.line();
+            sb.openBlock("protected " + className + "(WeaverEngine weaver)");
+            sb.line("this.weaver = weaver;");
+            sb.closeBlock();
+            sb.line();
+            sb.openBlock("public WeaverEngine getWeaverEngine()");
+            sb.line("return weaver;");
+            sb.closeBlock();
+            sb.line();
+        } else {
             // Constructor
             var nodeType = simpleClassName(config.nodeType());
             if (hasConcreteSuperclassNodeTypeCast(jpClass)) {
@@ -116,7 +124,7 @@ public final class AbstractJpGenerator {
         }
 
         // get_class()
-        if (config.hasBaseSpec()) {
+        if (!standaloneMode) {
             sb.line("@Override");
         }
         sb.openBlock("public String get_class()");
@@ -125,10 +133,11 @@ public final class AbstractJpGenerator {
         sb.line();
 
         // instanceOf()
-        if (config.hasBaseSpec()) {
+        if (!standaloneMode) {
             generateInstanceOf(sb);
         }
 
+        // Array factories and undefined value
         if (standaloneMode) {
             sb.line("protected abstract IntFunction<Self[]> selfTypeArrayFactory();");
             sb.line();
@@ -161,6 +170,9 @@ public final class AbstractJpGenerator {
     private void generateImports(JavaSourceBuilder sb) {
         var standaloneMode = !config.hasBaseSpec();
 
+        if (standaloneMode) {
+            sb.line("import org.lara.interpreter.weaver.interf.WeaverEngine;");
+        }
         if (!standaloneMode) {
             sb.line("import " + config.baseJoinPointPackage() + ".*;");
             sb.line("import " + getConstructorWeaverImport(jpClass) + ";");
@@ -187,9 +199,17 @@ public final class AbstractJpGenerator {
         if (jpClass.getOwnAttributes().size() > 0) {
             sb.line("import org.lara.interpreter.exception.AttributeException;");
         }
+        if (jpClass.getOwnActions().size() > 0 || jpClass.getOwnAttributes().size() > 0) {
+            sb.line("import org.lara.interpreter.weaver.interf.events.Stage;");
+            sb.line("import java.util.Optional;");
+        }
         sb.line();
         sb.line("import java.util.*;");
         sb.line("import java.util.function.IntFunction;");
+        if (standaloneMode) {
+            sb.line("import pt.up.fe.specs.jsengine.node.UndefinedValue;");
+        }
+        sb.line();
     }
 
     private String simpleClassName(String fullyQualifiedName) {
@@ -400,6 +420,7 @@ public final class AbstractJpGenerator {
         var wrapperReturnType = mapPublicReturnType(type);
         var wrapperName = TypeMapper
                 .sanitizeJavaIdentifier(methodName.substring(3, 4).toLowerCase() + methodName.substring(4));
+        var methodClass = isAttribute ? "Attribute" : "Action";
 
         sb.line("@Deprecated");
         if (params.isEmpty()) {
@@ -411,6 +432,12 @@ public final class AbstractJpGenerator {
         }
 
         sb.openBlock("try");
+
+        var eventTriggerArgsString = buildEventTriggerArgsString(params);
+
+        sb.openBlock("if(getWeaverEngine().hasListeners())");
+        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.BEGIN, this, \"" + attrName + "\", Optional.empty()" + eventTriggerArgsString + ");");
+        sb.closeBlock();
 
         var implCall = new StringBuilder();
         implCall.append("this.").append(methodName).append("Impl(");
@@ -425,24 +452,33 @@ public final class AbstractJpGenerator {
         }
         implCall.append(")");
 
-        if (isReferenceType) {
-            var javaRetType = mapReturnType(type);
-            sb.line(javaRetType + " result = " + implCall + ";");
-            sb.line("return result != null ? result : getUndefinedValue();");
-        } else if (isEnumLike(type)) {
-            sb.line("return " + toPublicEnumReturnExpression(type, implCall) + ";");
+        if (type == WeaverSpec.VOID) {
+            sb.line(implCall + ";");
         } else {
-            sb.line("return " + implCall + ";");
+            if (isEnumLike(type)) {
+                sb.line(wrapperReturnType + " result = " + toPublicEnumReturnExpression(type, implCall) + ";");
+            } else {
+                var javaRetType = mapReturnType(type);
+                sb.line(javaRetType + " result = " + implCall + ";");
+            }
+        }
+
+        sb.openBlock("if(getWeaverEngine().hasListeners())");
+        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.END, this, \"" + attrName + "\", " + ((type == WeaverSpec.VOID) ? "Optional.empty()" : "Optional.ofNullable(result)") + eventTriggerArgsString + ");");
+        sb.closeBlock();
+
+        if (type == WeaverSpec.VOID) {
+            sb.line("return;");
+        } else if (isReferenceType) {
+            sb.line("return result != null ? result : getUndefinedValue();");
+        } else {
+            sb.line("return result;");
         }
 
         sb.closeBlockNoNewline();
         sb.append(" catch (Exception e) {\n");
         sb.indent();
-        if (isAttribute) {
-            sb.line("throw new AttributeException(get_class(), \"" + attrName + "\", e);");
-        } else {
-            sb.line("throw new ActionException(get_class(), \"" + attrName + "\", e);");
-        }
+        sb.line("throw new " + methodClass + "Exception(get_class(), \"" + attrName + "\", e);");
         sb.closeBlock(); // catch
         sb.closeBlock(); // method
         sb.line();
@@ -461,6 +497,12 @@ public final class AbstractJpGenerator {
         sb.openBlock("public final " + wrapperReturnType + " " + wrapperActionName + "(" + paramStr + ")");
         sb.openBlock("try");
 
+        var eventTriggerArgsString = buildEventTriggerArgsString(action.parameters());
+
+        sb.openBlock("if(getWeaverEngine().hasListeners())");
+        sb.line("getWeaverEngine().getEventTrigger().triggerAction(Stage.BEGIN, this, \"" + wrapperActionName + "\", Optional.empty()" + eventTriggerArgsString + ");");
+        sb.closeBlock();
+
         var implCall = new StringBuilder();
         implCall.append("this.").append(action.name()).append("Impl(");
         if (!action.parameters().isEmpty()) {
@@ -471,17 +513,26 @@ public final class AbstractJpGenerator {
         }
         implCall.append(")");
 
-        if (isSelfOrJp) {
-            var javaRetType = actionReturnType;
-            sb.line(javaRetType + " result = " + implCall + ";");
-            sb.line("return result != null ? result : getUndefinedValue();");
-        } else if (isEnumLike(action.returnType())) {
-            sb.line("return " + toPublicEnumReturnExpression(action.returnType(), implCall) + ";");
-        } else if ("void".equals(actionReturnType)) {
+        if (action.returnType() == WeaverSpec.VOID) {
             sb.line(implCall + ";");
-            sb.line("return;");
         } else {
-            sb.line("return " + implCall + ";");
+            if (isEnumLike(action.returnType())) {
+                sb.line(actionReturnType + " result = " + toPublicEnumReturnExpression(action.returnType(), implCall) + ";");
+            } else {
+                sb.line(actionReturnType + " result = " + implCall + ";");
+            }
+        }
+
+        sb.openBlock("if(getWeaverEngine().hasListeners())");
+        sb.line("getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, \"" + wrapperActionName + "\", " + ((action.returnType() == WeaverSpec.VOID) ? "Optional.empty()" : "Optional.ofNullable(result)") + eventTriggerArgsString + ");");
+        sb.closeBlock();
+
+        if (action.returnType() == WeaverSpec.VOID) {
+            sb.line("return;");
+        } else if (isSelfOrJp) {
+            sb.line("return result != null ? result : getUndefinedValue();");
+        } else {
+            sb.line("return result;");
         }
 
         sb.closeBlockNoNewline();
@@ -491,6 +542,16 @@ public final class AbstractJpGenerator {
         sb.closeBlock(); // catch
         sb.closeBlock(); // method
         sb.line();
+    }
+
+    private String buildEventTriggerArgsString(List<Parameter> params) {
+        if (params.isEmpty()) {
+            return "";
+        }
+        return ", " + String.join(", ",
+                params.stream()
+                        .map(p -> (p.type() instanceof ArrayType ? "(Object) " : "") + TypeMapper.sanitizeJavaIdentifier(p.name()))
+                        .toList());
     }
 
     private String toImplArgument(JpDataType type, String paramName) {
