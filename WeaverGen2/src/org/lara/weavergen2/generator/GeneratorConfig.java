@@ -37,10 +37,6 @@ public record GeneratorConfig(
         return basePackage + ".enums";
     }
 
-    public String userAbstractClassName() {
-        return "A" + weaverName.replace("Weaver", "") + "WeaverJoinPoint";
-    }
-
     public String baseJoinPointClass() {
         return "JoinPoint2";
     }
