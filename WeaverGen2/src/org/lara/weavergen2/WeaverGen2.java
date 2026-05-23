@@ -135,50 +135,6 @@ public final class WeaverGen2 {
         }
     }
 
-    /**
-     * Generates a user-editable bridge class (only if it doesn't exist).
-     */
-    public void generateUserAbstract(Path outputDir) throws IOException {
-        if (!config.hasBaseSpec()) {
-            return; // Only generate user abstract if we have a base spec (otherwise there's no
-                    // generated abstract weaver to extend)
-        }
-
-        var pkg = config.basePackage() + ".abstracts";
-        var fileName = config.userAbstractClassName() + ".java";
-        var filePath = outputDir.resolve(pkg.replace('.', '/')).resolve(fileName);
-
-        if (Files.exists(filePath)) {
-            return; // Don't overwrite user-editable class
-        }
-
-        var source = generateUserAbstractSource(pkg);
-        writeFile(outputDir, pkg, fileName, source);
-    }
-
-    private String generateUserAbstractSource(String pkg) {
-        var sb = new StringBuilder();
-        sb.append("package ").append(pkg).append(";\n\n");
-        sb.append("import ").append(config.joinPointPackage()).append(".")
-                .append(TypeMapper.abstractClassName(model.getGlobal().getName())).append(";\n");
-        sb.append("import ").append(config.abstractWeaverPackage()).append(".").append(config.weaverClassName())
-                .append(";\n\n");
-        sb.append("/**\n");
-        sb.append(" * Abstract class which can be edited by the developer.\n");
-        sb.append(" * This class will NOT be overwritten by the generator.\n");
-        sb.append(" */\n");
-        sb.append("public abstract class ").append(config.userAbstractClassName());
-        sb.append("<Self extends ").append(config.userAbstractClassName()).append("<Self>>");
-        sb.append(" extends ").append(TypeMapper.abstractClassName(model.getGlobal().getName())).append("<Self> {\n\n");
-        sb.append("    public ").append(config.userAbstractClassName()).append("(").append(config.nodeType())
-                .append(" node, ")
-                .append(config.weaverClassName()).append(" weaver) {\n");
-        sb.append("        super(node, weaver);\n");
-        sb.append("    }\n");
-        sb.append("}\n");
-        return sb.toString();
-    }
-
     private void writeFile(Path outputDir, String pkg, String fileName, String content) throws IOException {
         var dir = outputDir.resolve(pkg.replace('.', '/'));
         Files.createDirectories(dir);
@@ -223,7 +179,6 @@ public final class WeaverGen2 {
         }
 
         gen.generate(outputDir, jsonOutPath);
-        gen.generateUserAbstract(outputDir);
 
         System.out.println("WeaverGen2: Generation complete. Output: " + outputDir);
     }
