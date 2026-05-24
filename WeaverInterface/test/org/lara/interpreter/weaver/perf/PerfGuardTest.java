@@ -31,8 +31,8 @@ class PerfGuardTest {
             var engine = new TestWeaverEngine();
             var jp = new TestJoinPoint(engine, "test");
             for (int i = 0; i < 1_000; i++) {
-                trigger.triggerAction(Stage.BEGIN, "guard", jp, List.of(), Optional.empty());
-                trigger.triggerAction(Stage.END, "guard", jp, List.of(), Optional.of(i));
+                trigger.triggerAction(Stage.BEGIN, jp, "guard", Optional.empty(), List.of());
+                trigger.triggerAction(Stage.END, jp, "guard", Optional.of(i), List.of());
             }
         });
     }
@@ -53,7 +53,7 @@ class PerfGuardTest {
     void descendants_tiny_shouldFinishQuickly() {
         assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
             var root = buildTree(3, 4);
-            var list = root.getJpDescendants();
+            var list = root.getDescendantsImpl();
             var count = root.getJpDescendantsStream().count();
             assertThat(list).hasSize((int) count);
         });

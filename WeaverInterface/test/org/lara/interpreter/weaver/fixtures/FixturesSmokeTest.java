@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.events.EventTrigger;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 public class FixturesSmokeTest {
 
