@@ -31,7 +31,7 @@ public final class SpecMerger {
         mergeBaseGlobalMembers(baseModel.getGlobal(), mergedGlobal, weaverModel.getGlobal().getName());
 
         var merged = new WeaverModel(
-                weaverModel.getWeaverName(),
+                weaverModel.getPrefix(),
                 weaverModel.getBasePackage(),
                 mergedGlobal
         );

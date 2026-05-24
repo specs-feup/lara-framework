@@ -17,7 +17,7 @@ import java.util.*;
  * public class CxxSpec extends WeaverSpec {
  *     {@literal @}Override
  *     public void define() {
- *         weaverName("CxxWeaver");
+ *         weaverPrefix("Cxx");
  *         packageName("pt.up.fe.specs.clava.weaver");
  *
  *         joinPoint("statement").extending(global())
@@ -76,7 +76,7 @@ public abstract class WeaverSpec {
 
     // ----- Internal state -----
 
-    private String weaverName;
+    private String weaverPrefix;
     private String packageName;
     private JpClass global;
     private JpBuilder globalBuilder;
@@ -122,8 +122,8 @@ public abstract class WeaverSpec {
 
     // ----- Weaver identity -----
 
-    protected void weaverName(String name) {
-        this.weaverName = name;
+    protected void weaverPrefix(String prefix) {
+        this.weaverPrefix = prefix;
     }
 
     protected void packageName(String pkg) {
@@ -194,7 +194,7 @@ public abstract class WeaverSpec {
 
         // Construct the model
         var model = new WeaverModel(
-                weaverName != null ? weaverName : "Weaver",
+                weaverPrefix,
                 packageName != null ? packageName : "org.lara.weaver",
                 global
         );
@@ -246,7 +246,7 @@ public abstract class WeaverSpec {
         }
 
         var model = new WeaverModel(
-                weaverName != null ? weaverName : "Weaver",
+                weaverPrefix,
                 packageName != null ? packageName : "org.lara.weaver",
                 global
         );

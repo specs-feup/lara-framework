@@ -10,7 +10,7 @@ import java.util.*;
  */
 public final class WeaverModel {
 
-    private final String weaverName;
+    private final String prefix;
     private final String basePackage;
     private final JpClass global;
     private JpClass root; // the "entry point" JP (e.g., "program")
@@ -18,17 +18,14 @@ public final class WeaverModel {
     private final Map<String, TypeDef> typeDefs;
     private final Map<String, EnumDef> enumDefs;
 
-    public WeaverModel(String weaverName, String basePackage, JpClass global) {
-        if (weaverName == null || weaverName.isBlank()) {
-            throw new IllegalArgumentException("Weaver name must not be null or blank");
-        }
+    public WeaverModel(String prefix, String basePackage, JpClass global) {
         if (basePackage == null || basePackage.isBlank()) {
             throw new IllegalArgumentException("Base package must not be null or blank");
         }
         if (global == null) {
             throw new IllegalArgumentException("Global join point class must not be null");
         }
-        this.weaverName = weaverName;
+        this.prefix = prefix == null ? "" : prefix;
         this.basePackage = basePackage;
         this.global = global;
         this.joinPoints = new LinkedHashMap<>();
@@ -36,8 +33,8 @@ public final class WeaverModel {
         this.enumDefs = new LinkedHashMap<>();
     }
 
-    public String getWeaverName() {
-        return weaverName;
+    public String getPrefix() {
+        return prefix;
     }
 
     public String getBasePackage() {
