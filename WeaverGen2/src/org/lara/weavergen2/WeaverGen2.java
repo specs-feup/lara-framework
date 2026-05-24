@@ -49,7 +49,7 @@ public final class WeaverGen2 {
         var mergedModel = SpecMerger.merge(baseModel, weaverModel);
 
         var config = new GeneratorConfig(
-                weaverModel.getWeaverName(),
+                weaverModel.getPrefix(),
                 weaverModel.getBasePackage(),
                 nodeType,
                 true,
@@ -76,7 +76,7 @@ public final class WeaverGen2 {
         var model = weaverSpec.build();
 
         var config = new GeneratorConfig(
-                model.getWeaverName(),
+                model.getPrefix(),
                 model.getBasePackage(),
                 nodeType,
                 true,

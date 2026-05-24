@@ -85,9 +85,7 @@ public final class AbstractJpGenerator {
                 nodeType = getConcreteSuperclassNodeType(jpClass);
             }
 
-            var constructorWeaverType = getConstructorWeaverType(jpClass);
             if (jpClass == model.getGlobal()) {
-
                 sb.line("/**");
                 sb.line(" *  FIXME: This should be a private field");
                 sb.line(" */ ");
@@ -95,7 +93,7 @@ public final class AbstractJpGenerator {
                 sb.line("protected " + nodeType + " node;");
                 sb.line();
                 sb.openBlock("public " + className + "(" + nodeType + " node, "
-                        + config.weaverClassName() + " weaver)");
+                        + config.weaverName() + " weaver)");
                 sb.line("super(weaver);");
                 sb.line("this.node = node;");
                 sb.closeBlock();
@@ -106,7 +104,7 @@ public final class AbstractJpGenerator {
                 sb.closeBlock();
                 sb.line();
             } else {
-                sb.openBlock("public " + className + "(" + nodeType + " node, " + constructorWeaverType + " weaver)");
+                sb.openBlock("public " + className + "(" + nodeType + " node, " + config.weaverName() + " weaver)");
                 sb.line("super(node, weaver);");
                 sb.closeBlock();
                 sb.line();
@@ -171,11 +169,11 @@ public final class AbstractJpGenerator {
         var standaloneMode = !config.hasBaseSpec();
 
         if (standaloneMode) {
-            sb.line("import org.lara.interpreter.weaver.interf.WeaverEngine;");
+            sb.line("import " + config.abstractWeaverPackage() + "." + config.weaverName() + ";");
         }
         if (!standaloneMode) {
             sb.line("import " + config.baseJoinPointPackage() + ".*;");
-            sb.line("import " + getConstructorWeaverImport(jpClass) + ";");
+            sb.line("import " + config.basePackage() + "." + config.weaverName() + ";");
             var parentConcreteImport = getConcreteSuperclassImport(jpClass);
             if (parentConcreteImport.isPresent()) {
                 sb.line("import " + parentConcreteImport.get() + ";");
@@ -340,7 +338,7 @@ public final class AbstractJpGenerator {
     }
 
     private String concreteClassName(JpClass jpClass) {
-        return "Cxx" + TypeMapper.capitalize(jpClass.getName());
+        return config.prefix() + TypeMapper.capitalize(jpClass.getName());
     }
 
     private String concretePackage(JpClass jpClass) {
@@ -694,24 +692,6 @@ public final class AbstractJpGenerator {
                 jpMapper,
                 TypeMapper::capitalize,
                 TypeMapper::capitalize);
-    }
-
-    private String getConstructorWeaverType(JpClass jpClass) {
-        return jpClass.getParent().map(parent -> parent.equals(model.getGlobal()))
-                .map(isRootChild -> isRootChild ? config.weaverClassName() : config.weaverName())
-                .orElse(config.weaverName());
-    }
-
-    private String getConstructorWeaverImport(JpClass jpClass) {
-        if (jpClass == model.getGlobal()) {
-            return config.abstractWeaverPackage() + "." + config.weaverClassName();
-        }
-
-        return jpClass.getParent().map(parent -> parent.equals(model.getGlobal()))
-                .map(isRootChild -> isRootChild
-                        ? config.abstractWeaverPackage() + "." + config.weaverClassName()
-                        : config.basePackage() + "." + config.weaverName())
-                .orElse(config.basePackage() + "." + config.weaverName());
     }
 
     private boolean shouldGenerateWrapper(String name, List<Parameter> params) {

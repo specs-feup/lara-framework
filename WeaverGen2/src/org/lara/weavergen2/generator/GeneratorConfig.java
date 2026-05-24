@@ -6,15 +6,15 @@ import java.util.Set;
  * Configuration for the code generator.
  */
 public record GeneratorConfig(
-        String weaverName,
+        String prefix,
         String basePackage,
         String nodeType,
         boolean generateEvents,
         boolean hasBaseSpec,
         Set<String> baseMemberSignatures
 ) {
-    public String weaverClassName() {
-        return hasBaseSpec ? "A" + weaverName : "WeaverEngine";
+    public String weaverName() {
+        return hasBaseSpec ? prefix + "Weaver" : "WeaverEngine";
     }
 
     public String abstractsPackage() {
@@ -43,9 +43,5 @@ public record GeneratorConfig(
 
     public String baseJoinPointPackage() {
         return "org.lara.interpreter.weaver.interf";
-    }
-
-    public String abstractJpClassName() {
-        return "AJoinPoint";
     }
 }
