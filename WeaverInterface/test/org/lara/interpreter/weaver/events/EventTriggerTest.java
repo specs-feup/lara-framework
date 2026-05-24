@@ -41,7 +41,7 @@ class EventTriggerTest {
         // Sanity: all gears receive events after registration via list
         var engine = new TestWeaverEngine();
         var jp = new TestJoinPoint(engine, "node");
-        trigger2.triggerAction(Stage.BEGIN, "touch", jp, Optional.empty(), "a", 1);
+        trigger2.triggerAction(Stage.BEGIN, jp, "touch", Optional.empty(), "a", 1);
         assertThat(gear2.getActionEvents()).hasSize(1);
         assertThat(gear3.getActionEvents()).hasSize(1);
     }
@@ -56,10 +56,10 @@ class EventTriggerTest {
         var target = new TestJoinPoint(engine, "function");
 
         // BEGIN without result
-        trigger.triggerAction(Stage.BEGIN, "insert", target, Optional.empty(), 10, "x");
+        trigger.triggerAction(Stage.BEGIN, target, "insert", Optional.empty(), 10, "x");
 
         // END with result
-        trigger.triggerAction(Stage.END, "insert", target, List.of(10, "x"), Optional.of("ok"));
+        trigger.triggerAction(Stage.END, target, "insert", Optional.of("ok"), List.of(10, "x"));
 
         var events = gear.getActionEvents();
         assertThat(events).hasSize(2);
@@ -97,7 +97,7 @@ class EventTriggerTest {
         var target = new TestJoinPoint(engine, "loop");
 
         trigger.triggerAttribute(Stage.BEGIN, target, "size", Optional.empty());
-        trigger.triggerAttribute(Stage.END, target, "size", List.of(), Optional.of(42));
+        trigger.triggerAttribute(Stage.END, target, "size", Optional.of(42), List.of());
 
         var attrs = gear.getAttributeEvents();
         assertThat(attrs).hasSize(2);
