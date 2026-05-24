@@ -381,7 +381,8 @@ public final class AbstractJpGenerator {
         generateOwnMethod(sb, action.name(), action.returnType(), action.parameters(), false);
     }
 
-    private void generateOwnMethod(JavaSourceBuilder sb, String methodName, JpDataType returnType, List<Parameter> parameters, boolean isAttribute) {
+    private void generateOwnMethod(JavaSourceBuilder sb, String methodName, JpDataType returnType,
+            List<Parameter> parameters, boolean isAttribute) {
         var javaRetType = mapReturnType(returnType);
         var finalName = isAttribute ? ("get" + TypeMapper.capitalize(methodName)) : methodName;
         var implMethodName = finalName + "Impl";
@@ -417,7 +418,8 @@ public final class AbstractJpGenerator {
         var eventTriggerArgsString = buildEventTriggerArgsString(params);
 
         sb.openBlock("if(getWeaverEngine().hasListeners())");
-        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.BEGIN, this, \"" + attrName + "\", Optional.empty()" + eventTriggerArgsString + ");");
+        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.BEGIN, this, \"" + attrName
+                + "\", Optional.empty()" + eventTriggerArgsString + ");");
         sb.closeBlock();
 
         var implCall = new StringBuilder();
@@ -445,7 +447,9 @@ public final class AbstractJpGenerator {
         }
 
         sb.openBlock("if(getWeaverEngine().hasListeners())");
-        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.END, this, \"" + attrName + "\", " + ((type == WeaverSpec.VOID) ? "Optional.empty()" : "Optional.ofNullable(result)") + eventTriggerArgsString + ");");
+        sb.line("getWeaverEngine().getEventTrigger().trigger" + methodClass + "(Stage.END, this, \"" + attrName + "\", "
+                + ((type == WeaverSpec.VOID) ? "Optional.empty()" : "Optional.ofNullable(result)")
+                + eventTriggerArgsString + ");");
         sb.closeBlock();
 
         if (type == WeaverSpec.VOID) {
@@ -471,7 +475,8 @@ public final class AbstractJpGenerator {
         }
         return ", " + String.join(", ",
                 params.stream()
-                        .map(p -> (p.type() instanceof ArrayType ? "(Object) " : "") + TypeMapper.sanitizeJavaIdentifier(p.name()))
+                        .map(p -> (p.type() instanceof ArrayType ? "(Object) " : "")
+                                + TypeMapper.sanitizeJavaIdentifier(p.name()))
                         .toList());
     }
 
