@@ -230,10 +230,13 @@ public final class AbstractJpGenerator {
         }
 
         var parent = jpClass.getParent().orElseThrow();
-        var concretePackage = concretePackage(parent);
         var concreteClass = concreteClassName(parent);
+        var sourceFile = resolveConcreteSuperclassSourceFile(concreteClass)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Could not locate source file for concrete superclass '" + concreteClass
+                                + "' while generating join point '" + jpClass.getName() + "'"));
 
-        return Optional.of(concretePackage + "." + concreteClass);
+        return Optional.of(resolvePackageName(sourceFile) + "." + concreteClass);
     }
 
     private String getConcreteSuperclassNodeType(JpClass jpClass) {
@@ -254,15 +257,16 @@ public final class AbstractJpGenerator {
                 .orElseThrow(() -> new IllegalStateException(
                         "Could not resolve concrete superclass for join point '" + jpClass.getName() + "'"));
 
+        var concreteSuperclassName = simpleClassName(concreteSuperclassImport);
+
         try {
-            var sourceFile = resolveSourceFile(concreteSuperclassImport)
+            var sourceFile = resolveConcreteSuperclassSourceFile(concreteSuperclassName)
                     .orElseThrow(
-                            () -> new IllegalStateException("Could not locate source file for concrete superclass '"
-                                    + concreteSuperclassImport + "' while generating join point '" + jpClass.getName()
-                                    + "'"));
+                    () -> new IllegalStateException("Could not locate source file for concrete superclass '"
+                        + concreteSuperclassName + "' while generating join point '" + jpClass.getName()
+                        + "'"));
 
             var source = Files.readString(sourceFile);
-            var concreteSuperclassName = simpleClassName(concreteSuperclassImport);
             var constructorMatcher = Pattern.compile("public\\s+" + Pattern.quote(concreteSuperclassName)
                     + "\\s*\\(([^)]*)\\)", Pattern.DOTALL).matcher(source);
 
@@ -281,30 +285,62 @@ public final class AbstractJpGenerator {
             }
 
             var nodeTypeSimpleName = firstParameter.substring(0, firstSpace).trim();
-            return Optional.of(resolveNodeTypeImport(source, sourceFile, concreteSuperclassImport, nodeTypeSimpleName));
+            return Optional.of(resolveNodeTypeImport(source, sourceFile, concreteSuperclassName, nodeTypeSimpleName));
         } catch (java.io.IOException e) {
             throw new IllegalStateException("Could not read source file for concrete superclass '"
                     + concreteSuperclassImport + "' while generating join point '" + jpClass.getName() + "'", e);
         }
     }
 
-    private Optional<Path> resolveSourceFile(String fullyQualifiedClassName) {
-        var relativePath = fullyQualifiedClassName.replace('.', '/') + ".java";
+    private Optional<Path> resolveConcreteSuperclassSourceFile(String concreteClassName) {
+        var joinpointsRelativePath = Path.of(config.basePackage().replace('.', '/'), "joinpoints");
         var sourceRoots = List.of("src", "src-java", "src/main/java");
+        var matches = new ArrayList<Path>();
 
         for (var sourceRoot : sourceRoots) {
-            var sourceFile = Path.of(System.getProperty("user.dir"), sourceRoot).resolve(relativePath);
-            if (Files.exists(sourceFile)) {
-                return Optional.of(sourceFile);
+            var joinpointsRoot = Path.of(System.getProperty("user.dir"), sourceRoot).resolve(joinpointsRelativePath);
+
+            if (!Files.exists(joinpointsRoot)) {
+                continue;
+            }
+
+            try (var paths = Files.walk(joinpointsRoot)) {
+                paths.filter(Files::isRegularFile)
+                        .filter(path -> path.getFileName().toString().equals(concreteClassName + ".java"))
+                        .forEach(matches::add);
+            } catch (java.io.IOException e) {
+                throw new IllegalStateException("Could not search for concrete joinpoint '" + concreteClassName
+                        + "' under '" + joinpointsRoot + "'", e);
             }
         }
 
-        return Optional.empty();
+        if (matches.size() > 1) {
+            throw new IllegalStateException("Found multiple source files for concrete joinpoint '" + concreteClassName
+                    + "' under '" + config.basePackage() + ".joinpoints': " + matches);
+        }
+
+        return matches.isEmpty() ? Optional.empty() : Optional.of(matches.get(0));
+    }
+
+    private String resolvePackageName(Path sourceFile) {
+        try {
+            var source = Files.readString(sourceFile);
+            var packageMatcher = Pattern.compile("^package\\s+([^;]+);$", Pattern.MULTILINE).matcher(source);
+
+            if (!packageMatcher.find()) {
+                throw new IllegalStateException(
+                        "Could not find package declaration in source file '" + sourceFile + "'");
+            }
+
+            return packageMatcher.group(1);
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException("Could not read source file '" + sourceFile + "'", e);
+        }
     }
 
     private String resolveNodeTypeImport(String source,
             Path sourceFile,
-            String concreteSuperclassImport,
+            String concreteSuperclassName,
             String nodeTypeSimpleName) {
 
         if (nodeTypeSimpleName.contains(".")) {
@@ -330,7 +366,7 @@ public final class AbstractJpGenerator {
         }
 
         throw new IllegalStateException("Could not resolve import for constructor node type '" + nodeTypeSimpleName
-                + "' in concrete superclass '" + concreteSuperclassImport + "' from source file '" + sourceFile + "'");
+            + "' in concrete superclass '" + concreteSuperclassName + "' from source file '" + sourceFile + "'");
     }
 
     private boolean hasConcreteSuperclassNodeTypeCast(JpClass jpClass) {
@@ -339,36 +375,6 @@ public final class AbstractJpGenerator {
 
     private String concreteClassName(JpClass jpClass) {
         return config.prefix() + TypeMapper.capitalize(jpClass.getName());
-    }
-
-    private String concretePackage(JpClass jpClass) {
-        var concreteBasePackage = config.basePackage() + ".joinpoints";
-
-        if (isCilkBranch(jpClass)) {
-            return concreteBasePackage + ".cilk";
-        }
-
-        if (isTypeBranch(jpClass)) {
-            return concreteBasePackage + ".types";
-        }
-
-        return concreteBasePackage;
-    }
-
-    private boolean isTypeBranch(JpClass jpClass) {
-        var typeRoot = findJpClass("type");
-        return typeRoot != null && jpClass.isOrExtends(typeRoot);
-    }
-
-    private boolean isCilkBranch(JpClass jpClass) {
-        return jpClass.getName().toLowerCase(Locale.ROOT).startsWith("cilk");
-    }
-
-    private JpClass findJpClass(String name) {
-        return model.getAllJpClasses().stream()
-                .filter(jp -> jp.getName().equals(name))
-                .findFirst()
-                .orElse(null);
     }
 
     private void generateOwnAttribute(JavaSourceBuilder sb, Attribute attr) {
