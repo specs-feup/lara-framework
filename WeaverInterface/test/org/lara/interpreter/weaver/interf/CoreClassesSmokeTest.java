@@ -3,13 +3,14 @@ package org.lara.interpreter.weaver.interf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.events.EventTrigger;
+import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 
 
@@ -22,28 +23,18 @@ class CoreClassesSmokeTest {
         }
 
         @Override
-        public List<String> getActions() {
-            return List.of("a");
-        }
-
-        @Override
         public String getRoot() {
             return "root";
         }
 
         @Override
-        public JoinPoint getRootJp() {
+        public JoinPoint2<?, ?> getRootJp() {
             return new DummyJp(this);
         }
 
         @Override
         public List<WeaverOption> getOptions() {
             return List.of();
-        }
-
-        @Override
-        protected LanguageSpecification buildLangSpecs() {
-            return new LanguageSpecification(JoinPoint.getLaraJoinPoint(), null);
         }
 
         @Override
@@ -57,7 +48,7 @@ class CoreClassesSmokeTest {
         }
     }
 
-    private static class DummyJp extends JoinPoint {
+    private static class DummyJp extends JoinPoint2<DummyJp, DummyJp> {
         public DummyJp(DummyWeaver weaver) {
             super(weaver);
         }
@@ -68,23 +59,98 @@ class CoreClassesSmokeTest {
         }
 
         @Override
-        public boolean same(JoinPoint iJoinPoint) {
+        public boolean getSameImpl(DummyJp iJoinPoint) {
             return this == iJoinPoint;
         }
 
         @Override
-        public Object getNode() {
+        public Object getNodeImpl() {
             return this;
         }
 
         @Override
-        public Stream<JoinPoint> getJpChildrenStream() {
+        public Stream<DummyJp> getJpChildrenStream() {
             return Stream.empty();
         }
 
         @Override
-        public JoinPoint getJpParent() {
+        public DummyJp getJpParent() {
             return null;
+        }
+
+        @Override
+        public DummyJp[] getChildrenImpl() {
+            return new DummyJp[0];
+        }
+
+        @Override
+        public DummyJp[] getDescendantsImpl() {
+            return new DummyJp[0];
+        }
+
+        @Override
+        public DummyJp[] getScopeNodesImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getScopeNodesImpl'");
+        }
+
+        @Override
+        public DummyJp getParentImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getParentImpl'");
+        }
+
+        @Override
+        public DummyJp getRootImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getRootImpl'");
+        }
+
+        @Override
+        public String getCodeImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getCodeImpl'");
+        }
+
+        @Override
+        public Integer getLineImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getLineImpl'");
+        }
+
+        @Override
+        public Integer getColumnImpl() {
+            throw new UnsupportedOperationException("Unimplemented method 'getColumnImpl'");
+        }
+
+        @Override
+        public boolean getCompareNodesImpl(DummyJp aJoinPoint) {
+            throw new UnsupportedOperationException("Unimplemented method 'getCompareNodesImpl'");
+        }
+
+        @Override
+        public boolean equalsImpl(DummyJp jp) {
+            throw new UnsupportedOperationException("Unimplemented method 'equalsImpl'");
+        }
+
+        @Override
+        public boolean instanceOfImpl(String joinpointClassname) {
+            throw new UnsupportedOperationException("Unimplemented method 'instanceOfImpl'");
+        }
+
+        @Override
+        public DummyJp[] insertImpl(InsertPosition position, String code) {
+            throw new UnsupportedOperationException("Unimplemented method 'insertImpl'");
+        }
+
+        @Override
+        public DummyJp[] insertImpl(InsertPosition position, DummyJp joinpoint) {
+            throw new UnsupportedOperationException("Unimplemented method 'insertImpl'");
+        }
+
+        @Override
+        protected IntFunction<DummyJp[]> selfTypeArrayFactory() {
+            throw new UnsupportedOperationException("Unimplemented method 'selfTypeArrayFactory'");
+        }
+
+        @Override
+        protected IntFunction<DummyJp[]> jpTypeArrayFactory() {
+            throw new UnsupportedOperationException("Unimplemented method 'jpTypeArrayFactory'");
         }
     }
 
@@ -111,13 +177,13 @@ class CoreClassesSmokeTest {
     void joinPointUtilities() {
         var weaver = new DummyWeaver();
         var jp = new DummyJp(weaver);
-        assertThat(jp.getJoinPointType()).isEqualTo(jp.get_class());
-        assertThat(JoinPoint.isJoinPoint(jp)).isTrue();
-        assertThat(jp.instanceOf("joinpoint")).isTrue();
-        assertThat(jp.getJpChildren()).isEmpty();
-        assertThat(jp.getJpDescendants()).isEmpty();
-        assertThat(jp.toString()).contains("Joinpoint");
-        assertThat(jp.getDump()).contains("Joinpoint");
-        assertThat(jp.getSelf()).isSameAs(jp);
+        assertThat(jp.getJoinPointTypeImpl()).isEqualTo(jp.get_class());
+        assertThat(JoinPoint2.isJoinPoint(jp)).isTrue();
+        assertThat(jp.instanceOfImpl("joinpoint")).isTrue();
+        assertThat(jp.getChildrenImpl()).isEmpty();
+        assertThat(jp.getDescendantsImpl()).isEmpty();
+        assertThat(jp.toStringImpl()).contains("Joinpoint");
+        assertThat(jp.getDumpImpl()).contains("Joinpoint");
+        assertThat(jp.getSelfImpl()).isSameAs(jp);
     }
 }

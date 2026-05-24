@@ -2,12 +2,13 @@ package org.lara.interpreter.weaver.fixtures;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
+import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 
-public class TestJoinPoint extends JoinPoint {
+public class TestJoinPoint extends JoinPoint2<TestJoinPoint, TestJoinPoint> {
 
     private final String type;
     private final Object node;
@@ -29,6 +30,11 @@ public class TestJoinPoint extends JoinPoint {
         return (TestWeaverEngine) super.getWeaverEngine();
     }
 
+    @Override
+    public TestJoinPoint getRootImpl() {
+        return this;
+    }
+
     public TestJoinPoint addChild(TestJoinPoint child) {
         child.parent = this;
         this.children.add(child);
@@ -36,12 +42,12 @@ public class TestJoinPoint extends JoinPoint {
     }
 
     @Override
-    public boolean same(JoinPoint iJoinPoint) {
+    public boolean getSameImpl(TestJoinPoint iJoinPoint) {
         return this == iJoinPoint;
     }
 
     @Override
-    public Object getNode() {
+    public Object getNodeImpl() {
         return node != null ? node : this;
     }
 
@@ -51,38 +57,83 @@ public class TestJoinPoint extends JoinPoint {
     }
 
     @Override
-    public Optional<? extends JoinPoint> getSuper() {
-        return Optional.empty();
+    public Stream<TestJoinPoint> getJpChildrenStream() {
+        return children.stream();
     }
 
     @Override
-    public Stream<JoinPoint> getJpChildrenStream() {
-        return children.stream().map(jp -> (JoinPoint) jp);
-    }
-
-    @Override
-    public JoinPoint getJpParent() {
+    public TestJoinPoint getJpParent() {
         return parent;
     }
 
     @Override
-    public JoinPoint[] insertImpl(String position, String code) {
+    public TestJoinPoint[] insertImpl(InsertPosition position, String code) {
         // For testing, return self in an array
-        return new JoinPoint[] { this };
+        return new TestJoinPoint[] { this };
     }
 
     @Override
-    public JoinPoint[] insertImpl(String position, JoinPoint JoinPoint) {
-        return new JoinPoint[] { JoinPoint };
+    public TestJoinPoint[] insertImpl(InsertPosition position, TestJoinPoint JoinPoint) {
+        return new TestJoinPoint[] { JoinPoint };
     }
 
     @Override
-    public <T extends JoinPoint> void insertFarImpl(String position, T JoinPoint) {
-        // No-op for tests, just to allow event flow BEGIN -> END without exceptions
+    public TestJoinPoint[] getChildrenImpl() {
+        return children.toArray(new TestJoinPoint[0]);
     }
 
     @Override
-    public void insertFarImpl(String position, String code) {
-        // No-op for tests, just to allow event flow BEGIN -> END without exceptions
+    public TestJoinPoint[] getDescendantsImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getDescendantsImpl'");
+    }
+
+    @Override
+    public TestJoinPoint[] getScopeNodesImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getScopeNodesImpl'");
+    }
+
+    @Override
+    public TestJoinPoint getParentImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getParentImpl'");
+    }
+
+    @Override
+    public String getCodeImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getCodeImpl'");
+    }
+
+    @Override
+    public Integer getLineImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getLineImpl'");
+    }
+
+    @Override
+    public Integer getColumnImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getColumnImpl'");
+    }
+
+    @Override
+    public boolean getCompareNodesImpl(TestJoinPoint aJoinPoint) {
+        throw new UnsupportedOperationException("Unimplemented method 'getCompareNodesImpl'");
+    }
+
+    @Override
+    public boolean equalsImpl(TestJoinPoint jp) {
+        throw new UnsupportedOperationException("Unimplemented method 'equalsImpl'");
+    }
+
+    @Override
+    public boolean instanceOfImpl(String joinpointClassname) {
+        throw new UnsupportedOperationException("Unimplemented method 'instanceOfImpl'");
+    }
+
+    @Override
+    protected IntFunction<TestJoinPoint[]> selfTypeArrayFactory() {
+        return TestJoinPoint[]::new;
+    }
+
+    @Override
+    protected IntFunction<TestJoinPoint[]> jpTypeArrayFactory() {
+        return TestJoinPoint[]::new;
     }
 }
