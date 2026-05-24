@@ -7,13 +7,10 @@ import java.util.List;
 import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.TreeNodeAstMethods;
 import org.lara.interpreter.weaver.interf.AGear;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.weaver.options.OptionArguments;
 import org.lara.interpreter.weaver.options.WeaverOption;
 import org.lara.interpreter.weaver.options.WeaverOptionBuilder;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Datakey.DataKey;
 import org.suikasoft.jOptions.Datakey.KeyFactory;
 import org.suikasoft.jOptions.Interfaces.DataStore;
@@ -62,17 +59,12 @@ public class TestWeaverEngine extends WeaverEngine {
     }
 
     @Override
-    public List<String> getActions() {
-        return List.of("insert");
-    }
-
-    @Override
     public String getRoot() {
         return "root";
     }
 
     @Override
-    public JoinPoint getRootJp() {
+    public TestJoinPoint getRootJp() {
         return rootJp;
     }
 
@@ -83,19 +75,6 @@ public class TestWeaverEngine extends WeaverEngine {
         return List.of(
                 WeaverOptionBuilder.build("v", "verbose", OptionArguments.NO_ARGS, "", "Verbose flag", OPT_VERBOSE),
                 WeaverOptionBuilder.build("t", "target", OptionArguments.ONE_ARG, "name", "Target name", OPT_TARGET));
-    }
-
-    @Override
-    protected LanguageSpecification buildLangSpecs() {
-        JoinPointClass base = JoinPoint.getLaraJoinPoint();
-        JoinPointClass jp = new JoinPointClass("root");
-        jp.setDefaultAttribute("dump");
-        LanguageSpecification spec = new LanguageSpecification(jp, null);
-        // Register declared join point, otherwise getJoinPoint("root") returns null
-        spec.add(jp);
-        spec.setRoot(jp);
-        spec.setGlobal(base);
-        return spec;
     }
 
     @Override
