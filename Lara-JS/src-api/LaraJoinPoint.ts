@@ -224,6 +224,10 @@ export function wrapJoinPoint(obj: any): any {
     return obj;
   }
 
+  if (obj === null) {
+    return undefined;
+  }
+
   if (obj === undefined) {
     return obj;
   }
@@ -246,12 +250,6 @@ export function wrapJoinPoint(obj: any): any {
 
   if (!JavaTypes.isJavaObject(obj)) {
     return obj;
-  }
-
-  if (
-    JavaTypes.instanceOf(obj, "pt.up.fe.specs.jsengine.node.UndefinedValue")
-  ) {
-    return undefined;
   }
 
   if (
