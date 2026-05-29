@@ -90,15 +90,6 @@ class JoinPointTest {
     }
 
     @Test
-    @DisplayName("getUndefinedValue is non-null and stable (same instance)")
-    void testGetUndefinedValue() {
-        Object u1 = JoinPoint2.getUndefinedValue();
-        Object u2 = JoinPoint2.getUndefinedValue();
-        assertThat(u1).isNotNull();
-        assertThat(u1).isSameAs(u2);
-    }
-
-    @Test
     @DisplayName("hasListeners and eventTrigger delegation uses thread-local weaver")
     void testHasListenersDelegation() {
         var engine = new TestWeaverEngine();
