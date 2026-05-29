@@ -13,7 +13,9 @@ function buildLaraJoinPoint(inputFileName, outputFileName) {
   console.log("outputFile:", outputFileName);
 
   const jsonSpecification = fs.readFileSync(inputFileName, "utf8");
-  const specification = convertSpecification(JSON.parse(jsonSpecification));
+  const specificationJson = JSON.parse(jsonSpecification);
+  promoteToStringFromAttributeToAction(specificationJson);
+  const specification = convertSpecification(specificationJson);
 
   // Create output file if it doesn't exist
   const outputFile = fs.openSync(outputFileName, "w");
@@ -73,6 +75,22 @@ export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapp
   generateJoinpointWrapper(specification.joinpoints, outputFile);
 
   fs.closeSync(outputFile);
+}
+
+function promoteToStringFromAttributeToAction(specification) {
+  specification.children?.forEach((child) => {
+    if (child.type === "joinpoint") {
+      child.children?.forEach((member) => {
+        if (
+          member.type === "attribute" &&
+          member.children?.length === 1 &&
+          member.children[0].name === "toString"
+        ) {
+          member.type = "action";
+        }
+      });
+    }
+  });
 }
 
 function generateJoinpointWrapper(joinpoints, outputFile) {
