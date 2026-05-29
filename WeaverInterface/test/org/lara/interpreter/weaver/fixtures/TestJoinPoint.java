@@ -118,13 +118,13 @@ public class TestJoinPoint extends JoinPoint2<TestJoinPoint, TestJoinPoint> {
     }
 
     @Override
-    public boolean equalsImpl(TestJoinPoint jp) {
-        throw new UnsupportedOperationException("Unimplemented method 'equalsImpl'");
+    public boolean getEqualsImpl(TestJoinPoint jp) {
+        throw new UnsupportedOperationException("Unimplemented method 'getEqualsImpl'");
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
-        throw new UnsupportedOperationException("Unimplemented method 'instanceOfImpl'");
+    public boolean getInstanceOfImpl(String joinpointClassname) {
+        throw new UnsupportedOperationException("Unimplemented method 'getInstanceOfImpl'");
     }
 
     @Override

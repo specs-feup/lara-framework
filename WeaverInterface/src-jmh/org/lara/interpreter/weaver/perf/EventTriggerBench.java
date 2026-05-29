@@ -138,13 +138,13 @@ public class EventTriggerBench {
         }
 
         @Override
-        public boolean equalsImpl(BenchJoinPoint jp) {
-            throw new UnsupportedOperationException("Unimplemented method 'equalsImpl'");
+        public boolean getEqualsImpl(BenchJoinPoint jp) {
+            throw new UnsupportedOperationException("Unimplemented method 'getEqualsImpl'");
         }
 
         @Override
-        public boolean instanceOfImpl(String joinpointClassname) {
-            throw new UnsupportedOperationException("Unimplemented method 'instanceOfImpl'");
+        public boolean getInstanceOfImpl(String joinpointClassname) {
+            throw new UnsupportedOperationException("Unimplemented method 'getInstanceOfImpl'");
         }
 
         @Override

@@ -124,13 +124,13 @@ class CoreClassesSmokeTest {
         }
 
         @Override
-        public boolean equalsImpl(DummyJp jp) {
-            throw new UnsupportedOperationException("Unimplemented method 'equalsImpl'");
+        public boolean getEqualsImpl(DummyJp jp) {
+            throw new UnsupportedOperationException("Unimplemented method 'getEqualsImpl'");
         }
 
         @Override
-        public boolean instanceOfImpl(String joinpointClassname) {
-            throw new UnsupportedOperationException("Unimplemented method 'instanceOfImpl'");
+        public boolean getInstanceOfImpl(String joinpointClassname) {
+            throw new UnsupportedOperationException("Unimplemented method 'getInstanceOfImpl'");
         }
 
         @Override
@@ -179,10 +179,10 @@ class CoreClassesSmokeTest {
         var jp = new DummyJp(weaver);
         assertThat(jp.getJoinPointTypeImpl()).isEqualTo(jp.get_class());
         assertThat(JoinPoint2.isJoinPoint(jp)).isTrue();
-        assertThat(jp.instanceOfImpl("joinpoint")).isTrue();
+        assertThat(jp.getInstanceOfImpl("joinpoint")).isTrue();
         assertThat(jp.getChildrenImpl()).isEmpty();
         assertThat(jp.getDescendantsImpl()).isEmpty();
-        assertThat(jp.toStringImpl()).contains("Joinpoint");
+        assertThat(jp.getToStringImpl()).contains("Joinpoint");
         assertThat(jp.getDumpImpl()).contains("Joinpoint");
         assertThat(jp.getSelfImpl()).isSameAs(jp);
     }

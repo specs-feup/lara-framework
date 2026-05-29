@@ -602,7 +602,7 @@ public final class AbstractJpGenerator {
         var chain = jpClass.getAncestorChain();
 
         sb.line("@Override");
-        sb.openBlock("public boolean instanceOfImpl(String joinpointClassname)");
+        sb.openBlock("public boolean getInstanceOfImpl(String joinpointClassname)");
 
         var checks = chain.stream()
                 .map(jp -> "\"" + jp.getName() + "\".equals(joinpointClassname)")
