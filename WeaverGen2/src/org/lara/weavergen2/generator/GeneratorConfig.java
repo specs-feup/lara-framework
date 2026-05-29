@@ -1,6 +1,7 @@
 package org.lara.weavergen2.generator;
 
 import java.util.Set;
+import java.nio.file.Path;
 
 /**
  * Configuration for the code generator.
@@ -11,7 +12,8 @@ public record GeneratorConfig(
         String nodeType,
         boolean generateEvents,
         boolean hasBaseSpec,
-        Set<String> baseMemberSignatures
+        Set<String> baseMemberSignatures,
+        Path projectRoot
 ) {
     public String weaverName() {
         return hasBaseSpec ? prefix + "Weaver" : "WeaverEngine";
@@ -43,5 +45,9 @@ public record GeneratorConfig(
 
     public String baseJoinPointPackage() {
         return "org.lara.interpreter.weaver.interf";
+    }
+
+    public Path sourceLookupRoot() {
+        return projectRoot;
     }
 }

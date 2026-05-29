@@ -1,0 +1,31 @@
+package medium.pkg.abstracts.weaver;
+
+import org.lara.interpreter.weaver.LaraWeaverEngine;
+
+import java.util.*;
+
+/**
+ * Auto-generated abstract weaver class for MediumWeaver.
+ */
+public abstract class AMediumWeaver extends LaraWeaverEngine {
+
+    public List<String> getJoinPointClassNames() {
+        return List.of(
+            "joinpoint",
+            "file",
+            "function",
+            "var",
+            "body",
+            "statement"
+        );
+    }
+
+    @Override
+    public String getRoot() {
+        return "file";
+    }
+
+    public boolean implementsEvents() {
+        return true;
+    }
+}

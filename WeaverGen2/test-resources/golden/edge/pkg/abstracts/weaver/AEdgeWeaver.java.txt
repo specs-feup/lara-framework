@@ -1,0 +1,30 @@
+package edge.pkg.abstracts.weaver;
+
+import org.lara.interpreter.weaver.LaraWeaverEngine;
+
+import java.util.*;
+
+/**
+ * Auto-generated abstract weaver class for EdgeWeaver.
+ */
+public abstract class AEdgeWeaver extends LaraWeaverEngine {
+
+    public List<String> getJoinPointClassNames() {
+        return List.of(
+            "joinpoint",
+            "base",
+            "level1",
+            "level2",
+            "reservedKeyword"
+        );
+    }
+
+    @Override
+    public String getRoot() {
+        return "base";
+    }
+
+    public boolean implementsEvents() {
+        return true;
+    }
+}

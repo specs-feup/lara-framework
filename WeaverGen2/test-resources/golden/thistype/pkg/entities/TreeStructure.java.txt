@@ -1,0 +1,48 @@
+package thistype.pkg.entities;
+
+import java.util.*;
+
+import thistype.pkg.abstracts.joinpoints.*;
+
+/**
+ * User-defined type: TreeStructure
+ */
+public class TreeStructure {
+    private AJoinpoint<?> root;
+    private List<List<AJoinpoint<?>>> levels;
+    private Map<String, AJoinpoint<?>> nodeIndex;
+    private Integer depth;
+
+    public AJoinpoint<?> getRoot() {
+        return root;
+    }
+
+    public void setRoot(AJoinpoint<?> root) {
+        this.root = root;
+    }
+
+    public List<List<AJoinpoint<?>>> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<List<AJoinpoint<?>>> levels) {
+        this.levels = levels;
+    }
+
+    public Map<String, AJoinpoint<?>> getNodeIndex() {
+        return nodeIndex;
+    }
+
+    public void setNodeIndex(Map<String, AJoinpoint<?>> nodeIndex) {
+        this.nodeIndex = nodeIndex;
+    }
+
+    public Integer getDepth() {
+        return depth;
+    }
+
+    public void setDepth(Integer depth) {
+        this.depth = depth;
+    }
+
+}
