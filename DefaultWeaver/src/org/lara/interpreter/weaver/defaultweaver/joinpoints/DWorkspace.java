@@ -29,19 +29,24 @@ import pt.up.fe.specs.util.SpecsIo;
  * @author Tiago Carvalho
  * 
  */
-public class DWorkspace extends AWorkspace<DWorkspace> {
+public class DWorkspace<Self extends DWorkspace<Self>> extends AWorkspace<Self> {
 
-    private final Map<File, DWFolder> folders;
+    private final Map<File, DWFolder<?>> folders;
 
     public DWorkspace(DefaultWeaver weaver) {
-        super(weaver);
+        super(null, weaver);
         folders = new HashMap<>();
+    }
+
+    @Override
+    public Object getNode() {
+        return super.getNode();
     }
 
     public void addFolder(File dir) {
         File canonicalFile = SpecsIo.getCanonicalFile(dir.getAbsoluteFile());
         if (!folders.containsKey(canonicalFile)) {
-            folders.put(canonicalFile, new DWFolder(canonicalFile, getWeaverEngine()));
+            folders.put(canonicalFile, new DWFolder<>(canonicalFile, getWeaverEngine()));
         }
     }
 
@@ -50,12 +55,7 @@ public class DWorkspace extends AWorkspace<DWorkspace> {
         return folders.containsKey(canonicalFile);
     }
 
-    @Override
-    public Object getNode() {
-        return true;
-    }
-
-    public Collection<DWFolder> getFiles() {
+    public Collection<DWFolder<?>> getFiles() {
         return folders.values();
     }
 

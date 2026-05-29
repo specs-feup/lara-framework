@@ -12,10 +12,6 @@
  */
 package org.lara.interpreter.weaver.defaultweaver;
 
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ACTIONS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.ARTIFACTS;
-import static org.lara.interpreter.weaver.defaultweaver.specification.DefaultWeaverResource.JOINPOINTS;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +21,9 @@ import org.lara.interpreter.weaver.defaultweaver.gears.TestGear;
 import org.lara.interpreter.weaver.defaultweaver.joinpoints.DWorkspace;
 import org.lara.interpreter.weaver.defaultweaver.options.DefaultWeaverOption;
 import org.lara.interpreter.weaver.interf.AGear;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-
-import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
 
 /**
  * Abstract Weaver Implementation for DefaultWeaver. The implementation of the abstract methods is mandatory!
@@ -39,7 +32,7 @@ import pt.up.fe.specs.lara.langspec.LangSpecsXmlParser;
  */
 public class DefaultWeaver extends ADefaultWeaver {
     // Fields
-    DWorkspace root;
+    DWorkspace<?> root;
     private final TestGear testGear;
     private boolean property;
     private DataStore args;
@@ -60,7 +53,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     public boolean begin(List<File> sources, File output, DataStore args) {
 
         this.args = args;
-        root = new DWorkspace(this);
+        root = new DWorkspace<>(this);
         for (File source : sources) {
             if (source.isDirectory()) {
                 root.addFolder(source);
@@ -81,7 +74,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     }
 
     @Override
-    public JoinPoint getRootJp() {
+    public JoinPoint2<?, ?> getRootJp() {
         return root;
     }
 
@@ -114,21 +107,6 @@ public class DefaultWeaver extends ADefaultWeaver {
         options.add(DefaultWeaverOption.STRING);
         options.add(DefaultWeaverOption.FILE);
         return options;
-    }
-
-    /**
-     * Creates the default language specification
-     *
-     * @return
-     */
-    public static LanguageSpecification createDefaultLanguageSpecification() {
-        // TODO: Why validate is false?
-        return LangSpecsXmlParser.parse(JOINPOINTS, ARTIFACTS, ACTIONS, false);
-    }
-
-    @Override
-    protected LanguageSpecification buildLangSpecs() {
-        return DefaultWeaver.createDefaultLanguageSpecification();
     }
 
     public void ensureThatContains(File appFolder) {
