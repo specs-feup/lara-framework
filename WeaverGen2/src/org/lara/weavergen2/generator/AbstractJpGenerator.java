@@ -136,15 +136,11 @@ public final class AbstractJpGenerator {
             generateInstanceOf(sb);
         }
 
-        // Array factories and undefined value
+        // Array factories
         if (standaloneMode) {
             sb.line("protected abstract IntFunction<Self[]> selfTypeArrayFactory();");
             sb.line();
             sb.line("protected abstract IntFunction<Jp[]> jpTypeArrayFactory();");
-            sb.line();
-            sb.openBlock("public static Object getUndefinedValue()");
-            sb.line("return UndefinedValue.getUndefined();");
-            sb.closeBlock();
         } else {
             sb.line();
             sb.line("@SuppressWarnings(\"unchecked\")");
@@ -205,9 +201,6 @@ public final class AbstractJpGenerator {
         sb.line();
         sb.line("import java.util.*;");
         sb.line("import java.util.function.IntFunction;");
-        if (standaloneMode) {
-            sb.line("import pt.up.fe.specs.jsengine.node.UndefinedValue;");
-        }
         sb.line();
     }
 
@@ -503,8 +496,6 @@ public final class AbstractJpGenerator {
 
         if (type == WeaverSpec.VOID) {
             sb.line("return;");
-        } else if (isReferenceType) {
-            sb.line("return result != null ? result : getUndefinedValue();");
         } else {
             sb.line("return result;");
         }
