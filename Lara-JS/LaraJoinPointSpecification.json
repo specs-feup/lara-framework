@@ -117,6 +117,26 @@
 				},
 				{
 					"type": "attribute",
+					"children": [
+						{
+							"type": "String",
+							"name": "toString"
+						}]
+				},
+				{
+					"type": "attribute",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "equals"
+						},
+						{
+							"type": "this",
+							"name": "jp"
+						}]
+				},
+				{
+					"type": "attribute",
 					"tooltip": "Compares this join point with another join point for identity (i.e., whether they represent the same AST node)",
 					"children": [
 						{
@@ -142,27 +162,7 @@
 						}]
 				},
 				{
-					"type": "action",
-					"children": [
-						{
-							"type": "String",
-							"name": "toString"
-						}]
-				},
-				{
-					"type": "action",
-					"children": [
-						{
-							"type": "boolean",
-							"name": "equals"
-						},
-						{
-							"type": "this",
-							"name": "jp"
-						}]
-				},
-				{
-					"type": "action",
+					"type": "attribute",
 					"children": [
 						{
 							"type": "boolean",
@@ -174,7 +174,7 @@
 						}]
 				},
 				{
-					"type": "action",
+					"type": "attribute",
 					"children": [
 						{
 							"type": "boolean",

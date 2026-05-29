@@ -27,9 +27,9 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
     /**
      * Multi-argument instanceOf.
      */
-    public boolean instanceOfImpl(String[] types) {
+    public boolean getInstanceOfImpl(String[] types) {
         for (var type : types) {
-            if (instanceOfImpl(type)) {
+            if (getInstanceOfImpl(type)) {
                 return true;
             }
         }
@@ -88,12 +88,12 @@ public abstract class JoinPoint2<Self extends JoinPoint2<Self, Jp>, Jp extends J
 
     private static String dumpPrivate(JoinPoint2<?, ?> jp, String prefix) {
         var dump = new StringBuilder();
-        dump.append(prefix).append(jp.toStringImpl()).append("\n");
+        dump.append(prefix).append(jp.getToStringImpl()).append("\n");
         jp.getJpChildrenStream().forEach(child -> dump.append(dumpPrivate(child, prefix + "   ")));
         return dump.toString();
     }
 
-    public String toStringImpl() {
+    public String getToStringImpl() {
         return "Joinpoint '" + getJoinPointTypeImpl() + "'";
     }
 }
