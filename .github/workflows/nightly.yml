@@ -94,8 +94,8 @@ jobs:
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-      - name: Build and test WeaverGenerator
-        working-directory: lara-framework/WeaverGenerator
+      - name: Build and test WeaverGen2
+        working-directory: lara-framework/WeaverGen2
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false

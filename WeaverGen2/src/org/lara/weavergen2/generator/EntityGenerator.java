@@ -41,6 +41,8 @@ public final class EntityGenerator {
         var sb = new JavaSourceBuilder();
         sb.line("package " + config.entitiesPackage() + ";");
         sb.line();
+        sb.line("import java.util.*;");
+        sb.line();
 
         var usesJoinpoint = td.fields().stream().anyMatch(field -> containsJoinpointRef(field.type()));
         var usesEnum = td.fields().stream().anyMatch(field -> containsEnumRef(field.type()));
@@ -177,7 +179,7 @@ public final class EntityGenerator {
         return TypeMapper.toJavaType(
                 type,
                 "Object",
-                name -> TypeMapper.abstractClassName(name) + "<?>",
+                name -> TypeMapper.abstractClassName(name) + (config.hasBaseSpec() ? "<?>" : "<?, ?>"),
                 TypeMapper::capitalize,
                 TypeMapper::capitalize
         );

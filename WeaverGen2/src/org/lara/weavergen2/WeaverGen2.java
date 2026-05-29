@@ -35,6 +35,10 @@ public final class WeaverGen2 {
      * Creates a generator from a base spec and weaver spec.
      */
     public static WeaverGen2 fromSpecs(WeaverSpec baseSpec, WeaverSpec weaverSpec, String nodeType) {
+        return fromSpecs(baseSpec, weaverSpec, nodeType, null);
+    }
+
+    public static WeaverGen2 fromSpecs(WeaverSpec baseSpec, WeaverSpec weaverSpec, String nodeType, Path projectRoot) {
         var baseModel = instantiate(baseSpec).buildRaw();
         var weaverModel = weaverSpec.build();
 
@@ -54,11 +58,25 @@ public final class WeaverGen2 {
                 nodeType,
                 true,
                 true,
-                Set.copyOf(baseMemberSignatures));
+                Set.copyOf(baseMemberSignatures),
+                projectRoot);
 
         var importEnums = new ArrayList<>(baseModel.getEnumDefs().keySet());
 
         return new WeaverGen2(weaverModel, mergedModel, importEnums, config);
+    }
+
+    public static WeaverGen2 fromSpecs(Class<? extends WeaverSpec> baseSpecClass,
+            Class<? extends WeaverSpec> weaverSpecClass,
+            String nodeType) {
+        return fromSpecs(instantiate(baseSpecClass), instantiate(weaverSpecClass), nodeType, null);
+    }
+
+    public static WeaverGen2 fromSpecs(Class<? extends WeaverSpec> baseSpecClass,
+            Class<? extends WeaverSpec> weaverSpecClass,
+            String nodeType,
+            Path projectRoot) {
+        return fromSpecs(instantiate(baseSpecClass), instantiate(weaverSpecClass), nodeType, projectRoot);
     }
 
     private static WeaverSpec instantiate(WeaverSpec spec) {
@@ -69,10 +87,22 @@ public final class WeaverGen2 {
         }
     }
 
+    private static WeaverSpec instantiate(Class<? extends WeaverSpec> specClass) {
+        try {
+            return specClass.getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not instantiate spec class " + specClass.getName(), e);
+        }
+    }
+
     /**
      * Creates a generator from a single weaver spec (no base spec).
      */
     public static WeaverGen2 fromSpec(WeaverSpec weaverSpec, String nodeType) {
+        return fromSpec(weaverSpec, nodeType, null);
+    }
+
+    public static WeaverGen2 fromSpec(WeaverSpec weaverSpec, String nodeType, Path projectRoot) {
         var model = weaverSpec.build();
 
         var config = new GeneratorConfig(
@@ -81,9 +111,18 @@ public final class WeaverGen2 {
                 nodeType,
                 true,
                 false,
-                Set.of());
+                Set.of(),
+                projectRoot);
 
         return new WeaverGen2(model, model, List.of(), config);
+    }
+
+    public static WeaverGen2 fromSpec(Class<? extends WeaverSpec> weaverSpecClass, String nodeType) {
+        return fromSpec(instantiate(weaverSpecClass), nodeType, null);
+    }
+
+    public static WeaverGen2 fromSpec(Class<? extends WeaverSpec> weaverSpecClass, String nodeType, Path projectRoot) {
+        return fromSpec(instantiate(weaverSpecClass), nodeType, projectRoot);
     }
 
     /**
@@ -173,9 +212,9 @@ public final class WeaverGen2 {
         if (baseSpecClassName != null) {
             var baseClass = Class.forName(baseSpecClassName);
             var baseSpec = (WeaverSpec) baseClass.getDeclaredConstructor().newInstance();
-            gen = fromSpecs(baseSpec, weaverSpec, nodeType);
+            gen = fromSpecs(baseSpec, weaverSpec, nodeType, outputDir);
         } else {
-            gen = fromSpec(weaverSpec, nodeType);
+            gen = fromSpec(weaverSpec, nodeType, outputDir);
         }
 
         gen.generate(outputDir, jsonOutPath);
