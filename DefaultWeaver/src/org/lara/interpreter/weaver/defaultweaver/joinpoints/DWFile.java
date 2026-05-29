@@ -17,27 +17,24 @@ import java.io.File;
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
 
-public class DWFile extends AFile<DWFile> {
-
-    private final File file;
+public class DWFile<Self extends DWFile<Self>> extends AFile<Self> {
 
     public DWFile(File f, DefaultWeaver weaver) {
-        super(weaver);
-        file = f;
+        super(f, weaver);
+    }
+
+    @Override
+    public File getNode() {
+        return (File) super.getNode();
     }
 
     @Override
     public String getNameImpl() {
-        return file.getName();
+        return this.getNode().getName();
     }
 
     @Override
     public String getAbsolutePathImpl() {
-        return file.getAbsolutePath();
-    }
-
-    @Override
-    public Object getNode() {
-        return getName();
+        return this.getNode().getAbsolutePath();
     }
 }
