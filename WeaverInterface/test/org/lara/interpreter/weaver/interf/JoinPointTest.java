@@ -23,21 +23,21 @@ class JoinPointTest {
         child.addChild(grandchild);
 
         // Base type always true
-        assertThat(root.instanceOfImpl("joinpoint")).isTrue();
-        assertThat(child.instanceOfImpl("joinpoint")).isTrue();
+        assertThat(root.getInstanceOfImpl("joinpoint")).isTrue();
+        assertThat(child.getInstanceOfImpl("joinpoint")).isTrue();
 
         // Exact type
-        assertThat(root.instanceOfImpl("root")).isTrue();
-        assertThat(child.instanceOfImpl("child")).isTrue();
+        assertThat(root.getInstanceOfImpl("root")).isTrue();
+        assertThat(child.getInstanceOfImpl("child")).isTrue();
 
 
-        assertThat(grandchild.instanceOfImpl("grandchild")).isTrue();
-        assertThat(grandchild.instanceOfImpl("child")).isTrue();
-        assertThat(grandchild.instanceOfImpl("root")).isTrue();
-        assertThat(grandchild.instanceOfImpl("unknown")).isFalse();
+        assertThat(grandchild.getInstanceOfImpl("grandchild")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("child")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("root")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("unknown")).isFalse();
 
         // Array variant
-        assertThat(grandchild.instanceOfImpl(new String[] { "foo", "bar", "child" })).isTrue();
+        assertThat(grandchild.getInstanceOfImpl(new String[] { "foo", "bar", "child" })).isTrue();
     }
 
     @Test
@@ -52,7 +52,7 @@ class JoinPointTest {
         root.addChild(b);
         b.addChild(b1);
 
-        assertThat(root.toStringImpl()).isEqualTo("Joinpoint 'root'");
+        assertThat(root.getToStringImpl()).isEqualTo("Joinpoint 'root'");
         String dump = root.getDumpImpl();
         assertThat(dump)
                 .contains("Joinpoint 'root'")
