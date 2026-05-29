@@ -1,0 +1,37 @@
+package thistype.pkg.entities;
+
+import java.util.*;
+
+/**
+ * User-defined type: SimpleMetadata
+ */
+public class SimpleMetadata {
+    private String name;
+    private List<String> values;
+    private Map<String, Object> config;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getValues() {
+        return values;
+    }
+
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+
+    public Map<String, Object> getConfig() {
+        return config;
+    }
+
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+
+}
