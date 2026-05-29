@@ -16,20 +16,18 @@ import java.util.List;
 
 import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
-import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AJoinPoint;
+import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AJoinpoint;
+import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 
-public class DWFunction extends AFunction<DWFunction> {
-
-    private final String name;
+public class DWFunction<Self extends DWFunction<Self>> extends AFunction<Self> {
 
     public DWFunction(String element, DefaultWeaver weaver) {
-        super(weaver);
-        name = element;
+        super(element, weaver);
     }
 
     @Override
-    public Object getNode() {
-        return name;
+    public String getNode() {
+        return (String) super.getNode();
     }
 
     // @Override
@@ -41,10 +39,10 @@ public class DWFunction extends AFunction<DWFunction> {
     // }
 
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
+    public AJoinpoint<?>[] insertImpl(InsertPosition position, String code) {
         System.out.println("#########INSERTING#########");
         System.out.println(
-                "Action not available. But would insert " + position + " function " + name + ": " + code.trim());//
+                "Action not available. But would insert " + position.getDisplay() + " function " + this.getNode() + ": " + code.trim());//
         System.out.println("###########################");
 
         return null;
@@ -58,11 +56,11 @@ public class DWFunction extends AFunction<DWFunction> {
 
     @Override
     public String getNameImpl() {
-        return name;
+        return this.getNode();
     }
 
     @Override
-    public DWFunction usesThisImpl(List<DWFunction> param1) {
+    public Self getUsesThisImpl(Self[] param1) {
         throw new UnsupportedOperationException("Not implemented");
     }
 }

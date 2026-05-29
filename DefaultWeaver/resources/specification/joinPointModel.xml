@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<joinpoints  root_class="workspace">
-    <joinpoint class="folder"/>
-    <joinpoint class="file"/>
-    <joinpoint class="function"/>
-    <joinpoint class="class"/>
-    <joinpoint class="method" extends="function"/>
-    <joinpoint class="workspace"/>
-</joinpoints>
