@@ -1,0 +1,37 @@
+package thistype.pkg.enums;
+
+import java.util.Objects;
+
+/**
+ * Classification of node types
+ */
+public enum NodeKind {
+    EXPRESSION("EXPRESSION"),
+    STATEMENT("STATEMENT"),
+    DECLARATION("DECLARATION"),
+    OTHER("OTHER");
+
+    private final String display;
+
+    NodeKind(String display) {
+        this.display = display;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    @Override
+    public String toString() {
+        return display;
+    }
+
+    public static NodeKind fromDisplay(String display) {
+        for (NodeKind value : values()) {
+            if (Objects.equals(value.getDisplay(), display)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("Unknown value for enum NodeKind: " + display + ". Expected one of: EXPRESSION, STATEMENT, DECLARATION, OTHER");
+    }
+}

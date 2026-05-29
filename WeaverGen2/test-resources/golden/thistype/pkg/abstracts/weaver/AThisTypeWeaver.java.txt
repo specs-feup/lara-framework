@@ -1,0 +1,32 @@
+package thistype.pkg.abstracts.weaver;
+
+import org.lara.interpreter.weaver.LaraWeaverEngine;
+
+import java.util.*;
+
+/**
+ * Auto-generated abstract weaver class for ThisTypeWeaver.
+ */
+public abstract class AThisTypeWeaver extends LaraWeaverEngine {
+
+    public List<String> getJoinPointClassNames() {
+        return List.of(
+            "joinpoint",
+            "node",
+            "expr",
+            "binaryExpr",
+            "stmt",
+            "loop",
+            "container"
+        );
+    }
+
+    @Override
+    public String getRoot() {
+        return "node";
+    }
+
+    public boolean implementsEvents() {
+        return true;
+    }
+}

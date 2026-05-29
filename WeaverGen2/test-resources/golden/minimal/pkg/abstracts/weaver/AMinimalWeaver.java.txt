@@ -1,0 +1,27 @@
+package minimal.pkg.abstracts.weaver;
+
+import org.lara.interpreter.weaver.LaraWeaverEngine;
+
+import java.util.*;
+
+/**
+ * Auto-generated abstract weaver class for MinimalWeaver.
+ */
+public abstract class AMinimalWeaver extends LaraWeaverEngine {
+
+    public List<String> getJoinPointClassNames() {
+        return List.of(
+            "joinpoint",
+            "root"
+        );
+    }
+
+    @Override
+    public String getRoot() {
+        return "root";
+    }
+
+    public boolean implementsEvents() {
+        return true;
+    }
+}

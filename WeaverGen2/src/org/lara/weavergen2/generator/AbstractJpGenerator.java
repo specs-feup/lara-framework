@@ -7,6 +7,7 @@ import org.lara.langspec2.types.JpDataType.*;
 import org.lara.weavergen2.java.JavaSourceBuilder;
 import org.lara.weavergen2.java.TypeMapper;
 
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.Function;
@@ -231,10 +232,7 @@ public final class AbstractJpGenerator {
 
         var parent = jpClass.getParent().orElseThrow();
         var concreteClass = concreteClassName(parent);
-        var sourceFile = resolveConcreteSuperclassSourceFile(concreteClass)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Could not locate source file for concrete superclass '" + concreteClass
-                                + "' while generating join point '" + jpClass.getName() + "'"));
+        var sourceFile = resolveOrCreateConcreteSuperclassSourceFile(parent);
 
         return Optional.of(resolvePackageName(sourceFile) + "." + concreteClass);
     }
@@ -260,14 +258,10 @@ public final class AbstractJpGenerator {
         var concreteSuperclassName = simpleClassName(concreteSuperclassImport);
 
         try {
-            var sourceFile = resolveConcreteSuperclassSourceFile(concreteSuperclassName)
-                    .orElseThrow(
-                    () -> new IllegalStateException("Could not locate source file for concrete superclass '"
-                        + concreteSuperclassName + "' while generating join point '" + jpClass.getName()
-                        + "'"));
+            var sourceFile = resolveOrCreateConcreteSuperclassSourceFile(jpClass.getParent().orElseThrow());
 
             var source = Files.readString(sourceFile);
-            var constructorMatcher = Pattern.compile("public\\s+" + Pattern.quote(concreteSuperclassName)
+            var constructorMatcher = Pattern.compile("(?:public|protected)?\\s*" + Pattern.quote(concreteSuperclassName)
                     + "\\s*\\(([^)]*)\\)", Pattern.DOTALL).matcher(source);
 
             if (!constructorMatcher.find()) {
@@ -294,24 +288,21 @@ public final class AbstractJpGenerator {
 
     private Optional<Path> resolveConcreteSuperclassSourceFile(String concreteClassName) {
         var joinpointsRelativePath = Path.of(config.basePackage().replace('.', '/'), "joinpoints");
-        var sourceRoots = List.of("src", "src-java", "src/main/java");
         var matches = new ArrayList<Path>();
 
-        for (var sourceRoot : sourceRoots) {
-            var joinpointsRoot = Path.of(System.getProperty("user.dir"), sourceRoot).resolve(joinpointsRelativePath);
+        var joinpointsRoot = config.sourceLookupRoot().resolve(joinpointsRelativePath);
 
-            if (!Files.exists(joinpointsRoot)) {
-                continue;
-            }
+        if (!Files.exists(joinpointsRoot)) {
+            return Optional.empty();
+        }
 
-            try (var paths = Files.walk(joinpointsRoot)) {
-                paths.filter(Files::isRegularFile)
-                        .filter(path -> path.getFileName().toString().equals(concreteClassName + ".java"))
-                        .forEach(matches::add);
-            } catch (java.io.IOException e) {
-                throw new IllegalStateException("Could not search for concrete joinpoint '" + concreteClassName
-                        + "' under '" + joinpointsRoot + "'", e);
-            }
+        try (var paths = Files.walk(joinpointsRoot)) {
+            paths.filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().equals(concreteClassName + ".java"))
+                    .forEach(matches::add);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not search for concrete joinpoint '" + concreteClassName
+                    + "' under '" + joinpointsRoot + "'", e);
         }
 
         if (matches.size() > 1) {
@@ -320,6 +311,60 @@ public final class AbstractJpGenerator {
         }
 
         return matches.isEmpty() ? Optional.empty() : Optional.of(matches.get(0));
+    }
+
+    private Path resolveOrCreateConcreteSuperclassSourceFile(JpClass jpClass) {
+        var concreteClassName = concreteClassName(jpClass);
+        var existing = resolveConcreteSuperclassSourceFile(concreteClassName);
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        if (jpClass.getParent().isPresent()) {
+            resolveOrCreateConcreteSuperclassSourceFile(jpClass.getParent().orElseThrow());
+        }
+
+        return createConcreteSuperclassSourceFile(jpClass);
+    }
+
+    private Path createConcreteSuperclassSourceFile(JpClass jpClass) {
+        try {
+            var joinpointsRoot = config.sourceLookupRoot().resolve(config.basePackage().replace('.', '/')).resolve("joinpoints");
+            Files.createDirectories(joinpointsRoot);
+
+            var concreteClassName = concreteClassName(jpClass);
+            var parentConcreteClass = jpClass == model.getGlobal() ? TypeMapper.abstractClassName(jpClass.getName())
+                    : concreteClassName(jpClass.getParent().orElseThrow());
+            var nodeType = simpleClassName(config.nodeType());
+            var nodeTypeImport = config.nodeType().contains(".") ? config.nodeType() : null;
+
+            var source = new StringBuilder();
+            source.append("package ").append(config.basePackage()).append(".joinpoints;\n\n");
+            if (jpClass == model.getGlobal()) {
+                source.append("import ").append(config.baseJoinPointPackage()).append(".AJoinpoint;\n");
+            }
+            source.append("import ").append(config.basePackage()).append(".").append(config.weaverName()).append(";\n");
+            if (nodeTypeImport != null) {
+                source.append("import ").append(nodeTypeImport).append(";\n");
+            }
+            source.append("\n");
+            source.append("public abstract class ").append(concreteClassName).append("<Self extends ")
+                    .append(concreteClassName).append("<Self>> extends ")
+                    .append(jpClass == model.getGlobal() ? "AJoinpoint<Self>" : parentConcreteClass + "<Self>")
+                    .append(" {\n");
+            source.append("    protected ").append(concreteClassName).append("(").append(nodeType)
+                    .append(" node, ").append(config.weaverName()).append(" weaver) {\n");
+            source.append("        super(node, weaver);\n");
+            source.append("    }\n");
+            source.append("}\n");
+
+            var sourceFile = joinpointsRoot.resolve(concreteClassName + ".java");
+            Files.writeString(sourceFile, source.toString());
+            return sourceFile;
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException("Could not create source file for concrete superclass '"
+                    + concreteClassName(jpClass) + "'", e);
+        }
     }
 
     private String resolvePackageName(Path sourceFile) {
