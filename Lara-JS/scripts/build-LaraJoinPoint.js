@@ -175,6 +175,10 @@ export function registerJoinpointMapperFunction(
     return obj;
   }
 
+  if (obj === null) {
+    return undefined;
+  }
+
   if (obj === undefined) {
     return obj;
   }
@@ -197,12 +201,6 @@ export function registerJoinpointMapperFunction(
 
   if (!JavaTypes.isJavaObject(obj)) {
     return obj;
-  }
-
-  if (
-    JavaTypes.instanceOf(obj, "pt.up.fe.specs.jsengine.node.UndefinedValue")
-  ) {
-    return undefined;
   }
 
   if (
