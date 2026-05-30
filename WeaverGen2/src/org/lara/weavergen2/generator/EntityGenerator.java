@@ -153,7 +153,7 @@ public final class EntityGenerator {
 
         sb.openBlock("public static " + enumName + " fromDisplay(String display)");
         sb.openBlock("for (" + enumName + " value : values())");
-        sb.openBlock("if (Objects.equals(value.getDisplay(), display))");
+        sb.openBlock("if (Objects.equals(value.getDisplay(), display) || (display != null && value.name().equalsIgnoreCase(display)))");
         sb.line("return value;");
         sb.closeBlock();
         sb.closeBlock();
