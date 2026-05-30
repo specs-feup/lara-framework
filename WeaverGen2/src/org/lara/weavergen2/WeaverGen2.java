@@ -9,6 +9,7 @@ import org.lara.weavergen2.java.TypeMapper;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main entry point for the WeaverGen2 code generator.
@@ -172,12 +173,58 @@ public final class WeaverGen2 {
         } else {
             writeFile(outputDir, config.basePackage(), config.weaverName() + ".json", json);
         }
+
+        validateNoExtraConcreteJoinpointFiles();
     }
 
     private void writeFile(Path outputDir, String pkg, String fileName, String content) throws IOException {
         var dir = outputDir.resolve(pkg.replace('.', '/'));
         Files.createDirectories(dir);
         Files.writeString(dir.resolve(fileName), content);
+    }
+
+    private void validateNoExtraConcreteJoinpointFiles() throws IOException {
+        if (!config.hasBaseSpec() || config.sourceLookupRoot() == null) {
+            return;
+        }
+
+        var joinpointsRoot = config.sourceLookupRoot()
+                .resolve(config.basePackage().replace('.', '/'))
+                .resolve("joinpoints");
+
+        if (!Files.exists(joinpointsRoot)) {
+            return;
+        }
+
+        var expectedFileNames = model.getAllJpClasses().stream()
+                .map(jp -> config.prefix() + TypeMapper.capitalize(jp.getName()) + ".java")
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        List<Path> unexpectedFiles;
+        try (var paths = Files.walk(joinpointsRoot)) {
+            unexpectedFiles = paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith(".java"))
+                    .filter(path -> !expectedFileNames.contains(path.getFileName().toString()))
+                    .sorted(Comparator.comparing(path -> normalizeRelativePath(joinpointsRoot.relativize(path))))
+                    .toList();
+        }
+
+        if (unexpectedFiles.isEmpty()) {
+            return;
+        }
+
+        System.err.println("WeaverGen2: Found concrete joinpoint source files not declared in the spec:");
+        for (var file : unexpectedFiles) {
+            System.err.println("  - " + normalizeRelativePath(joinpointsRoot.relativize(file)));
+        }
+
+        throw new IllegalStateException(
+                "Found " + unexpectedFiles.size() + " concrete joinpoint source file(s) not declared in the spec");
+    }
+
+    private static String normalizeRelativePath(Path path) {
+        return path.toString().replace(File.separatorChar, '/');
     }
 
     // ----- Command-line entry point -----
