@@ -1,0 +1,11 @@
+package thistype.pkg.joinpoints;
+
+import thistype.pkg.abstracts.joinpoints.AJoinpoint;
+import thistype.pkg.ThisTypeWeaver;
+import java.lang.Object;
+
+public class ThisTypeJoinpoint<Self extends ThisTypeJoinpoint<Self>> extends AJoinpoint<Self> {
+    protected ThisTypeJoinpoint(Object node, ThisTypeWeaver weaver) {
+        super(node, weaver);
+    }
+}
