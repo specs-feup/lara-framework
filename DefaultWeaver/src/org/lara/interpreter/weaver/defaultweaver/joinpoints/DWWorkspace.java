@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AWorkspace;
 
 import pt.up.fe.specs.util.SpecsIo;
@@ -29,18 +29,18 @@ import pt.up.fe.specs.util.SpecsIo;
  * @author Tiago Carvalho
  * 
  */
-public class DWorkspace<Self extends DWorkspace<Self>> extends AWorkspace<Self> {
+public class DWWorkspace<Self extends DWWorkspace<Self>> extends AWorkspace<Self> {
 
     private final Map<File, DWFolder<?>> folders;
 
-    public DWorkspace(DefaultWeaver weaver) {
+    public DWWorkspace(DWWeaver weaver) {
         super(null, weaver);
         folders = new HashMap<>();
     }
 
     @Override
-    public Object getNode() {
-        return super.getNode();
+    public Object getNodeImpl() {
+        return super.getNodeImpl();
     }
 
     public void addFolder(File dir) {
