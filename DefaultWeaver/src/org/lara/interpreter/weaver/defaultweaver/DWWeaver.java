@@ -16,9 +16,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.abstracts.weaver.ADWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.gears.TestGear;
-import org.lara.interpreter.weaver.defaultweaver.joinpoints.DWorkspace;
+import org.lara.interpreter.weaver.defaultweaver.joinpoints.DWWorkspace;
 import org.lara.interpreter.weaver.defaultweaver.options.DefaultWeaverOption;
 import org.lara.interpreter.weaver.interf.AGear;
 import org.lara.interpreter.weaver.interf.JoinPoint2;
@@ -30,15 +30,15 @@ import org.suikasoft.jOptions.Interfaces.DataStore;
  *
  * @author Lara C.
  */
-public class DefaultWeaver extends ADefaultWeaver {
+public class DWWeaver extends ADWWeaver {
     // Fields
-    DWorkspace<?> root;
+    DWWorkspace<?> root;
     private final TestGear testGear;
     private boolean property;
     private DataStore args;
 
     // Constructors
-    public DefaultWeaver() {
+    public DWWeaver() {
         testGear = new TestGear();
     }
 
@@ -53,7 +53,7 @@ public class DefaultWeaver extends ADefaultWeaver {
     public boolean begin(List<File> sources, File output, DataStore args) {
 
         this.args = args;
-        root = new DWorkspace<>(this);
+        root = new DWWorkspace<>(this);
         for (File source : sources) {
             if (source.isDirectory()) {
                 root.addFolder(source);
