@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 
 public class DWFolder<Self extends DWFolder<Self>> extends AFolder<Self> {
@@ -24,15 +24,15 @@ public class DWFolder<Self extends DWFolder<Self>> extends AFolder<Self> {
     private final boolean getFilesRecursively = true;
     private final List<DWFile<?>> files;
 
-    public DWFolder(File source, DefaultWeaver weaver) {
+    public DWFolder(File source, DWWeaver weaver) {
         super(source, weaver);
         files = new ArrayList<>();
         createFiles(source);
     }
 
     @Override
-    public File getNode() {
-        return (File) super.getNode();
+    public File getNodeImpl() {
+        return (File) super.getNodeImpl();
     }
 
     public void createFiles(File folder) {
@@ -48,6 +48,6 @@ public class DWFolder<Self extends DWFolder<Self>> extends AFolder<Self> {
 
     @Override
     public String getPathImpl() {
-        return this.getNode().getAbsolutePath();
+        return this.getNodeImpl().getAbsolutePath();
     }
 }
