@@ -334,7 +334,8 @@ public final class AbstractJpGenerator {
             var source = new StringBuilder();
             source.append("package ").append(config.basePackage()).append(".joinpoints;\n\n");
             if (jpClass == model.getGlobal()) {
-                source.append("import ").append(config.baseJoinPointPackage()).append(".AJoinpoint;\n");
+                source.append("import ").append(config.joinPointPackage()).append(".")
+                        .append(TypeMapper.abstractClassName(jpClass.getName())).append(";\n");
             }
             source.append("import ").append(config.basePackage()).append(".").append(config.weaverName()).append(";\n");
             if (nodeTypeImport != null) {

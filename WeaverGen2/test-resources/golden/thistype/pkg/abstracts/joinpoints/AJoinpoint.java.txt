@@ -47,7 +47,7 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "root", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "root", e);
         }
@@ -101,7 +101,7 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "selfTransform", Optional.ofNullable(result), transformName);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "selfTransform", e);
         }
@@ -167,7 +167,7 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "joinpoint".equals(joinpointClassname);
     }
 
