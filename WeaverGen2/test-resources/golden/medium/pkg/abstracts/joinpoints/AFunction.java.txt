@@ -80,22 +80,6 @@ public abstract class AFunction<Self extends AFunction<Self>> extends MediumJoin
 
     public abstract AJoinpoint<?>[] insertImpl(String position, String code);
 
-    @Deprecated
-    public final Object[] insert(String position, String code) {
-        try {
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAction(Stage.BEGIN, this, "insert", Optional.empty(), position, code);
-            }
-            AJoinpoint<?>[] result = this.insertImpl(position, code);
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "insert", Optional.ofNullable(result), position, code);
-            }
-            return result;
-        } catch (Exception e) {
-            throw new ActionException(get_class(), "insert", e);
-        }
-    }
-
     @Override
     public String get_class() {
         return "function";

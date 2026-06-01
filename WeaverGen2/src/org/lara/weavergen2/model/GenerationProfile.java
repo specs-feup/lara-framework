@@ -1,4 +1,4 @@
-package org.lara.weavergen2.generator;
+package org.lara.weavergen2.model;
 
 import java.util.Set;
 import java.nio.file.Path;
@@ -6,13 +6,14 @@ import java.nio.file.Path;
 /**
  * Configuration for the code generator.
  */
-public record GeneratorConfig(
+public record GenerationProfile(
         String prefix,
         String basePackage,
         String nodeType,
         boolean generateEvents,
         boolean hasBaseSpec,
         Set<String> baseMemberSignatures,
+        Set<String> inheritedFinalWrapperSignatures,
         Path projectRoot
 ) {
     public String weaverName() {

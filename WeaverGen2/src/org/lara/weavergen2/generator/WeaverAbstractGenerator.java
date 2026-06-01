@@ -2,6 +2,7 @@ package org.lara.weavergen2.generator;
 
 import org.lara.langspec2.model.*;
 import org.lara.weavergen2.java.JavaSourceBuilder;
+import org.lara.weavergen2.model.GenerationProfile;
 
 /**
  * Generates the abstract weaver class (e.g., ACxxWeaver).
@@ -9,9 +10,9 @@ import org.lara.weavergen2.java.JavaSourceBuilder;
 public final class WeaverAbstractGenerator {
 
     private final WeaverModel model;
-    private final GeneratorConfig config;
+    private final GenerationProfile config;
 
-    public WeaverAbstractGenerator(WeaverModel model, GeneratorConfig config) {
+    public WeaverAbstractGenerator(WeaverModel model, GenerationProfile config) {
         this.model = model;
         this.config = config;
     }
