@@ -1,4 +1,4 @@
-package org.lara.weavergen2.generator;
+package org.lara.weavergen2.model;
 
 import org.lara.langspec2.model.*;
 import org.lara.langspec2.types.JpDataType;
@@ -17,9 +17,9 @@ import java.util.List;
  * The base spec's global attributes/actions are added to the weaver spec's global.
  * The weaver spec provides the JP hierarchy, weaver name, and package.
  */
-public final class SpecMerger {
+public final class SpecModelMerger {
 
-    private SpecMerger() {}
+    private SpecModelMerger() {}
 
     /**
      * Merges the base spec into the weaver spec model.

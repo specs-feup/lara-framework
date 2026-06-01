@@ -37,22 +37,6 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract Self getRootImpl();
 
-    @Deprecated
-    public final Object root() {
-        try {
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.BEGIN, this, "root", Optional.empty());
-            }
-            Self result = this.getRootImpl();
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "root", Optional.ofNullable(result));
-            }
-            return result;
-        } catch (Exception e) {
-            throw new AttributeException(get_class(), "root", e);
-        }
-    }
-
     public abstract Self[] getAncestorsImpl();
 
     @Deprecated

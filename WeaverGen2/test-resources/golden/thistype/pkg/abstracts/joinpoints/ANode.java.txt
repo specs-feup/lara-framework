@@ -45,22 +45,6 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self getParentImpl();
 
-    @Deprecated
-    public final Object parent() {
-        try {
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.BEGIN, this, "parent", Optional.empty());
-            }
-            Self result = this.getParentImpl();
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "parent", Optional.ofNullable(result));
-            }
-            return result;
-        } catch (Exception e) {
-            throw new AttributeException(get_class(), "parent", e);
-        }
-    }
-
     public abstract Self getAncestorOfTypeImpl(String typeName);
 
     @Deprecated
@@ -337,39 +321,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Integer getLineImpl();
 
-    @Deprecated
-    public final Object line() {
-        try {
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.BEGIN, this, "line", Optional.empty());
-            }
-            Integer result = this.getLineImpl();
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "line", Optional.ofNullable(result));
-            }
-            return result;
-        } catch (Exception e) {
-            throw new AttributeException(get_class(), "line", e);
-        }
-    }
-
     public abstract Integer getColumnImpl();
-
-    @Deprecated
-    public final Object column() {
-        try {
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.BEGIN, this, "column", Optional.empty());
-            }
-            Integer result = this.getColumnImpl();
-            if(getWeaverEngine().hasListeners()) {
-                getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "column", Optional.ofNullable(result));
-            }
-            return result;
-        } catch (Exception e) {
-            throw new AttributeException(get_class(), "column", e);
-        }
-    }
 
     public abstract Self copyImpl();
 

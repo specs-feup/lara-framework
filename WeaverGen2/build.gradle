@@ -13,7 +13,7 @@ java {
 }
 
 application {
-    mainClass.set("org.lara.weavergen2.WeaverGen2")
+    mainClass.set("org.lara.weavergen2.cli.WeaverGen2Cli")
 }
 
 repositories {
@@ -31,6 +31,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
     testImplementation 'org.junit-pioneer:junit-pioneer:2.3.0' // For test retries
     testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
+    testImplementation 'com.google.guava:guava:33.4.0-jre'
+    testImplementation 'com.google.code.gson:gson:2.12.1'
+    testImplementation 'com.thoughtworks.xstream:xstream:1.4.21'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 }
 
