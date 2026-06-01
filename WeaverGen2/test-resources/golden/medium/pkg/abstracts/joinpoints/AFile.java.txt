@@ -47,7 +47,7 @@ public abstract class AFile<Self extends AFile<Self>> extends MediumJoinpoint<Se
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "file".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

@@ -34,7 +34,7 @@ public abstract class ABase<Self extends ABase<Self>> extends EdgeJoinpoint<Self
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "a", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "a", e);
         }
@@ -46,7 +46,7 @@ public abstract class ABase<Self extends ABase<Self>> extends EdgeJoinpoint<Self
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "base".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

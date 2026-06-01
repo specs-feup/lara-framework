@@ -26,7 +26,7 @@ public abstract class ABody<Self extends ABody<Self>> extends MediumJoinpoint<Se
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "body".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

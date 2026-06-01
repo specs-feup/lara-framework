@@ -72,7 +72,7 @@ public abstract class AFunction<Self extends AFunction<Self>> extends MediumJoin
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "replaceWith", Optional.ofNullable(result), node);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "replaceWith", e);
         }
@@ -102,7 +102,7 @@ public abstract class AFunction<Self extends AFunction<Self>> extends MediumJoin
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "function".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

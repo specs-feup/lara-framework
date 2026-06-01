@@ -57,7 +57,7 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "joinpoint".equals(joinpointClassname);
     }
 

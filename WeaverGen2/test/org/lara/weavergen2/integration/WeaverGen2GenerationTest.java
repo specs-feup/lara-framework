@@ -7,7 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,30 +79,30 @@ class WeaverGen2GenerationTest {
     private void assertOutputMatchesGolden(String scenarioName, Path outputDir) throws Exception {
         var generatedFiles = GeneratedTreeUtils.snapshotFiles(outputDir).entrySet().stream()
                 .filter(entry -> entry.getKey().endsWith(".java"))
-                .collect(java.util.stream.Collectors.toMap(
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (left, right) -> {
                             throw new IllegalStateException("Duplicate generated path: " + left);
                         },
-                        java.util.TreeMap::new));
+                        TreeMap::new));
         var goldenRoot = GOLDEN_ROOT.resolve(scenarioName);
 
         BaselineRegen.runOrVerify(
-                () -> persistGoldenOnce(goldenRoot, scenarioName, generatedFiles),
-                () -> verifyGolden(scenarioName, generatedFiles, goldenRoot));
+                () -> persistGoldenOnce(scenarioName, goldenRoot, generatedFiles),
+                () -> verifyGolden(scenarioName, goldenRoot, generatedFiles));
     }
 
-    private void persistGoldenOnce(Path goldenRoot, String scenarioName, Map<String, Path> generatedFiles)
+    private void persistGoldenOnce(String scenarioName, Path goldenRoot, Map<String, Path> generatedFiles)
             throws IOException {
         if (regeneratedScenarios.add(scenarioName)) {
-            persistGolden(goldenRoot, scenarioName, generatedFiles);
+            persistGolden(scenarioName, goldenRoot, generatedFiles);
         }
     }
 
-    private static void verifyGolden(String scenarioName, Map<String, Path> generatedFiles, Path goldenRoot)
+    private static void verifyGolden(String scenarioName, Path goldenRoot, Map<String, Path> generatedFiles)
             throws IOException {
-        var goldenFiles = snapshotGolden(goldenRoot, scenarioName);
+        var goldenFiles = snapshotGolden(scenarioName, goldenRoot);
 
         assertThat(generatedFiles.keySet())
                 .as("Generated file set for scenario '%s'", scenarioName)
@@ -116,19 +119,19 @@ class WeaverGen2GenerationTest {
         }
     }
 
-    private static void persistGolden(Path goldenRoot, String scenarioName, Map<String, Path> generatedFiles)
+    private static void persistGolden(String scenarioName, Path goldenRoot, Map<String, Path> generatedFiles)
             throws IOException {
         GeneratedTreeUtils.deleteTree(goldenRoot);
         Files.createDirectories(goldenRoot);
 
         for (var entry : generatedFiles.entrySet()) {
-            var relative = toGoldenRelativePath(entry.getKey(), scenarioName);
+            var relative = toGoldenRelativePath(scenarioName, entry.getKey());
             var target = goldenRoot.resolve(relative.replaceFirst("\\.java$", ".java.txt"));
             GeneratedTreeUtils.writeNormalized(target, GeneratedTreeUtils.readNormalized(entry.getValue()));
         }
     }
 
-    private static String toGoldenRelativePath(String generatedRelativePath, String scenarioName) {
+    private static String toGoldenRelativePath(String scenarioName, String generatedRelativePath) {
         String prefix = scenarioName + "/";
         if (!generatedRelativePath.startsWith(prefix)) {
             throw new IllegalStateException(
@@ -138,17 +141,17 @@ class WeaverGen2GenerationTest {
         return generatedRelativePath.substring(prefix.length());
     }
 
-    private static Map<String, Path> snapshotGolden(Path goldenRoot, String scenarioName) throws IOException {
+    private static Map<String, Path> snapshotGolden(String scenarioName, Path goldenRoot) throws IOException {
         return GeneratedTreeUtils.listFiles(goldenRoot, Files::isRegularFile).stream()
                 .filter(path -> path.getFileName().toString().endsWith(".txt"))
-                .collect(java.util.stream.Collectors.toMap(
+                .collect(Collectors.toMap(
                         path -> scenarioName + "/"
                                 + GeneratedTreeUtils.normalizeRelativePath(goldenRoot.relativize(path).toString())
                                         .replaceFirst("\\.txt$", ""),
-                        java.util.function.Function.identity(),
+                        Function.identity(),
                         (left, right) -> {
                             throw new IllegalStateException("Duplicate golden path: " + left);
                         },
-                        java.util.TreeMap::new));
+                        TreeMap::new));
     }
 }

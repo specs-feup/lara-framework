@@ -37,7 +37,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "clone", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "clone", e);
         }
@@ -55,7 +55,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "parent", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "parent", e);
         }
@@ -73,7 +73,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "ancestorOfType", Optional.ofNullable(result), typeName);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "ancestorOfType", e);
         }
@@ -347,7 +347,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "line", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "line", e);
         }
@@ -365,7 +365,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAttribute(Stage.END, this, "column", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new AttributeException(get_class(), "column", e);
         }
@@ -383,7 +383,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "copy", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "copy", e);
         }
@@ -401,7 +401,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "detach", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "detach", e);
         }
@@ -455,7 +455,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "merge", Optional.ofNullable(result), other);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "merge", e);
         }
@@ -509,7 +509,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "wrapWith", Optional.ofNullable(result), wrapper, position);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "wrapWith", e);
         }
@@ -683,7 +683,7 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "node".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

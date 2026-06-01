@@ -26,7 +26,7 @@ public abstract class AStatement<Self extends AStatement<Self>> extends MediumJo
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "statement".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }
