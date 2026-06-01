@@ -69,15 +69,34 @@ class WeaverGen2GenerationTest {
 
         assertThat(firstRun.error()).isNull();
         assertThat(Files.exists(outputDir)).isTrue();
-        assertOutputMatchesGolden(scenarioName, outputDir);
+        assertOutputMatchesGolden(scenarioName, firstRun);
 
         var secondRun = WeaverGen2TestHarness.run(scenario, outputDir);
         assertThat(secondRun.error()).isNull();
-        assertOutputMatchesGolden(scenarioName, outputDir);
+        assertOutputMatchesGolden(scenarioName, secondRun);
     }
 
-    private void assertOutputMatchesGolden(String scenarioName, Path outputDir) throws Exception {
-        var generatedFiles = GeneratedTreeUtils.snapshotFiles(outputDir).entrySet().stream()
+    private void assertOutputMatchesGolden(String scenarioName, WeaverGen2TestHarness.RunResult run) throws Exception {
+        var generatedFiles = javaSnapshot(run.outputDir());
+        javaSnapshot(run.projectRoot()).forEach((relative, path) -> {
+            if (relative.startsWith("src/")) {
+                return;
+            }
+
+            var previous = generatedFiles.putIfAbsent(relative, path);
+            if (previous != null) {
+                throw new IllegalStateException("Duplicate generated path: " + relative);
+            }
+        });
+        var goldenRoot = GOLDEN_ROOT.resolve(scenarioName);
+
+        BaselineRegen.runOrVerify(
+                () -> persistGoldenOnce(scenarioName, goldenRoot, generatedFiles),
+                () -> verifyGolden(scenarioName, goldenRoot, generatedFiles));
+    }
+
+    private static Map<String, Path> javaSnapshot(Path root) throws IOException {
+        return GeneratedTreeUtils.snapshotFiles(root).entrySet().stream()
                 .filter(entry -> entry.getKey().endsWith(".java"))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -86,11 +105,6 @@ class WeaverGen2GenerationTest {
                             throw new IllegalStateException("Duplicate generated path: " + left);
                         },
                         TreeMap::new));
-        var goldenRoot = GOLDEN_ROOT.resolve(scenarioName);
-
-        BaselineRegen.runOrVerify(
-                () -> persistGoldenOnce(scenarioName, goldenRoot, generatedFiles),
-                () -> verifyGolden(scenarioName, goldenRoot, generatedFiles));
     }
 
     private void persistGoldenOnce(String scenarioName, Path goldenRoot, Map<String, Path> generatedFiles)

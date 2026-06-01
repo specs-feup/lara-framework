@@ -1,0 +1,11 @@
+package edge.pkg.joinpoints;
+
+import edge.pkg.abstracts.joinpoints.ABase;
+import edge.pkg.EdgeWeaver;
+import java.lang.Object;
+
+public class EdgeBase<Self extends EdgeBase<Self>> extends ABase<Self> {
+    protected EdgeBase(Object node, EdgeWeaver weaver) {
+        super(node, weaver);
+    }
+}
