@@ -203,9 +203,12 @@ class LargeLangSpecIntegrationTest {
             cachedTempRoot = Files.createTempDirectory("large-integration-cache-");
         }
 
+        Path projectRoot = Files.createTempDirectory(cachedTempRoot, "large-integration-project-");
+        writeConcreteWeaverStub(projectRoot);
+
         WeaverGen2 generator = WeaverGen2.fromSpecs(BaseSpec.class, LargeIntegration.class, "java.lang.Object",
-                Files.createTempDirectory(cachedTempRoot, "large-integration-project-"));
-        return runPipeline(cachedTempRoot.resolve("output-" + runCounter.incrementAndGet()), generator);
+                projectRoot);
+        return runPipeline(cachedTempRoot.resolve("output-" + runCounter.incrementAndGet()), generator, projectRoot);
     }
 
     private void assertGeneratedJavaCompiles(RuntimeSnapshot runtime) throws Exception {
@@ -221,7 +224,7 @@ class LargeLangSpecIntegrationTest {
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             var units = fileManager.getJavaFileObjectsFromFiles(javaFiles.stream().map(Path::toFile).toList());
             String classpath = System.getProperty("java.class.path");
-            String sourcepath = generatedCompileSourcePath();
+            String sourcepath = generatedCompileSourcePath(runtime.projectRoot);
 
             List<String> options = List.of("-d", classesDir.toString(), "-classpath", classpath, "-sourcepath",
                     sourcepath);
@@ -249,12 +252,15 @@ class LargeLangSpecIntegrationTest {
     }
 
     private RuntimeSnapshot runPipeline(Path outputDir) throws Exception {
+        Path projectRoot = Files.createTempDirectory(temp, "large-integration-project-");
+        writeConcreteWeaverStub(projectRoot);
+
         WeaverGen2 generator = WeaverGen2.fromSpecs(BaseSpec.class, LargeIntegration.class, "java.lang.Object",
-                Files.createTempDirectory(temp, "large-integration-project-"));
-        return runPipeline(outputDir, generator);
+                projectRoot);
+        return runPipeline(outputDir, generator, projectRoot);
     }
 
-    private RuntimeSnapshot runPipeline(Path outputDir, WeaverGen2 generator) throws Exception {
+    private RuntimeSnapshot runPipeline(Path outputDir, WeaverGen2 generator, Path projectRoot) throws Exception {
         Files.createDirectories(outputDir);
         Path jsonPath = outputDir.resolve("spec.json");
 
@@ -279,12 +285,13 @@ class LargeLangSpecIntegrationTest {
                 WEAVER_NAME);
         InvariantSnapshot invariantSnapshot = JsonInvariantUtils.computeSnapshot(parsedJson, javaSnapshot.structure());
 
-        return new RuntimeSnapshot(0, outputDir, javaManifest, jsonManifest, aggregateHash, parsedJson,
+        return new RuntimeSnapshot(0, projectRoot, outputDir, javaManifest, jsonManifest, aggregateHash, parsedJson,
                 jsonCanonicalHash, javaSnapshot, invariantSnapshot);
     }
 
-    private static String generatedCompileSourcePath() {
+    private static String generatedCompileSourcePath(Path projectRoot) {
         return String.join(System.getProperty("path.separator"), List.of(
+                projectRoot.toString(),
                 sourceRoot("../LaraUtils", "src"),
                 sourceRoot("../WeaverInterface", "src"),
                 sourceRoot("../WeaverInterface", "src-spec"),
@@ -297,6 +304,17 @@ class LargeLangSpecIntegrationTest {
     private static String sourceRoot(String relativeProject, String sourceDir) {
         return Path.of(System.getProperty("user.dir")).resolve(relativeProject).resolve(sourceDir).normalize()
                 .toString();
+    }
+
+    private static void writeConcreteWeaverStub(Path projectRoot) throws IOException {
+        Path packageDir = projectRoot.resolve(PACKAGE_NAME.replace('.', '/'));
+        Files.createDirectories(packageDir);
+        Files.writeString(packageDir.resolve(WEAVER_NAME + ".java"),
+                "package " + PACKAGE_NAME + ";\n\n"
+                        + "import " + PACKAGE_NAME + ".abstracts.weaver.A" + WEAVER_NAME + ";\n\n"
+                        + "public abstract class " + WEAVER_NAME + " extends A" + WEAVER_NAME + " {\n"
+                        + "}\n",
+                StandardCharsets.UTF_8);
     }
 
     private static void assertExpectedFilesExist() {
@@ -340,7 +358,7 @@ class LargeLangSpecIntegrationTest {
         return Files.readString(file, StandardCharsets.UTF_8).trim();
     }
 
-    private record RuntimeSnapshot(int exitCode, Path outputDir, List<ArtifactManifestEntry> javaManifest,
+    private record RuntimeSnapshot(int exitCode, Path projectRoot, Path outputDir, List<ArtifactManifestEntry> javaManifest,
             List<ArtifactManifestEntry> jsonManifest, String aggregateHash, ParsedJson parsedJson,
             String jsonCanonicalHash, JavaInvariantUtils.JavaSnapshot javaSnapshot,
             InvariantSnapshot invariantSnapshot) {

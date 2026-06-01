@@ -25,7 +25,7 @@ public abstract class ARoot<Self extends ARoot<Self>> extends MinimalJoinpoint<S
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "root".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }
