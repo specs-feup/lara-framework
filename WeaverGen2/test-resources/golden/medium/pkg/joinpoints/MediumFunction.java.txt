@@ -1,0 +1,11 @@
+package medium.pkg.joinpoints;
+
+import medium.pkg.abstracts.joinpoints.AFunction;
+import medium.pkg.MediumWeaver;
+import java.lang.Object;
+
+public class MediumFunction<Self extends MediumFunction<Self>> extends AFunction<Self> {
+    protected MediumFunction(Object node, MediumWeaver weaver) {
+        super(node, weaver);
+    }
+}

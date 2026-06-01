@@ -1,0 +1,11 @@
+package edge.pkg.joinpoints;
+
+import edge.pkg.abstracts.joinpoints.AReservedKeyword;
+import edge.pkg.EdgeWeaver;
+import java.lang.Object;
+
+public class EdgeReservedKeyword<Self extends EdgeReservedKeyword<Self>> extends AReservedKeyword<Self> {
+    protected EdgeReservedKeyword(Object node, EdgeWeaver weaver) {
+        super(node, weaver);
+    }
+}
