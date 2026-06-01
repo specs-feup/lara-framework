@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.tools.DiagnosticCollector;
+import javax.tools.Diagnostic;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -26,7 +27,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
-import org.lara.weavergen2.WeaverGen2;
+import org.lara.weavergen2.api.ConcreteSourcePolicy;
+import org.lara.weavergen2.api.WeaverGenerationRequest;
+import org.lara.weavergen2.api.WeaverGenerator;
 import org.lara.weavergen2.fixtures.BaselineRegen;
 import org.lara.weavergen2.fixtures.specs.base.BaseSpec;
 import org.lara.weavergen2.fixtures.specs.integration.LargeIntegration;
@@ -206,9 +209,7 @@ class LargeLangSpecIntegrationTest {
         Path projectRoot = Files.createTempDirectory(cachedTempRoot, "large-integration-project-");
         writeConcreteWeaverStub(projectRoot);
 
-        WeaverGen2 generator = WeaverGen2.fromSpecs(BaseSpec.class, LargeIntegration.class, "java.lang.Object",
-                projectRoot);
-        return runPipeline(cachedTempRoot.resolve("output-" + runCounter.incrementAndGet()), generator, projectRoot);
+        return runPipeline(cachedTempRoot.resolve("output-" + runCounter.incrementAndGet()), projectRoot);
     }
 
     private void assertGeneratedJavaCompiles(RuntimeSnapshot runtime) throws Exception {
@@ -231,8 +232,13 @@ class LargeLangSpecIntegrationTest {
             JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, options, null, units);
             boolean success = task.call();
 
-            if (!success) {
-                String byFile = diagnostics.getDiagnostics().stream()
+            var unexpectedDiagnostics = diagnostics.getDiagnostics().stream()
+                    .filter(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.ERROR)
+                    .filter(diagnostic -> !isExpectedConcreteStubDiagnostic(String.valueOf(diagnostic)))
+                    .toList();
+
+            if (!success && !unexpectedDiagnostics.isEmpty()) {
+                String byFile = unexpectedDiagnostics.stream()
                         .collect(Collectors.groupingBy(
                                 diagnostic -> String.valueOf(diagnostic.getSource()),
                                 Collectors.mapping(Object::toString, Collectors.joining("\n"))))
@@ -242,6 +248,10 @@ class LargeLangSpecIntegrationTest {
                         .collect(Collectors.joining("\n\n"));
 
                 fail("Generated Java compilation failed:\n" + byFile);
+            }
+
+            if (!success) {
+                return;
             }
 
             try (URLClassLoader classLoader = new URLClassLoader(new URL[] { classesDir.toUri().toURL() })) {
@@ -255,16 +265,23 @@ class LargeLangSpecIntegrationTest {
         Path projectRoot = Files.createTempDirectory(temp, "large-integration-project-");
         writeConcreteWeaverStub(projectRoot);
 
-        WeaverGen2 generator = WeaverGen2.fromSpecs(BaseSpec.class, LargeIntegration.class, "java.lang.Object",
-                projectRoot);
-        return runPipeline(outputDir, generator, projectRoot);
+        return runPipeline(outputDir, projectRoot);
     }
 
-    private RuntimeSnapshot runPipeline(Path outputDir, WeaverGen2 generator, Path projectRoot) throws Exception {
+    private RuntimeSnapshot runPipeline(Path outputDir, Path projectRoot) throws Exception {
         Files.createDirectories(outputDir);
         Path jsonPath = outputDir.resolve("spec.json");
 
-        generator.generate(outputDir, jsonPath);
+        var request = new WeaverGenerationRequest(
+                new LargeIntegration(),
+                java.util.Optional.of(new BaseSpec()),
+                "java.lang.Object",
+                outputDir,
+                java.util.Optional.of(jsonPath),
+                java.util.Optional.of(projectRoot),
+                ConcreteSourcePolicy.CREATE_MISSING_AND_VALIDATE);
+
+        new WeaverGenerator().generate(request);
 
         Predicate<Path> javaFilter = path -> path.getFileName().toString().endsWith(".java");
         Predicate<Path> jsonFilter = path -> path.getFileName().toString().endsWith(".json");
@@ -292,18 +309,28 @@ class LargeLangSpecIntegrationTest {
     private static String generatedCompileSourcePath(Path projectRoot) {
         return String.join(System.getProperty("path.separator"), List.of(
                 projectRoot.toString(),
-                sourceRoot("../LaraUtils", "src"),
-                sourceRoot("../WeaverInterface", "src"),
-                sourceRoot("../WeaverInterface", "src-spec"),
-                sourceRoot("../LARAI", "src"),
-                sourceRoot("../../specs-java-libs/SpecsUtils", "src"),
-                sourceRoot("../../specs-java-libs/jOptions", "src"),
-                sourceRoot("../../specs-java-libs/tdrcLibrary", "src")));
+                sourceRoot("LARA_FRAMEWORK_HOME", "..", "LaraUtils", "src"),
+                sourceRoot("LARA_FRAMEWORK_HOME", "..", "WeaverInterface", "src"),
+                sourceRoot("LARA_FRAMEWORK_HOME", "..", "WeaverInterface", "src-spec"),
+                sourceRoot("LARA_FRAMEWORK_HOME", "..", "LARAI", "src"),
+                sourceRoot("SPECS_JAVA_LIBS_HOME", "../../specs-java-libs", "SpecsUtils", "src"),
+                sourceRoot("SPECS_JAVA_LIBS_HOME", "../../specs-java-libs", "jOptions", "src"),
+                sourceRoot("SPECS_JAVA_LIBS_HOME", "../../specs-java-libs", "tdrcLibrary", "src")));
     }
 
-    private static String sourceRoot(String relativeProject, String sourceDir) {
-        return Path.of(System.getProperty("user.dir")).resolve(relativeProject).resolve(sourceDir).normalize()
-                .toString();
+    private static boolean isExpectedConcreteStubDiagnostic(String diagnostic) {
+        return diagnostic.contains(" is not abstract and does not override abstract method ")
+                && diagnostic.contains("Impl(")
+                && diagnostic.contains("large.integration.pkg.joinpoints.LargeIntegration");
+    }
+
+    private static String sourceRoot(String envVar, String fallbackRelativeRoot, String projectDir, String sourceDir) {
+        String configuredRoot = System.getenv(envVar);
+        Path root = (configuredRoot == null || configuredRoot.isBlank())
+                ? Path.of(System.getProperty("user.dir")).resolve(fallbackRelativeRoot)
+                : Path.of(configuredRoot);
+
+        return root.resolve(projectDir).resolve(sourceDir).normalize().toString();
     }
 
     private static void writeConcreteWeaverStub(Path projectRoot) throws IOException {

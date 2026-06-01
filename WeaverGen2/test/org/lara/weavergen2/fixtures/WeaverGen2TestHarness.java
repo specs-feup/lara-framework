@@ -7,11 +7,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Optional;
 
 import org.lara.langspec2.dsl.WeaverSpec;
 import org.lara.langspec2.model.JpClass;
 import org.lara.langspec2.model.WeaverModel;
-import org.lara.weavergen2.WeaverGen2;
+import org.lara.weavergen2.api.ConcreteSourcePolicy;
+import org.lara.weavergen2.api.WeaverGenerationRequest;
+import org.lara.weavergen2.api.WeaverGenerator;
 import org.lara.weavergen2.java.TypeMapper;
 
 public final class WeaverGen2TestHarness {
@@ -59,11 +62,12 @@ public final class WeaverGen2TestHarness {
             throw new UncheckedIOException("Could not prepare join point stubs for '" + scenario.specClass().getName() + "'", e);
         }
 
-        var generator = scenario.createGenerator(projectRoot);
         var jsonOutPath = scenario.emitJson() ? outputDir.resolve("spec.json") : null;
+        var generator = new WeaverGenerator();
+        var request = scenario.createRequest(outputDir, jsonOutPath, projectRoot);
 
         try {
-            generator.generate(outputDir, jsonOutPath);
+            generator.generate(request);
             return new RunResult(scenario, projectRoot, outputDir, jsonOutPath, null);
         } catch (Exception e) {
             return new RunResult(scenario, projectRoot, outputDir, jsonOutPath, e);
@@ -97,12 +101,15 @@ public final class WeaverGen2TestHarness {
             return instantiate(specClass).build();
         }
 
-        WeaverGen2 createGenerator(Path projectRoot) {
-            if (baseSpecClass != null) {
-                return WeaverGen2.fromSpecs(baseSpecClass, specClass, "java.lang.Object", projectRoot);
-            }
-
-            return WeaverGen2.fromSpec(specClass, "java.lang.Object", projectRoot);
+        WeaverGenerationRequest createRequest(Path outputDir, Path jsonOutPath, Path projectRoot) {
+            return new WeaverGenerationRequest(
+                    instantiate(specClass),
+                    baseSpecClass == null ? Optional.empty() : Optional.of(instantiate(baseSpecClass)),
+                    "java.lang.Object",
+                    outputDir,
+                    Optional.ofNullable(jsonOutPath),
+                    Optional.of(projectRoot),
+                    ConcreteSourcePolicy.CREATE_MISSING_AND_VALIDATE);
         }
 
         private static WeaverSpec instantiate(Class<? extends WeaverSpec> specClass) {

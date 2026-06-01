@@ -7,10 +7,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.lara.weavergen2.WeaverGen2;
+import org.lara.langspec2.dsl.WeaverSpec;
+import org.lara.weavergen2.api.ConcreteSourcePolicy;
+import org.lara.weavergen2.api.WeaverGenerationRequest;
+import org.lara.weavergen2.api.WeaverGenerator;
 import org.lara.weavergen2.fixtures.specs.base.BaseSpec;
 import org.lara.weavergen2.fixtures.specs.valid.EdgeSpec;
 import org.lara.weavergen2.fixtures.specs.valid.MinimalSpec;
@@ -22,7 +26,7 @@ class WeaverGen2CliTest {
 
     @Test
     void rejectsMissingSpecClass() {
-        assertThatThrownBy(() -> WeaverGen2.main(new String[] {
+        assertThatThrownBy(() -> WeaverGen2Cli.main(new String[] {
                 "no.such.Spec",
                 temp.resolve("out").toString()
         }))
@@ -32,7 +36,7 @@ class WeaverGen2CliTest {
     @Test
     void runsWithBaseSpecAndSpecClasses() throws Exception {
         Path outputDir = temp.resolve("out");
-        WeaverGen2.main(new String[] {
+        WeaverGen2Cli.main(new String[] {
                 MinimalSpec.class.getName(),
                 outputDir.toString(),
                 "--base",
@@ -52,10 +56,10 @@ class WeaverGen2CliTest {
         Files.createDirectories(staleFile.getParent());
         Files.writeString(staleFile, "package minimal.pkg.joinpoints;\n\npublic class MinimalGhost { }\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, MinimalSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, MinimalSpec.class, outputDir, projectRoot);
 
         String stderr = tapSystemErr(() -> {
-            Throwable thrown = catchThrowable(() -> generator.generate(outputDir, outputDir.resolve("spec.json")));
+            Throwable thrown = catchThrowable(() -> new WeaverGenerator().generate(request));
 
             assertThat(thrown)
                     .isInstanceOf(IllegalStateException.class)
@@ -74,9 +78,9 @@ class WeaverGen2CliTest {
     void createsMissingConcreteJoinpointFilesAndAcceptsThem() throws Exception {
         Path projectRoot = temp.resolve("project-missing");
         Path outputDir = temp.resolve("out-missing");
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, MinimalSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, MinimalSpec.class, outputDir, projectRoot);
 
-        generator.generate(outputDir, outputDir.resolve("spec.json"));
+        new WeaverGenerator().generate(request);
 
         assertThat(projectRoot.resolve("minimal/pkg/joinpoints/MinimalJoinpoint.java")).exists();
         assertThat(projectRoot.resolve("minimal/pkg/joinpoints/MinimalRoot.java")).exists();
@@ -91,9 +95,9 @@ class WeaverGen2CliTest {
         Files.createDirectories(readme.getParent());
         Files.writeString(readme, "notes\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, MinimalSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, MinimalSpec.class, outputDir, projectRoot);
 
-        generator.generate(outputDir, outputDir.resolve("spec.json"));
+        new WeaverGenerator().generate(request);
 
         assertThat(outputDir.resolve("minimal/pkg/abstracts/joinpoints/ARoot.java")).exists();
     }
@@ -106,10 +110,10 @@ class WeaverGen2CliTest {
         Files.createDirectories(staleFile.getParent());
         Files.writeString(staleFile, "package minimal.pkg.joinpoints.legacy;\n\npublic class MinimalOld { }\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, MinimalSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, MinimalSpec.class, outputDir, projectRoot);
 
         String stderr = tapSystemErr(() -> {
-            Throwable thrown = catchThrowable(() -> generator.generate(outputDir, outputDir.resolve("spec.json")));
+            Throwable thrown = catchThrowable(() -> new WeaverGenerator().generate(request));
 
             assertThat(thrown)
                     .isInstanceOf(IllegalStateException.class)
@@ -134,9 +138,9 @@ class WeaverGen2CliTest {
                 + "    }\n"
                 + "}\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, EdgeSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, EdgeSpec.class, outputDir, projectRoot);
 
-        generator.generate(outputDir, outputDir.resolve("spec.json"));
+        new WeaverGenerator().generate(request);
 
         assertThat(Files.readString(outputDir.resolve("edge/pkg/abstracts/joinpoints/AReservedKeyword.java")))
                 .contains("import edge.pkg.joinpoints.nested.EdgeLevel2;");
@@ -166,10 +170,10 @@ class WeaverGen2CliTest {
                 + "    }\n"
                 + "}\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, EdgeSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, EdgeSpec.class, outputDir, projectRoot);
 
         String stderr = tapSystemErr(() -> {
-            Throwable thrown = catchThrowable(() -> generator.generate(outputDir, outputDir.resolve("spec.json")));
+            Throwable thrown = catchThrowable(() -> new WeaverGenerator().generate(request));
 
             assertThat(thrown)
                     .isInstanceOf(IllegalStateException.class)
@@ -192,10 +196,10 @@ class WeaverGen2CliTest {
                 + "public class MinimalRoot {\n"
                 + "}\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, MinimalSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, MinimalSpec.class, outputDir, projectRoot);
 
         String stderr = tapSystemErr(() -> {
-            Throwable thrown = catchThrowable(() -> generator.generate(outputDir, outputDir.resolve("spec.json")));
+            Throwable thrown = catchThrowable(() -> new WeaverGenerator().generate(request));
 
             assertThat(thrown)
                     .isInstanceOf(IllegalStateException.class)
@@ -227,9 +231,9 @@ class WeaverGen2CliTest {
                 + "    }\n"
                 + "}\n");
 
-        var generator = WeaverGen2.fromSpecs(BaseSpec.class, EdgeSpec.class, "java.lang.Object", projectRoot);
+        var request = request(BaseSpec.class, EdgeSpec.class, outputDir, projectRoot);
 
-        generator.generate(outputDir, outputDir.resolve("spec.json"));
+        new WeaverGenerator().generate(request);
 
         assertThat(Files.readString(outputDir.resolve("edge/pkg/abstracts/joinpoints/ALevel2.java")))
                 .contains("public ALevel2(String node, EdgeWeaver weaver)")
@@ -237,5 +241,25 @@ class WeaverGen2CliTest {
         assertThat(Files.readString(projectRoot.resolve("edge/pkg/joinpoints/EdgeLevel2.java")))
                 .contains("public class EdgeLevel2<Self extends EdgeLevel2<Self>> extends ALevel2<Self>")
                 .contains("protected EdgeLevel2(String node, EdgeWeaver weaver)");
+    }
+
+    private static WeaverGenerationRequest request(Class<? extends WeaverSpec> baseSpecClass,
+            Class<? extends WeaverSpec> specClass, Path outputDir, Path projectRoot) {
+        return new WeaverGenerationRequest(
+                instantiate(specClass),
+                Optional.of(instantiate(baseSpecClass)),
+                "java.lang.Object",
+                outputDir,
+                Optional.of(outputDir.resolve("spec.json")),
+                Optional.of(projectRoot),
+                ConcreteSourcePolicy.CREATE_MISSING_AND_VALIDATE);
+    }
+
+    private static WeaverSpec instantiate(Class<? extends WeaverSpec> specClass) {
+        try {
+            return specClass.getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not instantiate spec class " + specClass.getName(), e);
+        }
     }
 }

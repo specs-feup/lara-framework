@@ -566,7 +566,6 @@ large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Depr
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object replaceWith(String node)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object replaceWithStrings(String[] node)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object rightJp()
-large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object root()
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object setFirstChild(Object node)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object setLastChild(Object node)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final Object setUserField(Map<String, ?> fieldNameAndValue)

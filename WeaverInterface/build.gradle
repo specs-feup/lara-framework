@@ -79,7 +79,7 @@ tasks.register('generateBaseJoinPointAbstracts', JavaExec) {
     group = 'Execution'
     description = 'Generates base joinpoint abstracts from BaseJoinPointSpec using WeaverGen2'
     classpath = configurations.weaverGeneratorRuntime + sourceSets.spec.runtimeClasspath
-    mainClass = 'org.lara.weavergen2.WeaverGen2'
+    mainClass = 'org.lara.weavergen2.cli.WeaverGen2Cli'
     args = [
             'org.lara.interpreter.weaver.interf.BaseJoinPointSpec',
             "${projectDir}/src",
