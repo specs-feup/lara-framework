@@ -1,0 +1,11 @@
+package medium.pkg.joinpoints;
+
+import medium.pkg.abstracts.joinpoints.AVar;
+import medium.pkg.MediumWeaver;
+import java.lang.Object;
+
+public class MediumVar<Self extends MediumVar<Self>> extends AVar<Self> {
+    protected MediumVar(Object node, MediumWeaver weaver) {
+        super(node, weaver);
+    }
+}

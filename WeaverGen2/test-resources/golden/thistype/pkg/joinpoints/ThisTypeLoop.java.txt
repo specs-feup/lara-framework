@@ -1,0 +1,11 @@
+package thistype.pkg.joinpoints;
+
+import thistype.pkg.abstracts.joinpoints.ALoop;
+import thistype.pkg.ThisTypeWeaver;
+import java.lang.Object;
+
+public class ThisTypeLoop<Self extends ThisTypeLoop<Self>> extends ALoop<Self> {
+    protected ThisTypeLoop(Object node, ThisTypeWeaver weaver) {
+        super(node, weaver);
+    }
+}

@@ -1,0 +1,11 @@
+package thistype.pkg.joinpoints;
+
+import thistype.pkg.abstracts.joinpoints.AStmt;
+import thistype.pkg.ThisTypeWeaver;
+import java.lang.Object;
+
+public class ThisTypeStmt<Self extends ThisTypeStmt<Self>> extends AStmt<Self> {
+    protected ThisTypeStmt(Object node, ThisTypeWeaver weaver) {
+        super(node, weaver);
+    }
+}
