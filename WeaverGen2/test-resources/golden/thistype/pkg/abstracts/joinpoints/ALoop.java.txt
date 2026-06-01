@@ -54,7 +54,7 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "tile", Optional.ofNullable(result), tileSize);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "tile", e);
         }
@@ -90,7 +90,7 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "fuse", Optional.ofNullable(result), other, checkDependencies);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "fuse", e);
         }
@@ -102,7 +102,7 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "loop".equals(joinpointClassname)
             || "stmt".equals(joinpointClassname)
             || "node".equals(joinpointClassname)

@@ -1,12 +1,12 @@
 large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::@Deprecated public final String kind()
 large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::public AAccessSpecifier(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AAccessSpecifier.java::member:method::public abstract String getKindImpl();
 large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::@Deprecated public final Object originalType()
 large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::public AAdjustedType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AAdjustedType.java::member:method::public abstract AType<?> getOriginalTypeImpl();
@@ -16,7 +16,7 @@ large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@De
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@Deprecated public final String name()
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@Deprecated public final int numSubscripts()
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::public AArrayAccess(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::public abstract AArrayAccess<?> getParentAccessImpl();
@@ -27,7 +27,7 @@ large/integration/pkg/abstracts/joinpoints/AArrayAccess.java::member:method::pub
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@Deprecated public final Object elementType()
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@Deprecated public final void setElementType(Object arrayElementType)
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::public AArrayType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AArrayType.java::member:method::public abstract AType<?> getElementTypeImpl();
@@ -36,7 +36,7 @@ large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Deprec
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Deprecated public final boolean isSimple()
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Deprecated public final boolean isVolatile()
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::public AAsmStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::public abstract String[] getClobbersImpl();
@@ -44,7 +44,7 @@ large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::public 
 large/integration/pkg/abstracts/joinpoints/AAsmStmt.java::member:method::public abstract boolean getIsVolatileImpl();
 large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::@Deprecated public final String kind()
 large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::public AAttribute(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AAttribute.java::member:method::public abstract String getKindImpl();
@@ -54,7 +54,7 @@ large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Depre
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Deprecated public final void setLeft(Object left)
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Deprecated public final void setRight(Object right)
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::public ABinaryOp(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::public abstract AExpression<?> getLeftImpl();
@@ -63,18 +63,18 @@ large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::public
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::public abstract void setLeftImpl(AExpression<?> left);
 large/integration/pkg/abstracts/joinpoints/ABinaryOp.java::member:method::public abstract void setRightImpl(AExpression<?> right);
 large/integration/pkg/abstracts/joinpoints/ABody.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ABody.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ABody.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ABody.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ABody.java::member:method::public ABody(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::@Deprecated public final boolean value()
 large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::public ABoolLiteral(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ABoolLiteral.java::member:method::public abstract boolean getValueImpl();
 large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::@Deprecated public final Object enclosingStmt()
 large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::public ABreak(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ABreak.java::member:method::public abstract AStatement<?> getEnclosingStmtImpl();
@@ -85,7 +85,7 @@ large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@De
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@Deprecated public final boolean isUnsigned()
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@Deprecated public final boolean isVoid()
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::public ABuiltinType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ABuiltinType.java::member:method::public abstract String getBuiltinKindImpl();
@@ -118,7 +118,7 @@ large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Deprecated public final void setName(String name)
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Deprecated public final void wrap(String name)
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::public ACall(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACall.java::member:method::public abstract AExpression<?> getGetArgImpl(int index);
@@ -151,7 +151,7 @@ large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Deprecated public final boolean isDefault()
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Deprecated public final boolean isEmpty()
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::public ACase(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACase.java::member:method::public abstract ACase<?> getNextCaseImpl();
@@ -165,7 +165,7 @@ large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Deprecated public final Object toType()
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Deprecated public final boolean isImplicitCast()
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::public ACast(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::public abstract AExpression<?> getSubExprImpl();
@@ -173,15 +173,15 @@ large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::public abs
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::public abstract AType<?> getToTypeImpl();
 large/integration/pkg/abstracts/joinpoints/ACast.java::member:method::public abstract boolean getIsImplicitCastImpl();
 large/integration/pkg/abstracts/joinpoints/ACilkFor.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACilkFor.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACilkFor.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACilkFor.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACilkFor.java::member:method::public ACilkFor(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACilkSpawn.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACilkSpawn.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACilkSpawn.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACilkSpawn.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACilkSpawn.java::member:method::public ACilkSpawn(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACilkSync.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACilkSync.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACilkSync.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACilkSync.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACilkSync.java::member:method::public ACilkSync(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Deprecated public final Object canonical()
@@ -196,7 +196,7 @@ large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Deprecat
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Deprecated public final boolean isInterface()
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Deprecated public final void addMethod(Object method)
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::public AClass(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::public abstract AClass<?> getCanonicalImpl();
@@ -213,20 +213,20 @@ large/integration/pkg/abstracts/joinpoints/AClass.java::member:method::public ab
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@Deprecated public final String text()
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@Deprecated public final void setText(String text)
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::public AComment(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::public abstract String getTextImpl();
 large/integration/pkg/abstracts/joinpoints/AComment.java::member:method::public abstract void setTextImpl(String text);
 large/integration/pkg/abstracts/joinpoints/AContinue.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AContinue.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AContinue.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AContinue.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AContinue.java::member:method::public AContinue(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Deprecated public final Object[] config()
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Deprecated public final void setConfig(Object[] args)
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Deprecated public final void setConfigFromStrings(String[] args)
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::public ACudaKernelCall(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::public abstract AExpression<?>[] getConfigImpl();
@@ -234,65 +234,65 @@ large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::
 large/integration/pkg/abstracts/joinpoints/ACudaKernelCall.java::member:method::public abstract void setConfigImpl(AExpression<?>[] args);
 large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::@Deprecated public final Object[] attrs()
 large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::public ADecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ADecl.java::member:method::public abstract AAttribute<?>[] getAttrsImpl();
 large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::@Deprecated public final Object[] decls()
 large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::public ADeclStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ADeclStmt.java::member:method::public abstract ADecl<?>[] getDeclsImpl();
 large/integration/pkg/abstracts/joinpoints/ADeclarator.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ADeclarator.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ADeclarator.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ADeclarator.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ADeclarator.java::member:method::public ADeclarator(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ADefault.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ADefault.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ADefault.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ADefault.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ADefault.java::member:method::public ADefault(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ADeleteExpr.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ADeleteExpr.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ADeleteExpr.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ADeleteExpr.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ADeleteExpr.java::member:method::public ADeleteExpr(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Deprecated public final Object namedType()
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Deprecated public final String keyword()
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Deprecated public final String qualifier()
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::public AElaboratedType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::public abstract AType<?> getNamedTypeImpl();
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::public abstract String getKeywordImpl();
 large/integration/pkg/abstracts/joinpoints/AElaboratedType.java::member:method::public abstract String getQualifierImpl();
 large/integration/pkg/abstracts/joinpoints/AEmpty.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AEmpty.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AEmpty.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AEmpty.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AEmpty.java::member:method::public AEmpty(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AEmptyStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AEmptyStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AEmptyStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AEmptyStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AEmptyStmt.java::member:method::public AEmptyStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::@Deprecated public final Object[] enumerators()
 large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::public AEnumDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AEnumDecl.java::member:method::public abstract AEnumeratorDecl<?>[] getEnumeratorsImpl();
 large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::@Deprecated public final Object integerType()
 large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::public AEnumType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AEnumType.java::member:method::public abstract AType<?> getIntegerTypeImpl();
 large/integration/pkg/abstracts/joinpoints/AEnumeratorDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AEnumeratorDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AEnumeratorDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AEnumeratorDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AEnumeratorDecl.java::member:method::public AEnumeratorDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::@Deprecated public final Object expr()
 large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::public AExprStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AExprStmt.java::member:method::public abstract AExpression<?> getExprImpl();
@@ -302,7 +302,7 @@ large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Dep
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Deprecated public final String use()
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Deprecated public final boolean isFunctionArgument()
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::public AExpression(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::public abstract ACast<?> getImplicitCastImpl();
@@ -311,7 +311,7 @@ large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::publ
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::public abstract ExpressionUse getUseImpl();
 large/integration/pkg/abstracts/joinpoints/AExpression.java::member:method::public abstract boolean getIsFunctionArgumentImpl();
 large/integration/pkg/abstracts/joinpoints/AField.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AField.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AField.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AField.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AField.java::member:method::public AField(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Deprecated public final Object addFunction(String name)
@@ -343,7 +343,7 @@ large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Deprecated public final void setName(String filename)
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Deprecated public final void setRelativeFolderpath(String path)
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::public AFile(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::public abstract AFile<?> rebuildImpl();
@@ -376,7 +376,7 @@ large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::public abs
 large/integration/pkg/abstracts/joinpoints/AFile.java::member:method::public abstract void setRelativeFolderpathImpl(String path);
 large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::@Deprecated public final double value()
 large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::public AFloatLiteral(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AFloatLiteral.java::member:method::public abstract double getValueImpl();
@@ -422,7 +422,7 @@ large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Depre
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Deprecated public final void setParamsFromStrings(String[] params)
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Deprecated public final void setReturnType(Object returnType)
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::public AFunction(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AFunction.java::member:method::public abstract ACall<?> newCallImpl(AJoinpoint<?>[] args);
@@ -471,7 +471,7 @@ large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@D
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@Deprecated public final void setParamType(int index, Object newType)
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@Deprecated public final void setReturnType(Object newType)
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::public AFunctionType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::public abstract AType<?> getReturnTypeImpl();
@@ -481,7 +481,7 @@ large/integration/pkg/abstracts/joinpoints/AFunctionType.java::member:method::pu
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@Deprecated public final Object label()
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@Deprecated public final void setLabel(Object label)
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::public AGotoStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AGotoStmt.java::member:method::public abstract ALabelDecl<?> getLabelImpl();
@@ -494,7 +494,7 @@ large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Deprecated 
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Deprecated public final void setElse(Object _else)
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Deprecated public final void setThen(Object then)
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::public AIf(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::public abstract AExpression<?> getCondImpl();
@@ -505,32 +505,32 @@ large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::public abstr
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::public abstract void setElseImpl(AStatement<?> _else);
 large/integration/pkg/abstracts/joinpoints/AIf.java::member:method::public abstract void setThenImpl(AStatement<?> then);
 large/integration/pkg/abstracts/joinpoints/AImplicitValue.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AImplicitValue.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AImplicitValue.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AImplicitValue.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AImplicitValue.java::member:method::public AImplicitValue(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Deprecated public final String name()
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Deprecated public final String relativeFolderpath()
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Deprecated public final boolean isAngled()
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::public AInclude(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::public abstract String getNameImpl();
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::public abstract String getRelativeFolderpathImpl();
 large/integration/pkg/abstracts/joinpoints/AInclude.java::member:method::public abstract boolean getIsAngledImpl();
 large/integration/pkg/abstracts/joinpoints/AIncompleteArrayType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AIncompleteArrayType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AIncompleteArrayType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AIncompleteArrayType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AIncompleteArrayType.java::member:method::public AIncompleteArrayType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::@Deprecated public final Object arrayFiller()
 large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::public AInitList(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AInitList.java::member:method::public abstract AExpression<?> getArrayFillerImpl();
 large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::@Deprecated public final long value()
 large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::public AIntLiteral(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AIntLiteral.java::member:method::public abstract long getValueImpl();
@@ -617,7 +617,7 @@ large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Depr
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Deprecated public final void setType(Object type)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Override protected final IntFunction<AJoinpoint<?>[]> jpTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::public AJoinpoint(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::public Object getNodeImpl()
@@ -703,20 +703,20 @@ large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::publi
 large/integration/pkg/abstracts/joinpoints/AJoinpoint.java::member:method::public abstract void setTypeImpl(AType<?> type);
 large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::@Deprecated public final Object labelStmt()
 large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::public ALabelDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ALabelDecl.java::member:method::public abstract ALabelStmt<?> getLabelStmtImpl();
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@Deprecated public final Object decl()
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@Deprecated public final void setDecl(Object label)
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::public ALabelStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::public abstract ALabelDecl<?> getDeclImpl();
 large/integration/pkg/abstracts/joinpoints/ALabelStmt.java::member:method::public abstract void setDeclImpl(ALabelDecl<?> label);
 large/integration/pkg/abstracts/joinpoints/ALiteral.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ALiteral.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ALiteral.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ALiteral.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ALiteral.java::member:method::public ALiteral(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Deprecated public final Object body()
@@ -752,7 +752,7 @@ large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Deprecated public final void setKind(String kind)
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Deprecated public final void setStep(String stepCode)
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::public ALoop(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::public abstract AExpression<?> getIterationsExprImpl();
@@ -790,7 +790,7 @@ large/integration/pkg/abstracts/joinpoints/ALoop.java::member:method::public abs
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@Deprecated public final Object contents()
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@Deprecated public final String id()
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::public AMarker(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AMarker.java::member:method::public abstract AScope<?> getContentsImpl();
@@ -802,7 +802,7 @@ large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@D
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@Deprecated public final boolean arrow()
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@Deprecated public final void setArrow(boolean isArrow)
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::public AMemberAccess(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::public abstract AExpression<?> getBaseImpl();
@@ -814,7 +814,7 @@ large/integration/pkg/abstracts/joinpoints/AMemberAccess.java::member:method::pu
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@Deprecated public final Object base()
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@Deprecated public final Object rootBase()
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::public AMemberCall(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::public abstract AExpression<?> getBaseImpl();
@@ -822,7 +822,7 @@ large/integration/pkg/abstracts/joinpoints/AMemberCall.java::member:method::publ
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@Deprecated public final Object record()
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@Deprecated public final void removeRecord()
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::public AMethod(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AMethod.java::member:method::public abstract AClass<?> getRecordImpl();
@@ -835,7 +835,7 @@ large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Depr
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Deprecated public final void setQualifiedName(String name)
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Deprecated public final void setQualifiedPrefix(String qualifiedPrefix)
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::public ANamedDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::public abstract String getNameImpl();
@@ -846,7 +846,7 @@ large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::publi
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::public abstract void setQualifiedNameImpl(String name);
 large/integration/pkg/abstracts/joinpoints/ANamedDecl.java::member:method::public abstract void setQualifiedPrefixImpl(String qualifiedPrefix);
 large/integration/pkg/abstracts/joinpoints/ANewExpr.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ANewExpr.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ANewExpr.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ANewExpr.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ANewExpr.java::member:method::public ANewExpr(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Deprecated public final String _default()
@@ -887,7 +887,7 @@ large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Deprecated
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Deprecated public final void setScheduleModifiers(String[] modifiers)
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Deprecated public final void setShared(String[] newVariables)
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::public AOmp(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AOmp.java::member:method::public abstract String getCollapseImpl();
@@ -931,26 +931,26 @@ large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Deprecated 
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Deprecated public final String operator()
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Deprecated public final boolean isBitwise()
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::public AOp(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::public abstract OpKind getKindImpl();
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::public abstract String getOperatorImpl();
 large/integration/pkg/abstracts/joinpoints/AOp.java::member:method::public abstract boolean getIsBitwiseImpl();
 large/integration/pkg/abstracts/joinpoints/AParam.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AParam.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AParam.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AParam.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AParam.java::member:method::public AParam(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::@Deprecated public final Object subExpr()
 large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::public AParenExpr(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AParenExpr.java::member:method::public abstract AExpression<?> getSubExprImpl();
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@Deprecated public final Object innerType()
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@Deprecated public final void setInnerType(Object innerType)
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::public AParenType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AParenType.java::member:method::public abstract AType<?> getInnerTypeImpl();
@@ -959,7 +959,7 @@ large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@De
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@Deprecated public final int pointerLevels()
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@Deprecated public final void setPointee(Object pointeeType)
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::public APointerType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/APointerType.java::member:method::public abstract AType<?> getPointeeImpl();
@@ -972,7 +972,7 @@ large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Depreca
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Deprecated public final void setContent(String content)
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Deprecated public final void setName(String name)
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::public APragma(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/APragma.java::member:method::public abstract AJoinpoint<?> getTargetImpl();
@@ -1010,7 +1010,7 @@ large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Deprec
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Deprecated public final void push()
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Deprecated public final void rebuildFuzzy()
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::public AProgram(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::public abstract AFile<?>[] getFilesImpl();
@@ -1044,7 +1044,7 @@ large/integration/pkg/abstracts/joinpoints/AProgram.java::member:method::public 
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@Deprecated public final Object unqualifiedType()
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@Deprecated public final String[] qualifiers()
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::public AQualType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AQualType.java::member:method::public abstract AType<?> getUnqualifiedTypeImpl();
@@ -1056,7 +1056,7 @@ large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Depreca
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Deprecated public final boolean isPrototype()
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Deprecated public final void addField(Object field)
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::public ARecord(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::public abstract AField<?>[] getFieldsImpl();
@@ -1067,7 +1067,7 @@ large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::public a
 large/integration/pkg/abstracts/joinpoints/ARecord.java::member:method::public abstract void addFieldImpl(AField<?> field);
 large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::@Deprecated public final Object returnExpr()
 large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::public AReturnStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AReturnStmt.java::member:method::public abstract AExpression<?> getReturnExprImpl();
@@ -1090,7 +1090,7 @@ large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Deprecat
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Deprecated public final void clear()
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Deprecated public final void setNaked(boolean isNaked)
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::public AScope(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::public abstract AJoinpoint<?> addLocalImpl(String name, AJoinpoint<?> type, String initValue);
@@ -1114,13 +1114,13 @@ large/integration/pkg/abstracts/joinpoints/AScope.java::member:method::public ab
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@Deprecated public final boolean isFirst()
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@Deprecated public final boolean isLast()
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::public AStatement(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::public abstract boolean getIsFirstImpl();
 large/integration/pkg/abstracts/joinpoints/AStatement.java::member:method::public abstract boolean getIsLastImpl();
 large/integration/pkg/abstracts/joinpoints/AStruct.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AStruct.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AStruct.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AStruct.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AStruct.java::member:method::public AStruct(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Deprecated public final Object condition()
@@ -1128,7 +1128,7 @@ large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Depreca
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Deprecated public final Object[] cases()
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Deprecated public final boolean hasDefaultCase()
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::public ASwitch(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::public abstract ACase<?> getGetDefaultCaseImpl();
@@ -1136,19 +1136,19 @@ large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::public a
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::public abstract AExpression<?> getConditionImpl();
 large/integration/pkg/abstracts/joinpoints/ASwitch.java::member:method::public abstract boolean getHasDefaultCaseImpl();
 large/integration/pkg/abstracts/joinpoints/ASwitchCase.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ASwitchCase.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ASwitchCase.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ASwitchCase.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ASwitchCase.java::member:method::public ASwitchCase(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::@Deprecated public final String id()
 large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::public ATag(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATag.java::member:method::public abstract String getIdImpl();
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@Deprecated public final Object decl()
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@Deprecated public final String name()
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::public ATagType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATagType.java::member:method::public abstract ADecl<?> getDeclImpl();
@@ -1158,7 +1158,7 @@ large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::mem
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@Deprecated public final String[] args()
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@Deprecated public final int numArgs()
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::public ATemplateSpecializationType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATemplateSpecializationType.java::member:method::public abstract AType<?> getFirstArgTypeImpl();
@@ -1169,14 +1169,14 @@ large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Depr
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Deprecated public final Object falseExpr()
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Deprecated public final Object trueExpr()
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::public ATernaryOp(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::public abstract AExpression<?> getCondImpl();
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::public abstract AExpression<?> getFalseExprImpl();
 large/integration/pkg/abstracts/joinpoints/ATernaryOp.java::member:method::public abstract AExpression<?> getTrueExprImpl();
 large/integration/pkg/abstracts/joinpoints/AThis.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AThis.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AThis.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AThis.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AThis.java::member:method::public AThis(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Deprecated public final Object asConst()
@@ -1205,7 +1205,7 @@ large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Deprecate
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Deprecated public final void setTemplateArgType(int index, Object templateArgType)
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Deprecated public final void setTemplateArgsTypes(Object[] templateArgTypes)
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::public AType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::public abstract AType<?> asConstImpl();
@@ -1234,17 +1234,17 @@ large/integration/pkg/abstracts/joinpoints/AType.java::member:method::public abs
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::public abstract void setTemplateArgTypeImpl(int index, AType<?> templateArgType);
 large/integration/pkg/abstracts/joinpoints/AType.java::member:method::public abstract void setTemplateArgsTypesImpl(AType<?>[] templateArgTypes);
 large/integration/pkg/abstracts/joinpoints/ATypedefDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATypedefDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATypedefDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATypedefDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATypedefDecl.java::member:method::public ATypedefDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATypedefNameDecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATypedefNameDecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATypedefNameDecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATypedefNameDecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATypedefNameDecl.java::member:method::public ATypedefNameDecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@Deprecated public final Object decl()
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@Deprecated public final Object underlyingType()
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::public ATypedefType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/ATypedefType.java::member:method::public abstract AType<?> getUnderlyingTypeImpl();
@@ -1256,7 +1256,7 @@ large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method:
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@Deprecated public final boolean hasTypeExpr()
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@Deprecated public final void setArgType(Object argType)
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::public AUnaryExprOrType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method::public abstract AExpression<?> getArgExprImpl();
@@ -1268,13 +1268,13 @@ large/integration/pkg/abstracts/joinpoints/AUnaryExprOrType.java::member:method:
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@Deprecated public final Object operand()
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@Deprecated public final boolean isPointerDeref()
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::public AUnaryOp(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::public abstract AExpression<?> getOperandImpl();
 large/integration/pkg/abstracts/joinpoints/AUnaryOp.java::member:method::public abstract boolean getIsPointerDerefImpl();
 large/integration/pkg/abstracts/joinpoints/AUndefinedType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AUndefinedType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AUndefinedType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AUndefinedType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AUndefinedType.java::member:method::public AUndefinedType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Deprecated public final Object definition()
@@ -1290,7 +1290,7 @@ large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Deprec
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Deprecated public final void setInit(String init)
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Deprecated public final void setStorageClass(String storageClass)
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::public AVardecl(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::public abstract AExpression<?> getInitImpl();
@@ -1308,7 +1308,7 @@ large/integration/pkg/abstracts/joinpoints/AVardecl.java::member:method::public 
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@Deprecated public final Object sizeExpr()
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@Deprecated public final void setSizeExpr(Object sizeExpr)
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::public AVariableArrayType(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AVariableArrayType.java::member:method::public abstract AExpression<?> getSizeExprImpl();
@@ -1322,7 +1322,7 @@ large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Depreca
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Deprecated public final boolean isFunctionCall()
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Deprecated public final void setName(String name)
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::public AVarref(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::public abstract ADeclarator<?> getDeclarationImpl();
@@ -1336,7 +1336,7 @@ large/integration/pkg/abstracts/joinpoints/AVarref.java::member:method::public a
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@Deprecated public final Object content()
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@Deprecated public final String kind()
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@Override public String get_class()
-large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@Override public boolean instanceOfImpl(String joinpointClassname)
+large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@Override public boolean getInstanceOfImpl(String joinpointClassname)
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::@SuppressWarnings("unchecked") @Override protected IntFunction<Self[]> selfTypeArrayFactory()
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::public AWrapperStmt(Object node, LargeIntegrationWeaver weaver)
 large/integration/pkg/abstracts/joinpoints/AWrapperStmt.java::member:method::public abstract AJoinpoint<?> getContentImpl();

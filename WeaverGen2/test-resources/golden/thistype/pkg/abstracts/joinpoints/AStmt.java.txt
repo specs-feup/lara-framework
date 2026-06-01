@@ -36,7 +36,7 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ThisTypeNode<Self>
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "moveAfter", Optional.ofNullable(result), target);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "moveAfter", e);
         }
@@ -54,7 +54,7 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ThisTypeNode<Self>
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "extractTo", Optional.ofNullable(result), context);
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "extractTo", e);
         }
@@ -66,7 +66,7 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ThisTypeNode<Self>
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "stmt".equals(joinpointClassname)
             || "node".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);

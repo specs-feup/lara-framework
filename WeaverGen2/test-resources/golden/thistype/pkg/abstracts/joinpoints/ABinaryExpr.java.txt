@@ -36,7 +36,7 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends ThisTy
             if(getWeaverEngine().hasListeners()) {
                 getWeaverEngine().getEventTrigger().triggerAction(Stage.END, this, "swapOperands", Optional.ofNullable(result));
             }
-            return result != null ? result : getUndefinedValue();
+            return result;
         } catch (Exception e) {
             throw new ActionException(get_class(), "swapOperands", e);
         }
@@ -66,7 +66,7 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends ThisTy
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "binaryExpr".equals(joinpointClassname)
             || "expr".equals(joinpointClassname)
             || "node".equals(joinpointClassname)

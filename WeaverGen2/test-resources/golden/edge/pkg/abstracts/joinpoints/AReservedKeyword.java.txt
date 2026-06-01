@@ -46,7 +46,7 @@ public abstract class AReservedKeyword<Self extends AReservedKeyword<Self>> exte
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "reservedKeyword".equals(joinpointClassname)
             || "level2".equals(joinpointClassname)
             || "level1".equals(joinpointClassname)

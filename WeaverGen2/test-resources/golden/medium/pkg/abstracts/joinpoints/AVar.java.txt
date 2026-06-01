@@ -26,7 +26,7 @@ public abstract class AVar<Self extends AVar<Self>> extends MediumJoinpoint<Self
     }
 
     @Override
-    public boolean instanceOfImpl(String joinpointClassname) {
+    public boolean getInstanceOfImpl(String joinpointClassname) {
         return "var".equals(joinpointClassname)
             || "joinpoint".equals(joinpointClassname);
     }

@@ -28,7 +28,7 @@ public enum NodeKind {
 
     public static NodeKind fromDisplay(String display) {
         for (NodeKind value : values()) {
-            if (Objects.equals(value.getDisplay(), display)) {
+            if (Objects.equals(value.getDisplay(), display) || (display != null && value.name().equalsIgnoreCase(display))) {
                 return value;
             }
         }
