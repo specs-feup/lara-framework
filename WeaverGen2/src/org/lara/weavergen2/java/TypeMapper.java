@@ -119,4 +119,8 @@ public final class TypeMapper {
 
         return name + "(" + parameterTypes + ")";
     }
+
+    public static String memberAritySignature(String name, int arity) {
+        return name + "/" + arity;
+    }
 }
