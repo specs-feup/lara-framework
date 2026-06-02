@@ -52,12 +52,8 @@ public final class JavaSourceBuilder {
         return this;
     }
 
-    private String indentStr() {
+    public String indentStr() {
         return INDENT_UNIT.repeat(indent);
-    }
-
-    public String getIndentStr() {
-        return indentStr();
     }
 
     @Override

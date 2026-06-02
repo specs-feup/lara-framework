@@ -214,9 +214,6 @@ public final class SpecModelMerger {
     }
 
     private static MemberSignature signature(String name, List<Parameter> parameters) {
-        var parameterTypes = parameters.stream().map(Parameter::type).toList();
-        return new MemberSignature(name, parameterTypes);
+        return MemberSignature.of(name, parameters);
     }
-
-    private record MemberSignature(String name, List<JpDataType> parameterTypes) {}
 }

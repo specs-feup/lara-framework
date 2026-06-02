@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.lara.weavergen2.fixtures.GeneratedTreeUtils;
+
 public final class JavaMethodSignatureUtils {
 
     private static final Pattern METHOD_SIGNATURE_PATTERN = Pattern.compile(
