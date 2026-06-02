@@ -10,6 +10,7 @@ import org.lara.weavergen2.api.ConcreteSourceChangeKind;
 import org.lara.weavergen2.api.GenerationDiagnostic;
 import org.lara.weavergen2.api.WeaverGenerationRequest;
 import org.lara.weavergen2.source.ConcreteJoinPointSources;
+import org.lara.weavergen2.source.ConcreteSourceSync;
 import org.lara.weavergen2.source.NonConformingConcreteSource;
 
 public final class GenerationPipeline {
@@ -29,13 +30,13 @@ public final class GenerationPipeline {
     public GenerationPlan plan(WeaverGenerationRequest request) throws IOException {
         var build = specs.resolve(request);
         var concreteSources = new ConcreteJoinPointSources(build.model(), build.config(), request.concreteSourcePolicy());
-        var nonConforming = concreteSources.ensureConcreteSources();
+        var concreteSourceSync = concreteSources.ensureConcreteSources();
 
         return new GenerationPlan(
                 artifacts.plan(request, build, concreteSources),
-                concreteSourceChanges(concreteSources, nonConforming),
+                concreteSourceChanges(concreteSourceSync),
                 List.<GenerationDiagnostic>of(),
-                nonConforming);
+                concreteSourceSync.nonConformingFiles());
     }
 
     public void reportNonConformingConcreteFiles(List<NonConformingConcreteSource> nonConformingConcreteFiles) {
@@ -56,14 +57,13 @@ public final class GenerationPipeline {
                         + " non-conforming concrete joinpoint source file(s): " + fileList);
     }
 
-    private List<ConcreteSourceChange> concreteSourceChanges(ConcreteJoinPointSources concreteSources,
-            List<NonConformingConcreteSource> nonConforming) {
+    private List<ConcreteSourceChange> concreteSourceChanges(ConcreteSourceSync concreteSourceSync) {
         var changes = new ArrayList<ConcreteSourceChange>();
-        for (var createdPath : concreteSources.createdFiles()) {
+        for (var createdPath : concreteSourceSync.createdFiles()) {
             changes.add(new ConcreteSourceChange(ConcreteSourceChangeKind.CREATED, createdPath,
                     "Created missing concrete joinpoint source"));
         }
-        for (var file : nonConforming) {
+        for (var file : concreteSourceSync.nonConformingFiles()) {
             changes.add(new ConcreteSourceChange(ConcreteSourceChangeKind.NON_CONFORMING, Path.of(file.path()),
                     file.reason()));
         }

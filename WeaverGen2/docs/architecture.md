@@ -18,6 +18,7 @@ WeaverGen2 is split into a small command-line layer, a programmatic generation A
   - Coordinates generation through focused collaborators.
   - `SpecResolver` builds LangSpec2 models and creates a `GenerationProfile`.
   - `ArtifactPlanner` creates generated artifacts.
+  - `GeneratedArtifactFactory` centralizes package-to-path and artifact identity rules.
   - `FinalWrapperCatalog` isolates inherited final-wrapper discovery.
   - `GenerationPipeline` only orchestrates those components and reports concrete-source validation failures.
 
@@ -36,6 +37,7 @@ WeaverGen2 is split into a small command-line layer, a programmatic generation A
 - `org.lara.weavergen2.emit`
   - Emits individual Java source sections and type bridges.
   - Joinpoint class emission is split into imports, class declaration, constructors, type rendering, public wrappers, typedefs, and enums.
+  - `JoinPointMemberEmitter` owns abstract member method emission and wrapper suppression rules.
 
 - `org.lara.weavergen2.generator`
   - Contains only high-level generator facades that sequence emitters, plus DOT/weaver generation.
@@ -43,6 +45,7 @@ WeaverGen2 is split into a small command-line layer, a programmatic generation A
 
 - `org.lara.weavergen2.model`
   - Contains WeaverGen2-side generation models such as `GenerationProfile`.
+  - `JoinPointMember`, `MemberSignature`, and `WrapperSignature` are the shared primitives for attribute/action naming and signature comparison.
   - `SpecModelMerger` owns base/weaver model merge and reference rewrite behavior.
 
 - `org.lara.weavergen2.java`

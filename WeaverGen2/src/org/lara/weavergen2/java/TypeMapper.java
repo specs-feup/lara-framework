@@ -1,10 +1,7 @@
 package org.lara.weavergen2.java;
 
-import org.lara.langspec2.model.Parameter;
 import org.lara.langspec2.types.JpDataType;
 import org.lara.langspec2.types.JpDataType.*;
-
-import java.util.List;
 
 import javax.lang.model.SourceVersion;
 
@@ -60,17 +57,6 @@ public final class TypeMapper {
     }
 
     /**
-     * Returns the Java type for an impl method return type.
-     * For Self types, returns "Self". For JP refs, returns the abstract class name.
-     */
-    public static String toImplReturnType(JpDataType type, String selfType,
-                                          java.util.function.Function<String, String> jpRefMapper,
-                                          java.util.function.Function<String, String> typeDefRefMapper,
-                                          java.util.function.Function<String, String> enumRefMapper) {
-        return toJavaType(type, selfType, jpRefMapper, typeDefRefMapper, enumRefMapper);
-    }
-
-    /**
      * Returns true if the type is a Java primitive.
      */
     public static boolean isPrimitive(String type) {
@@ -108,19 +94,5 @@ public final class TypeMapper {
         }
 
         return name;
-    }
-
-    public static String memberSignature(String name, List<Parameter> parameters) {
-        var parameterTypes = parameters.stream()
-                .map(Parameter::type)
-                .map(Object::toString)
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("");
-
-        return name + "(" + parameterTypes + ")";
-    }
-
-    public static String memberAritySignature(String name, int arity) {
-        return name + "/" + arity;
     }
 }

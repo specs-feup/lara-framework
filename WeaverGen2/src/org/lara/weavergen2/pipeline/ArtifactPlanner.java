@@ -1,6 +1,5 @@
 package org.lara.weavergen2.pipeline;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,53 +16,57 @@ import org.lara.weavergen2.source.ConcreteJoinPointSources;
 
 public final class ArtifactPlanner {
 
+    private final GeneratedArtifactFactory artifacts;
+
+    public ArtifactPlanner() {
+        this(new GeneratedArtifactFactory());
+    }
+
+    public ArtifactPlanner(GeneratedArtifactFactory artifacts) {
+        this.artifacts = artifacts;
+    }
+
     public List<GeneratedArtifact> plan(WeaverGenerationRequest request, GenerationBuildContext build,
             ConcreteJoinPointSources concreteSources) {
-        var artifacts = new ArrayList<GeneratedArtifact>();
+        var plannedArtifacts = new ArrayList<GeneratedArtifact>();
         var outputModel = build.config().hasBaseSpec() ? build.mergedModel() : build.model();
 
         for (var jp : build.model().getAllJpClasses()) {
             var gen = new AbstractJpGenerator(jp, build.model(), build.config(), concreteSources);
             var fileName = TypeMapper.abstractClassName(jp.getName()) + ".java";
-            artifacts.add(javaArtifact(ArtifactKind.ABSTRACT_JOINPOINT, build.config().joinPointPackage(), fileName,
+            plannedArtifacts.add(artifacts.javaArtifact(ArtifactKind.ABSTRACT_JOINPOINT,
+                    build.config().joinPointPackage(), fileName,
                     gen.generate()));
         }
 
         var entityGen = new EntityGenerator(build.model(), build.config());
         for (var entry : entityGen.generateTypeDefs().entrySet()) {
-            artifacts.add(javaArtifact(ArtifactKind.ENTITY, build.config().entitiesPackage(),
+            plannedArtifacts.add(artifacts.javaArtifact(ArtifactKind.ENTITY, build.config().entitiesPackage(),
                     TypeMapper.capitalize(entry.getKey()) + ".java", entry.getValue()));
         }
         for (var entry : entityGen.generateEnumDefs().entrySet()) {
-            artifacts.add(javaArtifact(ArtifactKind.ENUM, build.config().enumsPackage(),
+            plannedArtifacts.add(artifacts.javaArtifact(ArtifactKind.ENUM, build.config().enumsPackage(),
                     TypeMapper.capitalize(entry.getKey()) + ".java", entry.getValue()));
         }
 
         if (build.config().hasBaseSpec()) {
             var weaverGen = new WeaverAbstractGenerator(outputModel, build.config());
-            artifacts.add(javaArtifact(ArtifactKind.ABSTRACT_WEAVER, build.config().abstractWeaverPackage(),
+            plannedArtifacts.add(artifacts.javaArtifact(ArtifactKind.ABSTRACT_WEAVER,
+                    build.config().abstractWeaverPackage(),
                     "A" + build.config().weaverName() + ".java", weaverGen.generate()));
 
             var dot = new DotGenerator(outputModel).generate();
-            artifacts.add(javaArtifact(ArtifactKind.DOT_GRAPH, build.config().basePackage(),
+            plannedArtifacts.add(artifacts.javaArtifact(ArtifactKind.DOT_GRAPH, build.config().basePackage(),
                     build.config().weaverName() + ".dotty", dot));
         }
 
         var json = JsonSerializer.toJson(outputModel, build.importEnums());
         var jsonPath = request.jsonOutputPath()
-                .orElseGet(() -> packagePath(build.config().basePackage()).resolve(build.config().weaverName() + ".json"));
-        artifacts.add(new GeneratedArtifact(ArtifactKind.JSON_SPEC, build.config().basePackage() + "."
-                + build.config().weaverName(), jsonPath, json));
+                .orElseGet(() -> artifacts.packagePath(build.config().basePackage())
+                        .resolve(build.config().weaverName() + ".json"));
+        plannedArtifacts.add(artifacts.jsonArtifact(build.config().basePackage(), build.config().weaverName(), jsonPath,
+                json));
 
-        return artifacts;
-    }
-
-    private GeneratedArtifact javaArtifact(ArtifactKind kind, String packageName, String fileName, String content) {
-        return new GeneratedArtifact(kind, packageName + "." + fileName.replaceFirst("\\.java$", ""),
-                packagePath(packageName).resolve(fileName), content);
-    }
-
-    private Path packagePath(String packageName) {
-        return Path.of(packageName.replace('.', '/'));
+        return plannedArtifacts;
     }
 }

@@ -12,8 +12,8 @@ public record GenerationProfile(
         String nodeType,
         boolean generateEvents,
         boolean hasBaseSpec,
-        Set<String> baseMemberSignatures,
-        Set<String> inheritedFinalWrapperSignatures,
+        Set<MemberSignature> baseMemberSignatures,
+        Set<WrapperSignature> inheritedFinalWrapperSignatures,
         Path projectRoot
 ) {
     public String weaverName() {
