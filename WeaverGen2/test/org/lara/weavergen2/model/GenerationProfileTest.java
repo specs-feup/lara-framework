@@ -16,7 +16,7 @@ class GenerationProfileTest {
     @Test
     void derivesWeaverNamesAndPackagesForMergedBaseMode() {
         var config = new GenerationProfile("Cxx", "pt.up.fe.specs.clava.weaver", "java.lang.Object", true, true,
-                Set.<String>of(), Set.<String>of(), tempDir);
+                Set.<MemberSignature>of(), Set.<WrapperSignature>of(), tempDir);
 
         assertThat(config.weaverName()).isEqualTo("CxxWeaver");
         assertThat(config.abstractWeaverPackage()).isEqualTo("pt.up.fe.specs.clava.weaver.abstracts.weaver");
@@ -26,7 +26,7 @@ class GenerationProfileTest {
     @Test
     void derivesStandaloneWeaverNamesAndPackages() {
         var config = new GenerationProfile("Cxx", "pt.up.fe.specs.clava.weaver", "java.lang.Object", true, false,
-                Set.<String>of(), Set.<String>of(), tempDir);
+                Set.<MemberSignature>of(), Set.<WrapperSignature>of(), tempDir);
 
         assertThat(config.weaverName()).isEqualTo("WeaverEngine");
         assertThat(config.abstractWeaverPackage()).isEqualTo("org.lara.interpreter.weaver.interf");

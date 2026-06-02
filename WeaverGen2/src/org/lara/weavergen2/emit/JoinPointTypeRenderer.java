@@ -25,14 +25,6 @@ public final class JoinPointTypeRenderer {
         this.config = config;
     }
 
-    public String mapReturnType(JpDataType type) {
-        return mapType(type);
-    }
-
-    public String mapParameterType(JpDataType type) {
-        return mapType(type);
-    }
-
     public String mapPublicReturnType(JpDataType type) {
         if (type instanceof DirectType primitiveType) {
             return primitiveType.name();
@@ -68,7 +60,7 @@ public final class JoinPointTypeRenderer {
         }
 
         if (type instanceof ParameterizedType parameterizedType && parameterizedType.base() instanceof DirectType) {
-            return mapType(parameterizedType);
+            return javaType(parameterizedType);
         }
 
         return "Object";
@@ -76,7 +68,7 @@ public final class JoinPointTypeRenderer {
 
     public String formatImplParams(List<Parameter> params) {
         return params.stream()
-                .map(p -> mapParameterType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
+                .map(p -> javaType(p.type()) + " " + TypeMapper.sanitizeJavaIdentifier(p.name()))
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
     }
@@ -133,7 +125,7 @@ public final class JoinPointTypeRenderer {
             return paramName;
         }
 
-        return "(" + mapParameterType(type) + ") " + paramName;
+        return "(" + javaType(type) + ") " + paramName;
     }
 
     public boolean isEnumLike(JpDataType type) {
@@ -176,13 +168,13 @@ public final class JoinPointTypeRenderer {
             var innerExpression = toImplEnumArrayArgument(innerArray, lambdaVar);
             return "Arrays.stream(" + sourceExpression + ")"
                     + ".map(" + lambdaVar + " -> " + innerExpression + ")"
-                    + ".toArray(" + mapParameterType(arrayType) + "::new)";
+                    + ".toArray(" + javaType(arrayType) + "::new)";
         }
 
         throw new IllegalArgumentException("Unsupported enum array type: " + arrayType);
     }
 
-    private String mapType(JpDataType type) {
+    public String javaType(JpDataType type) {
         boolean useRootJoinPointAlias = !config.hasBaseSpec();
 
         Function<String, String> jpMapper = name -> {
