@@ -22,7 +22,6 @@ public final class ConcreteJoinPointSources {
     private final ConcreteSourceParser parser;
     private final ConcreteSourceStubFactory stubFactory;
     private final ConcreteSourceValidator validator;
-    private final List<Path> createdFiles;
 
     public ConcreteJoinPointSources(WeaverModel model, GenerationProfile config, ConcreteSourcePolicy policy) {
         this.model = model;
@@ -33,15 +32,10 @@ public final class ConcreteJoinPointSources {
         this.parser = new ConcreteSourceParser();
         this.stubFactory = new ConcreteSourceStubFactory(config, namer);
         this.validator = new ConcreteSourceValidator(model, namer, index, parser);
-        this.createdFiles = new ArrayList<>();
     }
 
     public boolean isEnabled() {
         return policy != ConcreteSourcePolicy.DISABLED && config.hasBaseSpec() && namer.root() != null;
-    }
-
-    public List<Path> createdFiles() {
-        return List.copyOf(createdFiles);
     }
 
     public String concreteClassName(JpClass jpClass) {
@@ -74,12 +68,12 @@ public final class ConcreteJoinPointSources {
         return resolveConcreteConstructorNodeTypeImport(jpClass.getParent().orElseThrow());
     }
 
-    public List<NonConformingConcreteSource> ensureConcreteSources() throws IOException {
+    public ConcreteSourceSync ensureConcreteSources() throws IOException {
         if (!isEnabled()) {
-            return List.of();
+            return new ConcreteSourceSync(List.of(), List.of());
         }
 
-        createdFiles.clear();
+        var createdFiles = new ArrayList<Path>();
         Files.createDirectories(namer.root());
         index.scan();
 
@@ -87,7 +81,7 @@ public final class ConcreteJoinPointSources {
         for (var jp : model.getAllJpClasses()) {
             var sourceFiles = concreteSourceFiles(jp);
             if (sourceFiles.isEmpty()) {
-                createMissingSource(jp);
+                createMissingSource(jp, createdFiles);
                 continue;
             }
 
@@ -102,12 +96,14 @@ public final class ConcreteJoinPointSources {
 
         nonConforming.addAll(validator.unexpectedJavaFiles());
 
-        return nonConforming.stream()
+        var sortedNonConforming = nonConforming.stream()
                 .sorted(Comparator.comparing(NonConformingConcreteSource::path))
                 .toList();
+
+        return new ConcreteSourceSync(createdFiles, sortedNonConforming);
     }
 
-    private void createMissingSource(JpClass jp) throws IOException {
+    private void createMissingSource(JpClass jp, List<Path> createdFiles) throws IOException {
         if (policy != ConcreteSourcePolicy.CREATE_MISSING_AND_VALIDATE) {
             return;
         }

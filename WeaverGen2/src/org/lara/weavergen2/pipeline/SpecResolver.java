@@ -6,7 +6,8 @@ import java.util.Set;
 
 import org.lara.weavergen2.api.WeaverGenerationRequest;
 import org.lara.weavergen2.model.GenerationProfile;
-import org.lara.weavergen2.java.TypeMapper;
+import org.lara.weavergen2.model.JoinPointMember;
+import org.lara.weavergen2.model.MemberSignature;
 import org.lara.weavergen2.model.SpecModelMerger;
 
 public final class SpecResolver {
@@ -38,12 +39,12 @@ public final class SpecResolver {
         }
 
         var baseModel = request.baseSpec().orElseThrow().buildRaw();
-        var baseMemberSignatures = new LinkedHashSet<String>();
+        var baseMemberSignatures = new LinkedHashSet<MemberSignature>();
         for (var attr : baseModel.getGlobal().getOwnAttributes()) {
-            baseMemberSignatures.add(TypeMapper.memberSignature(attr.name(), attr.parameters()));
+            baseMemberSignatures.add(JoinPointMember.attribute(attr).signature());
         }
         for (var action : baseModel.getGlobal().getOwnActions()) {
-            baseMemberSignatures.add(TypeMapper.memberSignature(action.name(), action.parameters()));
+            baseMemberSignatures.add(JoinPointMember.action(action).signature());
         }
 
         var mergedModel = SpecModelMerger.merge(baseModel, weaverModel);
