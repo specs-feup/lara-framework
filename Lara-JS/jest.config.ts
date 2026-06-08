@@ -1,4 +1,6 @@
-const config = {
+import { defineConfig } from "jest";
+
+export default defineConfig({
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
   moduleNameMapper: {
@@ -13,6 +15,4 @@ const config = {
   collectCoverageFrom: ["**/*[^.d].(t|j)s"],
   coverageProvider: "v8",
   projects: ["api", "code"],
-};
-
-export default config;
+});
