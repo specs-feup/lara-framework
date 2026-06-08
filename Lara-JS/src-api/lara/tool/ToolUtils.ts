@@ -1,4 +1,4 @@
-import { JavaClasses } from "../util/JavaTypes.js";
+import { type JavaClasses } from "../util/JavaTypes.js";
 import Strings from "../Strings.js";
 
 export default class ToolUtils {

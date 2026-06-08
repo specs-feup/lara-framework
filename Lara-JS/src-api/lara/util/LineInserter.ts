@@ -1,5 +1,5 @@
 import LineIterator from "../iterators/LineIterator.js";
-import { JavaClasses } from "./JavaTypes.js";
+import { type JavaClasses } from "./JavaTypes.js";
 
 /**
  * Helps inserting lines.

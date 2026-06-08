@@ -1,5 +1,5 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
-import TraversalType from "../../weaver/TraversalType.js";
+import { TraversalType } from "../../weaver/TraversalType.js";
 import PassTransformationError from "./PassTransformationError.js";
 import SimplePass from "./SimplePass.js";
 import AggregatePassResult from "./results/AggregatePassResult.js";

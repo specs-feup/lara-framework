@@ -1,7 +1,7 @@
 import Io from "../Io.js";
 import JavaInterop from "../JavaInterop.js";
 import { arrayFromArgs, checkType } from "../core/LaraCore.js";
-import JavaTypes, { JavaClasses } from "./JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./JavaTypes.js";
 import TimeUnits, { TimerUnit } from "./TimeUnits.js";
 
 /**

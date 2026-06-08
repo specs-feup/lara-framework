@@ -1,6 +1,6 @@
 import Io from "../Io.js";
 import { info } from "../core/LaraCore.js";
-import JavaTypes, { JavaClasses } from "./JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./JavaTypes.js";
 
 /**
  * Interface with Java class DataStore, used for storing arbitrary information.

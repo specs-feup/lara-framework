@@ -7,7 +7,7 @@ import { laraGetter } from "../lara/core/LaraCore.js";
 import Accumulator from "../lara/util/Accumulator.js";
 import { type JpFilterRules } from "../lara/util/JpFilter.js";
 import JoinPoints from "./JoinPoints.js";
-import TraversalType from "./TraversalType.js";
+import { TraversalType } from "./TraversalType.js";
 import Weaver from "./Weaver.js";
 import JpPredicate from "./predicate/JpPredicate.js";
 import StringPredicate from "./predicate/StringPredicate.js";

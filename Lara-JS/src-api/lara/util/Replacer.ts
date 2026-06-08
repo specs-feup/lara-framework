@@ -1,5 +1,5 @@
 import Io from "../Io.js";
-import JavaTypes, { JavaClasses } from "./JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./JavaTypes.js";
 
 /**
  * Replaces strings inside a larger string.

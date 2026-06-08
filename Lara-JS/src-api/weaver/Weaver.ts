@@ -5,7 +5,7 @@ import {
 import Io from "../lara/Io.js";
 import JavaInterop from "../lara/JavaInterop.js";
 import DataStore from "../lara/util/DataStore.js";
-import JavaTypes, { JavaClasses } from "../lara/util/JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "../lara/util/JavaTypes.js";
 import WeaverOptions from "./WeaverOptions.js";
 
 /**
