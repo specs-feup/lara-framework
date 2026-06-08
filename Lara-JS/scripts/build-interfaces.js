@@ -54,7 +54,7 @@ import {
   wrapJoinPoint,
   unwrapJoinPoint,
 ${importedEnums.map((name) => `  ${name},`).join("\n")}
-} from "@specs-feup/lara/api/LaraJoinPoint.js";\n\n`
+} from "@specs-feup/lara/api/LaraJoinPoint.ts";\n\n`
   );
 
   generateDefaultAttributeMappers(specification.joinpoints, outputFile);
