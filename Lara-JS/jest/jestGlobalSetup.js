@@ -1,4 +1,4 @@
-import { Weaver } from "@specs-feup/lara/code/Weaver.js";
+import { Weaver } from "@specs-feup/lara/code/Weaver.ts";
 
 async function oneTimeSetup(globalConfig, projectConfig) {
   const weaverMessageFromLauncher = {
