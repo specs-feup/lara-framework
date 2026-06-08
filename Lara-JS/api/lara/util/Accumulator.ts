@@ -71,7 +71,7 @@ export default class Accumulator {
   }
 
   copy(...args: any) {
-    let copy: Accumulator = new Accumulator();
+    const copy: Accumulator = new Accumulator();
 
     for (const key of this.keys()) {
       const value: number = this.get(key);
@@ -125,7 +125,7 @@ export default class Accumulator {
       throw "Accumulator._parseArguments: Expected arguments to have length 1";
     }
 
-    let functionArguments = args[0];
+    const functionArguments = args[0];
 
     // If one argument and array, return it
     if (

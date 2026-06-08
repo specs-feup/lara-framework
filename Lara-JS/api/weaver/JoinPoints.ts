@@ -180,7 +180,6 @@ export default class JoinPoints {
     for (let obj = $jp; obj !== null; obj = Object.getPrototypeOf(obj)) {
       const descriptor = Object.getOwnPropertyDescriptor(obj, property);
       if (descriptor !== undefined) {
-        let attributeValue: any = undefined;
         if (Object.getOwnPropertyDescriptor(descriptor, "get")) {
           return descriptor.get?.call?.($jp);
         } else if (Object.getOwnPropertyDescriptor(descriptor, "value")) {
