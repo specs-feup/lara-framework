@@ -45,20 +45,14 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 
 /**
  * Copied files will have .mjs extension.
- *
- * @param {string} sourceDir
- * @param {string} destinationDir
- * @param {RegExp} extension
- * @param {RegExp} targetExtension
- * @returns
  */
 export default function copyFolder(
-  sourceDir,
-  destinationDir,
-  extension,
-  targetExtension = extension
+  sourceDir: string,
+  destinationDir: string,
+  extension: string,
+  targetExtension: string = extension
 ) {
-  const copiedFiles = [];
+  const copiedFiles: string[] = [];
 
   const files = fs.readdirSync(sourceDir);
   fs.mkdirSync(destinationDir, { recursive: true });
