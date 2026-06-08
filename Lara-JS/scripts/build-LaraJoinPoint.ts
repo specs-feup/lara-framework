@@ -280,15 +280,17 @@ const args = yargs(hideBin(process.argv))
     alias: "input",
     describe: "Path to JSON config file",
     type: "string",
+    demandOption: true,
   })
   .option("o", {
     alias: "output",
     describe: "Path to the output file",
     type: "string",
+    demandOption: true,
   })
   .help()
   .showHelpOnFail(true)
   .strict()
-  .parse();
+  .parseSync();
 
-buildLaraJoinPoint(args.input, args.output);
+buildLaraJoinPoint(args.i, args.o);
