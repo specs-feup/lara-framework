@@ -4,8 +4,11 @@ import Weaver from "../Weaver.js";
 
 export default class TypePredicate<T extends typeof LaraJoinPoint> extends JpPredicate {
 
-    constructor(private type: T) {
+    private type: T;
+
+    constructor(type: T) {
         super();
+        this.type = type;
     }
 
     jpName(): string {

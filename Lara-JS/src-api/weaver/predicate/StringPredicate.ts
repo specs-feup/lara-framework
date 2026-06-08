@@ -3,8 +3,11 @@ import JpPredicate from "./JpPredicate.js";
 
 export default class StringPredicate extends JpPredicate {
 
-    constructor(private name: string) {
+    private name: string;
+
+    constructor(name: string) {
         super();
+        this.name = name;
     }
 
     jpName(): string {

@@ -1,7 +1,7 @@
 import Io from "./Io.js";
 import Platforms from "./Platforms.js";
 import { info } from "./core/LaraCore.js";
-import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./util/JavaTypes.js";
 import TimeUnits, { TimerUnit } from "./util/TimeUnits.js";
 
 export default class System {

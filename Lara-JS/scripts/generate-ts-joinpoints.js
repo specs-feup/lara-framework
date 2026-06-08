@@ -200,9 +200,18 @@ export function generateEnums(enums, outputFile) {
 }
 
 function generateEnum(e, outputFile) {
-  fs.writeSync(outputFile, `export enum ${e.name} {\n`);
+  fs.writeSync(outputFile, `/**
+ * This is supposed to be an enum, but Node.js v25 does bot support TS' enums, only erasable-syntax.
+ * Revert to an enum when Node.js supports it, or when we move to a different engine that supports it.
+ * This and the "type" declaration below.
+ */\n`);
+  fs.writeSync(outputFile, `export const ${e.name} = {\n`);
   e.entries.forEach((entry) => {
-    fs.writeSync(outputFile, `  ${entry} = "${entry.toLowerCase()}",\n`);
+    fs.writeSync(outputFile, `  ${entry}: "${entry.toLowerCase()}",\n`);
   });
-  fs.writeSync(outputFile, `}\n\n`);
+  fs.writeSync(outputFile, `} as const;\n`);
+  fs.writeSync(
+    outputFile,
+    `export type ${e.name} = typeof ${e.name}[keyof typeof ${e.name}];\n\n`
+  );
 }
