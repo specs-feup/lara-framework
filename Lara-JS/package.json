@@ -11,8 +11,6 @@
     "code",
     "jest",
     "scripts",
-    "src-api",
-    "src-code",
     ".gitignore",
     "eslint.config.js",
     "jest.config.js",
@@ -26,17 +24,17 @@
     "typedoc.json"
   ],
   "scripts": {
-    "build": "npx tsc -b src-api src-code",
-    "build:api": "npx tsc -b src-api",
-    "build:code": "npx tsc -b src-code",
+    "build": "npx tsc -b api code",
+    "build:api": "npx tsc -b api",
+    "build:code": "npx tsc -b code",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
     "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --detectOpenHandles --forceExit",
-    "test:api": "npm run test -- src-api",
-    "test:code": "npm run test -- src-code",
+    "test:api": "npm run test -- api",
+    "test:code": "npm run test -- code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
+    "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output api/LaraJoinPoint.ts"
   },
   "repository": {
     "type": "git",

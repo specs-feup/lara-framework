@@ -1,5 +1,5 @@
-import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
-import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.js";
+import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
+import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
 
 /**
  * Registers the source code that will be used by the weaver for the purpose of this test suite.
