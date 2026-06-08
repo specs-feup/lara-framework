@@ -318,7 +318,6 @@ export default class Selector<
         break;
       default:
         throw new Error(
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Traversal type not implemented: ${traversal}`
         );
     }

@@ -159,7 +159,6 @@ export class Weaver {
   }
 
   static start() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     Weaver.javaWeaver.run(Weaver.datastore);
   }
 
@@ -217,7 +216,6 @@ export class Weaver {
 
   static shutdown() {
     Weaver.debug("Exiting...");
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     Weaver.javaWeaver.end();
   }
 }

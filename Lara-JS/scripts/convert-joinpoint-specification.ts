@@ -78,11 +78,11 @@ export type ConvertedEnum = {
 };
 
 export function convertSpecification(input: JSON_LanguageSpecification, baseJoinPointSpec?: ConvertedSpecification | undefined): ConvertedSpecification {
-  let typeNameSet = new Set<string>();
-  let joinpointNameSet = new Set<string>();
-  let unorderedJoinpoints: JSON_JoinpointSpecification[] = [];
-  let enumNameSet = new Set<string>();
-  let unorderedEnums: JSON_EnumSpecification[] = [];
+  const typeNameSet = new Set<string>();
+  const joinpointNameSet = new Set<string>();
+  const unorderedJoinpoints: JSON_JoinpointSpecification[] = [];
+  const enumNameSet = new Set<string>();
+  const unorderedEnums: JSON_EnumSpecification[] = [];
 
   input.children.forEach((child) => {
     typeNameSet.add(child.type);
@@ -96,10 +96,10 @@ export function convertSpecification(input: JSON_LanguageSpecification, baseJoin
     }
   });
 
-  let joinpoints = orderJoinpoints(unorderedJoinpoints);
-  let enums = orderJoinpoints(unorderedEnums);
+  const joinpoints = orderJoinpoints(unorderedJoinpoints);
+  const enums = orderJoinpoints(unorderedEnums);
 
-  let output: ConvertedSpecification = {
+  const output: ConvertedSpecification = {
     joinpoints: convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet),
     enums: convertEnums(enums),
     importEnums: Array.isArray(input.importEnums) ? [...input.importEnums] : [],
@@ -115,9 +115,9 @@ export function convertSpecification(input: JSON_LanguageSpecification, baseJoin
 }
 
 function orderJoinpoints<T extends JSON_JoinpointSpecification | JSON_EnumSpecification>(unorderedJoinpoints: T[]): T[] {
-  let orderedNameSet = new Set<string>();
-  let blockedJpSet = new Set<T>();
-  let joinpoints: T[] = [];
+  const orderedNameSet = new Set<string>();
+  const blockedJpSet = new Set<T>();
+  const joinpoints: T[] = [];
 
   unorderedJoinpoints.forEach((jp) => {
     if (jp.extends) {
@@ -146,7 +146,7 @@ function orderJoinpoints<T extends JSON_JoinpointSpecification | JSON_EnumSpecif
 }
 
 function convertJoinpoints(joinpoints: JSON_JoinpointSpecification[], joinpointNameSet: Set<string>, enumNameSet: Set<string>) {
-  let convertedJoinpoints: ConvertedJoinpoint[] = [];
+  const convertedJoinpoints: ConvertedJoinpoint[] = [];
 
   joinpoints.forEach((jp) => {
     convertedJoinpoints.push(
@@ -158,8 +158,8 @@ function convertJoinpoints(joinpoints: JSON_JoinpointSpecification[], joinpointN
 }
 
 function convertJoinpoint(jp: JSON_JoinpointSpecification, joinpointNameSet: Set<string>, enumNameSet: Set<string>): ConvertedJoinpoint {
-  let attributes: ConvertedAttribute[] = [];
-  let actions: ConvertedAction[] = [];
+  const attributes: ConvertedAttribute[] = [];
+  const actions: ConvertedAction[] = [];
   const actionNameSet = new Set<string>();
 
   jp.children?.forEach((child) => {
@@ -215,7 +215,7 @@ function convertDeprecationNotice(notice: string | undefined): string | undefine
     notice = notice.replace("[DEPRECATED:", "@deprecated");
     notice = notice.replace("DEPRECATED:", "@deprecated");
 
-    let splitTooltip = notice.split("]");
+    const splitTooltip = notice.split("]");
 
     notice = splitTooltip.slice(1).join("]") + "\n\n" + splitTooltip[0];
   }
