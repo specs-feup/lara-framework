@@ -12,7 +12,7 @@ const config = {
   coverageReporters: ["text", "lcov"],
   collectCoverageFrom: ["**/*[^.d].(t|j)s"],
   coverageProvider: "v8",
-  projects: ["src-api", "src-code"],
+  projects: ["api", "code"],
 };
 
 export default config;

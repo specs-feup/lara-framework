@@ -1,7 +1,7 @@
 import JavaTypes, {
   type JavaClasses,
-} from "@specs-feup/lara/api/lara/util/JavaTypes.js";
-import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
+} from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
+import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 import fs from "fs";
 import util from "util";
 import { jest } from "@jest/globals";

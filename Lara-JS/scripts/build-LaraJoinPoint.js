@@ -27,7 +27,7 @@ function buildLaraJoinPoint(inputFileName, outputFileName) {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import JavaTypes from "./lara/util/JavaTypes.js";
+import JavaTypes from "./lara/util/JavaTypes.ts";
 
 /**
  * Type for type equality assertion. If T is equal to U, return Y, otherwise return N.
