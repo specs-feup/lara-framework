@@ -16,7 +16,7 @@ describe("Accumulator", () => {
       const acc = new Accumulator;
       expect(acc.get("step1")).toBe(0);
     });
-    it("is 0 for step1 after adding an array with a step1 and a step2 and 1 for tuple step1,step2 ", () => {
+    it("is 0 for step1 after adding an array with a step1 and a step2 and 1 for tuple step1,step2", () => {
       const acc  = new Accumulator;
       acc.add("step1", "step2");
       expect(acc.get("step1")).toBe(0);
@@ -70,7 +70,6 @@ describe("Accumulator", () => {
       acc.add("step1","step2");
       acc.add("step1");
       acc.add(["step1","step2"]);
-      const res = [["step1"],["step1","step2"]];
       expect(acc.keys()[0]).toStrictEqual(["step1"]);
       expect(acc.keys()[1]).toStrictEqual(["step1", "step2"]);
     })

@@ -10,7 +10,7 @@ export namespace JavaClasses {
     [key: string]: any;
   }
 
-  /* eslint-disable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
+  /* eslint-disable @typescript-eslint/no-empty-object-type */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
   export interface LaraSystemTools extends JavaClass {
@@ -71,7 +71,7 @@ export namespace JavaClasses {
   }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
-  /* eslint-enable @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
+  /* eslint-enable @typescript-eslint/no-empty-object-type */
 }
 
 export default class JavaTypes {
