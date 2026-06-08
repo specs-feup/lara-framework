@@ -24,9 +24,7 @@
     "typedoc.json"
   ],
   "scripts": {
-    "build": "npx tsc -b api code",
-    "build:api": "npx tsc -b api",
-    "build:code": "npx tsc -b code",
+    "build": "tsc",
     "build:watch": "npm run build -- --watch",
     "lint": "eslint .",
     "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --detectOpenHandles --forceExit",
