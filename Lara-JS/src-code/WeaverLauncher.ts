@@ -1,5 +1,5 @@
 import Debug from "debug";
-import yargs, { Arguments } from "yargs";
+import yargs, { type Arguments } from "yargs";
 import * as path from "path";
 import * as chokidar from "chokidar";
 import { hideBin } from "yargs/helpers";
@@ -11,8 +11,8 @@ import {
   getActiveChildProcesses,
   listenForTerminationSignals,
 } from "./ChildProcessHandling.js";
-import WeaverConfiguration from "./WeaverConfiguration.js";
-import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
+import type WeaverConfiguration from "./WeaverConfiguration.js";
+import type WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 
 import { Weaver } from "./Weaver.js";
 

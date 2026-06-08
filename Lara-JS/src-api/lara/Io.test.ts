@@ -1,5 +1,5 @@
 import Io from "./Io.js";
-import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./util/JavaTypes.js";
 
 describe("Io", () => {
     

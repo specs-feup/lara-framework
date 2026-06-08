@@ -4,7 +4,7 @@ import Selector, {
   type Filter_StringVariant,
   type Filter_WrapperVariant,
 } from "./Selector.js";
-import TraversalType from "./TraversalType.js";
+import { TraversalType } from "./TraversalType.js";
 
 /**
  * Class for selection of join points. Provides an API similar to the keyword 'select'.
