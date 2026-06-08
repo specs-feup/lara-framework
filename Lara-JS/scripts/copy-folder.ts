@@ -14,11 +14,13 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
       alias: "inputFolder",
       describe: "Path to the source folder",
       type: "string",
+      demandOption: true,
     })
     .option("o", {
       alias: "outputFolder",
       describe: "Path to the destination folder",
       type: "string",
+      demandOption: true,
     })
     .option("e", {
       alias: "extension",
@@ -33,14 +35,9 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
     .help()
     .showHelpOnFail(true)
     .strict()
-    .parse();
+    .parseSync();
 
-  copyFolder(
-    args.inputFolder,
-    args.outputFolder,
-    args.extension,
-    args.newExtension
-  );
+  copyFolder(args.i, args.o, args.e, args.newExtension);
 }
 
 /**
@@ -49,8 +46,8 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
 export default function copyFolder(
   sourceDir: string,
   destinationDir: string,
-  extension: string,
-  targetExtension: string = extension
+  extension?: string,
+  targetExtension = extension,
 ) {
   const copiedFiles: string[] = [];
 
