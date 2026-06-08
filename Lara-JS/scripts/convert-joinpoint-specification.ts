@@ -1,11 +1,88 @@
 #!/usr/bin/env node
 
-export function convertSpecification(input, baseJoinPointSpec = undefined) {
-  let typeNameSet = new Set();
-  let joinpointNameSet = new Set();
-  let unorderedJoinpoints = [];
-  let enumNameSet = new Set();
-  let unorderedEnums = [];
+export type JSON_LanguageSpecification = {
+  root: string;
+  rootAlias: string;
+  importEnums?: string[];
+  children: (JSON_JoinpointSpecification | JSON_EnumSpecification)[];
+};
+
+type JSON_JoinpointSpecification = {
+  type: "joinpoint";
+  name: string;
+  extends: string;
+  defaultAttr?: string;
+  tooltip?: string;
+  children?: JSON_JoinpointMemberSpecification[];
+};
+
+type JSON_JoinpointMemberSpecification = {
+  type: "attribute" | "action";
+  tooltip?: string;
+  children: JSON_ParameterSpecification[];
+};
+
+type JSON_ParameterSpecification = {
+  name: string;
+  type: string;
+  defaultValue: string;
+}
+
+type JSON_EnumSpecification = {
+  type: "enum";
+  name: string;
+  extends?: string;
+  children: { value: string }[];
+};
+
+export type ConvertedSpecification = {
+  joinpoints: ConvertedJoinpoint[];
+  enums: ConvertedEnum[];
+  importEnums: string[];
+};
+
+export type ConvertedJoinpoint = {
+  name: string;
+  originalName: string;
+  tooltip?: string;
+  extends?: string;
+  attributes: ConvertedAttribute[];
+  actions: ConvertedAction[];
+  defaultAttribute?: string;
+};
+
+export type ConvertedAttribute = {
+  name: string;
+  type: string;
+  tooltip?: string;
+};
+
+export type ConvertedAction = {
+  name: string;
+  tooltip?: string;
+  returnType: string;
+  parameters: ConvertedParameter[];
+  overloads: ConvertedAction[];
+};
+
+export type ConvertedParameter = {
+  name: string;
+  type: string;
+  default: string;
+};
+
+export type ConvertedEnum = {
+  name: string;
+  extends?: string;
+  entries: string[];
+};
+
+export function convertSpecification(input: JSON_LanguageSpecification, baseJoinPointSpec?: ConvertedSpecification | undefined): ConvertedSpecification {
+  let typeNameSet = new Set<string>();
+  let joinpointNameSet = new Set<string>();
+  let unorderedJoinpoints: JSON_JoinpointSpecification[] = [];
+  let enumNameSet = new Set<string>();
+  let unorderedEnums: JSON_EnumSpecification[] = [];
 
   input.children.forEach((child) => {
     typeNameSet.add(child.type);
@@ -22,7 +99,7 @@ export function convertSpecification(input, baseJoinPointSpec = undefined) {
   let joinpoints = orderJoinpoints(unorderedJoinpoints);
   let enums = orderJoinpoints(unorderedEnums);
 
-  let output = {
+  let output: ConvertedSpecification = {
     joinpoints: convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet),
     enums: convertEnums(enums),
     importEnums: Array.isArray(input.importEnums) ? [...input.importEnums] : [],
@@ -37,10 +114,10 @@ export function convertSpecification(input, baseJoinPointSpec = undefined) {
   return output;
 }
 
-function orderJoinpoints(unorderedJoinpoints) {
-  let orderedNameSet = new Set();
-  let blockedJpSet = new Set();
-  let joinpoints = [];
+function orderJoinpoints<T extends JSON_JoinpointSpecification | JSON_EnumSpecification>(unorderedJoinpoints: T[]): T[] {
+  let orderedNameSet = new Set<string>();
+  let blockedJpSet = new Set<T>();
+  let joinpoints: T[] = [];
 
   unorderedJoinpoints.forEach((jp) => {
     if (jp.extends) {
@@ -57,7 +134,7 @@ function orderJoinpoints(unorderedJoinpoints) {
   });
   while (blockedJpSet.size > 0) {
     blockedJpSet.forEach((jp) => {
-      if (orderedNameSet.has(jp.extends)) {
+      if (jp.extends && orderedNameSet.has(jp.extends)) {
         joinpoints.push(jp);
         orderedNameSet.add(jp.name);
         blockedJpSet.delete(jp);
@@ -68,15 +145,8 @@ function orderJoinpoints(unorderedJoinpoints) {
   return joinpoints;
 }
 
-/**
- *
- * @param {*} joinpoints
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @returns {ReturnType<convertJoinpoint>[]}
- */
-function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
-  let convertedJoinpoints = [];
+function convertJoinpoints(joinpoints: JSON_JoinpointSpecification[], joinpointNameSet: Set<string>, enumNameSet: Set<string>) {
+  let convertedJoinpoints: ConvertedJoinpoint[] = [];
 
   joinpoints.forEach((jp) => {
     convertedJoinpoints.push(
@@ -87,17 +157,10 @@ function convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet) {
   return convertedJoinpoints;
 }
 
-/**
- *
- * @param {*} jp
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @returns { { name: string, originalName: string, tooltip: string, extends: string | undefined, attributes: ReturnType<convertJoinpointAttribute>[], actions: { name: string, tooltip: string, returnType: string, parameters: ReturnType<convertJoinpointActionParameter>[], overloads: never[] }[] }, defaultAttribute: string | undefined }
- */
-function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
-  let attributes = [];
-  let actions = [];
-  const actionNameSet = new Set();
+function convertJoinpoint(jp: JSON_JoinpointSpecification, joinpointNameSet: Set<string>, enumNameSet: Set<string>): ConvertedJoinpoint {
+  let attributes: ConvertedAttribute[] = [];
+  let actions: ConvertedAction[] = [];
+  const actionNameSet = new Set<string>();
 
   jp.children?.forEach((child) => {
     switch (child.type) {
@@ -125,11 +188,8 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
           actionNameSet
         );
         break;
-      case "select":
-        // Do nothing
-        break;
       default:
-        console.log("Unknown child type:", child.type);
+        console.log("Unknown child type:", (child as { type: string }).type);
     }
   });
 
@@ -150,12 +210,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   };
 }
 
-/**
- *
- * @param {string} notice
- * @returns {string}
- */
-function convertDeprecationNotice(notice) {
+function convertDeprecationNotice(notice: string | undefined): string | undefined {
   if (notice?.includes("DEPRECATED")) {
     notice = notice.replace("[DEPRECATED:", "@deprecated");
     notice = notice.replace("DEPRECATED:", "@deprecated");
@@ -167,18 +222,11 @@ function convertDeprecationNotice(notice) {
   return capitalizeFirstLetter(notice)?.trim();
 }
 
-/**
- *
- * @param {*} attributeObject
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @returns { { name: string, type: string, default: string } }
- */
 function convertJoinpointAttribute(
-  attributeObject,
-  joinpointNameSet,
-  enumNameSet
-) {
+  attributeObject: JSON_JoinpointMemberSpecification,
+  joinpointNameSet: Set<string>,
+  enumNameSet: Set<string>
+): ConvertedAttribute {
   const attribute = attributeObject.children[0];
 
   return {
@@ -188,18 +236,11 @@ function convertJoinpointAttribute(
   };
 }
 
-/**
- *
- * @param {*} parameterObject
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @returns { { name: string, type: string, default: string } }
- */
 function convertJoinpointActionParameter(
-  parameterObject,
-  joinpointNameSet,
-  enumNameSet
-) {
+  parameterObject: JSON_ParameterSpecification,
+  joinpointNameSet: Set<string>,
+  enumNameSet: Set<string>
+): ConvertedParameter {
   const type = interpretType(
     parameterObject.type,
     joinpointNameSet,
@@ -214,7 +255,7 @@ function convertJoinpointActionParameter(
       parameterName = "elseStatement";
   }
 
-  let defaultValue = parameterObject.defaultValue;
+  let defaultValue: string | undefined = parameterObject.defaultValue;
   if (defaultValue === "") {
     defaultValue = undefined;
   }
@@ -226,24 +267,14 @@ function convertJoinpointActionParameter(
   };
 }
 
-/**
- *
- * @param {Object} actionObject
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @param {Object[]} actions
- * @param {Set<string>} actionNameSet
- * @param {string} [overrideName=null]
- * @returns
- */
 function convertJoinpointAction(
-  actionObject,
-  joinpointNameSet,
-  enumNameSet,
-  actions,
-  actionNameSet,
-  overrideName = null
-) {
+  actionObject: JSON_JoinpointMemberSpecification,
+  joinpointNameSet: Set<string>,
+  enumNameSet: Set<string>,
+  actions: ConvertedAction[],
+  actionNameSet: Set<string>,
+  overrideName: string | null = null
+): void {
   const action = actionObject.children[0];
   const actionName = overrideName ?? action.name;
 
@@ -327,27 +358,11 @@ function convertJoinpointAction(
   actions.push(convertedAction);
 }
 
-/**
- *
- * @param {Object[]} enums
- * @returns {(ReturnType<convertEnum>)[]}
- */
-function convertEnums(enums) {
-  let convertedEnums = [];
-
-  enums.forEach((enumObj) => {
-    convertedEnums.push(convertEnum(enumObj));
-  });
-
-  return convertedEnums;
+function convertEnums(enums: JSON_EnumSpecification[]) {
+  return enums.map((enumObj) => convertEnum(enumObj));
 }
 
-/**
- *
- * @param {Object} e
- * @returns { {name: string, extends: string, entries: string[]} }
- */
-function convertEnum(e) {
+function convertEnum(e: JSON_EnumSpecification): ConvertedEnum {
   return {
     name: e.name,
     extends: e.extends,
@@ -357,24 +372,15 @@ function convertEnum(e) {
   };
 }
 
-/**
- *
- * @param {string} string
- * @returns {string}
- */
-export function capitalizeFirstLetter(string) {
+export function capitalizeFirstLetter(string: string): string;
+export function capitalizeFirstLetter(string: undefined): undefined;
+export function capitalizeFirstLetter(string: string | undefined): string | undefined;
+export function capitalizeFirstLetter(string: string | undefined): string | undefined {
   if (!string) return string;
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-/**
- *
- * @param {string} typeString
- * @param {Set<string>} joinpointNameSet
- * @param {Set<string>} enumNameSet
- * @returns {string}
- */
-function interpretType(typeString, joinpointNameSet, enumNameSet) {
+function interpretType(typeString: string, joinpointNameSet: Set<string>, enumNameSet: Set<string>): string {
   if (typeString === "?") {
     return "any";
   }
@@ -439,7 +445,7 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
   }
 }
 
-function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
+function deduplicateJoinpoints(joinpoints: ConvertedJoinpoint[], baseJoinPointSpec?: ConvertedSpecification | undefined) {
   for (const joinpoint of joinpoints) {
     // Find the parent joinpoint
     let parentJoinpoint = joinpoints.find(
@@ -452,7 +458,7 @@ function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
     }
 
     while (parentJoinpoint) {
-      for (const attributeIndex in joinpoint.attributes) {
+      for (let attributeIndex = 0; attributeIndex < joinpoint.attributes.length; attributeIndex++) {
         for (const parentAttribute of parentJoinpoint.attributes) {
           if (
             JSON.stringify(joinpoint.attributes[attributeIndex]) ===
@@ -463,7 +469,7 @@ function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
         }
       }
 
-      for (const actionIndex in joinpoint.actions) {
+      for (let actionIndex = 0; actionIndex < joinpoint.actions.length; actionIndex++) {
         for (const parentAction of parentJoinpoint.actions) {
           if (
             JSON.stringify(joinpoint.actions[actionIndex]) ===
@@ -475,7 +481,7 @@ function deduplicateJoinpoints(joinpoints, baseJoinPointSpec = undefined) {
       }
 
       parentJoinpoint = joinpoints.find(
-        (jp) => jp.name === parentJoinpoint.extends
+        (jp) => jp.name === parentJoinpoint!.extends
       );
     }
   }

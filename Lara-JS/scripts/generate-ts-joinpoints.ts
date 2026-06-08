@@ -1,13 +1,13 @@
 import fs from "fs";
-import { capitalizeFirstLetter } from "./convert-joinpoint-specification.js";
+import { capitalizeFirstLetter, type ConvertedAction, type ConvertedAttribute, type ConvertedEnum, type ConvertedJoinpoint } from "./convert-joinpoint-specification.ts";
 
-export function generateJoinpoints(joinpoints, outputFile) {
+export function generateJoinpoints(joinpoints: ConvertedJoinpoint[], outputFile: number) {
   for (const jp of joinpoints) {
     generateJoinpoint(jp, outputFile, joinpoints);
   }
 }
 
-function generateJoinpoint(jp, outputFile, joinpoints) {
+function generateJoinpoint(jp: ConvertedJoinpoint, outputFile: number, joinpoints: ConvertedJoinpoint[]) {
   fs.writeSync(
     outputFile,
     `${generateDocumentation(jp.tooltip)}export class ${jp.name}${
@@ -66,14 +66,14 @@ function generateJoinpoint(jp, outputFile, joinpoints) {
   fs.writeSync(outputFile, `}\n\n`);
 }
 
-function generateDocumentation(tooltip) {
+function generateDocumentation(tooltip: string | undefined): string {
   if (!tooltip) {
     return "";
   }
   return `  /**\n   * ${tooltip.split("\n").join("\n   * ")}\n   */\n`;
 }
 
-function escapeJavaReservedKeywords(name) {
+function escapeJavaReservedKeywords(name: string): string {
   const reservedKeywords = new Set([
     "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
     "class", "const", "continue", "default", "do", "double", "else", "enum",
@@ -91,7 +91,7 @@ function escapeJavaReservedKeywords(name) {
   return name;
 }
 
-function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
+function generateJoinpointAttribute(attribute: ConvertedAttribute, outputFile: number, joinpointActions: ConvertedAction[]) {
   if (attribute.name === "data") {
     fs.writeSync(
       outputFile,
@@ -120,7 +120,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
     setterActions = setterActions[0].overloads.filter((overload) => {
       const requiredParameters = overload.parameters.reduce(
         (acc, parameter) => {
-          if (parameter.defaultValue === undefined) {
+          if (parameter.default === undefined) {
             return acc + 1;
           }
           return acc;
@@ -137,7 +137,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   }
 
   const setterParameterType = setterActions
-    .reduce((type, action) => {
+    .reduce((type: string[], action) => {
       if (action.parameters.length) {
         type.push(action.parameters[0].type);
       }
@@ -155,7 +155,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   );
 }
 
-function generateJoinpointActionParameters(action) {
+function generateJoinpointActionParameters(action: ConvertedAction): string {
   return action.parameters
     .map((parameter) => {
       let paramStr = parameter.name;
@@ -173,7 +173,7 @@ function generateJoinpointActionParameters(action) {
     .join(", ");
 }
 
-function generateJoinpointAction(action, outputFile, joinpoints) {
+function generateJoinpointAction(action: ConvertedAction, outputFile: number, joinpoints: ConvertedJoinpoint[]) {
   const parameters = generateJoinpointActionParameters(action);
 
   const callParameters = action.parameters
@@ -193,13 +193,13 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
   );
 }
 
-export function generateEnums(enums, outputFile) {
+export function generateEnums(enums: ConvertedEnum[], outputFile: number) {
   for (const e of enums) {
     generateEnum(e, outputFile);
   }
 }
 
-function generateEnum(e, outputFile) {
+function generateEnum(e: ConvertedEnum, outputFile: number) {
   fs.writeSync(outputFile, `/**
  * This is supposed to be an enum, but Node.js v25 does bot support TS' enums, only erasable-syntax.
  * Revert to an enum when Node.js supports it, or when we move to a different engine that supports it.
