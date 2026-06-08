@@ -1,5 +1,5 @@
 import JavaTypes, {
-  JavaClasses,
+  type JavaClasses,
 } from "@specs-feup/lara/api/lara/util/JavaTypes.js";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.js";
 import fs from "fs";

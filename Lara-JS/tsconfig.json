@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    //"noEmit": true,
     "module": "NodeNext",
     "declaration": true,
-    "outDir": "./dist",
     "strict": true,
     //"allowJs": true,
     //"checkJs": true,
@@ -13,6 +12,9 @@
     "declarationMap": true,
     "allowSyntheticDefaultImports": true,
     //"esModuleInterop": true
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
   }
 }

@@ -6,7 +6,7 @@ import Debug from "debug";
 import { fileURLToPath, pathToFileURL } from "url";
 import { isJavaError } from "./JavaError.js";
 import { isValidFileExtension } from "./FileExtensions.js";
-import WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
+import type WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.js";
 import assert from "assert";
 
 let directExecution = false;

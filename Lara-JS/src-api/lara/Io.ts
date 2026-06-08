@@ -1,5 +1,5 @@
 import { JSONtoFile, fileToJSON } from "../core/output.js";
-import JavaTypes, { JavaClasses } from "./util/JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./util/JavaTypes.js";
 import fg from "fast-glob";
 import fs from "fs";
 

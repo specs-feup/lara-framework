@@ -5,15 +5,21 @@ interface TimerUnitI {
   magnitudeFactorNanoseconds: number;
 }
 
-export enum TimerUnit {
-  NANOSECONDS = 1,
-  MICROSECONDS = 2,
-  MILLISECONDS = 3,
-  SECONDS = 4,
-  MINUTES = 5,
-  HOURS = 6,
-  DAYS = 7,
-}
+/**
+ * This is supposed to be an enum, but Node.js v25 does bot support TS' enums, only erasable-syntax.
+ * Revert to an enum when Node.js supports it, or when we move to a different engine that supports it.
+ * This and the "type" declaration below.
+ */
+export const TimerUnit = {
+  NANOSECONDS: 1,
+  MICROSECONDS: 2,
+  MILLISECONDS: 3,
+  SECONDS: 4,
+  MINUTES: 5,
+  HOURS: 6,
+  DAYS: 7,
+} as const;
+export type TimerUnit = typeof TimerUnit[keyof typeof TimerUnit];
 
 const timerUnitData: Record<TimerUnit, TimerUnitI> = {
   [TimerUnit.NANOSECONDS]: {

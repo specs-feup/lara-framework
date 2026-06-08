@@ -125,11 +125,17 @@ export class LaraJoinPoint {
   toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
 }
 
-export enum InsertPosition {
-  before = "before",
-  after = "after",
-  replace = "replace",
-}
+/**
+ * This is supposed to be an enum, but Node.js v25 does bot support TS' enums, only erasable-syntax.
+ * Revert to an enum when Node.js supports it, or when we move to a different engine that supports it.
+ * This and the "type" declaration below.
+ */
+export const InsertPosition = {
+  before: "before",
+  after: "after",
+  replace: "replace",
+} as const;
+export type InsertPosition = typeof InsertPosition[keyof typeof InsertPosition];
 
 /**
  * Converts Java join point objects to TypeScript objects.

@@ -1,6 +1,6 @@
 import { fileToJSON } from "../../core/output.js";
 import Io from "../Io.js";
-import JavaTypes, { JavaClasses } from "./JavaTypes.js";
+import JavaTypes, { type JavaClasses } from "./JavaTypes.js";
 import System from "../System.js";
 
 /**

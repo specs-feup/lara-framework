@@ -1,6 +1,6 @@
 import { LaraJoinPoint } from "../../LaraJoinPoint.js";
 import Io from "../Io.js";
-import { JavaClasses } from "../util/JavaTypes.js";
+import { type JavaClasses } from "../util/JavaTypes.js";
 import ProcessExecutor from "../util/ProcessExecutor.js";
 import BenchmarkCompilationEngine from "./BenchmarkCompilationEngine.js";
 
