@@ -199,7 +199,6 @@ export default abstract class BenchmarkInstance {
     }
 
     this.currentExecutor.execute(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this.currentExecutable.getAbsolutePath()
     );
   }

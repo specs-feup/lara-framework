@@ -2,9 +2,9 @@
 
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { fileURLToPath } from "url";
 
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   // This script is being executed directly
@@ -71,13 +71,15 @@ export default function copyFolder(
         sourcePath,
         newDestinationDir,
         extension,
-        targetExtension
+        targetExtension,
       );
 
       copiedFiles.push(...subDirectoryCopiedFiles);
     } else if (extension === undefined || file.endsWith(extension)) {
-      const targetFileName = extension === undefined ? file :
-        file.substring(0, file.length - extension.length) + targetExtension;
+      const targetFileName =
+        extension === undefined
+          ? file
+          : file.substring(0, file.length - extension.length) + targetExtension;
 
       const destinationPath = path.join(destinationDir, targetFileName);
 
