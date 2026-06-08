@@ -113,20 +113,23 @@ const args = yargs(hideBin(process.argv))
     alias: "input",
     describe: "Path to JSON config file",
     type: "string",
+    demandOption: true,
   })
   .option("l", {
     alias: "lara",
     describe: "Path to JSON config file that describes LaraJoinPoint",
     type: "string",
+    demandOption: true,
   })
   .option("o", {
     alias: "output",
     describe: "Path to the output file",
     type: "string",
+    demandOption: true,
   })
   .help()
   .showHelpOnFail(true)
   .strict()
-  .parse();
+  .parseSync();
 
-await buildInterfaces(args.input, args.lara, args.output);
+await buildInterfaces(args.i, args.l, args.o);
