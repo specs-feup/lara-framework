@@ -4,7 +4,25 @@
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
-    "lara-build-interfaces": "scripts/build-interfaces.ts"
+    "lara-build-interfaces": "./scripts/build-interfaces.ts"
+  },
+  "exports": {
+    "./api/*.test.ts": null,
+    "./api/*.config.ts": null,
+    "./api/*": "./api/*.ts",
+    "./api/*.ts": "./api/*.ts",
+    "./code/*.test.ts": null,
+    "./code/*.config.ts": null,
+    "./code/*": "./code/*.ts",
+    "./code/*.ts": "./code/*.ts",
+    "./jest/*.test.ts": null,
+    "./jest/*.config.ts": null,
+    "./jest/*": "./jest/*.ts",
+    "./jest/*.ts": "./jest/*.ts",
+    "./eslint.config.ts": "./eslint.config.ts",
+    "./jest.config.ts": "./jest.config.ts",
+    "./LaraJoinPointSpecification.json": "./LaraJoinPointSpecification.json",
+    "./typedoc.base.json": "./typedoc.base.json"
   },
   "files": [
     "api",
@@ -12,16 +30,15 @@
     "jest",
     "scripts",
     ".gitignore",
-    "eslint.config.js",
-    "jest.config.js",
+    "eslint.config.ts",
+    "jest.config.ts",
     "LaraJoinPointSpecification.json",
     "LICENSE",
     "package.json",
     "README.md",
-    "tsconfig.jest.json",
     "tsconfig.json",
     "typedoc.base.json",
-    "typedoc.json"
+    "typedoc.config.js"
   ],
   "scripts": {
     "build": "tsc",
