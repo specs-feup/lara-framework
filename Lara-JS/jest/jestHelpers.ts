@@ -1,6 +1,4 @@
-// @ts-ignore
 import JavaTypes from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
-// @ts-ignore
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 
 /**
