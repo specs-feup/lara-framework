@@ -1,4 +1,5 @@
 import type { Config } from "@jest/types";
+// @ts-expect-error
 import { Weaver } from "@specs-feup/lara/code/Weaver.ts";
 import type WeaverMessageFromLauncher from "@specs-feup/lara/code/WeaverMessageFromLauncher.ts";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";

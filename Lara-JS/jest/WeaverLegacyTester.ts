@@ -1,11 +1,13 @@
 import JavaTypes, {
   type JavaClasses,
+// @ts-ignore
 } from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
+import { jest } from "@jest/globals";
+// @ts-ignore
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 import fs from "fs";
-import util from "util";
-import { jest } from "@jest/globals";
 import path from "path";
+import util from "util";
 
 afterAll(() => {
   const javaWeaver = Weaver.getWeaverEngine();
