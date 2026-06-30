@@ -12,6 +12,7 @@ import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 
 class WeaverInterfaceE2ETest {
 
+    @SuppressWarnings("deprecation")
     @Test
     @DisplayName("Event flow through insert/insertFar with TestGear and active toggle")
     void eventFlow_insert_and_insertFar() {
@@ -25,13 +26,13 @@ class WeaverInterfaceE2ETest {
         var root = engine.getRootJp();
 
         // insert with String
-        root.insertImpl(InsertPosition.BEFORE, "code-snippet");
+        root.insert(InsertPosition.BEFORE.getDisplay(), "code-snippet");
         // insert with JP
         var other = new TestJoinPoint(engine, "node");
-        root.insertImpl(InsertPosition.AFTER, other);
+        root.insert(InsertPosition.AFTER.getDisplay(), other);
         // insertFar variants
-        root.insertImpl(InsertPosition.REPLACE, "far-code");
-        root.insertImpl(InsertPosition.BEFORE, other);
+        root.insert(InsertPosition.REPLACE.getDisplay(), "far-code");
+        root.insert(InsertPosition.BEFORE.getDisplay(), other);
 
         // Expect 8 action events: for insert(String) BEGIN+END, insert(JP) BEGIN+END,
         // insert(String) BEGIN+END, insert(JP) BEGIN+END
@@ -48,7 +49,7 @@ class WeaverInterfaceE2ETest {
 
         // Toggle gear off and ensure no more events are collected
         gear.setActive(false);
-        root.insertImpl(InsertPosition.BEFORE, "no-capture");
+        root.insert(InsertPosition.BEFORE.getDisplay(), "no-capture");
         assertThat(gear.getActionEvents()).hasSize(8);
     }
 

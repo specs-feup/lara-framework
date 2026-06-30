@@ -271,7 +271,7 @@ public abstract class WeaverSpec {
     }
 
     private JpClass resolveJpClass(String name) {
-        if ("joinpoint".equals(name)) {
+        if (global.getName().equals(name)) {
             return global;
         }
         var jp = joinPoints.get(name);
