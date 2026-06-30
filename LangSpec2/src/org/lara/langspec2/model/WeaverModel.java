@@ -61,7 +61,7 @@ public final class WeaverModel {
     }
 
     public void addJoinPoint(JpClass jp) {
-        if (joinPoints.containsKey(jp.getName())) {
+        if (joinPoints.containsKey(jp.getName()) || global.getName().equals(jp.getName())) {
             throw new IllegalArgumentException("Duplicate join point: " + jp.getName());
         }
         joinPoints.put(jp.getName(), jp);

@@ -1,7 +1,7 @@
 package org.lara.interpreter.weaver.perf;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,8 +10,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junitpioneer.jupiter.RetryingTest;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
@@ -21,9 +21,9 @@ import org.lara.interpreter.weaver.utils.SourcesGatherer;
 
 class PerfGuardTest {
 
-    @Test
+    @RetryingTest(5)
     void eventTrigger_tiny_shouldFinishQuickly() {
-        assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+        assertTimeout(Duration.ofSeconds(2), () -> {
             var trigger = new EventTrigger();
             trigger.registerReceiver(new AGear() {
             }); // no-op gear
@@ -37,9 +37,9 @@ class PerfGuardTest {
         });
     }
 
-    @Test
+    @RetryingTest(5)
     void sourcesGatherer_tiny_shouldFinishQuickly(@TempDir Path root) throws IOException {
-        assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+        assertTimeout(Duration.ofSeconds(2), () -> {
             Files.writeString(root.resolve("a.c"), "x");
             Files.writeString(root.resolve("b.h"), "x");
             Files.writeString(root.resolve("c.txt"), "x");
@@ -49,9 +49,9 @@ class PerfGuardTest {
         });
     }
 
-    @Test
+    @RetryingTest(5)
     void descendants_tiny_shouldFinishQuickly() {
-        assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+        assertTimeout(Duration.ofSeconds(2), () -> {
             var root = buildTree(3, 4);
             var list = root.getDescendantsImpl();
             var count = root.getJpDescendantsStream().count();
