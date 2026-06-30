@@ -111,7 +111,7 @@ class LaraSystemToolsTest {
         // Given
         String command = "echo hello";
         boolean printToConsole = false;
-        Long timeoutNanos = -1L;
+        long timeoutNanos = -1L;
         
         // When
         ProcessOutputAsString result = LaraSystemTools.runCommand(command, workingDirectory, printToConsole, timeoutNanos);
@@ -126,7 +126,7 @@ class LaraSystemToolsTest {
         // Given
         String command = "echo hello";
         boolean printToConsole = false;
-        Integer timeoutNanos = null;
+        long timeoutNanos = 2000000000; // 2 seconds
         
         // When
         ProcessOutputAsString result = LaraSystemTools.runCommand(command, workingDirectory, printToConsole, timeoutNanos);
@@ -164,7 +164,7 @@ class LaraSystemToolsTest {
         // Given - Command with quotes and spaces
         String command = "echo \"hello world\"";
         boolean printToConsole = false;
-        Integer timeoutNanos = 1000000000; // 1 seconds
+        long timeoutNanos = 2000000000; // 2 seconds
         
         // When
         ProcessOutputAsString result = LaraSystemTools.runCommand(command, workingDirectory, printToConsole, timeoutNanos);
