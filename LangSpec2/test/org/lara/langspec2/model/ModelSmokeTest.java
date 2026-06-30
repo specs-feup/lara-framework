@@ -1,6 +1,7 @@
 package org.lara.langspec2.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ class ModelSmokeTest {
         jp.addAction(new Action("copy", WeaverSpec.THIS));
 
         var model = new WeaverModel("Prefix", "example.pkg", jp);
-        model.addJoinPoint(jp);
+        assertThatThrownBy(() -> model.addJoinPoint(jp)).isInstanceOf(IllegalArgumentException.class);
         model.addTypeDef(new TypeDef("Info", List.of(new Attribute("name", WeaverSpec.STRING))));
         model.addEnumDef(new EnumDef("Kind", List.of(new EnumValue("A"))));
 
