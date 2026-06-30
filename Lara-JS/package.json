@@ -70,7 +70,7 @@
   },
   "homepage": "https://github.com/specs-feup/lara-framework#readme",
   "engines": {
-    "node": ">=25.0.0"
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "chokidar": "^5.0.0",
