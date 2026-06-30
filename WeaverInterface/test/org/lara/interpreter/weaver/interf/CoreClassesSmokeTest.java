@@ -130,7 +130,7 @@ class CoreClassesSmokeTest {
 
         @Override
         public boolean getInstanceOfImpl(String joinpointClassname) {
-            throw new UnsupportedOperationException("Unimplemented method 'getInstanceOfImpl'");
+            return "joinpoint".equals(joinpointClassname) || get_class().equals(joinpointClassname);
         }
 
         @Override

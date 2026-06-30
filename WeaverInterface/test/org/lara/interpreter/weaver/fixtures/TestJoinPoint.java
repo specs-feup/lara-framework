@@ -32,7 +32,7 @@ public class TestJoinPoint extends JoinPoint2<TestJoinPoint, TestJoinPoint> {
 
     @Override
     public TestJoinPoint getRootImpl() {
-        return this;
+        return parent == null ? this : parent.getRootImpl();
     }
 
     public TestJoinPoint addChild(TestJoinPoint child) {
@@ -84,17 +84,17 @@ public class TestJoinPoint extends JoinPoint2<TestJoinPoint, TestJoinPoint> {
 
     @Override
     public TestJoinPoint[] getDescendantsImpl() {
-        throw new UnsupportedOperationException("Unimplemented method 'getDescendantsImpl'");
+        return getJpDescendantsStream().toArray(TestJoinPoint[]::new);
     }
 
     @Override
     public TestJoinPoint[] getScopeNodesImpl() {
-        throw new UnsupportedOperationException("Unimplemented method 'getScopeNodesImpl'");
+        return children.toArray(new TestJoinPoint[0]);
     }
 
     @Override
     public TestJoinPoint getParentImpl() {
-        throw new UnsupportedOperationException("Unimplemented method 'getParentImpl'");
+        return getJpParent();
     }
 
     @Override
@@ -114,17 +114,18 @@ public class TestJoinPoint extends JoinPoint2<TestJoinPoint, TestJoinPoint> {
 
     @Override
     public boolean getCompareNodesImpl(TestJoinPoint aJoinPoint) {
-        throw new UnsupportedOperationException("Unimplemented method 'getCompareNodesImpl'");
+        return getNodeImpl() == aJoinPoint.getNodeImpl();
     }
 
     @Override
     public boolean getEqualsImpl(TestJoinPoint jp) {
-        throw new UnsupportedOperationException("Unimplemented method 'getEqualsImpl'");
+        return this == jp;
     }
 
     @Override
     public boolean getInstanceOfImpl(String joinpointClassname) {
-        throw new UnsupportedOperationException("Unimplemented method 'getInstanceOfImpl'");
+        return "joinpoint".equals(joinpointClassname) || type.equals(joinpointClassname)
+                || (parent != null && parent.getInstanceOfImpl(joinpointClassname));
     }
 
     @Override
