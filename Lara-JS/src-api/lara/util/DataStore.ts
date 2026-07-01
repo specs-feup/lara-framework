@@ -224,7 +224,7 @@ export default class DataStore {
       "joptions_current_folder_path"
     );
 
-    if (currentFolder.isEmpty()) {
+    if (currentFolder == null || currentFolder.isEmpty()) {
       return undefined;
     }
 
