@@ -1,7 +1,7 @@
-import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.ts";
+import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
 
-/* eslint-disable jest/expect-expect */
+/* eslint-disable vitest/expect-expect */
 describe("JsEngine", () => {
     function newTester() {
         return new WeaverLegacyTester(
