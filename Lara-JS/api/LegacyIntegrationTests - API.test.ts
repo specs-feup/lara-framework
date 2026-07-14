@@ -1,7 +1,7 @@
-import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.ts";
+import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
 
-/* eslint-disable jest/expect-expect */
+/* eslint-disable vitest/expect-expect */
 describe("ApiTest", () => {
     function newTester() {
         return new WeaverLegacyTester(
@@ -29,7 +29,7 @@ describe("ApiTest", () => {
         await newTester().test("LaraCoreTest.js");
     });
 
-    it.failing("LocalFolder", async () => {
+    it.fails("LocalFolder", async () => {
         await newTester().test("LocalFolderTest.js");
     });
 

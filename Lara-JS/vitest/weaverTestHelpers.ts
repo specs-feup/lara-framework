@@ -33,7 +33,7 @@ export function registerSourceCodes(codes: Record<string, string>): void {
 
     javaDatastore.set(
       JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
-      JavaTypes.FileList.newInstance()
+      JavaTypes.FileList.newInstance(),
     );
 
     javaWeaver.run(javaDatastore);

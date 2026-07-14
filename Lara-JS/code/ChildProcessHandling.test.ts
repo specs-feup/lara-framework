@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { vi } from "vitest";
 import {
   addActiveChildProcess,
   handleExit,
@@ -36,16 +36,16 @@ describe("ChildProcessHandling", () => {
       getActiveChildProcesses()[childProcess1.pid] = childProcess1;
       getActiveChildProcesses()[childProcess2.pid] = childProcess2;
 
-      const childProcessKillSpy1 = jest
+      const childProcessKillSpy1 = vi
         .spyOn(childProcess1, "kill")
         .mockClear();
-      const childProcessOnceSpy1 = jest
+      const childProcessOnceSpy1 = vi
         .spyOn(childProcess1, "once")
         .mockClear();
-      const childProcessKillSpy2 = jest
+      const childProcessKillSpy2 = vi
         .spyOn(childProcess2, "kill")
         .mockClear();
-      const childProcessOnceSpy2 = jest
+      const childProcessOnceSpy2 = vi
         .spyOn(childProcess2, "once")
         .mockClear();
 
@@ -56,7 +56,7 @@ describe("ChildProcessHandling", () => {
       expect(childProcessKillSpy2).toHaveBeenCalledTimes(1);
       expect(childProcessOnceSpy2).toHaveBeenCalledTimes(1);
 
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
   });
 });
