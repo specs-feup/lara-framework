@@ -7,7 +7,7 @@ export default interface JavaError {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export function isJavaError(obj: any): obj is JavaError {
   return obj.cause != undefined;
 }

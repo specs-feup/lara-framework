@@ -1,7 +1,7 @@
 import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
 
-/* eslint-disable vitest/expect-expect */
+/* oxlint-disable vitest/expect-expect */
 describe("ApiTest", () => {
     function newTester() {
         return new WeaverLegacyTester(
