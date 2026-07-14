@@ -86,6 +86,11 @@
     "supports-color": "^10.2.2",
     "yargs": "^18.0.0"
   },
+  "peerDependencies": {
+    "eslint-plugin-tsdoc": "^0.5.0",
+    "oxlint": "^1.74.0",
+    "vitest": "^4.1.10"
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.10",
     "@types/debug": "^4.1.12",
