@@ -1,13 +1,15 @@
-import { defineConfig } from "vitest/config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { createWeaverVitestConfig } from "./vitest/weaverVitestConfig.ts";
 
-export default defineConfig({
-  test: {
-    coverage: {
-      include: ["**/*[^.d].(t|j)s"],
-      provider: "v8",
-      reporter: ["text", "lcov"],
-    },
-    maxWorkers: 1,
-    projects: ["api/vitest.config.ts", "code/vitest.config.ts"],
-  },
+export default createWeaverVitestConfig({
+  jarPath: path.join(
+    path.dirname(path.dirname(fileURLToPath(import.meta.url))),
+    "./DefaultWeaver/build/install/DefaultWeaver",
+  ),
+  javaWeaverQualifiedName:
+    "org.lara.interpreter.weaver.defaultweaver.DWWeaver",
+  weaverFileName: "@specs-feup/lara/code/Weaver.ts",
+  weaverName: "DefaultWeaver",
+  weaverPrettyName: "Default Weaver",
 });
