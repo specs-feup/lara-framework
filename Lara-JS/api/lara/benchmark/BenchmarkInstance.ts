@@ -218,14 +218,14 @@ export default abstract class BenchmarkInstance {
    */
   test(
     worker: (instance: BenchmarkInstance) => boolean = (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // oxlint-disable-next-line typescript/no-unused-vars
       _instance: BenchmarkInstance
     ) => {
       return true;
     },
     executeCode: boolean = false,
     outputProcessor: (executor: ProcessExecutor) => void = (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // oxlint-disable-next-line typescript/no-unused-vars
       _executor: ProcessExecutor
     ) => {}
   ): boolean {
