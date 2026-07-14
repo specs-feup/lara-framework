@@ -2,10 +2,15 @@ import { vi } from "vitest";
 import JavaTypes, {
   type JavaClasses,
 } from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
+import IdGenerator from "@specs-feup/lara/api/lara/util/IdGenerator.ts";
+import PrintOnce from "@specs-feup/lara/api/lara/util/PrintOnce.ts";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 import fs from "fs";
 import path from "path";
+import { pathToFileURL } from "url";
 import util from "util";
+
+let legacyScriptRun = 0;
 
 afterAll(() => {
   const javaWeaver = Weaver.getWeaverEngine();
@@ -17,6 +22,8 @@ afterAll(() => {
   );
 
   javaWeaver.run(javaDatastore);
+  IdGenerator.idCounter.clear();
+  PrintOnce.messagesSet.clear();
 });
 
 export class WeaverLegacyTester {
@@ -161,7 +168,11 @@ export class WeaverLegacyTester {
       );
 
       javaWeaver.run(javaDatastore);
-      await import(path.join(this.basePackage, laraResource));
+      const scriptUrl = pathToFileURL(
+        path.join(this.basePackage, laraResource),
+      );
+      scriptUrl.searchParams.set("vitestRun", String(legacyScriptRun++));
+      await import(scriptUrl.href);
       javaWeaver.end();
     } finally {
       log.mockRestore();
