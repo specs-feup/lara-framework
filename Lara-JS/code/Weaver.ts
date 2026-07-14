@@ -25,9 +25,9 @@ java.asyncOptions = {
 
 export class Weaver {
   private static debug: Debug.Debugger;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   private static datastore: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   private static javaWeaver: any;
 
   static getDatastore(): any {
@@ -77,8 +77,8 @@ export class Weaver {
     const JavaSpecsSystem = java.import("pt.up.fe.specs.util.SpecsSystem");
     JavaSpecsSystem.programStandardInit();
 
-    /* eslint-disable */
-    // This code is intentionally ignored by eslint
+    /* oxlint-disable */
+    // This code is intentionally ignored by the linter
     const JavaArrayList = java.import("java.util.ArrayList");
     const JavaFile = java.import("java.io.File");
     const JavaFileList = java.import(
@@ -155,7 +155,7 @@ export class Weaver {
     for (const file of config.importForSideEffects ?? []) {
       await import(file);
     }
-    /* eslint-enable */
+    /* oxlint-enable */
   }
 
   static start() {

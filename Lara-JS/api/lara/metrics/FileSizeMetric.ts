@@ -11,7 +11,7 @@ export default class FileSizeMetric extends Metric {
     super("File Size");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // oxlint-disable-next-line typescript/no-unused-vars
   instrument($start: LaraJoinPoint, $end: LaraJoinPoint = $start) {}
 
   // Override
