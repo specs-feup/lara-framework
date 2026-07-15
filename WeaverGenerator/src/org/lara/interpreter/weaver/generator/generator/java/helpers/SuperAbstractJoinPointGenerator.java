@@ -20,12 +20,14 @@ import java.util.Optional;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Parameter;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
+import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
@@ -80,32 +82,22 @@ public class SuperAbstractJoinPointGenerator extends GeneratorHelper {
         // abstJPClass.setSuperClass(GenConstants.getJoinPointInterfaceType());
         // abstJPClass.addImport(JoinPoint.class.getCanonicalName());
 
+        addConstructor(abstJPClass);
         generateCompareMethods(abstJPClass);
         generateGlobalJoinPointData(abstJPClass);
         GeneratorUtils.generateInstanceOf(abstJPClass, "super", false);
-        addWeaverEngineField(abstJPClass);
 
         return abstJPClass;
     }
 
-    // @Override
-    // public JavaWeaver getWeaverEngine() {
-    // return JavaWeaver.getJavaWeaver();
-    // }
-    private void addWeaverEngineField(JavaClass abstJPClass) {
-        JavaClass weaverImplClass = javaGenerator.getWeaverImplClass();
-        String qualifiedName = weaverImplClass.getQualifiedName();
-        String weaverName = weaverImplClass.getName();
-        abstJPClass.addImport(qualifiedName);
-        JavaType weavingEngineClass = new JavaType(weaverName);
+    private void addConstructor(JavaClass abstJPClass) {
+        JavaType weaverType = new JavaType(WeaverEngine.class);
+        abstJPClass.addImport(WeaverEngine.class.getCanonicalName());
 
-        // Override getWeavingEngine to return the engine with the specific
-        // <qualifiedName> class
-        Method getWE = new Method(weavingEngineClass, GenConstants.getWeaverEngineMethodName());
-        getWE.add(Annotation.OVERRIDE);
-        getWE.appendComment("Returns the Weaving Engine this join point pertains to.");
-        getWE.appendCode("return " + weaverName + ".get" + weaverName + "();");
-        abstJPClass.add(getWE);
+        var constructor = new Constructor(abstJPClass);
+        constructor.addArgument(weaverType, "weaver");
+        constructor.appendCode("super(weaver);");
+        abstJPClass.add(constructor);
     }
 
     /**

@@ -47,7 +47,7 @@ class TreeNodeAstMethodsTest {
         var ast = new TreeNodeAstMethods<>(
                 engine,
                 N.class,
-                node -> new TestJoinPoint("node", node),
+                node -> new TestJoinPoint(engine, "node", node),
                 node -> node.name,
                 node -> node == root ? List.of(body) : node.getChildren());
 
@@ -77,7 +77,7 @@ class TreeNodeAstMethodsTest {
         var ast = new TreeNodeAstMethods<>(
                 engine,
                 N.class,
-                n -> new TestJoinPoint("jp-" + n.name, n),
+                n -> new TestJoinPoint(engine, "jp-" + n.name, n),
                 n -> "name-" + n.name,
                 N::getChildren);
 

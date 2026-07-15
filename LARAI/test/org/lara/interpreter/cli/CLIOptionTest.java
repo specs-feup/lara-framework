@@ -35,20 +35,6 @@ class CLIOptionTest {
     }
 
     @Test
-    @DisplayName("version option should have correct properties")
-    void testVersionOption() {
-        // Given
-        CLIOption versionOption = CLIOption.version;
-
-        // Then
-        assertThat(versionOption.shortOption()).isEqualTo("v");
-        assertThat(versionOption.description()).isEqualTo("print version information and exit");
-        assertThat(versionOption.args()).isEqualTo(OptionArguments.NO_ARGS);
-        assertThat(versionOption.longOption()).isEqualTo("version");
-        assertThat(versionOption.dataKey()).isNull(); // Version option has no data key
-    }
-
-    @Test
     @DisplayName("debug option should have correct properties")
     void testDebugOption() {
         // Given
@@ -129,7 +115,6 @@ class CLIOptionTest {
     void testGetArgumentByShortName() {
         // When/Then
         assertThat(CLIOption.getArgumentByShortName("h")).isEqualTo(CLIOption.help);
-        assertThat(CLIOption.getArgumentByShortName("v")).isEqualTo(CLIOption.version);
         assertThat(CLIOption.getArgumentByShortName("d")).isEqualTo(CLIOption.debug);
         assertThat(CLIOption.getArgumentByShortName("o")).isEqualTo(CLIOption.output);
         assertThat(CLIOption.getArgumentByShortName("p")).isEqualTo(CLIOption.workspace);
@@ -152,7 +137,6 @@ class CLIOptionTest {
     void testContains() {
         // When/Then
         assertThat(CLIOption.contains("help")).isTrue();
-        assertThat(CLIOption.contains("version")).isTrue();
         assertThat(CLIOption.contains("debug")).isTrue();
         assertThat(CLIOption.contains("argv")).isTrue();
         assertThat(CLIOption.contains("output")).isTrue();
@@ -177,7 +161,6 @@ class CLIOptionTest {
     void testContainsShort() {
         // When/Then
         assertThat(CLIOption.containsShort("h")).isTrue();
-        assertThat(CLIOption.containsShort("v")).isTrue();
         assertThat(CLIOption.containsShort("d")).isTrue();
         assertThat(CLIOption.containsShort("av")).isTrue();
         assertThat(CLIOption.containsShort("o")).isTrue();

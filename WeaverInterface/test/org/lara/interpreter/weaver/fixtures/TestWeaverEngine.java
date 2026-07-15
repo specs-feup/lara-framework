@@ -52,7 +52,7 @@ public class TestWeaverEngine extends WeaverEngine {
         this.astRoot.addChild(astChild);
 
         // Root JP is backed by the AST root node
-        this.rootJp = new TestJoinPoint("root", this.astRoot);
+        this.rootJp = new TestJoinPoint(this, "root", this.astRoot);
     }
 
     @Override

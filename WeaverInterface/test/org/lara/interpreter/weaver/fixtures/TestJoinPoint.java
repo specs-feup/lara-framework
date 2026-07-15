@@ -14,13 +14,19 @@ public class TestJoinPoint extends JoinPoint {
     private TestJoinPoint parent;
     private final List<TestJoinPoint> children = new ArrayList<>();
 
-    public TestJoinPoint(String type) {
-        this(type, null);
+    public TestJoinPoint(TestWeaverEngine weaver, String type) {
+        this(weaver, type, null);
     }
 
-    public TestJoinPoint(String type, Object node) {
+    public TestJoinPoint(TestWeaverEngine weaver, String type, Object node) {
+        super(weaver);
         this.type = type;
         this.node = node;
+    }
+
+    @Override
+    public TestWeaverEngine getWeaverEngine() {
+        return (TestWeaverEngine) super.getWeaverEngine();
     }
 
     public TestJoinPoint addChild(TestJoinPoint child) {

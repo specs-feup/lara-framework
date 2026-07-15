@@ -1,8 +1,8 @@
 package edge.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.exception.ActionException;
-import edge.pkg.EdgeWeaver;
 
 /**
  * Abstract class containing the global attributes and default action exception.
@@ -11,6 +11,12 @@ import edge.pkg.EdgeWeaver;
  */
 public abstract class AJoinPoint extends JoinPoint {
 
+    /**
+     * 
+     */
+    public AJoinPoint(WeaverEngine weaver){
+        super(weaver);
+    }
     /**
      * 
      */
@@ -68,13 +74,5 @@ public abstract class AJoinPoint extends JoinPoint {
         	return true;
         }
         return super.instanceOf(joinpointClass);
-    }
-
-    /**
-     * Returns the Weaving Engine this join point pertains to.
-     */
-    @Override
-    public EdgeWeaver getWeaverEngine() {
-        return EdgeWeaver.getEdgeWeaver();
     }
 }
