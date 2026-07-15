@@ -13,7 +13,9 @@ function buildLaraJoinPoint(inputFileName, outputFileName) {
   console.log("outputFile:", outputFileName);
 
   const jsonSpecification = fs.readFileSync(inputFileName, "utf8");
-  const specification = convertSpecification(JSON.parse(jsonSpecification));
+  const specificationJson = JSON.parse(jsonSpecification);
+  promoteToStringFromAttributeToAction(specificationJson);
+  const specification = convertSpecification(specificationJson);
 
   // Create output file if it doesn't exist
   const outputFile = fs.openSync(outputFileName, "w");
@@ -73,6 +75,22 @@ export type NameFromWrapperClass<T extends typeof LaraJoinPoint> = NameFromWrapp
   generateJoinpointWrapper(specification.joinpoints, outputFile);
 
   fs.closeSync(outputFile);
+}
+
+function promoteToStringFromAttributeToAction(specification) {
+  specification.children?.forEach((child) => {
+    if (child.type === "joinpoint") {
+      child.children?.forEach((member) => {
+        if (
+          member.type === "attribute" &&
+          member.children?.length === 1 &&
+          member.children[0].name === "toString"
+        ) {
+          member.type = "action";
+        }
+      });
+    }
+  });
 }
 
 function generateJoinpointWrapper(joinpoints, outputFile) {
@@ -175,6 +193,10 @@ export function registerJoinpointMapperFunction(
     return obj;
   }
 
+  if (obj === null) {
+    return undefined;
+  }
+
   if (obj === undefined) {
     return obj;
   }
@@ -197,12 +219,6 @@ export function registerJoinpointMapperFunction(
 
   if (!JavaTypes.isJavaObject(obj)) {
     return obj;
-  }
-
-  if (
-    JavaTypes.instanceOf(obj, "pt.up.fe.specs.jsengine.node.UndefinedValue")
-  ) {
-    return undefined;
   }
 
   if (
@@ -229,10 +245,10 @@ export function registerJoinpointMapperFunction(
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  const jpType: string = obj.joinPointType();
   // Iterate in reverse order, to give priority to most recently added mappers
-  for(let i = JoinpointMappers.length - 1; i>=0; i--) {
-    const mapper = JoinpointMappers[i];  
+  for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
+    const mapper = JoinpointMappers[i];
     const laraJp = mapper.toJpInstance(jpType, obj);
     if (laraJp) {
       return laraJp;

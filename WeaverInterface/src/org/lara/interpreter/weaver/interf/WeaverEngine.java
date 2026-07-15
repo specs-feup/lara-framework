@@ -16,12 +16,10 @@ import org.lara.interpreter.weaver.ast.AstMethods;
 import org.lara.interpreter.weaver.ast.DummyAstMethods;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
 import org.suikasoft.jOptions.Interfaces.DataStore;
 import org.suikasoft.jOptions.storedefinition.StoreDefinition;
 import org.suikasoft.jOptions.storedefinition.StoreDefinitionBuilder;
 import pt.up.fe.specs.util.SpecsIo;
-import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
 import pt.up.fe.specs.util.lazy.Lazy;
 
@@ -43,13 +41,10 @@ public abstract class WeaverEngine {
     private EventTrigger eventTrigger;
     private final Lazy<File> temporaryWeaverFolder;
     private final Lazy<StoreDefinition> storeDefinition;
-    private final Lazy<LanguageSpecification> langSpec;
 
     public WeaverEngine() {
         temporaryWeaverFolder = Lazy.newInstance(WeaverEngine::createTemporaryWeaverFolder);
         storeDefinition = Lazy.newInstance(this::buildStoreDefinition);
-
-        langSpec = Lazy.newInstance(this::buildLangSpecs);
     }
 
     public Optional<DataStore> getData() {
@@ -80,13 +75,6 @@ public abstract class WeaverEngine {
     public abstract boolean run(DataStore dataStore);
 
     /**
-     * Get the list of available actions in the weaver
-     *
-     * @return list with all actions
-     */
-    public abstract List<String> getActions();
-
-    /**
      * Returns the name of the join point model root
      *
      * @return then name of the join point model root
@@ -97,10 +85,10 @@ public abstract class WeaverEngine {
      * Function that can be called from LARA code to retrieve the root join point
      *
      */
-    public abstract JoinPoint getRootJp();
+    public abstract JoinPoint2<?, ?> getRootJp();
 
     public Object getRootNode() {
-        return getRootJp().getNode();
+        return getRootJp().getNodeImpl();
     }
 
     /**
@@ -116,16 +104,6 @@ public abstract class WeaverEngine {
     public StoreDefinition getStoreDefinition() {
         return storeDefinition.get();
     }
-
-    public LanguageSpecification getLanguageSpecificationV2() {
-        return langSpec.get();
-    }
-
-    /**
-     * Builds and returns the language specification for this weaver.
-     *
-     */
-    protected abstract LanguageSpecification buildLangSpecs();
 
     /**
      * Returns a list of Gears associated to this weaver engine
@@ -204,15 +182,6 @@ public abstract class WeaverEngine {
         throw new NotImplementedException(getClass().getSimpleName() + ".writeCode() not yet implemented!");
     }
 
-    public String getDefaultAttribute(String joinPointType) {
-        var jp = getLanguageSpecificationV2().getJoinPoint(joinPointType);
-        if (jp == null) {
-            throw new RuntimeException("Used unsupported join point '" + joinPointType + "'");
-        }
-
-        return getLanguageSpecificationV2().getJoinPoint(joinPointType).getDefaultAttribute().orElse(null);
-    }
-
     /**
      * Pairs of labels-values that will populate the predefined list of the option
      * "External Dependencies".
@@ -230,4 +199,5 @@ public abstract class WeaverEngine {
     public AstMethods getAstMethods() {
         return new DummyAstMethods(this);
     }
+
 }

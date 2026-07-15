@@ -13,7 +13,7 @@
 
 package org.lara.interpreter.weaver.ast;
 
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.interf.WeaverEngine;
 
 import pt.up.fe.specs.util.exceptions.NotImplementedException;
@@ -30,7 +30,7 @@ public class DummyAstMethods extends AAstMethods<Object> {
     }
 
     @Override
-    protected JoinPoint toJavaJoinPointImpl(Object node) {
+    protected JoinPoint2<?, ?> toJavaJoinPointImpl(Object node) {
         throw new NotImplementedException(this);
     }
 

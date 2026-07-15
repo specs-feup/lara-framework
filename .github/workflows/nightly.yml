@@ -109,7 +109,7 @@ jobs:
 
       # Setting up gradle multi-project would be helpful
       - name: Build and test LanguageSpecification
-        working-directory: lara-framework/LanguageSpecification
+        working-directory: lara-framework/LangSpec2
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
@@ -129,7 +129,7 @@ jobs:
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Build and test WeaverGenerator
-        working-directory: lara-framework/WeaverGenerator
+        working-directory: lara-framework/WeaverGen2
         run: gradle build test
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false

@@ -59,22 +59,76 @@ export class LaraJoinPoint {
   constructor(obj: any) {
     this._javaObject = obj;
   }
-  get dump(): string { return wrapJoinPoint(this._javaObject.getDump()) }
-  get joinPointType(): string { return wrapJoinPoint(this._javaObject.getJoinPointType()) }
-  get node(): object { return (this._javaObject.getNode()) }
-  get self(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSelf()) }
-  get super(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.getSuper()) }
-  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getChildren()) }
-  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getDescendants()) }
-  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.getScopeNodes()) }
-  insert(position: "before" | "after" | "replace", code: string): LaraJoinPoint[];
-  insert(position: "before" | "after" | "replace", joinpoint: LaraJoinPoint): LaraJoinPoint[];
-  insert(p1: "before" | "after" | "replace", p2: string | LaraJoinPoint): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
-  toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
-  equals(jp: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
-  instanceOf(name: string): boolean;
-  instanceOf(names: string[]): boolean;
+  /**
+   * The children of this join point, ignoring null nodes
+   */
+  get children(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.children()) }
+  /**
+   * String with the code represented by this node
+   */
+  get code(): string { return wrapJoinPoint(this._javaObject.code()) }
+  /**
+   * The starting column of the current node in the original code
+   */
+  get column(): number { return wrapJoinPoint(this._javaObject.column()) }
+  /**
+   * All descendants of this join point
+   */
+  get descendants(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.descendants()) }
+  /**
+   * String with a dump of the join point hierarchy
+   */
+  get dump(): string { return wrapJoinPoint(this._javaObject.dump()) }
+  /**
+   * The type name of this join point
+   */
+  get joinPointType(): string { return wrapJoinPoint(this._javaObject.joinPointType()) }
+  /**
+   * The starting line of the current node in the original code
+   */
+  get line(): number { return wrapJoinPoint(this._javaObject.line()) }
+  /**
+   * The underlying AST node represented by this join point
+   */
+  get node(): object { return (this._javaObject.node()) }
+  /**
+   * Returns the parent node in the AST, or undefined if it is the root node
+   */
+  get parent(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.parent()) }
+  /**
+   * The root of the tree
+   */
+  get root(): LaraJoinPoint { return wrapJoinPoint(this._javaObject.root()) }
+  /**
+   * The scope nodes of this join point
+   */
+  get scopeNodes(): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.scopeNodes()) }
+  /**
+   * A reference to this join point
+   */
+  get self(): this { return wrapJoinPoint(this._javaObject.self()) }
+  /**
+   * Compares this join point with another join point for identity (i.e., whether they represent the same AST node)
+   */
+  compareNodes(aJoinPoint: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.compareNodes(unwrapJoinPoint(aJoinPoint))); }
+  equals(jp: this): boolean { return wrapJoinPoint(this._javaObject.equals(unwrapJoinPoint(jp))); }
+  insert(position: InsertPosition, code: string): LaraJoinPoint[];
+  insert(position: InsertPosition, joinpoint: LaraJoinPoint): LaraJoinPoint[];
+  insert(p1: InsertPosition, p2: string | LaraJoinPoint): LaraJoinPoint[] { return wrapJoinPoint(this._javaObject.insert(unwrapJoinPoint(p1), unwrapJoinPoint(p2))); }
+  instanceOf(joinpointClassname: string): boolean;
+  instanceOf(joinpointClassnames: string[]): boolean;
   instanceOf(p1: string | string[]): boolean { return wrapJoinPoint(this._javaObject.instanceOf(unwrapJoinPoint(p1))); }
+  /**
+   * Compares this join point with another join point for identity (i.e., whether they represent the same AST node)
+   */
+  same(other: LaraJoinPoint): boolean { return wrapJoinPoint(this._javaObject.same(unwrapJoinPoint(other))); }
+  toString(): string { return wrapJoinPoint(this._javaObject.toString()); }
+}
+
+export enum InsertPosition {
+  before = "before",
+  after = "after",
+  replace = "replace",
 }
 
 /**
@@ -170,6 +224,10 @@ export function wrapJoinPoint(obj: any): any {
     return obj;
   }
 
+  if (obj === null) {
+    return undefined;
+  }
+
   if (obj === undefined) {
     return obj;
   }
@@ -192,12 +250,6 @@ export function wrapJoinPoint(obj: any): any {
 
   if (!JavaTypes.isJavaObject(obj)) {
     return obj;
-  }
-
-  if (
-    JavaTypes.instanceOf(obj, "pt.up.fe.specs.jsengine.node.UndefinedValue")
-  ) {
-    return undefined;
   }
 
   if (
@@ -224,7 +276,7 @@ export function wrapJoinPoint(obj: any): any {
     );
   }
 
-  const jpType: string = obj.getJoinPointType();
+  const jpType: string = obj.joinPointType();
   // Iterate in reverse order, to give priority to most recently added mappers
   for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
     const mapper = JoinpointMappers[i];

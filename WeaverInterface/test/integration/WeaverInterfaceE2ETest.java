@@ -8,12 +8,11 @@ import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.fixtures.TestGear;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
-import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 
 class WeaverInterfaceE2ETest {
 
+    @SuppressWarnings("deprecation")
     @Test
     @DisplayName("Event flow through insert/insertFar with TestGear and active toggle")
     void eventFlow_insert_and_insertFar() {
@@ -27,16 +26,16 @@ class WeaverInterfaceE2ETest {
         var root = engine.getRootJp();
 
         // insert with String
-        root.insert("before", "code-snippet");
+        root.insert(InsertPosition.BEFORE.getDisplay(), "code-snippet");
         // insert with JP
         var other = new TestJoinPoint(engine, "node");
-        root.insert("after", other);
+        root.insert(InsertPosition.AFTER.getDisplay(), other);
         // insertFar variants
-        root.insertFar("replace", "far-code");
-        root.insertFar("before", other);
+        root.insert(InsertPosition.REPLACE.getDisplay(), "far-code");
+        root.insert(InsertPosition.BEFORE.getDisplay(), other);
 
         // Expect 8 action events: for insert(String) BEGIN+END, insert(JP) BEGIN+END,
-        // insertFar(String) BEGIN+END, insertFar(JP) BEGIN+END
+        // insert(String) BEGIN+END, insert(JP) BEGIN+END
         assertThat(gear.getActionEvents()).hasSize(8);
         // Sanity check ordering and names
         var events = gear.getActionEvents();
@@ -45,12 +44,12 @@ class WeaverInterfaceE2ETest {
         assertThat(events.get(1).getStage().getName()).isEqualTo("end");
         assertThat(events.get(1).getActionName()).isEqualTo("insert");
         assertThat(events.get(2).getActionName()).isEqualTo("insert");
-        assertThat(events.get(4).getActionName()).isEqualTo("insertFar");
-        assertThat(events.get(6).getActionName()).isEqualTo("insertFar");
+        assertThat(events.get(4).getActionName()).isEqualTo("insert");
+        assertThat(events.get(6).getActionName()).isEqualTo("insert");
 
         // Toggle gear off and ensure no more events are collected
         gear.setActive(false);
-        root.insert("before", "no-capture");
+        root.insert(InsertPosition.BEFORE.getDisplay(), "no-capture");
         assertThat(gear.getActionEvents()).hasSize(8);
     }
 
@@ -80,38 +79,9 @@ class WeaverInterfaceE2ETest {
         assertThat(desc).hasSize(1).containsExactly(children[0]);
 
         // Mapping to join point and name
-        var jp = (JoinPoint) ast.toJavaJoinPoint(rootNode);
-        assertThat(jp.getJoinPointType()).isEqualTo("root");
+        var jp = (TestJoinPoint) ast.toJavaJoinPoint(rootNode);
+        assertThat(jp.getJoinPointTypeImpl()).isEqualTo("root");
         var name = (String) ast.getJoinPointName(rootNode);
         assertThat(name).isEqualTo("root");
-    }
-
-    @Test
-    @DisplayName("JSON spec generation (safe): build LanguageSpecification from JoinPoint.getLaraJoinPoint() and verify top-level fields")
-    void jsonSpecGeneration_like_flow() {
-        // Build a minimal language specification using the static LARA join point as a
-        // base
-        JoinPointClass base = JoinPoint.getLaraJoinPoint();
-
-        // Declare a simple root JP and set a default attribute
-        JoinPointClass root = new JoinPointClass("root");
-        root.setDefaultAttribute("dump");
-
-        LanguageSpecification spec = new LanguageSpecification(root, null);
-        spec.add(root);
-        spec.setRoot(root);
-        spec.setGlobal(base);
-
-        // The spec should report the root and global join points properly
-        assertThat(spec.getRoot().getName()).isEqualTo("root");
-        // Global JP name comes from JoinPoint.getLaraJoinPoint() => "LaraJoinPoint"
-        assertThat(spec.getGlobal().getName()).isEqualTo("LaraJoinPoint");
-        assertThat(spec.getRoot().getDefaultAttribute().orElse("<none>")).isEqualTo("dump");
-
-        // A pseudo-JSON-like check via toString() DSL contents to ensure non-empty &
-        // contains expected names
-        String dsl = spec.toString();
-        assertThat(dsl).isNotEmpty();
-        assertThat(dsl).contains("root");
     }
 }

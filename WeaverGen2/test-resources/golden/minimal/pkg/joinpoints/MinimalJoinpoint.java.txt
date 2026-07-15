@@ -1,0 +1,11 @@
+package minimal.pkg.joinpoints;
+
+import minimal.pkg.abstracts.joinpoints.AJoinpoint;
+import minimal.pkg.MinimalWeaver;
+import java.lang.Object;
+
+public class MinimalJoinpoint<Self extends MinimalJoinpoint<Self>> extends AJoinpoint<Self> {
+    protected MinimalJoinpoint(Object node, MinimalWeaver weaver) {
+        super(node, weaver);
+    }
+}

@@ -1,0 +1,10 @@
+package thistype.pkg.entities;
+
+import java.util.*;
+
+/**
+ * Contextual information for AST operations
+ */
+public class AstContext {
+
+}

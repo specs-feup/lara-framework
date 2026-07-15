@@ -1,8 +1,0 @@
-rootProject.name = 'LanguageSpecification'
-
-def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-java-libs'
-
-includeBuild("${specsJavaLibsRoot}/SpecsUtils")
-includeBuild("${specsJavaLibsRoot}/tdrcLibrary")
-
-includeBuild("../LaraUtils")

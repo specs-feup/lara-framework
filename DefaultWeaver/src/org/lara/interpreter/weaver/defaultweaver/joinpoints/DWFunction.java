@@ -12,22 +12,20 @@
  */
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AJoinpoint;
+import org.lara.interpreter.weaver.interf.enums.InsertPosition;
 
-public class DWFunction extends AFunction {
+public class DWFunction<Self extends DWFunction<Self>> extends AFunction<Self> {
 
-    private final String name;
-
-    public DWFunction(String element, DefaultWeaver weaver) {
-        super(weaver);
-        name = element;
+    public DWFunction(String element, DWWeaver weaver) {
+        super(element, weaver);
     }
 
     @Override
-    public Object getNode() {
-        return name;
+    public String getNodeImpl() {
+        return (String) super.getNodeImpl();
     }
 
     // @Override
@@ -39,10 +37,10 @@ public class DWFunction extends AFunction {
     // }
 
     @Override
-    public JoinPoint[] insertImpl(String position, String code) {
+    public AJoinpoint<?>[] insertImpl(InsertPosition position, String code) {
         System.out.println("#########INSERTING#########");
         System.out.println(
-                "Action not available. But would insert " + position + " function " + name + ": " + code.trim());//
+                "Action not available. But would insert " + position.getDisplay() + " function " + this.getNodeImpl() + ": " + code.trim());//
         System.out.println("###########################");
 
         return null;
@@ -56,6 +54,11 @@ public class DWFunction extends AFunction {
 
     @Override
     public String getNameImpl() {
-        return name;
+        return this.getNodeImpl();
+    }
+
+    @Override
+    public Self getUsesThisImpl(Self[] param1) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

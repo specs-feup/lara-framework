@@ -18,7 +18,6 @@ import org.lara.interpreter.cli.CLIOption;
 import org.lara.interpreter.cli.OptionsParser;
 
 import larai.LaraI;
-import pt.up.fe.specs.util.SpecsSystem;
 import pt.up.fe.specs.util.utilities.JarPath;
 
 public class LaraIUtils {

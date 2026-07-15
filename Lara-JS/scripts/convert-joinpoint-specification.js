@@ -25,6 +25,7 @@ export function convertSpecification(input, baseJoinPointSpec = undefined) {
   let output = {
     joinpoints: convertJoinpoints(joinpoints, joinpointNameSet, enumNameSet),
     enums: convertEnums(enums),
+    importEnums: Array.isArray(input.importEnums) ? [...input.importEnums] : [],
   };
 
   if (baseJoinPointSpec !== undefined) {
@@ -98,7 +99,7 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
   let actions = [];
   const actionNameSet = new Set();
 
-  jp.children.forEach((child) => {
+  jp.children?.forEach((child) => {
     switch (child.type) {
       case "attribute":
         if (child.children.length !== 1) {
@@ -131,6 +132,9 @@ function convertJoinpoint(jp, joinpointNameSet, enumNameSet) {
         console.log("Unknown child type:", child.type);
     }
   });
+
+  attributes.sort((left, right) => left.name.localeCompare(right.name));
+  actions.sort((left, right) => left.name.localeCompare(right.name));
 
   const jpName = interpretType(jp.name, joinpointNameSet, enumNameSet);
   return {
@@ -371,6 +375,10 @@ export function capitalizeFirstLetter(string) {
  * @returns {string}
  */
 function interpretType(typeString, joinpointNameSet, enumNameSet) {
+  if (typeString === "?") {
+    return "any";
+  }
+
   // Detect array types
   if (typeString.endsWith("[]")) {
     const baseType = typeString.slice(0, -2);
@@ -383,6 +391,17 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
       .map((literal) => `"${literal.trim()}"`)
       .join(" | ");
     return literals;
+  }
+
+  if ((typeString.startsWith("Map<") || typeString.startsWith("map<")) && typeString.endsWith(">")) {
+    const innerTypes = typeString.slice(4, -1).split(",").map((t) => t.trim());
+    if (innerTypes.length === 2) {
+      const keyType = interpretType(innerTypes[0], joinpointNameSet, enumNameSet);
+      const valueType = interpretType(innerTypes[1], joinpointNameSet, enumNameSet);
+      return `Record<${keyType}, ${valueType}>`;
+    } else {
+      return "Record<string, any>";
+    }
   }
 
   if (joinpointNameSet.has(typeString) || enumNameSet.has(typeString)) {
@@ -404,9 +423,14 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
     case "Integer":
     case "int":
     case "Long":
+    case "long":
     case "Double":
+    case "double":
       return "number";
       break;
+    case "map<?, ?>":
+    case "Map<?, ?>":
+    case "map":
     case "Map":
       return "Record<string, any>";
     default:

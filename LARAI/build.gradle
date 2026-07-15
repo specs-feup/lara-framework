@@ -21,7 +21,6 @@ dependencies {
     implementation ':SpecsUtils'
 
     implementation ':LaraUtils'
-    implementation ':LanguageSpecification'
     implementation ':WeaverInterface'
 
     implementation 'commons-cli:commons-cli:1.9.0'
@@ -82,12 +81,4 @@ test {
     maxParallelForks = Runtime.runtime.availableProcessors()
 
     finalizedBy jacocoTestReport
-}
-
-tasks.register('json', JavaExec) {
-    group = "Execution"
-    description = "Generates the LaraJoinPointSpecification.json file for Lara-JS"
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'org.lara.interpreter.LaraJoinPointJsonGeneratorLauncher'
-    args = []
 }

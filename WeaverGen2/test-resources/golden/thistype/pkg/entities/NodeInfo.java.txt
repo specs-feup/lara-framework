@@ -1,0 +1,48 @@
+package thistype.pkg.entities;
+
+import java.util.*;
+
+import thistype.pkg.abstracts.joinpoints.*;
+
+/**
+ * User-defined type: NodeInfo
+ */
+public class NodeInfo {
+    private AJoinpoint<?> node;
+    private List<AJoinpoint<?>> relatedNodes;
+    private Map<String, String> metadata;
+    private String name;
+
+    public AJoinpoint<?> getNode() {
+        return node;
+    }
+
+    public void setNode(AJoinpoint<?> node) {
+        this.node = node;
+    }
+
+    public List<AJoinpoint<?>> getRelatedNodes() {
+        return relatedNodes;
+    }
+
+    public void setRelatedNodes(List<AJoinpoint<?>> relatedNodes) {
+        this.relatedNodes = relatedNodes;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+}

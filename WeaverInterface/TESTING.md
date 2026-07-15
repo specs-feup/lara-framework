@@ -9,7 +9,6 @@ This document explains how to run the unit, integration, and performance tests f
   - specs-java-libs/jOptions
   - specs-java-libs/SpecsUtils
   - specs-java-libs/tdrcLibrary
-  - lara-framework/LanguageSpecification
   - lara-framework/LaraUtils
 
 These are already referenced via `settings.gradle` using `includeBuild(...)`.

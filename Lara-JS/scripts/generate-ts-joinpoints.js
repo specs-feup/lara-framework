@@ -73,11 +73,29 @@ function generateDocumentation(tooltip) {
   return `  /**\n   * ${tooltip.split("\n").join("\n   * ")}\n   */\n`;
 }
 
+function escapeJavaReservedKeywords(name) {
+  const reservedKeywords = new Set([
+    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+    "class", "const", "continue", "default", "do", "double", "else", "enum",
+    "extends", "final", "finally", "float", "for", "goto", "if", "implements",
+    "import", "instanceof", "int", "interface", "long", "native", "new",
+    "package", "private", "protected", "public", "return", "short",
+    "static", "strictfp", "super", "switch", "synchronized", "this",
+    "throw", "throws", "transient", "try", "void", "volatile",
+    // Also include literals and special identifiers
+    "true", "false", "null"
+  ]);
+  if (reservedKeywords.has(name)) {
+    return `_${name}`;
+  }
+  return name;
+}
+
 function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
   if (attribute.name === "data") {
     fs.writeSync(
       outputFile,
-      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): any { const data = (this._javaObject.get${capitalizeFirstLetter(attribute.name)}() as string | undefined); return data ? JSON.parse(data) : data; }\n`
+      `${generateDocumentation(attribute.tooltip)}  get ${attribute.name}(): any { const data = (this._javaObject.${attribute.name}() as string | undefined); return data ? JSON.parse(data) : data; }\n`
     );
   } else {
     fs.writeSync(
@@ -86,7 +104,7 @@ function generateJoinpointAttribute(attribute, outputFile, joinpointActions) {
         attribute.type
       } { return ${
         attribute.name === "node" ? "" : "wrapJoinPoint"
-      }(this._javaObject.get${capitalizeFirstLetter(attribute.name)}()) }\n`
+      }(this._javaObject.${escapeJavaReservedKeywords(attribute.name)}()) }\n`
     );
   }
 
@@ -170,7 +188,7 @@ function generateJoinpointAction(action, outputFile, joinpoints) {
     `${generateDocumentation(action.tooltip)}  ${action.name}(${parameters}): ${
       action.returnType
     } { return wrapJoinPoint(this._javaObject.${
-      action.name
+      escapeJavaReservedKeywords(action.name)
     }(${callParameters})); }\n`
   );
 }

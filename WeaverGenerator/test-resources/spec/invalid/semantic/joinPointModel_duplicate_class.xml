@@ -1,4 +1,0 @@
-<joinpoints root_class="A">
-  <joinpoint class="A"/>
-  <joinpoint class="A"/>
-</joinpoints>
