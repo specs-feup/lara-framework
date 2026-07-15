@@ -22,6 +22,7 @@
     "./vitest/*.js": "./vitest/*.ts",
     "./vitest/*": "./vitest/*.ts",
     "./vitest/*.ts": "./vitest/*.ts",
+    "./scripts/validateJavaBinaries.js": "./scripts/validateJavaBinaries.ts",
     "./oxlint.config.ts": "./oxlint.config.ts",
     "./vitest.config.ts": "./vitest.config.ts",
     "./LaraJoinPointSpecification.json": "./LaraJoinPointSpecification.json",
