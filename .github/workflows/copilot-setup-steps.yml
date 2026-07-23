@@ -61,6 +61,7 @@ jobs:
         shell: bash
         env:
           SOURCE_BRANCH: ${{ env.BRANCH_NAME }}
+          EVIDENCE_REPOSITORIES: specs-feup/clava
         run: |
           bash lara-framework/.github/scripts/resolve-dependency-refs.sh \
             lara-framework \
@@ -69,7 +70,8 @@ jobs:
       - name: Echo checks
         run: |
           echo "Lara branch: ${{ env.BRANCH_NAME }}"
-          echo "Specs-java-libs ref: ${{ steps.repo-refs.outputs.specs_ref }}"
+          echo "Specs-java-libs branch: ${{ steps.repo-refs.outputs.specs_branch }}"
+          echo "Specs-java-libs commit: ${{ steps.repo-refs.outputs.specs_ref }}"
           echo "Specs-java-libs default: ${{ steps.repo-refs.outputs.specs_default }}"
 
       - name: Checkout specs-java-libs
