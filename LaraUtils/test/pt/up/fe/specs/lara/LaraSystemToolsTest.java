@@ -126,7 +126,7 @@ class LaraSystemToolsTest {
         // Given
         String command = "echo hello";
         boolean printToConsole = false;
-        long timeoutNanos = 2000000000; // 2 seconds
+        Long timeoutNanos = null;
         
         // When
         ProcessOutputAsString result = LaraSystemTools.runCommand(command, workingDirectory, printToConsole, timeoutNanos);
