@@ -1,17 +1,4 @@
-import path from "path";
-import { fileURLToPath } from "url";
-
-export const weaverConfig = {
-  weaverName: "DefaultWeaver",
-  weaverPrettyName: "Default Weaver",
-  weaverFileName: "@specs-feup/lara/code/Weaver.js",
-  jarPath: path.join(
-    path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url)))),
-    "./DefaultWeaver/build/install/DefaultWeaver"
-  ),
-  javaWeaverQualifiedName: "org.lara.interpreter.weaver.defaultweaver.DefaultWeaver",
-};
-
+import { weaverConfig } from "../code/WeaverConfiguration.js";
 
 const config = {
   preset: "ts-jest/presets/default-esm",

@@ -1,3 +1,6 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
 export default interface WeaverConfiguration {
   /**
    * Name of the weaver.
@@ -35,3 +38,18 @@ export default interface WeaverConfiguration {
    */
   importForSideEffects?: string[];
 }
+
+/**
+ * Default configuration for packages that require a Lara weaver during setup.
+ */
+export const weaverConfig: WeaverConfiguration = {
+  weaverName: "DefaultWeaver",
+  weaverPrettyName: "Default Weaver",
+  weaverFileName: "@specs-feup/lara/code/Weaver.js",
+  jarPath: path.join(
+    path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url)))),
+    "./DefaultWeaver/build/install/DefaultWeaver"
+  ),
+  javaWeaverQualifiedName:
+    "org.lara.interpreter.weaver.defaultweaver.DefaultWeaver",
+};
