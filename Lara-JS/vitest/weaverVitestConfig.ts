@@ -17,31 +17,29 @@ export function createWeaverVitestConfig(
     weaver,
   };
 
-  return defineConfig(() => {
-    const root = process.cwd();
-    const environmentPath = path
-      .relative(root, fileURLToPath(new URL("./weaverEnvironment.ts", import.meta.url)))
-      .split(path.sep)
-      .join("/");
+  const root = process.cwd();
+  const environmentPath = path
+    .relative(root, fileURLToPath(new URL("./weaverEnvironment.ts", import.meta.url)))
+    .split(path.sep)
+    .join("/");
 
-    return {
-      test: {
-        coverage: {
-          include: ["**/*[^.d].(t|j)s"],
-          provider: "v8",
-          reporter: ["text", "lcov"],
-        },
-        environment: `./${environmentPath}`,
-        environmentOptions,
-        experimental: {
-          viteModuleRunner: false,
-        },
-        fileParallelism: false,
-        globals: true,
-        isolate: false,
-        maxWorkers: 1,
-        pool: "forks",
+  return defineConfig({
+    test: {
+      coverage: {
+        include: ["**/*[^.d].(t|j)s"],
+        provider: "v8",
+        reporter: ["text", "lcov"],
       },
-    };
+      environment: `./${environmentPath}`,
+      environmentOptions,
+      experimental: {
+        viteModuleRunner: false,
+      },
+      fileParallelism: false,
+      globals: true,
+      isolate: false,
+      maxWorkers: 1,
+      pool: "forks",
+    },
   });
 }
