@@ -17,8 +17,8 @@ export function createWeaverVitestConfig(
     weaver,
   };
 
-  return defineConfig((userConfig) => {
-    const root = userConfig.root ?? process.cwd();
+  return defineConfig(() => {
+    const root = process.cwd();
     const environmentPath = path
       .relative(root, fileURLToPath(new URL("./weaverEnvironment.ts", import.meta.url)))
       .split(path.sep)
