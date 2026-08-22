@@ -1,4 +1,3 @@
-import { fileURLToPath } from "node:url";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";
 import type { WeaverEnvironmentOptions } from "./weaverEnvironment.ts";
 import { defineConfig } from "vitest/config";
@@ -23,9 +22,7 @@ export function createWeaverVitestConfig(
         provider: "v8",
         reporter: ["text", "lcov"],
       },
-      environment: fileURLToPath(
-        new URL("./weaverEnvironment.ts", import.meta.url),
-      ),
+      environment: new URL("./weaverEnvironment.ts", import.meta.url).href,
       environmentOptions,
       experimental: {
         viteModuleRunner: false,
