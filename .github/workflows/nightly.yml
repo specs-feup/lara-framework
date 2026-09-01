@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      specs_ref: ${{ steps.repo-refs.outputs.specs_ref }}
+      specs_ref: ${{ env.specs_ref }}
 
     steps:
       - name: Setup Java
@@ -49,33 +49,26 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-      - name: Test dependency ref resolver
-        run: bash lara-framework/.github/scripts/test-resolve-dependency-refs.sh
-
       - name: Determine repository refs
-        id: repo-refs
-        shell: bash
-        env:
-          SOURCE_BRANCH: ${{ env.BRANCH_NAME }}
-          EVIDENCE_REPOSITORIES: specs-feup/clava
-        run: |
-          bash lara-framework/.github/scripts/resolve-dependency-refs.sh \
-            lara-framework \
-            specs specs-feup/specs-java-libs
+        uses: specs-feup/branch-resolver@v1
+        with:
+          source-directory: lara-framework
+          evidence-repositories: specs-feup/clava
+          dependencies: specs specs-feup/specs-java-libs
 
       - name: Echo checks
         run: |
           echo "Lara branch: ${{ env.BRANCH_NAME }}"
-          echo "Specs-java-libs branch: ${{ steps.repo-refs.outputs.specs_branch }}"
-          echo "Specs-java-libs commit: ${{ steps.repo-refs.outputs.specs_ref }}"
-          echo "Specs-java-libs default: ${{ steps.repo-refs.outputs.specs_default }}"
+          echo "Specs-java-libs branch: ${{ env.specs_branch }}"
+          echo "Specs-java-libs commit: ${{ env.specs_ref }}"
+          echo "Specs-java-libs default: ${{ env.specs_default }}"
 
       - name: Checkout specs-java-libs
         uses: actions/checkout@v6
         with:
           repository: specs-feup/specs-java-libs
           path: specs-java-libs
-          ref: ${{ steps.repo-refs.outputs.specs_ref }}
+          ref: ${{ env.specs_ref }}
 
       # Setting up gradle multi-project would be helpful
       - name: Build and test LanguageSpecification
