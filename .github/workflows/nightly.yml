@@ -149,6 +149,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           path: lara-framework
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup js workspace
         run: |
