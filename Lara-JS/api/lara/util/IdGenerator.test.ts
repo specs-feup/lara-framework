@@ -1,6 +1,10 @@
 import IdGenerator, { IdGeneratorClass } from "./IdGenerator.ts";
 
 describe("IdGenerator", () => {
+  afterEach(() => {
+    IdGenerator.idCounter.clear();
+  });
+
   describe("IdGenerator", () => {
     it("should generate ids with the correct sequence", () => {
       const id1 = IdGenerator.next("test");

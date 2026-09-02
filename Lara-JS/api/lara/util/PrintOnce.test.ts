@@ -1,6 +1,10 @@
 import PrintOnce from "./PrintOnce.ts"
 
 describe("PrintOnce", () => {
+  afterEach(() => {
+    PrintOnce.messagesSet.clear();
+  });
+
   describe("message", () => {
     it("prints the string it receives ignoring duplicates", () => {
       const originalConsoleLog = console.log;
@@ -20,5 +24,3 @@ describe("PrintOnce", () => {
     });
   });
 });
-
-  

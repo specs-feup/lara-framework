@@ -2,8 +2,6 @@ import { vi } from "vitest";
 import JavaTypes, {
   type JavaClasses,
 } from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
-import IdGenerator from "@specs-feup/lara/api/lara/util/IdGenerator.ts";
-import PrintOnce from "@specs-feup/lara/api/lara/util/PrintOnce.ts";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 import fs from "fs";
 import path from "path";
@@ -22,8 +20,6 @@ afterAll(() => {
   );
 
   javaWeaver.run(javaDatastore);
-  IdGenerator.idCounter.clear();
-  PrintOnce.messagesSet.clear();
 });
 
 export class WeaverLegacyTester {

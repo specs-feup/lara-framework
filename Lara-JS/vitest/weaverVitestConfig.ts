@@ -1,21 +1,8 @@
 import { fileURLToPath } from "node:url";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";
-import type { WeaverEnvironmentOptions } from "./weaverEnvironment.ts";
 import { defineConfig } from "vitest/config";
 
-export interface WeaverVitestConfigOptions {
-  javaOptionsEnvironmentVariable?: string;
-}
-
-export function createWeaverVitestConfig(
-  weaver: WeaverConfiguration,
-  options: WeaverVitestConfigOptions = {},
-) {
-  const environmentOptions: WeaverEnvironmentOptions = {
-    javaOptionsEnvironmentVariable: options.javaOptionsEnvironmentVariable,
-    weaver,
-  };
-
+export function createWeaverVitestConfig(weaver: WeaverConfiguration) {
   return defineConfig({
     test: {
       coverage: {
@@ -23,10 +10,8 @@ export function createWeaverVitestConfig(
         provider: "v8",
         reporter: ["text", "lcov"],
       },
-      environment: fileURLToPath(
-        new URL("./weaverEnvironment.ts", import.meta.url),
-      ),
-      environmentOptions,
+      environment: fileURLToPath(new URL("./weaverEnvironment.ts", import.meta.url)),
+      environmentOptions: { weaver },
       experimental: {
         viteModuleRunner: false,
       },

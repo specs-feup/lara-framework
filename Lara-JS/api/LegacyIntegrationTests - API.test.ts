@@ -1,5 +1,6 @@
 import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
+import PrintOnce from "./lara/util/PrintOnce.ts";
 
 /* oxlint-disable vitest/expect-expect */
 describe("ApiTest", () => {
@@ -124,7 +125,12 @@ describe("ApiTest - Util", () => {
     });
 
     it("PrintOnce", async () => {
-        await newTester().test("PrintOnceTest.js");
+        {
+            await newTester().test("PrintOnceTest.js");
+        }
+
+        // Clear the PrintOnce messagesSet to avoid affecting other tests
+        PrintOnce.messagesSet.clear();
     });
 
     it("Random", async () => {
