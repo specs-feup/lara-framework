@@ -5,7 +5,6 @@ import { Weaver } from "../code/Weaver.ts";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";
 
 export interface WeaverEnvironmentOptions extends Record<string, unknown> {
-  javaOptionsEnvironmentVariable?: string;
   weaver: WeaverConfiguration;
 }
 
@@ -18,8 +17,6 @@ const environment: Environment = {
   async setup(global, rawOptions) {
     const options = rawOptions as unknown as WeaverEnvironmentOptions;
     let weaverStarted = false;
-
-    applyJavaOptions(options.javaOptionsEnvironmentVariable);
 
     // Vitest sends all results (including worker coverage) before it terminates
     // the fork. Stopping node-java any earlier also closes Vitest's IPC handle.
@@ -57,39 +54,5 @@ const environment: Environment = {
     };
   },
 };
-
-function applyJavaOptions(environmentVariable: string | undefined): void {
-  if (environmentVariable === undefined) {
-    return;
-  }
-
-  const rawJavaOptions = process.env[environmentVariable];
-  if (rawJavaOptions === undefined || rawJavaOptions.trim() === "") {
-    return;
-  }
-
-  for (const javaOption of parseJavaOptions(rawJavaOptions)) {
-    if (!java.options.includes(javaOption)) {
-      java.options.push(javaOption);
-    }
-  }
-}
-
-function parseJavaOptions(rawJavaOptions: string): string[] {
-  try {
-    const parsed: unknown = JSON.parse(rawJavaOptions);
-
-    if (
-      Array.isArray(parsed) &&
-      parsed.every((javaOption) => typeof javaOption === "string")
-    ) {
-      return parsed;
-    }
-  } catch {
-    // Fall back to whitespace splitting for ad-hoc local use.
-  }
-
-  return rawJavaOptions.split(/\s+/).filter((javaOption) => javaOption !== "");
-}
 
 export default environment;

@@ -2,7 +2,4 @@
     "cmake.ignoreCMakeListsMissing": true,
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "jest.runMode": {
-        "type": "on-demand"
-    },
 }
