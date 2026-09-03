@@ -17,7 +17,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AFunction extends AMediumWeaverJoinPoint {
+public abstract class AFunction<Self extends AFunction<Self>> extends AMediumWeaverJoinPoint<Self> {
 
     /**
      * 
@@ -67,7 +67,7 @@ public abstract class AFunction extends AMediumWeaverJoinPoint {
      * 
      * @param node 
      */
-    public AJoinPoint replaceWithImpl(AJoinPoint node) {
+    public AJoinPoint<?> replaceWithImpl(AJoinPoint<?> node) {
         throw new UnsupportedOperationException(get_class()+": Action replaceWith not implemented ");
     }
 
@@ -75,9 +75,9 @@ public abstract class AFunction extends AMediumWeaverJoinPoint {
      * 
      * @param node 
      */
-    public final Object replaceWith(AJoinPoint node) {
+    public final Object replaceWith(AJoinPoint<?> node) {
         try {
-        	AJoinPoint result = this.replaceWithImpl(node);
+        	AJoinPoint<?> result = this.replaceWithImpl(node);
         	return result!=null?result:getUndefinedValue();
         } catch(Exception e) {
         	throw new ActionException(get_class(), "replaceWith", e);
@@ -98,6 +98,14 @@ public abstract class AFunction extends AMediumWeaverJoinPoint {
     protected enum FunctionAttributes {
         NAME("name"),
         PARAMS("params"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

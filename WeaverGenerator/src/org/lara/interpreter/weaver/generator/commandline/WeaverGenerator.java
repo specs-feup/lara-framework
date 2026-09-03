@@ -12,6 +12,9 @@
  */
 package org.lara.interpreter.weaver.generator.commandline;
 
+import java.io.File;
+import java.util.Objects;
+
 import org.apache.commons.cli.CommandLine;
 import org.lara.interpreter.weaver.generator.commandline.WeaverGeneratorOptions.GeneratorOption;
 import org.lara.interpreter.weaver.generator.generator.BaseGenerator;
@@ -19,13 +22,11 @@ import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerat
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.ast.LangSpecNode;
 import org.lara.language.specification.ast.NodeFactory;
+
 import pt.up.fe.specs.util.DotRenderFormat;
 import pt.up.fe.specs.util.SpecsGraphviz;
 import pt.up.fe.specs.util.SpecsIo;
 import pt.up.fe.specs.util.SpecsSystem;
-
-import java.io.File;
-import java.util.Objects;
 
 public class WeaverGenerator {
     /**

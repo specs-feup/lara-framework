@@ -1,0 +1,28 @@
+{
+  "java": {
+    "abstractJoinpointFiles": 94,
+    "dottyFiles": 1,
+    "entityFiles": 0,
+    "enumFiles": 6,
+    "exceptionFiles": 1,
+    "jsonFiles": 1,
+    "totalJavaFiles": 100,
+    "weaverFiles": 1
+  },
+  "json": {
+    "actionCount": 3036,
+    "attributeCount": 7062,
+    "childrenKeyCount": 10191,
+    "enumCount": 2,
+    "extendsKeyCount": 90,
+    "joinpointCount": 3644,
+    "maxDepth": 7,
+    "nameKeyCount": 14657,
+    "nodesWithChildren": 10191,
+    "totalArrays": 10191,
+    "totalChildrenEdges": 24767,
+    "totalObjects": 24768,
+    "typeKeyCount": 24755,
+    "typedefCount": 0
+  }
+}

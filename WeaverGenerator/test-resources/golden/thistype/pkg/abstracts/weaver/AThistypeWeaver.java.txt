@@ -1,0 +1,66 @@
+package thistype.pkg.abstracts.weaver;
+
+import org.lara.interpreter.weaver.LaraWeaverEngine;
+import java.util.Arrays;
+import java.util.List;
+import thistype.pkg.entities.AstContext;
+import thistype.pkg.entities.NodeInfo;
+import thistype.pkg.entities.TreeStructure;
+import thistype.pkg.entities.SimpleMetadata;
+import thistype.pkg.enums.NodeKind;
+import java.util.ArrayList;
+
+/**
+ * Abstract Weaver Implementation for ThistypeWeaver<br>
+ * Since the generated abstract classes are always overwritten, their implementation should be done by extending those abstract classes with user-defined classes.<br>
+ * The abstract class {@link thistype.pkg.abstracts.AThistypeWeaverJoinPoint} contains attributes and actions common to all join points.
+ * The implementation of the abstract methods is mandatory!
+ * @author Lara C.
+ */
+public abstract class AThistypeWeaver extends LaraWeaverEngine {
+
+    /**
+     * Get the list of available actions in the weaver
+     * 
+     * @return list with all actions
+     */
+    @Override
+    public final List<String> getActions() {
+        String[] weaverActions= {"insert", "insert", "toString", "equals", "instanceOf", "instanceOf", "categorize", "findAll", "replaceWith", "selfTransform", "setOperands", "swapOperands", "collectTerms", "evaluate", "substitute", "copy", "detach", "findChildren", "getMetadata", "getTags", "groupByType", "insertAfter", "insertAll", "insertAt", "insertBefore", "merge", "partitionChildren", "replaceAll", "replaceBetween", "swap", "toArray", "wrapWith", "addToAll", "processNested", "fuse", "interchange", "tile", "unroll", "extractTo", "moveAfter"};
+        return Arrays.asList(weaverActions);
+    }
+
+    /**
+     * Returns the name of the root
+     * 
+     * @return the root name
+     */
+    @Override
+    public final String getRoot() {
+        return "root";
+    }
+
+    /**
+     * Returns a list of classes that may be imported and used in LARA.
+     * 
+     * @return a list of importable classes
+     */
+    @Override
+    public final List<Class<?>> getAllImportableClasses() {
+        Class<?>[] defaultClasses = {AstContext.class, NodeInfo.class, TreeStructure.class, SimpleMetadata.class, NodeKind.class};
+        List<Class<?>> otherClasses = this.getImportableClasses();
+        List<Class<?>> allClasses = new ArrayList<>(Arrays.asList(defaultClasses));
+        allClasses.addAll(otherClasses);
+        return allClasses;
+    }
+
+    /**
+     * Does the generated code implements events?
+     * 
+     * @return true if implements events, false otherwise
+     */
+    @Override
+    public final boolean implementsEvents() {
+        return false;
+    }
+}

@@ -13,28 +13,74 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.utils;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecification;
+import org.lara.language.specification.dsl.types.ArrayType;
+import org.lara.language.specification.dsl.types.GenericType;
+import org.lara.language.specification.dsl.types.IType;
+import org.lara.language.specification.dsl.types.JPType;
+import org.lara.language.specification.dsl.types.ParameterizedType;
+import org.lara.language.specification.dsl.types.PrimitiveClasses;
+import org.lara.language.specification.dsl.types.ThisType;
 import org.lara.language.specification.dsl.types.TypeDef;
+import org.lara.language.specification.dsl.types.WildcardType;
 import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.types.Primitive;
 import org.specs.generators.java.utils.Utils;
+
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 public class ConvertUtils {
+
+    private enum PrimitiveConversionStrategy {
+        STANDARD {
+            @Override
+            JavaType convertPrimitive(Primitive primitive, int arrayDimension) {
+                JavaType primitiveType = JavaTypeFactory.getPrimitiveType(primitive);
+                primitiveType.setArrayDimension(arrayDimension);
+                return primitiveType;
+            }
+        },
+        ATTRIBUTE_RETURN {
+            @Override
+            JavaType convertPrimitive(Primitive primitive, int arrayDimension) {
+                if (arrayDimension == 0) {
+                    JavaType wrapperType = JavaTypeFactory.getPrimitiveWrapper(primitive);
+                    wrapperType.setArrayDimension(arrayDimension);
+                    return wrapperType;
+                }
+
+                JavaType primitiveType = JavaTypeFactory.getPrimitiveType(primitive);
+                primitiveType.setArrayDimension(arrayDimension);
+                return primitiveType;
+            }
+        };
+
+        abstract JavaType convertPrimitive(Primitive primitive, int arrayDimension);
+    }
 
     private static final String JoinPointClassTypeName = "Joinpoint";
     private static final String JoinPointInterfaceClassTypeName = "JoinpointInterface";
     private static final Map<String, JavaType> InterpreterTypes;
+    /**
+     * Standard Java types that can be used in type specifications.
+     * These don't require full qualification and are resolved to their proper
+     * java.util classes.
+     */
+    private static final Map<String, JavaType> StandardJavaTypes;
 
     static {
         InterpreterTypes = new HashMap<>();
@@ -50,85 +96,26 @@ public class ConvertUtils {
         ConvertUtils.InterpreterTypes.put("Map", mapType);
         ConvertUtils.InterpreterTypes.put("Template", JavaTypeFactory.getStringType());
 
+        // Standard Java types that can be used in generic contexts
+        StandardJavaTypes = new HashMap<>();
+        StandardJavaTypes.put("List", new JavaType(List.class));
+        StandardJavaTypes.put("Set", new JavaType(Set.class));
+        StandardJavaTypes.put("Collection", new JavaType(Collection.class));
+        StandardJavaTypes.put("Optional", new JavaType(Optional.class));
+        StandardJavaTypes.put("Map", new JavaType(Map.class));
+
     }
 
-    /**
-     * Get the correct type for the given string, according to:
-     * <p>
-     * 1st the primitives, 2nd the declared objects and 3rd the declared join points
-     *
-     * @throws RuntimeException if the type cannot be found.
-     */
-    public static JavaType getConvertedType(String type, JavaAbstractsGenerator generator) {
-        type = normalizeReferenceType(type);
-
-        // First remove array dimension
-        final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.left();
-        final int arrayDimension = splittedType.right();
-        // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
-        // Integer)
-        if (JavaTypeFactory.isPrimitive(type)) {
-
-            final JavaType primitiveType = JavaTypeFactory.getPrimitiveType(Primitive.getPrimitive(type));
-            primitiveType.setArrayDimension(arrayDimension);
-            return primitiveType;
-        }
-        if (JavaTypeFactory.isPrimitiveWrapper(type)) {
-
-            final JavaType primitiveWrapper = JavaTypeFactory.getPrimitiveWrapper(type);
-            primitiveWrapper.setArrayDimension(arrayDimension);
-            return primitiveWrapper;
-        }
-
-        return getConvertedTypeAux(type, generator, arrayDimension);
+    public static JavaType withJoinPointWildcard(JavaType joinPointType) {
+        JavaType clone = joinPointType.clone();
+        clone.addGeneric(new JavaGenericType(JavaTypeFactory.getWildCardType()));
+        return clone;
     }
 
-    /**
-     * Get the correct type for the return of an attribute. This method converts a
-     * primitive type into its wrapper
-     * <p>
-     * <p>
-     * 1st the primitives, 2nd the declared objects and 3rd the declared join points
-     *
-     * @throws RuntimeException if the type cannot be found.
-     */
-    public static JavaType getAttributeConvertedType(String type, JavaAbstractsGenerator generator) {
-
-        // Check if enum in the format [name1| name2| ...]
-        // In this case, the type is String
-        if (type.contains("[") && type.contains("|") && type.contains("]")) {
-            type = String.class.getSimpleName();
-        }
-
-        type = normalizeReferenceType(type);
-
-        // First remove array dimension
-        final Pair<String, Integer> splittedType = JavaTypeFactory.splitTypeFromArrayDimension(type);
-        type = splittedType.left();
-        final int arrayDimension = splittedType.right();
-        // if the type is a primitive (e.g. int) or a primitive wrapper (e.g.
-        // Integer)
-        if (JavaTypeFactory.isPrimitive(type)) {
-
-            Primitive primitive = Primitive.getPrimitive(type);
-            if (arrayDimension == 0) {
-                final JavaType primitiveType = JavaTypeFactory.getPrimitiveWrapper(primitive);
-                primitiveType.setArrayDimension(arrayDimension);
-                return primitiveType;
-            }
-            final JavaType primitiveType = JavaTypeFactory.getPrimitiveType(Primitive.getPrimitive(type));
-            primitiveType.setArrayDimension(arrayDimension);
-            return primitiveType;
-        }
-        if (JavaTypeFactory.isPrimitiveWrapper(type)) {
-
-            final JavaType primitiveWrapper = JavaTypeFactory.getPrimitiveWrapper(type);
-            primitiveWrapper.setArrayDimension(arrayDimension);
-            return primitiveWrapper;
-        }
-
-        return getConvertedTypeAux(type, generator, arrayDimension);
+    public static JavaType withJoinPointTypeArgument(JavaType joinPointType, JavaType typeArgument) {
+        JavaType clone = joinPointType.clone();
+        clone.addGeneric(new JavaGenericType(typeArgument.clone()));
+        return clone;
     }
 
     private static JavaType getConvertedTypeAux(String type, JavaAbstractsGenerator generator,
@@ -146,15 +133,15 @@ public class ConvertUtils {
             return clone;
         }
 
-        // if it is the base joinpoint type
-        if (keyType.equals(ConvertUtils.JoinPointClassTypeName)) {
+        // if it is the base joinpoint type (case-insensitive match)
+        if (keyType.equalsIgnoreCase(ConvertUtils.JoinPointClassTypeName)) {
             final JavaType clone = generator.getaJoinPointType().clone();
             clone.setArrayDimension(arrayDimension);
-            return clone;
+            return withJoinPointWildcard(clone);
         }
 
-        // if it is the joinpoint interface type
-        if (keyType.equals(ConvertUtils.JoinPointInterfaceClassTypeName)) {
+        // if it is the joinpoint interface type (case-insensitive match)
+        if (keyType.equalsIgnoreCase(ConvertUtils.JoinPointInterfaceClassTypeName)) {
             final JavaType clone = GenConstants.getJoinPointInterfaceType().clone();
             clone.setArrayDimension(arrayDimension);
             return clone;
@@ -167,7 +154,7 @@ public class ConvertUtils {
         // if it is a join point class
         if (generator.getLanguageSpecification().hasJoinPoint(type)) {
             final String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(type);
-            return new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension);
+            return withJoinPointWildcard(new JavaType(jpName, generator.getJoinPointClassPackage(), arrayDimension));
         }
 
         // If it does not exist, throw an exception with the error message and
@@ -248,5 +235,261 @@ public class ConvertUtils {
 
     public static String ln() {
         return Utils.ln();
+    }
+
+    // ========== IType-aware type conversion ==========
+
+    /**
+     * Converts an IType to a JavaType, resolving ThisType to the current join point
+     * type.
+     * This method handles all IType subtypes including ParameterizedType,
+     * ArrayType, WildcardType, etc.
+     *
+     * @param type          the IType to convert (must not be null). String-based
+     *                      conversion is no longer supported.
+     * @param generator     the generator context for resolving type references
+     * @param currentJpType the JavaType representing the current join point
+     *                      abstract being generated; ThisType will resolve to this
+     *                      type. Must not be null if the type contains ThisType
+     *                      (directly or nested in generic arguments).
+     * @return the converted JavaType
+     * @throws IllegalArgumentException if type is null
+     * @throws IllegalStateException    if ThisType is encountered but currentJpType
+     *                                  is null (ThisType is not supported in
+     *                                  contexts like TypeDef fields)
+     */
+    public static JavaType getConvertedType(IType type, JavaAbstractsGenerator generator, JavaType currentJpType) {
+        ensureThisTypeContext(type, currentJpType);
+        return convert(type, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
+    }
+
+    /**
+     * Converts an IType to a JavaType for use as an attribute return type.
+     * Similar to {@link #getConvertedType(IType, JavaAbstractsGenerator, JavaType)}
+     * but wraps
+     * primitives in their wrapper classes for use as return types.
+     *
+     * @param type          the IType to convert (must not be null). String-based
+     *                      conversion is no longer supported.
+     * @param generator     the generator context for resolving type references
+     * @param currentJpType the JavaType representing the current join point
+     *                      abstract; ThisType will resolve to this type. Must not
+     *                      be null if the type contains ThisType (directly or
+     *                      nested in generic arguments).
+     * @return the converted JavaType with primitives wrapped
+     * @throws IllegalArgumentException if type is null
+     * @throws IllegalStateException    if ThisType is encountered but currentJpType
+     *                                  is null (ThisType is not supported in
+     *                                  contexts like TypeDef fields)
+     */
+    public static JavaType getAttributeConvertedType(IType type, JavaAbstractsGenerator generator,
+            JavaType currentJpType) {
+        ensureThisTypeContext(type, currentJpType);
+        return convert(type, generator, currentJpType, PrimitiveConversionStrategy.ATTRIBUTE_RETURN);
+    }
+
+    private static void ensureThisTypeContext(IType type, JavaType currentJpType) {
+        if (type == null) {
+            return;
+        }
+
+        if (currentJpType != null) {
+            return;
+        }
+
+        if (TypeTraversalUtils.containsThisType(type)) {
+            throw new IllegalStateException(
+                    "ThisType found but no currentJpType context provided. ThisType is not supported in this context (e.g., TypeDef fields).");
+        }
+    }
+
+    private static JavaType convert(IType type, JavaAbstractsGenerator generator, JavaType currentJpType,
+            PrimitiveConversionStrategy strategy) {
+        if (type == null) {
+            throw new IllegalArgumentException("Type cannot be null");
+        }
+
+        if (type instanceof org.lara.language.specification.dsl.types.Primitive primitiveType) {
+            Primitive primitive = Primitive.getPrimitive(primitiveType.type());
+            return strategy.convertPrimitive(primitive, 0);
+        }
+
+        // Handle ThisType - resolve to current join point type
+        if (type instanceof ThisType) {
+            return currentJpType.clone();
+        }
+
+        // Handle ArrayType - recursively convert base type and set dimension
+        if (type instanceof ArrayType arrayType) {
+            // For arrays, use the base conversion to ensure primitives are wrapped at the
+            // element level
+            JavaType baseJavaType = convert(arrayType.getBaseType(), generator, currentJpType, strategy);
+            baseJavaType.setArrayDimension(baseJavaType.getArrayDimension() + arrayType.getDimension());
+            return baseJavaType;
+        }
+
+        // Handle ParameterizedType - convert base and type arguments
+        if (type instanceof ParameterizedType paramType) {
+            JavaType baseJavaType = getRawBaseType(paramType.getBaseType(), generator, currentJpType);
+
+            for (IType typeArg : paramType.getTypeArguments()) {
+                JavaType argJavaType = convert(typeArg, generator, currentJpType, strategy);
+                baseJavaType.addGeneric(new JavaGenericType(argJavaType));
+            }
+
+            return baseJavaType;
+        }
+
+        // Handle WildcardType
+        if (type instanceof WildcardType wildcardType) {
+            return convertWildcardType(wildcardType, generator, currentJpType);
+        }
+
+        // Handle JPType (join point reference)
+        if (type instanceof JPType jpType) {
+            String jpClassName = jpType.getJointPoint().getName();
+            // Check if this is the global join point (named "joinpoint")
+            // If so, use the pre-configured AJoinPoint type from the generator
+            if (jpClassName.equalsIgnoreCase(JoinPointClassTypeName)) {
+                return withJoinPointWildcard(generator.getaJoinPointType().clone());
+            }
+            // For regular join points, construct the abstract class name
+            String jpName = GenConstants.abstractPrefix() + StringUtils.firstCharToUpper(jpClassName);
+            return withJoinPointWildcard(new JavaType(jpName, generator.getJoinPointClassPackage()));
+        }
+
+        // Handle GenericType - check standard Java types first, then fall back to
+        // string-based conversion
+        if (type instanceof GenericType genericType) {
+            String typeName = genericType.type();
+            // Check standard Java types (List, Set, Optional, etc.)
+            if (StandardJavaTypes.containsKey(typeName)) {
+                JavaType result = StandardJavaTypes.get(typeName).clone();
+                if (genericType.isArray()) {
+                    result.setArrayDimension(1);
+                }
+                return result;
+            }
+
+            // GenericType carries array information separately from its name.
+            // Preserve it for non-standard types by appending the suffix before
+            // simple-name conversion.
+            if (genericType.isArray()) {
+                return convertSimpleTypeName(typeName + "[]", generator, strategy);
+            }
+        }
+
+        // Fall back to string-based conversion for other simple types
+        return convertSimpleTypeName(type.type(), generator, strategy);
+    }
+
+    private static JavaType convertSimpleTypeName(String typeName, JavaAbstractsGenerator generator,
+            PrimitiveConversionStrategy strategy) {
+        String normalizedType = normalizeReferenceType(typeName);
+
+        final Pair<String, Integer> splitType = JavaTypeFactory.splitTypeFromArrayDimension(normalizedType);
+        final String baseType = splitType.left();
+        final int arrayDimension = splitType.right();
+
+        if (JavaTypeFactory.isPrimitive(baseType)) {
+            Primitive primitive = Primitive.getPrimitive(baseType);
+            return strategy.convertPrimitive(primitive, arrayDimension);
+        }
+
+        if (JavaTypeFactory.isPrimitiveWrapper(baseType)) {
+            final JavaType primitiveWrapper = JavaTypeFactory.getPrimitiveWrapper(baseType);
+            primitiveWrapper.setArrayDimension(arrayDimension);
+            return primitiveWrapper;
+        }
+
+        return getConvertedTypeAux(baseType, generator, arrayDimension);
+    }
+
+    /**
+     * Gets the raw base type for use in ParameterizedType conversion.
+     * This method ensures that when resolving generic container types like Map,
+     * List, etc.,
+     * we get a clean type without any pre-populated generics.
+     * 
+     * <p>
+     * The InterpreterTypes map contains some types with pre-populated wildcards for
+     * backward compatibility (e.g., Map<?, ?>). When we're building a
+     * ParameterizedType with explicit type arguments, we need the raw type without
+     * these wildcards.
+     * </p>
+     *
+     * @param baseType      the base type of a ParameterizedType
+     * @param generator     the generator context
+     * @param currentJpType the current join point type for ThisType resolution
+     * @return a JavaType representing the raw base type without pre-populated
+     *         generics
+     */
+    private static JavaType getRawBaseType(IType baseType, JavaAbstractsGenerator generator, JavaType currentJpType) {
+        // For GenericType, check if it's a standard Java type
+        if (baseType instanceof GenericType genericType) {
+            String typeName = genericType.type();
+            // Use StandardJavaTypes which have clean types without pre-populated generics
+            if (StandardJavaTypes.containsKey(typeName)) {
+                return StandardJavaTypes.get(typeName).clone();
+            }
+        }
+
+        // Handle PrimitiveClasses that are also in StandardJavaTypes (e.g., MAP)
+        // PrimitiveClasses.MAP has pre-populated wildcards in InterpreterTypes,
+        // so we need to use the clean version from StandardJavaTypes
+        if (baseType instanceof PrimitiveClasses primitiveClass) {
+            String typeName = primitiveClass.type(); // e.g., "Map"
+            if (StandardJavaTypes.containsKey(typeName)) {
+                return StandardJavaTypes.get(typeName).clone();
+            }
+        }
+
+        // For other types, convert normally.
+        // Note: Only collection types in InterpreterTypes have pre-populated generics,
+        // and those are handled above via StandardJavaTypes. Other types (String,
+        // Object, etc.) don't have pre-populated generics that would interfere.
+        return convert(baseType, generator, currentJpType, PrimitiveConversionStrategy.STANDARD);
+    }
+
+    /**
+     * Converts a WildcardType to a JavaType representing a wildcard.
+     * Note: Wildcards in Java generics are special - they can only appear as type
+     * arguments, not as standalone types. This method returns a JavaType that can
+     * be used with addGeneric().
+     * For unbounded wildcards, returns the wildcard type directly.
+     * For bounded wildcards, we create the bound type and represent the wildcard
+     * accordingly.
+     */
+    private static JavaType convertWildcardType(WildcardType wildcardType, JavaAbstractsGenerator generator,
+            JavaType currentJpType) {
+        switch (wildcardType.getKind()) {
+            case UNBOUNDED:
+                return JavaTypeFactory.getWildCardType();
+
+            case EXTENDS:
+                // For ? extends T, we need to properly represent the bounded wildcard
+                JavaType extendsBound = convert(wildcardType.getBound(), generator, currentJpType,
+                        PrimitiveConversionStrategy.STANDARD);
+                // Create a type that represents ? extends T
+                // Use the full type representation including package if needed
+                String extendsTypeName = extendsBound.getPackage().isEmpty()
+                        ? extendsBound.getSimpleType()
+                        : extendsBound.getPackage() + "." + extendsBound.getSimpleType();
+                JavaType extendsWildcard = new JavaType("? extends " + extendsTypeName);
+                return extendsWildcard;
+
+            case SUPER:
+                JavaType superBound = convert(wildcardType.getBound(), generator, currentJpType,
+                        PrimitiveConversionStrategy.STANDARD);
+                // Create a type that represents ? super T
+                String superTypeName = superBound.getPackage().isEmpty()
+                        ? superBound.getSimpleType()
+                        : superBound.getPackage() + "." + superBound.getSimpleType();
+                JavaType superWildcard = new JavaType("? super " + superTypeName);
+                return superWildcard;
+
+            default:
+                throw new IllegalArgumentException("Unknown wildcard kind: " + wildcardType.getKind());
+        }
     }
 }

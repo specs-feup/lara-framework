@@ -10,7 +10,7 @@ import org.lara.interpreter.exception.AttributeException;
  * This class is overwritten when the weaver generator is executed.
  * @author Lara Weaver Generator
  */
-public abstract class AJoinPoint extends JoinPoint {
+public abstract class AJoinPoint<Self extends AJoinPoint<Self>> extends JoinPoint {
 
     /**
      * 
@@ -24,8 +24,7 @@ public abstract class AJoinPoint extends JoinPoint {
     @Override
     public boolean same(JoinPoint iJoinPoint) {
         if (this.get_class().equals(iJoinPoint.get_class())) {
-        
-                return this.compareNodes((AJoinPoint) iJoinPoint);
+                return this.compareNodes((AJoinPoint<?>) iJoinPoint);
             }
             return false;
     }
@@ -36,7 +35,7 @@ public abstract class AJoinPoint extends JoinPoint {
      * <b>Note for developers:</b> A weaver may override this implementation in the editable abstract join point, so
      * the changes are made for all join points, or override this method in specific join points.
      */
-    public boolean compareNodes(AJoinPoint aJoinPoint) {
+    public boolean compareNodes(AJoinPoint<?> aJoinPoint) {
         return this.getNode().equals(aJoinPoint.getNode());
     }
 
@@ -47,12 +46,37 @@ public abstract class AJoinPoint extends JoinPoint {
     public abstract Object getNode();
 
     /**
-     * 
-     * @param position 
-     * @param code 
+     * Defines if this joinpoint is an instanceof a given joinpoint class
+     * @return True if this join point is an instanceof the given class
      */
-    public AJoinPoint[] insertImpl(String position, String code) {
-        throw new UnsupportedOperationException(get_class()+": Action insert not implemented ");
+    @Override
+    public boolean instanceOf(String joinpointClass) {
+        boolean isInstance = get_class().equals(joinpointClass);
+        if(isInstance) {
+        	return true;
+        }
+        return super.instanceOf(joinpointClass);
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        throw new UnsupportedOperationException(get_class()+": Action equals not implemented ");
+    }
+
+    /**
+     * 
+     * @param jp 
+     */
+    public final Object equals(AJoinPoint<?> jp) {
+        try {
+        	boolean result = this.equalsImpl(jp);
+        	return result;
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "equals", e);
+        }
     }
 
     /**
@@ -72,18 +96,5 @@ public abstract class AJoinPoint extends JoinPoint {
         } catch(Exception e) {
         	throw new AttributeException(get_class(), "language", e);
         }
-    }
-
-    /**
-     * Defines if this joinpoint is an instanceof a given joinpoint class
-     * @return True if this join point is an instanceof the given class
-     */
-    @Override
-    public boolean instanceOf(String joinpointClass) {
-        boolean isInstance = get_class().equals(joinpointClass);
-        if(isInstance) {
-        	return true;
-        }
-        return super.instanceOf(joinpointClass);
     }
 }

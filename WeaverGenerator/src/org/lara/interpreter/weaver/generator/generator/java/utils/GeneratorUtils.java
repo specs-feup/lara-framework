@@ -13,6 +13,15 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.exception.AttributeException;
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
@@ -23,24 +32,28 @@ import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.Attribute;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.Parameter;
-import org.lara.language.specification.dsl.types.ArrayType;
-import org.lara.language.specification.dsl.types.JPType;
-import org.lara.language.specification.dsl.types.PrimitiveClasses;
+import org.lara.language.specification.dsl.types.GenericType;
+import org.lara.language.specification.dsl.types.IType;
+import org.lara.language.specification.dsl.types.LiteralEnum;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.classtypes.JavaEnum;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
 import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.enums.Privacy;
-import org.specs.generators.java.members.*;
+import org.specs.generators.java.members.Argument;
+import org.specs.generators.java.members.Constructor;
+import org.specs.generators.java.members.EnumItem;
+import org.specs.generators.java.members.Field;
+import org.specs.generators.java.members.JavaDoc;
+import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
+
+import pt.up.fe.specs.util.SpecsLogs;
 import tdrc.utils.Pair;
 import tdrc.utils.StringUtils;
-
-import java.util.*;
-import java.util.function.Function;
 
 public class GeneratorUtils {
 
@@ -49,60 +62,72 @@ public class GeneratorUtils {
     }
 
     /**
-     * Add methods of the super join point to the java class
+     * Add methods of the super join point to the java class, resolving ThisType to
+     * "Self".
      *
+     * <p>
+     * With CRTP (Curiously Recurring Template Pattern), all classes in the
+     * hierarchy use the same "Self" type parameter. Therefore, inherited methods
+     * that use ThisType should also resolve to "Self" - the override is valid
+     * because both parent and child use "Self".
+     * </p>
+     *
+     * @param javaC         the target Java class
+     * @param fieldName     the name of the field holding the super join point
+     * @param generator     the generator context
+     * @param current       the current join point class
+     * @param currentJpType the JavaType representing "Self" - used for ThisType
+     *                      resolution in all methods
      */
     public static void addSuperMethods(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            JoinPointClass current) {
+            JoinPointClass current, JavaType currentJpType) {
 
         var parent = current.getExtendExplicit().orElse(null);
         if (parent == null) {
             return;
         }
 
-        addSuperGetters(javaC, fieldName, generator, parent);
-        addSuperMethods(javaC, fieldName, generator, parent);
+        // With CRTP, all classes use "Self" as their type parameter, so inherited
+        // methods should also use "Self" for ThisType resolution (the override is valid
+        // because both parent and child use the same type parameter "Self")
+        addSuperGetters(javaC, fieldName, generator, parent.getAttributesSelf(), currentJpType);
+        addSuperMethods(javaC, fieldName, generator, parent, currentJpType);
     }
 
     /**
+     * Add getter methods for inherited attributes.
+     * 
+     * <p>
+     * With CRTP (Curiously Recurring Template Pattern), all classes use "Self" as
+     * their type parameter. Therefore, inherited attributes that use ThisType
+     * should also resolve to "Self" - the override is valid because both parent and
+     * child use the same type parameter.
+     * </p>
+     *
+     * @param javaC         the target Java class
+     * @param fieldName     the name of the field holding the super join point
+     * @param generator     the generator context
+     * @param attributes    the list of inherited attributes
+     * @param currentJpType the JavaType representing "Self" (for ThisType
+     *                      resolution)
      */
-    public static void addSuperToString(JavaClass javaC, String fieldName) {
-
-        final Method toStringMethod = new Method(JavaTypeFactory.getStringType(), "toString");
-        toStringMethod.add(Annotation.OVERRIDE);
-        toStringMethod.appendCode("return this." + fieldName + "." + toStringMethod.getName() + "();");
-        javaC.add(toStringMethod);
-    }
-
     public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            JoinPointClass parent) {
+            List<Attribute> attributes, JavaType currentJpType) {
 
-        addSuperGetters(javaC, fieldName, generator, parent.getAttributesSelf());
-    }
-
-    public static void addSuperGetters(JavaClass javaC, String fieldName, JavaAbstractsGenerator generator,
-            List<org.lara.language.specification.dsl.Attribute> attributes) {
-
-        // TODO: Remove sort
         var mutableAttributes = new ArrayList<>(attributes);
         mutableAttributes.sort(Comparator.comparing(Attribute::getName));
 
         for (var attribute : mutableAttributes) {
 
-            // System.out.println("ATTR:" + attribute.getName());
-            String attrClassStr = attribute.getReturnType().trim();
-
-            if (attrClassStr.startsWith("{")) { // then it is an enumerator
-                attrClassStr = String.class.getSimpleName();
-            }
-
-            // if (ObjectOfPrimitives.contains(attrClassStr))
-            // attrClassStr = ObjectOfPrimitives.getPrimitive(attrClassStr);
+            IType attrType = normalizeAttributeTypeForGetter(attribute);
+            JavaType type = ConvertUtils.getConvertedType(attrType, generator, currentJpType);
+            Function<Parameter, JavaType> parameterTypeResolver = parameter -> ConvertUtils.getConvertedType(
+                    parameter.getIType(), generator, currentJpType);
+            boolean needsCast = currentJpType != null && TypeTraversalUtils.containsThisType(attrType);
 
             String sanitizedName = sanitizeAttributeName(attribute.getName());
             String methodBase = attributeMethodBaseName(attribute.getName());
 
-            JavaType type = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
             String effectiveMethodBase = methodBase;
             if (type.isArray()) {
                 effectiveMethodBase += GenConstants.getArrayMethodSufix();
@@ -112,10 +137,9 @@ public class GeneratorUtils {
             }
 
             final Method getter = createSuperGetter(sanitizedName, effectiveMethodBase, type, fieldName,
-                    attribute.getParameters(),
-                    generator);
+                    attribute.getParameters(), parameterTypeResolver, needsCast);
 
-            if (hasMethod(javaC, getter)) {
+            if (hasMethodSignature(javaC, getter)) {
                 continue;
             }
 
@@ -125,57 +149,62 @@ public class GeneratorUtils {
 
     }
 
+    private static IType normalizeAttributeTypeForGetter(Attribute attribute) {
+        IType attrType = attribute.getType();
+        if (!(attrType instanceof LiteralEnum)) {
+            return attrType;
+        }
+
+        return new GenericType("String", false);
+    }
+
     /**
      * Create the action methods calling the super class method
      *
      */
     public static void addSuperActions(JavaAbstractsGenerator javaGenerator, JavaClass javaC,
             JoinPointClass joinPointSuperType,
-            String fieldName) {
+            String fieldName,
+            JavaType currentJpType) {
 
         var jps = new ArrayList<>(joinPointSuperType.getActions());
 
-        // TODO: HACK - Two insert methods are missing from the actions/generation,
-        // adding them manually
-
-        var returnType = new ArrayType(new JPType(JoinPointClass.globalJoinPoint()));
-        // var globalJpType = new GenericType("JoinpointInterface", false);
-        var globalJpType = PrimitiveClasses.JOINPOINT_INTERFACE;
-        var paramsJp = List.of(new Parameter(PrimitiveClasses.STRING, "position"), new Parameter(globalJpType, "code"));
-        var paramsString = List.of(new Parameter(PrimitiveClasses.STRING, "position"),
-                new Parameter(PrimitiveClasses.STRING, "code"));
-
-        var insertActionWithJp = new org.lara.language.specification.dsl.Action(returnType, "insert", paramsJp);
-        var insertActionWithString = new org.lara.language.specification.dsl.Action(returnType, "insert", paramsString);
-
-        jps.add(insertActionWithString);
-        jps.add(insertActionWithJp);
-
-        // Sort with the insert actions inside
+        // Insert overloads now come from the shared LaraJoinPoint contract through the
+        // inherited action hierarchy.
         jps.sort(Comparator.comparing(Action::getName));
 
-        // getJoinPointOwnActions(joinPointSuperType); // These two lines makes
-        // the same thing as the code above
-        // joinPointOwnActions.addAll(langSpec.getActionModel().getActionsForAll());
         for (var action : jps) {
-            // for (var action :
-            // joinPointSuperType.getActionsSelf().stream().sorted((attribute, t1) ->
-            // attribute.getName().compareTo(t1.getName())).toList()) {
+            if (isRuntimeBackedAction(action)) {
+                continue;
+            }
 
-            final Method m = generateActionMethod(action, javaGenerator);
+            normalizeJoinPointBaseAction(
+                    action,
+                    javaGenerator,
+                    "Inherited action '%s' redeclares inherited action with different return type. Using return type '%s'.");
+
+            final Method m = generateActionMethod(action, javaGenerator, currentJpType);
             m.setName(m.getName() + GenConstants.getImplementationSufix());
             m.clearCode();
             m.add(Annotation.OVERRIDE);
+
+            // Cast is only needed when ThisType is involved.
+            // JPType by itself does not require a cast and may trigger unnecessary-cast
+            // warnings.
+            boolean needsCast = TypeTraversalUtils.containsThisType(action.getType());
+
             if (!action.getReturnType().equals("void")) {
                 m.appendCode("return ");
+                if (needsCast) {
+                    // Add cast to the method's return type (which has Self resolved)
+                    m.appendCode("(" + m.getReturnType().getSimpleType() + ") ");
+                }
             }
-            m.appendCode("this." + fieldName + "." + m.getName() + "(");
-            final String joinedParameters = StringUtils.join(m.getParams(), Argument::getName, ", ");
-            m.appendCode(joinedParameters);
+            appendDelegationInvocation(m, fieldName, m.getName());
 
-            m.appendCode(");");
-
-            javaC.add(m);
+            if (!hasMethodSignature(javaC, m)) {
+                javaC.add(m);
+            }
         }
 
     }
@@ -192,9 +221,6 @@ public class GeneratorUtils {
             boolean abstractGetters) {
         final String attr = field.getName();
         final JavaType attrClassType = field.getType();
-        // attrClassType = JavaTypeFactory.primitiveUnwrap(attrClassType);
-        // if (ObjectOfPrimitives.contains(getAttrType))
-        // getAttrType = ObjectOfPrimitives.getPrimitive(getAttrType);
 
         final Method getAttribute = createGetter(attr, originalName, attrClassType, abstractGetters);
         final Method setAttribute = createSetter(attr, originalName, attrClassType);
@@ -235,90 +261,50 @@ public class GeneratorUtils {
     }
 
     private static Method createSuperGetter(String attr, String originalName, JavaType getAttrType, String superField,
-            List<org.lara.language.specification.dsl.Parameter> list,
-            JavaAbstractsGenerator generator) {
+            List<Parameter> list,
+            Function<Parameter, JavaType> parameterTypeResolver, boolean needsCast) {
 
-        if (!list.isEmpty()) {
-            final Method getAttribute = new Method(getAttrType, originalName);
-            // getAttribute.addModifier(Modifier.ABSTRACT);
-            getAttribute.appendComment("Get value on attribute " + attr);
-            getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
-            getAttribute.appendCode("return this." + superField + "." + originalName + "(");
-
-            for (var parameter : list) {
-
-                JavaType type = ConvertUtils.getConvertedType(parameter.getType(), generator);
-                getAttribute.addArgument(type, parameter.getName());
-                getAttribute.appendCode(parameter.getName());
-            }
-            getAttribute.appendCode(");");
-
-            return getAttribute;
-        }
-        final String getName = "get" + Utils.firstCharToUpper(originalName);
-        final Method getAttribute = new Method(getAttrType, getName);
-        // getAttribute.addModifier(Modifier.ABSTRACT);
+        final boolean hasParameters = !list.isEmpty();
+        final String methodName = hasParameters ? originalName : "get" + Utils.firstCharToUpper(originalName);
+        final Method getAttribute = new Method(getAttrType, methodName);
         getAttribute.appendComment("Get value on attribute " + attr);
         getAttribute.addJavaDocTag(JDocTag.RETURN, "the attribute's value");
-        getAttribute.appendCode("return this." + superField + "." + getName + "();");
+        getAttribute.appendCode("return ");
+        if (needsCast) {
+            getAttribute.appendCode("(" + getAttrType.getSimpleType() + ") ");
+        }
+
+        for (var parameter : list) {
+            JavaType type = parameterTypeResolver.apply(parameter);
+            getAttribute.addArgument(type, parameter.getName());
+        }
+
+        appendDelegationInvocation(getAttribute, superField, methodName);
 
         return getAttribute;
+    }
+
+    private static void appendDelegationInvocation(Method method, String targetField, String targetMethodName) {
+        method.appendCode("this." + targetField + "." + targetMethodName + "(");
+        method.appendCode(StringUtils.join(method.getParams(), Argument::getName, ", "));
+        method.appendCode(");");
     }
 
     public static void encapsulateArrayAttribute(JavaClass javaC, Method getter) {
         final Method newGetter = getter.clone();
         newGetter.setName(newGetter.getName() + GenConstants.getArrayMethodSufix());
-        final JavaType returnType = newGetter.getReturnType();
-        final String baseType = returnType.getName();
-        // getter.setReturnType(new JavaType(Bindings.class));
         getter.setReturnType(new JavaType(Object.class));
-        // javaC.addImport(Converter.class); // No longer needed?
         getter.clearCode();
-        getter.appendCode(returnType.getSimpleType());
-        final String valueName = StringUtils.firstCharToLower(baseType) + GenConstants.getArrayMethodSufix();
-        getter.appendCode(" " + valueName + "0 = ");
-        getter.appendCode(newGetter.getName() + "(");
+        getter.appendCode("return " + newGetter.getName() + "(");
         final List<Argument> arguments = getter.getParams();
         final String argsList = StringUtils.join(arguments, Argument::getName, ", ");
         getter.appendCode(argsList);
-        getter.appendCode(");" + ln());
-        getter.appendCode(encapsulateBasedOnDimension(baseType, valueName, returnType.getArrayDimension(), 0));
-        getter.appendCode("return " + GenConstants.getNativeArrayVarName() + "0;");
+        getter.appendCode(");");
         getter.remove(Modifier.ABSTRACT);
         javaC.add(newGetter);
     }
 
-    public static String encapsulateBasedOnDimension(String baseType, String valueName, int dimension, int position) {
-        final String spaceStr = "\t".repeat(position);
-        final String nativeArrayVarName = GenConstants.getNativeArrayVarName();
-        if (dimension == 1) {
-            // return spaceStr + "Bindings " + nativeArrayVarName + position + " =
-            // Converter.toNativeArray(" + valueName
-            // + position + ");\n";
-            // return spaceStr + "Bindings " + nativeArrayVarName + position
-            return spaceStr + "Object " + nativeArrayVarName + position
-                    + " = " + valueName + position + ";" + ln();
-        }
-        String converted = "";
-        final int currentNa = position;
-        final int nextNa = position + 1;
-        // int previousNa = dimension + 1;
-        String currentBinding = nativeArrayVarName + currentNa;
-        // converted += spaceStr + "Bindings " + currentBinding + " =
-        // Converter.newNativeArray();\n";
-        converted += spaceStr + "Object " + currentBinding + " = Converter.newNativeArray();" + ln();
-        String iNa = "i" + currentNa;
-        converted += spaceStr + "for (int " + iNa + " = 0; i < " + valueName + currentNa + ".length; i++) {" + ln();
-        converted += spaceStr + "\t" + baseType + "[]".repeat(dimension - 1);
-        converted += " " + valueName + nextNa + " = " + valueName + currentNa + "[ " + iNa + "];" + ln();
-        converted += encapsulateBasedOnDimension(baseType, valueName, dimension - 1, position + 1);
-        converted += spaceStr + "\t" + currentBinding + ".put(\"\"+" + iNa + ", " + nativeArrayVarName + nextNa
-                + ");" + ln();
-        converted += spaceStr + "}" + ln();
-        return converted;
-    }
-
-    private static boolean hasMethod(JavaClass javaClass, Method candidate) {
+    public static boolean hasMethodSignature(JavaClass javaClass, Method candidate) {
         return javaClass.getMethods().stream().anyMatch(existing -> sameSignature(existing, candidate));
     }
 
@@ -351,22 +337,187 @@ public class GeneratorUtils {
         return withoutPrefix.isEmpty() ? sanitized : withoutPrefix;
     }
 
+    public static boolean hasSameSignature(Action left, Action right) {
+        return hasSameParameterTypes(left, right)
+                && normalizeType(left.getReturnType()).equals(normalizeType(right.getReturnType()));
+    }
+
+    public static boolean hasSameParameterTypes(Action left, Action right) {
+        List<Parameter> leftParams = left.getParameters();
+        List<Parameter> rightParams = right.getParameters();
+        if (leftParams.size() != rightParams.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < leftParams.size(); i++) {
+            String leftType = normalizeType(leftParams.get(i).getType());
+            String rightType = normalizeType(rightParams.get(i).getType());
+            if (!leftType.equals(rightType)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Optional<java.lang.reflect.Method> findJoinPointBaseMethod(Action action) {
+        return Arrays.stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
+                .filter(method -> method.getName().equals(action.getName()))
+                .filter(method -> parametersMatch(method, action))
+                .findFirst();
+    }
+
+    public static String toSpecTypeName(Class<?> type) {
+        if (type.isArray()) {
+            return toSpecTypeName(type.getComponentType()) + "[]";
+        }
+
+        if (org.lara.interpreter.weaver.interf.JoinPoint.class.equals(type)) {
+            return "joinpoint";
+        }
+
+        return type.getSimpleName();
+    }
+
+    public static String normalizeType(String type) {
+        return type.replace("java.lang.", "").trim();
+    }
+
+    public static boolean isRuntimeBackedAction(Action action) {
+        return findJoinPointBaseMethod(action).isPresent();
+    }
+
+    public static boolean isRuntimeBackedAttribute(Attribute attribute) {
+        String methodName = attribute.getParameters().isEmpty()
+                ? "get" + Utils.firstCharToUpper(attributeMethodBaseName(attribute.getName()))
+                : attribute.getName();
+
+        Optional<java.lang.reflect.Method> baseMethod = Arrays
+            .stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
+                .filter(method -> method.getName().equals(methodName))
+            .filter(method -> parametersMatch(method, attribute.getParameters()))
+            .findFirst();
+
+        // Keep generation for Object-returning methods (e.g., children/descendants),
+        // so we can still emit the JP-specific impl hook and wrapper. For methods with
+        // non-Object returns (e.g., getJoinPointType/getSuper/getDump) generation would
+        // produce an invalid override because generated wrappers return Object.
+        return baseMethod
+            .map(method -> java.lang.reflect.Modifier.isFinal(method.getModifiers())
+                || !Object.class.equals(method.getReturnType()))
+            .orElse(false);
+    }
+
+    public static JoinPointBaseActionInfo analyzeJoinPointBaseAction(Action action) {
+        var baseMethod = findJoinPointBaseMethod(action);
+        if (baseMethod.isEmpty()) {
+            return new JoinPointBaseActionInfo(Optional.empty(), false);
+        }
+
+        java.lang.reflect.Method method = baseMethod.get();
+        boolean skipWrapper = java.lang.reflect.Modifier.isFinal(method.getModifiers());
+        String expectedReturnType = toSpecTypeName(method.getReturnType());
+        String actualReturnType = action.getReturnType();
+        Optional<String> correctedReturnType = normalizeType(expectedReturnType).equals(normalizeType(actualReturnType))
+                ? Optional.empty()
+                : Optional.of(expectedReturnType);
+
+        return new JoinPointBaseActionInfo(correctedReturnType, skipWrapper);
+    }
+
     /**
-     * Generates the method with the name and parameters of the action
+     * Aligns an action with the base JoinPoint contract (if one exists), applying a
+     * corrected return type when needed.
      *
-     * @param action the action used to generate its method
+     * @param action            action to normalize
+     * @param generator         generator used to resolve corrected type names
+     * @param warningMessageFmt message format with placeholders: action name,
+     *                          corrected type name
+     * @return true when wrapper generation should be skipped because the base
+     *         method is final
+     */
+    public static boolean normalizeJoinPointBaseAction(Action action, JavaAbstractsGenerator generator,
+            String warningMessageFmt) {
+        var baseInfo = analyzeJoinPointBaseAction(action);
+        baseInfo.correctedReturnType().ifPresent(specTypeName -> {
+            action.setType(generator.getLanguageSpecification().getType(specTypeName));
+            SpecsLogs.warn(warningMessageFmt.formatted(action.getName(), specTypeName));
+        });
+
+        return baseInfo.skipWrapper();
+    }
+
+    public static void addActionAndWrapper(JavaClass targetClass, Action action, JavaAbstractsGenerator generator,
+            JavaType currentJpType, boolean skipWrapper, String duplicateActionMessage,
+            String duplicateWrapperMessage) {
+        final Method method = generateActionMethod(action, generator, currentJpType);
+        if (hasMethodSignature(targetClass, method)) {
+            SpecsLogs.warn(duplicateActionMessage.formatted(action.getName(), method.getName()));
+            return;
+        }
+        targetClass.add(method);
+
+        Method wrapper = generateActionImplMethod(method, action, targetClass, generator, currentJpType);
+        if (skipWrapper) {
+            return;
+        }
+
+        if (hasMethodSignature(targetClass, wrapper)) {
+            SpecsLogs.warn(duplicateWrapperMessage.formatted(wrapper.getName()));
+            return;
+        }
+
+        targetClass.add(wrapper);
+    }
+
+    public record JoinPointBaseActionInfo(Optional<String> correctedReturnType, boolean skipWrapper) {
+    }
+
+    private static boolean parametersMatch(java.lang.reflect.Method method, Action action) {
+        return parametersMatch(method, action.getParameters());
+    }
+
+    private static boolean parametersMatch(java.lang.reflect.Method method, List<Parameter> params) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length != params.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
+            String actual = normalizeType(params.get(i).getType());
+            if (params.get(i).getIType() instanceof LiteralEnum && expected.equals("String")) {
+                continue;
+            }
+            if (!expected.equals(actual)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Generates the method with the name and parameters of the action, resolving
+     * ThisType to the current join point type.
+     *
+     * @param action        the action used to generate its method
+     * @param generator     the generator context
+     * @param currentJpType the JavaType representing the current join point
+     *                      abstract being generated
      */
     public static Method generateActionMethod(org.lara.language.specification.dsl.Action action,
-            JavaAbstractsGenerator generator) {
-
-        JavaType actionReturn = getJavaType(action.getReturnType(), action.getName(), action, "ActionParam", generator);
+            JavaAbstractsGenerator generator, JavaType currentJpType) {
+        JavaType actionReturn = getJavaType(action.getType(), action.getName(), action, "ActionParam", generator,
+                currentJpType);
         final Method m = new Method(actionReturn, action.getName());
         action.getToolTip().ifPresent(m::appendComment);
         for (var param : action.getParameters()) {
 
             String paramName = param.getName();
             paramName = StringUtils.getSanitizedName(paramName);
-            JavaType jType = getJavaType(param.getType(), paramName, action, "ActionParam", generator);
+            JavaType jType = getJavaType(param.getIType(), paramName, action, "ActionParam", generator,
+                    currentJpType);
 
             paramName = StringUtils.getSanitizedName(paramName);
             m.addArgument(jType, paramName);
@@ -378,23 +529,18 @@ public class GeneratorUtils {
         return m;
     }
 
-    private static JavaType getJavaType(String type, String paramName,
+    private static JavaType getJavaType(IType type, String paramName,
             org.lara.language.specification.dsl.Action action, String sufix,
-            JavaAbstractsGenerator generator) {
+            JavaAbstractsGenerator generator, JavaType currentJpType) {
 
-        JavaType jType;
-        if (type.startsWith("{")) { // then it is an enumerator
+        if (type instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             final String firstCharToUpper = StringUtils.firstCharToUpper(action.getName());
-            final JavaEnum enumerator = generateEnum(type, paramName, firstCharToUpper + sufix, generator);
+            final JavaEnum enumerator = generateEnum(literalEnum.getValues(), paramName, firstCharToUpper + sufix,
+                    generator);
             generator.getEnums().add(enumerator);
-            // if (!generator.isAbstractGetters())
-            // javaC.addImport(enumerator.getClassPackage() + "." +
-            // enumerator.getName());
-            jType = JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
-        } else {
-            jType = ConvertUtils.getConvertedType(type, generator);
+            return JavaType.enumType(enumerator.getName(), enumerator.getClassPackage());
         }
-        return jType;
+        return ConvertUtils.getConvertedType(type, generator, currentJpType);
     }
 
     /**
@@ -411,9 +557,11 @@ public class GeneratorUtils {
 
         for (var arg : arguments) {
             if (arg.getClassType().isArray()) {
+                int arrayDimension = arg.getClassType().getArrayDimension();
                 arg = arg.clone();
-                arg.getClassType().setName("Object");
-                arg.getClassType().setPackage("java.lang");
+                JavaType objectArrayType = JavaTypeFactory.getObjectType();
+                objectArrayType.setArrayDimension(arrayDimension);
+                arg.setClassType(objectArrayType);
             }
 
             newArgs.add(arg);
@@ -429,13 +577,15 @@ public class GeneratorUtils {
      *
      */
     public static Method generateActionImplMethod(Method original, org.lara.language.specification.dsl.Action action,
-            JavaClass targetClass, JavaAbstractsGenerator generator) {
+            JavaClass targetClass, JavaAbstractsGenerator generator, JavaType currentJpType) {
 
         String actionName = action.getName();
         String returnType = action.getReturnType();
         boolean hasEvents = generator.hasEvents();
 
-        JavaType actionReturn = getJavaType(action.getReturnType(), action.getName(), action, "ActionParam", generator);
+        // Use IType-aware conversion that properly handles ThisType
+        JavaType actionReturn = getJavaType(action.getType(), action.getName(), action, "ActionParam", generator,
+                currentJpType);
 
         // TODO: This is the abstract method that will be called from JavaScript,
         // instead of cloned should have another name. Also, this method is called
@@ -565,17 +715,17 @@ public class GeneratorUtils {
      * @param attributeName   the name of the attribute
      * @param baseName        the base for the name
      */
-    public static JavaEnum generateEnum(String itemsCollection, String attributeName, String baseName,
+    public static JavaEnum generateEnum(List<String> items, String attributeName, String baseName,
             JavaAbstractsGenerator generator) {
 
-        final String[] items = itemsCollection.substring(1, itemsCollection.length() - 1).split(",");
-        // System.out.println(itemsCollection);
         final String javaEnumName = extractEnumName(baseName, attributeName);
         final JavaEnum enumerator = new JavaEnum(javaEnumName, generator.getLiteralEnumsPackage());
         for (String itemName : items) {
             itemName = itemName.trim();
-            String enumName = itemName.toUpperCase();
-            enumName = enumName.replace("-", "_");
+            String enumName = itemName.toUpperCase().replaceAll("[^A-Z0-9_]", "_");
+            if (!enumName.isEmpty() && Character.isDigit(enumName.charAt(0))) {
+                enumName = "_" + enumName;
+            }
 
             final EnumItem item = new EnumItem(enumName);
             item.addParameter('"' + itemName + '"');
@@ -668,7 +818,11 @@ public class GeneratorUtils {
             cloned.appendCodeln("\t}");
         }
 
-        cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
+        if (original.getReturnType().isPrimitive()) {
+            cloned.appendCodeln("\treturn result;");
+        } else {
+            cloned.appendCodeln("\treturn result!=null?result:getUndefinedValue();");
+        }
 
         cloned.appendCodeln("} catch(Exception e) {");
         cloned.appendCode("\tthrow new " + AttributeException.class.getSimpleName());
@@ -679,10 +833,19 @@ public class GeneratorUtils {
         return cloned;
     }
 
+    /**
+     * Generate code for a given attribute, resolving ThisType to the current join
+     * point type.
+     *
+     * @param attribute     the attribute to generate
+     * @param javaC         the target Java class
+     * @param generator     the generator context
+     * @param currentJpType the JavaType representing the current join point
+     *                      abstract being generated
+     */
     public static Method generateAttribute(org.lara.language.specification.dsl.Attribute attribute, JavaClass javaC,
-            JavaAbstractsGenerator generator) {
-        String attrClassStr = attribute.getReturnType().trim();
-        // String originalType = attrClassStr;
+            JavaAbstractsGenerator generator, JavaType currentJpType) {
+        IType attrType = attribute.getType();
         boolean isEnum = false;
         JavaEnum enumerator = null;
         JavaType javaType;
@@ -690,26 +853,25 @@ public class GeneratorUtils {
         final String fieldName = sanitizeAttributeName(name);
         final String methodBaseName = attributeMethodBaseName(name);
 
-        if (attrClassStr.startsWith("{")) { // then it is an enumerator
+        // A LiteralEnum with only one value is typically a type reference like
+        // {TypeName}, not a true enum. We only generate an enum for multi-value
+        // LiteralEnums.
+        if (attrType instanceof LiteralEnum literalEnum && literalEnum.getValues().size() > 1) {
             isEnum = true;
-            enumerator = generateEnum(attrClassStr, name, javaC.getName(), generator);
+            enumerator = generateEnum(literalEnum.getValues(), name, javaC.getName(), generator);
             generator.getEnums().add(enumerator);
-            // if (!generator.isAbstractGetters())
-            // javaC.addImport(enumerator.getClassPackage() + "." +
-            // enumerator.getName());
             javaType = new JavaType(enumerator.getName(), enumerator.getClassPackage());
         } else {
-            // Any primitive type for attributes are now converted into their wrapper
-            javaType = ConvertUtils.getAttributeConvertedType(attrClassStr, generator);
+            // Use IType-aware conversion that resolves ThisType while preserving
+            // primitive signatures in generated impl methods.
+            javaType = ConvertUtils.getConvertedType(attrType, generator, currentJpType);
         }
         final Field attributeField = new Field(javaType, fieldName, Privacy.PROTECTED);
-        // attributeField.setPrivacy(Privacy.PUBLIC);
         if (!generator.isAbstractGetters()) {
             javaC.add(attributeField);
         }
 
-        var parameters = attribute
-                .getParameters();
+        var parameters = attribute.getParameters();
         if (parameters.isEmpty()) {
 
             final Pair<Method, Method> get_set = createGetterAndSetter(attributeField, methodBaseName,
@@ -718,28 +880,19 @@ public class GeneratorUtils {
             if (isEnum) {
                 defineEnumReturnType(getter, enumerator, attributeField, generator.isAbstractGetters());
             } else if (javaType.isArray()) {
-                // TODO - see if this is really necessary, and if so correct the
-                // implementations
                 encapsulateArrayAttribute(javaC, getter);
             }
-            // Old code
-            // } else if (originalType.equals("Array")) { // if the attribute is
-            // an array then it should return a
-            // // NativeArray!
-            // encapsulateArrayAttribute(javaC, getter);
-            // }
             attribute.getToolTip().ifPresent(comment -> getter.setJavaDocComment(new JavaDoc(comment)));
             javaC.add(getter);
 
             return getter;
-            // javaC.add(get_set.getRight());
         }
         final Method methodForAttribute = new Method(javaType, name);
 
         methodForAttribute.add(Modifier.ABSTRACT);
         for (var param : parameters) {
-
-            final Argument arg = newSanitizedArgument(param.getName(), param.getType(), generator);
+            // Use IType-aware conversion for parameter types as well
+            final Argument arg = newSanitizedArgument(param.getName(), param.getIType(), generator, currentJpType);
             methodForAttribute.addArgument(arg);
             methodForAttribute.addJavaDocTag(JDocTag.PARAM, arg.getName());
         }
@@ -748,20 +901,19 @@ public class GeneratorUtils {
         if (javaType.isArray()) {
             encapsulateArrayAttribute(javaC, methodForAttribute);
         }
-        // if (originalType.equals("Array")) { // if the attribute is an array
-        // then it should return a
-        // NativeArray!
-        // encapsulateArrayAttribute(javaC, methodForAttribute);
-        // }
 
         javaC.add(methodForAttribute);
         return methodForAttribute;
-
     }
 
-    private static Argument newSanitizedArgument(String name, String type, JavaAbstractsGenerator generator) {
+    /**
+     * Creates a sanitized argument from an IType, resolving ThisType to the current
+     * join point type.
+     */
+    private static Argument newSanitizedArgument(String name, IType type, JavaAbstractsGenerator generator,
+            JavaType currentJpType) {
         final String sanitizedName = StringUtils.getSanitizedName(name);
-        final JavaType paramType = ConvertUtils.getConvertedType(type, generator);
+        final JavaType paramType = ConvertUtils.getConvertedType(type, generator, currentJpType);
         return new Argument(paramType, sanitizedName);
     }
 
@@ -771,9 +923,8 @@ public class GeneratorUtils {
      */
     public static Method generateCompareNodes(JavaType superClass) {
         final Method method = new Method(JavaTypeFactory.getBooleanType(), "compareNodes");
-        method.addArgument(superClass, "aJoinPoint");
-        // abstJPClass.addImport(javaGenerator.getJoinPointClassPackage()); //
-        // JoinPoint.class.getCanonicalName()
+        method.addArgument(
+                ConvertUtils.withJoinPointWildcard(superClass), "aJoinPoint");
         method.appendCode("return this.getNode().equals(aJoinPoint.getNode());");
         method.appendComment(
                 "Compares the two join points based on their node reference of the used compiler/parsing tool.<br>"

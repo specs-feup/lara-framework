@@ -1,0 +1,806 @@
+package thistype.pkg.abstracts.joinpoints;
+
+import org.lara.interpreter.exception.AttributeException;
+import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import org.lara.interpreter.exception.ActionException;
+import thistype.pkg.ThistypeWeaver;
+import thistype.pkg.abstracts.AThistypeWeaverJoinPoint;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+
+/**
+ * Auto-Generated class for join point ANode
+ * This class is overwritten by the Weaver Generator.
+ * 
+ * 
+ * @author Lara Weaver Generator
+ */
+public abstract class ANode<Self extends ANode<Self>> extends AThistypeWeaverJoinPoint<Self> {
+
+    /**
+     * 
+     */
+    public ANode(ThistypeWeaver weaver){
+        super(weaver);
+    }
+    /**
+     * 
+     * @param typeName
+     * @return 
+     */
+    public abstract Self ancestorOfTypeImpl(String typeName);
+
+    /**
+     * 
+     * @param typeName
+     * @return 
+     */
+    public final Object ancestorOfType(String typeName) {
+        try {
+        	Self result = this.ancestorOfTypeImpl(typeName);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "ancestorOfType", e);
+        }
+    }
+
+    /**
+     * Returns attribute name-value pairs
+     */
+    public abstract Map<String, String> getAttributesImpl();
+
+    /**
+     * Returns attribute name-value pairs
+     */
+    public final Object getAttributes() {
+        try {
+        	Map<String, String> result = this.getAttributesImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "attributes", e);
+        }
+    }
+
+    /**
+     * Returns nodes categorized by type
+     */
+    public abstract Map<String, List<Self>> getCategorizedNodesImpl();
+
+    /**
+     * Returns nodes categorized by type
+     */
+    public final Object getCategorizedNodes() {
+        try {
+        	Map<String, List<Self>> result = this.getCategorizedNodesImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "categorizedNodes", e);
+        }
+    }
+
+    /**
+     * Returns children grouped in nested lists
+     */
+    public abstract List<List<Self>> getChildGroupsImpl();
+
+    /**
+     * Returns children grouped in nested lists
+     */
+    public final Object getChildGroups() {
+        try {
+        	List<List<Self>> result = this.getChildGroupsImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "childGroups", e);
+        }
+    }
+
+    /**
+     * Returns children as List
+     */
+    public abstract List<Self> getChildListImpl();
+
+    /**
+     * Returns children as List
+     */
+    public final Object getChildList() {
+        try {
+        	List<Self> result = this.getChildListImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "childList", e);
+        }
+    }
+
+    /**
+     * Get value on attribute children
+     * @return the attribute's value
+     */
+    public abstract Self[] getChildrenArrayImpl();
+
+    /**
+     * Returns direct children as array
+     */
+    public Object getChildrenImpl() {
+        return getChildrenArrayImpl();
+    }
+
+    /**
+     * Get value on attribute childrenMatrix
+     * @return the attribute's value
+     */
+    public abstract Self[][] getChildrenMatrixArrayImpl();
+
+    /**
+     * Returns children organized in 2D matrix
+     */
+    public Object getChildrenMatrixImpl() {
+        return getChildrenMatrixArrayImpl();
+    }
+
+    /**
+     * Returns children organized in 2D matrix
+     */
+    public final Object getChildrenMatrix() {
+        try {
+        	Object result = this.getChildrenMatrixImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "childrenMatrix", e);
+        }
+    }
+
+    /**
+     * Creates a deep clone of this node
+     */
+    public abstract Self getCloneImpl();
+
+    /**
+     * Creates a deep clone of this node
+     */
+    public final Object getClone() {
+        try {
+        	Self result = this.getCloneImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "clone", e);
+        }
+    }
+
+    /**
+     * Get value on attribute column
+     * @return the attribute's value
+     */
+    public abstract Integer getColumnImpl();
+
+    /**
+     * Get value on attribute column
+     * @return the attribute's value
+     */
+    public final Object getColumn() {
+        try {
+        	Integer result = this.getColumnImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "column", e);
+        }
+    }
+
+    /**
+     * Returns descendants as Set
+     */
+    public abstract Set<Self> getDescendantSetImpl();
+
+    /**
+     * Returns descendants as Set
+     */
+    public final Object getDescendantSet() {
+        try {
+        	Set<Self> result = this.getDescendantSetImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "descendantSet", e);
+        }
+    }
+
+    /**
+     * Get value on attribute descendants
+     * @return the attribute's value
+     */
+    public abstract Self[] getDescendantsArrayImpl();
+
+    /**
+     * Returns all descendants as array
+     */
+    public Object getDescendantsImpl() {
+        return getDescendantsArrayImpl();
+    }
+
+    /**
+     * 
+     * @param start
+     * @param end
+     * @return 
+     */
+    public abstract List<Self> findBetweenImpl(Self start, Self end);
+
+    /**
+     * 
+     * @param start
+     * @param end
+     * @return 
+     */
+    public final Object findBetween(Self start, Self end) {
+        try {
+        	List<Self> result = this.findBetweenImpl(start, end);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "findBetween", e);
+        }
+    }
+
+    /**
+     * 
+     * @param target
+     * @return 
+     */
+    public abstract List<Self> findSimilarImpl(Self target);
+
+    /**
+     * 
+     * @param target
+     * @return 
+     */
+    public final Object findSimilar(Self target) {
+        try {
+        	List<Self> result = this.findSimilarImpl(target);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "findSimilar", e);
+        }
+    }
+
+    /**
+     * Returns nested categorization
+     */
+    public abstract Map<String, Map<String, Self>> getHierarchyImpl();
+
+    /**
+     * Returns nested categorization
+     */
+    public final Object getHierarchy() {
+        try {
+        	Map<String, Map<String, Self>> result = this.getHierarchyImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "hierarchy", e);
+        }
+    }
+
+    /**
+     * Get value on attribute id
+     * @return the attribute's value
+     */
+    public abstract String getIdImpl();
+
+    /**
+     * Get value on attribute id
+     * @return the attribute's value
+     */
+    public final Object getId() {
+        try {
+        	String result = this.getIdImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "id", e);
+        }
+    }
+
+    /**
+     * Returns nodes indexed by position
+     */
+    public abstract Map<Integer, Self> getIndexedNodesImpl();
+
+    /**
+     * Returns nodes indexed by position
+     */
+    public final Object getIndexedNodes() {
+        try {
+        	Map<Integer, Self> result = this.getIndexedNodesImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "indexedNodes", e);
+        }
+    }
+
+    /**
+     * Get value on attribute line
+     * @return the attribute's value
+     */
+    public abstract Integer getLineImpl();
+
+    /**
+     * Get value on attribute line
+     * @return the attribute's value
+     */
+    public final Object getLine() {
+        try {
+        	Integer result = this.getLineImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "line", e);
+        }
+    }
+
+    /**
+     * Returns children indexed by name
+     */
+    public abstract Map<String, Self> getNamedChildrenImpl();
+
+    /**
+     * Returns children indexed by name
+     */
+    public final Object getNamedChildren() {
+        try {
+        	Map<String, Self> result = this.getNamedChildrenImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "namedChildren", e);
+        }
+    }
+
+    /**
+     * Returns the parent node with late-bound type
+     */
+    public abstract Self getParentImpl();
+
+    /**
+     * Returns the parent node with late-bound type
+     */
+    public final Object getParent() {
+        try {
+        	Self result = this.getParentImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "parent", e);
+        }
+    }
+
+    /**
+     * Returns property map
+     */
+    public abstract Map<String, Object> getPropertiesImpl();
+
+    /**
+     * Returns property map
+     */
+    public final Object getProperties() {
+        try {
+        	Map<String, Object> result = this.getPropertiesImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "properties", e);
+        }
+    }
+
+    /**
+     * Returns list of tags
+     */
+    public abstract List<String> getTagsImpl();
+
+    /**
+     * Returns list of tags
+     */
+    public final Object getTags() {
+        try {
+        	List<String> result = this.getTagsImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new AttributeException(get_class(), "tags", e);
+        }
+    }
+
+    /**
+     * Creates a copy of this node
+     */
+    public Self copyImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action copy not implemented ");
+    }
+
+    /**
+     * Creates a copy of this node
+     */
+    public final Object copy() {
+        try {
+        	Self result = this.copyImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "copy", e);
+        }
+    }
+
+    /**
+     * Detaches node from parent and returns it
+     */
+    public Self detachImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action detach not implemented ");
+    }
+
+    /**
+     * Detaches node from parent and returns it
+     */
+    public final Object detach() {
+        try {
+        	Self result = this.detachImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "detach", e);
+        }
+    }
+
+    /**
+     * Finds children matching criteria
+     * @param filter 
+     */
+    public List<Self> findChildrenImpl(String filter) {
+        throw new UnsupportedOperationException(get_class()+": Action findChildren not implemented ");
+    }
+
+    /**
+     * Finds children matching criteria
+     * @param filter 
+     */
+    public final Object findChildren(String filter) {
+        try {
+        	List<Self> result = this.findChildrenImpl(filter);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "findChildren", e);
+        }
+    }
+
+    /**
+     * Returns metadata as map
+     */
+    public Map<String, String> getMetadataImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action getMetadata not implemented ");
+    }
+
+    /**
+     * Returns metadata as map
+     */
+    public final Object getMetadata() {
+        try {
+        	Map<String, String> result = this.getMetadataImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "getMetadata", e);
+        }
+    }
+
+    /**
+     * Groups descendants by type
+     */
+    public Map<String, List<Self>> groupByTypeImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action groupByType not implemented ");
+    }
+
+    /**
+     * Groups descendants by type
+     */
+    public final Object groupByType() {
+        try {
+        	Map<String, List<Self>> result = this.groupByTypeImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "groupByType", e);
+        }
+    }
+
+    /**
+     * Inserts node after this one
+     * @param node 
+     */
+    public void insertAfterImpl(Self node) {
+        throw new UnsupportedOperationException(get_class()+": Action insertAfter not implemented ");
+    }
+
+    /**
+     * Inserts node after this one
+     * @param node 
+     */
+    public final void insertAfter(Self node) {
+        try {
+        	this.insertAfterImpl(node);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "insertAfter", e);
+        }
+    }
+
+    /**
+     * Inserts multiple nodes
+     * @param nodes 
+     */
+    public void insertAllImpl(List<Self> nodes) {
+        throw new UnsupportedOperationException(get_class()+": Action insertAll not implemented ");
+    }
+
+    /**
+     * Inserts multiple nodes
+     * @param nodes 
+     */
+    public final void insertAll(List<Self> nodes) {
+        try {
+        	this.insertAllImpl(nodes);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "insertAll", e);
+        }
+    }
+
+    /**
+     * Inserts node at specific position
+     * @param position 
+     * @param node 
+     */
+    public void insertAtImpl(Integer position, Self node) {
+        throw new UnsupportedOperationException(get_class()+": Action insertAt not implemented ");
+    }
+
+    /**
+     * Inserts node at specific position
+     * @param position 
+     * @param node 
+     */
+    public final void insertAt(Integer position, Self node) {
+        try {
+        	this.insertAtImpl(position, node);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "insertAt", e);
+        }
+    }
+
+    /**
+     * Inserts node before this one
+     * @param node 
+     */
+    public void insertBeforeImpl(Self node) {
+        throw new UnsupportedOperationException(get_class()+": Action insertBefore not implemented ");
+    }
+
+    /**
+     * Inserts node before this one
+     * @param node 
+     */
+    public final void insertBefore(Self node) {
+        try {
+        	this.insertBeforeImpl(node);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "insertBefore", e);
+        }
+    }
+
+    /**
+     * Merges with another node
+     * @param other 
+     */
+    public Self mergeImpl(Self other) {
+        throw new UnsupportedOperationException(get_class()+": Action merge not implemented ");
+    }
+
+    /**
+     * Merges with another node
+     * @param other 
+     */
+    public final Object merge(Self other) {
+        try {
+        	Self result = this.mergeImpl(other);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "merge", e);
+        }
+    }
+
+    /**
+     * Partitions children
+     * @param criteria 
+     */
+    public Map<String, List<Self>> partitionChildrenImpl(String criteria) {
+        throw new UnsupportedOperationException(get_class()+": Action partitionChildren not implemented ");
+    }
+
+    /**
+     * Partitions children
+     * @param criteria 
+     */
+    public final Object partitionChildren(String criteria) {
+        try {
+        	Map<String, List<Self>> result = this.partitionChildrenImpl(criteria);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "partitionChildren", e);
+        }
+    }
+
+    /**
+     * Replaces multiple nodes by name
+     * @param replacements 
+     */
+    public void replaceAllImpl(Map<String, Self> replacements) {
+        throw new UnsupportedOperationException(get_class()+": Action replaceAll not implemented ");
+    }
+
+    /**
+     * Replaces multiple nodes by name
+     * @param replacements 
+     */
+    public final void replaceAll(Map<String, Self> replacements) {
+        try {
+        	this.replaceAllImpl(replacements);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "replaceAll", e);
+        }
+    }
+
+    /**
+     * Replaces nodes between two markers
+     * @param start 
+     * @param end 
+     * @param replacement 
+     */
+    public void replaceBetweenImpl(Self start, Self end, Self replacement) {
+        throw new UnsupportedOperationException(get_class()+": Action replaceBetween not implemented ");
+    }
+
+    /**
+     * Replaces nodes between two markers
+     * @param start 
+     * @param end 
+     * @param replacement 
+     */
+    public final void replaceBetween(Self start, Self end, Self replacement) {
+        try {
+        	this.replaceBetweenImpl(start, end, replacement);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "replaceBetween", e);
+        }
+    }
+
+    /**
+     * Swaps position with another node
+     * @param other 
+     * @param preserveComments 
+     */
+    public void swapImpl(Self other, Boolean preserveComments) {
+        throw new UnsupportedOperationException(get_class()+": Action swap not implemented ");
+    }
+
+    /**
+     * Swaps position with another node
+     * @param other 
+     * @param preserveComments 
+     */
+    public final void swap(Self other, Boolean preserveComments) {
+        try {
+        	this.swapImpl(other, preserveComments);
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "swap", e);
+        }
+    }
+
+    /**
+     * Converts children to array
+     */
+    public Self[] toArrayImpl() {
+        throw new UnsupportedOperationException(get_class()+": Action toArray not implemented ");
+    }
+
+    /**
+     * Converts children to array
+     */
+    public final Object toArray() {
+        try {
+        	Self[] result = this.toArrayImpl();
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "toArray", e);
+        }
+    }
+
+    /**
+     * Wraps this node with wrapper
+     * @param wrapper 
+     * @param position 
+     */
+    public Self wrapWithImpl(Self wrapper, String position) {
+        throw new UnsupportedOperationException(get_class()+": Action wrapWith not implemented ");
+    }
+
+    /**
+     * Wraps this node with wrapper
+     * @param wrapper 
+     * @param position 
+     */
+    public final Object wrapWith(Self wrapper, String position) {
+        try {
+        	Self result = this.wrapWithImpl(wrapper, position);
+        	return result!=null?result:getUndefinedValue();
+        } catch(Exception e) {
+        	throw new ActionException(get_class(), "wrapWith", e);
+        }
+    }
+
+    /**
+     * Returns the join point type of this class
+     * @return The join point type
+     */
+    @Override
+    public String get_class() {
+        return "node";
+    }
+    /**
+     * 
+     */
+    protected enum NodeAttributes {
+        ANCESTOROFTYPE("ancestorOfType"),
+        ATTRIBUTES("attributes"),
+        CATEGORIZEDNODES("categorizedNodes"),
+        CHILDGROUPS("childGroups"),
+        CHILDLIST("childList"),
+        CHILDREN("children"),
+        CHILDRENMATRIX("childrenMatrix"),
+        CLONE("clone"),
+        COLUMN("column"),
+        DESCENDANTSET("descendantSet"),
+        DESCENDANTS("descendants"),
+        FINDBETWEEN("findBetween"),
+        FINDSIMILAR("findSimilar"),
+        HIERARCHY("hierarchy"),
+        ID("id"),
+        INDEXEDNODES("indexedNodes"),
+        LINE("line"),
+        NAMEDCHILDREN("namedChildren"),
+        PARENT("parent"),
+        PROPERTIES("properties"),
+        TAGS("tags"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        SCOPENODES("scopeNodes"),
+        ANCESTORS("ancestors"),
+        ROOT("root"),
+        SIBLINGS("siblings");
+        private String name;
+
+        /**
+         * 
+         */
+        private NodeAttributes(String name){
+            this.name = name;
+        }
+        /**
+         * Return an attribute enumeration item from a given attribute name
+         */
+        public static Optional<NodeAttributes> fromString(String name) {
+            return Arrays.asList(values()).stream().filter(attr -> attr.name.equals(name)).findAny();
+        }
+
+        /**
+         * Return a list of attributes in String format
+         */
+        public static List<String> getNames() {
+            return Arrays.asList(values()).stream().map(NodeAttributes::name).collect(Collectors.toList());
+        }
+
+        /**
+         * True if the enum contains the given attribute name, false otherwise.
+         */
+        public static boolean contains(String name) {
+            return fromString(name).isPresent();
+        }
+    }
+}

@@ -13,10 +13,10 @@
 
 package org.lara.interpreter.weaver.generator.generator.utils;
 
+import java.io.File;
+
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.specs.generators.java.types.JavaType;
-
-import java.io.File;
 
 public class GenConstants {
 

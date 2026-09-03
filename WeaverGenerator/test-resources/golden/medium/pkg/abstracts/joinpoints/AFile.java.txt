@@ -15,7 +15,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AFile extends AMediumWeaverJoinPoint {
+public abstract class AFile<Self extends AFile<Self>> extends AMediumWeaverJoinPoint<Self> {
 
     /**
      * 
@@ -55,6 +55,14 @@ public abstract class AFile extends AMediumWeaverJoinPoint {
      */
     protected enum FileAttributes {
         PATH("path"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

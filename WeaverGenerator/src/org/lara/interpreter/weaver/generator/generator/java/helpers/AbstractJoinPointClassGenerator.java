@@ -13,16 +13,15 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
+import org.lara.interpreter.weaver.generator.generator.java.utils.ConvertUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.lara.language.specification.dsl.Action;
 import org.lara.language.specification.dsl.JoinPointClass;
-import org.lara.language.specification.dsl.Parameter;
 import org.specs.generators.java.classtypes.JavaClass;
 import org.specs.generators.java.enums.Annotation;
 import org.specs.generators.java.enums.JDocTag;
@@ -35,6 +34,7 @@ import org.specs.generators.java.types.JavaGenericType;
 import org.specs.generators.java.types.JavaType;
 import org.specs.generators.java.types.JavaTypeFactory;
 import org.specs.generators.java.utils.Utils;
+
 import pt.up.fe.specs.util.SpecsLogs;
 
 /**
@@ -59,52 +59,69 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     }
 
     /**
-     * Generate the Join Point abstract class for the given join point type
-     *
+     * Generate the Join Point abstract class for the given join point type.
+     * 
+     * <p>
+     * This generator implements CRTP (Curiously Recurring Template Pattern) for
+     * polymorphic 'this' type support. ALL classes get the CRTP type parameter for
+     * consistency and future extensibility:
+     * </p>
+     * 
+     * <ul>
+     * <li>{@code ANode<Self extends ANode<Self>>} with methods returning
+     * {@code Self}</li>
+     * <li>{@code ALoop<Self extends ALoop<Self>>} extends {@code AStmt<Self>}</li>
+     * </ul>
      */
     @Override
     public JavaClass generate() {
-        final String className = Utils.firstCharToUpper(joinPoint.getName());
-        final JavaClass javaC = new JavaClass(GenConstants.abstractPrefix() + className,
+        final String baseClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(joinPoint.getName());
+
+        // Determine if this is a leaf class (used for generating 'final' modifiers on
+        // some methods)
+        boolean isLeafClass = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
+
+        // Create the CRTP-enabled class (all classes get the CRTP type parameter)
+        final CrtpJavaClass javaC = new CrtpJavaClass(baseClassName,
                 javaGenerator.getJoinPointClassPackage());
         javaC.add(Modifier.ABSTRACT);
-        javaC.appendComment("Auto-Generated class for join point " + javaC.getName());
+        javaC.appendComment("Auto-Generated class for join point " + baseClassName);
         javaC.appendComment(ln() + "This class is overwritten by the Weaver Generator." + ln() + ln());
         joinPoint.getToolTip().ifPresent(javaC::appendComment);
         javaC.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
 
-        addFields(javaC);
-        addActions(javaC);
+        // All classes use "Self" for ThisType resolution (CRTP pattern)
+        JavaType thisType = new JavaType(CrtpJavaClass.SELF_TYPE_PARAMETER);
+
+        addFields(javaC, thisType);
+        addActions(javaC, thisType);
 
         String superTypeName = null;
-
-        // Returns itself if join point does extend anything
-        // This is testing if the node
 
         // If explicitly extends a join point
         if (joinPoint.getExtendExplicit().isPresent()) {
             var superType = joinPoint.getExtendExplicit().get();
 
-            String superClass = Utils.firstCharToUpper(superType.getName());
-            superClass = GenConstants.abstractPrefix() + superClass;
+            String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
 
-            superTypeName = addSuperMethods(javaC);
+            superTypeName = addSuperMethods(javaC, thisType);
 
-            javaC.setSuperClass(new JavaType(superClass, javaGenerator.getJoinPointClassPackage()));
+            // Set superclass with CRTP type argument (all classes use Self)
+            JavaType superJavaType = new JavaType(superClassName, javaGenerator.getJoinPointClassPackage());
+            javaC.setSuperClass(superJavaType);
 
         } else {
             addConstructor(javaC);
 
+            // Extends the user-editable abstract class (which also has CRTP)
+            javaC.setAddTypeArgToSuperClass(javaGenerator.addTypeArgToRootUserSuperClass());
             javaC.setSuperClass(javaGenerator.getSuperClass());
         }
 
-        // If join point is not extended by any other join point, it is final
-        boolean isFinal = !javaGenerator.getLanguageSpecification().isSuper(joinPoint);
-
-        generateGet_Class(javaC, isFinal);
+        generateGet_Class(javaC, isLeafClass);
 
         if (superTypeName != null) {
-            GeneratorUtils.generateInstanceOf(javaC, "this." + superTypeName, isFinal);
+            GeneratorUtils.generateInstanceOf(javaC, "this." + superTypeName, isLeafClass);
         }
 
         AttributesEnumGenerator.generate(javaC, joinPoint);
@@ -124,7 +141,6 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         javaC.add(clazzMethod);
     }
 
-
     private void addConstructor(JavaClass abstJPClass) {
         JavaClass weaverClass = javaGenerator.getWeaverImplClass();
         String qualifiedName = weaverClass.getQualifiedName();
@@ -142,10 +158,10 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      * Add fields
      *
      */
-    private void addFields(JavaClass javaC) {
+    private void addFields(JavaClass javaC, JavaType currentJpType) {
 
         for (var attribute : joinPoint.getAttributesSelf()) {
-            Method generateAttribute = GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator);
+            Method generateAttribute = GeneratorUtils.generateAttribute(attribute, javaC, javaGenerator, currentJpType);
             boolean overridesAttribute = joinPoint.getExtend().map(parent -> parent.hasAttribute(attribute.getName()))
                     .orElse(false);
             Method generateAttributeImpl = GeneratorUtils.generateAttributeImpl(generateAttribute, attribute,
@@ -167,48 +183,28 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
      * Adds actions for the join point
      *
      */
-    private void addActions(JavaClass javaC) {
+    private void addActions(JavaClass javaC, JavaType currentJpType) {
 
         for (var action : joinPoint.getActionsSelf()) {
-            ActionPlan plan = prepareAction(action);
-
-            final Method m = GeneratorUtils.generateActionMethod(plan.action(), javaGenerator);
-            javaC.add(m);
-
-            Method cloned = GeneratorUtils.generateActionImplMethod(m, plan.action(), javaC,
-                    javaGenerator);
-
-            if (!plan.skipWrapper()) {
-                javaC.add(cloned);
-            }
+            Action preparedAction = alignWithSpecHierarchy(action);
+            boolean skipWrapper = GeneratorUtils.normalizeJoinPointBaseAction(
+                    preparedAction,
+                    javaGenerator,
+                    "Action '%s' in join point '" + joinPoint.getName()
+                            + "' redeclares inherited action with different return type."
+                            + " Using return type '%s'.");
+            GeneratorUtils.addActionAndWrapper(
+                    javaC,
+                    preparedAction,
+                    javaGenerator,
+                    currentJpType,
+                    skipWrapper,
+                    "Skipping action '%s' in join point '" + joinPoint.getName()
+                            + "' due to duplicate method signature '%s'.",
+                    "Skipping action wrapper '%s' in join point '" + joinPoint.getName()
+                            + "' due to duplicate method signature.");
         }
 
-    }
-
-    private ActionPlan prepareAction(Action action) {
-        Action effective = alignWithSpecHierarchy(action);
-
-        boolean skipWrapper = false;
-
-        var baseMethod = findJoinPointBaseMethod(effective);
-        if (baseMethod.isPresent()) {
-            java.lang.reflect.Method method = baseMethod.get();
-
-            if (!hasSameReturnType(effective, method)) {
-                String specTypeName = toSpecTypeName(method.getReturnType());
-                effective.setType(javaGenerator.getLanguageSpecification().getType(specTypeName));
-                SpecsLogs.warn(String.format(
-                        "Action '%s' in join point '%s' redeclares inherited action with different return type."
-                                + " Using return type '%s'.",
-                        effective.getName(), joinPoint.getName(), specTypeName));
-            }
-
-            if (java.lang.reflect.Modifier.isFinal(method.getModifiers())) {
-                skipWrapper = true;
-            }
-        }
-
-        return new ActionPlan(effective, skipWrapper);
     }
 
     private Action alignWithSpecHierarchy(Action action) {
@@ -219,15 +215,16 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
     }
 
     private Action ensureMatchingParameters(Action action, Action superAction) {
-        if (hasSameSignature(action, superAction)) {
+        if (GeneratorUtils.hasSameSignature(action, superAction)) {
             return action;
         }
 
-        if (!hasSameParameterTypes(action, superAction)) {
+        if (!GeneratorUtils.hasSameParameterTypes(action, superAction)) {
             return action;
         }
 
-        // Same parameters but different return type - adopt super type to keep override valid
+        // Same parameters but different return type - adopt super type to keep override
+        // valid
         SpecsLogs.warn(String.format(
                 "Action '%s' in join point '%s' redeclares inherited action with different return type."
                         + " Using return type '%s'.",
@@ -237,88 +234,20 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         return action;
     }
 
-    private boolean hasSameSignature(Action left, Action right) {
-        return hasSameParameterTypes(left, right) && left.getReturnType().equals(right.getReturnType());
-    }
-
-    private boolean hasSameParameterTypes(Action left, Action right) {
-        List<Parameter> leftParams = left.getParameters();
-        List<Parameter> rightParams = right.getParameters();
-        if (leftParams.size() != rightParams.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < leftParams.size(); i++) {
-            String leftType = normalizeType(leftParams.get(i).getType());
-            String rightType = normalizeType(rightParams.get(i).getType());
-            if (!leftType.equals(rightType)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private Optional<Action> findMatchingAction(JoinPointClass parent, Action action) {
         return parent.getAction(action.getName()).stream()
-                .filter(candidate -> hasSameParameterTypes(candidate, action))
+                .filter(candidate -> GeneratorUtils.hasSameParameterTypes(candidate, action))
                 .findFirst();
     }
-
-    private Optional<java.lang.reflect.Method> findJoinPointBaseMethod(Action action) {
-        return Arrays.stream(org.lara.interpreter.weaver.interf.JoinPoint.class.getMethods())
-                .filter(method -> method.getName().equals(action.getName()))
-                .filter(method -> parametersMatch(method, action))
-                .findFirst();
-    }
-
-    private boolean parametersMatch(java.lang.reflect.Method method, Action action) {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        List<Parameter> params = action.getParameters();
-        if (parameterTypes.length != params.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < parameterTypes.length; i++) {
-            String expected = normalizeType(toSpecTypeName(parameterTypes[i]));
-            String actual = normalizeType(params.get(i).getType());
-            if (!expected.equals(actual)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean hasSameReturnType(Action action, java.lang.reflect.Method method) {
-        String expected = normalizeType(toSpecTypeName(method.getReturnType()));
-        String actual = normalizeType(action.getReturnType());
-        return expected.equals(actual);
-    }
-
-    private String toSpecTypeName(Class<?> type) {
-        if (type.isArray()) {
-            return toSpecTypeName(type.getComponentType()) + "[]";
-        }
-
-        if (org.lara.interpreter.weaver.interf.JoinPoint.class.equals(type)) {
-            return "joinpoint";
-        }
-
-        return type.getSimpleName();
-    }
-
-    private String normalizeType(String type) {
-        return type.replace("java.lang.", "").trim();
-    }
-
-    private record ActionPlan(Action action, boolean skipWrapper) {}
 
     /**
      * Add code that calls to the super methods
      *
+     * @param javaC         the target Java class
+     * @param currentJpType the JavaType representing the current join point
+     *                      abstract being generated
      */
-    private String addSuperMethods(JavaClass javaC) {
+    private String addSuperMethods(JavaClass javaC, JavaType currentJpType) {
 
         var superType = joinPoint.getExtendExplicit()
                 .orElseThrow(() -> new RuntimeException("Expected join point to explicitly extend another join point"));
@@ -326,7 +255,8 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         final String superClassName = GenConstants.abstractPrefix() + Utils.firstCharToUpper(superType.getName());
         final String fieldName = GenConstants.abstractPrefix().toLowerCase()
                 + Utils.firstCharToUpper(superType.getName());
-        final JavaType joinPointType = new JavaType(superClassName, javaGenerator.getJoinPointClassPackage());
+        final JavaType joinPointType = ConvertUtils.withJoinPointTypeArgument(
+            new JavaType(superClassName, javaGenerator.getJoinPointClassPackage()), currentJpType);
         javaC.add(new Field(joinPointType, fieldName, Privacy.PROTECTED));
 
         final Constructor constructor = new Constructor(javaC);
@@ -346,13 +276,18 @@ public class AbstractJoinPointClassGenerator extends GeneratorHelper {
         }
 
         constructor.appendCode("this." + fieldName + " = " + fieldName + ";");
-        GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint);
+        GeneratorUtils.addSuperMethods(javaC, fieldName, javaGenerator, joinPoint, currentJpType);
 
         // Add global methods for global attributes
-        var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf();
+        // With CRTP, global attributes that use ThisType must resolve to the current
+        // Self type to keep override signatures compatible across the hierarchy.
+        var globalAttributes = javaGenerator.getLanguageSpecification().getGlobal().getAttributesSelf().stream()
+            .filter(attribute -> !GeneratorUtils.isRuntimeBackedAttribute(attribute))
+            .toList();
+        JavaType globalJpType = currentJpType;
 
-        GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes);
-        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType, fieldName);
+        GeneratorUtils.addSuperGetters(javaC, fieldName, javaGenerator, globalAttributes, globalJpType);
+        GeneratorUtils.addSuperActions(javaGenerator, javaC, superType, fieldName, currentJpType);
         addGetSuperMethod(javaC, joinPointType, fieldName);
         return fieldName;
     }

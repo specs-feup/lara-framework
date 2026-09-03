@@ -2,7 +2,6 @@ package edge.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.exception.AttributeException;
 import edge.pkg.EdgeWeaver;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
@@ -15,14 +14,14 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AReservedKeyword extends ALevel2 {
+public abstract class AReservedKeyword<Self extends AReservedKeyword<Self>> extends ALevel2<Self> {
 
-    protected ALevel2 aLevel2;
+    protected ALevel2<Self> aLevel2;
 
     /**
      * 
      */
-    public AReservedKeyword(ALevel2 aLevel2, EdgeWeaver weaver){
+    public AReservedKeyword(ALevel2<Self> aLevel2, EdgeWeaver weaver){
         super(aLevel2, weaver);
         this.aLevel2 = aLevel2;
     }
@@ -74,22 +73,11 @@ public abstract class AReservedKeyword extends ALevel2 {
 
     /**
      * 
-     * @param position 
-     * @param code 
+     * @param jp 
      */
     @Override
-    public AJoinPoint[] insertImpl(String position, String code) {
-        return this.aLevel2.insertImpl(position, code);
-    }
-
-    /**
-     * 
-     * @param position 
-     * @param code 
-     */
-    @Override
-    public AJoinPoint[] insertImpl(String position, JoinPoint code) {
-        return this.aLevel2.insertImpl(position, code);
+    public boolean equalsImpl(AJoinPoint<?> jp) {
+        return this.aLevel2.equalsImpl(jp);
     }
 
     /**
@@ -104,7 +92,7 @@ public abstract class AReservedKeyword extends ALevel2 {
      * 
      */
     @Override
-    public Optional<? extends ALevel2> getSuper() {
+    public Optional<? extends ALevel2<Self>> getSuper() {
         return Optional.of(this.aLevel2);
     }
 
@@ -136,7 +124,15 @@ public abstract class AReservedKeyword extends ALevel2 {
         CLASS("class"),
         C("c"),
         A("a"),
-        B("b");
+        B("b"),
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes");
         private String name;
 
         /**

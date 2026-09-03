@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class AEdgeWeaverJoinPoint extends AJoinPoint {
+public abstract class AEdgeWeaverJoinPoint<Self extends AEdgeWeaverJoinPoint<Self>> extends AJoinPoint<Self> {
 
     /**
      * 
@@ -32,7 +32,7 @@ public abstract class AEdgeWeaverJoinPoint extends AJoinPoint {
      * the changes are made for all join points, or override this method in specific join points.
      */
     @Override
-    public boolean compareNodes(AJoinPoint aJoinPoint) {
+    public boolean compareNodes(AJoinPoint<?> aJoinPoint) {
         return this.getNode().equals(aJoinPoint.getNode());
     }
 }

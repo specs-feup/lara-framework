@@ -13,7 +13,10 @@
 
 package org.lara.interpreter.weaver.generator.generator.java.helpers;
 
+import java.util.List;
+
 import org.lara.interpreter.weaver.generator.generator.java.JavaAbstractsGenerator;
+import org.lara.interpreter.weaver.generator.generator.java.utils.CrtpJavaClass;
 import org.lara.interpreter.weaver.generator.generator.java.utils.GeneratorUtils;
 import org.lara.interpreter.weaver.generator.generator.utils.GenConstants;
 import org.specs.generators.java.classtypes.JavaClass;
@@ -23,8 +26,6 @@ import org.specs.generators.java.enums.Modifier;
 import org.specs.generators.java.members.Constructor;
 import org.specs.generators.java.members.Method;
 import org.specs.generators.java.types.JavaType;
-
-import java.util.List;
 
 /**
  * Generates an abstract class that can be edited by the developer. This class
@@ -57,19 +58,25 @@ public class UserAbstractJPClassGenerator extends GeneratorHelper {
      * Generate an abstract class that can be edited by the developer. This class
      * can be used for changes/extensions
      * that are global to the join points
+     * 
+     * <p>
+     * This class uses CRTP (Curiously Recurring Template Pattern) to pass through
+     * the type parameter from AJoinPoint to concrete join point classes.
+     * </p>
      *
      */
     private JavaClass generateUserClass() {
         // Create the abstract class using the name of the weaver
         String classname = GenConstants.abstractPrefix() + javaGenerator.getWeaverName() + GenConstants.interfaceName();
 
-        final JavaClass abstJPClass = new JavaClass(classname, javaGenerator.getAbstractUserJoinPointClassPackage());
+        // All classes use CRTP type parameters
+        final CrtpJavaClass abstJPClass = new CrtpJavaClass(classname,
+                javaGenerator.getAbstractUserJoinPointClassPackage());
         abstJPClass.setSuperClass(javaGenerator.getaJoinPointType());
         abstJPClass.add(Modifier.ABSTRACT);
         abstJPClass.appendComment(
                 "Abstract class which can be edited by the developer. This class will not be overwritten." + ln());
         abstJPClass.add(JDocTag.AUTHOR, GenConstants.getAUTHOR());
-        abstJPClass.setSuperClass(javaGenerator.getaJoinPointType());
 
         addConstructor(abstJPClass);
         addWeaverEngineField(abstJPClass);

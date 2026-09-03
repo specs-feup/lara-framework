@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * @author Lara Weaver Generator
  */
-public abstract class ABody extends AMediumWeaverJoinPoint {
+public abstract class ABody<Self extends ABody<Self>> extends AMediumWeaverJoinPoint<Self> {
 
     /**
      * 
@@ -34,6 +34,14 @@ public abstract class ABody extends AMediumWeaverJoinPoint {
      * 
      */
     protected enum BodyAttributes {
+        DUMP("dump"),
+        JOINPOINTTYPE("joinPointType"),
+        NODE("node"),
+        SELF("self"),
+        SUPER("super"),
+        CHILDREN("children"),
+        DESCENDANTS("descendants"),
+        SCOPENODES("scopeNodes"),
         LANGUAGE("language");
         private String name;
 

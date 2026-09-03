@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
  * @author jbispo
  */
 public class LanguageSpecification {
+    private static final String WILDCARD_EXTENDS_PREFIX = "? extends ";
+    private static final String WILDCARD_SUPER_PREFIX = "? super ";
 
     private static final String JOIN_POINTS_FILENAME = "joinPointModel.xml";
     private static final String ATTRIBUTES_FILENAME = "artifacts.xml";
@@ -251,6 +253,21 @@ public class LanguageSpecification {
             return new ArrayType(baseType, arrayDimension);
         }
 
+        // Handle 'this' type (late-bound self type)
+        if (type.equals(ThisType.THIS_KEYWORD)) {
+            return ThisType.getInstance();
+        }
+
+        // Handle wildcard types: ?, ? extends X, ? super X
+        if (type.startsWith(WildcardType.WILDCARD_SYMBOL)) {
+            return parseWildcardType(type);
+        }
+
+        // Handle generic/parameterized types (e.g., List<String>, Map<String, this>)
+        if (type.contains("<") && type.contains(">")) {
+            return parseParameterizedType(type);
+        }
+
         if (type.equalsIgnoreCase("template")) {
             return PrimitiveClasses.STRING;
         }
@@ -277,6 +294,150 @@ public class LanguageSpecification {
         }
 
         throw new RuntimeException("Type given does not exist: " + type);
+    }
+
+    /**
+     * Parses a parameterized type string (e.g., "List&lt;String&gt;", "Map&lt;String, this&gt;").
+     * Supports nested generics and the 'this' type anywhere in the type arguments.
+     *
+     * @param type the type string with generic syntax
+     * @return a ParameterizedType representing the parsed type
+     */
+    private IType parseParameterizedType(String type) {
+        int angleBracketStart = type.indexOf('<');
+        int angleBracketEnd = type.lastIndexOf('>');
+
+        validateParameterizedTypeFormat(type, angleBracketStart, angleBracketEnd);
+
+        String baseTypeName = type.substring(0, angleBracketStart).trim();
+        String argsString = type.substring(angleBracketStart + 1, angleBracketEnd).trim();
+
+        // Parse the base type
+        IType baseType = getBaseTypeForParameterized(baseTypeName);
+
+        // Parse type arguments, respecting nested generics
+        List<IType> typeArguments = parseTypeArguments(argsString);
+
+        return new ParameterizedType(baseType, typeArguments);
+    }
+
+    private static void validateParameterizedTypeFormat(String type, int angleBracketStart, int angleBracketEnd) {
+        if (angleBracketStart == -1 || angleBracketEnd == -1 || angleBracketEnd <= angleBracketStart) {
+            throw new RuntimeException("Invalid parameterized type format: " + type);
+        }
+
+        String afterBracket = type.substring(angleBracketEnd + 1).trim();
+        if (!afterBracket.isEmpty()) {
+            throw new RuntimeException("Invalid parameterized type format: unexpected characters after '>': " + type);
+        }
+
+        validateBalancedAngleBrackets(type, angleBracketStart, angleBracketEnd);
+    }
+
+    private static void validateBalancedAngleBrackets(String type, int start, int end) {
+        int depth = 0;
+        for (int i = start; i <= end; i++) {
+            char c = type.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            }
+
+            if (depth < 0) {
+                throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+            }
+        }
+
+        if (depth != 0) {
+            throw new RuntimeException("Invalid parameterized type format: unbalanced brackets in: " + type);
+        }
+    }
+
+    /**
+     * Gets the base type for a parameterized type. For unknown base types,
+     * returns a GenericType to preserve the original string.
+     */
+    private IType getBaseTypeForParameterized(String baseTypeName) {
+        // Check if it's a known primitive class (e.g., Map, List in some contexts)
+        if (PrimitiveClasses.contains(StringUtils.firstCharToUpper(baseTypeName))) {
+            return PrimitiveClasses.get(baseTypeName);
+        }
+        // For unknown base types (like List, Set, etc.), use GenericType as a wrapper
+        return new GenericType(baseTypeName, false);
+    }
+
+    /**
+     * Parses a comma-separated list of type arguments, respecting nested generics.
+     *
+     * @param argsString the string containing type arguments (e.g., "String, Map&lt;K, V&gt;")
+     * @return list of parsed IType objects
+     */
+    private List<IType> parseTypeArguments(String argsString) {
+        List<IType> arguments = new ArrayList<>();
+        int depth = 0;
+        int start = 0;
+
+        for (int i = 0; i < argsString.length(); i++) {
+            char c = argsString.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            } else if (c == ',' && depth == 0) {
+                addTypeArgument(argsString, arguments, start, i);
+                start = i + 1;
+            }
+        }
+
+        String lastArg = argsString.substring(start).trim();
+        if (!lastArg.isEmpty()) {
+            arguments.add(getType(lastArg));
+        } else if (!arguments.isEmpty()) {
+            throw new RuntimeException("Invalid type arguments: trailing comma in: " + argsString);
+        }
+
+        return arguments;
+    }
+
+    private void addTypeArgument(String argsString, List<IType> arguments, int start, int end) {
+        String arg = argsString.substring(start, end).trim();
+        if (arg.isEmpty()) {
+            throw new RuntimeException("Invalid type arguments: empty argument in: " + argsString);
+        }
+
+        arguments.add(getType(arg));
+    }
+
+    /**
+     * Parses a wildcard type string (e.g., "?", "? extends String", "? super this").
+     * 
+     * @param type the wildcard type string starting with "?"
+     * @return a WildcardType representing the parsed wildcard
+     */
+    private IType parseWildcardType(String type) {
+        String trimmed = type.trim();
+
+        // Unbounded wildcard: just "?"
+        if (trimmed.equals(WildcardType.WILDCARD_SYMBOL)) {
+            return WildcardType.unbounded();
+        }
+
+        // Upper bounded: "? extends X"
+        if (trimmed.startsWith(WILDCARD_EXTENDS_PREFIX)) {
+            String boundTypeName = trimmed.substring(WILDCARD_EXTENDS_PREFIX.length()).trim();
+            IType boundType = getType(boundTypeName);
+            return WildcardType.extendsType(boundType);
+        }
+
+        // Lower bounded: "? super X"
+        if (trimmed.startsWith(WILDCARD_SUPER_PREFIX)) {
+            String boundTypeName = trimmed.substring(WILDCARD_SUPER_PREFIX.length()).trim();
+            IType boundType = getType(boundTypeName);
+            return WildcardType.superType(boundType);
+        }
+
+        throw new RuntimeException("Invalid wildcard type format: " + type);
     }
 
     public JoinPointClass getRoot() {

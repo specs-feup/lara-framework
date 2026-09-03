@@ -3,7 +3,6 @@ package org.lara.interpreter.weaver.generator.codegen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -11,18 +10,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.lara.interpreter.weaver.generator.commandline.WeaverGenerator;
+import org.lara.interpreter.weaver.generator.fixtures.BaselineRegen;
 import org.lara.interpreter.weaver.generator.fixtures.DiffUtils;
+import org.lara.interpreter.weaver.generator.fixtures.GeneratedTreeUtils;
+import org.lara.interpreter.weaver.generator.fixtures.JavaMethodSignatureUtils;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.RunResult;
+import org.lara.interpreter.weaver.generator.fixtures.WeaverGeneratorTestHarness.Scenario;
 
-/**
- * Golden tests for Java code generation.
- *
- */
 public class JavaCodegenGoldenTest {
 
     @TempDir
@@ -46,36 +45,39 @@ public class JavaCodegenGoldenTest {
         runAndAssertGolden("edge");
     }
 
-    private void runAndAssertGolden(String scenario) throws Exception {
-        Path specDir = Path.of("test-resources/spec/valid/" + scenario);
-        Path outDir = temp.resolve("gen-" + scenario);
+    @Test
+    @DisplayName("ThisType spec generation matches golden and is deterministic")
+    void thistypeGolden() throws Exception {
+        runAndAssertGolden("thistype");
+    }
 
-        String weaverName = capitalize(scenario) + "Weaver";
-        String pkg = scenario + ".pkg";
+    private void runAndAssertGolden(String scenarioName) throws Exception {
+        Scenario scenario = scenario(scenarioName);
+        Path outDir = temp.resolve("gen-" + scenarioName);
 
-        String[] args = new String[] {
-                "-x", specDir.toString(),
-                "-o", outDir.toString(),
-                "-p", pkg,
-                "-w", weaverName
-        };
+        WeaverGeneratorTestHarness.assertSpecDirExists(scenario);
 
-        int exitCode = WeaverGenerator.run(args);
-        assertThat(exitCode).as("WeaverGenerator should succeed").isZero();
+        RunResult firstRun = WeaverGeneratorTestHarness.run(scenario, outDir);
+        assertThat(firstRun.exitCode()).as("WeaverGenerator should succeed").isZero();
 
-        // Determinism: run again into same folder should not change contents.
-        List<String> before = snapshot(outDir);
-        int exitCode2 = WeaverGenerator.run(args);
-        assertThat(exitCode2).as("WeaverGenerator should succeed (idempotency check)").isZero();
-        List<String> after = snapshot(outDir);
+        List<String> before = GeneratedTreeUtils.snapshotRelativePaths(outDir);
+        RunResult secondRun = WeaverGeneratorTestHarness.run(scenario, outDir);
+        assertThat(secondRun.exitCode()).as("WeaverGenerator should succeed (idempotency check)").isZero();
+        List<String> after = GeneratedTreeUtils.snapshotRelativePaths(outDir);
         assertThat(after).as("Idempotent generation (file listing)").containsExactlyElementsOf(before);
 
-        Path goldenRoot = Path.of("test-resources/golden/" + scenario);
-        Map<String, Path> generatedFiles = snapshotFiles(outDir);
-        Map<String, Path> goldenFiles = snapshotGolden(goldenRoot, scenario);
+        Path goldenRoot = Path.of("test-resources/golden/" + scenarioName);
+        Map<String, Path> generatedFiles = GeneratedTreeUtils.snapshotFiles(outDir);
+
+        if (BaselineRegen.isEnabled()) {
+            persistGolden(goldenRoot, scenarioName, generatedFiles);
+            return;
+        }
+
+        Map<String, Path> goldenFiles = snapshotGolden(goldenRoot, scenarioName);
 
         assertThat(generatedFiles.keySet())
-                .as("Generated file set for scenario '%s'", scenario)
+                .as("Generated file set for scenario '%s'", scenarioName)
                 .containsExactlyElementsOf(goldenFiles.keySet());
 
         for (Map.Entry<String, Path> entry : goldenFiles.entrySet()) {
@@ -83,60 +85,59 @@ public class JavaCodegenGoldenTest {
             Path generatedFile = generatedFiles.get(relative);
             assertThat(generatedFile).as("Generated file exists: " + relative).isNotNull();
 
-            String gen = read(generatedFile);
-            String gold = read(entry.getValue());
+            String generated = GeneratedTreeUtils.readNormalized(generatedFile);
+            String golden = GeneratedTreeUtils.readNormalized(entry.getValue());
+            DiffUtils.assertEqualsNormalized(golden, generated);
+        }
 
-            DiffUtils.assertEqualsNormalized(gold, gen);
+        JavaMethodSignatureUtils.assertNoMethodSignatureCollisions(outDir, scenarioName);
+    }
+
+    private static Scenario scenario(String name) {
+        return WeaverGeneratorTestHarness.scenario(name, name + ".pkg", capitalize(name) + "Weaver");
+    }
+
+    private static String capitalize(String value) {
+        return value.substring(0, 1).toUpperCase() + value.substring(1);
+    }
+
+    private static void persistGolden(Path goldenRoot, String scenario, Map<String, Path> generatedFiles)
+            throws IOException {
+        GeneratedTreeUtils.deleteTree(goldenRoot);
+        Files.createDirectories(goldenRoot);
+
+        for (Map.Entry<String, Path> entry : generatedFiles.entrySet()) {
+            String relative = toGoldenRelativePath(entry.getKey(), scenario);
+            Path target = goldenRoot.resolve(relative.replaceFirst("\\.java$", ".java.txt"));
+            GeneratedTreeUtils.writeNormalized(target, GeneratedTreeUtils.readNormalized(entry.getValue()));
         }
     }
 
-    private static List<String> snapshot(Path dir) throws IOException {
-        try (Stream<Path> walk = Files.walk(dir)) {
-            return walk.filter(Files::isRegularFile)
-                    .map(dir::relativize)
-                    .map(Path::toString)
-                    .sorted()
-                    .collect(Collectors.toList());
+    private static String toGoldenRelativePath(String generatedRelativePath, String scenario) {
+        String prefix = scenario + "/";
+        if (!generatedRelativePath.startsWith(prefix)) {
+            throw new IllegalStateException(
+                    "Generated file '" + generatedRelativePath + "' is not inside scenario '" + scenario + "'");
         }
-    }
 
-    private static String read(Path file) throws IOException {
-        return Files.readString(file, StandardCharsets.UTF_8).replace("\r\n", "\n").replace('\r', '\n');
-    }
-
-    private static String capitalize(String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    }
-
-    private static Map<String, Path> snapshotFiles(Path root) throws IOException {
-        try (Stream<Path> walk = Files.walk(root)) {
-            return walk.filter(Files::isRegularFile)
-                    .collect(Collectors.toMap(
-                            path -> normalize(root.relativize(path).toString()),
-                            Function.identity(),
-                            (a, b) -> {
-                                throw new IllegalStateException("Duplicate generated path: " + a);
-                            },
-                            TreeMap::new));
+        if (!generatedRelativePath.endsWith(".java")) {
+            throw new IllegalStateException("Golden regeneration only supports Java files: " + generatedRelativePath);
         }
+
+        return generatedRelativePath.substring(prefix.length());
     }
 
     private static Map<String, Path> snapshotGolden(Path goldenRoot, String scenario) throws IOException {
-        try (Stream<Path> walk = Files.walk(goldenRoot)) {
-            return walk.filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().endsWith(".java.txt"))
-                    .collect(Collectors.toMap(
-                            path -> scenario + "/" + normalize(goldenRoot.relativize(path).toString())
-                                    .replaceFirst("\\.java\\.txt$", ".java"),
-                            Function.identity(),
-                            (a, b) -> {
-                                throw new IllegalStateException("Duplicate golden path: " + a);
-                            },
-                            TreeMap::new));
-        }
-    }
-
-    private static String normalize(String relativePath) {
-        return relativePath.replace('\\', '/');
+        return GeneratedTreeUtils.listFiles(goldenRoot, Files::isRegularFile).stream()
+                .filter(path -> path.getFileName().toString().endsWith(".java.txt"))
+                .collect(Collectors.toMap(
+                        path -> scenario + "/"
+                                + GeneratedTreeUtils.normalizeRelativePath(goldenRoot.relativize(path).toString())
+                                        .replaceFirst("\\.java\\.txt$", ".java"),
+                        Function.identity(),
+                        (left, right) -> {
+                            throw new IllegalStateException("Duplicate golden path: " + left);
+                        },
+                        TreeMap::new));
     }
 }

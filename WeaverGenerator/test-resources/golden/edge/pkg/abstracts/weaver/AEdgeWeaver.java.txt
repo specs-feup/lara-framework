@@ -21,7 +21,7 @@ public abstract class AEdgeWeaver extends LaraWeaverEngine {
      */
     @Override
     public final List<String> getActions() {
-        String[] weaverActions= {"noop"};
+        String[] weaverActions= {"insert", "insert", "toString", "equals", "instanceOf", "instanceOf", "noop"};
         return Arrays.asList(weaverActions);
     }
 
