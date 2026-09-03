@@ -17,13 +17,8 @@ public class FixturesSmokeTest {
         var trigger = new EventTrigger();
         trigger.registerReceiver(gear);
         engine.setEventTrigger(trigger);
-        engine.setWeaver();
-        try {
-            assertThat(engine.getRootJp()).isNotNull();
-            assertThat(engine.implementsEvents()).isTrue();
-        } finally {
-            // Cleanup thread-local
-            WeaverEngine.removeWeaver();
-        }
+
+        assertThat(engine.getRootJp()).isNotNull();
+        assertThat(engine.implementsEvents()).isTrue();
     }
 }

@@ -1,5 +1,6 @@
 package medium.pkg.abstracts.joinpoints;
 
+import medium.pkg.MediumWeaver;
 import medium.pkg.abstracts.AMediumWeaverJoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,12 @@ import java.util.List;
  */
 public abstract class AVar extends AMediumWeaverJoinPoint {
 
+    /**
+     * 
+     */
+    public AVar(MediumWeaver weaver){
+        super(weaver);
+    }
     /**
      * Returns the join point type of this class
      * @return The join point type

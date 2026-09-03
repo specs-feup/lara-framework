@@ -2,31 +2,22 @@ package integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.events.EventTrigger;
 import org.lara.interpreter.weaver.fixtures.TestGear;
+import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.lara.interpreter.weaver.interf.JoinPoint;
-import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.language.specification.dsl.JoinPointClass;
 import org.lara.language.specification.dsl.LanguageSpecification;
 
 class WeaverInterfaceE2ETest {
 
-    @AfterEach
-    void cleanupThreadLocal() {
-        if (WeaverEngine.isWeaverSet()) {
-            WeaverEngine.removeWeaver();
-        }
-    }
-
     @Test
     @DisplayName("Event flow through insert/insertFar with TestGear and active toggle")
     void eventFlow_insert_and_insertFar() {
         var engine = new TestWeaverEngine();
-        engine.setWeaver();
 
         var trigger = new EventTrigger();
         var gear = new TestGear();
@@ -38,7 +29,7 @@ class WeaverInterfaceE2ETest {
         // insert with String
         root.insert("before", "code-snippet");
         // insert with JP
-        var other = new org.lara.interpreter.weaver.fixtures.TestJoinPoint("node");
+        var other = new TestJoinPoint(engine, "node");
         root.insert("after", other);
         // insertFar variants
         root.insertFar("replace", "far-code");

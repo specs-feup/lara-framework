@@ -13,13 +13,16 @@
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
 import java.io.File;
+
+import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
 
 public class DWFile extends AFile {
 
     private final File file;
 
-    public DWFile(File f) {
+    public DWFile(File f, DefaultWeaver weaver) {
+        super(weaver);
         file = f;
     }
 

@@ -1,6 +1,7 @@
 package edge.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.exception.AttributeException;
+import edge.pkg.EdgeWeaver;
 import org.lara.interpreter.weaver.interf.JoinPoint;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,8 @@ public abstract class AReservedKeyword extends ALevel2 {
     /**
      * 
      */
-    public AReservedKeyword(ALevel2 aLevel2){
-        super(aLevel2);
+    public AReservedKeyword(ALevel2 aLevel2, EdgeWeaver weaver){
+        super(aLevel2, weaver);
         this.aLevel2 = aLevel2;
     }
     /**

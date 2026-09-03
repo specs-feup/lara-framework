@@ -15,18 +15,12 @@ import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 
 class JoinPointTest {
 
-    @AfterEach
-    void cleanupThreadLocal() {
-        if (WeaverEngine.isWeaverSet()) {
-            WeaverEngine.removeWeaver();
-        }
-    }
-
     @Test
     @DisplayName("instanceOf() true for 'joinpoint', exact type, and super chain")
     void testInstanceOfBehavior() {
-        var root = new TestJoinPoint("root");
-        var child = new TestJoinPoint("child") {
+        var engine = new TestWeaverEngine();
+        var root = new TestJoinPoint(engine, "root");
+        var child = new TestJoinPoint(engine, "child") {
             @Override
             public Optional<? extends JoinPoint> getSuper() {
                 return Optional.of(root);
@@ -43,7 +37,7 @@ class JoinPointTest {
         assertThat(child.instanceOf("child")).isTrue();
 
         // Super chain: customize a test JP with getSuper() behavior
-        JoinPoint grandchild = new JoinPoint() {
+        JoinPoint grandchild = new JoinPoint(new TestWeaverEngine()) {
             @Override
             public boolean same(JoinPoint iJoinPoint) {
                 return this == iJoinPoint;
@@ -87,10 +81,11 @@ class JoinPointTest {
     @Test
     @DisplayName("toString and dump format")
     void testToStringAndDump() {
-        var root = new TestJoinPoint("root");
-        var a = new TestJoinPoint("a");
-        var b = new TestJoinPoint("b");
-        var b1 = new TestJoinPoint("b1");
+        var engine = new TestWeaverEngine();
+        var root = new TestJoinPoint(engine, "root");
+        var a = new TestJoinPoint(engine, "a");
+        var b = new TestJoinPoint(engine, "b");
+        var b1 = new TestJoinPoint(engine, "b1");
         root.addChild(a);
         root.addChild(b);
         b.addChild(b1);
@@ -107,10 +102,11 @@ class JoinPointTest {
     @Test
     @DisplayName("Descendant APIs: getJpChildren, getJpDescendants, and stream variants")
     void testDescendantApis() {
-        var root = new TestJoinPoint("root");
-        var a = new TestJoinPoint("a");
-        var b = new TestJoinPoint("b");
-        var b1 = new TestJoinPoint("b1");
+        var engine = new TestWeaverEngine();
+        var root = new TestJoinPoint(engine, "root");
+        var a = new TestJoinPoint(engine, "a");
+        var b = new TestJoinPoint(engine, "b");
+        var b1 = new TestJoinPoint(engine, "b1");
         root.addChild(a);
         root.addChild(b);
         b.addChild(b1);
@@ -144,7 +140,6 @@ class JoinPointTest {
     @DisplayName("hasListeners and eventTrigger delegation uses thread-local weaver")
     void testHasListenersDelegation() {
         var engine = new TestWeaverEngine();
-        engine.setWeaver();
         // Without event trigger, hasListeners is false
         var root = (TestJoinPoint) engine.getRootJp();
         assertThat(root).isNotNull();
@@ -153,6 +148,5 @@ class JoinPointTest {
             // We check it doesn't throw and remains false as there is no event trigger
             root.hasListeners();
         }).doesNotThrowAnyException();
-        WeaverEngine.removeWeaver();
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestGear;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
+import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
 class EventTriggerTest {
@@ -38,7 +39,8 @@ class EventTriggerTest {
         assertThat(trigger2.hasListeners()).isTrue();
 
         // Sanity: all gears receive events after registration via list
-        var jp = new TestJoinPoint("node");
+        var engine = new TestWeaverEngine();
+        var jp = new TestJoinPoint(engine, "node");
         trigger2.triggerAction(Stage.BEGIN, "touch", jp, Optional.empty(), "a", 1);
         assertThat(gear2.getActionEvents()).hasSize(1);
         assertThat(gear3.getActionEvents()).hasSize(1);
@@ -50,7 +52,8 @@ class EventTriggerTest {
         var gear = new TestGear();
         trigger.registerReceiver(gear);
 
-        var target = new TestJoinPoint("function");
+        var engine = new TestWeaverEngine();
+        var target = new TestJoinPoint(engine, "function");
 
         // BEGIN without result
         trigger.triggerAction(Stage.BEGIN, "insert", target, Optional.empty(), 10, "x");
@@ -90,7 +93,8 @@ class EventTriggerTest {
         var gear = new TestGear();
         trigger.registerReceiver(gear);
 
-        var target = new TestJoinPoint("loop");
+        var engine = new TestWeaverEngine();
+        var target = new TestJoinPoint(engine, "loop");
 
         trigger.triggerAttribute(Stage.BEGIN, target, "size", Optional.empty());
         trigger.triggerAttribute(Stage.END, target, "size", List.of(), Optional.of(42));

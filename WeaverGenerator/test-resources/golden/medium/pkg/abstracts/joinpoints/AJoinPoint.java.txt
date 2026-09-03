@@ -1,9 +1,9 @@
 package medium.pkg.abstracts.joinpoints;
 
 import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.WeaverEngine;
 import org.lara.interpreter.exception.ActionException;
 import org.lara.interpreter.exception.AttributeException;
-import medium.pkg.MediumWeaver;
 
 /**
  * Abstract class containing the global attributes and default action exception.
@@ -12,6 +12,12 @@ import medium.pkg.MediumWeaver;
  */
 public abstract class AJoinPoint extends JoinPoint {
 
+    /**
+     * 
+     */
+    public AJoinPoint(WeaverEngine weaver){
+        super(weaver);
+    }
     /**
      * 
      */
@@ -79,13 +85,5 @@ public abstract class AJoinPoint extends JoinPoint {
         	return true;
         }
         return super.instanceOf(joinpointClass);
-    }
-
-    /**
-     * Returns the Weaving Engine this join point pertains to.
-     */
-    @Override
-    public MediumWeaver getWeaverEngine() {
-        return MediumWeaver.getMediumWeaver();
     }
 }

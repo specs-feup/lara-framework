@@ -13,7 +13,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -28,17 +27,6 @@ public class JavaCodegenGoldenTest {
 
     @TempDir
     Path temp;
-
-    private Path projectRoot;
-
-    @BeforeEach
-    void setupRoot() throws IOException {
-        // Find WeaverGenerator module root by traversing upwards until we find
-        // build.gradle
-        projectRoot = Path.of(".");
-        // heuristic: ensure we are inside WeaverGenerator
-        assertThat(projectRoot.resolve("build.gradle")).exists();
-    }
 
     @Test
     @DisplayName("Minimal spec generation matches golden and is deterministic")
@@ -59,7 +47,7 @@ public class JavaCodegenGoldenTest {
     }
 
     private void runAndAssertGolden(String scenario) throws Exception {
-        Path specDir = projectRoot.resolve("test-resources/spec/valid/" + scenario);
+        Path specDir = Path.of("test-resources/spec/valid/" + scenario);
         Path outDir = temp.resolve("gen-" + scenario);
 
         String weaverName = capitalize(scenario) + "Weaver";
@@ -72,15 +60,17 @@ public class JavaCodegenGoldenTest {
                 "-w", weaverName
         };
 
-        WeaverGenerator.main(args);
+        int exitCode = WeaverGenerator.run(args);
+        assertThat(exitCode).as("WeaverGenerator should succeed").isZero();
 
         // Determinism: run again into same folder should not change contents.
         List<String> before = snapshot(outDir);
-        WeaverGenerator.main(args);
+        int exitCode2 = WeaverGenerator.run(args);
+        assertThat(exitCode2).as("WeaverGenerator should succeed (idempotency check)").isZero();
         List<String> after = snapshot(outDir);
         assertThat(after).as("Idempotent generation (file listing)").containsExactlyElementsOf(before);
 
-        Path goldenRoot = projectRoot.resolve("test-resources/golden/" + scenario);
+        Path goldenRoot = Path.of("test-resources/golden/" + scenario);
         Map<String, Path> generatedFiles = snapshotFiles(outDir);
         Map<String, Path> goldenFiles = snapshotGolden(goldenRoot, scenario);
 
