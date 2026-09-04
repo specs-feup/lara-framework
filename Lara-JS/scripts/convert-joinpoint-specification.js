@@ -358,6 +358,33 @@ function convertEnum(e) {
 }
 
 /**
+ * Splits `text` on `separator` occurrences that are not nested inside <> or [].
+ * @param {string} text
+ * @param {string} separator
+ * @returns {string[]}
+ */
+function splitTopLevel(text, separator) {
+  const parts = [];
+  let depth = 0;
+  let current = "";
+  for (const char of text) {
+    if (char === "<" || char === "[") {
+      depth++;
+    } else if (char === ">" || char === "]") {
+      depth--;
+    }
+    if (char === separator && depth === 0) {
+      parts.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  parts.push(current);
+  return parts;
+}
+
+/**
  *
  * @param {string} string
  * @returns {string}
@@ -394,7 +421,7 @@ function interpretType(typeString, joinpointNameSet, enumNameSet) {
   }
 
   if ((typeString.startsWith("Map<") || typeString.startsWith("map<")) && typeString.endsWith(">")) {
-    const innerTypes = typeString.slice(4, -1).split(",").map((t) => t.trim());
+    const innerTypes = splitTopLevel(typeString.slice(4, -1), ",").map((t) => t.trim());
     if (innerTypes.length === 2) {
       const keyType = interpretType(innerTypes[0], joinpointNameSet, enumNameSet);
       const valueType = interpretType(innerTypes[1], joinpointNameSet, enumNameSet);

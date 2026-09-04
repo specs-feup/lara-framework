@@ -125,6 +125,12 @@ public final class SpecValidator {
                 }
             }
         }
+        for (var td : model.getTypeDefs().values()) {
+            for (var field : td.fields()) {
+                checkTypeRef(field.type(), validJpNames, validTypeDefs, validEnums,
+                        "field '" + field.name() + "' of typedef '" + td.name() + "'", errors);
+            }
+        }
     }
 
     private static void checkTypeRef(JpDataType type,

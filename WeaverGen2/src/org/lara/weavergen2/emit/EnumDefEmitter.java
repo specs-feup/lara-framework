@@ -35,9 +35,9 @@ public final class EnumDefEmitter {
             var suffix = i < ed.values().size() - 1 ? "," : ";";
             var enumConst = v.value().toUpperCase().replace(' ', '_').replace('-', '_');
             if (v.display() != null) {
-                sb.line(enumConst + "(\"" + v.display() + "\")" + suffix);
+                sb.line(enumConst + "(\"" + escapeJavaString(v.display()) + "\")" + suffix);
             } else {
-                sb.line(enumConst + "(\"" + v.value() + "\")" + suffix);
+                sb.line(enumConst + "(\"" + escapeJavaString(v.value()) + "\")" + suffix);
             }
         }
 
