@@ -32,7 +32,7 @@ type JSON_EnumSpecification = {
   type: "enum";
   name: string;
   extends?: string;
-  children: { value: string }[];
+  children: { value: string; display?: string }[];
 };
 
 export type ConvertedSpecification = {
@@ -74,7 +74,7 @@ export type ConvertedParameter = {
 export type ConvertedEnum = {
   name: string;
   extends?: string;
-  entries: string[];
+  entries: { name: string; value: string }[];
 };
 
 export function convertSpecification(input: JSON_LanguageSpecification, baseJoinPointSpec?: ConvertedSpecification | undefined): ConvertedSpecification {
@@ -367,7 +367,7 @@ function convertEnum(e: JSON_EnumSpecification): ConvertedEnum {
     name: e.name,
     extends: e.extends,
     entries: e.children.map((child) => {
-      return child.value;
+      return { name: child.value, value: child.display ?? child.value };
     }),
   };
 }
