@@ -1,7 +1,8 @@
-import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.ts";
+import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
+import PrintOnce from "./lara/util/PrintOnce.ts";
 
-/* eslint-disable jest/expect-expect */
+/* oxlint-disable vitest/expect-expect */
 describe("ApiTest", () => {
     function newTester() {
         return new WeaverLegacyTester(
@@ -29,7 +30,7 @@ describe("ApiTest", () => {
         await newTester().test("LaraCoreTest.js");
     });
 
-    it.failing("LocalFolder", async () => {
+    it.fails("LocalFolder", async () => {
         await newTester().test("LocalFolderTest.js");
     });
 
@@ -124,7 +125,12 @@ describe("ApiTest - Util", () => {
     });
 
     it("PrintOnce", async () => {
-        await newTester().test("PrintOnceTest.js");
+        {
+            await newTester().test("PrintOnceTest.js");
+        }
+
+        // Clear the PrintOnce messagesSet to avoid affecting other tests
+        PrintOnce.messagesSet.clear();
     });
 
     it("Random", async () => {

@@ -70,7 +70,7 @@ class AdapterPass extends SimplePass {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// oxlint-disable-next-line typescript/no-namespace
 namespace AdapterPass {
   /**
    * @param name - Name of the pass

@@ -77,14 +77,14 @@ export default abstract class BenchmarkSet {
    */
   test(
     worker: Parameters<BenchmarkInstance["test"]>[0] = (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // oxlint-disable-next-line typescript/no-unused-vars
       _instance: BenchmarkInstance
     ) => {
       return true;
     },
     executeCode: Parameters<BenchmarkInstance["test"]>[1] = false,
     outputProcessor: Parameters<BenchmarkInstance["test"]>[2] = (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // oxlint-disable-next-line typescript/no-unused-vars
       _executor: ProcessExecutor
     ) => {}
   ): string[] {

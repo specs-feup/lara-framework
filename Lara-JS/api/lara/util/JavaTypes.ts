@@ -2,7 +2,7 @@ import java from "java";
 
 export const NodeJavaPrefix = "nodeJava_";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// oxlint-disable-next-line typescript/no-namespace
 export namespace JavaClasses {
   export interface JavaClass {
     (...args: unknown[]): any;
@@ -10,7 +10,7 @@ export namespace JavaClasses {
     [key: string]: any;
   }
 
-  /* eslint-disable @typescript-eslint/no-empty-object-type */
+  /* oxlint-disable typescript/no-empty-object-type */
   export interface LaraI extends JavaClass {}
   export interface LaraApiTools extends JavaClass {}
   export interface LaraSystemTools extends JavaClass {
@@ -71,7 +71,7 @@ export namespace JavaClasses {
   }
   export interface ProgressCounter extends JavaClasses.JavaClass {}
   export interface LineStream extends JavaClasses.JavaClass {}
-  /* eslint-enable @typescript-eslint/no-empty-object-type */
+  /* oxlint-enable typescript/no-empty-object-type */
 }
 
 export default class JavaTypes {

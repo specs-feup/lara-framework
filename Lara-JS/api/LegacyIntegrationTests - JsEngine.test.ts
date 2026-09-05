@@ -1,7 +1,7 @@
-import { WeaverLegacyTester } from "../jest/WeaverLegacyTester.ts";
+import { WeaverLegacyTester } from "../vitest/WeaverLegacyTester.ts";
 import path from "path";
 
-/* eslint-disable jest/expect-expect */
+/* oxlint-disable vitest/expect-expect */
 describe("JsEngine", () => {
     function newTester() {
         return new WeaverLegacyTester(
@@ -22,7 +22,7 @@ describe("JsEngine", () => {
         }
 
         expect(err).toBeInstanceOf(Error);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // oxlint-disable-next-line typescript/no-explicit-any
         expect((err as any).message).toContain("throwing exception in bar()");
     });
 });

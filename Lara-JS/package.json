@@ -1,6 +1,6 @@
 {
   "name": "@specs-feup/lara",
-  "version": "3.5.1",
+  "version": "4.0.0",
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
@@ -17,37 +17,24 @@
     "./code/*.js": "./code/*.ts",
     "./code/*": "./code/*.ts",
     "./code/*.ts": "./code/*.ts",
-    "./jest/*.test.ts": null,
-    "./jest/*.config.ts": null,
-    "./jest/*.js": "./jest/*.ts",
-    "./jest/*": "./jest/*.ts",
-    "./jest/*.ts": "./jest/*.ts",
-    "./eslint.config.ts": "./eslint.config.ts",
-    "./jest.config.ts": "./jest.config.ts",
+    "./vitest/*.test.ts": null,
+    "./vitest/*.config.ts": null,
+    "./vitest/*.js": "./vitest/*.ts",
+    "./vitest/*": "./vitest/*.ts",
+    "./vitest/*.ts": "./vitest/*.ts",
+    "./scripts/validateJavaBinaries.js": "./scripts/validateJavaBinaries.ts",
+    "./oxlint.config.ts": "./oxlint.config.ts",
+    "./vitest.config.ts": "./vitest.config.ts",
     "./LaraJoinPointSpecification.json": "./LaraJoinPointSpecification.json",
     "./typedoc.base.json": "./typedoc.base.json"
   },
-  "files": [
-    "api",
-    "code",
-    "jest",
-    "scripts",
-    ".gitignore",
-    "eslint.config.ts",
-    "jest.config.ts",
-    "LaraJoinPointSpecification.json",
-    "LICENSE",
-    "package.json",
-    "README.md",
-    "tsconfig.json",
-    "typedoc.base.json",
-    "typedoc.config.js"
-  ],
   "scripts": {
     "build": "tsc",
     "build:watch": "npm run build -- --watch",
-    "lint": "eslint --flag unstable_native_nodejs_ts_config .",
-    "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --detectOpenHandles --forceExit",
+    "lint": "oxlint .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "test": "vitest run",
     "test:api": "npm run test -- api",
     "test:code": "npm run test -- code",
     "test:cov": "npm run test -- --coverage",
@@ -73,7 +60,8 @@
   },
   "homepage": "https://github.com/specs-feup/lara-framework#readme",
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=24.0.0",
+    "npm": ">=7"
   },
   "dependencies": {
     "chokidar": "^5.0.0",
@@ -84,21 +72,19 @@
     "supports-color": "^10.2.2",
     "yargs": "^18.0.0"
   },
-  "devDependencies": {
-    "@jest/globals": "^30.2.0",
-    "@types/debug": "^4.1.12",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.0",
-    "@types/yargs": "^17.0.35",
-    "cross-env": "^10.1.0",
-    "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jest": "^29.12.1",
+  "peerDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint-plugin-tsdoc": "^0.5.0",
-    "jest": "^30.2.0",
+    "oxfmt": "^0.59.0",
+    "oxlint": "^1.74.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "vitest": "^4.1.10"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^24.0.0",
+    "@types/yargs": "^17.0.35",
     "node-notifier": "^10.0.1",
-    "ts-jest": "^29.4.6",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.52.0"
+    "typescript": "^7.0.2"
   }
 }

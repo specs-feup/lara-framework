@@ -83,7 +83,7 @@ class PassResult {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// oxlint-disable-next-line typescript/no-namespace
 namespace PassResult {
   export interface PassResultParams {
     /**

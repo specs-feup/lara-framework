@@ -1,11 +1,14 @@
-import { jest } from "@jest/globals";
+import { vi } from "vitest";
 import JavaTypes, {
   type JavaClasses,
 } from "@specs-feup/lara/api/lara/util/JavaTypes.ts";
 import Weaver from "@specs-feup/lara/api/weaver/Weaver.ts";
 import fs from "fs";
 import path from "path";
+import { pathToFileURL } from "url";
 import util from "util";
+
+let legacyScriptRun = 0;
 
 afterAll(() => {
   const javaWeaver = Weaver.getWeaverEngine();
@@ -13,7 +16,7 @@ afterAll(() => {
 
   javaDatastore.set(
     JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
-    JavaTypes.FileList.newInstance()
+    JavaTypes.FileList.newInstance(),
   );
 
   javaWeaver.run(javaDatastore);
@@ -128,7 +131,7 @@ export class WeaverLegacyTester {
     }
 
     let out = "";
-    const log = jest.spyOn(global.console, "log");
+    const log = vi.spyOn(global.console, "log");
     log.mockImplementation((data, ...args: unknown[]) => {
       if (data) {
         out += util.format(data, ...args);
@@ -142,11 +145,11 @@ export class WeaverLegacyTester {
 
       for (const codeResource of codeResources) {
         const javaFile = new JavaTypes.File(
-          this.buildCodeResource(codeResource)
+          this.buildCodeResource(codeResource),
         );
         if (!fs.existsSync(javaFile.getAbsolutePath())) {
           throw new Error(
-            `Code resource '${codeResource}' does not exist at '${javaFile.getAbsolutePath()}'.`
+            `Code resource '${codeResource}' does not exist at '${javaFile.getAbsolutePath()}'.`,
           );
         }
         javaFiles.add(javaFile);
@@ -157,11 +160,15 @@ export class WeaverLegacyTester {
 
       javaDatastore.set(
         JavaTypes.LaraiKeys.WORKSPACE_FOLDER,
-        JavaTypes.FileList.newInstance(javaFiles)
+        JavaTypes.FileList.newInstance(javaFiles),
       );
 
       javaWeaver.run(javaDatastore);
-      await import(path.join(this.basePackage, laraResource));
+      const scriptUrl = pathToFileURL(
+        path.join(this.basePackage, laraResource),
+      );
+      scriptUrl.searchParams.set("vitestRun", String(legacyScriptRun++));
+      await import(scriptUrl.href);
       javaWeaver.end();
     } finally {
       log.mockRestore();
@@ -192,7 +199,7 @@ export class WeaverLegacyTester {
         "Could not find resource '" +
           expectedResource +
           "'. Actual output:\n" +
-          out
+          out,
       );
 
       throw new Error("Expected outputs not found");
@@ -202,8 +209,8 @@ export class WeaverLegacyTester {
       WeaverLegacyTester.normalize(
         fs
           .readFileSync(expectedResource, "utf8")
-          .replaceAll(`/**** File '${this.WORK_FOLDER}/`, "/**** File '")
-      )
+          .replaceAll(`/**** File '${this.WORK_FOLDER}/`, "/**** File '"),
+      ),
     );
   }
 
