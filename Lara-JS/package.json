@@ -4,39 +4,55 @@
   "description": "A js port of the popular framework for building source-to-source compilers",
   "type": "module",
   "bin": {
-    "lara-build-interfaces": "scripts/build-interfaces.js"
+    "lara-build-interfaces": "./scripts/build-interfaces.ts"
+  },
+  "exports": {
+    "./api/*.test.ts": null,
+    "./api/*.config.ts": null,
+    "./api/*.js": "./api/*.ts",
+    "./api/*": "./api/*.ts",
+    "./api/*.ts": "./api/*.ts",
+    "./code/*.test.ts": null,
+    "./code/*.config.ts": null,
+    "./code/*.js": "./code/*.ts",
+    "./code/*": "./code/*.ts",
+    "./code/*.ts": "./code/*.ts",
+    "./jest/*.test.ts": null,
+    "./jest/*.config.ts": null,
+    "./jest/*.js": "./jest/*.ts",
+    "./jest/*": "./jest/*.ts",
+    "./jest/*.ts": "./jest/*.ts",
+    "./eslint.config.ts": "./eslint.config.ts",
+    "./jest.config.ts": "./jest.config.ts",
+    "./LaraJoinPointSpecification.json": "./LaraJoinPointSpecification.json",
+    "./typedoc.base.json": "./typedoc.base.json"
   },
   "files": [
     "api",
     "code",
     "jest",
     "scripts",
-    "src-api",
-    "src-code",
     ".gitignore",
-    "eslint.config.js",
-    "jest.config.js",
+    "eslint.config.ts",
+    "jest.config.ts",
     "LaraJoinPointSpecification.json",
     "LICENSE",
     "package.json",
     "README.md",
-    "tsconfig.jest.json",
     "tsconfig.json",
     "typedoc.base.json",
-    "typedoc.json"
+    "typedoc.config.js"
   ],
   "scripts": {
-    "build": "npx tsc -b src-api src-code",
-    "build:api": "npx tsc -b src-api",
-    "build:code": "npx tsc -b src-code",
+    "build": "tsc",
     "build:watch": "npm run build -- --watch",
-    "lint": "eslint .",
+    "lint": "eslint --flag unstable_native_nodejs_ts_config .",
     "test": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --detectOpenHandles --forceExit",
-    "test:api": "npm run test -- src-api",
-    "test:code": "npm run test -- src-code",
+    "test:api": "npm run test -- api",
+    "test:code": "npm run test -- code",
     "test:cov": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "build-interfaces": "node scripts/build-LaraJoinPoint --input LaraJoinPointSpecification.json --output src-api/LaraJoinPoint.ts"
+    "build-interfaces": "node scripts/build-LaraJoinPoint.ts --input LaraJoinPointSpecification.json --output api/LaraJoinPoint.ts"
   },
   "repository": {
     "type": "git",
@@ -57,7 +73,7 @@
   },
   "homepage": "https://github.com/specs-feup/lara-framework#readme",
   "engines": {
-    "node": ">=18.18"
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "chokidar": "^5.0.0",
@@ -72,7 +88,7 @@
     "@jest/globals": "^30.2.0",
     "@types/debug": "^4.1.12",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20.14.10",
+    "@types/node": "^25.0.0",
     "@types/yargs": "^17.0.35",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
@@ -82,7 +98,7 @@
     "jest": "^30.2.0",
     "node-notifier": "^10.0.1",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.52.0"
   }
 }

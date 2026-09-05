@@ -1,0 +1,318 @@
+import java from "java";
+
+export const NodeJavaPrefix = "nodeJava_";
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace JavaClasses {
+  export interface JavaClass {
+    (...args: unknown[]): any;
+    new (...args: unknown[]): any;
+    [key: string]: any;
+  }
+
+  /* eslint-disable @typescript-eslint/no-empty-object-type */
+  export interface LaraI extends JavaClass {}
+  export interface LaraApiTools extends JavaClass {}
+  export interface LaraSystemTools extends JavaClass {
+    runCommand(
+      command: string | JavaClasses.List<string>,
+      workingDir: string,
+      printToConsole: boolean,
+      timeoutNanos?: number
+    ): JavaClasses.ProcessOutputAsString;
+  }
+  export interface LaraCli extends JavaClass {}
+  export interface Uuid extends JavaClass {}
+  export interface Gprofer extends JavaClass {}
+  export interface JoinPoint extends JavaClass {}
+  export interface SpecsStrings extends JavaClass {
+    escapeJson(str: string): string;
+  }
+  export interface SpecsSystem extends JavaClass {}
+  export interface ApacheStrings extends JavaClass {}
+  export interface StringLines extends JavaClass {}
+  export interface LaraIo extends JavaClass {}
+  export interface SpecsIo extends JavaClass {}
+  export interface System extends JavaClass {
+    nanoTime(): number;
+  }
+  export interface File extends JavaClass {
+    getParentFile(): JavaClasses.File;
+    getAbsolutePath(): string;
+  }
+  export interface List<T> extends JavaClass {
+    [Symbol.iterator](): IterableIterator<T>;
+    toArray(): T[];
+  }
+  export interface Collections extends JavaClass {}
+  export interface Diff extends JavaClass {}
+  export interface XStreamUtils extends JavaClass {
+    // Otherwise TS will get confused about .toString()
+    toString(obj: any): string;
+  }
+  export interface Object extends JavaClass {}
+  export interface CsvReader extends JavaClass {}
+  export interface CsvWriter extends JavaClasses.JavaClass {}
+  export interface CsvField extends JavaClasses.JavaClass {}
+  export interface DataStore extends JavaClass {}
+  export interface JOptionsUtils extends JavaClass {}
+  export interface WeaverEngine extends JavaClass {}
+  export interface LaraiKeys extends JavaClass {}
+  export interface FileList extends JavaClass {}
+  export interface OptionalFile extends JavaClass {}
+  export interface LaraIUtils extends JavaClass {}
+  export interface WeaverLauncher extends JavaClass {}
+  export interface ArrayList extends JavaClass {}
+  export interface HashMap extends JavaClass {}
+  export interface SpecsPlatforms extends JavaClass {}
+  export interface Runtime extends JavaClass {}
+  export interface ProcessOutputAsString extends JavaClass {
+    getOutput(): string;
+  }
+  export interface ProgressCounter extends JavaClasses.JavaClass {}
+  export interface LineStream extends JavaClasses.JavaClass {}
+  /* eslint-enable @typescript-eslint/no-empty-object-type */
+}
+
+export default class JavaTypes {
+  private static typeMap: Map<string, unknown> = new Map();
+
+  /**
+   * @beta Only for very exceptional cases. Should not be used directly, use the static methods instead.
+   *
+   * @param javaTypeName - String with the name of the Java type to be imported into the javascript environment
+   * @returns A Java object
+   */
+  static getType(javaTypeName: string): any {
+    if (JavaTypes.typeMap.has(javaTypeName)) {
+      return JavaTypes.typeMap.get(javaTypeName);
+    }
+
+    const javaType = java.import(javaTypeName);
+
+    JavaTypes.typeMap.set(javaTypeName, javaType);
+
+    return javaType;
+  }
+
+  static instanceOf<T>(value: T, javaTypeName: string): boolean {
+    return java.instanceOf(value, javaTypeName);
+  }
+
+  static isJavaObject<T>(value: T): boolean {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        Object.getPrototypeOf(value).constructor.name.startsWith(
+            NodeJavaPrefix
+        )
+    );
+  }
+
+  static get LaraI() {
+    return JavaTypes.getType("larai.LaraI") as JavaClasses.LaraI;
+  }
+
+  static get LaraApiTool() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lara.LaraApiTools"
+    ) as JavaClasses.LaraApiTools;
+  }
+
+  static get LaraSystemTools() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lara.LaraSystemTools"
+    ) as JavaClasses.LaraSystemTools;
+  }
+
+  static get LaraCli() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.cli.LaraCli"
+    ) as JavaClasses.LaraCli;
+  }
+
+  static get Uuid() {
+    return JavaTypes.getType("java.util.UUID") as JavaClasses.Uuid;
+  }
+
+  static get Gprofer() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.gprofer.Gprofer"
+    ) as JavaClasses.Gprofer;
+  }
+
+  static get JoinPoint() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.weaver.interf.JoinPoint2"
+    ) as JavaClasses.JoinPoint;
+  }
+
+  static get SpecsStrings() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.SpecsStrings"
+    ) as JavaClasses.SpecsStrings;
+  }
+
+  static get SpecsSystem() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.SpecsSystem"
+    ) as JavaClasses.SpecsSystem;
+  }
+
+  static get ApacheStrings() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lang.ApacheStrings"
+    ) as JavaClasses.ApacheStrings;
+  }
+
+  static get StringLines() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.StringLines"
+    ) as JavaClasses.StringLines;
+  }
+
+  static get LaraIo() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.api.LaraIo"
+    ) as JavaClasses.LaraIo;
+  }
+
+  static get SpecsIo() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.SpecsIo"
+    ) as JavaClasses.SpecsIo;
+  }
+
+  static get System() {
+    return JavaTypes.getType("java.lang.System") as JavaClasses.System;
+  }
+
+  static get File() {
+    return JavaTypes.getType("java.io.File") as JavaClasses.File;
+  }
+
+  static get Collections() {
+    return JavaTypes.getType(
+      "java.util.Collections"
+    ) as JavaClasses.Collections;
+  }
+
+  static get Diff() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lara.util.JavaDiffHelper"
+    ) as JavaClasses.Diff;
+  }
+
+  static get XStreamUtils() {
+    return JavaTypes.getType(
+      "org.suikasoft.XStreamPlus.XStreamUtils"
+    ) as JavaClasses.XStreamUtils;
+  }
+
+  static get Object() {
+    return JavaTypes.getType("java.lang.Object") as JavaClasses.Object;
+  }
+
+  static get CsvReader() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvReader"
+    ) as JavaClasses.CsvReader;
+  }
+
+  static get CsvField() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvField"
+    ) as JavaClasses.CsvField;
+  }
+
+  static get CsvWriter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.csv.CsvWriter"
+    ) as JavaClasses.CsvWriter;
+  }
+
+  static get DataStore() {
+    return JavaTypes.getType(
+      "org.suikasoft.jOptions.Interfaces.DataStore"
+    ) as JavaClasses.DataStore;
+  }
+
+  static get JOptionsUtils() {
+    return JavaTypes.getType(
+      "org.suikasoft.jOptions.JOptionsUtils"
+    ) as JavaClasses.JOptionsUtils;
+  }
+
+  static get WeaverEngine() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.weaver.interf.WeaverEngine"
+    ) as JavaClasses.WeaverEngine;
+  }
+
+  static get LaraiKeys() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.joptions.config.interpreter.LaraiKeys"
+    ) as JavaClasses.LaraiKeys;
+  }
+
+  static get FileList() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.joptions.keys.FileList"
+    ) as JavaClasses.FileList;
+  }
+
+  static get OptionalFile() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.joptions.keys.OptionalFile"
+    ) as JavaClasses.OptionalFile;
+  }
+
+  static get LaraIUtils() {
+    return JavaTypes.getType(
+      "org.lara.interpreter.utils.LaraIUtils"
+    ) as JavaClasses.LaraIUtils;
+  }
+
+  static get WeaverLauncher() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lara.WeaverLauncher"
+    ) as JavaClasses.WeaverLauncher;
+  }
+
+  static get ArrayList() {
+    return JavaTypes.getType("java.util.ArrayList") as JavaClasses.List<any>;
+  }
+
+  static get HashMap() {
+    return JavaTypes.getType("java.util.HashMap") as JavaClasses.HashMap;
+  }
+
+  static get SpecsPlatforms() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.lang.SpecsPlatforms"
+    ) as JavaClasses.SpecsPlatforms;
+  }
+
+  static get Runtime() {
+    return JavaTypes.getType("java.lang.Runtime") as JavaClasses.Runtime;
+  }
+
+  static get ProcessOutputAsString() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.system.ProcessOutputAsString"
+    ) as JavaClasses.ProcessOutputAsString;
+  }
+
+  static get ProgressCounter() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.ProgressCounter"
+    ) as JavaClasses.ProgressCounter;
+  }
+
+  static get LineStream() {
+    return JavaTypes.getType(
+      "pt.up.fe.specs.util.utilities.LineStream"
+    ) as JavaClasses.LineStream;
+  }
+
+}

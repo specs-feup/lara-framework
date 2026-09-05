@@ -1,0 +1,22 @@
+import Weaver from "./Weaver.ts";
+import WeaverDataStore from "./util/WeaverDataStore.ts";
+
+/**
+ * Contains configuration-related methods of the weaver.
+ */
+export default class WeaverOptions {
+  /**
+   * @returns DataStore with the data of the current weaver
+   */
+  static getData() {
+    const weaverEngine = Weaver.getWeaverEngine();
+    return new WeaverDataStore(weaverEngine.getData().get(), weaverEngine.getStoreDefinition());
+  }
+
+  /**
+   * @returns {java.util.Set<String>} with the languages supported by the current weaver
+   */
+  static getSupportedLanguages() {
+    return Weaver.getWeaverEngine().getLanguages();
+  }
+}
