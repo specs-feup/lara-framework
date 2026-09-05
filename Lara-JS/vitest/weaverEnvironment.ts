@@ -1,4 +1,3 @@
-import { Console } from "node:console";
 import java from "java";
 import type { Environment } from "vitest/environments";
 import { Weaver } from "../code/Weaver.ts";
@@ -45,12 +44,8 @@ const environment: Environment = {
     Weaver.start();
     weaverStarted = true;
 
-    global.console.Console = Console;
-
     return {
-      teardown() {
-        delete global.console.Console;
-      },
+      teardown() {},
     };
   },
 };
