@@ -207,7 +207,7 @@ function generateEnum(e: ConvertedEnum, outputFile: number) {
  */\n`);
   fs.writeSync(outputFile, `export const ${e.name} = {\n`);
   e.entries.forEach((entry) => {
-    fs.writeSync(outputFile, `  ${entry}: "${entry}",\n`);
+    fs.writeSync(outputFile, `  ${entry.name}: "${entry.value}",\n`);
   });
   fs.writeSync(outputFile, `} as const;\n`);
   fs.writeSync(

@@ -14,7 +14,23 @@ describe("generateEnums", () => {
       const outputFile = fs.openSync(outputPath, "w");
       try {
         generateEnums(
-          [{ name: "StorageClass", entries: ["NONE", "PRIVATE_EXTERN", "STATIC"] }],
+          [
+            {
+              name: "StorageClass",
+              entries: [
+                { name: "NONE", value: "NONE" },
+                { name: "PRIVATE_EXTERN", value: "PRIVATE_EXTERN" },
+                { name: "STATIC", value: "STATIC" },
+              ],
+            },
+            {
+              name: "AccessSpecifier",
+              entries: [
+                { name: "DEFAULT", value: "DEFAULT" },
+                { name: "STATIC", value: "static" },
+              ],
+            },
+          ],
           outputFile,
         );
       } finally {
@@ -24,6 +40,8 @@ describe("generateEnums", () => {
       const output = fs.readFileSync(outputPath, "utf8");
       expect(output).toContain('  STATIC: "STATIC",');
       expect(output).toContain('  PRIVATE_EXTERN: "PRIVATE_EXTERN",');
+      expect(output).toContain('export const AccessSpecifier = {');
+      expect(output).toContain('  STATIC: "static",');
     } finally {
       fs.rmSync(outputDirectory, { recursive: true, force: true });
     }
