@@ -1,6 +1,6 @@
 {
-	"root": "joinpoint",
-	"rootAlias": "joinpoint",
+	"root": "LaraJoinPoint",
+	"rootAlias": "LaraJoinPoint",
 	"children": [
 		{
 			"type": "joinpoint",

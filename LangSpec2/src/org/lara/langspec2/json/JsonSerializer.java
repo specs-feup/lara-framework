@@ -30,7 +30,7 @@ public final class JsonSerializer {
         sb.append("{\n");
 
         // Root
-        var root = model.getRoot().map(JpClass::getName).orElse("joinpoint");
+        var root = model.getRoot().map(JpClass::getName).orElseGet(() -> model.getGlobal().getName());
         appendKv(sb, "\t", "root", root, true);
         appendKv(sb, "\t", "rootAlias", root, true);
 

@@ -48,7 +48,7 @@ public final class WeaverAbstractGenerator {
         sb.line();
 
         // getRoot
-        var rootName = model.getRoot().map(JpClass::getName).orElse("joinpoint");
+        var rootName = model.getRoot().map(JpClass::getName).orElseGet(() -> model.getGlobal().getName());
         sb.line("@Override");
         sb.openBlock("public String getRoot()");
         sb.line("return \"" + rootName + "\";");
