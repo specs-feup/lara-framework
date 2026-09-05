@@ -35,6 +35,7 @@ public final class SpecValidator {
         checkNoSelfTypeInTypeDefs(model, errors);
         checkReservedKeywords(model, errors);
         checkDefaultAttributes(model, errors);
+        checkEnumDisplays(model, errors);
 
         return errors;
     }
@@ -206,6 +207,19 @@ public final class SpecValidator {
                             + jp.getName() + "' (including inherited)");
                 }
             });
+        }
+    }
+
+    private static void checkEnumDisplays(WeaverModel model, List<String> errors) {
+        for (var ed : model.getEnumDefs().values()) {
+            var displays = new HashSet<String>();
+            for (var value : ed.values()) {
+                var display = value.display() != null ? value.display() : value.value();
+                if (!displays.add(display)) {
+                    errors.add("Duplicate display '" + display + "' in enum '" + ed.name()
+                            + "': fromDisplay() resolves to the first constant, making the other one unreachable");
+                }
+            }
         }
     }
 
