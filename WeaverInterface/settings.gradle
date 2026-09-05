@@ -6,5 +6,6 @@ includeBuild("${specsJavaLibsRoot}/jOptions")
 includeBuild("${specsJavaLibsRoot}/SpecsUtils")
 includeBuild("${specsJavaLibsRoot}/tdrcLibrary")
 
-includeBuild("../LanguageSpecification")
+includeBuild("../LangSpec2")
 includeBuild("../LaraUtils")
+includeBuild("../WeaverGen2")

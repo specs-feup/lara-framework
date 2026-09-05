@@ -9,7 +9,7 @@ export const weaverConfig = {
     path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url)))),
     "./DefaultWeaver/build/install/DefaultWeaver"
   ),
-  javaWeaverQualifiedName: "org.lara.interpreter.weaver.defaultweaver.DefaultWeaver",
+  javaWeaverQualifiedName: "org.lara.interpreter.weaver.defaultweaver.DWWeaver",
 };
 
 

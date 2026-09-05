@@ -12,27 +12,17 @@
  */
 package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
-import java.util.List;
-
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
-import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFunction;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AMethod;
 
-public class DWMethod extends AMethod<DWMethod> {
+public class DWMethod<Self extends DWMethod<Self>> extends AMethod<Self> {
 
-    public DWMethod(AFunction<?> aFunction, DefaultWeaver weaver) {
-        super(aFunction, weaver);
+    public DWMethod(String name, DWWeaver weaver) {
+        super(name, weaver);
     }
 
-
     @Override
-    public DWMethod usesThisImpl(List<DWMethod> param1) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-
-    @Override
-    public Object getNode() {
-        throw new UnsupportedOperationException("Unimplemented method 'getNode'");
+    public String getNodeImpl() {
+        throw new UnsupportedOperationException("Unimplemented method 'getNodeImpl'");
     }
 }

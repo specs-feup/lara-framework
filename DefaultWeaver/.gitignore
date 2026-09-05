@@ -3,7 +3,4 @@
 *.dotty
 
 src/**/abstracts
-src/**/exceptions/DefaultWeaverException.java
-DefaultWeaver.json
-
-
+DWWeaver.json

@@ -20,45 +20,47 @@ configurations {
     weaverGeneratorRuntime
 }
 
+// Project sources
+sourceSets {
+    spec {
+        java {
+            srcDir 'src-spec'
+        }
+    }
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
 dependencies {
     implementation ":CommonsLangPlus" // Required for APIs only. Needs to be in the classpath.
     implementation ":jOptions"
     implementation ":SpecsUtils"
 
-    implementation ":LanguageSpecification"
     implementation ":LARAI"
     implementation ":LaraUtils"
     implementation ":WeaverInterface"
 
-    weaverGeneratorRuntime ':WeaverGenerator'
+    weaverGeneratorRuntime ":WeaverGen2"
+
+    // Spec source set: only needs LangSpec2 and WeaverInterface (for BaseJoinPointSpec)
+    specImplementation ":LangSpec2"
+    specImplementation ":WeaverInterface"
 }
 
-// Project sources
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-
-        resources {
-            srcDir 'resources'	  
-	    }
-    }
-}
-
-// Re-run the weaver generator
+// Run the weaver generator
 tasks.register('generateWeaver', JavaExec) {
     group = "Execution"
-    description = "Generates the Weaver Abstracts"
-    classpath = configurations.weaverGeneratorRuntime
-    mainClass = 'org.lara.interpreter.weaver.generator.commandline.WeaverGenerator'
+    description = "Generates the Weaver Abstracts using WeaverGen2"
+    classpath = configurations.weaverGeneratorRuntime + sourceSets.spec.runtimeClasspath
+    mainClass = 'org.lara.weavergen2.cli.WeaverGen2Cli'
     args = [
-        "-w", "DefaultWeaver",
-        "-x", "${rootProject.projectDir}/resources/specification",
-        "-o", "${rootProject.projectDir}/src/",
-        "-p", "org.lara.interpreter.weaver.defaultweaver",
-        "-e",
-        "-j"
+        "org.lara.interpreter.weaver.defaultweaver.DefaultSpec",
+        "${projectDir}/src",
+        "--base", "org.lara.interpreter.weaver.interf.BaseJoinPointSpec",
+        "--node", "java.lang.Object"
     ]
 }
 

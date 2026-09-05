@@ -2,7 +2,6 @@ package org.lara.interpreter.weaver.interf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 
@@ -58,17 +57,5 @@ class WeaverEngineTest {
         var engine = new TestWeaverEngine();
         assertThatExceptionOfType(NotImplementedException.class)
                 .isThrownBy(() -> engine.writeCode(new File("/tmp/nonexistent_out")));
-    }
-
-    @Test
-    @DisplayName("getDefaultAttribute returns default for supported JP and throws for unsupported")
-    void testGetDefaultAttribute() {
-        var engine = new TestWeaverEngine();
-        // Root JP is named "root" in the test spec with default attribute "dump"
-        assertThat(engine.getDefaultAttribute("root")).isEqualTo("dump");
-
-        assertThatThrownBy(() -> engine.getDefaultAttribute("unsupported"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Used unsupported join point 'unsupported'");
     }
 }

@@ -1,0 +1,11 @@
+package medium.pkg.joinpoints;
+
+import medium.pkg.abstracts.joinpoints.ABody;
+import medium.pkg.MediumWeaver;
+import java.lang.Object;
+
+public class MediumBody<Self extends MediumBody<Self>> extends ABody<Self> {
+    protected MediumBody(Object node, MediumWeaver weaver) {
+        super(node, weaver);
+    }
+}

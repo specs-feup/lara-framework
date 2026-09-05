@@ -4,96 +4,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.lara.interpreter.weaver.fixtures.TestJoinPoint;
 import org.lara.interpreter.weaver.fixtures.TestWeaverEngine;
-import org.lara.language.specification.dsl.Action;
-import org.lara.language.specification.dsl.Attribute;
-import org.lara.language.specification.dsl.LaraJoinPointContract;
 
 class JoinPointTest {
-
-    @Test
-    @DisplayName("getLaraJoinPoint() keeps runtime alias while reusing shared contract metadata")
-    void testGetLaraJoinPointUsesSharedContract() {
-    var runtimeContract = JoinPoint.getLaraJoinPoint();
-    var sharedContract = LaraJoinPointContract.build("LaraJoinPoint");
-
-    assertThat(runtimeContract.getName()).isEqualTo("LaraJoinPoint");
-    assertThat(runtimeContract.getAttributesSelf()).extracting(Attribute::getName)
-        .containsExactlyElementsOf(sharedContract.getAttributesSelf().stream().map(Attribute::getName).toList());
-    assertThat(runtimeContract.getActionsSelf()).extracting(Action::getSignature)
-        .containsExactlyElementsOf(sharedContract.getActionsSelf().stream().map(Action::getSignature).toList());
-    assertThat(runtimeContract.getAttributeSelf("self").get(0).getType().type()).isEqualTo("LaraJoinPoint");
-    assertThat(runtimeContract.getActionSelf("insert").get(1).getParameters().get(1).getIType().type())
-        .isEqualTo("LaraJoinPoint");
-    }
 
     @Test
     @DisplayName("instanceOf() true for 'joinpoint', exact type, and super chain")
     void testInstanceOfBehavior() {
         var engine = new TestWeaverEngine();
         var root = new TestJoinPoint(engine, "root");
-        var child = new TestJoinPoint(engine, "child") {
-            @Override
-            public Optional<? extends JoinPoint> getSuper() {
-                return Optional.of(root);
-            }
-        };
+        var child = new TestJoinPoint(engine, "child");
+        var grandchild = new TestJoinPoint(engine, "grandchild");
         root.addChild(child);
+        child.addChild(grandchild);
 
         // Base type always true
-        assertThat(root.instanceOf("joinpoint")).isTrue();
-        assertThat(child.instanceOf("joinpoint")).isTrue();
+        assertThat(root.getInstanceOfImpl("joinpoint")).isTrue();
+        assertThat(child.getInstanceOfImpl("joinpoint")).isTrue();
 
         // Exact type
-        assertThat(root.instanceOf("root")).isTrue();
-        assertThat(child.instanceOf("child")).isTrue();
+        assertThat(root.getInstanceOfImpl("root")).isTrue();
+        assertThat(child.getInstanceOfImpl("child")).isTrue();
 
-        // Super chain: customize a test JP with getSuper() behavior
-        JoinPoint grandchild = new JoinPoint(new TestWeaverEngine()) {
-            @Override
-            public boolean same(JoinPoint iJoinPoint) {
-                return this == iJoinPoint;
-            }
 
-            @Override
-            public Object getNode() {
-                return this;
-            }
-
-            @Override
-            public String get_class() {
-                return "grandchild";
-            }
-
-            @Override
-            public Optional<? extends JoinPoint> getSuper() {
-                return Optional.of(child);
-            }
-
-            @Override
-            public Stream<JoinPoint> getJpChildrenStream() {
-                return Stream.empty();
-            }
-
-            @Override
-            public JoinPoint getJpParent() {
-                return child;
-            }
-        };
-
-        assertThat(grandchild.instanceOf("grandchild")).isTrue();
-        assertThat(grandchild.instanceOf("child")).isTrue();
-        assertThat(grandchild.instanceOf("root")).isTrue();
-        assertThat(grandchild.instanceOf("unknown")).isFalse();
+        assertThat(grandchild.getInstanceOfImpl("grandchild")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("child")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("root")).isTrue();
+        assertThat(grandchild.getInstanceOfImpl("unknown")).isFalse();
 
         // Array variant
-        assertThat(grandchild.instanceOf(new String[] { "foo", "bar", "child" })).isTrue();
+        assertThat(grandchild.getInstanceOfImpl(new String[] { "foo", "bar", "child" })).isTrue();
     }
 
     @Test
@@ -108,8 +52,8 @@ class JoinPointTest {
         root.addChild(b);
         b.addChild(b1);
 
-        assertThat(root.toString()).isEqualTo("Joinpoint 'root'");
-        String dump = root.getDump();
+        assertThat(root.getToStringImpl()).isEqualTo("Joinpoint 'root'");
+        String dump = root.getDumpImpl();
         assertThat(dump)
                 .contains("Joinpoint 'root'")
                 .contains("Joinpoint 'a'")
@@ -130,28 +74,19 @@ class JoinPointTest {
         b.addChild(b1);
 
         // Children
-        List<JoinPoint> children = root.getJpChildren();
-        assertThat(children).extracting(JoinPoint::getJoinPointType).containsExactly("a", "b");
+        TestJoinPoint[] children = root.getChildrenImpl();
+        assertThat(children).extracting(JoinPoint2::getJoinPointTypeImpl).containsExactly("a", "b");
 
-        // Descendants list
-        List<JoinPoint> descendants = root.getJpDescendants();
-        assertThat(descendants).extracting(JoinPoint::getJoinPointType).containsExactly("a", "b", "b1");
+        // Descendants array
+        TestJoinPoint[] descendants = root.getDescendantsImpl();
+        assertThat(descendants).extracting(JoinPoint2::getJoinPointTypeImpl).containsExactly("a", "b", "b1");
 
         // Stream variants
-        List<JoinPoint> streamDesc = root.getJpDescendantsStream().toList();
-        assertThat(streamDesc).extracting(JoinPoint::getJoinPointType).containsExactly("a", "b", "b1");
+        List<TestJoinPoint> streamDesc = root.getJpDescendantsStream().toList();
+        assertThat(streamDesc).extracting(JoinPoint2::getJoinPointTypeImpl).containsExactly("a", "b", "b1");
 
-        List<JoinPoint> andSelf = root.getJpDescendantsAndSelfStream().toList();
-        assertThat(andSelf).extracting(JoinPoint::getJoinPointType).containsExactly("root", "a", "b", "b1");
-    }
-
-    @Test
-    @DisplayName("getUndefinedValue is non-null and stable (same instance)")
-    void testGetUndefinedValue() {
-        Object u1 = JoinPoint.getUndefinedValue();
-        Object u2 = JoinPoint.getUndefinedValue();
-        assertThat(u1).isNotNull();
-        assertThat(u1).isSameAs(u2);
+        List<TestJoinPoint> andSelf = root.getJpDescendantsAndSelfStream().toList();
+        assertThat(andSelf).extracting(JoinPoint2::getJoinPointTypeImpl).containsExactly("root", "a", "b", "b1");
     }
 
     @Test
@@ -164,7 +99,7 @@ class JoinPointTest {
         assertThatCode(() -> {
             // This method internally calls getWeaverEngine().hasListeners()
             // We check it doesn't throw and remains false as there is no event trigger
-            root.hasListeners();
+            root.getWeaverEngine().hasListeners();
         }).doesNotThrowAnyException();
     }
 }

@@ -1,11 +1,11 @@
 package org.lara.interpreter.weaver;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,17 +13,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.lara.interpreter.joptions.config.interpreter.LaraiKeys;
 import org.lara.interpreter.joptions.keys.FileList;
-import org.lara.interpreter.weaver.interf.JoinPoint;
 import org.lara.interpreter.weaver.interf.AGear;
+import org.lara.interpreter.weaver.interf.JoinPoint2;
 import org.lara.interpreter.weaver.options.WeaverOption;
-import org.lara.language.specification.dsl.LanguageSpecification;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.suikasoft.jOptions.Interfaces.DataStore;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for LaraWeaverEngine class.
@@ -85,22 +86,12 @@ class LaraWeaverEngineTest {
         }
 
         @Override
-        public List<String> getActions() {
-            return Arrays.asList("testAction");
-        }
-
-        @Override
         public String getRoot() {
             return "testRoot";
         }
 
         @Override
-        protected LanguageSpecification buildLangSpecs() {
-            return null; // Simplified for testing
-        }
-
-        @Override
-        public JoinPoint getRootJp() {
+        public JoinPoint2<?, ?> getRootJp() {
             return null; // Simplified for testing
         }
 

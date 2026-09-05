@@ -5,154 +5,235 @@
 		{
 			"type": "joinpoint",
 			"name": "LaraJoinPoint",
-			"extends": ""		,
+			"extends": "",
 			"children": [
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "String",
-										"name": "dump"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "String",
-										"name": "joinPointType"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "Object",
-										"name": "node"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "LaraJoinPoint",
-										"name": "self"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "LaraJoinPoint",
-										"name": "super"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "LaraJoinPoint[]",
-										"name": "children"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "LaraJoinPoint[]",
-										"name": "descendants"
-									}]
-					},
-					{
-						"type": "attribute",
-						"children": [
-									{
-										"type": "LaraJoinPoint[]",
-										"name": "scopeNodes"
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "LaraJoinPoint[]",
-										"name": "insert"
-									},
-									{
-										"type": "[before| after| replace]",
-										"name": "position",
-										"defaultValue": ""
-									},
-									{
-										"type": "String",
-										"name": "code",
-										"defaultValue": ""
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "LaraJoinPoint[]",
-										"name": "insert"
-									},
-									{
-										"type": "[before| after| replace]",
-										"name": "position",
-										"defaultValue": ""
-									},
-									{
-										"type": "LaraJoinPoint",
-										"name": "joinpoint",
-										"defaultValue": ""
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "String",
-										"name": "toString"
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "Boolean",
-										"name": "equals"
-									},
-									{
-										"type": "LaraJoinPoint",
-										"name": "jp",
-										"defaultValue": ""
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "Boolean",
-										"name": "instanceOf"
-									},
-									{
-										"type": "String",
-										"name": "name",
-										"defaultValue": ""
-									}]
-					},
-					{
-						"type": "action",
-						"children": [
-									{
-										"type": "Boolean",
-										"name": "instanceOf"
-									},
-									{
-										"type": "String[]",
-										"name": "names",
-										"defaultValue": ""
-									}]
-					}]
-		}]
+				{
+					"type": "attribute",
+					"tooltip": "The underlying AST node represented by this join point",
+					"children": [
+						{
+							"type": "Object",
+							"name": "node"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "String with a dump of the join point hierarchy",
+					"children": [
+						{
+							"type": "String",
+							"name": "dump"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The type name of this join point",
+					"children": [
+						{
+							"type": "String",
+							"name": "joinPointType"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "A reference to this join point",
+					"children": [
+						{
+							"type": "this",
+							"name": "self"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The children of this join point, ignoring null nodes",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "children"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "All descendants of this join point",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "descendants"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The scope nodes of this join point",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "scopeNodes"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "Returns the parent node in the AST, or undefined if it is the root node",
+					"children": [
+						{
+							"type": "LaraJoinPoint",
+							"name": "parent"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The root of the tree",
+					"children": [
+						{
+							"type": "LaraJoinPoint",
+							"name": "root"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "String with the code represented by this node",
+					"children": [
+						{
+							"type": "String",
+							"name": "code"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The starting line of the current node in the original code",
+					"children": [
+						{
+							"type": "Integer",
+							"name": "line"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "The starting column of the current node in the original code",
+					"children": [
+						{
+							"type": "Integer",
+							"name": "column"
+						}]
+				},
+				{
+					"type": "attribute",
+					"children": [
+						{
+							"type": "String",
+							"name": "toString"
+						}]
+				},
+				{
+					"type": "attribute",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "equals"
+						},
+						{
+							"type": "this",
+							"name": "jp"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "Compares this join point with another join point for identity (i.e., whether they represent the same AST node)",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "compareNodes"
+						},
+						{
+							"type": "LaraJoinPoint",
+							"name": "aJoinPoint"
+						}]
+				},
+				{
+					"type": "attribute",
+					"tooltip": "Compares this join point with another join point for identity (i.e., whether they represent the same AST node)",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "same"
+						},
+						{
+							"type": "LaraJoinPoint",
+							"name": "other"
+						}]
+				},
+				{
+					"type": "attribute",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "instanceOf"
+						},
+						{
+							"type": "String",
+							"name": "joinpointClassname"
+						}]
+				},
+				{
+					"type": "attribute",
+					"children": [
+						{
+							"type": "boolean",
+							"name": "instanceOf"
+						},
+						{
+							"type": "String[]",
+							"name": "joinpointClassnames"
+						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "insert"
+						},
+						{
+							"type": "InsertPosition",
+							"name": "position"
+						},
+						{
+							"type": "String",
+							"name": "code"
+						}]
+				},
+				{
+					"type": "action",
+					"children": [
+						{
+							"type": "LaraJoinPoint[]",
+							"name": "insert"
+						},
+						{
+							"type": "InsertPosition",
+							"name": "position"
+						},
+						{
+							"type": "LaraJoinPoint",
+							"name": "joinpoint"
+						}]
+				}
+			]
+		}
+,
+		{
+			"type": "enum",
+			"name": "InsertPosition",
+			"children": [
+				{
+					"value": "before"
+				},
+				{
+					"value": "after"
+				},
+				{
+					"value": "replace"
+				}
+			]
+		}
+	]
 }

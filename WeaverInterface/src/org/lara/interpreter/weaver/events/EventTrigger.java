@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.lara.interpreter.weaver.interf.AGear;
-import org.lara.interpreter.weaver.interf.JoinPoint;
+import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
 import org.lara.interpreter.weaver.interf.events.LaraIEvent;
 import org.lara.interpreter.weaver.interf.events.Stage;
 import org.lara.interpreter.weaver.interf.events.data.ActionEvent;
@@ -49,31 +49,26 @@ public class EventTrigger {
      * Trigger an action event
      *
      */
-    public void triggerAction(Stage stage, String name, JoinPoint target, List<Object> params,
-            Optional<Object> result) {
+    public void triggerAction(Stage stage, ALaraJoinPoint<?, ?> target, String name, Optional<Object> result, List<Object> params) {
 
         final ActionEvent data = new ActionEvent(stage, name, target, params, result);
         final Event event = new SimpleEvent(LaraIEvent.OnAction, data);
         eventController.notifyEvent(event);
     }
 
-    public void triggerAction(Stage stage, String name, JoinPoint target, Optional<Object> result, Object... params) {
-
-        final ActionEvent data = new ActionEvent(stage, name, target, Arrays.asList(params), result);
-        final Event event = new SimpleEvent(LaraIEvent.OnAction, data);
-        eventController.notifyEvent(event);
+    public void triggerAction(Stage stage, ALaraJoinPoint<?, ?> target, String name, Optional<Object> result, Object... params) {
+        triggerAction(stage, target, name, result, Arrays.asList(params));
     }
 
     /**
      * Trigger an attribute access event
      *
      */
-    public void triggerAttribute(Stage stage, JoinPoint target, String name, Optional<Object> result, Object... args) {
-        triggerAttribute(stage, target, name, Arrays.asList(args), result);
+    public void triggerAttribute(Stage stage, ALaraJoinPoint<?, ?> target, String name, Optional<Object> result, Object... args) {
+        triggerAttribute(stage, target, name, result, Arrays.asList(args));
     }
 
-    public void triggerAttribute(Stage stage, JoinPoint target, String name, List<Object> args,
-            Optional<Object> result) {
+    public void triggerAttribute(Stage stage, ALaraJoinPoint<?, ?> target, String name, Optional<Object> result, List<Object> args) {
 
         final AttributeEvent data = new AttributeEvent(stage, target, name, args, result);
         final Event event = new SimpleEvent(LaraIEvent.OnAttribute, data);

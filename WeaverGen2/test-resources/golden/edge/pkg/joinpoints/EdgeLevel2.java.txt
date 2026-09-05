@@ -1,0 +1,11 @@
+package edge.pkg.joinpoints;
+
+import edge.pkg.abstracts.joinpoints.ALevel2;
+import edge.pkg.EdgeWeaver;
+import java.lang.Object;
+
+public class EdgeLevel2<Self extends EdgeLevel2<Self>> extends ALevel2<Self> {
+    protected EdgeLevel2(Object node, EdgeWeaver weaver) {
+        super(node, weaver);
+    }
+}

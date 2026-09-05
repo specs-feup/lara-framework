@@ -143,7 +143,7 @@ export default class JavaTypes {
 
   static get JoinPoint() {
     return JavaTypes.getType(
-      "org.lara.interpreter.weaver.interf.JoinPoint"
+      "org.lara.interpreter.weaver.interf.JoinPoint2"
     ) as JavaClasses.JoinPoint;
   }
 

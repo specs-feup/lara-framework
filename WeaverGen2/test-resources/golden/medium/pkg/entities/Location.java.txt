@@ -1,0 +1,28 @@
+package medium.pkg.entities;
+
+import java.util.*;
+
+/**
+ * User-defined type: Location
+ */
+public class Location {
+    private String file;
+    private Integer line;
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public Integer getLine() {
+        return line;
+    }
+
+    public void setLine(Integer line) {
+        this.line = line;
+    }
+
+}

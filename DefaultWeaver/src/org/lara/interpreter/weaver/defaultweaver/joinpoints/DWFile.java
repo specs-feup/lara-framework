@@ -14,30 +14,27 @@ package org.lara.interpreter.weaver.defaultweaver.joinpoints;
 
 import java.io.File;
 
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFile;
 
-public class DWFile extends AFile<DWFile> {
+public class DWFile<Self extends DWFile<Self>> extends AFile<Self> {
 
-    private final File file;
+    public DWFile(File f, DWWeaver weaver) {
+        super(f, weaver);
+    }
 
-    public DWFile(File f, DefaultWeaver weaver) {
-        super(weaver);
-        file = f;
+    @Override
+    public File getNodeImpl() {
+        return (File) super.getNodeImpl();
     }
 
     @Override
     public String getNameImpl() {
-        return file.getName();
+        return this.getNodeImpl().getName();
     }
 
     @Override
     public String getAbsolutePathImpl() {
-        return file.getAbsolutePath();
-    }
-
-    @Override
-    public Object getNode() {
-        return getName();
+        return this.getNodeImpl().getAbsolutePath();
     }
 }

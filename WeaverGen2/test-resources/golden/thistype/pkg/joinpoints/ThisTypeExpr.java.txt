@@ -1,0 +1,11 @@
+package thistype.pkg.joinpoints;
+
+import thistype.pkg.abstracts.joinpoints.AExpr;
+import thistype.pkg.ThisTypeWeaver;
+import java.lang.Object;
+
+public class ThisTypeExpr<Self extends ThisTypeExpr<Self>> extends AExpr<Self> {
+    protected ThisTypeExpr(Object node, ThisTypeWeaver weaver) {
+        super(node, weaver);
+    }
+}

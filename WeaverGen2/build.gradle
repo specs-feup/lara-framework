@@ -1,0 +1,135 @@
+plugins {
+    id 'distribution'
+    id 'application'
+    id 'java'
+    id 'jacoco'
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass.set("org.lara.weavergen2.cli.WeaverGen2Cli")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation ':LangSpec2'
+
+    // Testing dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // For static mocking
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.3.0' // For test retries
+    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
+    testImplementation 'com.google.guava:guava:33.4.0-jre'
+    testImplementation 'com.google.code.gson:gson:2.12.1'
+    testImplementation 'com.thoughtworks.xstream:xstream:1.4.21'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test-resources'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    // Use up to half the available processors, minimum 1
+    maxParallelForks = Math.max(1, (int) (Runtime.getRuntime().availableProcessors() / 2))
+
+    def regen = System.getProperty('weaver.integration.regen')
+    if (regen != null) {
+        systemProperty 'weaver.integration.regen', regen
+    }
+
+    finalizedBy(jacocoTestReport)
+}
+
+tasks.register('regenGoldenBaselines', Test) {
+    group = 'verification'
+    description = 'Regenerates the normal WeaverGen2 golden baselines.'
+
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'weaver.integration.regen', 'true'
+
+    filter {
+        includeTestsMatching 'org.lara.weavergen2.integration.WeaverGen2GenerationTest'
+    }
+
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('regenLargeIntegrationBaselines', Test) {
+    group = 'verification'
+    description = 'Regenerates the large integration baselines for WeaverGen2.'
+
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'weaver.integration.regen', 'true'
+
+    filter {
+        includeTestsMatching 'org.lara.weavergen2.integration.LargeLangSpecIntegrationTest'
+    }
+
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('regenBaselines') {
+    group = 'verification'
+    description = 'Regenerates all WeaverGen2 baselines.'
+
+    dependsOn(tasks.named('regenGoldenBaselines'))
+    dependsOn(tasks.named('regenLargeIntegrationBaselines'))
+}
+
+tasks.named('test') {
+    mustRunAfter(tasks.named('regenLargeIntegrationBaselines'))
+    mustRunAfter(tasks.named('regenBaselines'))
+}
+
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.87 // 87% minimum coverage. Increase this as coverage improves, up to 90%.
+            }
+        }
+    }
+}
+
+// Test coverage configuration
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}

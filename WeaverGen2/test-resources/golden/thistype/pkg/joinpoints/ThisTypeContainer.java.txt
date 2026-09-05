@@ -1,0 +1,11 @@
+package thistype.pkg.joinpoints;
+
+import thistype.pkg.abstracts.joinpoints.AContainer;
+import thistype.pkg.ThisTypeWeaver;
+import java.lang.Object;
+
+public class ThisTypeContainer<Self extends ThisTypeContainer<Self>> extends AContainer<Self> {
+    protected ThisTypeContainer(Object node, ThisTypeWeaver weaver) {
+        super(node, weaver);
+    }
+}

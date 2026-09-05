@@ -16,20 +16,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lara.interpreter.weaver.defaultweaver.DefaultWeaver;
+import org.lara.interpreter.weaver.defaultweaver.DWWeaver;
 import org.lara.interpreter.weaver.defaultweaver.abstracts.joinpoints.AFolder;
 
-public class DWFolder extends AFolder<DWFolder> {
+public class DWFolder<Self extends DWFolder<Self>> extends AFolder<Self> {
 
     private final boolean getFilesRecursively = true;
-    private final List<DWFile> files;
-    private final String path;
+    private final List<DWFile<?>> files;
 
-    public DWFolder(File source, DefaultWeaver weaver) {
-        super(weaver);
-        path = source.getAbsolutePath();
+    public DWFolder(File source, DWWeaver weaver) {
+        super(source, weaver);
         files = new ArrayList<>();
         createFiles(source);
+    }
+
+    @Override
+    public File getNodeImpl() {
+        return (File) super.getNodeImpl();
     }
 
     public void createFiles(File folder) {
@@ -38,18 +41,13 @@ public class DWFolder extends AFolder<DWFolder> {
             if (f.isDirectory() && getFilesRecursively) {
                 createFiles(f);
             } else if (f.getName().endsWith(".c")) {
-                files.add(new DWFile(f, getWeaverEngine()));
+                files.add(new DWFile<>(f, getWeaverEngine()));
             }
         }
     }
 
     @Override
-    public Object getNode() {
-        return path;
-    }
-
-    @Override
     public String getPathImpl() {
-        return path;
+        return this.getNodeImpl().getAbsolutePath();
     }
 }

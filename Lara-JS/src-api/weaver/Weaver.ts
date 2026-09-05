@@ -1,7 +1,6 @@
 import {
   LaraJoinPoint,
   getJoinpointMappers,
-  wrapJoinPoint,
 } from "../LaraJoinPoint.js";
 import Io from "../lara/Io.js";
 import JavaInterop from "../lara/JavaInterop.js";
@@ -127,26 +126,6 @@ export default class Weaver {
     }
 
     return undefined;
-  }
-
-  /**
-   * @param jpTypeName - a join point, or the name of a join point
-   * @param attributeName - the name of the attribute to check
-   *
-   * @returns True, if the given join point or join point name support the attribute with the given name
-   *
-   * @deprecated The typescript compiler will tell you this
-   */
-  static hasAttribute(jpTypeName: string, attributeName: string): boolean {
-    const joinPoint: any = Weaver.getWeaverEngine()
-      .getLanguageSpecificationV2()
-      .getJoinPoint(jpTypeName);
-
-    if (joinPoint === null) {
-      return false;
-    }
-
-    return !joinPoint.getAttribute(attributeName).isEmpty();
   }
 
   /**
