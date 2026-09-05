@@ -460,7 +460,6 @@ function interpretType(typeString: string, joinpointNameSet: Set<string>, enumNa
     case "Double":
     case "double":
       return "number";
-      break;
     case "map<?, ?>":
     case "Map<?, ?>":
     case "map":
@@ -468,7 +467,6 @@ function interpretType(typeString: string, joinpointNameSet: Set<string>, enumNa
       return "Record<string, any>";
     default:
       return typeString.toLowerCase();
-      break;
   }
 }
 
