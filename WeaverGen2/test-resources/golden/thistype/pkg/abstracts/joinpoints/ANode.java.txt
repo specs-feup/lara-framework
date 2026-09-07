@@ -27,6 +27,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self getCloneImpl();
 
+    /**
+     * @deprecated Use {@link #getCloneImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object clone() {
         try {
@@ -47,6 +50,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self getAncestorOfTypeImpl(String typeName);
 
+    /**
+     * @deprecated Use {@link #getAncestorOfTypeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object ancestorOfType(String typeName) {
         try {
@@ -65,6 +71,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<Self> getFindSimilarImpl(Self target);
 
+    /**
+     * @deprecated Use {@link #getFindSimilarImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object findSimilar(Object target) {
         try {
@@ -83,6 +92,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<Self> getFindBetweenImpl(Self start, Self end);
 
+    /**
+     * @deprecated Use {@link #getFindBetweenImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object findBetween(Object start, Object end) {
         try {
@@ -105,6 +117,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self[][] getChildrenMatrixImpl();
 
+    /**
+     * @deprecated Use {@link #getChildrenMatrixImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object[][] childrenMatrix() {
         try {
@@ -123,6 +138,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, String> getAttributesImpl();
 
+    /**
+     * @deprecated Use {@link #getAttributesImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object attributes() {
         try {
@@ -141,6 +159,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<String> getTagsImpl();
 
+    /**
+     * @deprecated Use {@link #getTagsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object tags() {
         try {
@@ -159,6 +180,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, Object> getPropertiesImpl();
 
+    /**
+     * @deprecated Use {@link #getPropertiesImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object properties() {
         try {
@@ -177,6 +201,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<Self> getChildListImpl();
 
+    /**
+     * @deprecated Use {@link #getChildListImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object childList() {
         try {
@@ -195,6 +222,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Set<Self> getDescendantSetImpl();
 
+    /**
+     * @deprecated Use {@link #getDescendantSetImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object descendantSet() {
         try {
@@ -213,6 +243,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, Self> getNamedChildrenImpl();
 
+    /**
+     * @deprecated Use {@link #getNamedChildrenImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object namedChildren() {
         try {
@@ -231,6 +264,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<Integer, Self> getIndexedNodesImpl();
 
+    /**
+     * @deprecated Use {@link #getIndexedNodesImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object indexedNodes() {
         try {
@@ -249,6 +285,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<List<Self>> getChildGroupsImpl();
 
+    /**
+     * @deprecated Use {@link #getChildGroupsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object childGroups() {
         try {
@@ -267,6 +306,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, List<Self>> getCategorizedNodesImpl();
 
+    /**
+     * @deprecated Use {@link #getCategorizedNodesImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object categorizedNodes() {
         try {
@@ -285,6 +327,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, Map<String, Self>> getHierarchyImpl();
 
+    /**
+     * @deprecated Use {@link #getHierarchyImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object hierarchy() {
         try {
@@ -303,6 +348,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract String getIdImpl();
 
+    /**
+     * @deprecated Use {@link #getIdImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final String id() {
         try {
@@ -325,6 +373,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self copyImpl();
 
+    /**
+     * @deprecated Use {@link #copyImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object copy() {
         try {
@@ -343,6 +394,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self detachImpl();
 
+    /**
+     * @deprecated Use {@link #detachImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object detach() {
         try {
@@ -361,6 +415,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void insertBeforeImpl(Self node);
 
+    /**
+     * @deprecated Use {@link #insertBeforeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void insertBefore(Object node) {
         try {
@@ -379,6 +436,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void insertAfterImpl(Self node);
 
+    /**
+     * @deprecated Use {@link #insertAfterImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void insertAfter(Object node) {
         try {
@@ -397,6 +457,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self mergeImpl(Self other);
 
+    /**
+     * @deprecated Use {@link #mergeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object merge(Object other) {
         try {
@@ -415,6 +478,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void swapImpl(Self other, boolean preserveComments);
 
+    /**
+     * @deprecated Use {@link #swapImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void swap(Object other, boolean preserveComments) {
         try {
@@ -433,6 +499,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void insertAtImpl(Integer position, Self node);
 
+    /**
+     * @deprecated Use {@link #insertAtImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void insertAt(Integer position, Object node) {
         try {
@@ -451,6 +520,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self wrapWithImpl(Self wrapper, String position);
 
+    /**
+     * @deprecated Use {@link #wrapWithImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object wrapWith(Object wrapper, String position) {
         try {
@@ -469,6 +541,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void replaceBetweenImpl(Self start, Self end, Self replacement);
 
+    /**
+     * @deprecated Use {@link #replaceBetweenImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void replaceBetween(Object start, Object end, Object replacement) {
         try {
@@ -487,6 +562,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, String> getMetadataImpl();
 
+    /**
+     * @deprecated Use {@link #getMetadataImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object getMetadata() {
         try {
@@ -505,6 +583,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<String> getTagsImpl();
 
+    /**
+     * @deprecated Use {@link #getTagsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object getTags() {
         try {
@@ -523,6 +604,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract List<Self> findChildrenImpl(String filter);
 
+    /**
+     * @deprecated Use {@link #findChildrenImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object findChildren(String filter) {
         try {
@@ -541,6 +625,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, List<Self>> groupByTypeImpl();
 
+    /**
+     * @deprecated Use {@link #groupByTypeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object groupByType() {
         try {
@@ -559,6 +646,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void insertAllImpl(List<Self> nodes);
 
+    /**
+     * @deprecated Use {@link #insertAllImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void insertAll(List<Self> nodes) {
         try {
@@ -577,6 +667,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract void replaceAllImpl(Map<String, Self> replacements);
 
+    /**
+     * @deprecated Use {@link #replaceAllImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void replaceAll(Map<String, Self> replacements) {
         try {
@@ -595,6 +688,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Map<String, List<Self>> partitionChildrenImpl(String criteria);
 
+    /**
+     * @deprecated Use {@link #partitionChildrenImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object partitionChildren(String criteria) {
         try {
@@ -613,6 +709,9 @@ public abstract class ANode<Self extends ANode<Self>> extends ThisTypeJoinpoint<
 
     public abstract Self[] toArrayImpl();
 
+    /**
+     * @deprecated Use {@link #toArrayImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object[] toArray() {
         try {

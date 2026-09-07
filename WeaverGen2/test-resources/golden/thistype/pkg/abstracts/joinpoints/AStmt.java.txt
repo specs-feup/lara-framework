@@ -26,6 +26,9 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ThisTypeNode<Self>
 
     public abstract Self moveAfterImpl(Self target);
 
+    /**
+     * @deprecated Use {@link #moveAfterImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object moveAfter(Object target) {
         try {
@@ -44,6 +47,9 @@ public abstract class AStmt<Self extends AStmt<Self>> extends ThisTypeNode<Self>
 
     public abstract Self extractToImpl(String context);
 
+    /**
+     * @deprecated Use {@link #extractToImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object extractTo(String context) {
         try {
