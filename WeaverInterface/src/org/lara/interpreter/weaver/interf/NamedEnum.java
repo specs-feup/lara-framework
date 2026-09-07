@@ -17,8 +17,9 @@ import java.util.Arrays;
 
 import org.lara.interpreter.exception.LaraIException;
 
+import java.util.stream.Collectors;
+
 import pt.up.fe.specs.util.providers.StringProvider;
-import tdrc.utils.StringUtils;
 
 public interface NamedEnum extends StringProvider {
 
@@ -39,6 +40,6 @@ public interface NamedEnum extends StringProvider {
         }
 
         throw new LaraIException("Unknown value for " + sourceName + ": " + name + ". Expected one of: "
-                + StringUtils.join(Arrays.asList(clazz.getEnumConstants()), NamedEnum::getName, ", "));
+                + Arrays.stream(clazz.getEnumConstants()).map(NamedEnum::getName).collect(Collectors.joining(", ")));
     }
 }
