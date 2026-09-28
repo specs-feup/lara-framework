@@ -35,6 +35,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract String getLanguageImpl();
 
+    /**
+     * @deprecated Use {@link #getLanguageImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final String language() {
         try {

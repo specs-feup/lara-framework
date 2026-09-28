@@ -23,6 +23,9 @@ public final class PublicWrapperEmitter {
         var methodClass = member.kind().eventName();
         var params = member.parameters();
 
+        sb.line("/**");
+        sb.line(" * @deprecated Use {@link #" + member.implementationName() + "} instead, the direct variant of this method pair.");
+        sb.line(" */");
         sb.line("@Deprecated");
         if (params.isEmpty()) {
             sb.openBlock("public final " + wrapperReturnType + " " + member.wrapperName() + "()");

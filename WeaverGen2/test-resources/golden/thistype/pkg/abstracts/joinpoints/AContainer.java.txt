@@ -26,6 +26,9 @@ public abstract class AContainer<Self extends AContainer<Self>> extends ThisType
 
     public abstract List<Map<String, Self>> processNestedImpl();
 
+    /**
+     * @deprecated Use {@link #processNestedImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object processNested() {
         try {
@@ -44,6 +47,9 @@ public abstract class AContainer<Self extends AContainer<Self>> extends ThisType
 
     public abstract void addToAllImpl(Map<String, List<Self>> items);
 
+    /**
+     * @deprecated Use {@link #addToAllImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void addToAll(Map<String, List<Self>> items) {
         try {

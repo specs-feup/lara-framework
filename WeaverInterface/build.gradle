@@ -56,7 +56,6 @@ jar {
 dependencies {
     implementation ':jOptions'
     implementation ':SpecsUtils'
-    implementation ':tdrcLibrary'
     implementation ':LangSpec2'
     implementation ':LaraUtils'
 

@@ -34,6 +34,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract void noopImpl();
 
+    /**
+     * @deprecated Use {@link #noopImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void noop() {
         try {

@@ -19,7 +19,7 @@ import java.util.Optional;
 import org.lara.interpreter.weaver.interf.abstracts.joinpoints.ALaraJoinPoint;
 import org.lara.interpreter.weaver.interf.events.Stage;
 
-import tdrc.utils.StringUtils;
+import java.util.stream.Collectors;
 
 public class ActionEvent extends BaseEvent {
 
@@ -42,7 +42,8 @@ public class ActionEvent extends BaseEvent {
         String ret = super.toString();
         ret += ", action " + name;
         ret += ", in join point " + joinPoint.get_class();
-        ret += ", with arguments: (" + StringUtils.join(arguments, ",") + ")";
+        ret += ", with arguments: (" + arguments.stream().map(obj -> obj == null ? "null" : obj.toString())
+                .collect(Collectors.joining(",")) + ")";
         if (result.isPresent()) {
             ret += ", result: " + result.get();
         }

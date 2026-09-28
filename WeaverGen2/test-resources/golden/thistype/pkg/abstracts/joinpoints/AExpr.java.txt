@@ -26,6 +26,9 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ThisTypeNode<Self>
 
     public abstract Self evaluateImpl();
 
+    /**
+     * @deprecated Use {@link #evaluateImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object evaluate() {
         try {
@@ -44,6 +47,9 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ThisTypeNode<Self>
 
     public abstract Self substituteImpl(Self target, Self replacement);
 
+    /**
+     * @deprecated Use {@link #substituteImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object substitute(Object target, Object replacement) {
         try {
@@ -62,6 +68,9 @@ public abstract class AExpr<Self extends AExpr<Self>> extends ThisTypeNode<Self>
 
     public abstract List<Self> collectTermsImpl();
 
+    /**
+     * @deprecated Use {@link #collectTermsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object collectTerms() {
         try {

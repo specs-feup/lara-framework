@@ -26,6 +26,9 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
 
     public abstract List<Self> unrollImpl(Integer factor);
 
+    /**
+     * @deprecated Use {@link #unrollImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object unroll(Integer factor) {
         try {
@@ -44,6 +47,9 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
 
     public abstract Self tileImpl(Integer tileSize);
 
+    /**
+     * @deprecated Use {@link #tileImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object tile(Integer tileSize) {
         try {
@@ -62,6 +68,9 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
 
     public abstract void interchangeImpl(Self other);
 
+    /**
+     * @deprecated Use {@link #interchangeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void interchange(Object other) {
         try {
@@ -80,6 +89,9 @@ public abstract class ALoop<Self extends ALoop<Self>> extends ThisTypeStmt<Self>
 
     public abstract Self fuseImpl(Self other, boolean checkDependencies);
 
+    /**
+     * @deprecated Use {@link #fuseImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object fuse(Object other, boolean checkDependencies) {
         try {
