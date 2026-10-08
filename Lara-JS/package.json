@@ -37,7 +37,7 @@
     "typedoc.base.json"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node ./scripts/clean-dist.mjs && tsc",
     "build:watch": "npm run build -- --watch",
     "prepack": "npm run build",
     "lint": "oxlint .",
@@ -47,7 +47,7 @@
     "test:api": "npm run test -- api",
     "test:code": "npm run test -- code",
     "test:cov": "npm run test -- --coverage",
-    "test:package": "npm run build && node ./test/package-runtime.mjs",
+    "test:package": "npm run build && node ./test/package-runtime.mjs && node ./test/packed-vitest-smoke.mjs",
     "test:watch": "npm run test -- --watch",
     "build-interfaces": "node scripts/build-LaraJoinPoint.ts --input LaraJoinPointSpecification.json --output api/LaraJoinPoint.ts"
   },

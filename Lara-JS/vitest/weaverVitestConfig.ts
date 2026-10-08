@@ -1,6 +1,9 @@
 import { fileURLToPath } from "node:url";
+import { extname } from "node:path";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
+
+const moduleExtension = extname(fileURLToPath(import.meta.url));
 
 function getEnvironmentPath(url: URL): string {
   const path = fileURLToPath(url).replaceAll("\\", "/");
@@ -14,13 +17,14 @@ function getEnvironmentPath(url: URL): string {
 export function createWeaverVitestConfig(weaver: WeaverConfiguration) {
   return defineConfig({
     test: {
+      exclude: [...configDefaults.exclude, "**/dist/**"],
       coverage: {
         include: ["**/*.{t,j}s"],
         provider: "v8",
         reporter: ["text", "lcov"],
       },
       environment: getEnvironmentPath(
-        new URL("./weaverEnvironment.ts", import.meta.url),
+        new URL(`./weaverEnvironment${moduleExtension}`, import.meta.url),
       ),
       environmentOptions: { weaver },
       experimental: {
