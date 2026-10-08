@@ -1,11 +1,8 @@
 import Debug from "debug";
 import yargs, { type Arguments } from "yargs";
-import * as path from "path";
 import * as chokidar from "chokidar";
 import { hideBin } from "yargs/helpers";
 import { fork } from "child_process";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import {
   addActiveChildProcess,
   getActiveChildProcesses,
@@ -13,6 +10,7 @@ import {
 } from "./ChildProcessHandling.ts";
 import type WeaverConfiguration from "./WeaverConfiguration.ts";
 import type WeaverMessageFromLauncher from "./WeaverMessageFromLauncher.ts";
+import resolveWeaverScript from "./resolveWeaverScript.ts";
 
 import { Weaver } from "./Weaver.ts";
 
@@ -144,9 +142,10 @@ export default class WeaverLauncher {
       }
     }
 
-    const weaverScript = this.config.weaverFileName
-      ? fileURLToPath(import.meta.resolve(this.config.weaverFileName))
-      : path.join(dirname(fileURLToPath(import.meta.url)), "Weaver.ts");
+    const weaverScript = resolveWeaverScript(
+      import.meta.url,
+      this.config.weaverFileName
+    );
 
     this.debug("Launcher weaver using the script '" + weaverScript + "'");
 
