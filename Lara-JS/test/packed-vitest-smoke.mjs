@@ -26,9 +26,11 @@ function run(command, args, options = {}) {
 
 try {
   await mkdir(installedPackage, { recursive: true });
+  const npmExecPath = process.env.npm_execpath;
+  assert.ok(npmExecPath, "Run this smoke test through npm so npm_execpath is available");
   const packOutput = run(
-    "npm",
-    ["pack", "--json", "--ignore-scripts", "--pack-destination", temporaryDirectory],
+    process.execPath,
+    [npmExecPath, "pack", "--json", "--ignore-scripts", "--pack-destination", temporaryDirectory],
     { cwd: packageDirectory },
   );
   const [{ filename }] = JSON.parse(packOutput);

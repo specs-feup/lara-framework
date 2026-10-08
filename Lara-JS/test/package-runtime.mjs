@@ -59,8 +59,10 @@ assert.equal(
   emittedEnvironment,
   expectedEnvironmentPath(new URL("../dist/vitest/weaverEnvironment.js", import.meta.url)),
 );
-assert.ok(existsSync(sourceEnvironment));
-assert.ok(existsSync(emittedEnvironment));
+assert.ok(existsSync(fileURLToPath(new URL("../vitest/weaverEnvironment.ts", import.meta.url))));
+assert.ok(
+  existsSync(fileURLToPath(new URL("../dist/vitest/weaverEnvironment.js", import.meta.url))),
+);
 assert.equal(
   sourceRepositoryVitestConfig.test.environmentOptions.weaver.jarPath,
   emittedRepositoryVitestConfig.test.environmentOptions.weaver.jarPath,
