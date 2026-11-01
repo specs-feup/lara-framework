@@ -148,15 +148,10 @@ class LaraSystemToolsTest {
         
         // Then
         assertThat(result).isNotNull();
-        // Command not found typically returns exit code 127 on Unix systems
-        assertThat(result.getReturnValue()).isEqualTo(127);
-        // The system may redirect stderr to stdout for command not found errors
-        // So we check that either stdout or stderr contains the error information
-        boolean hasErrorInfo = !result.getOutput().isEmpty() || !result.getStdErr().isEmpty();
-        assertThat(hasErrorInfo).isTrue();
-        // Should contain some indication of the command not being found
-        String combinedOutput = result.getOutput() + result.getStdErr();
-        assertThat(combinedOutput.toLowerCase()).containsAnyOf("command not found", "not found", "not recognized");
+        // Linux and macOS launch the command directly, so a missing command fails to launch
+        // (-1, launch error in stderr). Windows runs it through cmd, which exits non-zero.
+        assertThat(result.getReturnValue()).isNotZero();
+        assertThat(result.getOutput() + result.getStdErr()).isNotBlank();
     }
 
     @Test

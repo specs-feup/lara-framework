@@ -4,7 +4,6 @@ def specsJavaLibsRoot = System.getenv('SPECS_JAVA_LIBS_HOME') ?: '../../specs-ja
 
 includeBuild("${specsJavaLibsRoot}/jOptions")
 includeBuild("${specsJavaLibsRoot}/SpecsUtils")
-includeBuild("${specsJavaLibsRoot}/tdrcLibrary")
 
 includeBuild("../LangSpec2")
 includeBuild("../LaraUtils")

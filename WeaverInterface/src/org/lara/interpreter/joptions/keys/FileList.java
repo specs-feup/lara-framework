@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import pt.up.fe.specs.util.SpecsIo;
-import tdrc.utils.StringUtils;
 
 public class FileList implements Iterable<File> {
     private final List<File> fileList;
@@ -70,7 +69,9 @@ public class FileList implements Iterable<File> {
     }
 
     public String encode() {
-        return StringUtils.join(fileList, SpecsIo::getCanonicalPath, SpecsIo.getUniversalPathSeparator());
+        return fileList.stream()
+                .map(SpecsIo::getCanonicalPath)
+                .collect(Collectors.joining(SpecsIo.getUniversalPathSeparator()));
     }
 
     public static FileList newInstance() {

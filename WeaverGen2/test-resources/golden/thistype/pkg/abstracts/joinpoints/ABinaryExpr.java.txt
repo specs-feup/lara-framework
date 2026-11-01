@@ -26,6 +26,9 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends ThisTy
 
     public abstract Self swapOperandsImpl();
 
+    /**
+     * @deprecated Use {@link #swapOperandsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object swapOperands() {
         try {
@@ -44,6 +47,9 @@ public abstract class ABinaryExpr<Self extends ABinaryExpr<Self>> extends ThisTy
 
     public abstract void setOperandsImpl(Self left, Self right);
 
+    /**
+     * @deprecated Use {@link #setOperandsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void setOperands(Object left, Object right) {
         try {

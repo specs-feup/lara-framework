@@ -24,6 +24,9 @@ public abstract class AReservedKeyword<Self extends AReservedKeyword<Self>> exte
 
     public abstract String getClassImpl();
 
+    /**
+     * @deprecated Use {@link #getClassImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final String _class() {
         try {

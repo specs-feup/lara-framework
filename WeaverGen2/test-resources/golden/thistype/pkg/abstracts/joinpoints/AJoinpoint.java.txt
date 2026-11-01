@@ -39,6 +39,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract Self[] getAncestorsImpl();
 
+    /**
+     * @deprecated Use {@link #getAncestorsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object[] ancestors() {
         try {
@@ -57,6 +60,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract List<Self> getSiblingsImpl();
 
+    /**
+     * @deprecated Use {@link #getSiblingsImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object siblings() {
         try {
@@ -75,6 +81,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract Self selfTransformImpl(String transformName);
 
+    /**
+     * @deprecated Use {@link #selfTransformImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object selfTransform(String transformName) {
         try {
@@ -93,6 +102,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract void replaceWithImpl(Self replacement);
 
+    /**
+     * @deprecated Use {@link #replaceWithImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final void replaceWith(Object replacement) {
         try {
@@ -111,6 +123,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract List<Self> findAllImpl(String pattern);
 
+    /**
+     * @deprecated Use {@link #findAllImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object findAll(String pattern) {
         try {
@@ -129,6 +144,9 @@ public abstract class AJoinpoint<Self extends AJoinpoint<Self>> extends JoinPoin
 
     public abstract Map<String, Self> categorizeImpl();
 
+    /**
+     * @deprecated Use {@link #categorizeImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object categorize() {
         try {

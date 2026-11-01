@@ -26,6 +26,9 @@ public abstract class ALevel1<Self extends ALevel1<Self>> extends EdgeBase<Self>
 
     public abstract Integer getBImpl();
 
+    /**
+     * @deprecated Use {@link #getBImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object b() {
         try {

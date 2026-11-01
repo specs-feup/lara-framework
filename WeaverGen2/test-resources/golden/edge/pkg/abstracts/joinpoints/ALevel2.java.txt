@@ -24,6 +24,9 @@ public abstract class ALevel2<Self extends ALevel2<Self>> extends EdgeLevel1<Sel
 
     public abstract Integer getCImpl();
 
+    /**
+     * @deprecated Use {@link #getCImpl} instead, the direct variant of this method pair.
+     */
     @Deprecated
     public final Object c() {
         try {
