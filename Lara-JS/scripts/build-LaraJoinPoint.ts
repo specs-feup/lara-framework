@@ -184,10 +184,6 @@ export function registerJoinpointMapperFunction(
     return undefined;
   }
 
-  if (obj === undefined) {
-    return obj;
-  }
-
   if (obj instanceof LaraJoinPoint) {
     return obj;
   }
@@ -221,38 +217,35 @@ export function registerJoinpointMapperFunction(
  * instance of each class, so the bridge calls made here are not repeated.
  * Assumes joinPointType() is constant per Java class, which holds for generated
  * join points (get_class() returns a literal).
+ *
+ * Join points become their mapped wrapper class, lists become arrays with wrapped
+ * elements, enums become their toString(). Any other Java object (DataClass, File,
+ * Optional, Map, ...) is returned as-is.
  */
 function javaClassWrapper(obj: any): (javaObj: any) => any {
-  if (JavaTypes.instanceOf(obj, "java.util.ArrayList")) {
-    return (list) => list.toArray().map(wrapJoinPoint);
+  if (JavaTypes.JoinPoint.isJoinPoint(obj)) {
+    const jpType: string = obj.joinPointType();
+    // Iterate in reverse order, to give priority to most recently added mappers
+    for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
+      const jpClass = JoinpointMappers[i].toJpClass(jpType);
+      if (jpClass) {
+        return (javaJp) => new jpClass(javaJp);
+      }
+    }
+    throw new Error("No mapper found for join point type: " + jpType);
   }
 
-  if (
-    JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
-    !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")
-  ) {
-    return (dataClass) => dataClass;
+  if (JavaTypes.instanceOf(obj, "java.util.List")) {
+    // Copy first: calling methods on JDK-internal list classes (List.of, unmodifiableList)
+    // fails the module access check, which aborts the process inside node-java
+    return (list) => new JavaTypes.ArrayList(list).toArray().map(wrapJoinPoint);
   }
 
-  if (obj.getClass().isEnum()) {
+  if (JavaTypes.instanceOf(obj, "java.lang.Enum")) {
     return (javaEnum) => javaEnum.toString();
   }
 
-  if (!JavaTypes.JoinPoint.isJoinPoint(obj)) {
-    throw new Error(
-      \`Given Java join point is a Java class but is not a JoinPoint: \${obj.getClass()}\`
-    );
-  }
-
-  const jpType: string = obj.joinPointType();
-  // Iterate in reverse order, to give priority to most recently added mappers
-  for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
-    const jpClass = JoinpointMappers[i].toJpClass(jpType);
-    if (jpClass) {
-      return (javaJp) => new jpClass(javaJp);
-    }
-  }
-  throw new Error("No mapper found for join point type: " + jpType);
+  return (javaObj) => javaObj;
 }\n`
   );
 
