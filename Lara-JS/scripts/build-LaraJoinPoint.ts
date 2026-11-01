@@ -101,21 +101,33 @@ function generateJoinpointWrapper(joinpoints: ConvertedJoinpoint[], outputFile: 
  */
 export interface JoinpointMapper {
   toJpClass(jpTypename: string): typeof LaraJoinPoint | undefined;
-  toJpInstance(jpTypename: string, javaJp: any): LaraJoinPoint | undefined;
   fromJpClass(jpType: typeof LaraJoinPoint): string | undefined;
 }
 
 const JoinpointMappers: JoinpointMapper[] = [];
 
 /**
- * This function is for internal use only. DO NOT USE IT!
+ * How to wrap instances of each Java class seen by wrapJoinPoint, keyed by the
+ * JS prototype node-java creates per Java class. Cleared when the mappers change.
  */
-export function clearJoinpointMappers(): void {
-  JoinpointMappers.length = 0;
+const javaClassWrappers = new Map<object, (javaObj: any) => any>();
+
+function addJoinpointMapper(mapper: JoinpointMapper): void {
+  JoinpointMappers.push(mapper);
+  javaClassWrappers.clear();
 }
 
 /**
  * This function is for internal use only. DO NOT USE IT!
+ */
+export function clearJoinpointMappers(): void {
+  JoinpointMappers.length = 0;
+  javaClassWrappers.clear();
+}
+
+/**
+ * This function is for internal use only. DO NOT USE IT!
+ * Read-only use: adding mappers here bypasses the wrapJoinPoint cache.
  */
 export function getJoinpointMappers(): JoinpointMapper[] {
   return JoinpointMappers;
@@ -127,31 +139,20 @@ export function getJoinpointMappers(): JoinpointMapper[] {
 export type JoinpointMapperType = { [key: string]: typeof LaraJoinPoint };
 
 export function registerJoinpointMapper(mapper: JoinpointMapperType): void {
-  // Create mapper from object
-  const jpMapper: JoinpointMapper = {
+  addJoinpointMapper({
     toJpClass(jpTypename: string) {
       return mapper[jpTypename];
-    },
-
-    toJpInstance(jpTypename: string, javaJp: any) {
-      const jpClass = this.toJpClass(jpTypename);
-      if (jpClass) {
-        return new jpClass(javaJp);
-      }
-
-      return undefined;
     },
 
     fromJpClass(jpType: typeof LaraJoinPoint) {
       return Object.keys(mapper).find((key) => mapper[key] === jpType);
     },
-  };
-
-  JoinpointMappers.push(jpMapper);
+  });
 }
 
 /**
- * For mappers based on functions
+ * For mappers based on functions. The result for each join point type is cached,
+ * so the function must be pure.
  */
 export type JoinpointMapperFunction = (
   jpTypename: string
@@ -160,28 +161,14 @@ export type JoinpointMapperFunction = (
 export function registerJoinpointMapperFunction(
   mapper: JoinpointMapperFunction
 ): void {
-  // Create mapper from function
-  const jpMapper = {
-    toJpClass(jpTypename: string): typeof LaraJoinPoint | undefined {
-      return mapper(jpTypename);
-    },
-
-    toJpInstance(jpTypename: string, javaJp: any): LaraJoinPoint | undefined {
-      const jpClass = this.toJpClass(jpTypename);
-      if (jpClass) {
-        return new jpClass(javaJp);
-      }
-
-      return undefined;
-    },
+  addJoinpointMapper({
+    toJpClass: mapper,
 
     // Not possible to implement with just a function
-    fromJpClass(jpType: typeof LaraJoinPoint): string | undefined {
+    fromJpClass(): string | undefined {
       return undefined;
     },
-  };
-
-  JoinpointMappers.push(jpMapper);
+  });
 }
   `
   );
@@ -217,29 +204,41 @@ export function registerJoinpointMapperFunction(
     return obj.map(wrapJoinPoint);
   }
 
-  if (!JavaTypes.isJavaObject(obj)) {
-    return obj;
+  const javaClass = Object.getPrototypeOf(obj);
+  let wrap = javaClassWrappers.get(javaClass);
+  if (wrap === undefined) {
+    if (!JavaTypes.isJavaObject(obj)) {
+      return obj;
+    }
+    wrap = javaClassWrapper(obj);
+    javaClassWrappers.set(javaClass, wrap);
   }
+  return wrap(obj);
+}
 
-  if (
-    JavaTypes.instanceOf(obj, "java.util.ArrayList")
-  ) {
-    return obj.toArray().map(wrapJoinPoint);
+/**
+ * Decides how instances of obj's Java class are wrapped. Only called on the first
+ * instance of each class, so the bridge calls made here are not repeated.
+ * Assumes joinPointType() is constant per Java class, which holds for generated
+ * join points (get_class() returns a literal).
+ */
+function javaClassWrapper(obj: any): (javaObj: any) => any {
+  if (JavaTypes.instanceOf(obj, "java.util.ArrayList")) {
+    return (list) => list.toArray().map(wrapJoinPoint);
   }
 
   if (
     JavaTypes.instanceOf(obj, "org.suikasoft.jOptions.DataStore.DataClass") &&
     !JavaTypes.instanceOf(obj, "pt.up.fe.specs.clava.ClavaNode")
   ) {
-    return obj;
+    return (dataClass) => dataClass;
   }
 
   if (obj.getClass().isEnum()) {
-    return obj.toString();
+    return (javaEnum) => javaEnum.toString();
   }
 
-  const isJavaJoinPoint = JavaTypes.JoinPoint.isJoinPoint(obj);
-  if (!isJavaJoinPoint) {
+  if (!JavaTypes.JoinPoint.isJoinPoint(obj)) {
     throw new Error(
       \`Given Java join point is a Java class but is not a JoinPoint: \${obj.getClass()}\`
     );
@@ -248,10 +247,9 @@ export function registerJoinpointMapperFunction(
   const jpType: string = obj.joinPointType();
   // Iterate in reverse order, to give priority to most recently added mappers
   for (let i = JoinpointMappers.length - 1; i >= 0; i--) {
-    const mapper = JoinpointMappers[i];
-    const laraJp = mapper.toJpInstance(jpType, obj);
-    if (laraJp) {
-      return laraJp;
+    const jpClass = JoinpointMappers[i].toJpClass(jpType);
+    if (jpClass) {
+      return (javaJp) => new jpClass(javaJp);
     }
   }
   throw new Error("No mapper found for join point type: " + jpType);
