@@ -103,9 +103,10 @@ export default class JavaTypes {
     return (
         typeof value === "object" &&
         value !== null &&
-        Object.getPrototypeOf(value).constructor.name.startsWith(
+        // Optional chaining: objects created with Object.create(null) have no constructor
+        Object.getPrototypeOf(value)?.constructor?.name?.startsWith(
             NodeJavaPrefix
-        )
+        ) === true
     );
   }
 
