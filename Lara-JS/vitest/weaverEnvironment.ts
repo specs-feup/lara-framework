@@ -1,5 +1,5 @@
 import java from "java";
-import type { Environment } from "vitest/environments";
+import type { Environment } from "vitest/runtime";
 import { Weaver } from "../code/Weaver.ts";
 import type WeaverConfiguration from "../code/WeaverConfiguration.ts";
 
